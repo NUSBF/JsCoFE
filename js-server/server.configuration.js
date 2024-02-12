@@ -770,13 +770,13 @@ function readConfiguration ( confFilePath,serverType )  {
 
     if (!fe_server.hasOwnProperty('description'))
       fe_server.description = {
-        "id"   : "",  // this is not a typo
-        "name" : "CCP4-Harwell",
-        "icon" : "images_com/setup-harwell.png"
+        id   : '',  // this is not a typo
+        name : 'CCP4-Harwell',
+        icon : 'images_com/setup-harwell.png'
       };
 
     if (!fe_server.description.hasOwnProperty('id'))
-      fe_server.description.id = "";  // this is not a typo
+      fe_server.description.id = '';  // this is not a typo
 
     if (!fe_server.description.hasOwnProperty('partners'))
       fe_server.description.partners = [];

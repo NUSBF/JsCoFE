@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    12.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -99,11 +99,11 @@ function getWorkflowsFName ( loginData )  {
 }
 
 function _make_new_user ( userData,callback_func )  {  // gets UserData object
-var response  = null;  // must become a cmd.Response object to return
-var fe_server = conf.getFEConfig();
+let response  = null;  // must become a cmd.Response object to return
+let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
-  var pwd = '';
+  let pwd = '';
   if (userData.login=='devel')
     pwd = 'devel';
   else if (('localuser' in fe_server) && (userData.login==ud.__local_user_id))
@@ -126,7 +126,7 @@ var fe_server = conf.getFEConfig();
   userData.lastSeen   = Date.now();
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( userData );
+  let userFilePath = getUserDataFName ( userData );
   log.standard ( 1,'        user data path: ' + userFilePath );
 
   if (utils.fileExists(userFilePath))  {
@@ -144,7 +144,7 @@ var fe_server = conf.getFEConfig();
 
     if (response.status==cmd.fe_retcode.ok)  {
 
-      var msg = '';
+      let msg = '';
       if (response.message.length>0)
         msg = '<p><b><i>Note:</i></b> your login was re-used and may ' +
               'contain pre-existing projects and data.';
@@ -176,11 +176,11 @@ var fe_server = conf.getFEConfig();
 
 
 function makeNewUser ( userData,callback_func )  {  // gets UserData object
-var vconf = conf.getFEConfig().projectsPath;  // volumes configuration
-var vdata = [];  // volumes actual data
-var index = {};  // links volumes in config file and in vdata
+let vconf = conf.getFEConfig().projectsPath;  // volumes configuration
+let vdata = [];  // volumes actual data
+let index = {};  // links volumes in config file and in vdata
 
-  for (var vname in vconf)  {
+  for (let vname in vconf)  {
     index[vname] = vdata.length;
     vdata.push ({
       'name'      : vname,
@@ -192,21 +192,21 @@ var index = {};  // links volumes in config file and in vdata
   }
 
   function _select_disk()  {
-    var users = readUsersData().userList;
+    let users = readUsersData().userList;
 
-    for (var i=0;i<users.length;i++)  {
+    for (let i=0;i<users.length;i++)  {
       if (users[i].dormant)
             vdata[index[users[i].volume]].committed += users[i].ration.storage_used;
       else  vdata[index[users[i].volume]].committed += users[i].ration.storage;
       vdata[index[users[i].volume]].used += users[i].ration.storage_used;
     }
 
-    var volume      = null;
-    var home_volume = false;
-    var pfill0      = 1000.0;
+    let volume      = null;
+    let home_volume = false;
+    let pfill0      = 1000.0;
 
-    for (var i=0;(i<vdata.length) && (!home_volume);i++)  {
-      var pfill = 1.0 - ((vdata[i].free-vconf[vdata[i].name].diskReserve) -
+    for (let i=0;(i<vdata.length) && (!home_volume);i++)  {
+      let pfill = 1.0 - ((vdata[i].free-vconf[vdata[i].name].diskReserve) -
                          (vdata[i].committed-vdata[i].used)) /
                         (vdata[i].size-vconf[vdata[i].name].diskReserve);
       if (pfill<pfill0)  {
@@ -214,7 +214,7 @@ var index = {};  // links volumes in config file and in vdata
         volume = vdata[i];
       }
       if (vconf[vdata[i].name].type=='home')  {
-        var hpath = path.join ( vconf[vdata[i].name].path,userData.login );
+        let hpath = path.join ( vconf[vdata[i].name].path,userData.login );
         if (utils.dirExists(hpath))  {  // does user exist on this volume?
           home_volume = true;   // user should be put on 'home' volume
           pfill0      = pfill;
@@ -231,7 +231,7 @@ var index = {};  // links volumes in config file and in vdata
 
     } else  {
 
-      var msg = 'not enough disk space to create new user';
+      let msg = 'not enough disk space to create new user';
       if (home_volume)  msg += ' on home volume "';
                   else  msg += '; most free volume is "';
       msg += volume.name + '" at\n' +
@@ -282,24 +282,24 @@ var index = {};  // links volumes in config file and in vdata
 // ===========================================================================
 
 function recoverUserLogin ( userData,callback_func )  {  // gets UserData object
-var response  = null;  // must become a cmd.Response object to return
-var fe_server = conf.getFEConfig();
+let response  = null;  // must become a cmd.Response object to return
+let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
 
   log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
                    fe_server.userDataPath );
 
-  var files = fs.readdirSync ( fe_server.userDataPath );
+  let files = fs.readdirSync ( fe_server.userDataPath );
 
-  var userName = '???';
-  var logins   = [];
-  var pwds     = [];
-  var n = 0;
-  for (var i=0;i<files.length;i++)
+  let userName = '???';
+  let logins   = [];
+  let pwds     = [];
+  let n = 0;
+  for (let i=0;i<files.length;i++)
     if (files[i].endsWith(__userDataExt))  {
-      var userFilePath = path.join ( fe_server.userDataPath,files[i] );
-      var uData = utils.readObject ( userFilePath );
+      let userFilePath = path.join ( fe_server.userDataPath,files[i] );
+      let uData = utils.readObject ( userFilePath );
       if (uData)  {
         if (uData.email==userData.email)  {
           userName  = uData.name;
@@ -342,10 +342,10 @@ var fe_server = conf.getFEConfig();
 
     } else  {
 
-      var msg = 'The following account(s) have been identified as ' +
+      let msg = 'The following account(s) have been identified as ' +
                 'registered with your e-mail address, and their passwords ' +
                 'are now reset as below:<p>';
-      for (var i=0;i<logins.length;i++)
+      for (let i=0;i<logins.length;i++)
         msg += 'Login: <b>' + logins[i] +
                '</b>, new password: <b>' + pwds[i] + '</b><br>';
       msg += '&nbsp;<br>';
@@ -380,7 +380,7 @@ function UserLoginHash()  {
 }
 
 UserLoginHash.prototype.save = function()  {
-  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+  let userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
   if (!utils.writeObject(userHashPath,this))
     return emailer.send ( conf.getEmailerConfig().maintainerEmail,
                           'CCP4 Login Hash Write Fails',
@@ -390,8 +390,8 @@ UserLoginHash.prototype.save = function()  {
 }
 
 UserLoginHash.prototype.read = function()  {
-  var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
-  var hash = utils.readObject ( userHashPath);
+  let userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+  let hash = utils.readObject ( userHashPath);
   if (hash)  {
     if (!hash.hasOwnProperty('_type'))  {
       // transformation for backward compatibility
@@ -417,8 +417,8 @@ UserLoginHash.prototype.read = function()  {
 }
 
 // UserLoginHash.prototype.read = function()  {
-//   var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
-//   var hash = utils.readObject ( userHashPath);
+//   let userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+//   let hash = utils.readObject ( userHashPath);
 //   if (hash)  {
 //     if (!hash.hasOwnProperty('_type'))  {
 //       // transformation for backward compatibility
@@ -440,7 +440,7 @@ UserLoginHash.prototype.read = function()  {
 
 UserLoginHash.prototype.addUser = function ( token,login_data )  {
 
-  var logUsers = {};
+  let logUsers = {};
 
   for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login!=login_data.login)
@@ -462,8 +462,8 @@ UserLoginHash.prototype.removeUser = function ( token )  {
 */
 
 UserLoginHash.prototype.removeUser = function ( login_name )  {
-  var loggedUsers = {};
-  for (var key in this.loggedUsers)
+  let loggedUsers = {};
+  for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login!=login_name)
       loggedUsers[key] = this.loggedUsers[key];
   this.loggedUsers = loggedUsers;
@@ -477,7 +477,7 @@ UserLoginHash.prototype.getLoginEntry = function ( token )  {
 }
 
 UserLoginHash.prototype.getToken = function ( login_name )  {
-var token = null;
+let token = null;
   for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login==login_name)  {
       token = key;
@@ -499,7 +499,7 @@ UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
 var __userLoginHash = new UserLoginHash();
 
 /*
-var __userLoginHash = {
+let __userLoginHash = {
   '_type'       : 'UserLoginHash',
   'loggedUsers' :  {
     '340cef239bd34b777f3ece094ffb1ec5' : {
@@ -512,13 +512,13 @@ var __userLoginHash = {
 
 
 function readUserLoginHash()  {
-var fe_server  = conf.getFEConfig();
-var updateHash = false;
+let fe_server  = conf.getFEConfig();
+let updateHash = false;
 
   __userLoginHash = new UserLoginHash();
 
   if (!__userLoginHash.read())  {
-    var userData = new ud.UserData();
+    let userData = new ud.UserData();
     userData.name    = 'Developer';
     userData.email   = conf.getEmailerConfig().maintainerEmail;
     userData.login   = 'devel';
@@ -567,26 +567,26 @@ function signalUser ( login_name,signal )  {
 const __suspend_prefix = '**suspended**';
 
 function userLogin ( userData,callback_func )  {  // gets UserData object
-var response  = null;  // must become a cmd.Response object to return
-var fe_server = conf.getFEConfig();
+let response  = null;  // must become a cmd.Response object to return
+let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
-//  var userData = JSON.parse ( user_data_json );
-  var pwd = hashPassword ( userData.pwd );
+//  let userData = JSON.parse ( user_data_json );
+  let pwd = hashPassword ( userData.pwd );
   if (userData.login=='**' + ud.__local_user_id + '**')  {
     userData.login = ud.__local_user_id;
     userData.pwd   = 'e58e28a556d2b4884cb16ba8a37775f0';
     pwd = userData.pwd;
   }
-  var ulogin = userData.login;
+  let ulogin = userData.login;
   log.standard ( 5,'user login ' + ulogin );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( userData );
+  let userFilePath = getUserDataFName ( userData );
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
 
     if (uData)  {
 
@@ -599,7 +599,7 @@ var fe_server = conf.getFEConfig();
 
       } else if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
-        var rData = { // return data object
+        let rData = { // return data object
           onlogin_message : uData.onlogin_message
         };
 
@@ -609,10 +609,10 @@ var fe_server = conf.getFEConfig();
         utils.writeObject ( userFilePath,uData );
 
         anl.getFEAnalytics().userLogin ( uData );
-        // var rep = anl.getFEAnalytics().getReport();
+        // let rep = anl.getFEAnalytics().getReport();
         // console.log ( rep );
 
-        var token = '';
+        let token = '';
         if (uData.login=='devel')
               token = '340cef239bd34b777f3ece094ffb1ec5';
         else  token = crypto.randomBytes(20).toString('hex');
@@ -654,9 +654,9 @@ var fe_server = conf.getFEConfig();
 
         adm.getNCData ( [],function(ncInfo){
           rData.environ_server = [];
-          for (var i=0;i<ncInfo.length;i++)
+          for (let i=0;i<ncInfo.length;i++)
             if (ncInfo[i] && ('environ' in ncInfo[i]))  {
-              for (var j=0;j<ncInfo[i].environ.length;j++)
+              for (let j=0;j<ncInfo[i].environ.length;j++)
                 if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
                   rData.environ_server.push ( ncInfo[i].environ[j] );
             }
@@ -688,9 +688,9 @@ var fe_server = conf.getFEConfig();
 
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
-  var retcode   = cmd.fe_retcode.wrongSession;
-  var uLogEntry = __userLoginHash.getLoginEntry(userData.login_token);
-  var signal    = '';
+  let retcode   = cmd.fe_retcode.wrongSession;
+  let uLogEntry = __userLoginHash.getLoginEntry(userData.login_token);
+  let signal    = '';
   if (uLogEntry.login)  {
     anl.logPresence ( uLogEntry.login );
     signal  = uLogEntry.signal;
@@ -704,8 +704,8 @@ function checkSession ( userData,callback_func )  {  // gets UserData object
 // ===========================================================================
 
 function readUserData ( loginData )  {
-  var uData = null;
-  var userFilePath = getUserDataFName ( loginData );
+  let uData = null;
+  let userFilePath = getUserDataFName ( loginData );
   if (utils.fileExists(userFilePath))  {
     uData = utils.readObject ( userFilePath );
     if (uData)
@@ -718,17 +718,17 @@ function readUserData ( loginData )  {
 }
 
 function getUserLoginData ( login )  {
-  var uLoginData = { login:login, volume:null };
-  var uData      = readUserData ( uLoginData );
+  let uLoginData = { login:login, volume:null };
+  let uData      = readUserData ( uLoginData );
   if (uData)  uLoginData.volume = uData.volume;
         else  uLoginData = null;
   return uLoginData;
 }
 
 function readUsersData()  {
-var usersData = {};
-var fe_config = conf.getFEConfig();
-var udir_path = fe_config.userDataPath;
+let usersData = {};
+let fe_config = conf.getFEConfig();
+let udir_path = fe_config.userDataPath;
 
   usersData.loginHash = __userLoginHash;
   usersData.userList  = [];
@@ -798,15 +798,15 @@ var udir_path = fe_config.userDataPath;
 
 
 function getUserData ( loginData )  {
-var response = 0;  // must become a cmd.Response object to return
+let response = 0;  // must become a cmd.Response object to return
 
   //log.debug ( 5,'user get data ' + login );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( loginData );
+  let userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
     if (uData)  {
       ud.checkUserData ( uData );
       response = new cmd.Response ( cmd.fe_retcode.ok,'',uData );
@@ -825,15 +825,15 @@ var response = 0;  // must become a cmd.Response object to return
 
 
 function topupUserRation ( loginData,callback_func )  {
-var uRation = ration.getUserRation ( loginData );
-var rData   = { code : 'ok', message : '', ration : uRation };
+let uRation = ration.getUserRation ( loginData );
+let rData   = { code : 'ok', message : '', ration : uRation };
   if (!uRation)  {
     rData.code    = 'errors';
     rData.message = 'user ration file not found';
     log.error ( 80,'User ration file not found, login ' + loginData.login );
   } else if (uRation.storage_used>=uRation.storage)  {
-    var uData = null;
-    var userFilePath = getUserDataFName ( loginData );
+    let uData = null;
+    let userFilePath = getUserDataFName ( loginData );
     if (utils.fileExists(userFilePath))
       uData = utils.readObject ( userFilePath );
     if (!uData)  {
@@ -841,9 +841,9 @@ var rData   = { code : 'ok', message : '', ration : uRation };
       rData.message = 'user data file not found';
       log.error ( 81,'User data file not found, login ' + loginData.login );
     } else  {
-      var feconf = conf.getFEConfig();
+      let feconf = conf.getFEConfig();
       // find new storage and topup requirement
-      var storage1 = uRation.storage;
+      let storage1 = uRation.storage;
       if (uRation.storage_max>0)  {
         while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
           storage1 += feconf.ration.storage_step;
@@ -853,11 +853,11 @@ var rData   = { code : 'ok', message : '', ration : uRation };
           storage1 += feconf.ration.storage_step;
       }
       if (storage1>uRation.storage_used)  {
-        var vconf  = feconf.projectsPath[uData.volume];  // volumes configuration
-        var fspath = path.resolve ( vconf.path );
+        let vconf  = feconf.projectsPath[uData.volume];  // volumes configuration
+        let fspath = path.resolve ( vconf.path );
         rData.code = 'requesting';
         checkDiskSpace(fspath).then((diskSpace) => {
-            var free = diskSpace.free/(1024.0*1024.0) - vconf.diskReserve;
+            let free = diskSpace.free/(1024.0*1024.0) - vconf.diskReserve;
             if (free<storage1-uRation.storage)  {
               rData.code    = 'no_disk';
               rData.message = 'not enough disk space';
@@ -913,15 +913,15 @@ function getUserRation ( loginData,data,callback_func )  {
 // ===========================================================================
 
 function saveHelpTopics ( loginData,userData )  {
-var response = 0;  // must become a cmd.Response object to return
+let response = 0;  // must become a cmd.Response object to return
 
   log.standard ( 6,'user save help topics ' + loginData.login );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( loginData );
+  let userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
     if (uData)  {
       ud.checkUserData ( uData );
       uData.helpTopics = userData.helpTopics;
@@ -963,11 +963,11 @@ function userLogout ( loginData )  {
 // ===========================================================================
 
 function updateUserData ( loginData,userData )  {
-var response = null;  // must become a cmd.Response object to return
-var notify   = false;
+let response = null;  // must become a cmd.Response object to return
+let notify   = false;
 
-  var uData = userData;
-  var pwd   = userData.pwd;
+  let uData = userData;
+  let pwd   = userData.pwd;
   if ((userData.login!=ud.__local_user_id) && pwd)  {
   // if (userData.login!='devel')  {
     uData.pwd = hashPassword ( pwd );
@@ -975,7 +975,7 @@ var notify   = false;
     log.standard ( 8,'update user data, login ' + loginData.login );
   } else  {
     // can only change some records without password 
-    var uData = readUserData ( loginData );
+    uData = readUserData ( loginData );
     if (uData)  {
       if (userData.login==ud.__local_user_id)
         uData.cloudrun_id = userData.cloudrun_id;
@@ -991,13 +991,13 @@ var notify   = false;
     }
   }
 
-  var userFilePath = getUserDataFName ( loginData );
+  let userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
     if (utils.writeObject(userFilePath,uData))  {
 
-      var msg = '';
+      let msg = '';
       if (notify)
         msg = emailer.sendTemplateMessage ( uData,
                                             cmd.appName() + ' Account Update',
@@ -1020,15 +1020,15 @@ var notify   = false;
 
 
 function updateUserData_admin ( loginData,userData )  {
-var response     = null;  // must become a cmd.Response object to return
-var userFilePath = getUserDataFName ( loginData );
+let response     = null;  // must become a cmd.Response object to return
+let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 9,'update ' + userData.login +
                    '\' account settings by admin, login: ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
 
     if (uData)  {
 
@@ -1037,19 +1037,19 @@ var userFilePath = getUserDataFName ( loginData );
       if (uData.role==ud.role_code.admin)  {
 
         userFilePath = getUserDataFName ( userData );
-        var uData    = utils .readObject  ( userFilePath );
-        var uRation  = ration.getUserRation ( userData );
+        uData        = utils .readObject  ( userFilePath );
+        let uRation  = ration.getUserRation ( userData );
 
         if (uData && uRation)  {
 
-          var storage      = Number(userData.ration.storage);
-          var storage_max  = Number(userData.ration.storage_max);
-          var cpu_day      = Number(userData.ration.cpu_day);
-          var cpu_month    = Number(userData.ration.cpu_month);
-          var cloudrun_day = Number(userData.ration.cloudrun_day);
-          var archive_year = Number(userData.ration.archive_year);
+          let storage      = Number(userData.ration.storage);
+          let storage_max  = Number(userData.ration.storage_max);
+          let cpu_day      = Number(userData.ration.cpu_day);
+          let cpu_month    = Number(userData.ration.cpu_month);
+          let cloudrun_day = Number(userData.ration.cloudrun_day);
+          let archive_year = Number(userData.ration.archive_year);
 
-          var feedback  = '';
+          let feedback  = '';
           if (userData.hasOwnProperty('feedback'))
               feedback = userData.feedback;
 
@@ -1111,8 +1111,8 @@ var userFilePath = getUserDataFName ( loginData );
             // change of volume; do this in the background
 
             // a) calculate project directory paths
-            var old_path = prj.getUserProjectsDirPath ( uData );
-            var new_path = prj.getUserProjectsDirPath ( userData );
+            let old_path = prj.getUserProjectsDirPath ( uData );
+            let new_path = prj.getUserProjectsDirPath ( userData );
 
             // b) log user out and suspend their account
             __userLoginHash.removeUser ( uData.login );     // logout
@@ -1173,19 +1173,19 @@ var userFilePath = getUserDataFName ( loginData );
 // ===========================================================================
 
 function deleteUser ( loginData,userData )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
 
   log.standard ( 10,'delete user, login ' + loginData.login );
 
-  var pwd = userData.pwd;
+  let pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( loginData );
+  let userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
 
     if (uData)  {
 
@@ -1193,11 +1193,11 @@ var response = null;  // must become a cmd.Response object to return
 
       if (userData.pwd==uData.pwd)  {
 
-        var rationFilePath = ration.getUserRationFPath ( loginData );
+        let rationFilePath = ration.getUserRationFPath ( loginData );
         if (!utils.removeFile(rationFilePath))
           log.error ( 101,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
-        var userProjectsDir = prj.getUserProjectsDirPath ( loginData );
+        let userProjectsDir = prj.getUserProjectsDirPath ( loginData );
         if (!utils.removePath(userProjectsDir))
           log.error ( 102,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
@@ -1235,15 +1235,15 @@ var response = null;  // must become a cmd.Response object to return
 
 
 function deleteUser_admin ( loginData,userData )  {
-var response     = null;  // must become a cmd.Response object to return
-var userFilePath = getUserDataFName ( loginData );
+let response     = null;  // must become a cmd.Response object to return
+let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 11,'delete user ' + userData.login +
                     ' by admin, login ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
 
     if (uData)  {
 
@@ -1255,11 +1255,11 @@ var userFilePath = getUserDataFName ( loginData );
 
         if (utils.fileExists(userFilePath))  {
 
-          var rationFilePath = ration.getUserRationFPath ( userData );
+          let rationFilePath = ration.getUserRationFPath ( userData );
           if (!utils.removeFile(rationFilePath))
             log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
-          var userProjectsDir = prj.getUserProjectsDirPath ( userData );
+          let userProjectsDir = prj.getUserProjectsDirPath ( userData );
           if (!utils.removePath(userProjectsDir))
             log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
@@ -1306,9 +1306,9 @@ var userFilePath = getUserDataFName ( loginData );
 
 
 function suspendUser ( loginData,suspend_bool,message )  {
-var uData = readUserData ( loginData );
+let uData = readUserData ( loginData );
   if (uData)  {
-    var ulogin = uData.login;
+    let ulogin = uData.login;
     if (suspend_bool)  {
       __userLoginHash.removeUser ( ulogin );     // logout
       uData.login = __suspend_prefix + uData.login;   // suspend
@@ -1323,10 +1323,10 @@ var uData = readUserData ( loginData );
 
 
 function retireUser_admin ( loginData,meta )  {
-var admData    = readUserData ( loginData );
-var userData   = meta.userData;
-var uData      = readUserData ( userData );
-var sLoginData = getUserLoginData ( meta.successor );
+let admData    = readUserData ( loginData );
+let userData   = meta.userData;
+let uData      = readUserData ( userData );
+let sLoginData = getUserLoginData ( meta.successor );
 
   log.standard ( 16,'retire user ' + userData.login +
                     ' by admin, login ' + loginData.login );
@@ -1334,7 +1334,7 @@ var sLoginData = getUserLoginData ( meta.successor );
   // sanity checks
 
   if (userData.login==meta.successor)  {
-    var msg = 'User and successor cannot be the same (' + userData.login + ').';
+    let msg = 'User and successor cannot be the same (' + userData.login + ').';
     log.error ( 17,msg );
     return new cmd.Response ( cmd.fe_retcode.ok,'',{
       code    : 'duplicate_users',
@@ -1357,32 +1357,32 @@ var sLoginData = getUserLoginData ( meta.successor );
   }
 
   if (!uData)  {
-    var msg = 'User data cannot be read, login=' + userData.login;
+    let msg = 'User data cannot be read, login=' + userData.login;
     log.error ( 20,msg );
     return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
 
   if (!sLoginData)  {
-    var msg = 'Successor data file cannot be found (' + sLoginData.login +')';
+    let msg = 'Successor data file cannot be found (' + sLoginData.login +')';
     log.error ( 21,msg );
     return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
-  var sData = readUserData ( sLoginData );
+  let sData = readUserData ( sLoginData );
   if (!sData)  {
-    var msg = 'Successor data file cannot be read (' + sLoginData.login +')';
+    let msg = 'Successor data file cannot be read (' + sLoginData.login +')';
     log.error ( 22,msg );
     return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
 
   // check that there are no duplicate project ids
 
-  var userPrjList = prj.readProjectList ( userData );
-  var succPrjList = prj.readProjectList ( sLoginData );
-  var duplPrjIDs  = [];
+  let userPrjList = prj.readProjectList ( userData );
+  let succPrjList = prj.readProjectList ( sLoginData );
+  let duplPrjIDs  = [];
 
-  for (var i=0;i<userPrjList.projects.length;i++)  {
-    var userPrjDesc = userPrjList.projects[i];
-    var projectNo   = succPrjList.getProjectNo ( userPrjDesc.name );
+  for (let i=0;i<userPrjList.projects.length;i++)  {
+    let userPrjDesc = userPrjList.projects[i];
+    let projectNo   = succPrjList.getProjectNo ( userPrjDesc.name );
     // if ((projectNo>=0) && (userPrjDesc.owner.login!=sLoginData.login))  {
     if (projectNo>=0)  {
       // Project is owned by user and clashes with one of successor's projects.
@@ -1406,32 +1406,32 @@ var sLoginData = getUserLoginData ( meta.successor );
 
     // log out user and successor and suspend their accounts
 
-    var uDataFile = getUserDataFName ( uData );
-    var sDataFile = getUserDataFName ( sData );
+    let uDataFile = getUserDataFName ( uData );
+    let sDataFile = getUserDataFName ( sData );
 
-    var ulogin = uData.login;
+    let ulogin = uData.login;
     __userLoginHash.removeUser ( ulogin );     // logout
     uData.login = __suspend_prefix + uData.login;   // suspend
     utils.writeObject ( uDataFile,uData );  // commit
     uData.login = ulogin;
 
-    var slogin = sData.login;
+    let slogin = sData.login;
     __userLoginHash.removeUser ( slogin );     // logout
     sData.login = __suspend_prefix + sData.login;   // suspend
     utils.writeObject ( sDataFile,sData );  // commit
     sData.login = slogin;
 
     // loop and move
-    // var folder_name = ulogin + '\'s projects';
-    var failed_move = [];
-    var were_shared = [];
-    for (var i=0;i<userPrjList.projects.length;i++)  {
-      var pName = userPrjList.projects[i].name;
-      var uProjectDir = prj.getProjectDirPath ( uData,pName );
+    // let folder_name = ulogin + '\'s projects';
+    let failed_move = [];
+    let were_shared = [];
+    for (let i=0;i<userPrjList.projects.length;i++)  {
+      let pName = userPrjList.projects[i].name;
+      let uProjectDir = prj.getProjectDirPath ( uData,pName );
       if (!utils.isSymbolicLink(uProjectDir))  {
-        var sProjectDir = prj.getProjectDirPath ( sData,pName );
+        let sProjectDir = prj.getProjectDirPath ( sData,pName );
         if (utils.moveDir(uProjectDir,sProjectDir,false))  {
-          var pData = prj.readProjectData ( sData,pName );
+          let pData = prj.readProjectData ( sData,pName );
           if ((!('author' in pData.desc.owner)) ||
               (pData.desc.owner.author==ud.__local_user_id))
             pData.desc.owner.author = pData.desc.owner.login;
@@ -1445,8 +1445,8 @@ var sLoginData = getUserLoginData ( meta.successor );
 
     // update rations and activate user and successor accounts
 
-    var uRation = ration.getUserRation ( uData );
-    var sRation = ration.getUserRation ( sData );
+    let uRation = ration.getUserRation ( uData );
+    let sRation = ration.getUserRation ( sData );
 
     sRation.storage      += uRation.storage;
     sRation.storage_used += uRation.storage_used;
@@ -1459,7 +1459,7 @@ var sLoginData = getUserLoginData ( meta.successor );
     utils.writeObject ( uDataFile,uData );  // commit
     utils.writeObject ( sDataFile,sData );  // commit
 
-    var msg = '';
+    let msg = '';
     if (failed_move.length>0)
       msg = 'The following project(s) could not be moved due to errors:<p>' +
             failed_move.join(', ');
@@ -1495,25 +1495,25 @@ var sLoginData = getUserLoginData ( meta.successor );
 
 
 function resetUser_admin ( loginData,userData )  {
-var response     = null;  // must become a cmd.Response object to return
-var fe_server    = conf.getFEConfig();
-var userFilePath = getUserDataFName ( loginData );
+let response     = null;  // must become a cmd.Response object to return
+let fe_server    = conf.getFEConfig();
+let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 141,'reset pasword for user ' + userData.login +
                      ' by admin, login ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
-    var uaData = utils.readObject ( userFilePath );
+    let uaData = utils.readObject ( userFilePath );
     if (uaData)  {
       ud.checkUserData ( uaData );
       if (uaData.role==ud.role_code.admin)  {
         // admin privileges confirmed
 
         userFilePath = getUserDataFName ( userData );
-        var uData = utils.readObject ( userFilePath );
+        let uData = utils.readObject ( userFilePath );
         if (uData)  {
           // reset password
-          var pwd = '';
+          let pwd = '';
           if (uData.login=='devel')
                 pwd = 'devel';
           else if (('localuser' in fe_server) && (uData.login==ud.__local_user_id))
@@ -1599,20 +1599,20 @@ function _send_announcement ( subject,message,user_list,count )  {
 function sendAnnouncement ( loginData,message )  {
 
   // Check that we're having a new login name
-  var userFilePath = getUserDataFName ( loginData );
+  let userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
     if (uData)  {
 
       ud.checkUserData ( uData );
 
       if (uData.role==ud.role_code.admin)  {
 
-        var usersData = readUsersData();
-        var users     = usersData.userList;
-        //for (var i=0;i<users.length;i++)  {
+        let usersData = readUsersData();
+        let users     = usersData.userList;
+        //for (let i=0;i<users.length;i++)  {
         //  emailer.send ( users[i].email,cmd.appName() + ' Announcement',
         //                 message.replace( '&lt;User Name&gt;',users[i].name ) );
         //  log.standard ( 12,'Announcement sent to ' + users[i].name + ' at ' +
@@ -1639,22 +1639,22 @@ function sendAnnouncement ( loginData,message )  {
 // ===========================================================================
 
 function manageDormancy ( loginData,params )  {
-var userFilePath = getUserDataFName ( loginData );
-var ddata = { 'status' : 'ok' };
+let userFilePath = getUserDataFName ( loginData );
+let ddata = { 'status' : 'ok' };
 
   // Check that we're having a new login name
 
   if (utils.fileExists(userFilePath))  {
 
-    var uData = utils.readObject ( userFilePath );
+    let uData = utils.readObject ( userFilePath );
     if (uData)  {
 
       ud.checkUserData ( uData );
 
       if (uData.role==ud.role_code.admin)  {
 
-        var usersData = readUsersData();
-        var users     = usersData.userList;
+        let usersData = readUsersData();
+        let users     = usersData.userList;
 
         ddata.total_users   = users.length;
         ddata.dormant_users = 0;
@@ -1663,15 +1663,15 @@ var ddata = { 'status' : 'ok' };
         ddata.disk_freed    = 0;  // in case of deletion
         ddata.check_date    = Date.now();
 
-        for (var key in params)
+        for (let key in params)
           ddata[key] = params[key];
 
-        var timer_delay = 0; // ms
-        var tnorm = 1000 * 60 * 60 * 24;
-        for (var i=0;i<users.length;i++)
+        let timer_delay = 0; // ms
+        let tnorm = 1000 * 60 * 60 * 24;
+        for (let i=0;i<users.length;i++)
           if (users[i].dormant)  {
             // THIS IS NOT FINISHED !!!!!
-            var ndays = (ddata.check_date-users[i].dormant) / tnorm;
+            let ndays = (ddata.check_date-users[i].dormant) / tnorm;
             if (ndays>ddata.period3)  {
               ddata.deleted_users++;
               ddata.disk_freed += users[i].ration.storage_used;
@@ -1680,21 +1680,21 @@ var ddata = { 'status' : 'ok' };
               }
             }
           } else  {
-            var ndays = (ddata.check_date-users[i].lastSeen) / tnorm;
+            let ndays = (ddata.check_date-users[i].lastSeen) / tnorm;
 //ndays = 10000;
             if ((ndays>ddata.period1) ||
                 ((users[i].ration.jobs_total<=ddata.njobs) && (ndays>ddata.period2)))  {
               ddata.dormant_users++;
               ddata.disk_released += users[i].ration.storage - users[i].ration.storage_used;
               if (!ddata.checkOnly)  {
-                var uiFilePath = getUserDataFName ( users[i] );
-                var uiData     = utils.readObject ( uiFilePath );
+                let uiFilePath = getUserDataFName ( users[i] );
+                let uiData     = utils.readObject ( uiFilePath );
                 if (uiData)  {
                   ud.checkUserData ( uiData );
                   uiData.dormant = ddata.check_date;
 //uiData.dormant = 0;
                   if (utils.writeObject(uiFilePath,uiData))  {
-                    var reason_msg = '';
+                    let reason_msg = '';
                     if (ndays>ddata.period1)
                       reason_msg = 'you have not used your account during last ' +
                                    ddata.period1 + ' days';
@@ -1764,12 +1764,12 @@ let workflowsFPath = getWorkflowsFName ( loginData );
 // ===========================================================================
 
 function getInfo ( inData,callback_func )  {
-var response  = null;  // must become a cmd.Response object to return
-var fe_server = conf.getFEConfig();
+let response  = null;  // must become a cmd.Response object to return
+let fe_server = conf.getFEConfig();
 
   if (fe_server)  {
 
-    var rData = {};
+    let rData = {};
     rData.localuser       = null;
     rData.logintoken      = null;
     rData.helpTopics      = [];
@@ -1783,11 +1783,11 @@ var fe_server = conf.getFEConfig();
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );
-      var loginData    = __userLoginHash.getLoginEntry ( rData.logintoken );
+      let loginData    = __userLoginHash.getLoginEntry ( rData.logintoken );
       if (loginData.login)  {
-        var userFilePath = getUserDataFName ( loginData );
+        let userFilePath = getUserDataFName ( loginData );
         if (utils.fileExists(userFilePath))  {
-          var uData = utils.readObject ( userFilePath );
+          let uData = utils.readObject ( userFilePath );
           if (uData)
             rData.helpTopics = uData.helpTopics;
         }
@@ -1807,7 +1807,7 @@ var fe_server = conf.getFEConfig();
     rData.maintainerEmail = conf.getEmailerConfig().maintainerEmail;
     rData.jscofe_version  = cmd.appVersion();
 
-    var client_conf = conf.getClientNCConfig();
+    let client_conf = conf.getClientNCConfig();
     if (client_conf) rData.local_service = client_conf.externalURL;
                 else rData.local_service = null;
 
@@ -1830,26 +1830,26 @@ function authResponse ( server_request,server_response )  {
 // process response from authorisation server
 // /?token=WyIxLjIuMy40Iiw1MTM1XQ%3A1i4BlU%3AEyXX0QzMoWCGZqNwPZ5QabHToO8&code=ok&reqid=authorisation-arpwarp-340cef239bd34b777f3ece094ffb1ec5
 
-  var params = {
+  let params = {
     'token' : '',
     'code'  : '',
     'reqid' : ''
   };
 
-  var pstr  = server_request.url;
-  var plist = [];
+  let pstr  = server_request.url;
+  let plist = [];
   if (pstr.length>0)  {
     if (pstr.startsWith('/?'))     pstr = pstr.substr(2);
     else if (pstr.startsWith('?')) pstr = pstr.substr(1);
     plist = pstr.split('&');
-    for (var i=0;i<plist.length;i++)  {
-      var pair = plist[i].split('=');
+    for (let i=0;i<plist.length;i++)  {
+      let pair = plist[i].split('=');
       params[pair[0]] = pair[1];
     }
   }
 
-  var auth_result  = 'ok';
-  var software_key = '';
+  let auth_result  = 'ok';
+  let software_key = '';
 
   if ((params.reqid=='') || (params.code==''))
     auth_result = 'bad_reply';
@@ -1861,14 +1861,14 @@ function authResponse ( server_request,server_response )  {
     auth_result = 'denied';
 
   if (params.reqid) {
-    var rlist = params.reqid.split('-');
+    let rlist = params.reqid.split('-');
     if (rlist.length>2)  {
       params.reqid  = [rlist[0],rlist.slice(1,rlist.length-1).join('-'),rlist[rlist.length-1]];
       software_key  = params.reqid[1];
-      var loginData = __userLoginHash.getLoginEntry ( params.reqid[2] );
+      let loginData = __userLoginHash.getLoginEntry ( params.reqid[2] );
       if (loginData.login.length>0)  {
-        var userFilePath = getUserDataFName ( loginData );
-        var uData  = utils.readObject ( userFilePath );
+        let userFilePath = getUserDataFName ( loginData );
+        let uData  = utils.readObject ( userFilePath );
         if (uData)  {
           ud.checkUserData ( uData );
           if (!uData.authorisation.hasOwnProperty(params.reqid[1]))
@@ -1891,11 +1891,11 @@ function authResponse ( server_request,server_response )  {
   }
 
   //  read page into msg
-  var html = utils.readString ( path.join('bootstrap','authend.html') );
+  let html = utils.readString ( path.join('bootstrap','authend.html') );
   if (html.length>0)  {
-    var fe_server  = conf.getFEConfig();
-    var setup_name = '';
-    var setup_icon = '';
+    let fe_server  = conf.getFEConfig();
+    let setup_name = '';
+    let setup_icon = '';
     if (fe_server.hasOwnProperty('description'))  {
       setup_name = fe_server.description.name;
       setup_icon = fe_server.description.icon;
