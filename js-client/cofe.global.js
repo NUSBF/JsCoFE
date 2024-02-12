@@ -34,7 +34,7 @@ var __login_id        = '';
 var __login_user      = '';
 var __user_settings   = {
   color_modes : {
-    preferred_mode : 'system',  // 'light', 'dark', 'system' 
+    preferred_mode : 'light',  // light|dark|system; make 'system' in final version
     normal_mode :  {
       invert     : 0.0,   // 0 - 1
       sepia      : 0.0,   // 0 - 1
@@ -287,16 +287,18 @@ function isDarkMode()  {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
-function bindToBrowserColorMode()  {
+function bindToBrowserColorMode ( setModeOnly=false )  {
+  if (__user_settings.color_modes.preferred_mode!='system')
+    setDarkMode ( __user_settings.color_modes.preferred_mode=='dark' );
   if (window.matchMedia)  {
     let query = window.matchMedia ( '(prefers-color-scheme: dark)' );
     if (__user_settings.color_modes.preferred_mode=='system')
-          setDarkMode ( query.matches );
-    else  setDarkMode ( __user_settings.color_modes.preferred_mode=='dark' );
-    query.addEventListener ( 'change',function(event){
-      if (__user_settings.color_modes.preferred_mode=='system')
-        setDarkMode ( event.matches );
-    });
+        setDarkMode ( query.matches );
+    if (!setModeOnly)
+      query.addEventListener ( 'change',function(event){
+        if (__user_settings.color_modes.preferred_mode=='system')
+          setDarkMode ( event.matches );
+      });
   }
 }
 

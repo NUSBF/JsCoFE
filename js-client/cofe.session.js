@@ -188,9 +188,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __user_settings      = userData.settings;
               if (!('color_modes' in __user_settings))
                 __user_settings.color_modes = color_modes;
-              if (__user_settings.color_modes.preferred_mode=='system')
-                    setDarkMode ( query.matches );
-              else  setDarkMode ( __user_settings.color_modes.preferred_mode=='dark' );
+              bindToBrowserColorMode ( true ); 
               __user_role          = userData.role;
               __user_licence       = userData.licence;
               __dormant            = userData.dormant;
