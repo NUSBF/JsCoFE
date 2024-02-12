@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.02.24   <--  Date of Last Modification.
+ *    12.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -426,10 +426,12 @@ BasePage.prototype.addFullscreenToMenu = function()  {
     this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
-  // this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
-  //                      .addOnClickListener ( toggleDarkMode );
-  // this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
-  //                      .addOnClickListener ( function(){ new DarkModeDialog(); } );
+  if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
+    this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
+                        .addOnClickListener ( toggleDarkMode );
+    this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
+                        .addOnClickListener ( function(){ new DarkModeDialog(); } );
+  }
   return this;
 }
 

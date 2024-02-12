@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.02.24   <--  Date of Last Modification.
+ *    12.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -45,16 +45,9 @@ var __user_settings   = {
       grayscale  : 0.0    // 0 -1
     },
     dark_mode :  {
-      // invert     : 0.95,  // 0 - 1
-      // sepia      : 0.1,   // 0 - 1
-      // hue        : 0,     // integer deg +/-180
-      // saturate   : 1.0,   // >0
-      // contrast   : 1.0,   // >0
-      // brightness : 1.0,   // > 0
-      // grayscale  : 0.0    // 0 -1
-      invert     : 0.0,   // 0 - 1
-      sepia      : 0.0,   // 0 - 1
-      hue        : 0,     // integer deg +/- 180
+      invert     : 0.95,  // 0 - 1
+      sepia      : 0.1,   // 0 - 1
+      hue        : 0,     // integer deg +/-180
       saturate   : 1.0,   // >0
       contrast   : 1.0,   // >0
       brightness : 1.0,   // > 0
@@ -297,9 +290,12 @@ function isDarkMode()  {
 function bindToBrowserColorMode()  {
   if (window.matchMedia)  {
     let query = window.matchMedia ( '(prefers-color-scheme: dark)' );
-    setDarkMode ( query.matches );
+    if (__user_settings.color_modes.preferred_mode=='system')
+          setDarkMode ( query.matches );
+    else  setDarkMode ( __user_settings.color_modes.preferred_mode=='dark' );
     query.addEventListener ( 'change',function(event){
-      setDarkMode ( event.matches );
+      if (__user_settings.color_modes.preferred_mode=='system')
+        setDarkMode ( event.matches );
     });
   }
 }

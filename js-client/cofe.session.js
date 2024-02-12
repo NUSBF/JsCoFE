@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.09.23   <--  Date of Last Modification.
+ *    12.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2023
+ *  (C) E. Krissinel, A. Lebedev 2020-2024
  *
  *  =================================================================
  *
@@ -184,10 +184,13 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __environ_server     = response.data.environ_server;
               __my_workflows       = response.data.my_workflows;
               __login_user         = userData.name;
-              let color_modes = __user_settings.color_modes;
+              let color_modes      = __user_settings.color_modes;
               __user_settings      = userData.settings;
               if (!('color_modes' in __user_settings))
                 __user_settings.color_modes = color_modes;
+              if (__user_settings.color_modes.preferred_mode=='system')
+                    setDarkMode ( query.matches );
+              else  setDarkMode ( __user_settings.color_modes.preferred_mode=='dark' );
               __user_role          = userData.role;
               __user_licence       = userData.licence;
               __dormant            = userData.dormant;
