@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.04.23   <--  Date of Last Modification.
+ *    13.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Reciprocal Space Viewer
  *       ~~~~~~~~~  UglyMol XYZ+Maps Viewer
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -58,11 +58,11 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
                      'This is a bug, please contact ' + appName() + ' developer.',
                      'msg_error' );
   } else  {
-    var task = __current_page.getJobTree().getTask ( jobId );
+    let task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
-      var xyz_uri = '';
-      var map_uri  = '';
-      var dmap_uri = '';
+      let xyz_uri = '';
+      let map_uri  = '';
+      let dmap_uri = '';
       if (xyzFilePath)  xyz_uri  = task.getProjectURL ( jobId,xyzFilePath );
       if (mapFilePath)  map_uri  = task.getProjectURL ( jobId,mapFilePath );
       if (dmapFilePath) dmap_uri = task.getProjectURL ( jobId,dmapFilePath );

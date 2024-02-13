@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    15.08.23   <--  Date of Last Modification.
+//    13.02.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2023
+//  (C) E. Krissinel 2013-2024
 //
 //  ==========================================================================
 //
@@ -108,22 +108,22 @@ var html =
 }
 */
 
+
 function makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
-var html =
+let html =
     '<!doctype html>\n' +
     '<html lang="en">\n' +
     '<base target="_parent">\n' +
     '<head>\n' +
     '  <meta charset="utf-8">\n' +
     '  <meta name="viewport" content="width=device-width, user-scalable=no">\n' +
-    '  <meta name="theme-color" content="#333333">\n' +
+    // '  <meta name="theme-color" content="#333333">\n' +
     '  <link rel="stylesheet" type="text/css" href="' + _jsrview_uri + 'uglymol/uglymol.css"/>\n' +
     '  <script src="' + _jsrview_uri + 'uglymol/uglymol.js"><\/script>\n' +
     '  <script src="' + _jsrview_uri + 'uglymol/mtz.js"><\/script>\n' +
     '</head>\n' +
-    '<body style="overflow:hidden;font-size:16px;">\n' +
-    '  <div id="viewer" style="position:absolute; left:0px; top:0px; ' +
-                              'overflow:hidden;"></div>\n' +
+    '<body class="uglymol-page">\n' +
+    '  <div id="viewer"></div>\n' +
     '  <header id="hud" onmousedown="event.stopPropagation();"\n' +
     '                   onmousemove="event.stopPropagation();"\n' +
     '                   ondblclick="event.stopPropagation();">\n' +
@@ -150,11 +150,11 @@ var html =
   else if (diffmap_uri.length>0)
     html += '    V.load_map("' + diffmap_uri + '",{diff_map: true, format: "ccp4"});\n';
   else if (mtz_uri.length>0)  {
-    var mlline = '"';
+    let mlline = '"';
     if (mapLabels)  {
-      var mllist = mapLabels.split(',');
+      let mllist = mapLabels.split(',');
       mlline = '", [';
-      for (var i=0;i<mllist.length;i++)
+      for (let i=0;i<mllist.length;i++)
         mlline += '"' + mllist[i] + '",';
       mlline = mlline.slice(0,-1) + ']';
     }
@@ -167,6 +167,10 @@ var html =
   //         // 'drawMolecule();\n' +
   //         'let iterateDraw = function(){ drawMolecule(); window.setTimeout(iterateDraw,3000) };\n' +
   //         'iterateDraw();\n' +
+
+  if (('__active_color_mode' in window.parent) && (window.parent.__active_color_mode=='dark'))
+    html += '  let scene = document.getElementById("viewer");\n' +
+            '  scene.style.setProperty("filter","invert(1.0)");\n';
   html += '</script>\n' +
           '</body>\n' +
           '</html>\n';

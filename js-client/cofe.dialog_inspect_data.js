@@ -45,7 +45,7 @@ function DataSummaryPage ( data )  {
   this.makeRow ( 'Producing job number',data.jobId,'Id of job produced this dataset' );
   this.makeRow ( 'Version',data.version.toString(),'Data object version number' );
 
-  var type = data.title();
+  let type = data.title();
   if (data.subtype.length>0)
     type += ' (' + data.subtype.join(',') + ')';
   type = type.replace ( hkl_subtype.regular+',','').replace(','+hkl_subtype.regular,'' );
@@ -93,16 +93,16 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
     this.grid.setLabel ( '&nbsp;', 2,0,1,1 );
     this.view_btn_grid = this.grid.setGrid ( '-compact', 3,0,1,1 );
   }
-  var uglymol_btn = this.view_btn_grid.setButton ( 'UglyMol',
+  let uglymol_btn = this.view_btn_grid.setButton ( 'UglyMol',
                           image_path('display'), 3,this.view_btn_pos++,1,1 );
 
   (function(t){
     uglymol_btn.addOnClickListener ( function(){
-      var coors = t._getPath(task,t.data,file_key.xyz);
+      let coors = t._getPath(task,t.data,file_key.xyz);
       if (!coors)
         coors = t._getPath(task,t.data,file_key.sub);
-      var map_path  = t._getPath(task,t.data,file_key.map);
-      var dmap_path = t._getPath(task,t.data,file_key.dmap);
+      let map_path  = t._getPath(task,t.data,file_key.map);
+      let dmap_path = t._getPath(task,t.data,file_key.dmap);
       if (map_path || dmap_path)
         startUglyMol ( t.data.dname,coors,'',
                        t._getPath(task,t.data,file_key.map),
@@ -121,7 +121,7 @@ DataSummaryPage.prototype.addUglyMolButton = function ( task )  {
 DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
 
   /*
-  var fileNo;
+  let fileNo;
   if (this.data.files.length==1)  fileNo = 0;
                             else  fileNo = 1;
   */
@@ -132,7 +132,7 @@ DataSummaryPage.prototype.addViewHKLButton = function ( task )  {
       this.grid.setLabel ( '&nbsp;', 2,0,1,1 );
       this.view_btn_grid = this.grid.setGrid ( '-compact', 3,0,1,1 );
     }
-    var viewhkl_btn = this.view_btn_grid.setButton ( 'ViewHKL',
+    let viewhkl_btn = this.view_btn_grid.setButton ( 'ViewHKL',
                           image_path('display'), 3,this.view_btn_pos++,1,1 );
 
     (function(t){
