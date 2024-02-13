@@ -32,7 +32,7 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
                      'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
   } else  {
-    var task = __current_page.getJobTree().getTask ( jobId );
+    let task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
       startRSViewer ( title,task.getProjectURL(jobId,rlpFilePath),
                             task.getProjectURL(jobId,mapFilePath) );
@@ -104,11 +104,11 @@ function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,legendFilePath,
                      'This is a bug, please contact ' + appName() + ' developer.',
                      'msg_error' );
   } else  {
-    var task = __current_page.getJobTree().getTask ( jobId );
+    let task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
-      var xyz_uri    = '';
-      var mtz_uri    = '';
-      var legend_uri = '';
+      let xyz_uri    = '';
+      let mtz_uri    = '';
+      let legend_uri = '';
       if (xyzFilePath)     xyz_uri    = task.getProjectURL ( jobId,xyzFilePath );
       if (mtzFilePath)     mtz_uri    = task.getProjectURL ( jobId,mtzFilePath );
       if (legendFilePath)  legend_uri = task.getProjectURL ( jobId,legendFilePath );
