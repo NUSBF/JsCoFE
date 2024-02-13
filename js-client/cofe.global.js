@@ -283,7 +283,8 @@ function toggleDarkMode() {
   setDarkMode ( __active_color_mode=='light' );
 }
 
-function isDarkMode()  { 
+function isDarkMode()  {
+  // alert ( ' isdarkmode=' + window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches );
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 

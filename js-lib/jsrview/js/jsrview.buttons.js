@@ -288,6 +288,7 @@ function buttonClicked ( command,data )  {
           window.rvGate.buttonClicked ( command,data_item );
     else  downloadUri ( data_item );
   } else if (command=="{uglymol}")  {
+    // alert ( 'ppp')
     _startUglyMol ( data_item,meta_item );
   } else if (command=="{display}")  {
     displayData ( data_item );
