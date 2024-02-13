@@ -119,7 +119,7 @@ function DarkModeDialog()  {
 
   setSlider ( 'Invert'    ,100,100*invert0    ,'invert'    ,function(s){ return s/100.0; } );
   setSlider ( 'Sepia'     ,100,100*sepia0     ,'sepia'     ,function(s){ return s/100.0; } );
-  setSlider ( 'HUE'       ,360,180+180*hue0   ,'hue'       ,function(s){ return s-180;   } );
+  setSlider ( 'HUE'       ,360,180+hue0       ,'hue'       ,function(s){ return s-180;   } );
   setSlider ( 'Saturation',150,100*saturate0  ,'saturate'  ,function(s){ return s/100.0; } );
   setSlider ( 'Contrast'  ,150,100*contrast0  ,'contrast'  ,function(s){ return s/100.0; } );
   setSlider ( 'Brightness',150,100*brightness0,'brightness',function(s){ return s/100.0; } );

@@ -339,13 +339,24 @@ if (!__template)  {
 
     fetchFile ( 'js-lib/webCoot/webcoot.html',
       function(text){
+        let dark_mode_html = '';
+        if (('__active_color_mode' in window) && (window.__active_color_mode=='dark'))  {
+          let dark_mode  = window.parent.__user_settings.color_modes.dark_mode;
+          let dinvert    = 2.0 - dark_mode.invert;
+          let dhue       = -dark_mode.hue;
+          dark_mode_html = '  let scene = document.getElementById("root");\n' +
+                           '  scene.style.setProperty("filter","invert(' + dinvert + 
+                           ') hue-rotate(' + dhue + 'deg) ' + 
+                           '");\n';
+        }
         wab.iframe.setHTML (
           // text.replace ( '[[baseurl]]',
           //                window.location + 'js-lib/webCoot/webcoot.html' )
           text.replaceAll ( '[[prefix]]','js-lib/webCoot' )
               .replace ( '</body>',
-                         '  <script type="text/javascript"  defer="defer">\n' + 
+                         '  <script type="text/javascript"  defer="defer">\n'  + 
                          '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
+                         dark_mode_html  +
                          '  </script>\n' +
                          '</body>'
                        )

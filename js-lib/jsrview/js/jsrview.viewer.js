@@ -168,9 +168,45 @@ let html =
   //         'let iterateDraw = function(){ drawMolecule(); window.setTimeout(iterateDraw,3000) };\n' +
   //         'iterateDraw();\n' +
 
-  if (('__active_color_mode' in window.parent) && (window.parent.__active_color_mode=='dark'))
+  if (('__active_color_mode' in window.parent) && (window.parent.__active_color_mode=='dark'))  {
+
+//    let normal_mode = window.parent.__user_settings.color_modes.normal_mode;
+    let dark_mode   = window.parent.__user_settings.color_modes.dark_mode;
+    let dinvert     = 2.0 - dark_mode.invert;
+//    let dsepia      = 0.0; // dark_mode.sepia;
+    let dhue        = -dark_mode.hue;
+//    let dsat        = dark_mode.saturate;
+    
+/*    
+    : {
+        preferred_mode : 'light',  // light|dark|system; make 'system' in final version
+        normal_mode :  {
+          invert     : 0.0,   // 0 - 1
+          sepia      : 0.0,   // 0 - 1
+          hue        : 0,     // integer deg +/- 180
+          saturate   : 1.0,   // >0
+          contrast   : 1.0,   // >0
+          brightness : 1.0,   // > 0
+          grayscale  : 0.0    // 0 -1
+        },
+        dark_mode :  {
+          invert     : 0.95,  // 0 - 1
+          sepia      : 0.1,   // 0 - 1
+          hue        : 0,     // integer deg +/-180
+          saturate   : 1.0,   // >0
+          contrast   : 1.0,   // >0
+          brightness : 1.0,   // > 0
+          grayscale  : 0.0    // 0 -1
+        }
+      }
+    };
+    */
+
     html += '  let scene = document.getElementById("viewer");\n' +
-            '  scene.style.setProperty("filter","invert(1.0)");\n';
+            '  scene.style.setProperty("filter","invert(' + dinvert + 
+            ') hue-rotate(' + dhue + 'deg) ' + 
+            '");\n';
+  }
   html += '</script>\n' +
           '</body>\n' +
           '</html>\n';
@@ -825,14 +861,19 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
 
   fetchFile ( 'js-lib/webCoot/webcoot.html',
     function(text){
+      let dark_mode_html = '';
+      if (('__active_color_mode' in window) && (window.__active_color_mode=='dark'))
+        dark_mode_html = '  let scene = document.getElementById("root");\n' +
+                         '  scene.style.setProperty("filter","invert(1.0)");\n';
       _start_viewer ( 
         title,
         // text.replace ( '[[baseurl]]',
         //                window.location + 'js-lib/webCoot/webcoot.html' )
         text.replaceAll ( '[[prefix]]','js-lib/webCoot' )
             .replace    ( '</body>',
-                          '  <script type="text/javascript"  defer="defer">\n' + 
+                          '  <script type="text/javascript"  defer="defer">\n'  + 
                           '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
+                          dark_mode_html  +
                           '  </script>\n' +
                           '</body>'
                         )
