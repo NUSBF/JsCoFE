@@ -3,20 +3,45 @@
 'use strict';
 
 const log = require('./js/log.js');
-log.newLog(`${process.cwd()}/app.log`);
+log.newLog(`${process.cwd()}/dl_cmdline.log`);
 
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
 const config = require('./js/config.js');
 
+const client = require('./dl_client.js');
 
-const { program } = require('commander');
-
-class client {
+class appClient extends client {
 
   constructor() {
+    super(true);
     this.datalink = new datalink(false);
+    this.datalink.standalone = true;
+
+    this.action_map = {
+      search: this.datalink.searchSourceCatalog,
+      fetch: this.datalink.fetchData,
+      remove: this.datalink.removeData,
+      update: this.datalink.updateData,
+      status: this.datalink.getDataStatus,
+      status_all: this.datalink.getDataStatus,
+      catalog: this.datalink.getSourceCatalog,
+      catalog_all: this.datalink.getAllSourceCatalogs
+    }
+
+    this.arg_info.user.def = '@local';
+
     this.setupSignals();
+  }
+
+  async doCall(action, ...args) {
+    let func = this.action_map[action];
+
+    await this.waitForCatalogs();
+
+    // need to use call and assign this.datalink as the given this
+    let res = func.call(this.datalink, ...args);
+    return res;
   }
 
   setupSignals() {
@@ -46,43 +71,8 @@ class client {
     }
   }
 
-  async searchPDB(pdb) {
-    let res = await this.datalink.searchSourceCatalog(pdb);
-
-    this.displayResult(res);
-  }
-
-  fetch(user, source, id) {
-    let res = this.datalink.fetchData(user, source, id, true);
-
-    if (res.error) {
-      this.displayResult(res);
-    }
-
-    this.fetchMultiple(user, [ { source: source, id: id } ] );
-  }
-
-  async fetchPDB(user, pdb) {
-    const res = await this.datalink.searchSourceCatalog(pdb);
-
-    if (res.error) {
-      this.displayResult(res);
-      return;
-    }
-
-    this.fetchMultiple(user, res.results);
-  }
-
   async fetchMultiple(user, results) {
-    for (const r of results) {
-      let st = this.datalink.fetchData(user, r.source, r.id, true);
-      if (st.success) {
-        let s = this.datalink.getDataStatus(user, r.source, r.id);
-        console.log(`Fetching ${r.source}/${r.id}\nName: ${s.name}`);
-      } else {
-        return;
-      }
-    }
+    await super.fetchMultiple(user, results);
 
     let status_c = 0;
     while (status_c < Object.keys(results).length) {
@@ -90,7 +80,7 @@ class client {
       let size_s = 0;
       let percent = 0;
       for (const r of results) {
-        let s = this.datalink.getDataStatus(user, r.source, r.id);
+        let s = await this.doCall('status', user, r.source, r.id);
         if (s.status == status.completed) {
           status_c += 1;
         }
@@ -110,119 +100,12 @@ class client {
     }
 
     for (const r of results) {
-      console.log(`Fetched ${r.source}/${r.id}\nData is available at ${tools.getDataDir(user)}/${r.source}/${r.id}`);
+      console.log(`\nFetched ${r.source}/${r.id}\nData is available at ${tools.getDataDir(user)}/${r.source}/${r.id}`);
     }
 
-  }
-
-  status(user, source, id) {
-    return this.datalink.getDataStatus(user, source, id);
-  }
-
-  update(user, source, id, field, value) {
-    let obj = {};
-    obj[field] = value;
-    return this.datalink.updateData(user, source, id, obj);
-  }
-
-  remove(user, source, id) {
-    return this.datalink.removeData(user, source, id)
-  }
-
-  displayResult(res) {
-    if (! res) {
-      return;
-    }
-    if (res.error) {
-      console.error(res.msg);
-      process.exitCode = 1;
-    } else if (res.success) {
-      console.log(res.msg);
-    } else {
-      try {
-        console.log(JSON.stringify(res, null, 2));
-      } catch {
-        console.log(res);
-      }
-    }
-  }
-
-  processArgs() {
-    program
-      .argument('<action>', 'catalog/catalogue, search, fetch, status, update or remove')
-      .description('Data Link: ')
-      .option('--user <user>', `Data will be stored in ${tools.getDataDir()}/<user>`, '@local')
-      .option('--source <source>', 'folder to filter by')
-      .option('--id <id>', 'id of entries')
-      .option('--pdb <id>', 'PDB identifier')
-      .option('--field <key=value>', 'Used for action <update> to update data catalog entry value (eg., in_use=true)')
-      .action(async (name, options, command) => {
-        await this.waitForCatalogs();
-        let res = null;
-
-        // parameter check
-        switch(name) {
-          case 'update':
-            if (! options.field) {
-              res = { error: true, msg: 'You need to include a --field key=value parameter' };
-            }
-          case 'fetch':
-          case 'remove':
-            if (! (options.user && options.source && options.id)) {
-              res = { error: true, msg: `You need to provide a <user>, <source> and an <id> of the data to ${name}`};
-            }
-            break;
-        }
-        if (res) {
-          this.displayResult(res);
-          return;
-        }
-
-        // process actions
-        switch(name) {
-          case 'catalog':
-          case 'catalogue':
-            if (options.source) {
-              res = this.datalink.getSourceCatalog(options.source);
-            } else {
-              res = this.datalink.getAllSourceCatalogs();
-            }
-            break;
-          case 'search':
-            this.searchPDB(options.pdb);
-            break;
-          case 'fetch':
-            if (options.pdb) {
-              this.fetchPDB(options.user, options.pdb);
-            } else {
-              this.fetch(options.user, options.source, options.id);
-            }
-            break;
-          case 'status':
-            res = this.status(options.user, options.source, options.id);
-            break;
-          case 'update':
-            let spl = options.field.split('=');
-            if (spl[0] && spl[1]) {
-              res = this.update(options.user, options.source, options.id, spl[0], spl[1]);
-            } else {
-              res = { error: true, msg: `Invalid field format. Please use --field key=value`};
-            }
-            break;
-          case 'remove':
-            res = this.remove(options.user, options.source, options.id);
-            break;
-          default:
-            console.log(`No such action <${name}>`);
-            process.exitCode = 1;
-        }
-        this.displayResult(res);
-      });
-
-    program.parse();
   }
 
 }
 
-client = new client();
-client.processArgs();
+const appclient = new appClient();
+appclient.run();
