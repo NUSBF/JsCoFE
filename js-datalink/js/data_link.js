@@ -20,6 +20,7 @@ const DATA_SOURCES = [
 class dataLink {
 
   constructor() {
+    this.standalone = false;
     this.source = {};
     for (let name of DATA_SOURCES) {
       if (config.get('data_sources.' + name + '.enabled')) {
@@ -239,8 +240,8 @@ class dataLink {
     }
   }
 
-  fetchData(user, source, id, force = false) {
-    if (! tools.validUserName(user)) {
+  fetchData(user, source, id, force = this.standalone) {
+    if (! tools.validUserName(user) && ! this.standalone) {
       return tools.errorMsg(`Invalid user name`, 400);
     }
 
@@ -250,18 +251,20 @@ class dataLink {
       return result;
     }
 
-    if (this.catalog.hasEntry(user, source, id) && ! force) {
+    if (this.catalog.hasEntry(user, source, id)) {
       let st = this.catalog.getStatus(user, source, id);
-      // check if in progress
-      if (st === status.inProgress) {
-        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
-      }
 
       // check if already fetched
       if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
         return tools.successMsg(`${source} - ${user}/${source}/${id} already exists`);
       }
+
+      // check if in progress
+      if (st === status.inProgress && ! force) {
+        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
+      }
+
     }
 
     // prune old data if required
@@ -444,4 +447,3 @@ class dataLink {
 }
 
 module.exports = dataLink;
-
