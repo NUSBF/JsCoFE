@@ -7,3 +7,5 @@ webCoot.bak/
 package-lock.json
 node_modules/
 settings.json
+.bzr
+.bzrignore

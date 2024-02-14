@@ -151,7 +151,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         cmd += ["LIBIN",libin]
 
     # Start refmac
-    rc = command.call ( "refmac5",cmd,
+    rc = command.call ( "refmacat",cmd,
                 job_dir,refmac_script(),file_stdout,file_stderr,
                 log_parser=log_parser,citation_ref="refmac5-srv" )
 
