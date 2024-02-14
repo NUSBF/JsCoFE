@@ -98,9 +98,15 @@ class tools {
   }
 
   static getUserCloudRunId(user) {
+    if (! tools.validUserName(user)) {
+      log.error(`Invalid user name ${user}`);
+      return false;
+    }
+
     let file = this.getUserPath(user);
     try {
       if (! fs.existsSync(file)) {
+        log.error(`User config ${file} does not exist`);
         return false;
       }
       let data = fs.readFileSync(file);
@@ -108,13 +114,19 @@ class tools {
       if (json['cloudrun_id']) {
         return json['cloudrun_id'];
       } else {
-        return false;
+        log.error(`No cloudrun_id field found for user ${user}`);
       }
-      return false;
     } catch (err) {
-        log.error(`getUserCloudId: ${err}`);
-      return false;
+      log.error(`${err}`);
     }
+    return false;
+  }
+
+  static validUserName(user) {
+    if (/^[a-zA-Z][a-zA-Z0-9\.\-_]+$/.test(user)) {
+      return true;
+    }
+    return false;
   }
 
   static validCloudRunId(user, id) {
