@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.12.23   <--  Date of Last Modification.
+#    14.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -61,8 +61,10 @@ class Slice(basic.TaskDriver):
             "-xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
             "-min_splits",nsplits,
             "-max_splits",nsplits,
-            "-xyz_source","alphafold_bfactor"
         ]
+
+        if xyz.BF_correction=="alphafold-suggested":
+            cmd += ['-xyz_source', 'alphafold']
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold",plddt_threshold]
