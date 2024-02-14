@@ -20,6 +20,7 @@ const DATA_SOURCES = [
 class dataLink {
 
   constructor() {
+    this.standalone = false;
     this.source = {};
     for (let name of DATA_SOURCES) {
       if (config.get('data_sources.' + name + '.enabled')) {
@@ -31,7 +32,6 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
-    this.resumeData();
   }
 
   loadAllUserCatalogs() {
@@ -135,6 +135,7 @@ class dataLink {
   }
 
   async searchSourceCatalog(pdb) {
+    pdb = pdb.toLowerCase();
     // check if id matches pdb indentifier format (4 alphanumberic characters)
     if (! pdb.match(/^[a-z0-9]{4}$/)) {
       return tools.errorMsg(`Invalid PDB identifier`, 400);
@@ -214,6 +215,12 @@ class dataLink {
     return true;
   }
 
+  async waitForCatalog(source) {
+    while (! this.source[source].catalog) {
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+
   async resumeData () {
     const catalog = this.catalog.getCatalog();
     for (const user in catalog) {
@@ -222,10 +229,7 @@ class dataLink {
         if (! this.source[source]) {
           continue;
         }
-        // wait for the data source catalog to become available
-        while (! this.source[source].catalog) {
-          await new Promise(r => setTimeout(r, 2000));
-        }
+        await this.waitForCatalog(source);
         // check if any entries are in progress, and refetch/continue
         for (const [id, entry] of Object.entries(catalog[user][source])) {
           if (entry.status === status.inProgress) {
@@ -236,25 +240,31 @@ class dataLink {
     }
   }
 
-  fetchData(user, source, id, force = false) {
+  fetchData(user, source, id, force = this.standalone) {
+    if (! tools.validUserName(user) && ! this.standalone) {
+      return tools.errorMsg(`Invalid user name`, 400);
+    }
+
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
       return result;
     }
 
-    if (this.catalog.hasEntry(user, source, id) && ! force) {
+    if (this.catalog.hasEntry(user, source, id)) {
       let st = this.catalog.getStatus(user, source, id);
-      // check if in progress
-      if (st === status.inProgress) {
-        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
-      }
 
       // check if already fetched
       if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
         return tools.successMsg(`${source} - ${user}/${source}/${id} already exists`);
       }
+
+      // check if in progress
+      if (st === status.inProgress && ! force) {
+        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
+      }
+
     }
 
     // prune old data if required
@@ -402,9 +412,18 @@ class dataLink {
     }
 
     let valid = {};
-    for (const [key, value] of Object.entries(obj)) {
+    for (let [key, value] of Object.entries(obj)) {
       switch(key) {
         case 'in_use':
+          if (typeof value === 'string') {
+            value = value.toLowerCase();
+            if (value === 'true' || value === '1') {
+              value = true;
+            }
+            if (value === 'false' || value === '0') {
+              value = false;
+            }
+          }
           if (typeof value !== 'boolean') {
             return tools.errorMsg(`${key} should be set to true or false`, 400);
           }
@@ -428,4 +447,3 @@ class dataLink {
 }
 
 module.exports = dataLink;
-
