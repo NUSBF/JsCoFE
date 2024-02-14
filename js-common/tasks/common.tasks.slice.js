@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    14.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,7 +67,7 @@ function TaskSlice()  {
                             label    : 'Number of splits',
                             tooltip  : 'Number of splits to produce.',
                             range    : [1,'*'],
-                            value    : 2,
+                            value    : 1,
                             iwidth   : 40,
                             position : [0,0,1,1]
                           },
