@@ -107,8 +107,13 @@ class SliceNDice(basic.TaskDriver):
             cmd += ["-no_mols",str(revision.getNofASUMonomers())]
         else:
             cmd += ["-no_mols",no_mols]
+            
         if xyz.BF_correction=="alphafold-suggested":
             cmd += ['-xyz_source', 'alphafold']
+        elif xyz.BF_correction=="rosetta-suggested":
+            cmd += ['-xyz_source', 'rosetta']
+        else:
+            cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold", plddt_threshold]
