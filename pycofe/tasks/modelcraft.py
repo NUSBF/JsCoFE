@@ -356,11 +356,11 @@ class ModelCraft(basic.TaskDriver):
                     #structure.FP         = istruct.FP
                     #structure.SigFP      = istruct.SigFP
                     #structure.FreeR_flag = istruct.FreeR_flag
-                    structure.HLA = "HLACOMB"
-                    structure.HLB = "HLBCOMB"
-                    structure.HLC = "HLCCOMB"
-                    structure.HLD = "HLDCOMB"
-                    structure.FOM = ''
+                    # structure.HLA = "HLACOMB"
+                    # structure.HLB = "HLBCOMB"
+                    # structure.HLC = "HLCCOMB"
+                    # structure.HLD = "HLDCOMB"
+                    # structure.FOM = ''
                     structure.FP         = labin_fo[0]
                     structure.SigFP      = labin_fo[1]
                     structure.FreeR_flag = labin_fo[2]
