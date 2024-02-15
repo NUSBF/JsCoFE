@@ -107,7 +107,7 @@ class Buccaneer(basic.TaskDriver):
             labin_ph = [istruct.PHI,istruct.FOM]
 
         else:  # MR phases
-            assert False
+            self.fail ("HL or FOM were not found")
         #     labin_ph = [istruct.PHI,istruct.FOM]
 
         self.makePhasesMTZ (
