@@ -5,6 +5,9 @@
 const log = require('./js/log.js');
 log.newLog(`${process.cwd()}/dl_cmdline.log`);
 
+const fs = require('fs');
+const stream = require('stream');
+
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
 const config = require('./js/config.js');
@@ -101,6 +104,40 @@ class appClient extends client {
 
     for (const r of results) {
       console.log(`\nFetched ${r.source}/${r.id}\nData is available at ${tools.getDataDir(user)}/${r.source}/${r.id}`);
+    }
+
+  }
+
+  async upload(user, source, id) {
+    let check = tools.validSourceId(source, id);
+    if (check !== true) {
+      return check;
+    }
+
+    const in_s = fs.createReadStream(this.opts.file);
+    const out_file = tools.sanitizeFilename(this.opts.file);
+
+    in_s.on('error', (err) => {
+      this.displayResult(tools.errorMsg(`${err}`, 500));
+    });
+
+    let out_s = await this.datalink.uploadData(user, source, id, out_file, in_s);
+
+    if (out_s) {
+      if (out_s instanceof stream.Writable) {
+        out_s.on('finish', async () => {
+          await this.datalink.uploadDataComplete(user, source, id, out_file);
+          this.displayResult(tools.successMsg(`Added ${out_file} to ${user}/${source}/${id}`));
+        });
+
+        out_s.on('error', (err) => {
+          this.displayResult(tools.errorMsg(`Error adding to ${user}/${source}/${id}`, 500));
+        });
+      }
+
+      if (out_s.error) {
+        return tools.errorMsg(`${r.message}`, 500);
+      }
     }
 
   }

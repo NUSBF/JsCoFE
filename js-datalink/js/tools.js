@@ -145,6 +145,16 @@ class tools {
     return false;
   }
 
+  static validSourceId(source, id) {
+    if (/[^a-z]/.test(source) || source.length < 3) {
+      return this.errorMsg('Data source name must contain only lowercase characters (with a minimum length of 3)', 400);
+    }
+    if (/[^\w]/.test(id) || id.length < 3) {
+      return this.errorMsg('Data ID name must contain only alphanumeric characters (with a minimum length of 3)', 400);
+    }
+    return true;
+  }
+
   static doRsync(args, stdoutFunc = null, stderrFunc = null, spawnFunc = null) {
     const options = {};
 
@@ -378,6 +388,10 @@ class tools {
     return new Promise(r => setTimeout(r, ms));
   }
 
+  static sanitizeFilename(file) {
+    file = path.basename(file);
+    return file.replace(/[^\w\-_=\+\.()]/g,'');
+  }
 }
 
 module.exports = {

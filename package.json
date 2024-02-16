@@ -2,6 +2,7 @@
     "name": "CCP4_Cloud",
     "version": "1.7.008",
     "dependencies": {
+        "busboy": "^1.6.0",
         "check-disk-space": "^3.0.1",
         "cheerio": "^1.0.0-rc.12",
         "child_process": "*",
