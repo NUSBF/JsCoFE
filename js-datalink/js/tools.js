@@ -286,6 +286,11 @@ class tools {
         case '.tgz':
           is_tar = true;
           break;
+        case '.zip':
+          cmd = 'unzip'
+          // overwrite without prompting
+          args = [ '-qq', '-o', '-d', dest, file ]
+          break;
         // single file compression methods
         case '.gz':
           cmd = 'gzip';
