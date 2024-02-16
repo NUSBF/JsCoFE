@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.02.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -103,12 +103,8 @@ class Buccaneer(basic.TaskDriver):
         labin_ph    = []
         if istruct.HLA:  #  experimental phases
             labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
-        elif istruct.FOM and istruct.PHI:
-            labin_ph = [istruct.PHI,istruct.FOM]
-
         else:  # MR phases
-            self.fail ("HL or FOM were not found")
-        #     labin_ph = [istruct.PHI,istruct.FOM]
+            labin_ph = [istruct.PHI,istruct.FOM]
 
         self.makePhasesMTZ (
                 hkl.getHKLFilePath(self.inputDir())    ,labin_fo,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.02.24   <--  Date of Last Modification.
+#    16.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@ import os
 import json
 
 import gemmi
+import uuid
 
 #  application imports
 from . import basic
@@ -294,6 +295,55 @@ class ModelCraft(basic.TaskDriver):
             mtzout   = os.path.join ( self.modelcraft_tmp(),self.modelcraft_mtz  () )
             jsonout  = os.path.join ( self.modelcraft_tmp(),self.modelcraft_json () )
 
+            # ===========================================================================
+            # ..... from here
+            # temporary hack only to put FOM in output MTZ. Delete when modelcraft is
+            # changed such as to produce FOM column
+
+            self.open_stdin()
+            self.write_stdin ( "pdbout format mmcif\n" +\
+                               "make hydrogen YES hout NO\n" +\
+                               "ncyc 0\n"   +\
+                               "labin  FP=" + hkl.dataset.Fmean.value +\
+                               " SIGFP="    + hkl.dataset.Fmean.sigma +\
+                               " FREE="     + hkl.dataset.FREE + "\n" +\
+                               "PNAME temporary hack\n" +\
+                               "DNAME\n"            +\
+                               "Pdbout keep true\n" +\
+                               "end\n" )
+            self.close_stdin()
+
+            # make command-line parameters for refmac
+            xyzin  = "__temp.mmcif"
+            os.rename ( mmcifout,xyzin )
+            xyzout = mmcifout   # refmac output cif (refmac wants ".pdb" anyway)
+            # mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
+            cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+                    "xyzin" ,xyzin,
+                    "hklout",mtzout,
+                    "xyzout",xyzout,
+                    "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+
+            # libin = istruct.getLibFilePath ( self.inputDir() )
+            # if libin:
+            #     cmd += ["libin",libin]
+
+            # Prepare report parser
+
+            # sec_id = self.getWidgetId ( self.refmac_section() )
+            # self.putSection ( sec_id,"Final Coordnates and Metadata from Refmac",
+            #                   False )
+            # panel_id = self.getWidgetId ( self.refmac_report() )
+            # self.putPanel1 ( sec_id,panel_id,0,1 )
+            # self.setGenericLogParser ( panel_id,False,False,False )
+
+            # Start refmac
+            self.runApp ( "refmac5",cmd,logType="Service" )
+
+            # ..... to here
+            # ===========================================================================
+
+
             asuNres  = revision.ASU.nRes
             final    = None
             Compl    = 0.0
@@ -356,11 +406,6 @@ class ModelCraft(basic.TaskDriver):
                     #structure.FP         = istruct.FP
                     #structure.SigFP      = istruct.SigFP
                     #structure.FreeR_flag = istruct.FreeR_flag
-                    # structure.HLA = "HLACOMB"
-                    # structure.HLB = "HLBCOMB"
-                    # structure.HLC = "HLCCOMB"
-                    # structure.HLD = "HLDCOMB"
-                    # structure.FOM = ''
                     structure.FP         = labin_fo[0]
                     structure.SigFP      = labin_fo[1]
                     structure.FreeR_flag = labin_fo[2]
