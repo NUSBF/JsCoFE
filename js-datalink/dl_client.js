@@ -4,12 +4,14 @@
 
 const https = require('https');
 const http = require('http');
+const fs = require('fs');
 
 class Client {
 
   opts = {};
   arg_info = {};
   action_map = {};
+  boundary = null;
 
   constructor(app_client = false) {
     this.app_client = app_client;
@@ -49,6 +51,11 @@ class Client {
         update: {
           path: 'data/@0/@1/@2',
           method: 'PATCH',
+          auth: 'user'
+        },
+        upload: {
+          path: 'data/@0/@1/@2/upload',
+          method: 'POST',
           auth: 'user'
         },
         status: {
@@ -92,9 +99,20 @@ class Client {
       field: {
         form: 'key=value',
         help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
+      },
+      file: {
+        form: '<path>',
+        help: 'Path to file to upload'
       }
     });
 
+  }
+
+  getBoundary() {
+    if (! this.boundary) {
+      this.boundary = this.generateBoundary();
+    }
+    return this.boundary;
   }
 
   async doCall(action, ...args) {
@@ -137,9 +155,17 @@ class Client {
       options.headers = { admin_key: this.opts.admin_key };
     }
 
+    // handle file uploads
+    let file;
+    if (action == 'upload') {
+      file = this.opts.file;
+      options.headers['Content-Type'] = `multipart/form-data; boundary=${this.getBoundary()}`;
+      file = this.opts.file;
+    }
+
     // make the request
     try {
-      res = await this.httpRequest(this.opts.url + '/' + path, method, options);
+      res = await this.httpRequest(this.opts.url + '/' + path, method, options, file);
       return JSON.parse(res.body);
     } catch (err) {
       return { error: true, msg: err };
@@ -190,6 +216,10 @@ class Client {
     }
   }
 
+  async upload(user, source, id) {
+    return await this.doCall('upload', this.opts.user, this.opts.source, this.opts.id);
+  }
+
   async status(user, source, id) {
     let res;
     if (! (user && source && id)) {
@@ -207,7 +237,15 @@ class Client {
     return this.datalink.updateData(user, source, id, obj);
   }
 
-  httpRequest(url, method, options = {}) {
+  generateBoundary() {
+    let b = 'DataLink-';
+    for (let i = 0; i < 3; i++) {
+      b += Math.random().toString(36).substring(2);
+    }
+    return b;
+  }
+
+  httpRequest(url, method, options = {}, file = null) {
     if (method) {
       options.method = method;
     }
@@ -235,7 +273,26 @@ class Client {
         reject(`${err.message}`);
       });
 
-      req.end();
+      if (file) {
+        // composer the multipart/form-data body
+        req.write(`--${this.getBoundary()}\r\n`);
+        req.write(`Content-Disposition: form-data; name="file"; filename="${file}"\r\n`);
+        req.write('Content-Type: application/octet-stream\r\n\r\n');
+
+        const s = fs.createReadStream(file);
+
+        s.on('data', (data) => {
+          req.write(data);
+        });
+
+        s.on('end', () => {
+          req.write(`\r\n--${this.getBoundary()}--\r\n`);
+          req.end();
+        });
+      } else {
+        req.end();
+      }
+
     });
   }
 
@@ -318,32 +375,38 @@ class Client {
       }
     }
 
-    let res;
-    // parameter check
-    switch(this.action) {
-      case 'search':
-        if (! this.opts.pdb) {
-          res = { error: true, msg: 'You need to include a --pdb to search for' };
-        }
-        break;
-      case 'update':
-        if (! this.opts.field) {
-          res = { error: true, msg: 'You need to include a --field key=value parameter' };
-        } else if (this.opts.field.split('=').length !== 2) {
-          res = { error: true, msg: `Invalid field format. Please use --field key=value`};
-        }
-      case 'fetch':
-      case 'remove':
-        if (! this.opts.user) {
-          res = { error: true, msg: `You need to provide a <user> for ${this.action}`};
-        } else if (! this.opts.pdb && ! (this.opts.source && this.opts.id)) {
-          res = { error: true, msg: `You need to provide a data <source> and <id> or a pdb <id> of the data to ${this.action}`};
-        }
-        break;
+    // check if the correct parameters are supplied
+    let res, err_msg;
+
+    // check if --pdb is set for search
+    if (this.action == 'search') {
+      return { error: true, msg: 'You need to include a --pdb to search for' };
     }
 
-    if (res) {
-      return res;
+    // check that fetch, remove, update and upload have a user set
+    if (['fetch', 'remove', 'update', 'upload'].includes(this.action)) {
+
+      if (! this.opts.user) {
+        return { error: true, msg: `You need to provide a <user> for ${this.action}`};
+      }
+
+      if (this.action == 'fetch') {
+        if (! this.opts.pdb && ! (this.opts.source && this.opts.id)) {
+          return { error: true, msg: `You need to provide a data <source> and <id> or a pdb <id> for the data to ${this.action}`};
+        }
+      }
+
+      if (['remove', 'update', 'upload'].includes(this.action)) {
+        if (! (this.opts.source && this.opts.id)) {
+          return { error: true, msg: `You need to provide a <source> and <id> for the data to ${this.action}`};
+        }
+      }
+
+      if (this.action == 'upload') {
+        if (! this.opts.file) {
+          return { error: true, msg: `You need to provide a file to ${this.action}`};
+        }
+      }
     }
 
     // process actions
@@ -375,6 +438,9 @@ class Client {
         break;
       case 'remove':
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);
+        break;
+      case 'upload':
+        res = this.upload(this.opts.user, this.opts.source, this.opts.id);
         break;
       default:
         res = { error: true, msg: `No such action <${this.action}>` };
