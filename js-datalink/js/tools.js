@@ -289,15 +289,15 @@ class tools {
         // single file compression methods
         case '.gz':
           cmd = 'gzip';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
         case '.bz2':
           cmd = 'bzip2';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
         case '.xz':
           cmd = 'xz';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
       }
     }
@@ -305,7 +305,7 @@ class tools {
     // is a tar archive
     if (is_tar) {
       cmd = 'tar';
-      args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
+      args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1 ];
     }
 
     return {cmd, args}
