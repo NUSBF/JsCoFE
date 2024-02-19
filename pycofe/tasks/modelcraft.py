@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.02.24   <--  Date of Last Modification.
+#    19.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -88,6 +88,7 @@ class ModelCraft(basic.TaskDriver):
         istruct  = self.makeClass ( idata.istruct[0]  )
         seq      = idata.seq
         sec1     = self.task.parameters.sec1.contains
+        sec2     = self.task.parameters.sec2.contains
 
         if hasattr(idata,"isubstruct"):
             isubstruct = self.makeClass ( idata.isubstruct[0] )
@@ -160,6 +161,9 @@ class ModelCraft(basic.TaskDriver):
             "ligands" : [],
             "buffers" : []
         }
+
+        if self.getCheckbox(sec1.SELEN_CBX):
+            contents["modifications"]=["M->MSE"]
         mres = 0
         for s in seq:
             s1     = self.makeClass ( s )
@@ -175,6 +179,8 @@ class ModelCraft(basic.TaskDriver):
                 contents["dnas"].append(item)
             elif s1.isRNA() and build_sel in ["all","rna"]:
                 contents["rnas"].append(item)
+
+        
 
         with open(self.contents_json(),"w") as contfile:
             json.dump ( contents,contfile )
@@ -220,15 +226,34 @@ class ModelCraft(basic.TaskDriver):
         #         cmd += [
         #             "--phases", ",".join(labin_ph)
         #         ]
+        if self.getParameter(sec1.MODE_SEL)=='basic':
+            cmd += [ "--basic" ]
+            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX_FAST)]
+            # "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
+        else:
+            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX)]
+
         cmd += [
-            "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
             "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),
             "--directory"       ,self.modelcraft_tmp()
         ]
         if hkl.detwin:
             cmd += [ "--twinned" ]
-        if self.getParameter(sec1.MODE_SEL)=='basic':
-            cmd += [ "--basic" ]
+        
+        if self.getCheckbox(sec2.SHEETBEND):
+            cmd += [ "--disable-sheetbend" ]
+        if self.getCheckbox(sec2.PRUNING):
+            cmd += [ "--disable-pruning" ]
+        if self.getCheckbox(sec2.DM):
+            cmd += [ "--disable-parrot" ]
+        if self.getCheckbox(sec2.DUMMY):
+            cmd += [ "--disable-dummy-atoms" ]
+        if self.getCheckbox(sec2.WATERS):
+            cmd += [ "--disable-waters" ]
+        if self.getCheckbox(sec2.ROTAMER_FIT):
+            cmd += [ "--disable-side-chain-fixing" ]
+        
+        
 
         rvrow0 = self.rvrow
         gridId = self.putWaitMessageLF ( "Building in progress ...",
@@ -266,7 +291,7 @@ class ModelCraft(basic.TaskDriver):
         job_params = dict(
             max_init_residues = int(mres/10 + 1)* 10,
             max_init_r_factor = 0.4,
-            max_cycles = self.getParameter(sec1.NCYCLES_MAX)
+            max_cycles = self.getParameter(sec1.NCYCLES_MAX) or self.getParameter(sec1.NCYCLES_MAX_FAST)
         )
         self.setModelCraftLogParser ( "report",job_params )
 
