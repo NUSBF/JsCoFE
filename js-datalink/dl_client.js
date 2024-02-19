@@ -222,10 +222,10 @@ class Client {
 
   async status(user, source, id) {
     let res;
-    if (! (user && source && id)) {
-      res = await this.doCall('status_all', user, source, id);
-    } else {
+    if (user) {
       res = await this.doCall('status', user, source, id);
+    } else {
+      res = await this.doCall('status_all', user, source, id);
     }
     return res;
   }
