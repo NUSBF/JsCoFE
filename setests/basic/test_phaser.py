@@ -333,6 +333,18 @@ def startPhaser(driver):
     inputASU.send_keys('2')
     time.sleep(2)
 
+    #Search options
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Search options')
+    time.sleep(1)
+    try:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'off')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'on')
+        time.sleep(1)
+    except:
+        pass
+    
+
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
     for buttonRun in buttonsRun:
@@ -366,7 +378,22 @@ def startPhaser1(driver):
             time.sleep(1)
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
             time.sleep(1)
-            
+
+            # inputASU = driver.find_element_by_xpath("//*[@title='Specify the number of model copies to look for in asymmetric unit']")
+            # inputASU.click()
+            # inputASU.clear()
+            # inputASU.send_keys('2')
+            # time.sleep(2)
+
+            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Search options')
+            time.sleep(1)
+            try:
+                sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'off')
+                time.sleep(1)
+                sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'on')
+                time.sleep(1)
+            except:
+                pass            
 
             # There are several forms - active and inactive. We need one displayed.
             buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -376,6 +403,7 @@ def startPhaser1(driver):
                     break
 
             time.sleep(3)
+            
 
             # pressing Close button
             closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -464,7 +492,7 @@ def test_1MRModelCOORDPhaserStart(browser,
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 02
 
         prepareMRmodelCOORD(d.driver, d.waitShort) # 03
-        startPhaser(d.driver) # 04
+        startPhaser1(d.driver) # 04
 
     except:
         d.driver.quit()
