@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.24   <--  Date of Last Modification.
+ *    19.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -584,9 +584,7 @@ let r = 0;  // grid row
     new TaskParrot    (),
     new TaskModelCraft (),
     new TaskCCP4Build (),
-    new TaskBuccaneer (),
     new TaskArpWarp   (),
-    new TaskNautilus  (),
 
     "Validation and Deposition",
     new TaskPDBVal    (),
@@ -1188,11 +1186,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskModelCraft   (),
     'Model building -- polypeptides',
     new TaskCCP4Build    (),
-    new TaskBuccaneer    (),
     new TaskArpWarp      (),
     'Model building -- polynucleotides',
     new TaskAWNuce       (),
-    new TaskNautilus     ()
   ],true);
 
   this.makeSection ( grid,'Refinement',[

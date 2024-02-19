@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.10.23   <--  Date of Last Modification.
+ *    19.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskModelCraft()  {
   this._type   = 'TaskModelCraft';
   this.name    = 'modelcraft';
   this.setOName ( 'modelcraft' );  // default output file name template
-  this.title   = 'Automatic Model Building with ModelCraft';
+  this.title   = 'Automatic Model Building with ModelCraft, Buccaneer and Nautilus';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!seq',['phases','xyz']]}, // data type(s) and subtype(s)
@@ -70,7 +70,7 @@ function TaskModelCraft()  {
                                    'modification is still used on the first ' +
                                    'cycle and starting models are still '     +
                                    'refined using Sheetbend and Refmac.',
-                        range    : ['full|Full', 'basic|Basic'],
+                        range    : ['full|Full', 'basic|Fast'],
                         value    : 'full',
                         iwidth   : 100,
                         position : [0,0,1,3]
@@ -79,11 +79,23 @@ function TaskModelCraft()  {
                       type     : 'integer',
                       keyword  : '--cycles',
                       label    : 'Maximum number of build cycles',
-                      tooltip  : 'Choose a value between 1 and 100 (default 25).',
+                      tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
                       range    : [1,100],
                       value    : '25',
                       iwidth   : 40,
-                      position : [1,0,1,1]
+                      position : [1,0,1,1],
+                      showon   : {'MODE_SEL':['full']},
+                    },
+                NCYCLES_MAX_FAST : {
+                      type     : 'integer',
+                      keyword  : '--cycles',
+                      label    : 'Maximum number of build cycles',
+                      tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
+                      range    : [1,100],
+                      value    : '5',
+                      iwidth   : 40,
+                      position : [1,0,1,1],
+                      showon   : {'MODE_SEL':['basic']},
                     },
                 NOIMPROVE_CYCLES : {
                       type     : 'integer',
@@ -99,9 +111,72 @@ function TaskModelCraft()  {
                       iwidth   : 40,
                       label2   : 'consequitive cycles',
                       position : [2,0,1,1]
-                    }
+                    },
+                SELEN_CBX : {
+                      type     : 'checkbox',
+                      label    : 'Build Selenomethionine (MSE instead of MET)',
+                      keyword  : '',
+                      tooltip  : 'Check to build selenomethionine',
+                      value    : false,
+                      position : [4,0,1,1]
+                    },
               }
-            }
+            },
+    sec2 :  { type     : 'section',
+              title    : 'Disable pipeline steps',
+              open     : false,  // true for the section to be initially open
+              label     :'Check to disable:',
+              position : [5,0,1,5],
+              showon   : {'MODE_SEL':['full']},
+              contains : {
+                  LABLE:{
+                    type     : 'label',
+                    label    :'Check to disable:',
+                    position : [6,0,1,1],
+                  },
+                  SHEETBEND:{
+                    type      : 'checkbox',
+                    label     : 'Sheetbend and only refine the input model with Refmac',
+                    keyword   : '--disable-sheetbend',
+                    tooltip   : 'Check to disable Sheetbend step',
+                    value     : false,
+                    position  : [6,0,1,1]},
+                  PRUNING:{
+                    type      : 'checkbox',
+                    label     : 'both the residue and chain pruning steps',
+                    keyword   : '--disable-pruning',
+                    tooltip   : 'Check to disable pruning steps',
+                    value     : false,
+                    position  : [7,0,1,1]},
+                  DM:{
+                    type      : 'checkbox',
+                    label     : 'the Parrot density modification step',
+                    keyword   : '--disable-parrot',
+                    tooltip   : 'Check to disable Parrot density modification step',
+                    value     : false,
+                    position  : [8,0,1,1]},
+                  DUMMY:{
+                    type      : 'checkbox',
+                    label     : 'density modification though addition and refinement of dummy atoms',
+                    keyword   : '--disable-dummy-atoms',
+                    tooltip   : 'Check to disable the addition of dummy atoms for phase improvement before Buccaneer',
+                    value     : false,
+                    position  : [9,0,1,1]},
+                  WATERS:{
+                    type      : 'checkbox',
+                    label     : 'addition of waters at the end of each cycle',
+                    keyword   : '--disable-waters',
+                    tooltip   : 'Check to disable the addition of waters at the end of each cycle',
+                    value     : false,
+                    position  : [10,0,1,1]},
+                  ROTAMER_FIT:{
+                    type      : 'checkbox',
+                    label     : 'final side chain rotamer fitting',
+                    keyword   : '--disable-side-chain-fixing',
+                    tooltip   : 'Check to disable the side-chain fixing step at the end of the pipeline',
+                    value     : false,
+                    position  : [11,0,1,1]}
+                  }}
   };
 
 
@@ -178,7 +253,7 @@ function ModelCraftHotButton()  {
 
 TaskModelCraft.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['modelcraft', 'model','building', 'mb', 'auto-mb'] );
+    return this.__check_keywords ( keywords,['modelcraft', 'buccaneer', 'nautilus' , 'model', 'building', 'mb', 'auto-mb'] );
 }
 
 if (!__template)  {
