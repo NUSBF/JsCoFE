@@ -282,6 +282,56 @@ class dataLink {
     return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
   }
 
+  uploadData(user, source, id, file, stream) {
+    if (! this.catalog.addEntry(user, source, id, null)) {
+      return tools.errorMsg(`Unable to add catalog entry for ${user}/${source}/${id}`, 500);
+    }
+    let entry = this.catalog.getEntry(user, source, id);
+
+    log.info(`uploadData - Adding ${file} to ${user}/${source}/${id}`);
+    let dest = tools.getDataDest(user, source, id);
+    const out = fs.createWriteStream(path.join(dest, file));
+
+    out.on('error', (err) => {
+      log.error(`uploadData - ${err}`);
+    });
+
+    stream.on('data', (data) => {
+      entry.size += data.length;
+    });
+
+    stream.pipe(out);
+
+    return out;
+  }
+
+  async uploadDataComplete(user, source, id, file) {
+    log.info(`uploadDataComplete - Added ${file} to ${user}/${source}/${id}`);
+
+    const dest_dir = tools.getDataDest(user, source, id);
+    const file_path = path.join(dest_dir, file);
+    // check if the file is packed and unpack if needed
+    const {cmd, args} = tools.getUnpackCmd(file_path, dest_dir);
+    if (cmd) {
+      log.info(`uploadDataComplete - Unpacking ${file}`);
+      try {
+        await tools.unpack(file_path, dest_dir, cmd, args);
+        log.info(`uploadDataComplete - Unpacked ${file}`);
+      } catch(err) {
+        log.error(`uploadDataComplete - ${err}`);
+      }
+    }
+
+    let fields = {
+      'status': status.completed,
+      'size': this.catalog.getStorageSize(user, source, id)
+    }
+    if (! this.catalog.updateEntry(user, source, id, fields)) {
+      log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
+    }
+
+  }
+
   getDataStatus(user, source, id) {
     let catalog = this.catalog.getCatalog();
 
