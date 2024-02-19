@@ -3,7 +3,9 @@
 'use strict';
 
 const express = require('express');
+const busboy = require('busboy');
 const bodyparser = require('body-parser');
+const stream = require('stream');
 
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
@@ -47,6 +49,15 @@ class server {
       next();
     } else {
       this.jsonResponse(res, tools.errorMsg('Invalid User or Cloud Run ID', 403));
+    }
+  }
+
+  checkValidSourceId(req, res, next) {
+    let check = tools.validSourceId(req.params.source, req.params.id);
+    if (check === true) {
+      next();
+    } else {
+      this.jsonResponse(res, check);
     }
   }
 
@@ -116,6 +127,45 @@ class server {
     this.jsonResponse(res, this.datalink.updateData(req.params.user, req.params.source, req.params.id, req.body));
   }
 
+  uploadData(req, res) {
+    // check username
+    if (! tools.validUserName(req.params.user)) {
+      this.jsonResponse(res, tools.errorMsg(`Invalid user name ${req.params.user}`, 400));
+      return;
+    }
+
+    const bb = busboy( { headers: req.headers } );
+
+    let file;
+
+    bb.on('file', (name, in_stream, info) => {
+      file = tools.sanitizeFilename(info.filename);
+      let r = this.datalink.uploadData(req.params.user, req.params.source, req.params.id, file, in_stream);
+      if (r) {
+        if (r instanceof stream.Writable) {
+          r.on('finish', () => {
+            this.datalink.uploadDataComplete(req.params.user, req.params.source, req.params.id, file);
+          });
+
+          r.on('error', (err) => {
+            req.unpipe(bb);
+            this.jsonResponse(res, tools.errorMsg(`Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`, 500));
+          });
+        }
+        if (r.error) {
+          req.unpipe(bb);
+          this.jsonResponse(res, r);
+        }
+      }
+    });
+
+    bb.on('finish', () => {
+      this.jsonResponse(res, tools.successMsg(`Added ${file} to ${req.params.user}/${req.params.source}/${req.params.id}`));
+    });
+
+    req.pipe(bb);
+  }
+
   start(port = config.get('server.port'), host = config.get('server.host')) {
 
     // set up express router
@@ -153,6 +203,12 @@ class server {
     router.patch(['/data/:user/:source/:id'],
       (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.updateData(req, res) );
+
+    // data upload for user
+    router.post(['/data/:user/:source/:id/upload'],
+      (req, res, next) => this.checkValidSourceId(req, res, next),
+      (req, res, next) => this.checkCloudRunId(req, res, next),
+      (req, res) => this.uploadData(req, res) );
 
     const app = express();
     app.use(API_PREFIX, router);

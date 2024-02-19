@@ -145,6 +145,16 @@ class tools {
     return false;
   }
 
+  static validSourceId(source, id) {
+    if (/[^a-z]/.test(source) || source.length < 3) {
+      return this.errorMsg('Data source name must contain only lowercase characters (with a minimum length of 3)', 400);
+    }
+    if (/[^\w]/.test(id) || id.length < 3) {
+      return this.errorMsg('Data ID name must contain only alphanumeric characters (with a minimum length of 3)', 400);
+    }
+    return true;
+  }
+
   static doRsync(args, stdoutFunc = null, stderrFunc = null, spawnFunc = null) {
     const options = {};
 
@@ -276,18 +286,23 @@ class tools {
         case '.tgz':
           is_tar = true;
           break;
+        case '.zip':
+          cmd = 'unzip'
+          // overwrite without prompting
+          args = [ '-qq', '-o', '-d', dest, file ]
+          break;
         // single file compression methods
         case '.gz':
           cmd = 'gzip';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
         case '.bz2':
           cmd = 'bzip2';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
         case '.xz':
           cmd = 'xz';
-          args = [ '-fd', file];
+          args = [ '-fd', file ];
           break;
       }
     }
@@ -295,7 +310,7 @@ class tools {
     // is a tar archive
     if (is_tar) {
       cmd = 'tar';
-      args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
+      args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1 ];
     }
 
     return {cmd, args}
@@ -378,6 +393,10 @@ class tools {
     return new Promise(r => setTimeout(r, ms));
   }
 
+  static sanitizeFilename(file) {
+    file = path.basename(file);
+    return file.replace(/[^\w\-_=\+\.()]/g,'');
+  }
 }
 
 module.exports = {
