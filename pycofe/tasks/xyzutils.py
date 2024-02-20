@@ -115,7 +115,7 @@ class XyzUtils(basic.TaskDriver):
             self.putTitle ( "Modified Structure" )
             oxyz = self.registerStructure ( 
                         mmcifout,
-                        None,
+                        pdbout,
                         ixyz.getSubFilePath(self.inputDir()),
                         ixyz.getMTZFilePath(self.inputDir()),
                         libPath    = ixyz.getLibFilePath(self.inputDir()),
@@ -204,6 +204,8 @@ class XyzUtils(basic.TaskDriver):
         if action_sel=="P":
             # run PDBSET
 
+            mmcifout = None
+
             log.append ( "PDBSET" )
 
             self.open_stdin()
@@ -212,8 +214,8 @@ class XyzUtils(basic.TaskDriver):
 
             # Run PDBSET
             self.runApp (
-                # "pdbset",["XYZIN",pdbin,"XYZOUT",pdbout],
-                "pdbset",["XYZIN",mmcifin,"XYZOUT",mmcifout],
+                "pdbset",["XYZIN",pdbin,"XYZOUT",pdbout],
+                # "pdbset",["XYZIN",mmcifin,"XYZOUT",mmcifout],
                 logType="Main"
             )
 
