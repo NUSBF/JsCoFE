@@ -64,7 +64,7 @@ function TaskModelCraft()  {
                 MODE_SEL : {
                         type     : 'combobox',
                         keyword  : '--basic',
-                        label    : 'Full or fast pipeline modes',
+                        label    : 'Full or Fast pipeline modes',
                         tooltip  : 'Fast mode will use only Buccaneer, '     +
                                    'Nautilus and Refmac. Parrot density '     +
                                    'modification is still used on the first ' +
@@ -78,23 +78,23 @@ function TaskModelCraft()  {
                 NCYCLES_MAX : {
                       type     : 'integer',
                       keyword  : '--cycles',
-                      label    : '"Maximum number of pipeline cycles',
+                      label    : 'Maximum number of pipeline cycles',
                       tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
                       range    : [1,100],
                       value    : '25',
                       iwidth   : 40,
-                      position : [1,0,1,1],
+                      position : [2,0,1,1],
                       showon   : {'MODE_SEL':['full']},
                     },
                 NCYCLES_MAX_FAST : {
                       type     : 'integer',
                       keyword  : '--cycles',
-                      label    : '"Maximum number of pipeline cycles',
+                      label    : 'Maximum number of pipeline cycles',
                       tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
                       range    : [1,100],
                       value    : '5',
                       iwidth   : 40,
-                      position : [1,0,1,1],
+                      position : [2,0,1,1],
                       showon   : {'MODE_SEL':['basic']}
                     },
                 NOIMPROVE_CYCLES : {
@@ -108,7 +108,7 @@ function TaskModelCraft()  {
                       value    : '4',
                       iwidth   : 40,
                       label2   : 'consecutive cycles',
-                      position : [2,0,1,1],
+                      position : [3,0,1,1],
                       showon   : {'MODE_SEL':['full']}
                     },
                 NOIMPROVE_CYCLES_FAST : {
@@ -124,7 +124,7 @@ function TaskModelCraft()  {
                       value    : '2',
                       iwidth   : 40,
                       label2   : 'consecutive cycles',
-                      position : [2,0,1,1],
+                      position : [3,0,1,1],
                       showon   : {'MODE_SEL':['basic']}
                     },
                 SELEN_CBX : {
@@ -133,7 +133,7 @@ function TaskModelCraft()  {
                       keyword  : '',
                       tooltip  : 'Check to build selenomethionine',
                       value    : false,
-                      position : [4,0,1,1]
+                      position : [4,0,1,5]
                     },
               }
             },
