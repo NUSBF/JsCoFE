@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.02.24   <--  Date of Last Modification.
+ *    20.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -64,8 +64,8 @@ function TaskModelCraft()  {
                 MODE_SEL : {
                         type     : 'combobox',
                         keyword  : '--basic',
-                        label    : 'Build mode',
-                        tooltip  : 'Basic mode will use only Buccaneer, '     +
+                        label    : 'Full or fast pipeline modes',
+                        tooltip  : 'Fast mode will use only Buccaneer, '     +
                                    'Nautilus and Refmac. Parrot density '     +
                                    'modification is still used on the first ' +
                                    'cycle and starting models are still '     +
@@ -78,7 +78,7 @@ function TaskModelCraft()  {
                 NCYCLES_MAX : {
                       type     : 'integer',
                       keyword  : '--cycles',
-                      label    : 'Maximum number of build cycles',
+                      label    : '"Maximum number of pipeline cycles',
                       tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
                       range    : [1,100],
                       value    : '25',
@@ -89,15 +89,29 @@ function TaskModelCraft()  {
                 NCYCLES_MAX_FAST : {
                       type     : 'integer',
                       keyword  : '--cycles',
-                      label    : 'Maximum number of build cycles',
+                      label    : '"Maximum number of pipeline cycles',
                       tooltip  : 'Choose a value between 1 and 100 (default 25 for full).',
                       range    : [1,100],
                       value    : '5',
                       iwidth   : 40,
                       position : [1,0,1,1],
-                      showon   : {'MODE_SEL':['basic']},
+                      showon   : {'MODE_SEL':['basic']}
                     },
                 NOIMPROVE_CYCLES : {
+                      type     : 'integer',
+                      keyword  : '--auto-stop-cycles',
+                      label    : 'Stop if results do not improve during',
+                      tooltip  : 'Choose a value between 0 and 100. '   +
+                                 'Setting this value to less than 1 ' +
+                                 'makes the program run to the maximum number of cycles.',
+                      range    : [0,100],
+                      value    : '4',
+                      iwidth   : 40,
+                      label2   : 'consecutive cycles',
+                      position : [2,0,1,1],
+                      showon   : {'MODE_SEL':['full']}
+                    },
+                NOIMPROVE_CYCLES_FAST : {
                       type     : 'integer',
                       keyword  : '--auto-stop-cycles',
                       label    : 'Stop if results do not improve during',
@@ -107,10 +121,11 @@ function TaskModelCraft()  {
                                  'as an improvement. Setting this value to less than 1 ' +
                                  'makes the program run to the maximum number of cycles.',
                       range    : [0,100],
-                      value    : '4',
+                      value    : '2',
                       iwidth   : 40,
-                      label2   : 'consequitive cycles',
-                      position : [2,0,1,1]
+                      label2   : 'consecutive cycles',
+                      position : [2,0,1,1],
+                      showon   : {'MODE_SEL':['basic']}
                     },
                 SELEN_CBX : {
                       type     : 'checkbox',
@@ -127,7 +142,6 @@ function TaskModelCraft()  {
               open     : false,  // true for the section to be initially open
               label     :'Check to disable:',
               position : [5,0,1,5],
-              showon   : {'MODE_SEL':['full']},
               contains : {
                   LABLE:{
                     type     : 'label',
@@ -143,35 +157,35 @@ function TaskModelCraft()  {
                     position  : [6,0,1,1]},
                   PRUNING:{
                     type      : 'checkbox',
-                    label     : 'both the residue and chain pruning steps',
+                    label     : 'Both the residue and chain pruning steps',
                     keyword   : '--disable-pruning',
                     tooltip   : 'Check to disable pruning steps',
                     value     : false,
                     position  : [7,0,1,1]},
                   DM:{
                     type      : 'checkbox',
-                    label     : 'the Parrot density modification step',
+                    label     : 'The Parrot density modification step',
                     keyword   : '--disable-parrot',
                     tooltip   : 'Check to disable Parrot density modification step',
                     value     : false,
                     position  : [8,0,1,1]},
                   DUMMY:{
                     type      : 'checkbox',
-                    label     : 'density modification though addition and refinement of dummy atoms',
+                    label     : 'Density modification though addition and refinement of dummy atoms',
                     keyword   : '--disable-dummy-atoms',
                     tooltip   : 'Check to disable the addition of dummy atoms for phase improvement before Buccaneer',
                     value     : false,
                     position  : [9,0,1,1]},
                   WATERS:{
                     type      : 'checkbox',
-                    label     : 'addition of waters at the end of each cycle',
+                    label     : 'Addition of waters at the end of each cycle',
                     keyword   : '--disable-waters',
                     tooltip   : 'Check to disable the addition of waters at the end of each cycle',
                     value     : false,
                     position  : [10,0,1,1]},
                   ROTAMER_FIT:{
                     type      : 'checkbox',
-                    label     : 'final side chain rotamer fitting',
+                    label     : 'Final side chain rotamer fitting',
                     keyword   : '--disable-side-chain-fixing',
                     tooltip   : 'Check to disable the side-chain fixing step at the end of the pipeline',
                     value     : false,

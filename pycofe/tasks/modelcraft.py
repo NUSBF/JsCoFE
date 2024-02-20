@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.02.24   <--  Date of Last Modification.
+#    20.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -228,15 +228,17 @@ class ModelCraft(basic.TaskDriver):
         #         ]
         if self.getParameter(sec1.MODE_SEL)=='basic':
             cmd += [ "--basic" ]
-            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX_FAST)]
+            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX_FAST),
+                    "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES_FAST)]
             # "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
         else:
-            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX)]
+            cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX),
+                    "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES)]
 
         cmd += [
-            "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),
             "--directory"       ,self.modelcraft_tmp()
         ]
+
         if hkl.detwin:
             cmd += [ "--twinned" ]
         
