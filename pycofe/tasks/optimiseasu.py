@@ -65,7 +65,7 @@ class OptimiseASU(basic.TaskDriver):
 
         st  = gemmi.read_structure ( xyzin )
         st.setup_entities()
-        log = optimize_xyz.optimizeXYZ ( st )
+        log = optimize_xyz.optimizeXYZ ( st,body=self )
 
         summary_line = ""
         have_results = False

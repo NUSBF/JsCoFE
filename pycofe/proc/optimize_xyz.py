@@ -18,7 +18,7 @@
 
 import gemmi
 
-def optimizeXYZ ( gemmi_st ):
+def optimizeXYZ ( gemmi_st,body=None ):
 
     if not gemmi_st.spacegroup_hm:
         return []
@@ -36,7 +36,9 @@ def optimizeXYZ ( gemmi_st ):
 
         chain = model[n]
         cpos.append ( None )
-    
+
+        # body.stderrln ( " >>>> chain=" + chain.name )
+
         water_chain = True
         for res in chain:
             if res.name not in ["HOH","WAT"]:
@@ -47,12 +49,16 @@ def optimizeXYZ ( gemmi_st ):
         else:
             polymers.append ( n )
             cm0   = chain.calculate_center_of_mass()
+            # body.stderrln ( " >>>> cm0=" + str(cm0) )
             fp0   = gemmi_st.cell.fractionalize ( gemmi.Position(cm0[0],cm0[1],cm0[2]) )
+            # body.stderrln ( " >>>> fp0=" + str(fp0) )
             dmin  = 0.0
             opmin = None
             df    = [0,0,0]
             for op in ops:
+                # body.stderrln ( " >>>> op=" + str(op) )
                 fp  = op.apply_to_xyz ( fp0.tolist() )
+                # body.stderrln ( " >>>> fp=" + str(fp) )
                 f1  = [0,0,0]
                 for i1 in range(5):
                     f1[0] = (fp[0] % 1) + i1 - 2
@@ -60,6 +66,7 @@ def optimizeXYZ ( gemmi_st ):
                         f1[1] = (fp[1] % 1)  + i2 - 2
                         for i3 in range(5):
                             f1[2] = (fp[2] % 1) + i3 - 2
+                            # body.stderrln ( " >>>> f1=" + str(f1) )
                             d1 = p0.dist ( gemmi_st.cell.orthogonalize ( gemmi.Fractional(f1[0],f1[1],f1[2])) )
                             if not opmin or d1<dmin:
                                 opmin = op
