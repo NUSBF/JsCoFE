@@ -5,6 +5,7 @@
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 
 class Client {
 
@@ -12,6 +13,8 @@ class Client {
   arg_info = {};
   action_map = {};
   boundary = null;
+  size_total = 0;
+  size_uploaded = 0;
 
   constructor(app_client = false) {
     this.app_client = app_client;
@@ -99,10 +102,6 @@ class Client {
       field: {
         form: 'key=value',
         help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
-      },
-      file: {
-        form: '<path>',
-        help: 'Path to file to upload'
       }
     });
 
@@ -120,7 +119,6 @@ class Client {
     let params = this.action_map[action];
 
     let res;
-    let path = params.path;
 
     // replace /@0, /@1 etc with args
     for (const i in args) {
@@ -130,7 +128,7 @@ class Client {
       } else {
         r = '';
       }
-      path = path.replace('/@' + i, r);
+      params.path = params.path.replace('/@' + i, r);
     }
 
     // request method
@@ -156,16 +154,15 @@ class Client {
     }
 
     // handle file uploads
-    let file;
+    let files = null;
     if (action == 'upload') {
-      file = this.opts.file;
+      files = this.opts.files;
       options.headers['Content-Type'] = `multipart/form-data; boundary=${this.getBoundary()}`;
-      file = this.opts.file;
     }
 
     // make the request
     try {
-      res = await this.httpRequest(this.opts.url + '/' + path, method, options, file);
+      res = await this.httpRequest(this.opts.url + '/' + params.path, method, options, files);
       return JSON.parse(res.body);
     } catch (err) {
       return { error: true, msg: err };
@@ -245,7 +242,7 @@ class Client {
     return b;
   }
 
-  httpRequest(url, method, options = {}, file = null) {
+  httpRequest(url, method, options = {}, files = null) {
     if (method) {
       options.method = method;
     }
@@ -254,7 +251,7 @@ class Client {
       options.method = 'GET';
     }
 
-    return new Promise ((resolve, reject) => {
+    return new Promise (async (resolve, reject) => {
       let req = this.proto.request(url, options, (res) => {
         res.resume();
 
@@ -270,36 +267,152 @@ class Client {
       });
 
       req.on('error', (err) => {
+        req.end();
         reject(`${err.message}`);
       });
 
-      if (file) {
-        // composer the multipart/form-data body
+      let in_s;
+      let last = false;
+      if (files) {
         req.write(`--${this.getBoundary()}\r\n`);
-        req.write(`Content-Disposition: form-data; name="file"; filename="${file}"\r\n`);
-        req.write('Content-Type: application/octet-stream\r\n\r\n');
-
-        const s = fs.createReadStream(file);
-
-        s.on('data', (data) => {
-          req.write(data);
-        });
-
-        s.on('end', () => {
-          req.write(`\r\n--${this.getBoundary()}--\r\n`);
-          req.end();
-        });
-      } else {
-        req.end();
+        for (let [i, file] of files.entries()) {
+          await this.fileCallback(file, async (f) => {
+            try {
+              await this.sendFile(req, file, f);
+            } catch (err) {
+              reject(err.message);
+              return false;
+            }
+            return true;
+          });
+        }
+        req.write(`--${this.getBoundary()}--\r\n`);
+        // clear line
+        process.stdout.write('\x1b[K');
       }
 
+      req.end();
+
     });
+  }
+
+  getDirectorySize(paths) {
+    let size = 0;
+    for (let [i, file] of paths.entries()) {
+      let stat;
+      try {
+        stat = fs.statSync(file);
+      } catch (err) {
+        continue;
+      }
+      if (stat.isFile()) {
+        size += stat.size;
+      } else if (stat.isDirectory()) {
+        size += this.getDirSize(file);
+      }
+    }
+    return size;
+  }
+
+  getDirSize(dir, size = 0) {
+    try {
+      const files = fs.readdirSync(dir, { withFileTypes: true });
+      files.forEach((file) => {
+        if (! file.isSymbolicLink()) {
+          file.isDirectory() ? size = this.getDirSize(`${dir}/${file.name}`, size) : size += (fs.statSync(`${dir}/${file.name}`).size);
+        }
+      });
+    } catch (err) {
+      return 0;
+    }
+
+    return size;
+  }
+
+  async fileCallback(dir, callback) {
+    // check if dir is a file
+    try {
+      if (fs.statSync(dir).isFile()) {
+        return await callback(dir);
+      }
+    } catch (err) {
+      return true;
+    }
+
+    let files;
+    try {
+      files = fs.readdirSync(dir, { withFileTypes: true });
+    } catch (err) {
+      return true;
+    }
+    for (const file of files) {
+      if (file.isSymbolicLink() || file.isCharacterDevice()) {
+        continue;
+      }
+      if (file.isDirectory()) {
+        if (! await this.fileCallback(path.join(dir, file.name), callback)) {
+          return false;
+        }
+      } else {
+        if (! await callback(path.join(dir, file.name))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  async sendFile(req, rel_dir, file) {
+    // if relative dir is the same as file (when we are processing just a file)
+    if (rel_dir === file) {
+      rel_dir = path.dirname(file);
+    }
+
+    return new Promise((resolve, reject) => {
+
+      // if the request has been destroyed then exit
+      if (req.destroyed) {
+        reject(err);
+        return;
+      }
+
+      const in_s = fs.createReadStream(file);
+
+      const filename = path.relative(rel_dir, file);
+
+      in_s.on('data', (data) => {
+        this.size_uploaded += data.length;
+        this.outputProgress(data.length);
+        req.write(data);
+      });
+
+      in_s.on('open', () => {
+        // compose the multipart/form-data body
+        req.write(`Content-Disposition: form-data; name="file"; filename="${filename}"\r\n`);
+        req.write('Content-Type: application/octet-stream\r\n\r\n');
+      });
+
+      in_s.on('end', () => {
+        req.write(`\r\n--${this.getBoundary()}\r\n`);
+        resolve();
+      });
+
+      in_s.on('error', (err) => {
+        reject(err);
+      });
+
+    });
+  }
+
+  outputProgress() {
+    let percent = (this.size_uploaded / this.size_total) * 100;
+    process.stdout.write(`Uploading ... (${percent.toFixed(2)}%)\r`);
   }
 
   showHelp() {
     const pad = 25;
     const cmd = process.argv[1].split('/').pop();
-    console.log(`Usage: ${cmd} [options] <action>`);
+    console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
     console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update or remove');
@@ -324,6 +437,9 @@ class Client {
   }
 
   async processArgs() {
+    // initialise file array
+    this.opts.files = [];
+
     const argv = process.argv;
 
     // get additional parameters
@@ -347,14 +463,25 @@ class Client {
       }
       // if it is an option starting with --
       if (key.startsWith('--')) {
+
         // extract the option and value
         let option = key.substring(2);
+
+        // if option is blank (--) the following arguments are files/directories
+        if (option === '') {
+          while (params.length) {
+            this.opts.files.push(params.shift());
+          }
+          break;
+        }
+
         // validate the option against arg_info, and set it in our options object
         if (this.arg_info[option]) {
           this.opts[option] = params.shift();
         } else {
           return { error: true, msg: `error: unknown option '${key}'`};
         }
+
       } else {
         this.action = key;
       }
@@ -403,7 +530,7 @@ class Client {
       }
 
       if (this.action == 'upload') {
-        if (! this.opts.file) {
+        if (! this.opts.files) {
           return { error: true, msg: `You need to provide a file to ${this.action}`};
         }
       }
@@ -440,6 +567,7 @@ class Client {
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'upload':
+        this.size_total = this.getDirectorySize(this.opts.files);
         res = this.upload(this.opts.user, this.opts.source, this.opts.id);
         break;
       default:

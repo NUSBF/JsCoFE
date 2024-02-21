@@ -394,8 +394,13 @@ class tools {
   }
 
   static sanitizeFilename(file) {
-    file = path.basename(file);
-    return file.replace(/[^\w\-_=\+\.()]/g,'');
+    // resolve any ../ ./ in path
+    file = path.normalize(file);
+    let p = path.parse(file);
+    // get the path relative to root (this will ensure any root prefix is removed)
+    file = path.relative(p.root, file);
+    // limit allowed characters for file
+    return file.replace(/[^\w\-_=\+\.,()'!~@\/\\ \[\]]/g,'');
   }
 }
 
