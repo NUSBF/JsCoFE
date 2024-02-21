@@ -241,7 +241,7 @@ def refmacAfterRevision(driver, waitLong):
     return ()
 
 
-def startNautilus(driver):
+def startModecraft(driver):
     print('Running Nautilus')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -251,37 +251,15 @@ def startNautilus(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
-        time.sleep(1)
-    except:
-        pass
-    time.sleep(1)
-    try:
-        
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
-        # textEl = driver.find_elements(By.XPATH, "//*[starts-with(text(), '%s')]" % 'Model Building')
-        driver.execute_script("window.scrollTo(0, 500)")
-        time.sleep(1)
-
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
-        time.sleep(1)
-    except:
-        pass
-
     
-
-
-    try:
         
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'ignore')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
-        time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+    # textEl = driver.find_elements(By.XPATH, "//*[starts-with(text(), '%s')]" % 'Model Building')
+    driver.execute_script("window.scrollTo(0, 500)")
+    time.sleep(1)
 
-    except:
-        pass
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+    time.sleep(1)
 
 
     # There are several forms - active and inactive. We need one displayed.
@@ -336,7 +314,7 @@ def verifyNautilus(driver, waitLong, jobNumber, targetRwork, targetRfree):
     return ()
 
 
-def test_1Nautilus(browser,
+def test_modelcraftRNA(browser,
                 cloud,
                 nologin,
                 login,
@@ -352,7 +330,7 @@ def test_1Nautilus(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'nautilusTest'
+    d.testName = 'modelcraft_rna_Test'
 
 
     try:
@@ -370,8 +348,12 @@ def test_1Nautilus(browser,
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         editRevisionStructure(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
-        startNautilus(d.driver) # 5
-        verifyNautilus(d.driver, 1000, '0005', 0.32, 0.35) # run takes 5 minutes, giving 10
+        startModecraft(d.driver) # 5
+        sf.clickTaskInTaskTree(d.driver, '\[0004\]')
+        time.sleep(2)
+        sf.startModelcraft_basic (d.driver)  # 6
+        sf.verifystartModelcraft_basic(d.driver, 1000, '0005', 0.22, 0.25) # run takes 5 minutes, giving 10
+        sf.verifystartModelcraft_basic(d.driver, 100, '0006', 0.2, 0.21) # run takes 5 minutes, giving 10
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
@@ -393,7 +375,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_1Nautilus(browser=parameters.browser,  # or 'Chrome'
+    test_modelcraftRNA(browser=parameters.browser,  # or 'Chrome'
                cloud=parameters.cloud,
                nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                login=parameters.login,  # Used to login into remote Cloud
