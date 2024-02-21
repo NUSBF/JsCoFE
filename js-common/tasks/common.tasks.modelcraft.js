@@ -154,7 +154,6 @@ function TaskModelCraft()  {
                     keyword   : '--disable-sheetbend',
                     tooltip   : 'Check to disable Sheetbend step',
                     value     : false,
-                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [6,0,1,1]},
                     
                   PRUNING:{
@@ -163,6 +162,7 @@ function TaskModelCraft()  {
                     keyword   : '--disable-pruning',
                     tooltip   : 'Check to disable pruning steps',
                     value     : false,
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [7,0,1,1]},
                   DM:{
                     type      : 'checkbox',
@@ -170,7 +170,6 @@ function TaskModelCraft()  {
                     keyword   : '--disable-parrot',
                     tooltip   : 'Check to disable Parrot density modification step',
                     value     : false,
-                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [8,0,1,1]},                    
                   DUMMY:{
                     type      : 'checkbox',
@@ -178,6 +177,7 @@ function TaskModelCraft()  {
                     keyword   : '--disable-dummy-atoms',
                     tooltip   : 'Check to disable the addition of dummy atoms for phase improvement before Buccaneer',
                     value     : false,
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [9,0,1,1]},
                   WATERS:{
                     type      : 'checkbox',
@@ -185,6 +185,7 @@ function TaskModelCraft()  {
                     keyword   : '--disable-waters',
                     tooltip   : 'Check to disable the addition of waters at the end of each cycle',
                     value     : false,
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [10,0,1,1]},
                   ROTAMER_FIT:{
                     type      : 'checkbox',
@@ -192,6 +193,7 @@ function TaskModelCraft()  {
                     keyword   : '--disable-side-chain-fixing',
                     tooltip   : 'Check to disable the side-chain fixing step at the end of the pipeline',
                     value     : false,
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [11,0,1,1]}
                   }}
   };
