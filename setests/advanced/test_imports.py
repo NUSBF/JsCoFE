@@ -542,8 +542,8 @@ def test_2importReplace():
         else:
             importReplace_p9(d.driver,'~/test_data')  # 7
         time.sleep(1)
-        sf.startBuccaneer(d.driver) # 8
-        sf.verifyBuccaneer(d.driver, 600, '0008', 0.29, 0.32)
+        sf.startModelcraft_basic(d.driver) # 8
+        sf.verifystartModelcraft_basic(d.driver, 600, '0008', 0.29, 0.32)
 
         d.driver.quit()
     except:

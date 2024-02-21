@@ -917,8 +917,8 @@ def generate_05(browser,
         phaserEP(d.driver) # 9
         addRemark(d.driver, 'Original hand branch', '')  # 10
         runParrot(d.driver, '0011') # 11
-        startBuccaneer(d.driver) # 12
-        verifyBuccaneer(d.driver, 600, '0012', 0.33, 0.35)
+        sf.startModelcraft_basic(d.driver) # 12
+        sf.verifystartModelcraft_basic(d.driver, 600, '0012', 0.33, 0.35)
         addRemark(d.driver, 'structure has been built - correct hand', '', colour='Green')  # 13
         fitWaters(d.driver, d.waitShort) # 14
         refmac_0015(d.driver) # 15
@@ -929,8 +929,8 @@ def generate_05(browser,
         time.sleep(2)
         cloneRemark(d.driver, 'Inverted hand branch', '')  # 18
         runParrotInverted(d.driver, '0019')  # 19
-        startBuccaneer(d.driver) # 20
-        verifyBuccaneer(d.driver, 600, '0020', 0.0, 0.0)
+        sf.startModelcraft_basic(d.driver) # 20
+        sf.verifystartModelcraft_basic(d.driver, 600, '0020', 0.0, 0.0)
         addRemark(d.driver, 'Structure cannot be built - wrong hand', '', colour='Red')  # 21
 
         d.driver.quit()
