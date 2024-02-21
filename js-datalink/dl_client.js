@@ -138,19 +138,12 @@ class Client {
     let options = {};
 
     // add authentication headers
-    if (params.auth === 'user') {
-      // if the argument requires user authentication and cloudrun_id is set, use it
-      if (this.opts.cloudrun_id) {
-        options.headers = { cloudrun_id: this.opts.cloudrun_id };
-      // otherwise use the admin_key if it's set
-      } else {
-        options.headers = { admin_key: this.opts.admin_key };
-      }
-    }
-
-    // if the argument requires admin authentication add the admin_key if it's set
-    if (params.auth === 'admin' && this.opts.admin_key) {
+    // if the action requires authentication and the admin_key is set, add to headers.
+    // otherwise, if the action requires user auth and cloudrun_id is set, use that.
+    if (params.auth && this.opts.admin_key) {
       options.headers = { admin_key: this.opts.admin_key };
+    } else if (params.auth === 'user' && this.opts.cloudrun_id) {
+      options.headers = { cloudrun_id: this.opts.cloudrun_id };
     }
 
     // handle file uploads
