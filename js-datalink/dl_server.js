@@ -127,40 +127,53 @@ class server {
     this.jsonResponse(res, this.datalink.updateData(req.params.user, req.params.source, req.params.id, req.body));
   }
 
-  uploadData(req, res) {
+  uploadData(req, res, next) {
     // check username
     if (! tools.validUserName(req.params.user)) {
       this.jsonResponse(res, tools.errorMsg(`Invalid user name ${req.params.user}`, 400));
       return;
     }
 
-    const bb = busboy( { headers: req.headers } );
+    let ret = this.datalink.uploadDataInit(req.params.user, req.params.source, req.params.id);
+    if (ret !== true) {
+      this.jsonResponse(res, ret);
+      return;
+    }
 
-    let file;
+    const bb = busboy( { headers: req.headers, preservePath: true } );
+
+    let has_error = false;
+    let err_msg = `Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`;
 
     bb.on('file', (name, in_stream, info) => {
-      file = tools.sanitizeFilename(info.filename);
-      let r = this.datalink.uploadData(req.params.user, req.params.source, req.params.id, file, in_stream);
-      if (r) {
-        if (r instanceof stream.Writable) {
-          r.on('finish', () => {
-            this.datalink.uploadDataComplete(req.params.user, req.params.source, req.params.id, file);
-          });
-
-          r.on('error', (err) => {
-            req.unpipe(bb);
-            this.jsonResponse(res, tools.errorMsg(`Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`, 500));
-          });
+      this.datalink.uploadData(req.params.user, req.params.source, req.params.id, in_stream, info.filename)
+      .catch( (err) => {
+        // if an error has already been triggered, just return as otherwise jsonResponse will be called twice and throw an error.
+        if (has_error) {
+          return;
         }
-        if (r.error) {
-          req.unpipe(bb);
-          this.jsonResponse(res, r);
-        }
-      }
+        has_error = true;
+        // detach stream
+        req.unpipe(bb);
+        log.error(err);
+        this.jsonResponse(res, err);
+      });
     });
 
     bb.on('finish', () => {
-      this.jsonResponse(res, tools.successMsg(`Added ${file} to ${req.params.user}/${req.params.source}/${req.params.id}`));
+      this.datalink.uploadDataComplete(req.params.user, req.params.source, req.params.id);
+      this.jsonResponse(res, tools.successMsg(`Added files to ${req.params.user}/${req.params.source}/${req.params.id}`));
+    });
+
+    bb.on('error', (err) => {
+      if (has_error) {
+        return;
+      }
+      has_error = true;
+      req.unpipe(bb);
+      log.error(err);
+      this.datalink.uploadDataError(req.params.user, req.params.source, req.params.id);
+      this.jsonResponse(res, tools.errorMsg(err_msg, 500));
     });
 
     req.pipe(bb);
@@ -208,7 +221,7 @@ class server {
     router.post(['/data/:user/:source/:id/upload'],
       (req, res, next) => this.checkValidSourceId(req, res, next),
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.uploadData(req, res) );
+      (req, res, next) => this.uploadData(req, res, next) );
 
     const app = express();
     app.use(API_PREFIX, router);

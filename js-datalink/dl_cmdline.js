@@ -93,7 +93,7 @@ class appClient extends client {
         size_s += s.size_s;
       }
       if (size_s > 0) {
-        percent = size / size_s * 100
+        percent = (size / size_s) * 100
         if (percent >= 100) {
             percent = 100
         }
@@ -108,40 +108,64 @@ class appClient extends client {
 
   }
 
+  async sendFile(user, source, id, dir, file) {
+    const in_stream = fs.createReadStream(file);
+
+    in_stream.on('error', (err) => {
+      log.error(err);
+      console.error(err.message);
+    });
+
+    in_stream.on('data', (data) => {
+      this.size_uploaded += data.length;
+      this.outputProgress(data.length);
+    });
+
+    await this.datalink.uploadData(user, source, id, in_stream, file,
+    (err) => {
+      log.error(err);
+      console.error(err.message);
+    });
+
+  }
+
   async upload(user, source, id) {
+    // check username
+    if (! tools.validUserName(user)) {
+      return tools.errorMsg(`Invalid user name ${req.params.user}`, 400);
+    }
+
     let check = tools.validSourceId(source, id);
     if (check !== true) {
       return check;
     }
 
-    const in_s = fs.createReadStream(this.opts.file);
-    const out_file = tools.sanitizeFilename(this.opts.file);
+    let ret = this.datalink.uploadDataInit(user, source, id);
+    if (ret !== true) {
+      return ret;
+    }
 
-    in_s.on('error', (err) => {
-      this.displayResult(tools.errorMsg(`${err}`, 500));
-    });
+    await this.waitForCatalogs();
 
-    let out_s = await this.datalink.uploadData(user, source, id, out_file, in_s);
-
-    if (out_s) {
-      if (out_s instanceof stream.Writable) {
-        out_s.on('finish', async () => {
-          await this.datalink.uploadDataComplete(user, source, id, out_file);
-          this.displayResult(tools.successMsg(`Added ${out_file} to ${user}/${source}/${id}`));
+    for (let [i, file] of this.opts.files.entries()) {
+      try {
+        await this.fileCallback(file, async (f) => {
+          try {
+            await this.sendFile(user, source, id, file, f);
+          } catch (err) {
+            return true;
+          }
+          return true;
         });
-
-        out_s.on('error', (err) => {
-          this.displayResult(tools.errorMsg(`Error adding to ${user}/${source}/${id}`, 500));
-        });
-      }
-
-      if (out_s.error) {
-        return tools.errorMsg(`${r.message}`, 500);
+      } catch (err) {
+        console.log(err);
       }
     }
 
+    this.datalink.uploadDataComplete(user, source, id);
+    process.stdout.write('\x1b[K');
+    return tools.successMsg(`Added files to ${user}/${source}/${id}`);
   }
-
 }
 
 const appclient = new appClient();
