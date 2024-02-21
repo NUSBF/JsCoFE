@@ -1375,7 +1375,7 @@ def startModelcraft_basic(driver):
 def verifystartModelcraft_basic(driver, waitLong, jobNumber, targetRwork, targetRfree):
     rWork = 1.0
     rFree = 1.0
-    print('Modelcraft basic verification, job ' + jobNumber)
+    print('Modelcraft verification, job ' + jobNumber)
 
     time.sleep(1)
     startTime = time.time()
