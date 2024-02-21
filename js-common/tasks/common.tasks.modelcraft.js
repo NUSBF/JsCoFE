@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.02.24   <--  Date of Last Modification.
+ *    21.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -134,7 +134,7 @@ function TaskModelCraft()  {
                       tooltip  : 'Check to build selenomethionine',
                       value    : false,
                       position : [4,0,1,5]
-                    },
+                    }
               }
             },
     sec2 :  { type     : 'section',
@@ -154,7 +154,9 @@ function TaskModelCraft()  {
                     keyword   : '--disable-sheetbend',
                     tooltip   : 'Check to disable Sheetbend step',
                     value     : false,
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
                     position  : [6,0,1,1]},
+                    
                   PRUNING:{
                     type      : 'checkbox',
                     label     : 'Both the residue and chain pruning steps',
@@ -168,7 +170,8 @@ function TaskModelCraft()  {
                     keyword   : '--disable-parrot',
                     tooltip   : 'Check to disable Parrot density modification step',
                     value     : false,
-                    position  : [8,0,1,1]},
+                    hideon   : {sec1:{'MODE_SEL':['basic']}},
+                    position  : [8,0,1,1]},                    
                   DUMMY:{
                     type      : 'checkbox',
                     label     : 'Density modification though addition and refinement of dummy atoms',
