@@ -1331,8 +1331,8 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
     assert rFree < targetRfree
 
 
-def startBuccaneer(driver):
-    print('Running Buccaneer')
+def startModelcraft_basic(driver):
+    print('Running Modelcraft in fast mode')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -1341,21 +1341,20 @@ def startBuccaneer(driver):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        time.sleep(1)
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
-        
-    except:
-        pass
+    
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
     time.sleep(1)
-    try:
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
-        time.sleep(1)
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
-        time.sleep(1)
-    except:
-        pass
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Fast')
+    time.sleep(1)
+
+
+
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -1373,10 +1372,10 @@ def startBuccaneer(driver):
     return ()
 
 
-def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
+def verifystartModelcraft_basic(driver, waitLong, jobNumber, targetRwork, targetRfree):
     rWork = 1.0
     rFree = 1.0
-    print('Buccaneer verification, job ' + jobNumber)
+    print('Modelcraft basic verification, job ' + jobNumber)
 
     time.sleep(1)
     startTime = time.time()
@@ -1394,14 +1393,14 @@ def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
-            print('*** Timeout for Buccaneer results! Waited for %d seconds.' % waitLong)
+            print('*** Timeout for Modelcraft results! Waited for %d seconds.' % waitLong)
             break
         time.sleep(10)
 
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find Rwork or Rfree value after Buccaneer run')
     else:
-        print('*** Verification: Buccaneer Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
+        print('*** Verification: Modelcraft Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
             rWork, targetRwork, rFree, targetRfree))
     assert rWork < targetRwork
     assert rFree < targetRfree

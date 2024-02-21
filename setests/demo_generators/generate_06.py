@@ -1034,16 +1034,16 @@ def generate_06(browser,
         startCCP4Build(d.driver) # 9
         sf.clickTaskInTaskTree(d.driver, '\[0007\]')
         runParrot(d.driver, '0010') # 10
-        startBuccaneer(d.driver) # 11
+        sf.startModelcraft_basic(d.driver) # 11
 
         sf.clickTaskInTaskTree(d.driver, '\[0008\]')
         startCCP4Build(d.driver, inverted=True) # 12
         sf.clickTaskInTaskTree(d.driver, '\[0008\]')
         runParrot(d.driver, '0013', inverted=True) # 13
-        startBuccaneer(d.driver) # 14
+        sf.startModelcraft_basic(d.driver) # 14
 
-        verifyBuccaneer(d.driver, 1200, '0011', 0.0, 0.0)
-        verifyBuccaneer(d.driver, 1200, '0014', 0.0, 0.0)
+        sf.verifystartModelcraft_basic(d.driver, 1200, '0011', 0.0, 0.0)
+        sf.verifystartModelcraft_basic(d.driver, 1200, '0014', 0.0, 0.0)
         verifyCCP4Build(d.driver, 1200, '0009', 0.0, 0.0)
         verifyCCP4Build(d.driver, 1200, '0012', 0.0, 0.0)
 

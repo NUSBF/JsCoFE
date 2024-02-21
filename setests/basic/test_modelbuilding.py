@@ -345,7 +345,7 @@ def test_modelBuildingBasic(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'buccaneerTest'
+    d.testName = 'modelbuildingTest'
 
 
     try:
@@ -363,8 +363,8 @@ def test_modelBuildingBasic(browser,
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 2
         sf.editRevisionStructure_rnase(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
-        startBuccaneer(d.driver) # 5
-        time.sleep(6)
+        # startBuccaneer(d.driver) # 5
+        # time.sleep(6)
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         time.sleep(6)
         startCCP4Build(d.driver) # 6
@@ -373,9 +373,9 @@ def test_modelBuildingBasic(browser,
         time.sleep(6)
         startModelcraft(d.driver) # 7
 
-        verifyCCP4Build(d.driver, 900, '0006', 0.25, 0.28) # run takes long
-        verifyBuccaneer(d.driver, 10, '0005', 0.28, 0.3) # 
-        verifyModelcraft(d.driver, 300, '0007', 0.2, 0.255) # 
+        verifyCCP4Build(d.driver, 900, '0005', 0.25, 0.28) # run takes long
+        # verifyBuccaneer(d.driver, 10, '0005', 0.28, 0.3) # 
+        verifyModelcraft(d.driver, 900, '0006', 0.2, 0.255) # 
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()

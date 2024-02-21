@@ -586,7 +586,7 @@ def test_3parrot():
     try:
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         runParrot(d.driver) # 6
-        startBuccaneer(d.driver) # 7
+        sf.startModelcraft_basic(d.driver) # 7
     except:
         d.driver.quit()
         raise
@@ -596,10 +596,10 @@ def test_4acorn():
     try:
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         runAcorn(d.driver) # 8
-        startBuccaneer(d.driver)  # 9
+        sf.startModelcraft_basic(d.driver)  # 9
 
-        verifyBuccaneer(d.driver, 420, '0006', 0.36, 0.37)
-        verifyBuccaneer(d.driver, 420, '0008', 0.36, 0.37)
+        sf.startModelcraft_basic(d.driver, 420, '0006', 0.36, 0.37)
+        sf.startModelcraft_basic(d.driver, 420, '0008', 0.36, 0.37)
         # verifyShelxDM(d.driver)
 
         sf.renameProject(d.driver, d.testName)

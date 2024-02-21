@@ -370,8 +370,8 @@ def test_2PhaserParrBucc():
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         phaserEP(d.driver, 1200)  # 4
         runParrot(d.driver)  # 5
-        startBuccaneer(d.driver)  # 6
-        verifyBuccaneer(d.driver, 600, '0006', 0.37, 0.39)  # run takes 6 minutes, giving 10
+        sf.startModelcraft_basic(d.driver)  # 6
+        sf.verifystartModelcraft_basic(d.driver, 600, '0006', 0.37, 0.39)  # run takes 6 minutes, giving 10
 
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
