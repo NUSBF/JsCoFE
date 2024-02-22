@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    22.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,7 +80,7 @@ TaskPDBREDO.prototype.authorisationID = function() { return 'pdb-redo'; }
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskPDBREDO.prototype.currentVersion = function()  {
-var version = 1;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -120,18 +120,18 @@ if (__template)  {  //  will run only on server side
     // job's 'input' directory
       
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['seq']     = revision.ASU.seq;
       this.input_data.data['istruct'] = [revision.Structure];
     }
 
-    var uData = user.readUserData ( loginData );
-    var auth_json = { status : 'ok' };
+    let uData = user.readUserData ( loginData );
+    let auth_json = { status : 'ok' };
     if (uData)  {
       if (('authorisation' in uData) && ('pdb-redo' in uData.authorisation))  {
         auth_json.auth_data = uData.authorisation['pdb-redo'];
-        var d1 = new Date(auth_json.auth_data.expiry_date);
+        let d1 = new Date(auth_json.auth_data.expiry_date);
         if (d1.getTime()<Date.now())
           auth_json.status = 'expired';
       } else
