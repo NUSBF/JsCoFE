@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.24   <--  Date of Last Modification.
+ *    22.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -89,9 +89,15 @@ if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
+  var user = require('../../js-server/server.fe.user');
 
   TaskFetchData.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.fetchdata', jobManager, jobDir, this.id];
+    let uData       = user.readUserData ( { login:this.submitter, volume:null } );
+    let cloudrun_id = '*** unidentified ***';
+    if (uData && ('cloudrun_id' in uData))
+        cloudrun_id = uData.cloudrun_id;
+    return [conf.pythonName(), '-m', 'pycofe.tasks.fetchdata', jobManager, jobDir, 
+            this.id, cloudrun_id];
   }
 
   // -------------------------------------------------------------------------

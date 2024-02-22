@@ -25,7 +25,7 @@
 #
 
 #  python native imports
-# import sys
+import sys
 import os
 import time
 
@@ -143,8 +143,14 @@ class FetchData(basic.TaskDriver):
         # create a DataLink class instance - DL_URL, CLOUD_USER and CLOUDRUN_ID are currently hardcoded
         # but I assume they can be passed in as a task parameter or similar?
 
-        # cloud_user  = ''''''''
-        # cloudrun_id = ''''''''
+        cloud_user  = self.task.submitter
+        cloudrun_id = sys.argv[4]
+
+        #  this will print in "Errors" tab of the Job Dialog, just to make sure
+        #  that correct values are obtained;  delete in final version
+        self.stderrln ( " >>>>> cloud_user = "  + str(cloud_user) )
+        self.stderrln ( " >>>>> cloudrun_id = " + str(cloudrun_id) )
+
         dl = DataLink(DL_URL, CLOUD_USER, CLOUDRUN_ID)
 
         # search the API for data source entries that match the PDB code
