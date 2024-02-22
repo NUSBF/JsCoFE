@@ -598,8 +598,8 @@ def test_4acorn():
         runAcorn(d.driver) # 8
         sf.startModelcraft_basic(d.driver)  # 9
 
-        sf.startModelcraft_basic(d.driver, 420, '0006', 0.36, 0.37)
-        sf.startModelcraft_basic(d.driver, 420, '0008', 0.36, 0.37)
+        sf.verifystartModelcraft_basic(d.driver, 420, '0006', 0.36, 0.37)
+        sf.verifystartModelcraft_basic(d.driver, 420, '0008', 0.36, 0.37)
         # verifyShelxDM(d.driver)
 
         sf.renameProject(d.driver, d.testName)

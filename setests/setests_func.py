@@ -1350,8 +1350,17 @@ def startModelcraft_basic(driver):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Fast')
-    time.sleep(1)
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Basic')
+        time.sleep(1)
+    except:
+        pass    
+
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Fast')
+        time.sleep(1)
+    except:
+        pass
 
 
 
