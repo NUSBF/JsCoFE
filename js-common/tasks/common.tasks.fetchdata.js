@@ -96,6 +96,7 @@ if (__template)  {
     let cloudrun_id = '*** unidentified ***';
     if (uData && ('cloudrun_id' in uData))
         cloudrun_id = uData.cloudrun_id;
+    // let fe_config = conf.getFEConfig();
     return [conf.pythonName(), '-m', 'pycofe.tasks.fetchdata', jobManager, jobDir, 
             this.id, cloudrun_id];
   }
