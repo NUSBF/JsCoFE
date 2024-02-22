@@ -142,6 +142,9 @@ class FetchData(basic.TaskDriver):
 
         # create a DataLink class instance - DL_URL, CLOUD_USER and CLOUDRUN_ID are currently hardcoded
         # but I assume they can be passed in as a task parameter or similar?
+
+        # cloud_user  = ''''''''
+        # cloudrun_id = ''''''''
         dl = DataLink(DL_URL, CLOUD_USER, CLOUDRUN_ID)
 
         # search the API for data source entries that match the PDB code
