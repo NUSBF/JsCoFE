@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.01.24   <--  Date of Last Modification.
+#    22.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -294,6 +294,7 @@ class XyzUtils(basic.TaskDriver):
             if not errors:
                 st.setup_entities()
                 st.make_mmcif_document().write_file ( mmcifout )
+                pdbout = None
 
         else:
             # make model transformations
@@ -494,6 +495,7 @@ class XyzUtils(basic.TaskDriver):
 
                 # st.write_pdb ( pdbout )
                 st.make_mmcif_document().write_file ( mmcifout )
+                pdbout = None
 
                 self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                                   "</i> transformed:</b><ul><li>" +\
@@ -525,14 +527,15 @@ class XyzUtils(basic.TaskDriver):
         elif action_sel=="R":
             if os.path.isfile(mmcifout):
                 self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
-                                "</i> transformed as:<pre>" +\
-                                self.getParameter(sec1.RENAME_INPUT) + "</pre>" )
+                                  "</i> transformed as:<pre>" +\
+                                  self.getParameter(sec1.RENAME_INPUT) + "</pre>" )
+                pdbout = None
                 have_results = self.makeXYZOutput ( istruct,ixyz,mmcifout,pdbout )
 
         # this will go in the project tree line
         if len(log)>0:
             self.generic_parser_summary["xyzutils"] = {
-              "summary_line" : ", ".join(log)
+                "summary_line" : ", ".join(log)
             }
 
         # close execution logs and quit
