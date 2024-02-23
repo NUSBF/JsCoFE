@@ -32,6 +32,11 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
+
+    process.on('error', (err) => {
+      log.error(err);
+      log.error(err.stack);
+    });
   }
 
   loadAllUserCatalogs() {
@@ -282,46 +287,78 @@ class dataLink {
     return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
   }
 
-  uploadData(user, source, id, file, stream) {
+  uploadDataInit(user, source, id) {
     if (! this.catalog.addEntry(user, source, id, null)) {
       return tools.errorMsg(`Unable to add catalog entry for ${user}/${source}/${id}`, 500);
     }
-    let entry = this.catalog.getEntry(user, source, id);
-
-    log.info(`uploadData - Adding ${file} to ${user}/${source}/${id}`);
-    let dest = tools.getDataDest(user, source, id);
-    const out = fs.createWriteStream(path.join(dest, file));
-
-    out.on('error', (err) => {
-      log.error(`uploadData - ${err}`);
-    });
-
-    stream.on('data', (data) => {
-      entry.size += data.length;
-    });
-
-    stream.pipe(out);
-
-    return out;
+    return true;
   }
 
-  async uploadDataComplete(user, source, id, file) {
-    log.info(`uploadDataComplete - Added ${file} to ${user}/${source}/${id}`);
+  uploadData(user, source, id, in_s, file, errorCallback) {
+    return new Promise((resolve, reject) => {
+      // make sure there is a filename set
+      if (file === undefined) {
+        this.uploadDataError(user, source, id);
+        reject(tools.errorMsg(`No filename supplied in upload data`, 400));
+      }
 
-    const dest_dir = tools.getDataDest(user, source, id);
-    const file_path = path.join(dest_dir, file);
+      // make sure the file (which can include a path), is valid and not an absolute path
+      file = tools.sanitizeFilename(file);
+
+      // add the data destination path
+      const dest_file = path.join(tools.getDataDest(user, source, id), file);
+      const dest_dir = path.dirname(dest_file);
+
+      // make the directory if needed
+      try {
+        fs.mkdirSync(dest_dir, { recursive: true });
+      } catch (err) {
+        reject();
+      }
+
+      // create output stream
+      const out_s = fs.createWriteStream(dest_file);
+
+      let entry = this.catalog.getEntry(user, source, id);
+      out_s.on('data', (data) => {
+        entry.size += data.length;
+      });
+
+      out_s.on('finish', () => {
+        resolve();
+        this.uploadDataUnpack(user, source, id, file);
+      });
+
+      out_s.on('error', (err) => {
+        this.uploadDataError(user, source, id);
+        reject(tools.errorMsg(`Error adding to ${user}/${source}/${id}`, 500));
+      });
+
+      // pipe input stream to output stream
+      in_s.pipe(out_s);
+    });
+  }
+
+  async uploadDataUnpack(user, source, id, file) {
+    log.info(`uploadData - Added ${file} to ${user}/${source}/${id}`);
+
+    const file_path = path.join(tools.getDataDest(user, source, id), file);
+    const dest_dir = path.dirname(file_path);
+
     // check if the file is packed and unpack if needed
     const {cmd, args} = tools.getUnpackCmd(file_path, dest_dir);
     if (cmd) {
-      log.info(`uploadDataComplete - Unpacking ${file}`);
+      log.info(`uploadData - Unpacking ${file}`);
       try {
         await tools.unpack(file_path, dest_dir, cmd, args);
-        log.info(`uploadDataComplete - Unpacked ${file}`);
+        log.info(`uploadData - Unpacked ${file}`);
       } catch(err) {
-        log.error(`uploadDataComplete - ${err}`);
+        log.error(`uploadData - ${err}`);
       }
     }
+  }
 
+  async uploadDataComplete(user, source, id) {
     let fields = {
       'status': status.completed,
       'size': this.catalog.getStorageSize(user, source, id)
@@ -329,7 +366,13 @@ class dataLink {
     if (! this.catalog.updateEntry(user, source, id, fields)) {
       log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
     }
+  }
 
+  uploadDataError(user, source, id) {
+    // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
+    if (this.catalog.hasEntry(user, source, id)) {
+      this.catalog.updateEntry(user, source, id, { status: status.failed });
+    }
   }
 
   getDataStatus(user, source, id) {
