@@ -64,7 +64,6 @@ if (msg)  {
 
 process.on ( 'uncaughtException', function (err) {
   log.error ( 3,'Caught unhandled exception: ' + err );
-  log.error (3, err.stack);
 });
 
 conf.setServerConfig ( conf.getFEConfig() );
