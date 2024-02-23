@@ -213,7 +213,6 @@ let index = {};  // links volumes in config file and in vdata
         pfill0 = pfill;
         volume = vdata[i];
       }
-      console.log(vconf[vdata[i].name].type);
       if (vconf[vdata[i].name].type=='home')  {
         let hpath = path.join ( vconf[vdata[i].name].path,userData.login );
         if (utils.dirExists(hpath))  {  // does user exist on this volume?
