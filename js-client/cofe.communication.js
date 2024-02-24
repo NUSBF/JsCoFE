@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    24.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,7 +73,7 @@ var cofe_signals = {
 function validateUserData ( user_inp,email_inp,login_inp )  {
 //  All parameters are InputText classes, corresponding to the input of
 //  user name, e-mail and login name, respectively
-var msg = '';
+let msg = '';
 
   if (user_inp.getValue().length<=0)
     msg += '<b>User name</b> must be provided.<p>';
@@ -169,9 +169,9 @@ function makeCommErrorMessage ( title,request_type,response )  {
 
 function checkVersionMatch ( response,localServer_bool )  {
 
-  var v0 = appVersion().split(' ')[0];
-  var rs = response.version.split(' ');
-  var v1 = rs[0];
+  let v0 = appVersion().split(' ')[0];
+  let rs = response.version.split(' ');
+  let v1 = rs[0];
 
   if (localServer_bool)
     return true;  // may need a better solution
@@ -180,7 +180,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     if ((v0!=v1) && (rs[rs.length-1]=='client'))  {
       // this works when client version is different from server version
       if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
-        var whattodo = '';
+        let whattodo = '';
         if (v1<v0)
               whattodo = 'Please update CCP4 setup on your computer';
         else  whattodo = 'The maintainer of your ' + appName() + ' setup should ' +
@@ -221,7 +221,7 @@ function checkVersionMatch ( response,localServer_bool )  {
 
 
 function makeJSONString ( data_obj )  {
-var json = null;
+let json = null;
 
   // json = JSON.stringify ( data_obj );
 
@@ -291,7 +291,7 @@ var __check_session_drops = 0;
 
 function processServerQueue()  {
   if (__server_queue.length>0)  {
-    var q0 = __server_queue[0];
+    let q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
       if (q0.type=='command')
@@ -372,7 +372,7 @@ function processServerQueue()  {
 
 function processLocalQueue()  {
   if (__local_queue.length>0)  {
-    var q0 = __local_queue[0];
+    let q0 = __local_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
       local_command ( q0.request_type,q0.data_obj,q0.command_title,q0.function_response );
@@ -403,7 +403,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
                             function_always,function_fail,sqid )  {
 // used when no user is logged in
 
-  var json = makeJSONString ( data_obj );
+  let json = makeJSONString ( data_obj );
 
   if (json)
     $.ajax ({
@@ -422,9 +422,9 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         __server_queue.shift();
         __process_network_indicators();
         try {
-          var rsp = jQuery.parseJSON ( rdata );
+          let rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
-            var response = jQuery.extend ( true, new Response(), rsp );
+            let response = jQuery.extend ( true, new Response(), rsp );
             if (!function_response(response))
               makeCommErrorMessage ( page_title,cmd,response );
           }
@@ -508,8 +508,8 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
                             function_always,function_fail,sqid )  {
 // used when a user is logged in
 
-  var request = new Request ( request_type,__login_token,data_obj );
-  var json = makeJSONString ( request );
+  let request = new Request ( request_type,__login_token,data_obj );
+  let json = makeJSONString ( request );
 
   function execute_ajax ( attemptNo )  {
 
@@ -540,9 +540,9 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         __process_network_indicators();
 
         try {
-          var rsp = jQuery.parseJSON ( rdata );
+          let rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
-            var response = jQuery.extend ( true, new Response(), rsp );
+            let response = jQuery.extend ( true, new Response(), rsp );
             if (response.status==fe_retcode.ok)  {
               if (function_ok)
                 function_ok ( response.data );
@@ -671,7 +671,7 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 //                      in case something is wrong, in which case a
 //                      communication error message box is displayed.
 
-  var json = makeJSONString ( data_obj );
+  let json = makeJSONString ( data_obj );
 
   if (__local_service && json)
     $.ajax ({
@@ -684,9 +684,9 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
       timeout  : 0  // in ms; '0' means no timeout
     })
     .done ( function(rdata) {
-      var rsp = jQuery.parseJSON ( rdata );
+      let rsp = jQuery.parseJSON ( rdata );
       if (checkVersionMatch(rsp,true))  {
-        var response = jQuery.extend ( true,new Response(),rsp );
+        let response = jQuery.extend ( true,new Response(),rsp );
         if (function_response && (!function_response(response)))
           makeCommErrorMessage ( command_title,cmd,response );
       }
@@ -781,8 +781,8 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
 
 
 function downloadFile ( uri )  {
-var hiddenALinkID = 'hiddenDownloader';
-var alink = document.getElementById(hiddenALinkID);
+let hiddenALinkID = 'hiddenDownloader';
+let alink = document.getElementById(hiddenALinkID);
   if (!alink)  {
     alink    = document.createElement('a');
     alink.id = hiddenALinkID;
@@ -797,7 +797,7 @@ var alink = document.getElementById(hiddenALinkID);
 
 
 // function calculateJobFileURL ( fileName )  {
-//   // var url = __special_url_tag + '/';
+//   // let url = __special_url_tag + '/';
 //   // if (__login_token)
 //   //       url += __login_token;
 //   // else  url += '404';
@@ -808,9 +808,9 @@ var alink = document.getElementById(hiddenALinkID);
 function fetchJobFile ( task,fname,function_success,function_always,function_fail )  {
 // task may be any task from the project; the actual task number is obtained from 'fname'
 
-  var furl = task.getProjectURL ( parseInt(fname.split('-')[0],10),fname );
+  let furl = task.getProjectURL ( parseInt(fname.split('-')[0],10),fname );
 
-  var oReq = new XMLHttpRequest();
+  let oReq = new XMLHttpRequest();
 
   oReq.onload = function(oEvent) {
     function_success ( oReq.responseText );
@@ -845,7 +845,7 @@ function fetchJobFile ( task,fname,function_success,function_always,function_fai
 function fetchFile ( furl,function_success,function_always,function_fail )  {
 // furl is relative file url starting from FE URL
 
-  var oReq = new XMLHttpRequest();
+  let oReq = new XMLHttpRequest();
 
   oReq.onload = function(oEvent) {
     function_success ( oReq.responseText );
@@ -890,7 +890,7 @@ function fetchJobOutputFile ( task,fname,function_success,function_always,functi
 
 
 function getJobFileURL ( jobId,filePath )  {
-  var url = __special_url_tag + '/';
+  let url = __special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';
@@ -900,7 +900,7 @@ function getJobFileURL ( jobId,filePath )  {
 
 function downloadJobFile ( jobId,filePath )  {
   /*
-  var url = __special_url_tag + '/';
+  let url = __special_url_tag + '/';
   if (__login_token)
         url += __login_token;
   else  url += '404';
@@ -943,9 +943,9 @@ function setQuitDestructor()  {
 var __comm_iframes = {};
 
 function setCommunicatingIFrame ( holder,iframe )  {
-var fid0 = 'fid_' + Date.now();
-var fid  = fid0;
-var k    = 0;
+let fid0 = 'fid_' + Date.now();
+let fid  = fid0;
+let k    = 0;
   while (fid in __comm_iframes)
     fid = fid0 + '_' + k++;
   __comm_iframes[fid] = { 
@@ -972,6 +972,12 @@ function removeCommunicatingIFrame ( fid )  {
     delete __comm_iframes[fid];
 }
 
+function removeAllCommunicatingIFrames()  {
+  for (let fid in __comm_iframes)
+    if (__comm_iframes.hasOwnProperty(fid))
+      delete __comm_iframes[fid];
+}
+
 function getNofCommunicatingIFrames()  {
 let c = 0;
   for (let p in __comm_iframes)
@@ -993,7 +999,7 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
-  var edata = event.data;
+  let edata = event.data;
 
   if (edata.command=='saveFiles')  {
     if (edata.files.length<=0)  {
@@ -1082,7 +1088,7 @@ function onWindowMessage ( event ) {
     }
   } else if (edata.command=='getFile')  {
 
-      var req_data  = {};
+      let req_data  = {};
       req_data.meta = {};
       req_data.meta.project = edata.meta.project;
       req_data.meta.id      = edata.meta.id;

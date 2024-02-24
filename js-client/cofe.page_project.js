@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.02.24   <--  Date of Last Modification.
+ *    24.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -401,14 +401,20 @@ ProjectPage.prototype.confirmLeaving = function ( callback_func )  {
   if (getNofCommunicatingIFrames()+this.jobTree.getNofJobDialogs(true)>0)  {
     new QuestionBox ( 'Active task dialogs',
                       '<div style="width:360px;"><h2>Active task dialogs</h2>'  +
-                      'Some task are open in this Project Page. Closing them '  +
+                      'Some task are open in this Project Page (' +
+                      getNofCommunicatingIFrames() + ':' +
+                      this.jobTree.getNofJobDialogs(true) +
+                      '). Closing them '  +
                       'them automatically may cause losing last changes.<p>'    +
                       'It is recommended that you review and close open tasks ' +
                       'manually before leaving this page.<p>What you would '    +
                       'like to do?</div',
                       [
                         { name    : 'Close them',
-                          onclick : function(){ callback_func(true); }
+                          onclick : function(){ 
+                                      removeAllCommunicatingIFrames();
+                                      callback_func(true); 
+                                    }
                         },{
                           name    : 'I will review and close manually',
                           onclick : function(){ callback_func(false); }
