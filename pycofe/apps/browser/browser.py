@@ -1,8 +1,28 @@
+#!/usr/bin/python
 
+#
+# ============================================================================
+#
+#    25.02.24   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  CCP4 Browser for embedded CCP4 Cloud desktop
+#
+#  Command-line:
+#     ccp4-python browser.py [url]
+#
+#  where:
+#    url        is CCP4 Cloud URL
+#
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2024
+#
+# ============================================================================
+#
 
-
-
-
+#  python native imports
+# import os
+import sys
 import argparse
 
 from   PySide2.QtCore import *
@@ -11,8 +31,6 @@ from   PySide2.QtGui import *
 from   PySide2.QtWebEngineWidgets import *
 from   PySide2.QtPrintSupport import *
 
-# import os
-import sys
 
 
 # class CustomWebEnginePage(QWebEnginePage):
