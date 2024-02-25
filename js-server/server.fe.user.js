@@ -531,7 +531,7 @@ let updateHash = false;
 
   if (('localuser' in fe_server) &&
       (!__userLoginHash.getToken(ud.__local_user_id)))  {
-    userData = new ud.UserData();
+    let userData = new ud.UserData();
     userData.name    = fe_server.localuser;
     // userData.email   = conf.getEmailerConfig().maintainerEmail;
     userData.email   = 'localuser@localhost';
