@@ -31,6 +31,14 @@ from   PySide2.QtGui              import *
 from   PySide2.QtWebEngineWidgets import *
 from   PySide2.QtPrintSupport     import *
 
+
+# class CustomWebEngineView(QWebEngineView):
+#     def createWindow ( self,type ):
+#         if type == QWebEnginePage.WebBrowserTab:
+#             print ( " >> create window in view ",type )
+#         return super().createWindow(type)
+
+
 # class CustomWebEnginePage(QWebEnginePage):
 #     """ Custom WebEnginePage to customize how we handle link navigation """
 #     # Store external windows.
@@ -44,17 +52,19 @@ from   PySide2.QtPrintSupport     import *
 #             return False
 #         return super().acceptNavigationRequest(url,  _type, isMainFrame)
 
+
 class CustomWebEnginePage(QWebEnginePage):
     # Store second window.
-    external_window = None
+    # external_window = None
 
     def acceptNavigationRequest(self, url,  _type, isMainFrame):
-        print( " >>>>> ",url, _type, isMainFrame)
+        # print( " >>>>> ",url, _type, isMainFrame, QWebEnginePage.NavigationTypeLinkClicked)
         if _type == QWebEnginePage.NavigationTypeLinkClicked:
-            if not self.external_window:
-                self.external_window = QWebEngineView()
-            self.external_window.setUrl(url)
-            self.external_window.show()
+            QDesktopServices.openUrl(url)
+            # if not self.external_window:
+            #     self.external_window = QWebEngineView()
+            # self.external_window.setUrl(url)
+            # self.external_window.show()
             return False
         return super().acceptNavigationRequest(url,  _type, isMainFrame)
 
@@ -64,7 +74,17 @@ class CustomWebEnginePage(QWebEnginePage):
         return
 		
     def createWindow ( self,type ):
-        return super().acceptNavigationRequest(url,  _type, isMainFrame)
+        # print ( " >> create window in page ",type )
+        if type == QWebEnginePage.WebBrowserTab:
+            page = CustomWebEnginePage(self)
+            # settings = QSettings ("CCP4","CCP4 Browser")
+            # geometry = settings.value('geometry','')
+            # if geometry: 
+            #     self.restoreGeometry ( geometry )
+            # else:
+            #     self.setGeometry ( 100,100,1200,800 )
+            return page
+        return super().createWindow(type)
 
 
 # creating main window class
@@ -78,8 +98,10 @@ class MainWindow(QMainWindow):
         self.args   = args
 
         # creating a QWebEngineView
+        # self.browser = CustomWebEngineView(self)
         self.browser = QWebEngineView()
-        self.browser.setPage(CustomWebEnginePage(self))
+        page = CustomWebEnginePage(self)
+        self.browser.setPage(page)
 
         self.settings = QSettings ("CCP4","CCP4 Browser")
 
@@ -181,44 +203,35 @@ class MainWindow(QMainWindow):
     # method for updating the title of the window
     def update_title(self):
         title = self.browser.page().title()
-        # self.setWindowTitle("% s - Geek Browser" % title)
         self.setWindowTitle ( title )
         return
 
     # method called by the home action
     def navigate_home(self):
-        # open the google
         self.browser.setUrl ( QUrl(self.args.url) )
         return
 
     # method called by the line edit when return key is pressed
     def navigate_to_url(self):
-
         if self.urlbar:
             # getting url and converting it to QUrl object
             q = QUrl ( self.urlbar.text() )
-
             # if url is scheme is blank
             if q.scheme() == "":
               # set url scheme to html
               q.setScheme("http")
-
             # set the url to the browser
             self.browser.setUrl(q)
-
         return
 
     # method for updating url
     # this method is called by the QWebEngineView object
     def update_urlbar(self, q):
-
         if self.urlbar:
           # setting text to the url bar
           self.urlbar.setText(q.toString())
-
           # setting cursor position of the url bar
           self.urlbar.setCursorPosition(0)
-
         return
 
     def closeEvent(self, event):
