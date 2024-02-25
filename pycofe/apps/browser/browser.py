@@ -1,14 +1,35 @@
+#!/usr/bin/python
 
-import argparse
+#
+# ============================================================================
+#
+#    25.02.24   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  CCP4 Browser for embedded CCP4 Cloud desktop
+#
+#  Command-line:
+#     ccp4-python browser.py [url]
+#
+#  where:
+#    url        is CCP4 Cloud URL
+#
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2024
+#
+# ============================================================================
+#
 
-from   PySide2.QtCore import *
-from   PySide2.QtWidgets import *
-from   PySide2.QtGui import *
-from   PySide2.QtWebEngineWidgets import *
-from   PySide2.QtPrintSupport import *
-
+#  python native imports
 # import os
 import sys
+import argparse
+
+from   PySide2.QtCore             import *
+from   PySide2.QtWidgets          import *
+from   PySide2.QtGui              import *
+from   PySide2.QtWebEngineWidgets import *
+from   PySide2.QtPrintSupport     import *
 
 
 # class CustomWebEnginePage(QWebEnginePage):
@@ -29,7 +50,7 @@ class CustomWebEnginePage(QWebEnginePage):
     # Store second window.
     external_window = None
     def acceptNavigationRequest(self, url,  _type, isMainFrame):
-        print(url, _type, isMainFrame)
+        print(  " >>> link clicked " + str(url) + " : " + str(_type) + " : " + str(isMainFrame) )
         if _type == QWebEnginePage.NavigationTypeLinkClicked:
             if not self.external_window:
                 self.external_window = QWebEngineView()
