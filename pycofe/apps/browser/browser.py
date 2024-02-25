@@ -60,8 +60,9 @@ class CustomWebEnginePage(QWebEnginePage):
         return super().acceptNavigationRequest(url,  _type, isMainFrame)
 
     def javaScriptConsoleMessage ( self,level,message,lineNumber,sourceID):
-        print( " %% ",sourceID,":",lineNumber, ": ",message )
-        return
+        print ( " % ",sourceID,":",lineNumber )
+        print ( " >> ",message )
+				return
 
 
 # creating main window class
