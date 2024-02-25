@@ -29,7 +29,7 @@ class CustomWebEnginePage(QWebEnginePage):
     # Store second window.
     external_window = None
     def acceptNavigationRequest(self, url,  _type, isMainFrame):
-        print(url, _type, isMainFrame)
+        print( " >>>>> ",url, _type, isMainFrame)
         if _type == QWebEnginePage.NavigationTypeLinkClicked:
             if not self.external_window:
                 self.external_window = QWebEngineView()
@@ -38,6 +38,9 @@ class CustomWebEnginePage(QWebEnginePage):
             return False
         return super().acceptNavigationRequest(url,  _type, isMainFrame)
 
+    def javaScriptConsoleMessage ( self,level,message,lineNumber,sourceID):
+        print( " %% ",sourceID,":",lineNumber, ": ",message )
+        return
 
 
 # creating main window class

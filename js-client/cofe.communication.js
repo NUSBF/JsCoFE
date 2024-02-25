@@ -509,7 +509,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
 // used when a user is logged in
 
   let request = new Request ( request_type,__login_token,data_obj );
-  let json = makeJSONString ( request );
+  let json    = makeJSONString ( request );
 
   function execute_ajax ( attemptNo )  {
 
@@ -534,6 +534,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 }
 */
 
+      let response = null;
+
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
         __server_queue.shift();  // request completed
@@ -542,7 +544,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         try {
           let rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
-            let response = jQuery.extend ( true, new Response(), rsp );
+            response = jQuery.extend ( true, new Response(), rsp );
             if (response.status==fe_retcode.ok)  {
               if (function_ok)
                 function_ok ( response.data );
@@ -586,8 +588,10 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
       // we put this function here and in the fail section because we
       // do not want to have it executed multiple times due to multiple
       // retries
-      if (function_always)
-        function_always(0,response.data);
+      if (function_always)  {
+        if (response)  function_always(0,response.data);
+                else   function_always(0,{});
+      }
 
     })
 
