@@ -208,8 +208,8 @@ class MainWindow(QMainWindow):
 argParser = argparse.ArgumentParser()
 argParser.add_argument ( "-u", "--url", 
 			              help="CCP4 Cloud's URL address; default: https://cloud.ccp4.ac.uk",
-										default="http://localhost:8085" )
-										# default="http://localhost:54862" )
+										# default="http://localhost:8085" )
+										default="http://localhost:54862" )
                     # default="https://cloud.ccp4.ac.uk" )
 args = argParser.parse_args()
 
