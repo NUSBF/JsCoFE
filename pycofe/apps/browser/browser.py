@@ -62,7 +62,7 @@ class CustomWebEnginePage(QWebEnginePage):
     def javaScriptConsoleMessage ( self,level,message,lineNumber,sourceID):
         print ( " % ",sourceID,":",lineNumber )
         print ( " >> ",message )
-				return
+        return
 
 
 # creating main window class
