@@ -90,9 +90,9 @@ TaskFetchData.prototype.isTaskAvailable = function()  {
     return TaskTemplate.prototype.isTaskAvailable.call ( this );
   else
     return ['environment-server',
-            'task software is not installed on ' + appName() + ' server',
-            '<h3>Task software is not installed on server</h3>' +
-            'Software, needed to run the task, is not installed on ' +
+            'task software is not configured on ' + appName() + ' server',
+            '<h3>Task software is not configured on server</h3>' +
+            'Software, needed to run the task, is not configured on ' +
             appName() + ' server, which you use.<br>Contact server ' +
             'maintainer for further details.'];
 
@@ -113,19 +113,16 @@ if (__template)  {
     
     let fetch_meta = {
       login       : loginData.login,
-      cloudrun_id : ''
+      cloudrun_id : '',
+      datalink_url: ''
     };
     
     let uData = user.readUserData ( loginData );
     if (uData && ('cloudrun_id' in uData))
         fetch_meta.cloudrun_id = uData.cloudrun_id;
 
-    // note that fetch_meta is a slim subset of uData at this point; do not
-    // send all uData over to NC for security reasons
-
-    // add anything else to fetch_meta if needed here, e.g.:
-    // let fe_config = conf.getFEConfig();
-    // fetch_meta.datalink_url = fe_config.datalink_url
+    let fe_config = conf.getFEConfig();
+    fetch_meta.datalink_url = fe_config.getDataLinkUrl();
     
     // write fetch_meta in jobd directory on FE; it will travel to NC along
     // with all other data
