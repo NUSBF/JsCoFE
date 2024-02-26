@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.01.24   <--  Date of Last Modification.
+#    26.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,7 +25,7 @@
 #
 
 #  python native imports
-import sys
+# import sys
 import os
 import time
 
@@ -143,13 +143,19 @@ class FetchData(basic.TaskDriver):
         # create a DataLink class instance - DL_URL, CLOUD_USER and CLOUDRUN_ID are currently hardcoded
         # but I assume they can be passed in as a task parameter or similar?
 
-        cloud_user  = self.task.submitter
-        cloudrun_id = sys.argv[4]
+        cloud_user  = None
+        cloudrun_id = None
+        with open("__fetch_meta.json","r") as f:
+            fetch_meta = json.loads ( f.read() )
+            cloud_user  = fetch_meta["login"]
+            cloudrun_id = fetch_meta["cloudrun_id"]
 
         #  this will print in "Errors" tab of the Job Dialog, just to make sure
         #  that correct values are obtained;  delete in final version
         self.stderrln ( " >>>>> cloud_user = "  + str(cloud_user) )
         self.stderrln ( " >>>>> cloudrun_id = " + str(cloudrun_id) )
+        # self.success(True)
+        # return
 
         dl = DataLink(DL_URL, CLOUD_USER, CLOUDRUN_ID)
 
