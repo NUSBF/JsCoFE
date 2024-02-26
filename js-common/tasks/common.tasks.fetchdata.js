@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.24   <--  Date of Last Modification.
+ *    26.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,17 +88,44 @@ TaskFetchData.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
-  var user = require('../../js-server/server.fe.user');
+  const path  = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const user  = require('../../js-server/server.fe.user');
+  const utils = require('../../js-server/server.utils');
+
+
+  TaskFetchData.prototype.makeInputData = function ( loginData,jobDir )  {
+  // this function prepares fetch metadata for NC
+    
+    let fetch_meta = {
+      login       : loginData.login,
+      cloudrun_id : ''
+    };
+    
+    let uData = user.readUserData ( loginData );
+    if (uData && ('cloudrun_id' in uData))
+        fetch_meta.cloudrun_id = uData.cloudrun_id;
+
+    // note that fetch_meta is a slim subset of uData at this point; do not
+    // send all uData over to NC for security reasons
+
+    // add anything else to fetch_meta if needed here, e.g.:
+    // let fe_config = conf.getFEConfig();
+    // fetch_meta.datalink_url = fe_config.datalink_url
+    
+    // write fetch_meta in jobd directory on FE; it will travel to NC along
+    // with all other data
+    utils.writeObject ( path.join(jobDir,'__fetch_meta.json'),fetch_meta );
+
+    // do not forget to call the original function
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
 
   TaskFetchData.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    let uData       = user.readUserData ( { login:this.submitter, volume:null } );
-    let cloudrun_id = '*** unidentified ***';
-    if (uData && ('cloudrun_id' in uData))
-        cloudrun_id = uData.cloudrun_id;
-    // let fe_config = conf.getFEConfig();
     return [conf.pythonName(), '-m', 'pycofe.tasks.fetchdata', jobManager, jobDir, 
-            this.id, cloudrun_id];
+            this.id];
   }
 
   // -------------------------------------------------------------------------
