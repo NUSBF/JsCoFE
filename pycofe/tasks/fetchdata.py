@@ -25,13 +25,13 @@
 #
 
 #  python native imports
-# import sys
 import os
 import time
 
 import pyrvapi
 import json
 import requests
+import urllib.parse
 
 #  application imports
 from  pycofe.tasks  import basic
@@ -43,23 +43,18 @@ from  pycofe.tasks  import basic
 # ============================================================================
 # Make FetchData Utilities driver
 
-# hardcoded to get the settings from the environment
-DL_URL = os.environ['DL_URL']
-CLOUD_USER = os.environ['CLOUD_USER']
-CLOUDRUN_ID = os.environ['CLOUDRUN_ID']
-
 # class to handle communication with the Data Link API
 class DataLink:
 
     # initialise API url, user and cloudrun_id
     def __init__(self, url, user, cloudrun_id):
-        self.url = url
+        self.url = url + '/'
         self.user = user
         self.cloudrun_id = cloudrun_id
 
     # send a request to the Data Link API
     def api(self, method, endpoint, use_auth = True):
-        url = self.url + '/api/' + endpoint
+        url = urllib.parse.urljoin(self.url, endpoint)
         auth_headers = {}
 
         if use_auth:
@@ -77,7 +72,10 @@ class DataLink:
             return False, e
 
         # parse JSON
-        obj = json.loads(res.text)
+        try:
+            obj = json.loads(res.text)
+        except:
+            return False, 'Error communicating with DataLink API'
 
         # on error return false and the error message
         if 'error' in obj:
@@ -147,17 +145,11 @@ class FetchData(basic.TaskDriver):
         cloudrun_id = None
         with open("__fetch_meta.json","r") as f:
             fetch_meta = json.loads ( f.read() )
+            datalink_url = fetch_meta["datalink_url"]
             cloud_user  = fetch_meta["login"]
             cloudrun_id = fetch_meta["cloudrun_id"]
 
-        #  this will print in "Errors" tab of the Job Dialog, just to make sure
-        #  that correct values are obtained;  delete in final version
-        self.stderrln ( " >>>>> cloud_user = "  + str(cloud_user) )
-        self.stderrln ( " >>>>> cloudrun_id = " + str(cloudrun_id) )
-        # self.success(True)
-        # return
-
-        dl = DataLink(DL_URL, CLOUD_USER, CLOUDRUN_ID)
+        dl = DataLink(datalink_url, cloud_user, cloudrun_id)
 
         # search the API for data source entries that match the PDB code
         res, search_info = dl.search(pdb_code)

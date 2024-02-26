@@ -372,6 +372,18 @@ ServerConfig.prototype.getExchangeDirectory = function()  {
   return null; // not a client server
 }
 
+ServerConfig.prototype.hasDataLink = function()  {
+  if (this.hasOwnProperty('datalink') && this.datalink.hasOwnProperty('api_url'))
+    return true;
+  return false;
+}
+
+ServerConfig.prototype.getDataLinkUrl = function()  {
+  if (this.hasDataLink())
+    return this.datalink.api_url;
+  return null;
+}
+
 // ===========================================================================
 // Config service functions
 
