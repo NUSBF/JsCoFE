@@ -23,36 +23,8 @@
 #  python native imports
 # import os
 import sys
-#!/usr/bin/python
-
-#
-# ============================================================================
-#
-#    25.02.24   <--  Date of Last Modification.
-#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ----------------------------------------------------------------------------
-#
-#  CCP4 Browser for embedded CCP4 Cloud desktop
-#
-#  Command-line:
-#     ccp4-python browser.py [url]
-#
-#  where:
-#    url        is CCP4 Cloud URL
-#
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2024
-#
-# ============================================================================
-#
-
-#  python native imports
-# import os
-import sys
 import argparse
 
-from   PySide2.QtCore             import *
-from   PySide2.QtWidgets          import *
-from   PySide2.QtGui              import *
 from   PySide2.QtCore             import *
 from   PySide2.QtWidgets          import *
 from   PySide2.QtGui              import *
@@ -85,7 +57,7 @@ class CustomWebEnginePage(QWebEnginePage):
     # Store second window.
     # external_window = None
 
-    def acceptNavigationRequest(self, url,  _type, isMainFrame):
+    def acceptNavigationRequest ( self, url, _type, isMainFrame ):
         # print( " >>>>> ",url, _type, isMainFrame, QWebEnginePage.NavigationTypeLinkClicked)
         if _type == QWebEnginePage.NavigationTypeLinkClicked:
             QDesktopServices.openUrl(url)
@@ -94,11 +66,9 @@ class CustomWebEnginePage(QWebEnginePage):
             # self.external_window.setUrl(url)
             # self.external_window.show()
             return False
-        return super().acceptNavigationRequest(url,  _type, isMainFrame)
+        return super().acceptNavigationRequest ( url, _type, isMainFrame )
 
-    def javaScriptConsoleMessage ( self,level,message,lineNumber,sourceID):
-        print ( " % ",sourceID,":",lineNumber )
-        print ( " >> ",message )
+    def javaScriptConsoleMessage ( self,level,message,lineNumber,sourceID ):
         print ( " % ",sourceID,":",lineNumber )
         print ( " >> ",message )
         return
