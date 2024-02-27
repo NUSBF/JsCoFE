@@ -60,12 +60,16 @@ function startSession ( sceneId,dev_switch )  {
     if (!rc)  {
 
       if (__local_user)  {
+        // start with CCP4 Cloud Desktop
+
+        // makeLoginPage ( sceneId );
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
         __offline_message = 'on';  // show prompt "working offline"
         login ( '**' + __local_user_id + '**','',sceneId,0 );
         //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
+
       } else  {
 
         if (dev_switch==0)  {
