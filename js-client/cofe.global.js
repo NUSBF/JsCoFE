@@ -76,6 +76,7 @@ var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
 var __jobs_safe       = false;  // true if FE supports failed jobs safe
+var __has_datalink    = false;  // true if datalink server is configured
 var __strict_dormancy = false;  // true if dormancy includes deactivation of user account
 var __treat_private   = ['none']; // list of data not to be sent out
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
