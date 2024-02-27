@@ -84,6 +84,20 @@ TaskFetchData.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['fetch','diffraction','images'] );
 }
 
+TaskFetchData.prototype.isTaskAvailable = function()  {
+
+  if (__has_datalink)
+    return TaskTemplate.prototype.isTaskAvailable.call ( this );
+  else
+    return ['environment-server',
+            'task software is not installed on ' + appName() + ' server',
+            '<h3>Task software is not installed on server</h3>' +
+            'Software, needed to run the task, is not installed on ' +
+            appName() + ' server, which you use.<br>Contact server ' +
+            'maintainer for further details.'];
+
+}
+
 
 if (__template)  {
   //  for server side

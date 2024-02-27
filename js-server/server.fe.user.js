@@ -642,6 +642,7 @@ let fe_server = conf.getFEConfig();
         rData.strict_dormancy = fe_server.dormancy_control.strict;
         rData.treat_private   = fe_server.treat_private;
         rData.jobs_safe       = (fe_server.getJobsSafePath().length>0);
+        rData.has_datalink    = false;
         rData.demo_projects   = fe_server.getDemoProjectsMount();
         rData.auth_software   = fe_server.auth_software;
         if (fe_server.hasOwnProperty('description'))
