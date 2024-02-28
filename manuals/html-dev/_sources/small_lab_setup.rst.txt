@@ -191,12 +191,14 @@ All actions, except 1 and 9, should be done in the designated CCP4 Cloud account
 
 At list one disk must be allocated for user and project data. Additional disks (``disk2`` in this example) may be added later.
 
-5. Make necessary changes in **NC** configuration files (see details in :ref:`Appendix B <appendix-b>`): :: 
+5. Make necessary changes in **NC** configuration files (see details in
+   :ref:`Appendix B <appendix-b>`): :: 
 
     vi /path/to/NC1/config.json
     vi /path/to/NC2/config.json
 
-6. Make necessary changes in **FE** configuration file (see details in :ref:`Appendix C <appendix-c>`): ::
+6. Make necessary changes in **FE** configuration file (see details in 
+   :ref:`Appendix C <appendix-c>`): ::
 
     vi /path/to/FE/config.json
 
