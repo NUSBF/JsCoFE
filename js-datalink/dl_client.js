@@ -269,15 +269,21 @@ class Client {
       if (files) {
         req.write(`--${this.getBoundary()}\r\n`);
         for (let [i, file] of files.entries()) {
-          await this.fileCallback(file, async (f) => {
-            try {
-              await this.sendFile(req, file, f);
-            } catch (err) {
-              reject(err.message);
-              return false;
-            }
-            return true;
-          });
+          try {
+            await this.fileCallback(file, async (f) => {
+              try {
+                await this.sendFile(req, file, f);
+              } catch (err) {
+                reject(err.message);
+                return false;
+              }
+              return true;
+            });
+          } catch (err) {
+            req.end();
+            reject(err.message);
+            return false;
+          }
         }
         req.write(`--${this.getBoundary()}--\r\n`);
         // clear line
@@ -296,7 +302,8 @@ class Client {
       try {
         stat = fs.statSync(file);
       } catch (err) {
-        continue;
+        throw err;
+        return false;
       }
       if (stat.isFile()) {
         size += stat.size;
@@ -329,14 +336,16 @@ class Client {
         return await callback(dir);
       }
     } catch (err) {
-      return true;
+      throw err;
+      return false;
     }
 
     let files;
     try {
       files = fs.readdirSync(dir, { withFileTypes: true });
     } catch (err) {
-      return true;
+      throw err;
+      return false;
     }
     for (const file of files) {
       if (file.isSymbolicLink() || file.isCharacterDevice()) {
@@ -374,6 +383,10 @@ class Client {
       const filename = path.relative(rel_dir, file);
 
       in_s.on('data', (data) => {
+        if (req.destroyed) {
+          in_s.destroy();
+          reject();
+        }
         this.size_uploaded += data.length;
         this.outputProgress(data.length);
         req.write(data);
@@ -560,7 +573,12 @@ class Client {
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'upload':
-        this.size_total = this.getDirectorySize(this.opts.files);
+        try {
+          this.size_total = this.getDirectorySize(this.opts.files);
+        } catch (err) {
+          res = { error: true, msg: err.message };
+          break;
+        }
         res = this.upload(this.opts.user, this.opts.source, this.opts.id);
         break;
       default:
