@@ -361,6 +361,60 @@ def startPhaser(driver):
 
     return ()
 
+def startPhaser2(driver):
+    print('Running PHASER')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+    time.sleep(1)
+    
+
+    # # 2 molecules in the ASU 
+    # inputASU = driver.find_element_by_xpath("//*[@title='Specify the number of model copies to look for in asymmetric unit']")
+    # inputASU.click()
+    # inputASU.clear()
+    # inputASU.send_keys('2')
+    # time.sleep(2)
+
+    # #Search options
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Search options')
+    # time.sleep(1)
+    # try:
+    #     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'off')
+    #     time.sleep(1)
+    #     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'on')
+    #     time.sleep(1)
+    # except:
+    #     pass
+    
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    time.sleep(3)
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
 def startPhaser1(driver):
             print('Running PHASER')
 
@@ -379,11 +433,11 @@ def startPhaser1(driver):
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
             time.sleep(1)
 
-            # inputASU = driver.find_element_by_xpath("//*[@title='Specify the number of model copies to look for in asymmetric unit']")
-            # inputASU.click()
-            # inputASU.clear()
-            # inputASU.send_keys('2')
-            # time.sleep(2)
+            inputASU = driver.find_element_by_xpath("//*[@title='Specify the number of model copies to look for in asymmetric unit']")
+            inputASU.click()
+            inputASU.clear()
+            inputASU.send_keys('2')
+            time.sleep(2)
 
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Search options')
             time.sleep(1)
@@ -392,6 +446,14 @@ def startPhaser1(driver):
                 time.sleep(1)
                 sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'on')
                 time.sleep(1)
+            except:
+                pass  
+            try:         
+                packing = driver.find_element_by_xpath("//*[@value='10']")
+                packing.click()
+                packing.clear()
+                packing.send_keys('5')
+                time.sleep(2)
             except:
                 pass            
 
@@ -542,7 +604,7 @@ def test_6ComplexModels():
 
         sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         prepareComplexModel(d.driver, 300) # 13
-        startPhaser1(d.driver)        
+        startPhaser2(d.driver)        
     except:
         d.driver.quit()
         raise
