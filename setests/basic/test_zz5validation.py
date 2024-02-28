@@ -33,6 +33,9 @@ def addSlice(driver):
     time.sleep(1)
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
     time.sleep(1)
+
+
+
    
     
     time.sleep(6)
@@ -59,7 +62,7 @@ def addSlice(driver):
     
     finished = False
 
-    textEls = driver.find_elements_by_xpath( "//*[normalize-space()='%s']" % '2 models generated')   
+    textEls = driver.find_elements_by_xpath( "//*[normalize-space()='%s']" % '1 model generated')   
     for textEl in reversed(textEls):
         if textEl.is_displayed():
             finished = True 
