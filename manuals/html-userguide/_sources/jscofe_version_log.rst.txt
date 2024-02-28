@@ -2,7 +2,11 @@
 CCP4 Cloud Version Log
 ======================
 
+**Version 1.7.019** 
 
+    *Released with CCP4 8.0.017*
+
+    
 
 **Version 1.7.018** 
 

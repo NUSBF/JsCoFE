@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,18 +46,19 @@
   
   
   
-    <title>10. CCP4 Cloud Client Setup &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>12. CCP4 Cloud Client Setup &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="11. What is CCP4 Cloud Client Software" href="clientwhatfor.html" />
-    <link rel="prev" title="8. Software testing in CCP4" href="tests.html" />
+    <link rel="next" title="13. What is CCP4 Cloud Client Software" href="clientwhatfor.html" />
+    <link rel="prev" title="10. Software testing in CCP4" href="tests.html" />
   
    
 
@@ -94,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> 10. CCP4 Cloud Client Setup </span>
+          <span class="md-header-nav__topic"> 12. CCP4 Cloud Client Setup </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -198,42 +199,56 @@
     <li class="md-nav__item">
     
     
-      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
+      <a href="pm2.html" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="mrparse_server_setup.html" class="md-nav__link">5. Linking MrParse to local databases</a>
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">6. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="dev_hello_world.html" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html" class="md-nav__link">8. Software testing in CCP4</a>
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a>
+      <a href="dev_hello_world.html" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="tests.html" class="md-nav__link">10. Software testing in CCP4</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
       
     
     </li>
@@ -241,23 +256,21 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 10. CCP4 Cloud Client Setup </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 12. CCP4 Cloud Client Setup </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">10. CCP4 Cloud Client Setup</a>
+      <a href="#" class="md-nav__link md-nav__link--active">12. CCP4 Cloud Client Setup</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">10. CCP4 Cloud Client Setup</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">12. CCP4 Cloud Client Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.1.1. Linux</a>
+        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">12.1. MS Windows</a>
         </li>
-        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#linux" class="md-nav__link">12.2. Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">12.3. Mac OSX</a>
         </li></ul>
             </nav>
         </li>
@@ -267,37 +280,37 @@
     <li class="md-nav__item">
     
     
-      <a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a>
-      <ul class="md-nav__list"> 
-    <li class="md-nav__item">
-    
-    
-      <a href="#linux" class="md-nav__link">10.1.1. Linux</a>
+      <a href="#ms-windows" class="md-nav__link">12.1. MS Windows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
+      <a href="#linux" class="md-nav__link">12.2. Linux</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#mac-osx" class="md-nav__link">12.3. Mac OSX</a>
       
     
     </li></ul>
     
-    </li></ul>
-    
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">11. What is CCP4 Cloud Client Software</a>
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">12. How to add a new Sphinx theme</a>
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -315,15 +328,13 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">10. CCP4 Cloud Client Setup</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">12. CCP4 Cloud Client Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.1.1. Linux</a>
+        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">12.1. MS Windows</a>
         </li>
-        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#linux" class="md-nav__link">12.2. Linux</a>
+        </li>
+        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">12.3. Mac OSX</a>
         </li></ul>
             </nav>
         </li>
@@ -336,25 +347,24 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="ccp4-cloud-client-setup">
-<h1 id="clientsetup--page-root"><span class="section-number">10. </span>CCP4 Cloud Client Setup<a class="headerlink" href="#clientsetup--page-root" title="Permalink to this heading">¶</a></h1>
-<hr class="docutils"/>
+  
+<h1 id="clientsetup--page-root"><span class="section-number">12. </span>CCP4 Cloud Client Setup<a class="headerlink" href="#clientsetup--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This article applies only to CCP4 Setups series 7.0; in later series,
+<p class="first admonition-title">Note</p>
+<p class="last">This article applies only to CCP4 Setups series 7.0; in later series,
 Client setup is automatic and does not require any manual intervention.</p>
 </div>
-<section id="ms-windows">
-<h2 id="ms-windows"><span class="section-number">10.1. </span>MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="ms-windows"><span class="section-number">12.1. </span>MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this headline">¶</a></h2>
 <p><strong>Installation</strong></p>
 <p>Installation should be performed in account with administrative privileges.</p>
 <ol class="arabic simple">
-<li><p>If you do not have CCP4 Software Series 7.0 installed on your machine,
+<li>If you do not have CCP4 Software Series 7.0 installed on your machine,
 download CCP4 Windows installer from <a class="reference external" href="http://www.ccp4.ac.uk/download" rel="noopener noreferrer" target="_blank">http://www.ccp4.ac.uk/download</a> and
-run it. Make sure to agree to all applicable licenses.</p></li>
-<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe" rel="noopener noreferrer" target="_blank">ccp4cloud_win64.exe</a>
+run it. Make sure to agree to all applicable licenses.</li>
+<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe" rel="noopener noreferrer" target="_blank">ccp4cloud_win64.exe</a>
 and run it. The installer has sensible defaults for the setup directory and
-various settings, you should not need to change them.</p></li>
+various settings, you should not need to change them.</li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>After successful installation, <em>local</em> (marked with an airplane sign),
@@ -364,28 +374,29 @@ CCP4 Cloud – simply double-click on the <em>remote</em> or <em>local</em> icon
 <p>The <em>configuration</em> icon starts a configuration editor that allows you
 to change web-browser, switch to different CCP4 Cloud server (e.g. the one that
 might have been installed in your lab) and apply updates.</p>
-<section id="linux">
-<h3 id="linux"><span class="section-number">10.1.1. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">¶</a></h3>
+
+
+<h2 id="linux"><span class="section-number">12.2. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
-<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup-linux.tar.gz</a>.</p></li>
-<li><p>Unpack the archive and launch ccp4-7.0-setup-linux.</p></li>
-<li><p>When CCP4 Setup Manager starts, click the “Next” button at the bottom
-of the window.</p></li>
-<li><p>In the next page, choose whether to install CCP4 Software anew or just to modify
+<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup-linux.tar.gz</a>.</li>
+<li>Unpack the archive and launch ccp4-7.0-setup-linux.</li>
+<li>When CCP4 Setup Manager starts, click the “Next” button at the bottom
+of the window.</li>
+<li>In the next page, choose whether to install CCP4 Software anew or just to modify
 the existing installation. In the latter case, navigate to the directory
 <code class="docutils literal notranslate"><span class="pre">ccp4-7.0</span></code> of the existing installation using the “Browse” button.
-Press the “Next” button.</p></li>
-<li><p>In the next page, choose CCP4 components to install. For new installation,
+Press the “Next” button.</li>
+<li>In the next page, choose CCP4 components to install. For new installation,
 the required minimum is all apart from the “Balbes database” and
 “Local fold libraries”. If you are modifying an existing installation, the
 already installed components will be shown as selected and you will have to
 select only those you want to add, including “CCP4 Cloud”. Press the “Next”
-button to continue.</p></li>
-<li><p>Next several pages present licences for CCP4 components. Read and agree to
+button to continue.</li>
+<li>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the “Next” button until you arrive at the
-directory selection page.</p></li>
-<li><p>There are three ways how the directory page may be presented.
+directory selection page.</li>
+<li>There are three ways how the directory page may be presented.
 This depends on previous choices. In case of new CCP4 setup,
 the directory page will contain an input field for installation directory.
 In case of installation of additional components, the installation directory
@@ -393,12 +404,12 @@ is shown but is not editable. If CCP4 Cloud is the only component to be added,
 it can be installed in a different location than all other CCP4 components.
 In this case an additional input field is presented for that location.
 In all three modes the input filed is presented for temporary directory,
-which is used for downloads. The temporary directory must be writable.</p></li>
-<li><p>After setting all required paths in the directory selection page, press the
+which is used for downloads. The temporary directory must be writable.</li>
+<li>After setting all required paths in the directory selection page, press the
 “Next” button and wait until all downloads finish, then press the “Next”
-button again.</p></li>
-<li><p>When you see a window with black field in it, press “Install” button.</p></li>
-<li><p>When installation finishes, press “Finish” button.</p></li>
+button again.</li>
+<li>When you see a window with black field in it, press “Install” button.</li>
+<li>When installation finishes, press “Finish” button.</li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>On successful installation, the installer should expose <em>local</em> (marked with
@@ -420,32 +431,32 @@ CCP4 Cloud can be launched from terminal with one of the following commands:</p>
 $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 </pre></div>
 </div>
-</section>
-<section id="mac-osx">
-<h3 id="mac-osx"><span class="section-number">10.1.2. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this heading">¶</a></h3>
+
+
+<h2 id="mac-osx"><span class="section-number">12.3. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this headline">¶</a></h2>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
-<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup.dmg</a>.</p></li>
-<li><p>Double-click on the file downloaded – this will open a Finder window with
-CCP4 Setup icon.</p></li>
-<li><p>Hold Ctrl and click on CCP4 Setup Manager icon. Ignore security warnings and
-proceed by clicking the “Open” button.</p></li>
-<li><p>When CCP4 Setup Manager starts, click the “Next” button at the bottom
-of the window.</p></li>
-<li><p>In the next page, choose whether to install CCP4 Software anew or just to modify
+<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup.dmg</a>.</li>
+<li>Double-click on the file downloaded – this will open a Finder window with
+CCP4 Setup icon.</li>
+<li>Hold Ctrl and click on CCP4 Setup Manager icon. Ignore security warnings and
+proceed by clicking the “Open” button.</li>
+<li>When CCP4 Setup Manager starts, click the “Next” button at the bottom
+of the window.</li>
+<li>In the next page, choose whether to install CCP4 Software anew or just to modify
 the existing installation. In the latter case, navigate to the directory
 <code class="docutils literal notranslate"><span class="pre">ccp4-7.0</span></code> of the existing installation using the “Browse” button.
-Press the “Next” button.</p></li>
-<li><p>In the next page, choose CCP4 components to install. For new installation,
+Press the “Next” button.</li>
+<li>In the next page, choose CCP4 components to install. For new installation,
 the required minimum is all apart from the “Balbes database” and
 “Local fold libraries”. If you are modifying an existing installation, the
 already installed components will be shown as selected and you will have to
 select only those you want to add, including “CCP4 Cloud”. Press the “Next”
-button to continue.</p></li>
-<li><p>Next several pages present licences for CCP4 components. Read and agree to
+button to continue.</li>
+<li>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the “Next” button until you arrive at the
-directory selection page.</p></li>
-<li><p>There are three ways how the directory page may be presented.
+directory selection page.</li>
+<li>There are three ways how the directory page may be presented.
 This depends on previous choices. In case of new CCP4 setup,
 the directory page will contain an input field for installation directory.
 In case of installation of additional components, the installation directory
@@ -453,12 +464,12 @@ is shown but is not editable. If CCP4 Cloud is the only component to be added,
 it can be installed in a different location than all other CCP4 components.
 In this case an additional input field is presented for that location.
 In all three modes the input filed is presented for temporary directory,
-which is used for downloads. The temporary directory must be writable.</p></li>
-<li><p>After setting all required paths in the directory selection page, press the
+which is used for downloads. The temporary directory must be writable.</li>
+<li>After setting all required paths in the directory selection page, press the
 “Next” button and wait until all downloads finish, then press the “Next”
-button again.</p></li>
-<li><p>When you see a window with black field in it, press “Install” button.</p></li>
-<li><p>When installation finishes, press “Finish” button.</p></li>
+button again.</li>
+<li>When you see a window with black field in it, press “Install” button.</li>
+<li>When installation finishes, press “Finish” button.</li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>On successful installation, the installer will place <em>local</em> (marked with
@@ -471,26 +482,25 @@ switch to a different CCP4 Cloud server (e.g. the one that might have been
 installed in your lab) and apply updates. Depending on the security settings
 in your machine, a few more steps may be required before you can use the icons.</p>
 <ol class="arabic simple">
-<li><p>Open Finder and navigate to <code class="docutils literal notranslate"><span class="pre">ccp4cloud</span></code> directory, found in CCP4 Cloud
+<li>Open Finder and navigate to <code class="docutils literal notranslate"><span class="pre">ccp4cloud</span></code> directory, found in CCP4 Cloud
 destination directory. The directory should contain application launchers
 <code class="docutils literal notranslate"><span class="pre">ccp4cloud-remote.app</span></code>, <code class="docutils literal notranslate"><span class="pre">ccp4cloud-desktop.app</span></code> and <code class="docutils literal notranslate"><span class="pre">ccp4cloud-config.app</span></code>.
-You can drag them to the location of your choice, for example, Desktop or Dock.</p></li>
-<li><p>Double-click on any of the icon. If the corresponding CCP4 Cloud component does
+You can drag them to the location of your choice, for example, Desktop or Dock.</li>
+<li>Double-click on any of the icon. If the corresponding CCP4 Cloud component does
 not start, it may be that the launchers are disabled by OSX security.
 In order to enable them, go to System Preferences, then to Security and Privacy,
 and then select “Anywhere” checkbox found in in section “Allow apps downloaded from”.
 After that, right-click on each CCP4 Cloud icon and choose “Open” from the context
 menu. This will start CCP4 Cloud components for first time, after which deselect
 checkbox “Anywhere” in the “Allow apps downloaded from” section of System
-Preferences.</p></li>
-<li><p>If “Allow apps downloaded from” does not have option “Anywhere”, open Terminal
+Preferences.</li>
+<li>If “Allow apps downloaded from” does not have option “Anywhere”, open Terminal
 and execute command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">spctl</span> <span class="pre">--master-disable</span></code>, then perform actions
 from p.2, and execute command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">spctl</span> <span class="pre">--master-enable</span></code> (details may read
-<a class="reference external" href="http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" rel="noopener noreferrer" target="_blank">here</a>).</p></li>
+<a class="reference external" href="http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" rel="noopener noreferrer" target="_blank">here</a>).</li>
 </ol>
-</section>
-</section>
-</section>
+
+
 
 
           </article>
@@ -502,7 +512,7 @@ from p.2, and execute command <code class="docutils literal notranslate"><span c
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="tests.html" title="8. Software testing in CCP4"
+            <a href="tests.html" title="10. Software testing in CCP4"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -511,17 +521,17 @@ from p.2, and execute command <code class="docutils literal notranslate"><span c
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">8. </span>Software testing in CCP4 </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">10. </span>Software testing in CCP4 </span>
               </div>
             </a>
           
           
-            <a href="clientwhatfor.html" title="11. What is CCP4 Cloud Client Software"
+            <a href="clientwhatfor.html" title="13. What is CCP4 Cloud Client Software"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">11. </span>What is CCP4 Cloud Client Software </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">13. </span>What is CCP4 Cloud Client Software </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -535,7 +545,7 @@ from p.2, and execute command <code class="docutils literal notranslate"><span c
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

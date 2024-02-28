@@ -13,6 +13,8 @@ Developer's Reference
    setup
    launchers
    configuration
+   pm2
+   nginx
    af_setup
    mrparse_server_setup
    interface_desc

@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,18 +46,19 @@
   
   
   
-    <title>8. Software testing in CCP4 &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>10. Software testing in CCP4 &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10. CCP4 Cloud Client Setup" href="clientsetup.html" />
-    <link rel="prev" title="7. CCP4 Cloud Task Development: Hello World!" href="dev_hello_world.html" />
+    <link rel="next" title="12. CCP4 Cloud Client Setup" href="clientsetup.html" />
+    <link rel="prev" title="9. CCP4 Cloud Task Development: Hello World!" href="dev_hello_world.html" />
   
    
 
@@ -94,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> 8. Software testing in CCP4 </span>
+          <span class="md-header-nav__topic"> 10. Software testing in CCP4 </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -198,28 +199,42 @@
     <li class="md-nav__item">
     
     
-      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
+      <a href="pm2.html" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="mrparse_server_setup.html" class="md-nav__link">5. Linking MrParse to local databases</a>
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">6. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="dev_hello_world.html" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dev_hello_world.html" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a>
       
     
     </li>
@@ -227,31 +242,31 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 8. Software testing in CCP4 </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 10. Software testing in CCP4 </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">8. Software testing in CCP4</a>
+      <a href="#" class="md-nav__link md-nav__link--active">10. Software testing in CCP4</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">8. Software testing in CCP4</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">10. Software testing in CCP4</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
         </li>
-        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">8.2. Pytest</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">10.2. Pytest</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
         </li>
-        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">11.2. Inventory</a>
         </li></ul>
             </nav>
         </li>
@@ -261,19 +276,19 @@
     <li class="md-nav__item">
     
     
-      <a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+      <a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#pytest" class="md-nav__link">8.2. Pytest</a>
+      <a href="#pytest" class="md-nav__link">10.2. Pytest</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+      <a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
       
     
     </li></ul>
@@ -284,19 +299,19 @@
     <li class="md-nav__item">
     
     
-      <a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a>
+      <a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+      <a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+      <a href="#inventory" class="md-nav__link">11.2. Inventory</a>
       
     
     </li></ul>
@@ -305,21 +320,21 @@
     <li class="md-nav__item">
     
     
-      <a href="clientsetup.html" class="md-nav__link">10. CCP4 Cloud Client Setup</a>
+      <a href="clientsetup.html" class="md-nav__link">12. CCP4 Cloud Client Setup</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">11. What is CCP4 Cloud Client Software</a>
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">12. How to add a new Sphinx theme</a>
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -337,23 +352,23 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">8. Software testing in CCP4</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">10. Software testing in CCP4</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
         </li>
-        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">8.2. Pytest</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">10.2. Pytest</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
         </li>
-        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">11.2. Inventory</a>
         </li></ul>
             </nav>
         </li>
@@ -366,32 +381,30 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="software-testing-in-ccp4">
-<h1 id="tests--page-root"><span class="section-number">8. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="tests--page-root"><span class="section-number">10. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this headline">¶</a></h1>
 <p>CCP4 command line tests contains <strong>unix scripts</strong> and <strong>pytest</strong> tests.</p>
-<section id="unix-scripts">
-<h2 id="unix-scripts"><span class="section-number">8.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="unix-scripts"><span class="section-number">10.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><dl class="simple">
-<dt>$CEXAM/unix/runnable:</dt><dd><p>unix scripts using the rnase/toxd data which should actually run</p>
-</dd>
+<li><dl class="first docutils">
+<dt>$CEXAM/unix/runnable:</dt><dd>unix scripts using the rnase/toxd data which should actually run</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>$CEXAM/unix/non-runnable:</dt><dd><p>unix scripts without usable input data, e.g. for image processing and data reduction</p>
-</dd>
+<li><dl class="first docutils">
+<dt>$CEXAM/unix/non-runnable:</dt><dd>unix scripts without usable input data, e.g. for image processing and data reduction</dd>
 </dl>
 </li>
 </ul>
-</section>
-<section id="pytest">
-<h2 id="pytest"><span class="section-number">8.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="pytest"><span class="section-number">10.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this headline">¶</a></h2>
 <p>Pytests are designed using the Arrange-Act-Assert model:</p>
 <ol class="arabic simple">
-<li><p><strong>Arrange</strong>, or set up, the conditions for the test</p></li>
-<li><p><strong>Act</strong> by calling function or method</p></li>
-<li><p><strong>Assert</strong> that end condition is true</p></li>
-<li><p><strong>Cleanup</strong> after itself, so other tests aren’t being accidentally influenced by it</p></li>
+<li><strong>Arrange</strong>, or set up, the conditions for the test</li>
+<li><strong>Act</strong> by calling function or method</li>
+<li><strong>Assert</strong> that end condition is true</li>
+<li><strong>Cleanup</strong> after itself, so other tests aren’t being accidentally influenced by it</li>
 </ol>
 <p>All changes and new tests should be committed to <code class="docutils literal notranslate"><span class="pre">http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/examples/trunk</span></code></p>
 <p>The transition from “trunk” to “series” is performed by Charles Ballard and must be requested.</p>
@@ -405,52 +418,51 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 </div>
 <p>Can be run:</p>
 <ul class="simple">
-<li><dl class="simple">
-<dt>Locally</dt><dd><p><strong>CCP4 console</strong> =&gt; <code class="docutils literal notranslate"><span class="pre">ccp4-python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">./path/to/tests</span></code></p>
-</dd>
+<li><dl class="first docutils">
+<dt>Locally</dt><dd><strong>CCP4 console</strong> =&gt; <code class="docutils literal notranslate"><span class="pre">ccp4-python</span> <span class="pre">-m</span> <span class="pre">pytest</span> <span class="pre">./path/to/tests</span></code></dd>
 </dl>
 </li>
-<li><p>Nightly on <a class="reference external" href="https://anvil.softeng-support.ac.uk/jenkins/job/CCP4/" rel="noopener noreferrer" target="_blank">Jenkins</a></p></li>
+<li>Nightly on <a class="reference external" href="https://anvil.softeng-support.ac.uk/jenkins/job/CCP4/" rel="noopener noreferrer" target="_blank">Jenkins</a></li>
 </ul>
 <p>Groovy scripts for Jenkins can be found <a class="reference external" href="https://gitlab.stfc.ac.uk/ccb63/ccp4-groovy/-/tree/master/vars" rel="noopener noreferrer" target="_blank">here</a></p>
 <p><strong>testCCP4.groovy</strong> runs nightly, <strong>testCCP4Exhaustive.groovy</strong> runs weekly (longer)</p>
 <div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Groovy scripts have Mac/Linux and Windows parts, all changes should be duplicated</p>
+<p class="first admonition-title">Attention</p>
+<p class="last">Groovy scripts have Mac/Linux and Windows parts, all changes should be duplicated</p>
 </div>
 <p>In order to get emails after tests run all emails should be listed in <strong>emailNotification.groovy</strong></p>
-<section id="test-new-build-manually">
-<h3 id="test-new-build-manually"><span class="section-number">8.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this heading">¶</a></h3>
+
+<h3 id="test-new-build-manually"><span class="section-number">10.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
-<li><p>Download build from Jenkins =&gt; build (for example, Series 8.0 python3 pyside2 on windows (msvc/intel) =&gt; Build # or name =&gt; Build Artifacts</p></li>
-<li><p>Run <strong>postinstall.bat</strong> (Windows) or <strong>BINARY.setup</strong> (Mac/Linux)</p></li>
-<li><p>Open build console</p></li>
-<li><p>Run <strong>ccp4.setup.bat</strong> (Windows) or <strong>$CCP4/bin/ccp4.setup-sh</strong> (Mac/Linux)</p></li>
-<li><p>ccp4-python -m pytest ./path/to/tests</p></li>
+<li>Download build from Jenkins =&gt; build (for example, Series 8.0 python3 pyside2 on windows (msvc/intel) =&gt; Build # or name =&gt; Build Artifacts</li>
+<li>Run <strong>postinstall.bat</strong> (Windows) or <strong>BINARY.setup</strong> (Mac/Linux)</li>
+<li>Open build console</li>
+<li>Run <strong>ccp4.setup.bat</strong> (Windows) or <strong>$CCP4/bin/ccp4.setup-sh</strong> (Mac/Linux)</li>
+<li>ccp4-python -m pytest ./path/to/tests</li>
 </ol>
 <div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>Do NOT forget to install SHELX and add the data folder for testsys</p>
+<p class="first admonition-title">Attention</p>
+<p class="last">Do NOT forget to install SHELX and add the data folder for testsys</p>
 </div>
-</section>
-</section>
-</section>
-<section id="ccp4-cloud-tests">
-<h1 id="ccp4-cloud-tests"><span class="section-number">9. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this heading">¶</a></h1>
+
+
+
+
+<h1 id="ccp4-cloud-tests"><span class="section-number">11. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this headline">¶</a></h1>
 <p>Performed using <a class="reference external" href="https://www.selenium.dev/documentation/" rel="noopener noreferrer" target="_blank">Selenium WebDriver</a></p>
 <p>Tests can be found in <code class="docutils literal notranslate"><span class="pre">jsCoFE/setests</span></code></p>
 <blockquote>
 <div><p><strong>Before running the tests</strong></p>
 <blockquote>
 <div><ul>
-<li><p>Tests require Selenium and PyTest installed. Please do</p>
+<li><p class="first">Tests require Selenium and PyTest installed. Please do</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">selenium</span>
 <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pytest</span>
 </pre></div>
 </div>
 </li>
-<li><p>If you would like to generate local HTML reports, please also install pytest-html:</p>
+<li><p class="first">If you would like to generate local HTML reports, please also install pytest-html:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">pytest</span><span class="o">-</span><span class="n">html</span>
 </pre></div>
 </div>
@@ -461,70 +473,70 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 </div></blockquote>
 <p><strong>Running the tests on a local computer</strong></p>
 <ul>
-<li><p>Typical local run via Firefox and developer’s CCP4Cloud (DEV server) is easy and will run all available tests</p>
+<li><p class="first">Typical local run via Firefox and developer’s CCP4Cloud (DEV server) is easy and will run all available tests</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">./</span><span class="n">setests</span><span class="o">/.</span>
 </pre></div>
 </div>
 </li>
 </ul>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>if change the current directory deeply into the tests directory like ./setests/basic/, tests may fail as Python will not find some imports; always run tests from at least ./setests/</p>
+<p class="first admonition-title">Note</p>
+<p class="last">if change the current directory deeply into the tests directory like ./setests/basic/, tests may fail as Python will not find some imports; always run tests from at least ./setests/</p>
 </div>
 <ul>
-<li><p>For verbose output during a run (highly recommended, so you know what test script is doing)</p>
+<li><p class="first">For verbose output during a run (highly recommended, so you know what test script is doing)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">s</span> <span class="o">.</span>
 </pre></div>
 </div>
 </li>
-<li><p>To generate HTML reports, please do</p>
+<li><p class="first">To generate HTML reports, please do</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span> <span class="o">--</span><span class="n">html</span> <span class="n">report</span><span class="o">.</span><span class="n">html</span>
 </pre></div>
 </div>
 </li>
-<li><p>To generate JUNIT XML report (Jenkins integration, for instance)</p>
+<li><p class="first">To generate JUNIT XML report (Jenkins integration, for instance)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span>  <span class="o">--</span><span class="n">junit</span><span class="o">-</span><span class="n">xml</span> <span class="n">report</span><span class="o">.</span><span class="n">xml</span>
 </pre></div>
 </div>
 </li>
-<li><p>To specify particular test to run</p>
+<li><p class="first">To specify particular test to run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">./</span><span class="n">basic</span><span class="o">/</span><span class="n">test_molrep</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 </li>
-<li><p>To specify a browser:</p>
+<li><p class="first">To specify a browser:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span> <span class="o">--</span><span class="n">browser</span> <span class="n">Chrome</span>  <span class="c1"># Chrome or Firefox, Firefox is default</span>
 </pre></div>
 </div>
 </li>
-<li><p>To test other CCP4Cloud installations</p>
+<li><p class="first">To test other CCP4Cloud installations</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span> <span class="o">--</span><span class="n">cloud</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cloud</span><span class="o">.</span><span class="n">ccp4</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span>  <span class="c1"># default is http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/</span>
 </pre></div>
 </div>
 </li>
-<li><p>You can also provide user name and password to login into CCP4Cloud</p>
+<li><p class="first">You can also provide user name and password to login into CCP4Cloud</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span> <span class="o">--</span><span class="n">cloud</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cloud</span><span class="o">.</span><span class="n">ccp4</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span> <span class="o">--</span><span class="n">login</span> <span class="n">abcd</span> <span class="o">--</span><span class="n">password</span> <span class="n">efgh</span>  <span class="c1"># default is setests</span>
 </pre></div>
 </div>
 </li>
-<li><p>To test CCP4Cloud for developers running locally, you may use following</p>
+<li><p class="first">To test CCP4Cloud for developers running locally, you may use following</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">.</span> <span class="o">--</span><span class="n">cloud</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8085</span> <span class="o">--</span><span class="n">login</span> <span class="n">devel</span> <span class="o">--</span><span class="n">password</span> <span class="n">devel</span>
 </pre></div>
 </div>
 </li>
-<li><p>To test CCP4Cloud Desktop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and <strong>look for correct port number instead of 12345</strong>. Only basic tests will be run from the ./basic/directory</p>
+<li><p class="first">To test CCP4Cloud Desktop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and <strong>look for correct port number instead of 12345</strong>. Only basic tests will be run from the ./basic/directory</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pytest</span> <span class="o">./</span><span class="n">basic</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">s</span> <span class="o">--</span><span class="n">cloud</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">12345</span> <span class="o">--</span><span class="n">nologin</span> <span class="kc">True</span>
 </pre></div>
 </div>
 </li>
-<li><p>You can use any combination of all above mentioned parameters.</p></li>
+<li><p class="first">You can use any combination of all above mentioned parameters.</p>
+</li>
 </ul>
 <p>These tests will start the browser (controlled by Selenium) on your computer</p>
 <p><strong>browser shall be on screen all the time or otherwise tests may fail! Do not change to other Desktop or full-screen programs on Mac or tests will fail.</strong></p>
 <ol class="arabic simple" start="2">
-<li><p><strong>Running the tests in remote mode.</strong></p>
-<ul class="simple">
-<li><p>It is possible to run the browser on a remote machine (Linux VM provided by STFC Cloud) running Selenium Server Hub.</p></li>
+<li><strong>Running the tests in remote mode.</strong><ul>
+<li>It is possible to run the browser on a remote machine (Linux VM provided by STFC Cloud) running Selenium Server Hub.</li>
 </ul>
 </li>
 </ol>
@@ -535,8 +547,8 @@ it will start on STFC Cloud VM). This Cloud machine is accessible only from STFC
 <span class="o">-</span> <span class="n">All</span> <span class="n">parameters</span> <span class="kn">from</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="n">will</span> <span class="n">also</span> <span class="n">work</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">remote</span> <span class="n">mode</span><span class="p">,</span> <span class="n">just</span> <span class="n">add</span> <span class="n">them</span> <span class="k">as</span> <span class="n">appropriate</span><span class="o">.</span>
 </pre></div>
 </div>
-<section id="data-for-cloud-tests">
-<h2 id="data-for-cloud-tests"><span class="section-number">9.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="data-for-cloud-tests"><span class="section-number">11.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this headline">¶</a></h2>
 <p>#. Directory <code class="docutils literal notranslate"><span class="pre">test_data</span></code> shall be copied into <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> of the current user, so Cloud tests would be able
 to upload data to the Cloud from that location (required for tests of imports and WorkFlows).
 Python code addresses this as <code class="docutils literal notranslate"><span class="pre">~/test_data</span></code> or <code class="docutils literal notranslate"><span class="pre">%userprofile%\\test_data</span></code> on Windows.
@@ -549,13 +561,13 @@ Python code addresses this as <code class="docutils literal notranslate"><span c
 <p>#. Contents of the directory <code class="docutils literal notranslate"><span class="pre">test_data_cloud</span></code> shall be in the <code class="docutils literal notranslate"><span class="pre">ccp4@ccp4serv9.rc-harwell.ac.uk:/data1/opt/cloud_storage/test-data/</span></code>
 This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tests do ‘Cloud import’ from these data.</p>
 <p>Cloud tests are run on setest machine on <a class="reference external" href="https://openstack.stfc.ac.uk/auth/login/" rel="noopener noreferrer" target="_blank">https://openstack.stfc.ac.uk/auth/login/</a></p>
-</section>
-<section id="inventory">
-<h2 id="inventory"><span class="section-number">9.2. </span>Inventory<a class="headerlink" href="#inventory" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="inventory"><span class="section-number">11.2. </span>Inventory<a class="headerlink" href="#inventory" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="http://devtools.fg.oisin.rc-harwell.ac.uk/tests/" rel="noopener noreferrer" target="_blank">CCP4 tests</a></p>
 <p><a class="reference external" href="http://devtools.fg.oisin.rc-harwell.ac.uk/tests/CCP4%20tests%2051ebb87582b44485825c2d5a19e24fd3/Failing%20tests%209284330721fb4b8d9c61fa5f265dd301.html" rel="noopener noreferrer" target="_blank">Failing tests</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -567,7 +579,7 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="dev_hello_world.html" title="7. CCP4 Cloud Task Development: Hello World!"
+            <a href="dev_hello_world.html" title="9. CCP4 Cloud Task Development: Hello World!"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -576,17 +588,17 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">7. </span>CCP4 Cloud Task Development: Hello World! </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">9. </span>CCP4 Cloud Task Development: Hello World! </span>
               </div>
             </a>
           
           
-            <a href="clientsetup.html" title="10. CCP4 Cloud Client Setup"
+            <a href="clientsetup.html" title="12. CCP4 Cloud Client Setup"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10. </span>CCP4 Cloud Client Setup </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">12. </span>CCP4 Cloud Client Setup </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -600,7 +612,7 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
