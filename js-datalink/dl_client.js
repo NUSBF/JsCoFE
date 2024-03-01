@@ -436,7 +436,7 @@ class Client {
     console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update or remove');
+    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update, remove, upload');
     console.log('\nOptions:');
 
     let out;
