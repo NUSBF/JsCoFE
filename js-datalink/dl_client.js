@@ -102,6 +102,10 @@ class Client {
       field: {
         form: 'key=value',
         help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
+      },
+      no_progress: {
+        type: 'boolean',
+        help: 'Don\'t output progress during upload'
       }
     });
 
@@ -286,8 +290,6 @@ class Client {
           }
         }
         req.write(`--${this.getBoundary()}--\r\n`);
-        // clear line
-        process.stdout.write('\x1b[K');
       }
 
       req.end();
@@ -384,11 +386,13 @@ class Client {
 
       in_s.on('data', (data) => {
         if (req.destroyed) {
-          in_s.destroy();
+          in_s.close();
           reject();
         }
-        this.size_uploaded += data.length;
-        this.outputProgress(data.length);
+        if (! this.opts.no_progress) {
+          this.size_uploaded += data.length;
+          this.outputProgress(file);
+        }
         req.write(data);
       });
 
@@ -410,9 +414,20 @@ class Client {
     });
   }
 
-  outputProgress() {
+  outputProgress(file) {
     let percent = (this.size_uploaded / this.size_total) * 100;
-    process.stdout.write(`Uploading ... (${percent.toFixed(2)}%)\r`);
+    this.outputBlankLine();
+    let line = `Uploading (${percent.toFixed(2)}%) - `;
+    let width = process.stdout.columns - line.length;
+    if (width < file.length) {
+      file = '... ' + file.slice(-width + 4);
+    }
+    line += file + '\r';
+    process.stdout.write(line);
+  }
+
+  outputBlankLine() {
+    process.stdout.write('\x1b[K');
   }
 
   showHelp() {
@@ -423,9 +438,15 @@ class Client {
     console.log('Arguments:');
     console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update or remove');
     console.log('\nOptions:');
- 
+
+    let out;
     for (const [n, o] of Object.entries(this.arg_info)) {
-      let out = `  --${n} <${o.form}>`.padEnd(pad) + o.help;
+      out = `  --${n}`;
+      if (o.type !== 'boolean') {
+        out += ` <${o.form}>`;
+      }
+      out = out.padEnd(pad) + o.help;
+
       // if we have a default for the argument
       if (o.def) {
         out += ` (default: ${o.def})`;
@@ -470,7 +491,7 @@ class Client {
       // if it is an option starting with --
       if (key.startsWith('--')) {
 
-        // extract the option and value
+        // extract the option name
         let option = key.substring(2);
 
         // if option is blank (--) the following arguments are files/directories
@@ -483,7 +504,13 @@ class Client {
 
         // validate the option against arg_info, and set it in our options object
         if (this.arg_info[option]) {
-          this.opts[option] = params.shift();
+          // if the argument type is set to boolean, don't expect a value
+          if (this.arg_info[option].type === 'boolean') {
+            this.opts[option] = true;
+          } else {
+            // get the value
+            this.opts[option] = params.shift();
+          }
         } else {
           return { error: true, msg: `error: unknown option '${key}'`};
         }
@@ -588,6 +615,10 @@ class Client {
   }
 
   displayResult(res) {
+    if (! this.opts.no_progress) {
+      this.outputBlankLine();
+    }
+
     if (! res) {
       return;
     }
