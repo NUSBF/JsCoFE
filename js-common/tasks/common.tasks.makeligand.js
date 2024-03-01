@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.24   <--  Date of Last Modification.
+ *    01.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -212,6 +212,8 @@ TaskMakeLigand.prototype.desc_title     = function()  {
   return 'generate crystallographic restraints for fitting ligand in the density and refinement';
 }
 
+// TaskMakeLigand.prototype.cleanJobDir = function ( jobDir )  {}
+
 TaskMakeLigand.prototype.currentVersion = function()  {
 let version = 2;
   if (__template)
@@ -259,7 +261,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskMakeLigand.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.makeligand', jobManager, jobDir, this.id];
