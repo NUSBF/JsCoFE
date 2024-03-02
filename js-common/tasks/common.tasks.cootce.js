@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    02.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Coordinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
  *
  *  =================================================================
  *
@@ -106,7 +106,7 @@ TaskCootCE.prototype.currentVersion = function()  {
 
 TaskCootCE.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['coot','model', 'building', 'manual-mb', 'mb', 'coordinate', 'editor'] );
+    return this.__check_keywords ( keywords,['coot','model', 'coordinate', 'editor'] );
   }
 
 if (__template)  {

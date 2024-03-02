@@ -6,14 +6,14 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.webcoot.js
+ *  **** Module  :  js-common/tasks/common.tasks.webcootce.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Web-Coot Model Building Task Class
+ *  **** Content :  Web-Coot Coordinate Editor Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2023-2024
+ *  (C) E. Krissinel, A. Lebedev 2024
  *
  *  =================================================================
  *
@@ -24,111 +24,69 @@
 var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.webcoot' );
 
 // ===========================================================================
 
-function TaskWebCoot()  {
+function TaskWebCootCE()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  __template.TaskWebCoot.call ( this );
+             else  TaskWebCoot.call ( this );
 
-  this._type     = 'TaskWebCoot';
-  this.name      = 'webcoot (interactive model building)';
-  this.setOName ( 'webcoot' );  // default output file name template
-  this.title     = 'Model Building with WebCoot/Moorhen';
+  this._type     = 'TaskWebCootCE';
+  this.name      = 'webcoot (edit coordinates)';
+  this.setOName ( 'webcootce' );  // default output file name template
+  this.title     = 'Edit Coordinates with WebCoot/Moorhen';
   this.nc_type   = 'browser-secure';   // job runs in-browser
   this.fasttrack = true;  // forces immediate execution
 
   this.input_dtypes = [{        // input data types
-      data_type   : {'DataRevision' :['!phases']}, // data type(s) and subtype(s)
-      label       : 'Structure revision', // label for input dialog
+      data_type   : {'DataStructure':['xyz'],
+                     'DataXYZ'      :[],
+                     'DataEnsemble' :[],
+                     'DataModel'    :[]
+                    }, // data type(s) and subtype(s)
+      label       : 'Structure to edit', // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'coot-mb',  // lay custom fields below the dropdown
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataStructure':[],
-                     'DataEnsemble' :[],
-                     'DataModel'    :[],
-                     'DataXYZ'      :[]
-                    },  // data type(s) and subtype(s)
-      label       : 'Additional structures', // label for input dialog
-      inputId     : 'aux_struct', // input Id for referencing input fields
-      version     : 0,            // minimum data version allowed
-      min         : 0,            // minimum acceptable number of data instances
-      max         : 20            // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      inputId     : 'ligand',      // input Id for referencing input fields
-      min         : 0,             // minimum acceptable number of data instances
-      max         : 1              // maximum acceptable number of data instances
-    /*
-    },{    // input data for making new ligand names
-      data_type   : {'DataLigand':[]}, // this item is only for having list of
-                                       // all ligands imported or generated
-                                       // (not only those in revision)
-      label       : '',        // no label for void data entry
-      inputId     : 'void1',   // prefix 'void' will hide entry in import dialog
-      version     : 0,         // minimum data version allowed
-      force       : 1000,      // "show" all revisions available
-      min         : 0,         // minimum acceptable number of data instances
-      max         : 1000       // maximum acceptable number of data instances
-    */
     }
   ];
 
-  this.parameters = { // input parameters
-    NOTE : {  type     : 'label',
-              label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
-                         '<h2>This Task is Experimental</h2>' +
-                         'WebCoot/Moorhen is developing fast aiming to deliver ' +
-                         'Coot functionality in-browser; many Coot functions are ' +
-                         'currently missing.<p>Please try it now and check ' +
-                         'regularly in future!<br>Any feedback is highly appreciated.' +
-                         '</i></center>',
-              lwidth   : 500,
-              position : [0,1,1,4]
-           }
-  };
-
-
 }
 
-
 if (__template)
-      TaskWebCoot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWebCoot.prototype = Object.create ( TaskTemplate.prototype );
-TaskWebCoot.prototype.constructor = TaskWebCoot;
+      TaskWebCootCE.prototype = Object.create ( __template.TaskWebCoot.prototype );
+else  TaskWebCootCE.prototype = Object.create ( TaskWebCoot.prototype );
+TaskWebCootCE.prototype.constructor = TaskWebCootCE;
 
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskWebCoot.prototype.icon           = function()  { return 'task_webcoot'; }
-TaskWebCoot.prototype.clipboard_name = function()  { return '"WebCoot"';    }
+TaskWebCootCE.prototype.icon           = function()  { return 'task_webcootce'; }
+TaskWebCootCE.prototype.clipboard_name = function()  { return '"WebCootCE"';    }
 
-TaskWebCoot.prototype.desc_title     = function()  {
+TaskWebCootCE.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return '<b>!!EXPERIMENTAL!!</b> fast-developing version of Coot for browsers';
+  return '<b>!!EXPERIMENTAL!!</b> based on fast-developing version of Coot for browsers';
 }
 
-TaskWebCoot.prototype.taskDescription = function()  {
+TaskWebCootCE.prototype.taskDescription = function()  {
 // this appears under task title in the Task Dialog
   return 'Fit atoms and new ligands in electron density, validate and explore';
 }
 
-TaskWebCoot.prototype.cloneItems = function() { return ['backups']; }
+TaskWebCootCE.prototype.cloneItems = function() { return ['backups']; }
 
 //TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskWebCoot.prototype.currentVersion = function()  {
+TaskWebCootCE.prototype.currentVersion = function()  {
 let version = 0;
   if (__template)
-        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
-  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+        return  version + __template.TaskWebCoot.prototype.currentVersion.call ( this );
+  else  return  version + TaskWebCoot.prototype.currentVersion.call ( this );
 }
 
 // function CootMBHotButton()  {
@@ -138,10 +96,10 @@ let version = 0;
 //   };
 // }
 
-TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
+TaskWebCootCE.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,[
-    'webcoot','moorhen','coot','model','building','manual-mb','mb','coordinate','editor'
+    'webcoot','moorhen','coot','model','coordinate','editor'
   ]);
 }
 
@@ -149,10 +107,12 @@ if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskWebCoot.prototype.hotButtons = function()  {
-    return [RefmacHotButton()];
+  TaskWebCootCE.prototype.hotButtons = function()  {
+    return [];
+    // return [RefmacHotButton()];
   }
 
+  /*
   TaskWebCoot.prototype.launchWebApp = function ( callback_func,
                                                   mode='model-building',
                                                   update_interval=3000 )  {
@@ -376,10 +336,11 @@ if (!__template)  {
       });
 
   }
+  */
 
 } else  {
   //  for server side
-
+  /*
   const path  = require('path');
   const conf  = require('../../js-server/server.configuration');
   const prj   = require('../../js-server/server.fe.projects');
@@ -432,7 +393,8 @@ if (!__template)  {
   }
 
   // -------------------------------------------------------------------------
+  */
 
-  module.exports.TaskWebCoot = TaskWebCoot;
+  module.exports.TaskWebCootCE = TaskWebCootCE;
 
 }
