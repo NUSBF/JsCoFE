@@ -86,6 +86,7 @@ class DType(dtype_xyz.DType):
         return self.getFilePath ( dirPath,dtype_template.file_key["seq"] )
 
     def register ( self,modelFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
+        # function for re-registering with changed model coordinates
         self.jobId = job_id
         self.files = vars(self.files)  # convert to dictionary
         fname = self.lessDataId ( os.path.basename(modelFilePath) )
