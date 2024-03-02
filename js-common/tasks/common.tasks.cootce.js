@@ -37,7 +37,6 @@ function TaskCootCE()  {
   this.name    = 'coot (edit coordinates)';
   this.setOName ( 'coot-ce' );  // default output file name template
   this.title   = 'Edit Coordinates with Coot';
-  //this.helpURL = './html/jscofe_task_coot_ce.html';
   this.nc_type = 'client';    // job may be run only on client NC
 
   this.input_dtypes = [{      // input data types

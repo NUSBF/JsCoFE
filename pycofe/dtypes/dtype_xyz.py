@@ -403,7 +403,7 @@ def setXYZMeta ( data_class,xyz_meta ):
 def register ( mmcifFilePath,pdbFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     filePath = pdbFilePath if pdbFilePath else mmcifFilePath
     if filePath and os.path.isfile(filePath):
-        xyz   = DType   ( job_id )
+        xyz   = DType  ( job_id )
         fname = os.path.basename(filePath)
         xyz.setXYZFile ( fname )
         xyz.makeDName  ( dataSerialNo )
