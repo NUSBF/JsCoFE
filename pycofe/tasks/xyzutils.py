@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.02.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -90,7 +90,7 @@ class XyzUtils(basic.TaskDriver):
                 seq = self.makeClass ( ixyz.sequence )
             oxyz = self.registerModel ( seq,pdbout,checkout=True )
             if oxyz:
-                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates:&nbsp;",oxyz )
                 results = True
             else:
                 # close execution logs and quit
@@ -104,7 +104,7 @@ class XyzUtils(basic.TaskDriver):
                 seq = self.makeClass ( ixyz.sequence )
             oxyz = self.registerEnsemble ( seq,pdbout,checkout=True )
             if oxyz:
-                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates",oxyz )
+                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates:&nbsp;",oxyz )
                 results = True
             else:
                 # close execution logs and quit

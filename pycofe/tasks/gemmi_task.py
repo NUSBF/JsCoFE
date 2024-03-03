@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -254,7 +254,7 @@ class Gemmi(basic.TaskDriver):
                     #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     #    xyz.dname )
                     self.putModelWidget ( self.getWidgetId("model_btn"),
-                                          "Coordinates",model )
+                                          "Coordinates:&nbsp;",model )
                     have_results = True
                 else:
                     # close execution logs and quit

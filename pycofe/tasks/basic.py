@@ -2181,7 +2181,6 @@ class TaskDriver(object):
                               self.outputDir() )
             model.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                   self.file_stderr,None )
-
         return model
 
     def registerEnsemble ( self,sequence,ensemblePath,checkout=True ):
@@ -2221,11 +2220,11 @@ class TaskDriver(object):
         if model.meta:
             msg += "<br><b>Estimated</b> "
             if "eLLG" in model.meta and model.meta["eLLG"]:
-                msg += "<b>eLLG :</b> " + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                msg += "<b>eLLG :</b> "  + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["seqId"]:
                 msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "%&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["rmsd"]:
-                msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&Aring;"
+                msg += "<b>RMSD :</b> "  + str(model.meta["rmsd"]) + "&Aring;"
             if "h_score" in model.meta and model.meta["h_score"]:
                 msg += "<b>H-score :</b> " + str(model.meta["h_score"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
 

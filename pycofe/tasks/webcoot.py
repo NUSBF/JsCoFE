@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.03.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -139,8 +139,6 @@ class WebCoot(basic.TaskDriver):
             self.putTitle   ( "No Output Structure Produced" )
             self.putMessage ( "<i style=\"color:maroon\">" +\
                               "Have you saved your results in CCP4 Cloud?</i>" )
-        else:
-            self.putTitle ( "Output Results" )
 
         refkeys = None
         try:
@@ -171,11 +169,12 @@ class WebCoot(basic.TaskDriver):
 
                 if iobject._type in ["DataRevision","DataStructure"]:
 
+                    self.putTitle ( "Output Results" )
+
                     self.putMessage ( "<h3>Output Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
                             " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
                     
-
                     ostruct = self.registerStructure ( 
                                     mmcif_fname,
                                     pdb_fname,
@@ -220,14 +219,50 @@ class WebCoot(basic.TaskDriver):
                     else:
                         self.stderrln ( "\n ***** output structure was not formed" )
 
-                # elif iobject._type=="DataEnsemble":
+                elif iobject._type=="DataEnsemble":
+                    self.putMessage ( "<b>Edited MR ensemble:</b> " + iobject.dname )
+                    self.putTitle   ( "Output MR Ensemble" )
+                    if iobject.sequence:
+                        iobject.sequence = self.makeClass ( iobject.sequence )
+                    ensemble = self.registerEnsemble ( iobject.sequence,pdb_fname,checkout=True )
+                    if ensemble:
+                        self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
+                                                 "Coordinates:&nbsp;",ensemble )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: MR ensemble could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: MR ensemble could not be formed" )
                         
                 elif iobject._type=="DataModel":
-                    iobject.register ( pdb_fname,self.dataSerialNo,self.job_id,
-                                       self.outputDataBox,self.outputDir() )
-                    self.putModelWidget ( self.getWidgetId("model_btn"),
-                                          "Coordinates",iobject )
-                # elif iobject._type=="DataXYZ":
+                    self.putMessage ( "<b>Edited MR model:</b> " + iobject.dname )
+                    self.putTitle   ( "Output MR Model" )
+                    if iobject.sequence:
+                        iobject.sequence = self.makeClass ( iobject.sequence )
+                    model = self.registerModel ( iobject.sequence,pdb_fname,checkout=True )
+                    if model:
+                        self.putModelWidget ( self.getWidgetId("model_btn"),
+                                              "Coordinates:&nbsp;",model )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: MR model could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: MR model could not be formed" )
+
+                elif iobject._type=="DataXYZ":
+                    self.putMessage ( "<b>Edited structure model:</b> " + iobject.dname )
+                    self.putTitle   ( "Output Structure Model" )
+                    xyz = self.registerXYZ ( mmcif_fname,pdb_fname,checkout=True )
+                    if xyz:
+                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                            "Coordinates:&nbsp;",xyz )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: structure model could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: structure model could not be formed" )
+
+                else:
+                    self.putMessage ( "<b>Unsupported data type (this is a bug)</b> " )
+                    self.stderrln   ( " ***** Error: unsupported data type " + iobject._type )
+                    self.putTitle   ( "No Output Produced" )
 
             else:
                 self.stderrln ( "\n ***** " + mmcif_f + " output file not found" )

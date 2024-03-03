@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    03.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -135,7 +135,7 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
                 self.add_seqid_remark ( model,[sidm] )
 
                 self.putModelWidget ( self.getWidgetId("model_btn"),
-                                      "Coordinates",model )
+                                      "Coordinates:&nbsp;",model )
 
             else:
                 self.putMessage ( "<h3>*** Failed to form Model object</h3>" )
