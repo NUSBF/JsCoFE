@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    04.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -203,7 +203,8 @@ class DimpleMR(basic.TaskDriver):
 
             if os.path.exists("reindexed.mtz"):
                 spg_change = self.checkSpaceGroupChanged ( xyz.getSpaceGroup(),
-                                hkl,"reindexed.mtz",title="Space Group Change" )
+                                hkl,"reindexed.mtz",title="Space Group Change",
+                                force=True )  # force because it may be reindexing
                 if spg_change:
                     # mtzfile = spg_change[0]
                     sol_hkl = spg_change[1]
