@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.01.24   <--  Date of Last Modification.
+ *    04.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2928,9 +2928,11 @@ if (!dbx)  {
                         break;
             case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
                         break;
+            case 'z011'     : S += '<u>HKL reindexed</u> ';
+                        break;
             case 'z02'      : if ('Ncopies' in d)  {
                                 if ((S.length>0) && (!S.endsWith(': ')))
-                                  S += ', ';
+                                  S  = S.trim() + ', ';
                                 if (d.Ncopies==1)
                                   S += '1 molecule in ASU, ';
                                 else if (d.Ncopies>1)
