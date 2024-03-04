@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,6 +85,21 @@ class DType(dtype_xyz.DType):
     def getSeqFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["seq"] )
 
+    # def register ( self,modelFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
+    #     # function for re-registering with changed model coordinates
+    #     self.jobId = job_id
+    #     self.files = vars(self.files)  # convert to dictionary
+    #     fname = self.lessDataId ( os.path.basename(modelFilePath) )
+    #     self.setXYZFile ( fname )
+    #     self.makeDName ( dataSerialNo )
+    #     newFileName = self.dataId + "_" + fname
+    #     self.setXYZFile ( newFileName )
+    #     if outDataBox:
+    #         outDataBox.add_data ( self )
+    #     os.rename ( modelFilePath, os.path.join(outputDir,newFileName) )
+    #     if self.meta:
+    #         self.meta = vars(self.meta)
+    #     return
 
 def register ( sequence,modelFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
     if os.path.isfile(modelFilePath):

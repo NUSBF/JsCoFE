@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.10.23   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2024
 #
 # ============================================================================
 #
@@ -237,7 +237,7 @@ class MrParse(basic.TaskDriver):
                             model.rmsd  = model.meta["rmsd" ]
                             self.add_seqid_remark ( model )
                             self.putModelWidget ( self.getWidgetId("model_btn"),
-                                                  "Coordinates",model )
+                                                  "Coordinates:&nbsp;",model )
                             have_results = True
                         else:
                             self.putMessage ( "<h3>*** Failed to form Model object for " +\
@@ -273,7 +273,7 @@ class MrParse(basic.TaskDriver):
                             model.rmsd  = model.meta["rmsd" ]
                             self.add_seqid_remark ( model )
                             self.putModelWidget ( self.getWidgetId("model_btn"),
-                                                  "Coordinates",model )
+                                                  "Coordinates:&nbsp;",model )
                             have_results = True
                         else:
                             self.putMessage ( "<h3>*** Failed to form Model object for " +\
@@ -309,7 +309,7 @@ class MrParse(basic.TaskDriver):
                             model.rmsd  = model.meta["rmsd" ]
                             self.add_seqid_remark ( model )
                             self.putModelWidget ( self.getWidgetId("model_btn"),
-                                                  "Coordinates",model )
+                                                  "Coordinates:&nbsp;",model )
                             have_results = True
                         else:
                             self.putMessage ( "<h3>*** Failed to form Model object for " +\

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -108,7 +108,7 @@ class TextEditor(basic.TaskDriver):
                 seq = self.makeClass ( object.sequence )
             oxyz = self.registerModel ( seq,ufname,checkout=True )
             if oxyz:
-                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates:&nbsp;",oxyz )
                 summary_line = "MR model coordinates edited"
                 have_results = True
             else:

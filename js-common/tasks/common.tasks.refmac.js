@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.02.24   <--  Date of Last Modification.
+ *    02.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -924,11 +924,11 @@ if (!__template)  {
 
   TaskRefmac.prototype.collectInput = function ( inputPanel )  {
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    var phases = this.input_data.getData('phases');
+    let phases = this.input_data.getData('phases');
     if (phases.length>0)  {
-      var hkl = this.input_data.getData('revision')[0].HKL;
+      let hkl = this.input_data.getData('revision')[0].HKL;
       if (hkl.useHKLSet!='F')
         input_msg = '<b><i>external phases cannot be used with twin or SAD refinement</i></b>';
     }
@@ -945,7 +945,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskRefmac.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -953,7 +953,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
