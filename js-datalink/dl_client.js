@@ -102,6 +102,10 @@ class Client {
       field: {
         form: 'key=value',
         help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
+      },
+      no_progress: {
+        type: 'boolean',
+        help: 'Don\'t output progress during upload'
       }
     });
 
@@ -269,19 +273,23 @@ class Client {
       if (files) {
         req.write(`--${this.getBoundary()}\r\n`);
         for (let [i, file] of files.entries()) {
-          await this.fileCallback(file, async (f) => {
-            try {
-              await this.sendFile(req, file, f);
-            } catch (err) {
-              reject(err.message);
-              return false;
-            }
-            return true;
-          });
+          try {
+            await this.fileCallback(file, async (f) => {
+              try {
+                await this.sendFile(req, file, f);
+              } catch (err) {
+                reject(err.message);
+                return false;
+              }
+              return true;
+            });
+          } catch (err) {
+            req.end();
+            reject(err.message);
+            return false;
+          }
         }
         req.write(`--${this.getBoundary()}--\r\n`);
-        // clear line
-        process.stdout.write('\x1b[K');
       }
 
       req.end();
@@ -296,7 +304,8 @@ class Client {
       try {
         stat = fs.statSync(file);
       } catch (err) {
-        continue;
+        throw err;
+        return false;
       }
       if (stat.isFile()) {
         size += stat.size;
@@ -329,14 +338,16 @@ class Client {
         return await callback(dir);
       }
     } catch (err) {
-      return true;
+      throw err;
+      return false;
     }
 
     let files;
     try {
       files = fs.readdirSync(dir, { withFileTypes: true });
     } catch (err) {
-      return true;
+      throw err;
+      return false;
     }
     for (const file of files) {
       if (file.isSymbolicLink() || file.isCharacterDevice()) {
@@ -374,8 +385,14 @@ class Client {
       const filename = path.relative(rel_dir, file);
 
       in_s.on('data', (data) => {
-        this.size_uploaded += data.length;
-        this.outputProgress(data.length);
+        if (req.destroyed) {
+          in_s.close();
+          reject();
+        }
+        if (! this.opts.no_progress) {
+          this.size_uploaded += data.length;
+          this.outputProgress(file);
+        }
         req.write(data);
       });
 
@@ -397,9 +414,20 @@ class Client {
     });
   }
 
-  outputProgress() {
+  outputProgress(file) {
     let percent = (this.size_uploaded / this.size_total) * 100;
-    process.stdout.write(`Uploading ... (${percent.toFixed(2)}%)\r`);
+    this.outputBlankLine();
+    let line = `Uploading (${percent.toFixed(2)}%) - `;
+    let width = process.stdout.columns - line.length;
+    if (width < file.length) {
+      file = '... ' + file.slice(-width + 4);
+    }
+    line += file + '\r';
+    process.stdout.write(line);
+  }
+
+  outputBlankLine() {
+    process.stdout.write('\x1b[K');
   }
 
   showHelp() {
@@ -408,11 +436,17 @@ class Client {
     console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update or remove');
+    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update, remove, upload');
     console.log('\nOptions:');
- 
+
+    let out;
     for (const [n, o] of Object.entries(this.arg_info)) {
-      let out = `  --${n} <${o.form}>`.padEnd(pad) + o.help;
+      out = `  --${n}`;
+      if (o.type !== 'boolean') {
+        out += ` <${o.form}>`;
+      }
+      out = out.padEnd(pad) + o.help;
+
       // if we have a default for the argument
       if (o.def) {
         out += ` (default: ${o.def})`;
@@ -457,7 +491,7 @@ class Client {
       // if it is an option starting with --
       if (key.startsWith('--')) {
 
-        // extract the option and value
+        // extract the option name
         let option = key.substring(2);
 
         // if option is blank (--) the following arguments are files/directories
@@ -470,7 +504,13 @@ class Client {
 
         // validate the option against arg_info, and set it in our options object
         if (this.arg_info[option]) {
-          this.opts[option] = params.shift();
+          // if the argument type is set to boolean, don't expect a value
+          if (this.arg_info[option].type === 'boolean') {
+            this.opts[option] = true;
+          } else {
+            // get the value
+            this.opts[option] = params.shift();
+          }
         } else {
           return { error: true, msg: `error: unknown option '${key}'`};
         }
@@ -560,7 +600,12 @@ class Client {
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'upload':
-        this.size_total = this.getDirectorySize(this.opts.files);
+        try {
+          this.size_total = this.getDirectorySize(this.opts.files);
+        } catch (err) {
+          res = { error: true, msg: err.message };
+          break;
+        }
         res = this.upload(this.opts.user, this.opts.source, this.opts.id);
         break;
       default:
@@ -570,6 +615,10 @@ class Client {
   }
 
   displayResult(res) {
+    if (! this.opts.no_progress) {
+      this.outputBlankLine();
+    }
+
     if (! res) {
       return;
     }
