@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.24   <--  Date of Last Modification.
+#    03.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2024
 #
 # ============================================================================
 #
@@ -107,7 +107,7 @@ class Slice(basic.TaskDriver):
                         model.rmsd  = "1.2"
                         self.add_seqid_remark ( model,["100.0"] )
                         self.putModelWidget ( self.getWidgetId("model_btn"),
-                                              "Coordinates",model )
+                                              "Coordinates:&nbsp;",model )
                         models.append(model)
                     else:
                         self.putMessage ( "<h3>*** Failed to form Model object for " +\

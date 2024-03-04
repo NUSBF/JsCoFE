@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.24   <--  Date of Last Modification.
+ *    02.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -557,7 +557,8 @@ let r = 0;  // grid row
   ]
 
   // if (!isSafari())
-    task_list.push ( new TaskWebCoot() );
+  task_list.push ( new TaskWebCoot()   );
+  task_list.push ( new TaskWebCootCE() );
 
   task_list = task_list.concat ([
     new TaskLorestr(),
@@ -1204,9 +1205,10 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   ],true);
 
   this.makeSection ( grid,'Coot',[
-    new TaskCootMB (),
-    new TaskCootCE (),
-    new TaskWebCoot()
+    new TaskCootMB   (),
+    new TaskCootCE   (),
+    new TaskWebCoot  (),
+    new TaskWebCootCE()
   ],true );
 
   this.makeSection ( grid,'Ligands',[
