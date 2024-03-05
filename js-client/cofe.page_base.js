@@ -27,7 +27,7 @@
 function BasePage ( sceneId,gridStyle,pageType )  {
 
   // clear the page first
-  $(document.body).empty();
+  $(document.body).empty().addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
 
   checkBrowser();

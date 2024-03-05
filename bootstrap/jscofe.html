@@ -298,15 +298,16 @@
 
   <!-- <div id='scene' style="width:100%;font-size:16px;"></div>  -->
   <!-- <div id='scene' class="main-page"></div> -->
-  <div id='scene'></div>
+  <!-- <div id='scene'></div> now in BasePage class -->
 
   <script>
-    document.body.style.fontSize = '16px';   // this is necessary for jquery
-                                             // dialogs to have correct layout
-                                             // despite explicit sizing set in
-                                             // main-page CSS class; it is
-                                             // unclear why
-    document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
+    // now in main-page css
+    // document.body.style.fontSize = '16px';   // this is necessary for jquery
+    //                                          // dialogs to have correct layout
+    //                                          // despite explicit sizing set in
+    //                                          // main-page CSS class; it is
+    //                                          // unclear why
+    // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
     //$(window).on ( 'load', function(){
     $(document).ready ( function(){
       // setDarkMode ( isDarkMode() );
