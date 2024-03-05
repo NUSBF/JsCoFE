@@ -114,7 +114,8 @@ if (__template)  {
     let fetch_meta = {
       login       : loginData.login,
       cloudrun_id : '',
-      datalink_url: ''
+      api_url     : '',
+      mount_name  : ''
     };
     
     let uData = user.readUserData ( loginData );
@@ -122,7 +123,8 @@ if (__template)  {
         fetch_meta.cloudrun_id = uData.cloudrun_id;
 
     let fe_config = conf.getFEConfig();
-    fetch_meta.datalink_url = fe_config.getDataLinkUrl();
+    fetch_meta.api_url = fe_config.getDataLinkUrl();
+    fetch_meta.mount_name = fe_config.getDataLinkMountName();
     
     // write fetch_meta in jobd directory on FE; it will travel to NC along
     // with all other data
