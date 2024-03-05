@@ -145,11 +145,12 @@ class FetchData(basic.TaskDriver):
         cloudrun_id = None
         with open("__fetch_meta.json","r") as f:
             fetch_meta = json.loads ( f.read() )
-            datalink_url = fetch_meta["datalink_url"]
             cloud_user  = fetch_meta["login"]
             cloudrun_id = fetch_meta["cloudrun_id"]
+            api_url = fetch_meta["api_url"]
+            mount_name = fetch_meta["mount_name"]
 
-        dl = DataLink(datalink_url, cloud_user, cloudrun_id)
+        dl = DataLink(api_url, cloud_user, cloudrun_id)
 
         # search the API for data source entries that match the PDB code
         res, search_info = dl.search(pdb_code)
@@ -240,7 +241,8 @@ class FetchData(basic.TaskDriver):
         # loop through the results, and display data locations
         self.putMessage (f'<b>Data location(s):</b>')
         for data in results:
-            self.putMessage (f'<tt>{data["source"]}/{data["id"]}</tt>')
+            path = os.path.join(mount_name, data["source"], data["id"])
+            self.putMessage (f'<tt>{path}</tt>')
 
         self.success(True)
 

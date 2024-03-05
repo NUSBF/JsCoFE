@@ -384,6 +384,12 @@ ServerConfig.prototype.getDataLinkUrl = function()  {
   return null;
 }
 
+ServerConfig.prototype.getDataLinkMountName = function()  {
+  if (this.hasDataLink() && this.datalink.hasOwnProperty('mount_name'))
+    return this.datalink.mount_name;
+  return '';
+}
+
 // ===========================================================================
 // Config service functions
 
