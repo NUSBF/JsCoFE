@@ -11,7 +11,8 @@ const log = require('../log.js');
 
 const URL_CAT = 'https://data.sbgrid.org/data/';
 // primary server = data.sbgrid.org::10.15785/SBGRID/
-const URL_RSYNC = 'sbgrid.icm.uu.se::10.15785/SBGRID/';
+// mirror server = sbgrid.icm.uu.se::10.15785/SBGRID/
+const URL_RSYNC = 'data.sbgrid.org::10.15785/SBGRID/';
 
 const RE_PDB = /structureId=([^\"]+)/;
 const RE_PROJ = /dataset\/([^\"\/]+)/;
