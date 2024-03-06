@@ -232,9 +232,13 @@ class server {
       res.send(router.stack.map( r => r.route?.path ));
     });
 
+    app.use((req, res, next) => {
+      this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));
+    });
+
     app.listen( port, host, function(err) {
       if (err) {
-        log.info(err)
+        log.error(err)
       } else {
         log.info(`Data Link Server - Running on ${host}:${port}`);
       }
