@@ -28,6 +28,13 @@
     },
     "irrmc": {
       "enabled": true
+    },
+    // used for user uploaded data
+    "upload": {
+      // allow user uploads
+      "enabled": true,
+      // limit in megabytes of data per entry
+      "limit_mb": 20000
     }
   },
   // other configuration settings

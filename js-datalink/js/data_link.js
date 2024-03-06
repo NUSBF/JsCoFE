@@ -17,6 +17,9 @@ const DATA_SOURCES = [
   'irrmc'
 ]
 
+const GB = 1000000000;
+const MB = 1000000;
+
 class dataLink {
 
   constructor() {
@@ -320,8 +323,15 @@ class dataLink {
       const out_s = fs.createWriteStream(dest_file);
 
       let entry = this.catalog.getEntry(user, source, id);
-      out_s.on('data', (data) => {
+      let limit_mb = config.get('data_sources.upload.limit_mb');
+      let limit = limit_mb * MB;
+
+      in_s.on('data', (data) => {
         entry.size += data.length;
+        if (entry.size >= limit) {
+          this.uploadDataError(user, source, id);
+          reject(tools.errorMsg(`Upload for ${user}/${source}/${id} has reached maximum of ${limit_mb} MB`, 400));
+        }
       });
 
       out_s.on('finish', () => {
@@ -438,8 +448,6 @@ class dataLink {
   }
 
   async pruneData(min_free_gb) {
-    const GB = 1000000000;
-    const MB = 1000000;
     const min_free = min_free_gb * GB;
     const free = tools.getFreeSpace(tools.getDataDir(), '1');
 
