@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    06.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -231,14 +231,15 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   // logoGrid.setHeight_px ( 16 );
   $(logoPanel.element).addClass ( 'logo-panel' );
   // $(logoPanel.element).css ({
-  //   'position'         : 'absolute',
-  //   'left'             : '0px',
-  //   'bottom'           : '0px',
-  //   'padding'          : '0px',
-  //   'margin'           : '0px',
-  //   // 'height'           : '16px',
-  //   'border'           : '1px solid lightgray',
-  //   'background-color' : 'rgba(240,250,255,0.67)'
+  //   // 'position'         : 'absolute',
+  //   // 'left'             : '0px',
+  //   // 'bottom'           : '0px',
+  //   'top'           : window.innerHeight-34 + 'px',
+  //   // 'padding'          : '0px',
+  //   // 'margin'           : '0px',
+  //   // // 'height'           : '16px',
+  //   // 'border'           : '1px solid lightgray',
+  //   // 'background-color' : 'rgba(240,250,255,0.67)'
   // });
 }
 

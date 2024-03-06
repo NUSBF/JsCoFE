@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    06.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ var __login_user      = '';
 var __user_settings   = {
   color_modes : {
     preferred_mode : 'light',  // light|dark|system; make 'system' in final version
-    normal_mode :  {
+    light_mode :  {
       invert     : 0.0,   // 0 - 1
       sepia      : 0.0,   // 0 - 1
       hue        : 0,     // integer deg +/- 180
@@ -45,12 +45,12 @@ var __user_settings   = {
       grayscale  : 0.0    // 0 -1
     },
     dark_mode :  {
-      invert     : 0.95,  // 0 - 1
+      invert     : 0.97,  // 0 - 1
       sepia      : 0.1,   // 0 - 1
-      hue        : 0,     // integer deg +/-180
+      hue        : 180,   // integer deg +/-180
       saturate   : 1.0,   // >0
-      contrast   : 1.0,   // >0
-      brightness : 1.0,   // > 0
+      contrast   : 0.89,  // >0
+      brightness : 0.93,  // > 0
       grayscale  : 0.0    // 0 -1
     }
   }
@@ -261,7 +261,10 @@ var __active_color_mode = 'light';
 
 function setDarkMode ( darkMode )  {
   
-  let color_mode = __user_settings.color_modes.normal_mode;
+  let color_mode = null;
+  if ('light_mode' in __user_settings.color_modes)
+        color_mode = __user_settings.color_modes.light_mode;
+  else  color_mode = __user_settings.color_modes.normal_mode;
   if (darkMode)  {
     color_mode = __user_settings.color_modes.dark_mode;
     __active_color_mode = 'dark';
