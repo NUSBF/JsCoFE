@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,7 +71,7 @@ class XyzUtils(basic.TaskDriver):
             self.putTitle ( "Modified coordinate data" )
             oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
             if oxyz:
-                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
                     "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     oxyz.dname )
@@ -410,7 +410,7 @@ class XyzUtils(basic.TaskDriver):
                         st1.make_mmcif_document().write_file ( mmcifout )
                         oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
                         if oxyz:
-                            oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                            # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                             self.putMessage (
                                 "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                                 oxyz.dname )

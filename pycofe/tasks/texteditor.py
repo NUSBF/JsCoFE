@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,7 +87,7 @@ class TextEditor(basic.TaskDriver):
             self.putTitle   ( "Edited coordinates" )
             oxyz = self.registerXYZ ( None,ufname,checkout=True )
             if oxyz:
-                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
                     "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     oxyz.dname )

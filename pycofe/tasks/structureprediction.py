@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -348,7 +348,7 @@ class StructurePrediction(basic.TaskDriver):
                         nModels = nModels + 1
 
                         xyz.fixBFactors ( self.outputDir(),"alphafold" )
-                        xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                         xyz.addDataAssociation ( seq.dataId )
 
                         if len(fpaths)>1:
