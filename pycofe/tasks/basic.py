@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.03.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -2123,7 +2123,9 @@ class TaskDriver(object):
         # else:
         #     xyz = dtype_xyz.register ( mmcifPath,xyzPath,self.dataSerialNo,
         #                                self.job_id,None,self.outputDir() )
-        if not xyz:
+        if xyz:
+            xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+        else:
             self.file_stderr.write ( "  NONE XYZ DATA\n" )
             self.file_stderr.flush()
 

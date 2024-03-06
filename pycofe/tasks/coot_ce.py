@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.03.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -196,7 +196,7 @@ class CootCE(basic.TaskDriver):
 
                 xyz = self.registerXYZ ( None,fname )
                 if xyz:
-                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         xyz.dname )
