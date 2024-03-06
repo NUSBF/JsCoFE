@@ -217,11 +217,13 @@ class server {
       (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.updateData(req, res) );
 
-    // data upload for user
-    router.post(['/data/:user/:source/:id/upload'],
-      (req, res, next) => this.checkValidSourceId(req, res, next),
-      (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res, next) => this.uploadData(req, res, next) );
+    if (config.get('data_sources.upload.enabled')) {
+      // data upload for user
+      router.post(['/data/:user/:source/:id/upload'],
+        (req, res, next) => this.checkValidSourceId(req, res, next),
+        (req, res, next) => this.checkCloudRunId(req, res, next),
+        (req, res, next) => this.uploadData(req, res, next) );
+    }
 
     const app = express();
     app.use(API_PREFIX, router);
@@ -230,9 +232,13 @@ class server {
       res.send(router.stack.map( r => r.route?.path ));
     });
 
+    app.use((req, res, next) => {
+      this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));
+    });
+
     app.listen( port, host, function(err) {
       if (err) {
-        log.info(err)
+        log.error(err)
       } else {
         log.info(`Data Link Server - Running on ${host}:${port}`);
       }
