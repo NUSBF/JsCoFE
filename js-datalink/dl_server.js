@@ -217,11 +217,13 @@ class server {
       (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.updateData(req, res) );
 
-    // data upload for user
-    router.post(['/data/:user/:source/:id/upload'],
-      (req, res, next) => this.checkValidSourceId(req, res, next),
-      (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res, next) => this.uploadData(req, res, next) );
+    if (config.get('data_sources.upload.enabled')) {
+      // data upload for user
+      router.post(['/data/:user/:source/:id/upload'],
+        (req, res, next) => this.checkValidSourceId(req, res, next),
+        (req, res, next) => this.checkCloudRunId(req, res, next),
+        (req, res, next) => this.uploadData(req, res, next) );
+    }
 
     const app = express();
     app.use(API_PREFIX, router);
