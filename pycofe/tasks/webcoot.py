@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -252,6 +252,10 @@ class WebCoot(basic.TaskDriver):
                     self.putTitle   ( "Output Structure Model" )
                     xyz = self.registerXYZ ( mmcif_fname,pdb_fname,checkout=True )
                     if xyz:
+                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        self.putMessage (
+                            "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                            xyz.dname )
                         self.putXYZWidget ( self.getWidgetId("xyz_btn"),
                                             "Coordinates:&nbsp;",xyz )
                         hasResults = True
