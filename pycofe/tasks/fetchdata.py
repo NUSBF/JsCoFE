@@ -131,6 +131,20 @@ class FetchData(basic.TaskDriver):
         pyrvapi.rvapi_flush()
         return
 
+    def dlSummary(self, msg):
+        self.generic_parser_summary["fetchdata"] = {
+            "summary_line" : msg
+        }
+        return
+
+    def dlError(self, msg):
+        summary = msg
+        if type(msg).__name__ == 'ConnectionError':
+            summary = "connection error"
+        self.dlSummary(f'datalink error {type(msg)}: {summary}')
+        self.fail(f'<b>Data Link Error:</b> {msg}', str(msg))
+        return
+
     def run(self):
 
         # get the user entered PDB code
@@ -155,14 +169,16 @@ class FetchData(basic.TaskDriver):
         # search the API for data source entries that match the PDB code
         res, search_info = dl.search(pdb_code)
         if not res:
-            self.fail(f'<b>Error:</b> {search_info}', 'Data Link Error')
+            self.dlError(search_info);
             return
 
         results = search_info['results'];
 
         # if there are no results, return
         if len(results) == 0:
-            self.putMessage( f'<b>Sorry - no results for {pdb_code}</b>' )
+            msg = f'no results for {pdb_code}'
+            self.dlSummary(msg)
+            self.putMessage( f'<b>Sorry - {msg}' )
             self.success(False)
             return
 
@@ -176,7 +192,7 @@ class FetchData(basic.TaskDriver):
             # get info about data source
             res, source_info = dl.source_info(data_source)
             if not res:
-                self.fail(f'<b>Error:</b> {source_info}', 'Data Link Error')
+                self.dlError(source_info)
                 return
 
             # display information about the data source
@@ -189,7 +205,7 @@ class FetchData(basic.TaskDriver):
             # send a fetch request in to the API
             res, fetch_info = dl.fetch(data_source, data_id)
             if not res:
-                self.fail(f'<b>Error:</b> {fetch_info}','Data Link Error')
+                self.dlError(fetch_info)
                 return
 
         # initialise progress bar
@@ -207,11 +223,11 @@ class FetchData(basic.TaskDriver):
             for result in results:
                 res, data_info = dl.status(data['source'], data['id'])
                 if not res:
-                    self.fail(f'<b>Error:</b> {data_info}', 'Data Link Error')
+                    self.dlError(data_info)
                     return
 
                 if data_info['status'] == 'failed':
-                    self.fail('<p><b>Error: Fetch of {data_info["source"]}/{data_info["id"]} Failed</b>', 'Data Link Error')
+                    self.dlError(f'Fetch of {data_info["source"]}/{data_info["id"]} failed')
                     return
 
                 if data_info['status'] == 'completed':
@@ -240,9 +256,13 @@ class FetchData(basic.TaskDriver):
 
         # loop through the results, and display data locations
         self.putMessage (f'<b>Data location(s):</b>')
+        msgs = []
         for data in results:
+            msgs.append(data["source"] + '/' + data["id"])
             path = os.path.join(mount_name, data["source"], data["id"])
             self.putMessage (f'<tt>{path}</tt>')
+
+        self.dlSummary(f'fetched data set(s) for {pdb_code}: {",".join(msgs)}')
 
         self.success(True)
 
