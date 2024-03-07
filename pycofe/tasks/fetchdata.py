@@ -255,7 +255,7 @@ class FetchData(basic.TaskDriver):
         self.putMessage (f'<b>Data size: {size}</b></p>')
 
         # loop through the results, and display data locations
-        self.putMessage (f'<b>Data location(s):</b>')
+        self.putMessage (f'<b>For processing images with Xia-2 and importing data with "Cloud import" tasks, use the following location(s):</b>')
         msgs = []
         for data in results:
             msgs.append(data["source"] + '/' + data["id"])
