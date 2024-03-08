@@ -124,6 +124,7 @@ class Client {
 
     let res;
 
+    let url_path = params.path;
     // replace /@0, /@1 etc with args
     for (const i in args) {
       let r = args[i];
@@ -132,7 +133,7 @@ class Client {
       } else {
         r = '';
       }
-      params.path = params.path.replace('/@' + i, r);
+      url_path = url_path.replace('/@' + i, r);
     }
 
     // request method
@@ -159,7 +160,8 @@ class Client {
 
     // make the request
     try {
-      res = await this.httpRequest(this.opts.url + '/' + params.path, method, options, files);
+      let url = this.opts.url + '/' + url_path;
+      res = await this.httpRequest(url, method, options, files);
       return JSON.parse(res.body);
     } catch (err) {
       return { error: true, msg: err };
@@ -167,13 +169,7 @@ class Client {
   }
 
   async fetch(user, source, id) {
-    const res = await this.doCall('fetch', user, source, id);
-
-    if (res.error) {
-      this.displayResult(res);
-    }
-
-    this.fetchMultiple(user, [ { source: source, id: id } ] );
+    return await this.doCall('fetch', user, source, id);
   }
 
   async search(pdb) {
@@ -188,8 +184,7 @@ class Client {
     const res = await this.search(pdb);
 
     if (res.error) {
-      this.displayResult(res);
-      return;
+      return res;
     }
 
     this.fetchMultiple(user, res.results);
@@ -197,16 +192,8 @@ class Client {
 
   async fetchMultiple(user, results) {
     for (const r of results) {
-      let res = await this.doCall('fetch', user, r.source, r.id);
-      if (res.success) {
-        let res = await this.doCall('status', user, r.source, r.id);
-        if (res.status === 'completed') {
-          console.log(`Already fetched ${r.source}/${r.id}\nName: ${res.name}`);
-        } else {
-          console.log(`Fetching ${r.source}/${r.id}\nName: ${res.name}`);
-        }
-      }
-      return res;
+      let res = await this.fetch(user, r.source, r.id);
+      this.displayResult(res);
     }
   }
 
@@ -539,7 +526,7 @@ class Client {
     let res, err_msg;
 
     // check if --pdb is set for search
-    if (this.action == 'search') {
+    if (this.action == 'search' && ! this.opts.pdb) {
       return { error: true, msg: 'You need to include a --pdb to search for' };
     }
 
@@ -584,9 +571,9 @@ class Client {
         break;
       case 'fetch':
         if (this.opts.pdb) {
-          this.fetchPDB(this.opts.user, this.opts.pdb);
+          res = this.fetchPDB(this.opts.user, this.opts.pdb);
         } else {
-          this.fetch(this.opts.user, this.opts.source, this.opts.id);
+          res = this.fetch(this.opts.user, this.opts.source, this.opts.id);
         }
         break;
       case 'status':

@@ -82,6 +82,7 @@ class appClient extends client {
       let size = 0;
       let size_s = 0;
       let percent = 0;
+      status_c = 0;
       for (const r of results) {
         let s = await this.doCall('status', user, r.source, r.id);
         if (s.status == status.completed) {
