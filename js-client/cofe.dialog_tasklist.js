@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    09.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1070,6 +1070,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   this.makeSection ( grid,'Data Processing',[
     new TaskXia2        (),
+    new TaskXDS         (),
     new TaskXDSGUI      (),
     new TaskDUI         (),
     new TaskIMosflm     (),
