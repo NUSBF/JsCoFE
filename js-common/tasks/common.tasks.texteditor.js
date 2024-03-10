@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,7 +88,7 @@ TaskTextEditor.prototype.checkKeywords = function ( keywords )  {
 }
 
 TaskTextEditor.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -111,9 +111,9 @@ if (!__template)  {
 
   TaskTextEditor.prototype.getSelectedFile = function ( inputPanel_grid )  {
     
-    var object = this.getInputData ( inputPanel_grid.inpDataRef,'object' )[0];
+    let object = this.getInputData ( inputPanel_grid.inpDataRef,'object' )[0];
     
-    var fspec  = {
+    let fspec  = {
       name  : '',
       ftype : '',
       otype : '',
@@ -122,7 +122,7 @@ if (!__template)  {
 
     if (object)  {
 
-      var files   = object.files;
+      let files   = object.files;
       fspec.otype = object._type;
 
       switch (fspec.otype)  {
@@ -151,8 +151,8 @@ if (!__template)  {
         case 'DataRevision' : fspec.name  = object.Options.texteditor.fname;
                               fspec.stype = object.Options.texteditor.stype;
                               // set listener on customGrid selector
-                              var item     = this.getInputItem ( inputPanel_grid.inpDataRef,'object' );
-                              var dropdown = item.dropdown[0];
+                              let item     = this.getInputItem ( inputPanel_grid.inpDataRef,'object' );
+                              let dropdown = item.dropdown[0];
                               if (!('listener' in dropdown))  {
                                 dropdown.listener = true;
                                 (function(task){
@@ -177,7 +177,7 @@ if (!__template)  {
 
   TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
     if (inputPanel_grid.aceinit)  {
-      var fname = null;
+      let fname = null;
       if (this.upload)  fname = this.upload.fspec.name;
                   else  fname = this.getSelectedFile(inputPanel_grid).name;
       if (fname)  {
@@ -212,9 +212,9 @@ if (!__template)  {
   // reserved function name
   TaskTextEditor.prototype.makeInputPanel = function ( dataBox )  {
 
-    var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
+    let div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
 
-    var row = div.grid.getNRows();
+    let row = div.grid.getNRows();
 
     div.grid.aceditor = new ACEditor ( 80,40,{
         'box-shadow'  : '6px 6px lightgray',
@@ -282,7 +282,7 @@ if (!__template)  {
           '<h2>Data not changed</h2><i>Nothing to do.</i>',
           'msg_stop' );
     } else  {
-      var data = inputPanel.grid.aceditor.getText();
+      let data = inputPanel.grid.aceditor.getText();
       if (!(data.trim()))  {
         new MessageBox ( 'No data',
             '<h2>Empty data</h2><i>Cannot process empty data.</i>',
@@ -328,7 +328,7 @@ if (!__template)  {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskTextEditor.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -336,7 +336,7 @@ if (__template)  {
     // job's 'input' directory
 
     if ('object' in this.input_data.data)  {
-      var object = this.input_data.data['object'][0];
+      let object = this.input_data.data['object'][0];
       if (object._type=='DataRevision')  {
         // this.input_data.data['hkl']     = [revision.HKL];
         if (object.Structure && (this.upload.fspec.stype=='structure'))

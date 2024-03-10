@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -306,8 +306,8 @@ TaskPhaserEP.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function PhaserEPHotButton()  {
   return {
-    'task'    : 'TaskPhaserEP',
-    'tooltip' : 'Calculate Experimental Phases with Phaser-EP'
+    'task_name' : 'TaskPhaserEP',
+    'tooltip'   : 'Calculate Experimental Phases with Phaser-EP'
   };
 }
 

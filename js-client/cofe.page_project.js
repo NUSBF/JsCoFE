@@ -1571,9 +1571,9 @@ ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
   });
 }
 
-ProjectPage.prototype.runHotButtonJob = function ( jobId,task )  {
+ProjectPage.prototype.runHotButtonJob = function ( jobId,task_name,options )  {
   if (jobId in this.jobTree.dlg_map)
-    this.jobTree.dlg_map[jobId].runHotButtonJob ( task );
+    this.jobTree.dlg_map[jobId].runHotButtonJob ( task_name,options );
   else
     new MessageBox ( 
         'Error',
@@ -1614,9 +1614,9 @@ function rvapi_cloneJob ( jobId )  {
     __current_page.cloneJobWithSuggestedParameters ( jobId );
 }
 
-function rvapi_runHotButtonJob ( jobId,task )  {
+function rvapi_runHotButtonJob ( jobId,task_name,options )  {
   if (rvapi_canRunJob())
-    __current_page.runHotButtonJob ( jobId,task );
+    __current_page.runHotButtonJob ( jobId,task_name,options );
 }
 
 
