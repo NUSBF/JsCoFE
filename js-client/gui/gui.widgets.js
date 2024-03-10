@@ -1091,9 +1091,9 @@ function ACEditor(width, height, options) {
 
   let css1 = {
     'position': 'relative',
-    'width': width,
-    'height': height,
-    'border': '1px solid gray'
+    'width'   : width,
+    'height'  : height,
+    'border'  : '1px solid gray'
   };
   if ('border' in options)
     css1.border = options.border;
@@ -1106,12 +1106,12 @@ function ACEditor(width, height, options) {
   this.element.appendChild(this.panel.element);
 
   let css2 = {
-    'position': 'absolute',
-    'top': 0,
-    'right': 0,
-    'bottom': 0,
-    'left': 0,
-    'width': '100%',
+    'position' : 'absolute',
+    'top'      : 0,
+    'right'    : 0,
+    'bottom'   : 0,
+    'left'     : 0,
+    'width'    : '100%',
     'font-size': '14px'
   };
   if ('font-size' in options)

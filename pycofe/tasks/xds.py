@@ -51,9 +51,9 @@ class XDS(basic.TaskDriver):
 
         if "XDS_home" not in os.environ:
             self.fail ( "<h3>XDS Software is not installed</h3>" +\
-                    "Chosen pipeline protocol requires XDS Software, " +\
+                    "This task requires XDS Software, " +\
                     "installation of which was not found.",
-                    "Image metadata errors." )
+                    "XDS Software is not installed." )
             return
 
         imageMetadata = None

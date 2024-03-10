@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.03.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,14 @@ function TaskXDS3()  {
   this.title = 'Image processing with XDS';
 
   this.input_dtypes = [];
-  this.parameters   = {};
+  this.parameters   = {
+    XDS_INP : {
+        type     : 'label',
+        label    : '',
+        position : [0,0,1,1],
+        showon   : {'VOID':['VOID']}
+      },
+  };
   
 }
 
@@ -51,10 +58,10 @@ TaskXDS3.prototype.constructor = TaskXDS3;
 
 // ===========================================================================
 
-//TaskXDS3.prototype.cleanJobDir   = function ( jobDir )  {}
+TaskXDS3.prototype.cleanJobDir    = function ( jobDir )  {}
 
 TaskXDS3.prototype.icon           = function()  { return 'task_xds3'; }
-TaskXDS3.prototype.clipboard_name = function()  { return '"XDS3"';   }
+TaskXDS3.prototype.clipboard_name = function()  { return ''; }  // no copy-paste
 
 TaskXDS3.prototype.desc_title     = function()  {
 // this appears under task title in the task list
@@ -84,117 +91,6 @@ function XDS3HotButton()  {
 if (!__template)  {
   // only on client
 
-  // This function is called at cloning jobs and should do copying of all
-  // custom class fields not found in the Template class
-  // TaskXDS3.prototype.customDataClone = function ( cloneMode,task )  {
-  //   this.upload = null;
-  //   return;
-  // }
-
-  // reserved function name
-  // TaskXDS3.prototype.runButtonName = function()  { return 'Save'; }
-
-
-  // TaskXDS3.prototype.getSelectedFile = function ( inputPanel_grid )  {
-    
-  //   var object = this.getInputData ( inputPanel_grid.inpDataRef,'object' )[0];
-    
-  //   var fspec  = {
-  //     name  : '',
-  //     ftype : '',
-  //     otype : '',
-  //     stype : ''
-  //   };
-
-  //   if (object)  {
-
-  //     var files   = object.files;
-  //     fspec.otype = object._type;
-
-  //     switch (fspec.otype)  {
-
-  //       case 'DataXYZ'      :
-  //       case 'DataModel'    :
-  //       case 'DataEnsemble' : if (file_key.xyz in files)  {
-  //                               fspec.name  = files[file_key.xyz];
-  //                               fspec.ftype = file_key.xyz
-  //                             }
-  //                           break;
-
-  //       case 'DataSequence' : if (file_key.seq in files)  {
-  //                               fspec.name  = files[file_key.seq];
-  //                               fspec.ftype = file_key.seq
-  //                             }
-  //                           break;
-
-  //       case 'DataLigand'   :
-  //       case 'DataLibrary'  : if (file_key.lib in files)  {
-  //                               fspec.name  = files[file_key.lib];
-  //                               fspec.ftype = file_key.lib
-  //                             }
-  //                         break;
-
-  //       case 'DataRevision' : fspec.name  = object.Options.texteditor.fname;
-  //                             fspec.stype = object.Options.texteditor.stype;
-  //                             // set listener on customGrid selector
-  //                             var item     = this.getInputItem ( inputPanel_grid.inpDataRef,'object' );
-  //                             var dropdown = item.dropdown[0];
-  //                             if (!('listener' in dropdown))  {
-  //                               dropdown.listener = true;
-  //                               (function(task){
-  //                                 dropdown.customGrid.textedit_sel.addOnChangeListener (
-  //                                   function(text,value){
-  //                                     task.loadFile ( inputPanel_grid );
-  //                                   },false );
-  //                               }(this))
-  //                             }
-  //                           break;
-  //       default : ;
-  //     }
-
-  //   }
-    
-  //   inputPanel_grid.aceditor.setVisible ( (fspec.name.length>0) );
-
-  //   return fspec;
-
-  // }
-
-
-  // TaskXDS3.prototype.loadFile = function ( inputPanel_grid )  {
-  //   if (inputPanel_grid.aceinit)  {
-  //     var fname = null;
-  //     if (this.upload)  fname = this.upload.fspec.name;
-  //                 else  fname = this.getSelectedFile(inputPanel_grid).name;
-  //     if (fname)  {
-  //       fetchJobOutputFile ( this,fname,function(ftext){
-  //         inputPanel_grid.file_loaded = fname;
-  //         inputPanel_grid.aceditor.setText ( ftext );
-  //         inputPanel_grid.content_changed = false;
-  //       },null,function(errdesc){
-  //         inputPanel_grid.file_loaded = null;
-  //         inputPanel_grid.aceditor.setText ( '' );
-  //         new MessageBox ( 'Cannot load file',
-  //           '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
-  //           'msg_error'
-  //         );
-  //         inputPanel_grid.content_changed = false;
-  //       });
-  //     } else  {
-  //       inputPanel_grid.file_loaded = null;
-  //       inputPanel_grid.aceditor.setText ( '' );
-  //       inputPanel_grid.content_changed = false;
-  //     }
-  //   }
-  // }
-
-
-  // TaskXDS3.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-  //   TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-  //   this.loadFile ( inpParamRef.grid );
-  // }
-
-
   // reserved function name
   TaskXDS3.prototype.makeInputPanel = function ( dataBox )  {
 
@@ -202,10 +98,18 @@ if (!__template)  {
 
     let row = div.grid.getNRows();
 
+    div.grid.setLabel ( 
+      '<div style="font-size:14px;height:28px;">XDS processing parameters; see details in ' +
+      '<a href="https://wiki.uni-konstanz.de/xds/index.php/XDS.INP" target="_blank">' +
+      '<i>XDS reference</i></a> (opens in new window)</div>',
+      row++,0,1,5 );
+
     div.grid.aceditor = new ACEditor ( 80,40,{
         'box-shadow'  : '6px 6px lightgray',
         'theme'       : 'chrome',
-        'mode'        : 'python'
+        'font-size'   : '12px',
+        'mode'        : 'terraform'
+        // 'mode'        : 'python'
       });
     div.grid.setWidget ( div.grid.aceditor,row,0,1,5 );
     div.grid.aceinit         = false;
@@ -234,7 +138,36 @@ if (!__template)  {
       }
       // console.log ( ' >>>> ' + (panelHeight - (rect.top-rect1.top-170)) )
       // inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
-      inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight-86 );
+      inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight-46 );
+    }
+  }
+
+  TaskXDS3.prototype.loadFile = function ( inputPanel_grid )  {
+    if (inputPanel_grid.aceinit)  {
+      if (this.parameters.XDS_INP.label.trim())  {
+        inputPanel_grid.file_loaded     = null;
+        inputPanel_grid.aceditor.setText ( this.parameters.XDS_INP.label );
+        inputPanel_grid.content_changed = false;
+      } else  {
+        let furl = this.getProjectURL ( this.parentId,'output/XDS.INP');
+        fetchFile ( furl,function(ftext){
+          inputPanel_grid.file_loaded     = furl;
+          inputPanel_grid.aceditor.setText ( ftext );
+          inputPanel_grid.content_changed = false;
+        },null,function(errdesc){
+          inputPanel_grid.file_loaded = null;
+          inputPanel_grid.aceditor.setText ( '' );
+          new MessageBox ( 'Cannot load file',
+            '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
+            'msg_error'
+          );
+          inputPanel_grid.content_changed = false;
+        });
+      }
+    } else  {
+      inputPanel_grid.file_loaded     = null;
+      inputPanel_grid.aceditor.setText ( '' );
+      inputPanel_grid.content_changed = false;
     }
   }
 
@@ -245,101 +178,31 @@ if (!__template)  {
       inputPanel.grid.aceditor.setReadOnly ( disable_bool );
   }
 
-  
-  // TaskXDS3.prototype.collectInput = function ( inputPanel )  {
-  
-  //   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-  
-  //   // send to server fspec and aceditor
-  //   this.getSelectedFile ( inputPanel.grid );
-  
-  //   return input_msg;
-  
-  // }
-  
-  // TaskXDS3.prototype.doRun = function ( inputPanel,run_func )  {
+  TaskXDS3.prototype.collectInput = function ( inputPanel )  {
 
-  //   if (!inputPanel.grid.file_loaded)  {
-  //     new MessageBox ( 'No data selected',
-  //         '<h2>No data selected</h2><i>Nothing to do.</i>',
-  //         'msg_stop' );
-  //   } else if (!inputPanel.grid.content_changed)  {
-  //     new MessageBox ( 'No changes',
-  //         '<h2>Data not changed</h2><i>Nothing to do.</i>',
-  //         'msg_stop' );
-  //   } else  {
-  //     var data = inputPanel.grid.aceditor.getText();
-  //     if (!(data.trim()))  {
-  //       new MessageBox ( 'No data',
-  //           '<h2>Empty data</h2><i>Cannot process empty data.</i>',
-  //           'msg_stop' );
-  //     } else  {
-  //       this.upload = {
-  //         fspec : this.getSelectedFile ( inputPanel.grid ),
-  //         data  : data
-  //       };
-  //       TaskTemplate.prototype.doRun.call ( this,inputPanel,run_func );
-  //     }
-  //   }
-  
-  // }
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-  // TaskXDS3.prototype.postSubmit = function()  {
-  //   this.upload.data = null;  // save space to optimize project logistics
-  // }
+    let xds_inp = inputPanel.grid.aceditor.getText();
+    if (!xds_inp.trim())
+      input_msg += '|<b><i>Np input statements</i>:</b> XDS input statements must be provided';
+    else
+      this.parameters.XDS_INP.label = xds_inp;
 
-  // TaskXDS3.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
-  //   if ((this.state==job_code.new) && job_dialog.inputPanel.grid.file_loaded && 
-  //                                     job_dialog.inputPanel.grid.content_changed)  {
-  //     new QuestionBox ( 'Close Job Dialog',
-  //       '<h2>Warning</h2>' +
-  //       '<i>Changes will be lost if job dialog is closed without saving data.</i>',[
-  //           { name    : 'Close anyway',
-  //             onclick : function(){ callback_func ( true ); }
-  //           },{
-  //             name    : 'Cancel',
-  //             onclick : function(){}
-  //           }],'msg_confirm' );
-  //   } else  {
-  //     callback_func ( true );
-  //   }
-  // }
+    return input_msg;
 
-}
+  }
 
-
-// ===========================================================================
-// export such that it could be used in both node and a browser
-
-if (__template)  {
+} else  {
   //  for server side
 
+  // ===========================================================================
+  // export such that it could be used in both node and a browser
+
   const conf = require('../../js-server/server.configuration');
-
-  // TaskXDS3.prototype.makeInputData = function ( loginData,jobDir )  {
-
-  //   // put hkl and structure data in input databox for copying their files in
-  //   // job's 'input' directory
-
-  //   if ('object' in this.input_data.data)  {
-  //     var object = this.input_data.data['object'][0];
-  //     if (object._type=='DataRevision')  {
-  //       // this.input_data.data['hkl']     = [revision.HKL];
-  //       if (object.Structure && (this.upload.fspec.stype=='structure'))
-  //         this.input_data.data['ixyz'] = [object.Structure];
-  //       if (object.Substructure && (this.upload.fspec.stype=='substructure'))
-  //         this.input_data.data['ixyz'] = [object.Substructure];
-  //     }
-  //   }
-
-  //   __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
-
-  // }
 
   TaskXDS3.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.xds3', jobManager, jobDir, this.id];
   }
-
 
   // -------------------------------------------------------------------------
 
