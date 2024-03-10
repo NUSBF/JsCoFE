@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.03.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2272,7 +2272,7 @@ if (!dbx)  {
 
   TaskTemplate.prototype._lay_parameters = function ( grid,row,col,params,inpParamRef ) {
   // internal recursive function, do not overwrite
-  let iwidth,defval,tooltip;
+  let iwidth,iheight,defval,tooltip;
 
     for (let key in params) {
 
@@ -2280,11 +2280,14 @@ if (!dbx)  {
         let item = params[key];
 
         if (item.hasOwnProperty('type'))  {
+
           let r  = row + item.position[0];
           let c  = col + item.position[1];
           let rs = item.position[2];
           let cs = item.position[3];
+
           item.visible = true;
+          
           if ('default' in item)           defval  = item.default;
           else if ('placeholder' in item)  defval  = item.placeholder;
                                      else  defval  = '';
@@ -2464,8 +2467,8 @@ if (!dbx)  {
                               inpParamRef.parameters[key].ref = item;
                               inpParamRef.parameters[key].ref.visible  = true;
                               inpParamRef.parameters[key].ref._visible = true;
-                              let iwidth  = 800;
-                              let iheight = 320;
+                              iwidth  = 800;
+                              iheight = 320;
                               if (item.hasOwnProperty('iwidth'))
                                 iwidth = item.iwidth;
                               if (item.hasOwnProperty('iheight'))
