@@ -47,6 +47,32 @@ function TaskXDS()  {
               open     : true,  // true for the section to be initially open
               position : [0,0,1,8],
               contains : {
+                MODE_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'MODE',
+                        label    : 'Start processing tasks',
+                        tooltip  : 'Choose the level of manual intervention in ' +
+                                   'starting XDS processing tasks. Choose '      +
+                                   '"Semi-automatic" or "Manual" modes if you '  +
+                                   'wish to revise task parameters before '      +
+                                   'runnung.',
+                        range    : ['A|Automatically',
+                                    'S|Semi-automatically',
+                                    'M|Manually'
+                                   ],
+                        value    : 'A',
+                        iwidth   : 200,
+                        position : [0,0,1,1]
+                      },
+                SET_UNTRUSTED_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Set untrusted detector areas',
+                        tooltip  : 'Check to include step for setting untrusted ' +
+                                   'detector areas',
+                        value    : false,
+                        iwidth   : 240,
+                        position : [1,0,1,3]
+                      }
               }
             }
   };

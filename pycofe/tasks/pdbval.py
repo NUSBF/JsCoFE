@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.24   <--  Date of Last Modification.
+#    10.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -461,7 +461,7 @@ class PDBVal(basic.TaskDriver):
         pyrvapi.rvapi_add_button ( self.getWidgetId("depfiles"),
                 "Prepare deposition files","{function}",
                 "window.parent.rvapi_runHotButtonJob(" + self.job_id +\
-                ",'TaskPDBDepFiles')",
+                ",'TaskPDBDepFiles',{})",
                 False,self.report_page_id(),rvrow0,0,1,1 )
         self.putMessage1 ( self.report_page_id(),
                             "<div style='height:6px;'>&nbsp;</div>",rvrow0+1 )

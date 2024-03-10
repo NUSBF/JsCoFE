@@ -76,8 +76,8 @@ let version = 0;
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function XDS3HotButton()  {
   return {
-    'task'    : 'TaskXDS3',
-    'tooltip' : 'Run XDS processing'
+    'task_name' : 'TaskXDS3',
+    'tooltip'   : 'Run XDS processing'
   };
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -244,8 +244,8 @@ TaskShelxEMR.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function ShelxEMRHotButton()  {
   return {
-    'task'    : 'TaskShelxEMR',
-    'tooltip' : 'Density Modificaton and C&alpha;-tracing with ShelxE'
+    'task_name' : 'TaskShelxEMR',
+    'tooltip'   : 'Density Modificaton and C&alpha;-tracing with ShelxE'
   };
 }
 
