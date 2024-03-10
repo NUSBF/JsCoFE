@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.03.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1037,11 +1037,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
     this.makeSection ( grid,'Tasks in Development',[
       // new TaskCootUtils    (),
-      // ccp4go2_task,
-      // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      // new TaskPDBVal       (),
+      new TaskXDS         (),
       new TaskFetchData    (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -1070,7 +1068,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   this.makeSection ( grid,'Data Processing',[
     new TaskXia2        (),
-    new TaskXDS         (),
+    // new TaskXDS         (),
     new TaskXDSGUI      (),
     new TaskDUI         (),
     new TaskIMosflm     (),
