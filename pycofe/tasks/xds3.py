@@ -26,14 +26,11 @@
 
 #  python native imports
 import os
-import json
-import re
-
-import pyrvapi
+# import json
 
 #  application imports
 from . import basic
-from pycofe.proc   import import_filetype, import_unmerged
+from pycofe.proc   import import_unmerged
 
 # ============================================================================
 # Make DUI driver
@@ -110,29 +107,7 @@ class XDS3(basic.TaskDriver):
                 # unmerged_imported[i].ha_type = hatom
                 self.putMessage ( "<b>Assigned name:</b>&nbsp;" + unmerged_imported[i].dname  )
             summary_line = str(len(unmerged_imported)) + " unmerged scaled dataset(s) created"
-
-
-
-        # if os.path.isfile("XDS.INP"):
-        #     os.rename ( "XDS.INP",os.path.join(self.outputDir(),"XDS.INP") )
-        #     self.putMessage ( "<b>Image files analysed and XDS input file " +\
-        #                       "created.</b><br>&nbsp;" )
-        #     task_options = { "prevent_autostart" : False }
-        #     if self.getParameter(sec1.MODE_SEL)=="M":
-        #         task_options["prevent_autostart"] = True
-        #     task_options = "'".join(json.dumps(task_options).split('"'))
-        #     pyrvapi.rvapi_add_button ( self.getWidgetId("xds_processing"),
-        #             "Run XDS processing","{function}",
-        #             "window.parent.rvapi_runHotButtonJob(" + self.job_id +\
-        #             ",'TaskXDS3'," + task_options + ")",
-        #             False,self.report_page_id(),self.rvrow,0,1,1 )
-        #     self.rvrow  += 1
-        #     have_results = True
-        #     summary_line = "XDS processing prepared"
-        # else:
-        #     self.putMessage ( "<b>Image files analysis was not successful.<b>" )
-        #     self.putMessage ( "<b>Return code:<b> " + rc.msg )
-        #     summary_line = "failed to prepare XDS processing"
+            have_results = True
 
         self.generic_parser_summary["parrot"] = {
             "summary_line" : summary_line
