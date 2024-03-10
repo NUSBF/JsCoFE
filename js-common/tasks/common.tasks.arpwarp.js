@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -442,8 +442,8 @@ TaskArpWarp.prototype.authorisationID = function() {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function ArpWarpHotButton()  {
   return {
-    'task'    : 'TaskArpWarp',
-    'tooltip' : 'Automatic model building with Arp/wArp'
+    'task_name' : 'TaskArpWarp',
+    'tooltip'   : 'Automatic model building with Arp/wArp'
   };
 }
 

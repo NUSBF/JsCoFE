@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -911,8 +911,8 @@ TaskAcorn.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function AcornHotButton()  {
   return {
-    'task'    : 'TaskAcorn',
-    'tooltip' : 'Phase Refinement and Dynamic Density Modification with ACORN'
+    'task_name' : 'TaskAcorn',
+    'tooltip'   : 'Phase Refinement and Dynamic Density Modification with ACORN'
   };
 }
 

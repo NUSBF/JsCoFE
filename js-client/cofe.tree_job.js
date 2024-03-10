@@ -1953,14 +1953,16 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         let branch_task_list = dlg.tree.getAllAncestors ( dlg.tree.getSelectedTask() );
                         dlg.tree._copy_task_cloud_path ( options,branch_task_list );
                         dlg.tree._copy_task_parameters ( options,branch_task_list );
-                        let dataSummary = dataBox.getDataSummary ( options );
-                        if ((dataSummary.status==2) ||
-                            (('DataRevision' in dataBox.data) &&
-                             (dataBox.data.DataRevision.length==1))) {
-                          // unambiguous data -- just start the job
-                          options.onJobDialogStart = function ( job_dialog )  {
-                            job_dialog.run_btn.click();  // start automatically
-                          };
+                        if (!options.prevent_autostart)  {
+                          let dataSummary = dataBox.getDataSummary ( options );
+                          if ((dataSummary.status==2) ||
+                              (('DataRevision' in dataBox.data) &&
+                              (dataBox.data.DataRevision.length==1))) {
+                            // unambiguous data -- just start the job
+                            options.onJobDialogStart = function ( job_dialog )  {
+                              job_dialog.run_btn.click();  // start automatically
+                            };
+                          }
                         }
                         dlg.tree._add_job ( false,options,dataBox,dlg.parent_page,
                           function(key){

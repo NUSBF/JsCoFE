@@ -83,6 +83,8 @@ class XDS(basic.TaskDriver):
                     "Image path not found in task metadata." )
             return
 
+        sec1 = self.task.parameters.sec1.contains
+
         # Prepare path for the script
         matches = re.findall ( r'0+[1-9]\d*(?=[^0-9]|$)',ipath )
         if len(matches)<=0:
@@ -114,14 +116,16 @@ class XDS(basic.TaskDriver):
             os.rename ( "XDS.INP",os.path.join(self.outputDir(),"XDS.INP") )
             self.putMessage ( "<b>Image files analysed and XDS input file " +\
                               "created.</b><br>&nbsp;" )
+            task_options = { "prevent_autostart" : False }
+            if self.getParameter(sec1.MODE_SEL)=="M":
+                task_options["prevent_autostart"] = True
+            task_options = "'".join(json.dumps(task_options).split('"'))
             pyrvapi.rvapi_add_button ( self.getWidgetId("xds_processing"),
                     "Run XDS processing","{function}",
                     "window.parent.rvapi_runHotButtonJob(" + self.job_id +\
-                    ",'TaskXDS3')",
+                    ",'TaskXDS3'," + task_options + ")",
                     False,self.report_page_id(),self.rvrow,0,1,1 )
             self.rvrow  += 1
-            # self.putMessage1 ( self.report_page_id(),
-            #                     "<div style='height:6px;'>&nbsp;</div>",rvrow0+1 )
             have_results = True
             summary_line = "XDS processing prepared"
         else:
