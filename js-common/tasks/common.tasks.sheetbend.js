@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,8 +96,8 @@ TaskSheetbend.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function SheetbendHotButton()  {
   return {
-    'task'    : 'TaskSheetbend',
-    'tooltip' : 'Post-MR model correction with Sheetbend'
+    'task_name' : 'TaskSheetbend',
+    'tooltip'   : 'Post-MR model correction with Sheetbend'
   };
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -261,8 +261,8 @@ TaskASUDef.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function AsuDefHotButton()  {
   return {
-    'task'    : 'TaskASUDef',
-    'tooltip' : 'Define Asymmetric Unit'
+    'task_name' : 'TaskASUDef',
+    'tooltip'   : 'Define Asymmetric Unit'
   };
 }
 

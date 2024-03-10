@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,8 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi,
+ *      M. Fando 2016-2024
  *
  *  ==========================================================================
  *
@@ -680,8 +681,8 @@ TaskRefmac.prototype.canShare = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function RefmacHotButton()  {
   return {
-    'task'    : 'TaskRefmac',
-    'tooltip' : 'Refine results using parameters of last refinement'
+    'task_name' : 'TaskRefmac',
+    'tooltip'   : 'Refine results using parameters of last refinement'
   };
 }
 

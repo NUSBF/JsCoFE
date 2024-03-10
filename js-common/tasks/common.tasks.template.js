@@ -262,9 +262,9 @@ TaskTemplate.prototype.isSuccessful = function()  {
 
 TaskTemplate.prototype.__check_keywords = function ( keywords,reflist )  {
 // keywords and reflist are supposed to be in low register
-var matches = (!keywords) || (keywords.length==0);
-  for (var i=0;(i<reflist.length) && (!matches);i++)
-    for (var j=0;(j<keywords.length) && (!matches);j++)
+let matches = (!keywords) || (keywords.length==0);
+  for (let i=0;(i<reflist.length) && (!matches);i++)
+    for (let j=0;(j<keywords.length) && (!matches);j++)
       matches = reflist[i].startsWith(keywords[j]);
   return matches;
 }
@@ -346,7 +346,7 @@ let wscript   = ['@' + wrun_name.toUpperCase()];
 
 // highlight changed parameters
 // TaskTemplate.prototype._highlight_changed_parameters = function ( parameters )  {
-//   for (var item in parameters)
+//   for (let item in parameters)
 //     if ('value' in parameters[item])  {
 //       if (parameters[item].value!=parameters[item].default_value)  {
 //         if ('label' in parameters[item])
@@ -366,7 +366,7 @@ let wscript   = ['@' + wrun_name.toUpperCase()];
 
 // recursion for substituting suggested parameters in depth
 TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParameters )  {
-  for (var item in parameters)
+  for (let item in parameters)
     if (item in suggestedParameters)  {
       if (parameters[item].value!=suggestedParameters[item])  {
         parameters[item].value = suggestedParameters[item];
@@ -392,14 +392,14 @@ function update_project_metrics ( task,metrics )  {
       metrics.R_free   = 2.0;
       metrics.R_factor = 2.0;
     }
-    var r = null;  // revision
+    let r = null;  // revision
     if (('output_data' in task) && ('DataRevision' in task.output_data.data))
       r = task.output_data.data.DataRevision[0];
     if ('scores' in task)
-      for (var key in task.scores)  {
-        var d = task.scores[key];
+      for (let key in task.scores)  {
+        let d = task.scores[key];
         if ('R_free' in d)  {
-          var rfree = parseFloat(d.R_free);
+          let rfree = parseFloat(d.R_free);
           if (d.R_free<metrics.R_free)  {
             metrics.R_free   = rfree;
             metrics.R_factor = parseFloat(d.R_factor);
@@ -413,15 +413,15 @@ function update_project_metrics ( task,metrics )  {
               metrics.nRes_ASU  = r.ASU.nRes;
               if ('ha_type' in r.ASU)  metrics.ha_type = r.ASU.ha_type;
                                  else  metrics.ha_type = '';
-              var nunits = 0;
-              for (var i=0;i<r.ASU.seq.length;i++)
+              let nunits = 0;
+              for (let i=0;i<r.ASU.seq.length;i++)
                 nunits += r.ASU.seq[i].ncopies;
               metrics.nUnits_ASU  = nunits;
               if (('Structure' in r) && (r.Structure))  {
-                var nr     = 0;
-                var models = r.Structure.xyzmeta.xyz;
+                let nr     = 0;
+                let models = r.Structure.xyzmeta.xyz;
                 if (models.length>0)
-                  for (var i=0;i<models[0].chains.length;i++)
+                  for (let i=0;i<models[0].chains.length;i++)
                     nr += models[0].chains[i].size;
                 metrics.nRes_Model   = nr;
                 metrics.nUnits_Model = models[0].chains.length;
@@ -451,8 +451,8 @@ if (!dbx)  {
     if (base_name && (base_name!='*'))  {
       this.oname = '';
       if (__current_page && (__current_page._type=='ProjectPage'))  {
-        // var pData = __current_page.job_tree.projectData;
-        var pData = __current_page.jobTree.projectData;
+        // let pData = __current_page.job_tree.projectData;
+        let pData = __current_page.jobTree.projectData;
 //        checkProjectData ( pData );
         if (pData)  {
           if (__user_settings.hasOwnProperty('project_prefix') &&
@@ -470,11 +470,11 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.compareEnvironment = function ( reqEnv,env )  {
-    var ok = true;
-    for (var i=0;(i<reqEnv.length) && ok;i++)
+    let ok = true;
+    for (let i=0;(i<reqEnv.length) && ok;i++)
       if (reqEnv[i].constructor === Array)  {
         ok = false;
-        for (var j=0;(j<reqEnv[i].length) && (!ok);j++)
+        for (let j=0;(j<reqEnv[i].length) && (!ok);j++)
           ok = (env.indexOf(reqEnv[i][j])>=0);
       } else
         ok = (env.indexOf(reqEnv[i])>=0);
@@ -616,7 +616,7 @@ if (!dbx)  {
 
     } else  {
 
-      var authID = this.authorisationID();
+      let authID = this.authorisationID();
       if (authID && //__auth_software && (authID in __auth_software) &&
           (!__local_user) && ((!(authID in __user_authorisation)) ||
                               (!__user_authorisation[authID].auth_date)))  {
@@ -681,17 +681,17 @@ if (!dbx)  {
 
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   // Version for moving only sibling jobs
-  // var parent_task = jobTree.getTaskByNodeId(node.parentId);
+  // let parent_task = jobTree.getTaskByNodeId(node.parentId);
     if (this.isArchived())  return false;
     if ((this.state!=job_code.new) &&
         (this.state!=job_code.running) && (this.state!=job_code.exiting))  {
-      var p = jobTree.getNodePosition(node);
+      let p = jobTree.getNodePosition(node);
       // p[0] is sibling position (<=0 means "leading sibling")
       return (p[0]>0); 
-      // var pos   = p[0];  // sibling position (<=0 means "leading sibling")
-      // var pnode = p[1];
-      // var pid   = p[2];
-      // var clen  = p[3];  // number of siblings
+      // let pos   = p[0];  // sibling position (<=0 means "leading sibling")
+      // let pnode = p[1];
+      // let pid   = p[2];
+      // let clen  = p[3];  // number of siblings
     }
     return false;
   }
@@ -700,8 +700,8 @@ if (!dbx)  {
   /* =================== Version based on the data flow logics
 
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
-  var parent_task = jobTree.getTaskByNodeId(node.parentId);
-  var can_move    = false;
+  let parent_task = jobTree.getTaskByNodeId(node.parentId);
+  let can_move    = false;
 
     if (this.isArchived())  return false;
 
@@ -709,11 +709,11 @@ if (!dbx)  {
     if ((this.state!=job_code.new) &&
         (this.state!=job_code.running) && (this.state!=job_code.exiting))  {
 
-      var p = jobTree.getNodePosition(node);
-      var pos   = p[0];  // sibling position (<=0 means "leading sibling")
-      var pnode = p[1];
-      var pid   = p[2];
-      var clen  = p[3];  // number of siblings
+      let p = jobTree.getNodePosition(node);
+      let pos   = p[0];  // sibling position (<=0 means "leading sibling")
+      let pnode = p[1];
+      let pid   = p[2];
+      let clen  = p[3];  // number of siblings
 
       can_move = true;
       //if (pnode && pid && (pos<=0) && (clen<2))  {
@@ -722,9 +722,9 @@ if (!dbx)  {
       //if (pnode && pid && ((pos<=0) || (clen<2)))  {
         // no siblings or seniour sibling -- check input data
         if (parent_task)  {
-          for (var dtype in this.input_data.data)  {
-            var d = this.input_data.data[dtype];
-            for (var j=0;(j<d.length) && can_move;j++)
+          for (let dtype in this.input_data.data)  {
+            let d = this.input_data.data[dtype];
+            for (let j=0;(j<d.length) && can_move;j++)
               if (d[j].jobId==parent_task.id)
                 can_move = false;
             if (!can_move)
@@ -754,11 +754,11 @@ if (!dbx)  {
   TaskTemplate.prototype.getProjectURL = function ( jobId,filePath )  {
   // forms pseudo-URL for accesing file with 'filePath' relative to job
   // directory of given (NOT THIS) job in same project as 'this' one
-  var token;
+  let token;
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
+    let url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               jobId + '/' + filePath;
     return url;
   }
@@ -767,11 +767,11 @@ if (!dbx)  {
   TaskTemplate.prototype.getURL = function ( filePath )  {
   // forms pseudo-URL for accesing file with 'filePath' relative to job
   // directory
-  var token;
+  let token;
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
-    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
+    let url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + filePath;
     return url;
   }
@@ -782,13 +782,13 @@ if (!dbx)  {
 
   TaskTemplate.prototype.getReportURL = function()  {
   // forms pseudo-URL for accessing files in job's report directory
-  var token;
+  let token;
     //if (__login_token)  token = __login_token.getValue();
     if (__login_token)  token = __login_token;
                   else  token = '404';
     // 'report/index.html' is hard-wired here and is used by cofe server,
     // which sends cofe-specific jsrview bootrstrap html file back.
-    var url = __special_url_tag + '/' + token + '/' + this.project + '/' +
+    let url = __special_url_tag + '/' + token + '/' + this.project + '/' +
               this.id + '/' + this.getLocalReportPath();
     return url;
   }
@@ -804,7 +804,7 @@ if (!dbx)  {
   // header for inputPanel, displayed in JobDialog
 
     function putLabel ( text,row,col )  {
-      var lbl = header.setLabel ( text,row,col,1,1 )
+      let lbl = header.setLabel ( text,row,col,1,1 )
                       .setFontItalic(true).setNoWrap().setHeight('1em');
       header.setVerticalAlignment ( row,col,'middle' );
       header.setCellSize ( '2%' ,'', row,col );
@@ -812,7 +812,7 @@ if (!dbx)  {
     }
 
     function putInput ( text,prompt,row,col )  {
-      //var txt = text.replace ( /<(?:.|\n)*?>/gm, '' );
+      //let txt = text.replace ( /<(?:.|\n)*?>/gm, '' );
       let n = text.indexOf('<b>');
       if (n<0)
         n = text.indexOf ( ' -- ' );
@@ -956,7 +956,7 @@ if (!dbx)  {
   // stores it in internal fields. Returns empty string if input is
   // validated, and an error message otherwise
 
-  var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
+  let msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                  // otherwise, it ocntains a concatenation of errors found.
 
     if (inputPanel.hasOwnProperty('header'))  {
@@ -1006,7 +1006,7 @@ if (!dbx)  {
 
   /*
   function _fill_dropdown ( ddn )  {
-    for (var j=0;j<ddn.ddndata.length;j++)
+    for (let j=0;j<ddn.ddndata.length;j++)
       if (ddn.ddndata[j][0])  {
         ddn.addItem ( ddn.ddndata[j][0],'',ddn.ddndata[j][1],ddn.ddndata[j][2] );
         if (ddn.ddndata[j][3])
@@ -1022,11 +1022,11 @@ if (!dbx)  {
       // The next line is necessary for annotating just this upload.
       // If sequences also need to be uploaded. file_mod should be cleared
       // the 'annotation' field when seq file is being uploaded
-      var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
-      var fname = files[0].name;
+      let file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+      let fname = files[0].name;
       if (div.file_system=='cloud')  //  local/cloud for file upload
         fname = 'cloudstorage::/' + this.currentCloudPath + '/' + fname;
-      var fext = fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 1)
+      let fext = fname.slice((fname.lastIndexOf(".") - 1 >>> 0) + 1)
                       .toLowerCase();
       if (['.sca','.seq','.pir','.fasta'].indexOf(fext)>=0)  {
         _import_checkFiles ( files,file_mod,div.upload_files,function(){
@@ -1075,7 +1075,7 @@ if (!dbx)  {
     div.source_select_ddn.make();
     div.source_select_ddn.addOnChangeListener ( function(text,value){
       div.file_system = value;
-      for (var i=0;i<div.itext.length;i++)
+      for (let i=0;i<div.itext.length;i++)
         div.itext[i].setValue ( '' );
     });
     div.source_select_ddn.setWidth ( '180px' );
@@ -1121,7 +1121,7 @@ if (!dbx)  {
           }
         });
         f.addOnChangeListener ( function(){
-          var files = f.getFiles();
+          let files = f.getFiles();
           self.__set_selected_files ( files,t,div,fd );
         });
       }(btn,fsel,fsdesc,itext,this))
@@ -1176,7 +1176,7 @@ if (!dbx)  {
           n = i;
       let code   = false;
       let smiles = false;
-      for (var i=0;i<div.ligands.length;i++)  {
+      for (let i=0;i<div.ligands.length;i++)  {
         let visible = (i<=n+1);
         let source  = div.ligands[i].selection.getValue();
         div.ligands[i].label    .setVisible ( visible );
@@ -1227,11 +1227,11 @@ if (!dbx)  {
       } else
         sel.fid = null;
       sel.make();
-      var code   = div.grid.setInputText ( this.input_ligands[i].code,row,3,1,1 )
+      let code   = div.grid.setInputText ( this.input_ligands[i].code,row,3,1,1 )
                            .setWidth_px(50).setNoWrap().setMaxInputLength(3)
                            .setTooltip ( tooltip )
                            .setVisible(this.input_ligands[i].source=='M');
-      var smiles = div.grid.setInputText ( this.input_ligands[i].smiles,row,4,1,1 )
+      let smiles = div.grid.setInputText ( this.input_ligands[i].smiles,row,4,1,1 )
                            .setWidth_px(500).setNoWrap()
                            .setTooltip ( tooltip )
                            .setVisible(this.input_ligands[i].source=='S');
@@ -1261,8 +1261,8 @@ if (!dbx)  {
 
     showLigands();
 
-    // var ncols = div.grid.getNCols();
-    // for (var i=1;i<ncols;i++)  {
+    // let ncols = div.grid.getNCols();
+    // for (let i=1;i<ncols;i++)  {
     //   div.grid.setLabel    ( ' ',row0,i,1,1   ).setHeight_px(8);
     //   div.grid.setCellSize ( 'auto','',row0,i );
     // }
@@ -1339,15 +1339,15 @@ if (!dbx)  {
 
     // generate vectors of suitable (subject to subtypes) datasets; for
     // simplicity, keep just the dataset serial numbers
-    var dsn = [];  // dsn[i][j] gives serial number of jth dataset
+    let dsn = [];  // dsn[i][j] gives serial number of jth dataset
                    // suitable for ith input data parameter
-    var ddt = [];  // ddt[i][j] gives dataset with serial number j of data type
+    let ddt = [];  // ddt[i][j] gives dataset with serial number j of data type
                    // compatible with ith input parameter
-    var ddf = [];  // ddf[i] is true if any data, suitable for ith input
+    let ddf = [];  // ddf[i] is true if any data, suitable for ith input
                    // parameter, was generated in the previous job
 
     // allocate dropdown widgets
-    var dropdown = [];  // dropdown[i][j] gives jth dropdown widget for ith
+    let dropdown = [];  // dropdown[i][j] gives jth dropdown widget for ith
                         // input data parameter
 
     grid.void_data = {};  // collectes data from 'void' data entries
@@ -1355,10 +1355,10 @@ if (!dbx)  {
     for (let i=0;i<this.input_dtypes.length;i++)  {
       // loop over input data structures in 'this' task
 
-      var inp_item = this.input_dtypes[i];
-      var dn       = [];
-      var dt       = [];
-      var df       = false;
+      let inp_item = this.input_dtypes[i];
+      let dn       = [];
+      let dt       = [];
+      let df       = false;
 
       if (!startsWith(inp_item.inputId,'void'))  {
 
@@ -1407,7 +1407,7 @@ if (!dbx)  {
 
       } else  {
 
-        var void_data = [];
+        let void_data = [];
         for (let dtype in inp_item.data_type)
           if (dtype in dataBox.data)  // given data type is found in the data box
             void_data = void_data.concat ( dataBox.data[dtype] );
@@ -1425,57 +1425,57 @@ if (!dbx)  {
 
     // 1. Fill all dropdowns with data and lay them out with all other widgets
 
-    var versionMatch = true;
+    let versionMatch = true;
     grid.inputPanel.fullVersionMismatch = false;
 
-    var r = row;
+    let r = row;
     for (let i=0;i<this.input_dtypes.length;i++)  {
       // loop over input data structures in 'this' task
 
-      var dt = ddt[i];
-      var dn = dsn[i];
+      let dt = ddt[i];
+      let dn = dsn[i];
 
       // check if given data type is present in the data box
       if (dn.length>0)  {
 
-        var inp_item = this.input_dtypes[i];
+        let inp_item = this.input_dtypes[i];
 
         // acquire currently selected data, corresponding to current data id,
         // from the task; this list is empty (zero-length) at first creation
         // of the interface
-        var inp_data = this.input_data.getData ( inp_item.inputId );
+        let inp_data = this.input_data.getData ( inp_item.inputId );
 
-        var layCustom = '';
+        let layCustom = '';
         if (inp_item.hasOwnProperty('customInput'))
           layCustom = inp_item.customInput;
 
-        var inp_item_version = 0;
+        let inp_item_version = 0;
         if (inp_item.hasOwnProperty('version'))
           inp_item_version = inp_item.version;
 
-        var nmax = Math.min ( dn.length,inp_item.max );  // maximum number of
+        let nmax = Math.min ( dn.length,inp_item.max );  // maximum number of
                                                          // datasets to display
 
         // force>0 will force choosing N=force data items (if available)
         // at first data load
-        var ndset = inp_item.min;
+        let ndset = inp_item.min;
         if (inp_item.hasOwnProperty('force'))
           ndset = Math.max ( ndset,inp_item.force );
 
         for (let n=0;n<nmax;n++)  {
 
           dropdown[i].push ( new Dropdown() );
-          var ddn     = dropdown[i][n];
+          let ddn     = dropdown[i][n];
           ddn.dataBox = dataBox;
           ddn.row     = r;
           ddn.task    = this;
           ddn.grid    = grid;
 
           // put label widget in the Grid
-          var label_text = inp_item.label;
+          let label_text = inp_item.label;
           if (nmax>1)
             label_text = label_text + ' (' + (n+1) + ')';
-          var label = grid.setLabel ( label_text, r,0, 1,1 ).setFontItalic(true)
+          let label = grid.setLabel ( label_text, r,0, 1,1 ).setFontItalic(true)
                                           .setFontBold(true).setNoWrap();
           grid.setCellSize          ( '5%','',r,0  );
           grid.setVerticalAlignment ( r,0,'middle' );
@@ -1497,7 +1497,7 @@ if (!dbx)  {
             });
           }(ddn,dt,this));
 
-          var sel = true;
+          let sel = true;
           if (n>=inp_item.min)  {
             if (inp_item.hasOwnProperty('unchosen_label') && (n==0))  {
               ddn.addItem ( inp_item.unchosen_label,'',-1,(n>=ndset) );
@@ -1510,14 +1510,14 @@ if (!dbx)  {
           // fill up the combobox with data names from the box, using positive
           // itemIds and making selections as appropriate
 
-          var ndisabled = 0;
-          var ddndata   = [];
+          let ndisabled = 0;
+          let ddndata   = [];
           for (let j=0;j<dn.length;j++)  {
-            var k = dn[j];
-            var data_title = dt[k].dname;
+            let k = dn[j];
+            let data_title = dt[k].dname;
             if (('cast' in inp_item) && (!dt[k].hasSubtype('proxy')))  {
-              var cast1  = '/' + inp_item.cast + '/';
-              var p = data_title.indexOf ( '/xyz/' );
+              let cast1  = '/' + inp_item.cast + '/';
+              let p = data_title.indexOf ( '/xyz/' );
               if (p<0)  p = data_title.indexOf ( '/hkl/' );
               if (p<0)  p = data_title.indexOf ( '/unmerged/'  );
               if (p<0)  p = data_title.indexOf ( '/seqeunce/'  );
@@ -1646,21 +1646,21 @@ if (!dbx)  {
       for (let i=0;i<this.input_dtypes.length;i++)
         if ((dropdown[i].length>0) && (!ddf[i]))  {
 
-          var dt = ddt[i];
-          var dn = dsn[i];
+          let dt = ddt[i];
+          let dn = dsn[i];
 
           // check if given data type is present in the data box
           if (dn.length>0)  {
 
-            var inp_item  = this.input_dtypes[i];
-            var inp_assoc = [];
-            for (var dtype in inp_item.data_type)
+            let inp_item  = this.input_dtypes[i];
+            let inp_assoc = [];
+            for (let dtype in inp_item.data_type)
               if (dtype in dataBox.inp_assoc)
                 inp_assoc = inp_assoc.concat ( dataBox.inp_assoc[dtype] );
 
             // force>0 will force choosing N=force data items (if available)
             // at first data load
-            var force = 0;
+            let force = 0;
             if (inp_item.hasOwnProperty('force'))
               force = inp_item.force;
             else  {  // try to load all relevant associated data
@@ -1670,10 +1670,10 @@ if (!dbx)  {
             }
 
             // maximum number of datasets to display
-            var nmax = Math.min ( dn.length,Math.max(inp_item.min,force) );
+            let nmax = Math.min ( dn.length,Math.max(inp_item.min,force) );
 
-            var k = 0;
-            var a = true;
+            let k = 0;
+            let a = true;
             for (let n=0;n<nmax;n++)  {
               if (a)  {
                 while (k<dn.length)
@@ -1735,20 +1735,20 @@ if (!dbx)  {
         if (dropdown[i].length>0)  {
           // fill data menu for ith input data type
 
-          var dt = ddt[i];
-          var dn = dsn[i];
+          let dt = ddt[i];
+          let dn = dsn[i];
 
           // check if given data type is present in the data box
           if (dn.length>0)  {
 
-            var inp_item = this.input_dtypes[i];
+            let inp_item = this.input_dtypes[i];
 
             // acquire currently selected data, corresponding to current data id,
             // from the task; this list is empty (zero-length) at first creation
             // of the interface
-            var inp_data = this.input_data.getData ( inp_item.inputId );
+            let inp_data = this.input_data.getData ( inp_item.inputId );
 
-            // ***before 09.03.2023 var j = -1;
+            // ***before 09.03.2023 let j = -1;
             for (let n=0;n<inp_data.length;n++)  {
               let j = 0;
               while ((j<dn.length) && (dt[dn[j]].dataId!=inp_data[n].dataId))
@@ -1836,13 +1836,13 @@ if (!dbx)  {
 
     if ('inpDataRef' in inpParamRef.grid) {
 
-      var input = inpParamRef.grid.inpDataRef.input;
+      let input = inpParamRef.grid.inpDataRef.input;
 
       for (let i=0;i<input.length;i++)  {
-        var dropdown = input[i].dropdown;
+        let dropdown = input[i].dropdown;
         if (dropdown.length>1)  {
-          var n0 = -1;
-          for (var n=0;n<dropdown.length;n++)
+          let n0 = -1;
+          for (let n=0;n<dropdown.length;n++)
             if (dropdown[n].getValue()>=0)
               n0 = -1;
             else {
@@ -1889,7 +1889,7 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.collectInputLigands = function ( inputPanel )  {
-    var msg = '';  // Ok if stays empty
+    let msg = '';  // Ok if stays empty
 
     for (let i=0;i<this.input_ligands.length;i++)  {
       this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
@@ -1903,7 +1903,7 @@ if (!dbx)  {
       }
     }
 
-    var unique = true;
+    let unique = true;
     for (let i=0;(i<this.input_ligands.length) && unique;i++)
       if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
         for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
@@ -1924,31 +1924,31 @@ if (!dbx)  {
   // This function collects input data (that is, secification of input files),
   // from input panel. The data populates this.input_data structure.
 
-    var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
+    let msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
 
-    var inp_data = new DataBox();
+    let inp_data = new DataBox();
 
     function collectData ( widget ) { // made recursive due to unspecified
                                       // enclosure of widgets in input panel
 
       if (('inpDataRef' in widget) && ('dataBox' in widget))  {
-        var input = widget.inpDataRef.input;
+        let input = widget.inpDataRef.input;
 
-        for (var i=0;i<input.length;i++)  {
-          var dt       = input[i].dt;
-          var dropdown = input[i].dropdown;
+        for (let i=0;i<input.length;i++)  {
+          let dt       = input[i].dt;
+          let dropdown = input[i].dropdown;
           for (let j=0;j<dropdown.length;j++)  {
-            var index = dropdown[j].getValue();
+            let index = dropdown[j].getValue();
             if (index>=0)  { // this skips non-mandatory items selected as
                              // 'do not use'
               // clone data object, otherwise input from customGrid will be
               // stored in original metadata, which is not good
               //$$$$ does not clone!
-              var dtj = jQuery.extend ( true,{},dt[index] );
-              //var dtj = deepClone ( dt[index] );
+              let dtj = jQuery.extend ( true,{},dt[index] );
+              //let dtj = deepClone ( dt[index] );
               if (dropdown[j].hasOwnProperty('customGrid'))  {
-                var msg_j = dtj.collectCustomDropdownInput ( dropdown[j] );
+                let msg_j = dtj.collectCustomDropdownInput ( dropdown[j] );
                 if (msg_j.length>0)
                   msg += '|' + msg_j;
               }
@@ -1961,11 +1961,11 @@ if (!dbx)  {
       }
 
       if ('void_data' in widget)
-        for (var inputId in widget.void_data)
-          for (var j=0;j<widget.void_data[inputId].length;j++)
+        for (let inputId in widget.void_data)
+          for (let j=0;j<widget.void_data[inputId].length;j++)
             inp_data.addCustomData ( inputId,widget.void_data[inputId][j] );
 
-      for (var i=0;i<widget.child.length;i++)
+      for (let i=0;i<widget.child.length;i++)
         collectData ( widget.child[i] );
 
     }
@@ -2007,7 +2007,7 @@ if (!dbx)  {
   //       the visibility of data widget
   //
 
-    var op = '&&';  // logical 'and'
+    let op = '&&';  // logical 'and'
 //    try {
     if ('_' in condition)
       op = condition['_'];
@@ -2015,14 +2015,14 @@ if (!dbx)  {
 //      alert ( 'condition=' + condition );
 //    }
 
-    var result = (op=='&&');
+    let result = (op=='&&');
 
-    for (var c in condition)
+    for (let c in condition)
       if (c!='_')  {
-        var value = false;
+        let value = false;
         if (condition[c].constructor===Array)  {
           if (c in parameters)  {
-            var v = null;
+            let v = null;
             if (parameters[c].hasOwnProperty('input'))
               v = parameters[c].input.getValue();
             else if (parameters[c].ref.hasOwnProperty('value'))
@@ -2058,28 +2058,28 @@ if (!dbx)  {
   TaskTemplate.prototype.addCustomDataState = function ( inpDataRef,dataState ) {}
 
   TaskTemplate.prototype.getDataState = function ( inpDataRef )  {
-  var grid      = inpDataRef.grid;
-  var dataState = {};
+  let grid      = inpDataRef.grid;
+  let dataState = {};
 
 // console.log ( ' data state eval ');
 
-    for (var i=0;i<this.input_dtypes.length;i++)  {
-      var inputId = this.input_dtypes[i].inputId;
-      var item    = this.getInputItem ( inpDataRef,inputId );
+    for (let i=0;i<this.input_dtypes.length;i++)  {
+      let inputId = this.input_dtypes[i].inputId;
+      let item    = this.getInputItem ( inpDataRef,inputId );
       if (item)  {
-        var dropdown = item.dropdown;
-        var dt       = item.dt;
+        let dropdown = item.dropdown;
+        let dt       = item.dt;
         dataState[inputId] = 0;
-        for (var j=0;j<dropdown.length;j++)  {
-          var index = dropdown[j].getValue();
+        for (let j=0;j<dropdown.length;j++)  {
+          let index = dropdown[j].getValue();
           if ((!grid.wasRowHidden(dropdown[j].row)) && (index>=0))  {
             dataState[inputId]++;
-            var ids = inputId + '.type:' + dt[index]._type;
+            let ids = inputId + '.type:' + dt[index]._type;
             if (!dataState.hasOwnProperty(ids))
                   dataState[ids] = 1;
             else  dataState[ids]++;
-            var subtype = dt[index].subtype;
-            for (var k=0;k<subtype.length;k++)  {
+            let subtype = dt[index].subtype;
+            for (let k=0;k<subtype.length;k++)  {
               ids = inputId + '.subtype:' + subtype[k];
               if (!dataState.hasOwnProperty(ids))
                     dataState[ids] = 1;
@@ -2098,17 +2098,17 @@ if (!dbx)  {
 
   TaskTemplate.prototype.inputChanged = function ( inpParamRef,emitterId,
                                                    emitterValue )  {
-  //var inpDataRef = inpParamRef.grid.inpDataRef;
-  var parameters = inpParamRef.parameters;
-  //var input      = inpDataRef.input;
-  //var dataState  = this.getDataState ( inpDataRef );
-  var dataState  = null;
+  //let inpDataRef = inpParamRef.grid.inpDataRef;
+  let parameters = inpParamRef.parameters;
+  //let input      = inpDataRef.input;
+  //let dataState  = this.getDataState ( inpDataRef );
+  let dataState  = null;
 
     if ('inpDataRef' in inpParamRef.grid)
           dataState = this.getDataState ( inpParamRef.grid.inpDataRef );
     else  dataState = {};
 
-    for (var key in parameters)  {
+    for (let key in parameters)  {
       parameters[key].ref.visible = true;
       if (key in inpParamRef.showon)
         parameters[key].ref.visible = this.evaluateCondition (
@@ -2118,10 +2118,10 @@ if (!dbx)  {
                                inpParamRef.hideon[key],parameters,dataState );
     }
 
-    for (var key in parameters)  {
-      var show = parameters[key].ref.visible;
+    for (let key in parameters)  {
+      let show = parameters[key].ref.visible;
       if (parameters[key].ref._visible!=show)  {
-        for (var elem in parameters[key])
+        for (let elem in parameters[key])
           if ('setVisible' in parameters[key][elem])
             parameters[key][elem].setVisible ( show );
         parameters[key].ref._visible = show;
@@ -2272,18 +2272,18 @@ if (!dbx)  {
 
   TaskTemplate.prototype._lay_parameters = function ( grid,row,col,params,inpParamRef ) {
   // internal recursive function, do not overwrite
-  var iwidth,defval,tooltip;
+  let iwidth,defval,tooltip;
 
     for (let key in params) {
 
       if (params.hasOwnProperty(key))  {
-        var item = params[key];
+        let item = params[key];
 
         if (item.hasOwnProperty('type'))  {
-          var r  = row + item.position[0];
-          var c  = col + item.position[1];
-          var rs = item.position[2];
-          var cs = item.position[3];
+          let r  = row + item.position[0];
+          let c  = col + item.position[1];
+          let rs = item.position[2];
+          let cs = item.position[3];
           item.visible = true;
           if ('default' in item)           defval  = item.default;
           else if ('placeholder' in item)  defval  = item.placeholder;
@@ -2296,7 +2296,7 @@ if (!dbx)  {
             case 'section'  : inpParamRef.parameters[key]     = {};
                               inpParamRef.parameters[key].ref = item;
                               if (item.title.length>0)  {
-                                var sec = grid.setSection ( item.title,item.open,
+                                let sec = grid.setSection ( item.title,item.open,
                                                             r,c,rs,cs );
                                 inpParamRef.parameters[key].sec = sec;
                                 inpParamRef.parameters[key].ref.visible  = true;
@@ -2305,7 +2305,7 @@ if (!dbx)  {
                                 this._lay_parameters ( sec.grid,0,0,item.contains,
                                                        inpParamRef );
                               } else  {
-                                var sec = grid.setGrid ( '-compact',r,c,rs,cs );
+                                let sec = grid.setGrid ( '-compact',r,c,rs,cs );
                                 inpParamRef.parameters[key].sec = sec;
                                 inpParamRef.parameters[key].ref.visible  = true;
                                 inpParamRef.parameters[key].ref._visible = true;
@@ -2406,7 +2406,7 @@ if (!dbx)  {
                               inpParamRef.parameters[key].ref = item;
                               inpParamRef.parameters[key].ref.visible  = true;
                               inpParamRef.parameters[key].ref._visible = true;
-                              var checkbox = grid.addCheckbox ( item.label,
+                              let checkbox = grid.addCheckbox ( item.label,
                                                          item.value,r,c,rs,cs );
                               checkbox.setTooltip ( item.tooltip );
                               if (item.hasOwnProperty('iwidth'))  {
@@ -2428,16 +2428,16 @@ if (!dbx)  {
                               inpParamRef.parameters[key].ref = item;
                               inpParamRef.parameters[key].ref.visible  = true;
                               inpParamRef.parameters[key].ref._visible = true;
-                              var placeholder = '';
-                              var nrows       = 5;
-                              var ncols       = 80;
+                              let placeholder = '';
+                              let nrows       = 5;
+                              let ncols       = 80;
                               if (item.hasOwnProperty('placeholder'))
                                 placeholder = item.placeholder;
                               if (item.hasOwnProperty('nrows'))
                                 nrows = item.nrows;
                               if (item.hasOwnProperty('ncols'))
                                 ncols = item.ncols;
-                              var textarea = grid.setTextArea ( item.value,
+                              let textarea = grid.setTextArea ( item.value,
                                         placeholder, nrows,ncols, r,c, rs,cs );
                               textarea.setTooltip ( item.tooltip );
                               $(textarea.element).css ({
@@ -2464,16 +2464,16 @@ if (!dbx)  {
                               inpParamRef.parameters[key].ref = item;
                               inpParamRef.parameters[key].ref.visible  = true;
                               inpParamRef.parameters[key].ref._visible = true;
-                              var iwidth  = 800;
-                              var iheight = 320;
+                              let iwidth  = 800;
+                              let iheight = 320;
                               if (item.hasOwnProperty('iwidth'))
                                 iwidth = item.iwidth;
                               if (item.hasOwnProperty('iheight'))
                                 iheight = item.iheight;
-                              var pholder = '';
+                              let pholder = '';
                               if (item.hasOwnProperty('placeholder'))
                                 pholder = item.placeholder;
-                              var aceditor = new ACEditor ( iwidth,iheight,{
+                              let aceditor = new ACEditor ( iwidth,iheight,{
                                 'box-shadow'  : '6px 6px lightgray',
                                 'theme'       : 'chrome',
                                 'mode'        : 'python'
@@ -2507,20 +2507,20 @@ if (!dbx)  {
   // counts the current number of datasets belonging to given 'inputId' and
   // 'subtype'. Empty subtype ('') will return the total number for all
   // subtypes.
-  var n = 0;
-  var item = this.getInputItem ( inpDataRef,inputId );
-  var grid = inpDataRef.grid;
+  let n = 0;
+  let item = this.getInputItem ( inpDataRef,inputId );
+  let grid = inpDataRef.grid;
 
     if (item)  {
-      var dropdown = item.dropdown;
+      let dropdown = item.dropdown;
       if (!subtype)  {
-        for (var j=0;j<dropdown.length;j++)
+        for (let j=0;j<dropdown.length;j++)
           if ((!grid.wasRowHidden(dropdown[j].row)) && (dropdown[j].getValue()>=0))
             n++;
       } else  {
-        var dt = item.dt;
-        for (var j=0;j<dropdown.length;j++)  {
-          var index = dropdown[j].getValue();
+        let dt = item.dt;
+        for (let j=0;j<dropdown.length;j++)  {
+          let index = dropdown[j].getValue();
           if ((!grid.wasRowHidden(dropdown[j].row)) && (index>=0) &&
               (dt[index].subtypes.indexOf(subtype)>=0))
             n++;
@@ -2535,14 +2535,14 @@ if (!dbx)  {
 /*
     TaskTemplate.prototype.countInputData = function ( inpDataRef,inputId ) {
     // counts the current number of datasets belonging to given 'inputId'.
-    var n = 0;
-    var input = inpDataRef.input;
-    var grid  = inpDataRef.grid;
+    let n = 0;
+    let input = inpDataRef.input;
+    let grid  = inpDataRef.grid;
 
-      for (var i=0;i<input.length;i++)
+      for (let i=0;i<input.length;i++)
         if (input[i].inputId==inputId)  {
-          var dropdown = input[i].dropdown;
-          for (var j=0;j<dropdown.length;j++)
+          let dropdown = input[i].dropdown;
+          for (let j=0;j<dropdown.length;j++)
             if ((!grid.wasRowHidden(dropdown[j].row)) && (dropdown[j].getValue()>=0))
               n++;
           break;
@@ -2555,9 +2555,9 @@ if (!dbx)  {
 
   TaskTemplate.prototype.getInputItem = function ( inpDataRef,inputId ) {
   // returns input item corresponding to given 'inputId'.
-  var item  = null;
-  var input = inpDataRef.input;
-    for (var i=0;(i<input.length) && (!item);i++)
+  let item  = null;
+  let input = inpDataRef.input;
+    for (let i=0;(i<input.length) && (!item);i++)
       if (input[i].inputId==inputId)
         item = input[i];
     return item;
@@ -2567,19 +2567,19 @@ if (!dbx)  {
 
   TaskTemplate.prototype.getInputData = function ( inpDataRef,inputId ) {
   // returns input item corresponding to given 'inputId'.
-  var item = this.getInputItem ( inpDataRef,inputId );
-  var data = [];
+  let item = this.getInputItem ( inpDataRef,inputId );
+  let data = [];
 
     if (item)  {
-      var dt       = item.dt;
-      var dropdown = item.dropdown;
-      for (var i=0;i<dropdown.length;i++)  {
-        var index = dropdown[i].getValue();
+      let dt       = item.dt;
+      let dropdown = item.dropdown;
+      for (let i=0;i<dropdown.length;i++)  {
+        let index = dropdown[i].getValue();
         if (index>=0)  { // this skips non-mandatory items selected as
                          // 'do not use'
           // clone data object, otherwise input from customGrid will be
           // stored in original metadata, which is not good
-          var dti = jQuery.extend ( true,{},dt[index] );
+          let dti = jQuery.extend ( true,{},dt[index] );
           if (dropdown[i].hasOwnProperty('customGrid'))
             dti.collectCustomDropdownInput ( dropdown[i] );
           dti.visible = dropdown[i].isVisible();
@@ -2595,9 +2595,9 @@ if (!dbx)  {
 
   TaskTemplate.prototype.getInputItemNo = function ( inpDataRef,inputId ) {
   // returns input item corresponding to given 'inputId'.
-  var itemNo = -1;
-  var input  = inpDataRef.input;
-    for (var i=0;(i<input.length) && (itemNo<0);i++)
+  let itemNo = -1;
+  let input  = inpDataRef.input;
+    for (let i=0;(i<input.length) && (itemNo<0);i++)
       if (input[i].inputId==inputId)
         itemNo = i;
     return itemNo;
@@ -2676,12 +2676,12 @@ if (!dbx)  {
 
   TaskTemplate.prototype.collectParameterValues = function ( widget ) {
 
-    var msg = '';  // The output. If everything's Ok, 'msg' remains empty,
+    let msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
 
     function addMessage ( item,key,message )  {
       if (item.visible)  {
-        var id = key;
+        let id = key;
         if ('reportas' in item)     id = item.reportas;
         else if ('label' in item)   id = item.label;
         else if ('keyword' in item) id = item.keyword;
@@ -2721,48 +2721,48 @@ if (!dbx)  {
 
       if ('inpParamRef' in widget)  {
 
-        for (var key in widget.inpParamRef.parameters)  {
+        for (let key in widget.inpParamRef.parameters)  {
 
-          var param = widget.inpParamRef.parameters[key];
-          var item  = param.ref;
+          let param = widget.inpParamRef.parameters[key];
+          let item  = param.ref;
 
           switch (item.type)  {
 
             case 'integer_' :
-            case 'integer'  : var text = param.input.getValue().trim();
-                              if (text.length<=0)  {
+            case 'integer'  : let texti = param.input.getValue().trim();
+                              if (texti.length<=0)  {
                                 if (item.type=='integer_')  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
                                 } else
                                   addMessage ( item,key,'no value given' );
-                              } else if (isInteger(text))  {
-                                var value = parseInt ( text );
+                              } else if (isInteger(texti))  {
+                                let value = parseInt ( texti );
                                 checkRange ( value,item,key );
                               } else
                                 addMessage ( item,key,'wrong integer format' );
                           break;
 
             case 'real_'    :
-            case 'real'     : var text = param.input.getValue().trim();
-                              if (text.length<=0)  {
+            case 'real'     : let textr = param.input.getValue().trim();
+                              if (textr.length<=0)  {
                                 if (item.type=='real_')  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
                                 } else
                                   addMessage ( item,key,'no value given' );
-                              } else if (isFloat(text))  {
-                                var value = parseFloat ( text );
+                              } else if (isFloat(textr))  {
+                                let value = parseFloat ( textr );
                                 checkRange ( value,item,key );
                               } else
                                 addMessage ( item,key,'wrong real format' );
                           break;
 
             case 'string_'  :
-            case 'string'   : var text = param.input.getValue().trim();
-                              if (text.length<=0)  {
+            case 'string'   : let texts = param.input.getValue().trim();
+                              if (texts.length<=0)  {
                                 if (item.type=='string_')  {
                                   if ('default' in item)
                                         item.value = item.default;
@@ -2770,7 +2770,7 @@ if (!dbx)  {
                                 } else
                                   addMessage ( item,key,'no value given' );
                               } else
-                                item.value = text;
+                                item.value = texts;
                           break;
 
             case 'checkbox' :
@@ -2778,8 +2778,8 @@ if (!dbx)  {
                           break;
 
             case 'textarea_':
-            case 'textarea' : var text = param.input.getValue();
-                              if (text.length<=0)  {
+            case 'textarea' : let texta = param.input.getValue();
+                              if (texta.length<=0)  {
                                 if (item.type=='textarea_')  {
                                   if ('default' in item)
                                         item.value = item.default;
@@ -2787,12 +2787,12 @@ if (!dbx)  {
                                 } else
                                   addMessage ( item,key,'no value given' );
                               } else
-                                item.value = text;
+                                item.value = texta;
                           break;
 
             case 'aceditor_':
-            case 'aceditor' : var text = param.input.getText();
-                              if (text.length<=0)  {
+            case 'aceditor' : let texte = param.input.getText();
+                              if (texte.length<=0)  {
                                 if (item.type=='aceditor_')  {
                                   if ('default' in item)
                                         item.value = item.default;
@@ -2800,7 +2800,7 @@ if (!dbx)  {
                                 } else
                                   addMessage ( item,key,'no value given' );
                               } else
-                                item.value = text;
+                                item.value = texte;
                           break;
 
             default : ;
@@ -2811,7 +2811,7 @@ if (!dbx)  {
 
       }
 
-      for (var i=0;i<widget.child.length;i++)
+      for (let i=0;i<widget.child.length;i++)
         collectValues ( widget.child[i] );
 
     }
@@ -2830,16 +2830,16 @@ if (!dbx)  {
     /*
     // do recursive search for widgets to disable
     widget.setDisabled ( disable_bool );
-    for (var i=0;i<widget.child.length;i++)
+    for (let i=0;i<widget.child.length;i++)
       this.disableInputWidgets ( widget.child[i],disable_bool );
     */
 
     window.setTimeout ( function(){
       if ('grid' in inputPanel)  {
         if ('inpDataRef' in inputPanel.grid)  {
-          var input = inputPanel.grid.inpDataRef.input;
-          for (var i=0;i<input.length;i++)
-            for (var j=0;j<input[i].dropdown.length;j++)  {
+          let input = inputPanel.grid.inpDataRef.input;
+          for (let i=0;i<input.length;i++)
+            for (let j=0;j<input[i].dropdown.length;j++)  {
               if (disable_bool)
                 input[i].dropdown[j].inspect_btn.setEnabled ( true );
             }
@@ -2866,9 +2866,9 @@ if (!dbx)  {
   TaskTemplate.prototype.doRun = function ( inputPanel,run_func )  {
 
     if ((this.inputMode==input_mode.root) && (this.file_select.length>0))  {
-      var files = [];
+      let files = [];
 
-      for (var i=0;i<this.file_select.length;i++)
+      for (let i=0;i<this.file_select.length;i++)
         files.push ( inputPanel[this.file_select[i].inputId].getFiles() );
 
       new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
@@ -2898,11 +2898,11 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.score_string = function() {
-  var S = '';
+  let S = '';
     if ('scores' in this)  {
       S = '';
-      for (var key in this.scores)  {
-        var d = this.scores[key];
+      for (let key in this.scores)  {
+        let d = this.scores[key];
         if (d.hasOwnProperty('summary_line'))
           S += d.summary_line + ' ';
         else
@@ -2955,7 +2955,7 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.result_indicator = function() {
-    var resind = '';
+    let resind = '';
 
     switch (this.state)  {
 
@@ -3024,9 +3024,9 @@ if (!dbx)  {
   TaskTemplate.prototype.addInputFile = function ( jobId,fileName,jobDir )  {
   // Adds (custom) file 'fileName' from 'outputDir()' of job with id 'jobId',
   // into 'inputDir()' directory of job directory 'jobDir'
-    var srcJobDir = prj.getSiblingJobDirPath ( jobDir,jobId );
-    var src_file  = prj.getOutputFilePath ( srcJobDir,fileName );
-    var dest_file = prj.getInputFilePath  ( jobDir   ,fileName );
+    let srcJobDir = prj.getSiblingJobDirPath ( jobDir,jobId );
+    let src_file  = prj.getOutputFilePath ( srcJobDir,fileName );
+    let dest_file = prj.getInputFilePath  ( jobDir   ,fileName );
     try {
       fs.copySync ( src_file,dest_file );
     } catch (err) {
@@ -3067,7 +3067,7 @@ if (!dbx)  {
 
     if (this.file_system=='cloud')  {
 
-      var uploads_dir = path.join ( jobDir,uh.uploadDir() );
+      let uploads_dir = path.join ( jobDir,uh.uploadDir() );
 
       if (!utils.writeObject(path.join(jobDir,'annotation.json'),this.file_mod))
         console.log ( ' ***** cannot write "annotation.json" in ' + uploads_dir );
@@ -3077,16 +3077,16 @@ if (!dbx)  {
           console.log ( ' ***** cannot create directory ' + uploads_dir );
       }
 
-      var cloudMounts = fcl.getUserCloudMounts ( loginData );
+      let cloudMounts = fcl.getUserCloudMounts ( loginData );
 
-      for (var i=0;i<this.file_select.length;i++)
+      for (let i=0;i<this.file_select.length;i++)
           this.__prepare_file ( this.file_select[i].path,cloudMounts,uploads_dir );
 
-      for (var i=0;i<this.file_mod.annotation.length;i++)  {
+      for (let i=0;i<this.file_mod.annotation.length;i++)  {
         utils.removeFile ( path.join(uploads_dir,this.file_mod.annotation[i].file) );
         //redundant_files.push ( file_mod.annotation[i].file );
-        for (var j=0;j<this.file_mod.annotation[i].items.length;j++)  {
-          var fname = this.file_mod.annotation[i].items[j].rename;
+        for (let j=0;j<this.file_mod.annotation[i].items.length;j++)  {
+          let fname = this.file_mod.annotation[i].items[j].rename;
           utils.writeString ( path.join(uploads_dir,fname),
                               this.file_mod.annotation[i].items[j].contents );
           //fdata.files.push ( fname );
@@ -3141,7 +3141,7 @@ if (!dbx)  {
           console.log ( ' *** empty data object in ' + this._type + '.makeInputData,dtype=' + dtype );
         }
     }
-    // var dboxPath = path.join ( jobDir,'input','databox.meta' );
+    // let dboxPath = path.join ( jobDir,'input','databox.meta' );
     // utils.writeObject ( dboxPath,this.input_data );
   }
 

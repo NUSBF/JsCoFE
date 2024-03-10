@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.03.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ModelCraft Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2024
  *
  *  ==========================================================================
  *
@@ -265,8 +265,8 @@ let version = 1;
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function ModelCraftHotButton()  {
   return {
-    'task'    : 'TaskModelCraft',
-    'tooltip' : 'Automated model building with ModelCraft'
+    'task_name' : 'TaskModelCraft',
+    'tooltip'   : 'Automated model building with ModelCraft'
   };
 }
 
