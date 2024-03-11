@@ -33,6 +33,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Make DUI driver
@@ -112,22 +113,51 @@ class XDS(basic.TaskDriver):
 
         have_results = False
         summary_line = ""
+        
         if os.path.isfile("XDS.INP"):
+            
+            xds_inp = ""
+            with open("XDS.INP","r") as fin:
+                xds_inp = fin.read()
+            
             os.rename ( "XDS.INP",os.path.join(self.outputDir(),"XDS.INP") )
             self.putMessage ( "<b>Image files analysed and XDS input file " +\
                               "created.</b><br>&nbsp;" )
+
+            xds_mode = self.getParameter ( sec1.MODE_SEL )
+
             task_options = { "prevent_autostart" : False }
-            if self.getParameter(sec1.MODE_SEL)=="M":
+            if xds_mode!="A":
                 task_options["prevent_autostart"] = True
             task_options = "'".join(json.dumps(task_options).split('"'))
+
             pyrvapi.rvapi_add_button ( self.getWidgetId("xds_processing"),
                     "Run XDS processing","{function}",
                     "window.parent.rvapi_runHotButtonJob(" + self.job_id +\
                     ",'TaskXDS3'," + task_options + ")",
                     False,self.report_page_id(),self.rvrow,0,1,1 )
+
             self.rvrow  += 1
             have_results = True
             summary_line = "XDS processing prepared"
+
+            # version relying on client code in browser -- better to avoid as
+            # XDS task may see a use in workflows
+            # if xds_mode!="M":
+            #     self.task.task_chain = ["TaskXDS3"]     
+
+            # version exploiting in-built automatic workflow framework
+            if xds_mode!="M":
+                self.task.autoRunName = "_root"
+                self.task.autoRunId   = "auto-XDS"
+                if auto.makeNextTask ( self,{
+                    "xds_inp" : xds_inp
+                },self.file_stderr):
+                    summary_line += " and started"
+                    self.putMessage ( "<h3>XDS processing started</hr>" )
+                else:
+                    summary_line += ", but XDS processing start failed"
+
         else:
             self.putMessage ( "<b>Image files analysis was not successful.<b>" )
             self.putMessage ( "<b>Return code:<b> " + rc.msg )

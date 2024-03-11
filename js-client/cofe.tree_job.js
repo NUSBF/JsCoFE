@@ -1242,7 +1242,13 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
         newtask.task_chain.push ( task.task_chain[i] );
     }
     newtask.onJobDialogStart = function ( job_dialog )  {
-      job_dialog.run_btn.click();  // start automatically
+      function __check_and_start()  {
+        if (newtask.interface_ready())
+              job_dialog.run_btn.click();  // start automatically
+        else  window.setTimeout ( __check_and_start,100 );
+      }
+      __check_and_start();
+      // job_dialog.run_btn.click();  // start automatically
     };
 
     (function(tree){

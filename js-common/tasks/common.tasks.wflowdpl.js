@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.23   <--  Date of Last Modification.
+ *    11.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -11,7 +11,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -62,7 +62,7 @@ function TaskWFlowDPL()  {
     }
   ];
 
-  var __coot_codes = null;
+  let __coot_codes = null;
   if (__make_lig)  __coot_codes = __make_lig.__coot_reserved_codes;
              else  __coot_codes = __coot_reserved_codes;
 
@@ -174,7 +174,7 @@ TaskWFlowDPL.prototype.desc_title     = function()  {
 //TaskWFlowDPL.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWFlowDPL.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -217,7 +217,7 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskWFlowDPL.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.wflow_dpl', jobManager, jobDir, this.id];
