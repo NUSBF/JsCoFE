@@ -60,6 +60,9 @@ class sbgrid extends dataSource {
           if (found) {
             proj = found[1].toLowerCase();
             doi = links[j].children[0].data;
+            if (doi) {
+              doi = doi.toLowerCase();
+            }
           }
 
           // extract the PDB id
