@@ -445,6 +445,13 @@ if (!dbx)  {
     callback_func ( true );
   }
 
+  TaskTemplate.prototype.interface_ready  = function()  { 
+    // use this function when task should launch automatically but preparation
+    // of task interface in browser takes time
+    return true; 
+  }
+
+
   TaskTemplate.prototype.setOName = function ( base_name )  {
   // sets default oname (output file name template) according to account and
   // current project settings

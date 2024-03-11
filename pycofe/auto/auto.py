@@ -68,6 +68,9 @@ def makeNextTask ( body,data,log=None ):
                 template_simpleMR.makeNextTask ( body.task,data )
             elif body.task.autoRunId=="af-MR":
                 template_afMR.makeNextTask ( body.task,data )
+            elif body.task.autoRunId=="auto-XDS":
+                auto_api.addTask      ( "XDS3","TaskXDS3",body.task.autoRunName )
+                auto_api.addTaskField ( "XDS3","xds_inp" ,data["xds_inp"] )
 
             else:
                 return False
