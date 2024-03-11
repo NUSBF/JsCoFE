@@ -38,7 +38,7 @@ class Client {
 
       Object.assign(this.action_map, {
         search: {
-          path: 'search/@0',
+          path: 'search/?f=@0&q=@1',
           method: 'GET'
         },
         fetch: {
@@ -95,13 +95,13 @@ class Client {
         form: 'id',
         help: 'id of entries'
       },
-      pdb: {
-        form: 'id', 
-        help: 'PDB identifier'
-      },
       field: {
-        form: 'key=value',
-        help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
+        form: 'field',
+        help: 'Used for actions <search> and <update> to select field to search or update'
+      },
+      value: {
+        form: 'value',
+        help: 'Used for action <search> and <update> for value to search for or set field to'
       },
       no_progress: {
         type: 'boolean',
@@ -129,12 +129,15 @@ class Client {
     for (const i in args) {
       let r = args[i];
       if (r) {
-        r = '/' + args[i];
+        r = encodeURIComponent(args[i]);
       } else {
         r = '';
       }
-      url_path = url_path.replace('/@' + i, r);
+      url_path = url_path.replace('@' + i, r);
     }
+
+    // replace any double '//' leftover when empty arguments are included (eg. for status)
+    url_path = url_path.replace(/\/\//g,'/');
 
     // request method
     let method = params.method;
@@ -160,7 +163,7 @@ class Client {
 
     // make the request
     try {
-      let url = this.opts.url + '/' + url_path;
+      const url = this.opts.url + url_path;
       res = await this.httpRequest(url, method, options, files);
       return JSON.parse(res.body);
     } catch (err) {
@@ -172,16 +175,20 @@ class Client {
     return await this.doCall('fetch', user, source, id);
   }
 
-  async search(pdb) {
-    const res = await this.doCall('search', this.opts.pdb);
+  async search(field, value) {
+    if (field === undefined || field === '') {
+      field = 'pdb';
+    }
+
+    const res = await this.doCall('search', field, value);
     if (res.results && res.results.length == 0) {
-      return { error: true, msg: `No data sources found for ${this.opts.pdb}` };
+      return { error: true, msg: `No data sources found with ${field} of ${value}` };
     }
     return res;
   }
 
-  async fetchPDB(user, pdb) {
-    const res = await this.search(pdb);
+  async fetchSearch(user, field, value) {
+    const res = await this.search(field, value);
 
     if (res.error) {
       return res;
@@ -520,14 +527,17 @@ class Client {
       } else {
         this.proto = http;
       }
+
+      // ensure the URL has a single trailing slash
+      this.opts.url = this.opts.url.replace(/(\/?)*$/, '/');
     }
 
     // check if the correct parameters are supplied
     let res, err_msg;
 
-    // check if --pdb is set for search
-    if (this.action == 'search' && ! this.opts.pdb) {
-      return { error: true, msg: 'You need to include a --pdb to search for' };
+    // check if value is set for search
+    if (this.action == 'search' && ! this.opts.value) {
+      return { error: true, msg: 'You need to include a <value> to search for' };
     }
 
     // check that fetch, remove, update and upload have a user set
@@ -538,8 +548,8 @@ class Client {
       }
 
       if (this.action == 'fetch') {
-        if (! this.opts.pdb && ! (this.opts.source && this.opts.id)) {
-          return { error: true, msg: `You need to provide a data <source> and <id> or a pdb <id> for the data to ${this.action}`};
+        if (! this.opts.value && ! (this.opts.source && this.opts.id)) {
+          return { error: true, msg: `You need to provide a data <source> and <id> or a search value <search> for the data to ${this.action}`};
         }
       }
 
@@ -567,11 +577,11 @@ class Client {
         }
         break;
       case 'search':
-        res = this.search(this.opts.pdb);
+        res = this.search(this.opts.field, this.opts.value);
         break;
       case 'fetch':
-        if (this.opts.pdb) {
-          res = this.fetchPDB(this.opts.user, this.opts.pdb);
+        if (this.opts.value) {
+          res = this.fetchSearch(this.opts.user, this.opts.field, this.opts.value);
         } else {
           res = this.fetch(this.opts.user, this.opts.source, this.opts.id);
         }
@@ -580,8 +590,7 @@ class Client {
         res = await this.status(this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'update':
-        let spl = this.opts.field.split('=');
-        res = await this.update(this.opts.user, this.opts.source, this.opts.id, spl[0], spl[1]);
+        res = await this.update(this.opts.user, this.opts.source, this.opts.id, this.opts.field, this.opts.value);
         break;
       case 'remove':
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);

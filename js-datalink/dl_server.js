@@ -89,8 +89,8 @@ class server {
     this.jsonResponse(res, data);
   }
 
-  async searchSourceCatalog(req, res) {
-    this.jsonResponse(res, await this.datalink.searchSourceCatalog(req.params.search));
+  async searchSourceCatalogs(res, field, value) {
+    this.jsonResponse(res, await this.datalink.searchSourceCatalogs(field, value));
   }
 
   updateSourceCatalog(req, res) {
@@ -189,7 +189,11 @@ class server {
     // data source info/catalog endpoints
     router.get(['/sources', '/sources/:id'], (req, res) => this.getSources(req, res) );
     router.get(['/sources/:id/catalog'], (req, res) => this.getSourceCatalog(req, res) );
-    router.get('/search/:search', (req, res) => this.searchSourceCatalog(req, res) );
+
+    // search endpoint
+    router.get('/search', (req, res) => this.searchSourceCatalogs(res, req.query.f, req.query.q) );
+    // pdb only search (for backwards compatibility)
+    router.get('/search/:search', (req, res) => this.searchSourceCatalogs(res, 'pdb', req.params.search) );
 
     router.put('/sources/:id/update',
       (req, res, next) => this.checkAdminKey(req, res, next),
