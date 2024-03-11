@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    11.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,20 +33,22 @@ function TaskXDS3()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type = 'TaskXDS3';
-  this.name  = 'xds processing';
-  this.oname = 'xds';   // asterisk here means do not use
-  this.title = 'Image processing with XDS';
+  this._type   = 'TaskXDS3';
+  this.name    = 'xds processing';
+  this.oname   = 'xds';   // asterisk here means do not use
+  this.title   = 'Image processing with XDS';
+
+  this.xds_inp = '';
 
   this.input_dtypes = [];
-  this.parameters   = {
-    XDS_INP : {
-        type     : 'label',
-        label    : '',
-        position : [0,0,1,1],
-        showon   : {'VOID':['VOID']}
-      },
-  };
+  this.parameters   = {}
+    // XDS_INP : {
+    //     type     : 'label',
+    //     label    : '',
+    //     position : [0,0,1,1],
+    //     showon   : {'VOID':['VOID']}
+    //   }
+  // };
   
 }
 
@@ -91,11 +93,17 @@ function XDS3HotButton()  {
 if (!__template)  {
   // only on client
 
+  TaskXDS3.prototype.customDataClone = function ( cloneMode,task )  {
+    this.autoRunId  = '';
+    this.autoRunId0 = '';
+    this.xds_inp    = task.xds_inp;
+    return;
+  }
+
   // reserved function name
   TaskXDS3.prototype.makeInputPanel = function ( dataBox )  {
 
     let div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
-
     let row = div.grid.getNRows();
 
     div.grid.setLabel ( 
@@ -142,11 +150,16 @@ if (!__template)  {
     }
   }
 
+  TaskXDS3.prototype.interface_ready = function()  {
+    return (this.xds_inp.length>0);  // singal 'ready'
+  }
+
   TaskXDS3.prototype.loadFile = function ( inputPanel_grid )  {
+    let self = this;
     if (inputPanel_grid.aceinit)  {
-      if (this.parameters.XDS_INP.label.trim())  {
+      if (this.xds_inp.trim())  {
         inputPanel_grid.file_loaded     = null;
-        inputPanel_grid.aceditor.setText ( this.parameters.XDS_INP.label );
+        inputPanel_grid.aceditor.setText ( this.xds_inp );
         inputPanel_grid.content_changed = false;
       } else  {
         let furl = this.getProjectURL ( this.parentId,'output/XDS.INP');
@@ -154,6 +167,7 @@ if (!__template)  {
           inputPanel_grid.file_loaded     = furl;
           inputPanel_grid.aceditor.setText ( ftext );
           inputPanel_grid.content_changed = false;
+          self.xds_inp = '*';  // singal 'loaded'
         },null,function(errdesc){
           inputPanel_grid.file_loaded = null;
           inputPanel_grid.aceditor.setText ( '' );
@@ -162,6 +176,7 @@ if (!__template)  {
             'msg_error'
           );
           inputPanel_grid.content_changed = false;
+          self.xds_inp = '*';  // singal 'loaded'
         });
       }
     } else  {
@@ -184,9 +199,9 @@ if (!__template)  {
 
     let xds_inp = inputPanel.grid.aceditor.getText();
     if (!xds_inp.trim())
-      input_msg += '|<b><i>Np input statements</i>:</b> XDS input statements must be provided';
+      input_msg += '|<b><i>No input statements</i>:</b> XDS input statements must be provided';
     else
-      this.parameters.XDS_INP.label = xds_inp;
+      this.xds_inp = xds_inp;
 
     return input_msg;
 

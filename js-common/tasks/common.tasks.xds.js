@@ -34,12 +34,15 @@ function TaskXDS()  {
   if (__template)  __template.TaskXia2.call ( this );
              else  TaskXia2.call ( this );
 
-  this._type   = 'TaskXDS';
-  this.name    = 'xds';
+  this._type     = 'TaskXDS';
+  this.name      = 'xds';
   this.setOName ( 'xds' );  // default output file name template
-  this.title   = 'Image Processing with XDS';
+  this.title     = 'Image Processing with XDS';
+  this.autoRunId = '';
+  this.nc_type   = 'client-storage';  // job may be run only on either client NC or
+                                      // ordinary NC if cloud storage is there
 
-  this.maxNDirs = 1; // maximum number of input directories
+  this.maxNDirs  = 1; // maximum number of input directories
 
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
@@ -57,7 +60,7 @@ function TaskXDS()  {
                                    'wish to revise task parameters before '      +
                                    'runnung.',
                         range    : ['A|Automatically',
-                                    'S|Semi-automatically',
+                                    // 'S|Semi-automatically',
                                     'M|Manually'
                                    ],
                         value    : 'A',
@@ -129,9 +132,23 @@ if (!__template)  {
     return dir_input;
   }
 
+  TaskXDS.prototype.customDataClone = function ( cloneMode,task )  {
+    this.autoRunId  = '';
+    this.autoRunId0 = '';
+    return;
+  }
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskXDS.prototype.hotButtons = function() {
     return [XDS3HotButton()];
+  }
+
+  TaskXDS.prototype.collectInput = function ( inputPanel )  {
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    if (this.parameters.sec1.contains.MODE_SEL.value!='M')
+          this.autoRunId = 'auto-XDS';
+    else  this.autoRunId = '';
+    return input_msg;
   }
 
   // reserved function name
