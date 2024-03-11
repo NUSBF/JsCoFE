@@ -32,6 +32,7 @@ import pyrvapi
 import json
 import requests
 import urllib.parse
+import re
 
 #  application imports
 from  pycofe.tasks  import basic
@@ -85,8 +86,10 @@ class DataLink:
         return True, obj
 
     # search the API for data source entries matching the PDB Identifier
-    def search(self, pdb):
-        return self.api('GET', 'search/' + pdb, use_auth = False)
+    def search(self, field, value):
+        field = urllib.parse.quote_plus(field)
+        value = urllib.parse.quote_plus(value)
+        return self.api('GET', f'search/?f={field}&q={value}' , use_auth = False)
 
     # get information about a data source
     def source_info(self, source):
@@ -147,10 +150,16 @@ class FetchData(basic.TaskDriver):
 
     def run(self):
 
-        # get the user entered PDB code
-        pdb_code = self.getParameter ( self.task.parameters.PDB_CODE )
+        # get the user entered PDB/DOI code
+        search = self.getParameter ( self.task.parameters.SEARCH )
+        search = search.lower()
+        field = 'pdb'
+        if not re.match('^[0-9a-z]{4}$', search):
+            field = 'doi'
 
-        self.putMessage (f'<p><b>PDB code:</b> {pdb_code}</p>')
+        # if the doi code contains a full url, extract the path
+        url = urllib.parse.urlparse(search);
+        search = url.path.strip('/');
 
         # create a DataLink class instance - DL_URL, CLOUD_USER and CLOUDRUN_ID are currently hardcoded
         # but I assume they can be passed in as a task parameter or similar?
@@ -167,16 +176,16 @@ class FetchData(basic.TaskDriver):
         dl = DataLink(api_url, cloud_user, cloudrun_id)
 
         # search the API for data source entries that match the PDB code
-        res, search_info = dl.search(pdb_code)
+        res, search_info = dl.search(field, search)
         if not res:
-            self.dlError(search_info);
+            self.dlError(search_info)
             return
 
-        results = search_info['results'];
+        results = search_info['results']
 
         # if there are no results, return
         if len(results) == 0:
-            msg = f'no results for {pdb_code}'
+            msg = f'no results for {field} {search}'
             self.dlSummary(msg)
             self.putMessage( f'<b>Sorry - {msg}' )
             self.success(False)
@@ -188,6 +197,7 @@ class FetchData(basic.TaskDriver):
             data_id = data['id']
             data_name = data['name']
             data_doi = data['doi']
+            data_pdb = data['pdb']
 
             # get info about data source
             res, source_info = dl.source_info(data_source)
@@ -198,9 +208,10 @@ class FetchData(basic.TaskDriver):
             # display information about the data source
             data_source_desc = source_info['description']
             data_source_url = source_info['url']
+            self.putMessage(f'<b>PDB:</b> {data_pdb}')
+            self.putMessage(f'<b>DOI:</b> <a href="https://www.doi.org/{data_doi}" target="_new">https://www.doi.org/{data_doi}</a>')
             self.putMessage(f'<b>Name:</b> {data_name}')
-            self.putMessage(f'<b>Source:</b> {data_source_desc} (<a href="{data_source_url}" target="_new">{data_source_url}</a>)' )
-            self.putMessage(f'<b>DOI:</b> <a href="https://www.doi.org/{data_doi}" target="_new">https://www.doi.org/{data_doi}</a><br /><br />')
+            self.putMessage(f'<b>Source:</b> {data_source_desc} (<a href="{data_source_url}" target="_new">{data_source_url}</a>)<br />' )
 
             # send a fetch request in to the API
             res, fetch_info = dl.fetch(data_source, data_id)
@@ -262,7 +273,7 @@ class FetchData(basic.TaskDriver):
             path = os.path.join(mount_name, data["source"], data["id"])
             self.putMessage (f'<tt>{path}</tt>')
 
-        self.dlSummary(f'fetched data set(s) for {pdb_code}: {",".join(msgs)}')
+        self.dlSummary(f'fetched data set(s) for PDB {data_pdb}: {",".join(msgs)}')
 
         self.success(True)
 
