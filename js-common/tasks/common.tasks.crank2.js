@@ -960,7 +960,7 @@ TaskCrank2.prototype.desc_title     = function()  {
 }
 
 TaskCrank2.prototype.currentVersion = function()  {
-  var version = 1;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -969,9 +969,10 @@ TaskCrank2.prototype.currentVersion = function()  {
 TaskCrank2.prototype.canEndGracefully = function() { return true; }
 
 TaskCrank2.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['crank2','experimental', 'phasing', 'auto-ep', 'ep', 'substructure'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['crank2','experimental', 'phasing',
+                                           'auto-ep', 'ep', 'substructure'] );
+}
 
 if (!__template)  {
 
@@ -983,11 +984,11 @@ if (!__template)  {
 /*
   TaskCrank2.prototype.addCustomDataState = function ( inpDataRef,dataState ) {
 
-    //var nHKL = dataState['hkl'];
-    var item = this.getInputItem ( inpDataRef,'revision' );
+    //let nHKL = dataState['hkl'];
+    let item = this.getInputItem ( inpDataRef,'revision' );
     if (item)  {
-      var dropdown = item.dropdown[0];
-      var dt = item.dt[dropdown.getValue()];
+      let dropdown = item.dropdown[0];
+      let dt = item.dt[dropdown.getValue()];
       if (dt.Structure)  dataState['pmodel'] =  1;
                    else  dataState['pmodel'] = -1;
       if (dropdown.customGrid.hasOwnProperty('nfind'))
@@ -1007,19 +1008,19 @@ if (!__template)  {
     }
 
     if ((emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var dataState  = this.getDataState ( inpDataRef );
-      var nHKL       = dataState['hkl'];
-      var nNative    = dataState['native'];
-      var nPModel    = dataState['pmodel'];
-      var IR         = false;
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let dataState  = this.getDataState ( inpDataRef );
+      let nHKL       = dataState['hkl'];
+      let nNative    = dataState['native'];
+      let nPModel    = dataState['pmodel'];
+      let IR         = false;
 
       if (nNative>0)  {
-        var native = this.getInputItem ( inpDataRef,'native' );
+        let native = this.getInputItem ( inpDataRef,'native' );
         if (native)  {
           if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-            var customGrid    = native.dropdown[0].customGrid;
-            var showUFP_cbx   = (nNative>0) && (nHKL<=1);
+            let customGrid    = native.dropdown[0].customGrid;
+            let showUFP_cbx   = (nNative>0) && (nHKL<=1);
             useForPhasing_cbx = customGrid.useForPhasing;
             IR                = useForPhasing_cbx.getValue();
             useForPhasing_cbx.setVisible ( showUFP_cbx );
@@ -1028,8 +1029,8 @@ if (!__template)  {
         }
       }
 
-      var pmodel   = this.getInputItem ( inpDataRef,'pmodel' );
-      var isPModel = false;
+      let pmodel   = this.getInputItem ( inpDataRef,'pmodel' );
+      let isPModel = false;
       if (pmodel)  {
         inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,
                                          (nHKL==1) && (!IR) );
@@ -1038,7 +1039,7 @@ if (!__template)  {
 
       if (this.state==job_code.new)  {
 
-        var name = this.name;
+        let name = this.name;
         if (nHKL<=1)  {
           if (nNative<=0)  {
             if (isPModel)  {
@@ -1071,7 +1072,7 @@ if (!__template)  {
         }
 
         if (this.name!=name)  {
-          var inputPanel = inpParamRef.grid.parent.parent;
+          let inputPanel = inpParamRef.grid.parent.parent;
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
           inputPanel.header.uname_inp.setStyle ( 'text','',
                                 this.name.replace(/<(?:.|\n)*?>/gm, '') );
@@ -1098,19 +1099,19 @@ if (!__template)  {
 
     //if ((emitterId=='hkl') || (emitterId=='native') || (emitterId=='pmodel')) {
     if (['revision','hkl','native','substructure','pmodel'].indexOf(emitterId)>=0)  {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var dataState  = this.getDataState ( inpDataRef );
-      var nHKL       = dataState['hkl'];
-      var nNative    = dataState['native'];
-      var isPModel   = (dataState['pmodel']>0);
-      var IR         = false;
-      var native     = this.getInputItem ( inpDataRef,'native' );
-      var hkl        = this.getInputItem ( inpDataRef,'hkl'    );
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let dataState  = this.getDataState ( inpDataRef );
+      let nHKL       = dataState['hkl'];
+      let nNative    = dataState['native'];
+      let isPModel   = (dataState['pmodel']>0);
+      let IR         = false;
+      let native     = this.getInputItem ( inpDataRef,'native' );
+      let hkl        = this.getInputItem ( inpDataRef,'hkl'    );
 
       if ((nNative>0) && native)  {
         if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-          var customGrid    = native.dropdown[0].customGrid;
-          var showUFP_cbx   = (nNative>0) && (nHKL<=0);
+          let customGrid    = native.dropdown[0].customGrid;
+          let showUFP_cbx   = (nNative>0) && (nHKL<=0);
           useForPhasing_cbx = customGrid.useForPhasing;
           IR                = useForPhasing_cbx.getValue();
           useForPhasing_cbx.setVisible ( showUFP_cbx );
@@ -1120,7 +1121,7 @@ if (!__template)  {
 
       if (this.state==job_code.new)  {
 
-        var name = this.name;
+        let name = this.name;
         if (nHKL<=0)  {
           if (nNative<=0)  {
             if (isPModel)  {
@@ -1153,9 +1154,9 @@ if (!__template)  {
         }
 
         if (this.name!=name)  {
-          var inputPanel = inpParamRef.grid.parent.parent;
+          let inputPanel = inpParamRef.grid.parent.parent;
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-          var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+          let new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
           inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
           inputPanel.job_dialog.changeTitle ( new_title );
           //this.updateInputPanel ( inputPanel );
@@ -1170,10 +1171,10 @@ if (!__template)  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
     if (hkl && native && isPModel)  {
-      var row_hkl    = hkl.dropdown[0].row;
+      let row_hkl    = hkl.dropdown[0].row;
       inpParamRef.grid.setRowVisible ( row_hkl,false );
-      var row_native = native.dropdown[0].row;
-      for (var r=row_hkl;r<row_native;r++)
+      let row_native = native.dropdown[0].row;
+      for (let r=row_hkl;r<row_native;r++)
         inpParamRef.grid.setRowVisible ( r,false );
     }
 
@@ -1188,35 +1189,35 @@ if (!__template)  {
 
 //    if (['revision','hkl','native','substructure','pmodel'].indexOf(emitterId)>=0)  {
     if (['revision','hkl','native'].indexOf(emitterId)>=0)  {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var revision   = this.getInputItem ( inpDataRef,'revision' ).dropdown[0];
-      var native     = this.getInputItem ( inpDataRef,'native' );
-      var hkl        = this.getInputItem ( inpDataRef,'hkl'    );
-      //var substr     = this.getInputItem ( inpDataRef,'substructure' );
-      //var pmodel     = this.getInputItem ( inpDataRef,'pmodel'       );
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let revision   = this.getInputItem ( inpDataRef,'revision' ).dropdown[0];
+      let native     = this.getInputItem ( inpDataRef,'native' );
+      let hkl        = this.getInputItem ( inpDataRef,'hkl'    );
+      //let substr     = this.getInputItem ( inpDataRef,'substructure' );
+      //let pmodel     = this.getInputItem ( inpDataRef,'pmodel'       );
 
       //console.log ( JSON.stringify(dt) );
-      //var dt         = revision.dt[revision.getValue()];
-      //var substr     = (dt.Options.phasing_sel!='model');
-      //var pmodel     = (dt.Options.phasing_sel!='substructure');
-      //var main_substructure = (dt.subtype.indexOf('substructure')>=0);
-      //var main_xyz          = (dt.subtype.indexOf('xyz')>=0);
+      //let dt         = revision.dt[revision.getValue()];
+      //let substr     = (dt.Options.phasing_sel!='model');
+      //let pmodel     = (dt.Options.phasing_sel!='substructure');
+      //let main_substructure = (dt.subtype.indexOf('substructure')>=0);
+      //let main_xyz          = (dt.subtype.indexOf('xyz')>=0);
 
-      var dataState  = this.getDataState ( inpDataRef );
-      var nHKL       = dataState['hkl'];
-      var nNative    = dataState['native'];
-      //var dt         = revision.dt[revision.getValue()];
-      var isPModel   = false;
+      let dataState  = this.getDataState ( inpDataRef );
+      let nHKL       = dataState['hkl'];
+      let nNative    = dataState['native'];
+      //let dt         = revision.dt[revision.getValue()];
+      let isPModel   = false;
       if (revision.customGrid.phasing_sel)
         isPModel = (revision.customGrid.phasing_sel.getValue()!='substructure');
-      //var isPModel   = (dt.Options.phasing_sel!='substructure');
-      //var isPModel   = main_xyz || (dataState['pmodel']>0);
-      var IR         = false;
+      //let isPModel   = (dt.Options.phasing_sel!='substructure');
+      //let isPModel   = main_xyz || (dataState['pmodel']>0);
+      let IR         = false;
 
       if ((nNative>0) && native)  {
         if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-          var customGrid    = native.dropdown[0].customGrid;
-          var showUFP_cbx   = (nNative>0) && (nHKL<=0);
+          let customGrid    = native.dropdown[0].customGrid;
+          let showUFP_cbx   = (nNative>0) && (nHKL<=0);
           useForPhasing_cbx = customGrid.useForPhasing;
           IR                = useForPhasing_cbx.getValue();
           useForPhasing_cbx.setVisible ( showUFP_cbx );
@@ -1226,7 +1227,7 @@ if (!__template)  {
 
       if (this.state==job_code.new)  {
 
-        var name = this.name;
+        let name = this.name;
 
         if (nHKL<=0)  {
           if (nNative<=0)  {
@@ -1260,9 +1261,9 @@ if (!__template)  {
         }
 
         if (this.name!=name)  {
-          var inputPanel = inpParamRef.grid.parent.parent;
+          let inputPanel = inpParamRef.grid.parent.parent;
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-          var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+          let new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
           inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
           inputPanel.job_dialog.changeTitle ( new_title );
           //this.updateInputPanel ( inputPanel );
@@ -1285,9 +1286,9 @@ if (!__template)  {
 
     if (hkl && native && isPModel)  {
       // make sure that HKL comboboxes are hidden for MR-SAD
-      var row_hkl    = hkl.dropdown[0].row;
-      var row_native = native.dropdown[0].row;
-      for (var r=row_hkl;r<row_native;r++)
+      let row_hkl    = hkl.dropdown[0].row;
+      let row_native = native.dropdown[0].row;
+      for (let r=row_hkl;r<row_native;r++)
         inpParamRef.grid.setRowVisible ( r,false );
     }
 
@@ -1296,7 +1297,7 @@ if (!__template)  {
 
   TaskCrank2.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+      let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
       });
       inputPanel.element.dispatchEvent(event);
@@ -1305,17 +1306,17 @@ if (!__template)  {
 
   TaskCrank2.prototype.collectInput = function ( inputPanel )  {
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     function addMessage ( label,message )  {
       input_msg += '|<b>' + label + ':</b> ' + message;
     }
 
-    var hkl    = this.input_data.getData ( 'hkl'    );
-    var native = this.input_data.getData ( 'native' );
+    let hkl    = this.input_data.getData ( 'hkl'    );
+    let native = this.input_data.getData ( 'native' );
 
-    for (var i=0;i<hkl.length;i++)  {
-      for (var j=i+1;j<hkl.length;j++)
+    for (let i=0;i<hkl.length;i++)  {
+      for (let j=i+1;j<hkl.length;j++)
         if (hkl[i].dataId==hkl[j].dataId)
           addMessage ( 'Reflection data','dataset ' + hkl[i].dname +
                        ' is used in more than one input positions, which is not ' +
@@ -1336,7 +1337,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskCrank2.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -1344,7 +1345,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hklrev'] = [revision.HKL];
       //if (revision.Structure)  {
       //  if (revision.Structure.isSubstructure())

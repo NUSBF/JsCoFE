@@ -84,7 +84,7 @@ class XDS3(basic.TaskDriver):
         # Prepare path for the script
 
         with open("XDS.INP","w") as fout:
-            fout.write ( self.task.parameters.XDS_INP.label )
+            fout.write ( self.task.xds_inp )
 
         environ = os.environ.copy()
         environ["PATH"] = os.environ["XDS_home"] + ":" + os.environ["PATH"]

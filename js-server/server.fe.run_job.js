@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.01.24   <--  Date of Last Modification.
+ *    11.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -106,16 +106,16 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     start_time : Date.now(),
     eoj_notification : eoj_notification
   };
-  var index = loginData.login + ':' + project + ':' + jobId;
+  let index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
-  for (var login in shared_logins)  {
+  for (let login in shared_logins)  {
     index = login + ':' + project + ':' + jobId;
     this.token_map[index] = job_token;
   }
 }
 
 FEJobRegister.prototype.getJobEntry = function ( loginData,project,jobId )  {
-var index = loginData.login + ':' + project + ':' + jobId;
+let index = loginData.login + ':' + project + ':' + jobId;
   if (index in this.token_map)  {
     return this.job_map[this.token_map[index]];
   } else {
@@ -133,7 +133,7 @@ FEJobRegister.prototype.getJobEntryByToken = function ( job_token )  {
 
 FEJobRegister.prototype.removeJob = function ( job_token )  {
   if (job_token in this.job_map)  {
-    var index = this.job_map[job_token].loginData.login + ':' +
+    let index = this.job_map[job_token].loginData.login + ':' +
                 this.job_map[job_token].project         + ':' +
                 this.job_map[job_token].jobId;
     //this.token_map = com_utils.mapExcludeKey ( this.token_map,index     );
@@ -141,11 +141,11 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
     if (index in this.token_map)
       delete this.token_map[index];
     if (this.job_map[job_token].is_shared)  {
-      var index_list = [];
-      for (var indx in this.token_map)
+      let index_list = [];
+      for (let indx in this.token_map)
         if (this.token_map[indx]==job_token)
           index_list.push ( indx );
-      for (var i=0;i<index_list.length;i++)
+      for (let i=0;i<index_list.length;i++)
         delete this.token_map[index_list[i]];
     }
     delete this.job_map[job_token];
@@ -156,9 +156,9 @@ FEJobRegister.prototype.cleanup = function ( job_token,token_list )  {
 // removes job identified by job_token and jobs from the same NC with tokens
 // not found in token_list
   if (job_token in this.job_map)  {
-    var nc_number = this.job_map[job_token].nc_number;
+    let nc_number = this.job_map[job_token].nc_number;
     this.removeJob ( job_token );
-    for (var token in this.job_map)
+    for (let token in this.job_map)
       if ((this.job_map.nc_number==nc_number) && (token_list.indexOf(token)<0))
         this.removeJob ( token );
         //removeJob ( token );
@@ -167,7 +167,7 @@ FEJobRegister.prototype.cleanup = function ( job_token,token_list )  {
 
 /*
 FEJobRegister.prototype.getListOfTokens = function ( nc_number )  {
-  var tlist = '';
+  let tlist = '';
   for (var job_token in this.job_map)
     if (this.job_map[job_token].nc_number==nc_number)  {
       if (tlist)  tlist += ',';
@@ -177,7 +177,7 @@ FEJobRegister.prototype.getListOfTokens = function ( nc_number )  {
 }
 */
 
-var feJobRegister = null;
+let feJobRegister = null;
 
 function getJobRegisterPath()  {
   return path.join ( conf.getFEConfig().storage,feJobRegisterFile );
@@ -193,13 +193,13 @@ function getJobStatPath ( logNo )  {
 function readFEJobRegister()  {
 
   if (!feJobRegister)  {
-    var fpath     = getJobRegisterPath();
+    let fpath     = getJobRegisterPath();
     feJobRegister = new FEJobRegister();
-    var obj       = utils.readObject ( fpath );
+    let obj       = utils.readObject ( fpath );
     if (obj)  {
-      for (var key in obj)
+      for (let key in obj)
         feJobRegister[key] = obj[key];
-      for (var token in feJobRegister.job_map)
+      for (let token in feJobRegister.job_map)
         if ('login' in feJobRegister.job_map[token])
           feJobRegister.job_map[token].loginData = {
             'login'  : feJobRegister.job_map[token].login,
@@ -212,7 +212,7 @@ function readFEJobRegister()  {
 }
 
 function writeFEJobRegister()  {
-var fpath = getJobRegisterPath();
+let fpath = getJobRegisterPath();
 
   if (!feJobRegister)
     feJobRegister = new FEJobRegister();
@@ -226,10 +226,10 @@ function cleanFEJobRegister ( nattempts )  {
   if (!feJobRegister)
     readFEJobRegister();
 
-  var dead_tokens = [];
-  for (var job_token in feJobRegister.job_map)  {
-    var jobEntry   = feJobRegister.job_map[job_token];
-    var jobDirPath = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+  let dead_tokens = [];
+  for (let job_token in feJobRegister.job_map)  {
+    let jobEntry   = feJobRegister.job_map[job_token];
+    let jobDirPath = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                          jobEntry.jobId );
     if (!utils.dirExists(jobDirPath))
       dead_tokens.push ( job_token );
@@ -244,7 +244,7 @@ function cleanFEJobRegister ( nattempts )  {
       log.standard ( 51,dead_tokens.length + ' dead entries in FE job registry found' );
       return;
     } else  {
-      for (var i=0;i<dead_tokens.length;i++)
+      for (let i=0;i<dead_tokens.length;i++)
         feJobRegister.removeJob ( dead_tokens[i] );
       writeFEJobRegister();
     }
@@ -318,11 +318,11 @@ function advance_last_number_cruncher ( nc_servers )  {
 
 
 function selectNC_by_order ( task )  {
-var nc_servers = conf.getNCConfigs();
-var nc_number  = -1;
-var n          = last_number_cruncher;
-var maxcap0    = Number.MIN_SAFE_INTEGER;
-var n0         = -1;
+let nc_servers = conf.getNCConfigs();
+let nc_number  = -1;
+let n          = last_number_cruncher;
+let maxcap0    = Number.MIN_SAFE_INTEGER;
+let n0         = -1;
 
   if ('nc_number' in task)  {  // developer's option
     // last_number_cruncher = task.nc_number;
@@ -334,8 +334,8 @@ var n0         = -1;
     return -1;  // this will not be used for client job, just make a valid return
 
   if (task.fasttrack)  { // request for fast track
-    var maxcap1 = Number.MIN_SAFE_INTEGER;
-    var n1      = -1;
+    let maxcap1 = Number.MIN_SAFE_INTEGER;
+    let n1      = -1;
 
     // first, look for servers dedicated to fast tracking, and choose first
     // free or the least busy one
@@ -429,20 +429,22 @@ var n0         = -1;
 
 
 function selectNC_by_capacity ( task )  {
-var nc_servers     = conf.getNCConfigs();
-var ft_cores       = [];  // fast track cores
-var cores          = [];  // general cores
-var ft_maxCapacity = Number.MIN_SAFE_INTEGER;
-var ft_nc_number0  = -1;  // NC with maximal capacity
-var maxCapacity    = Number.MIN_SAFE_INTEGER;
-var nc_number0     = -1;  // NC with maximal capacity
+let nc_servers     = conf.getNCConfigs();
+let ft_cores       = [];  // fast track cores
+let cores          = [];  // general cores
+let ft_maxCapacity = Number.MIN_SAFE_INTEGER;
+let ft_nc_number0  = -1;  // NC with maximal capacity
+let maxCapacity    = Number.MIN_SAFE_INTEGER;
+let nc_number0     = -1;  // NC with maximal capacity
 
   if ('nc_number' in task)  {  // developer's option
     return task.nc_number;
   }
 
-  if (task.nc_type!='ordinary')
-    return -1;  // this will not be used for client job, just make a valid return
+  // Unless this is commented out, XDS does not run as a auto-workflow on
+  // local machine, when it runs on client NC
+  // if (task.nc_type!='ordinary')
+  //   return -1;  // this will not be used for client job, just make a valid return
 
   for (let n=0;n<nc_servers.length;n++)
     if (nc_servers[n].in_use  &&
@@ -512,9 +514,9 @@ function selectNumberCruncher ( task )  {
 
 function ncSelectAndCheck ( nc_counter,task,callback_func )  {
 //  nc_counter == conf.getNumberOfNCs() at 1st call
-  var nc_number = selectNumberCruncher ( task );
+  let nc_number = selectNumberCruncher ( task );
   if (nc_number>=0)  {
-    var cfg = conf.getNCConfig ( nc_number );
+    let cfg = conf.getNCConfig ( nc_number );
     if (cfg)  {
       cfg.checkNCStatus ( function(error,response,body,config){
         if ((error=='not-in-use') && (nc_counter>0))  {
@@ -554,12 +556,12 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
   ncSelectAndCheck ( conf.getNumberOfNCs(),task,function(nc_number){
 
-    var jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
-    var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
+    let jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
+    let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
 
     if (nc_number<0)  {
 
-      var msg = '<h1>Task cannot be proccessed</h1>';
+      let msg = '<h1>Task cannot be proccessed</h1>';
 
       if (nc_number==-101)  {
         msg += 'Configuration data cannot be obtained. This is internal '   +
@@ -593,9 +595,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       // prepare input data
       task.makeInputData ( loginData,jobDir );
 
-      var nc_url = conf.getNCConfig(nc_number).externalURL;
-      var uData  = user.readUserData ( loginData );
-      var meta   = {};
+      let nc_url = conf.getNCConfig(nc_number).externalURL;
+      let uData  = user.readUserData ( loginData );
+      let meta   = {};
       meta.setup_id  = conf.getSetupID();
       meta.nc_name   = conf.getNCConfig(nc_number).name;
       meta.user_id   = loginData.login;
@@ -667,9 +669,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
 function runJob ( loginData,data, callback_func )  {
 
-  var rdata = {};  // response data structure
+  let rdata = {};  // response data structure
 
-  var task = class_map.makeClass ( data.meta );
+  let task = class_map.makeClass ( data.meta );
   if (!task)  {
     log.error ( 4,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
@@ -678,8 +680,8 @@ function runJob ( loginData,data, callback_func )  {
   }
 
   // modify user knowledge
-  var userKnowledgePath = prj.getUserKnowledgePath ( loginData );
-  var knowledge = {};
+  let userKnowledgePath = prj.getUserKnowledgePath ( loginData );
+  let knowledge = {};
   if (utils.fileExists(userKnowledgePath))
     knowledge = utils.readObject ( userKnowledgePath );
   knlg.addWfKnowledgeByTypes ( knowledge,task._type,data.ancestors );
@@ -688,9 +690,9 @@ function runJob ( loginData,data, callback_func )  {
 
   // run job
 
-  var shared_logins  = {};
-  var projectData    = prj.readProjectData ( loginData,task.project );
-  var ownerLoginData = loginData;
+  let shared_logins  = {};
+  let projectData    = prj.readProjectData ( loginData,task.project );
+  let ownerLoginData = loginData;
   if (projectData)  {
     shared_logins = projectData.desc.share;
     if (projectData.desc.owner.login!=loginData.login)
@@ -703,17 +705,17 @@ function runJob ( loginData,data, callback_func )  {
   }
 
 
-  var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
+  let jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
   if (!utils.dirExists(jobDir))  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
                 '[00005] Job directory does not exist (job deleted?).',rdata ) );
     return;
   }
 
-  var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
+  let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
 
   task.state      = task_t.job_code.running;
-  var job_token   = crypto.randomBytes(20).toString('hex');
+  let job_token   = crypto.randomBytes(20).toString('hex');
   if ((task.nc_type=='client') || task.nc_type.startsWith('browser'))
     task.job_dialog_data.job_token = job_token;
   task.start_time = Date.now();
@@ -811,9 +813,9 @@ function runJob ( loginData,data, callback_func )  {
 
 function webappEndJob ( loginData,data, callback_func )  {
 
-  var rdata = {};  // response data structure
+  let rdata = {};  // response data structure
 
-  var task = class_map.makeClass ( data.meta );
+  let task = class_map.makeClass ( data.meta );
   if (!task)  {
     log.error ( 4,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
@@ -823,9 +825,9 @@ function webappEndJob ( loginData,data, callback_func )  {
 
   // job for ordinary NC, pack and send all job directory to number cruncher
 
-  var shared_logins  = {};
-  var projectData    = prj.readProjectData ( loginData,task.project );
-  var ownerLoginData = loginData;
+  let shared_logins  = {};
+  let projectData    = prj.readProjectData ( loginData,task.project );
+  let ownerLoginData = loginData;
   if (projectData)  {
     shared_logins = projectData.desc.share;
     if (projectData.desc.owner.login!=loginData.login)
@@ -837,7 +839,7 @@ function webappEndJob ( loginData,data, callback_func )  {
     rdata.timestamp = projectData.desc.timestamp;
   }
 
-  var job_token = task.job_dialog_data.job_token;
+  let job_token = task.job_dialog_data.job_token;
 
   task.nc_type ='ordinary';
 
@@ -853,7 +855,7 @@ function webappEndJob ( loginData,data, callback_func )  {
 
 function replayJob ( loginData,data, callback_func )  {
 
-  var replay_task = class_map.makeClass ( data.meta );
+  let replay_task = class_map.makeClass ( data.meta );
   if (!replay_task)  {
     log.error ( 7,'Cannot make replay job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
@@ -863,15 +865,15 @@ function replayJob ( loginData,data, callback_func )  {
 
   // run job
 
-  var replayJobDataPath = prj.getJobDataPath ( loginData,replay_task.project,task.id );
+  let replayJobDataPath = prj.getJobDataPath ( loginData,replay_task.project,task.id );
   replay_task.state = task_t.job_code.running;
 
   // write task data because it may have latest changes
   if (utils.writeObject(jobDataPath,task))  {
 
-    var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
+    let jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
 
-    var nc_number = 0;
+    let nc_number = 0;
     if (task.nc_type=='ordinary')  {
 
       nc_number = selectNumberCruncher ( task );
@@ -910,7 +912,7 @@ function replayJob ( loginData,data, callback_func )  {
                       'Job is running on client machine. Full report will ' +
                       'become available after job finishes.',true );
 
-          var job_token = crypto.randomBytes(20).toString('hex');
+          let job_token = crypto.randomBytes(20).toString('hex');
           feJobRegister.addJob ( job_token,nc_number,loginData,
                                  task.project,task.id,[],null );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -934,8 +936,8 @@ function replayJob ( loginData,data, callback_func )  {
     } else  {
 
       // job for ordinary NC, pack and send all job directory to number cruncher
-      var nc_url = conf.getNCConfig(nc_number).externalURL;
-      var meta   = {};
+      let nc_url = conf.getNCConfig(nc_number).externalURL;
+      let meta   = {};
       meta.setup_id = conf.getSetupID();
       meta.user_id  = loginData.login;
       send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
@@ -994,17 +996,17 @@ function replayJob ( loginData,data, callback_func )  {
 function stopJob ( loginData,data )  {
 // Request to stop a running job. 'data' must contain a 'meta' field, which
 // must be the Task class of job to be terminated.
-var response = null;
+let response = null;
 
-  var task     = data.meta;
-  var jobEntry = getEFJobEntry ( loginData,task.project,task.id );
+  let task     = data.meta;
+  let jobEntry = getEFJobEntry ( loginData,task.project,task.id );
 
   if (jobEntry)  {
 
     // send stop request to number cruncher
-    var ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
+    let ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
     if (ncCfg)  {
-      var nc_url = ncCfg.externalURL;
+      let nc_url = ncCfg.externalURL;
       if (data.gracefully)
             log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url +
                              ' gracefully' );
@@ -1035,10 +1037,10 @@ var response = null;
 
   } else  {  // repair job metadata
 
-    var jobDir      = prj  .getJobDirPath    ( loginData,task.project,task.id );
-    var jobDataPath = prj  .getJobDataPath   ( loginData,task.project,task.id );
-    var code        = utils.getJobSignalCode ( jobDir      );
-    var jobData     = utils.readObject       ( jobDataPath );
+    let jobDir      = prj  .getJobDirPath    ( loginData,task.project,task.id );
+    let jobDataPath = prj  .getJobDataPath   ( loginData,task.project,task.id );
+    let code        = utils.getJobSignalCode ( jobDir      );
+    let jobData     = utils.readObject       ( jobDataPath );
 
     log.standard ( 80,' **** REPAIR JOB METADATA'          );
     log.standard ( 80,'      jobDir      = ' + jobDir      );
@@ -1066,15 +1068,15 @@ var response = null;
 function killJob ( loginData,projectName,taskId )  {
 // Request to stop a running job immediately and do not return data.
 
-  var jobEntry = getEFJobEntry ( loginData,projectName,taskId );
+  let jobEntry = getEFJobEntry ( loginData,projectName,taskId );
 
   if (jobEntry)  {
 
     // send stop request to number cruncher
-    var ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
+    let ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
     if (ncCfg)  {
 
-      var nc_url = ncCfg.externalURL;
+      let nc_url = ncCfg.externalURL;
 
       log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
 
@@ -1114,21 +1116,21 @@ const _sec  = 1000;
 
 function writeJobStats ( jobEntry )  {
 
-  var t  = Date.now();
-  var dt = t - jobEntry.start_time;
-  var dd = Math.trunc(dt/_day );   dt -= dd*_day;
-  var dh = Math.trunc(dt/_hour);   dt -= dh*_hour;
-  var dm = Math.trunc(dt/_min );   dt -= dm*_min;
-  var ds = Math.trunc(dt/_sec );
+  let t  = Date.now();
+  let dt = t - jobEntry.start_time;
+  let dd = Math.trunc(dt/_day );   dt -= dd*_day;
+  let dh = Math.trunc(dt/_hour);   dt -= dh*_hour;
+  let dm = Math.trunc(dt/_min );   dt -= dm*_min;
+  let ds = Math.trunc(dt/_sec );
 
-  var jobDataPath = prj.getJobDataPath ( jobEntry.loginData,jobEntry.project,
+  let jobDataPath = prj.getJobDataPath ( jobEntry.loginData,jobEntry.project,
                                          jobEntry.jobId );
-  var jobClass    = utils.readClass    ( jobDataPath );
+  let jobClass    = utils.readClass    ( jobDataPath );
 
   if (jobClass)  {
 
     // note residual disk space (in MB)
-    var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+    let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
 
     // make user ration bookkeeping
@@ -1136,13 +1138,13 @@ function writeJobStats ( jobEntry )  {
     // calculate the size of job directory as is on FE
     jobClass.disk_space = utils.getDirectorySize ( jobDir ) / 1024.0 / 1024.0;
 
-    var report_task_fpath = path.join (
+    let report_task_fpath = path.join (
       prj.getJobReportDirPath(jobEntry.loginData,jobEntry.project,jobEntry.jobId),
       'task.tsk' );
-    var report_tsk = utils.readString ( report_task_fpath );
+    let report_tsk = utils.readString ( report_task_fpath );
     if (report_tsk)  {
-      var report_tsk_list = report_tsk.split(';;;');
-      for (var i=0;i<report_tsk_list.length;i++)
+      let report_tsk_list = report_tsk.split(';;;');
+      for (let i=0;i<report_tsk_list.length;i++)
         if (report_tsk_list[i].includes('<br>Started:')   &&
             report_tsk_list[i].includes('<br>Finished:')  &&
             report_tsk_list[i].includes('<br>CPU:'))
@@ -1153,14 +1155,14 @@ function writeJobStats ( jobEntry )  {
 
     // update records in user's ration book
     // jobEntry.loginData corresponds to the project owner account
-    var userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+    let userRation = ration.bookJob ( jobEntry.loginData,jobClass,
                                       ('cloudrun' in jobEntry) );
 
     ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
                                 jobClass.cpu_time,jobClass.disk_space,1,false );
 
-    var S     = '';
-    var fpath = getJobStatPath(0);
+    let S     = '';
+    let fpath = getJobStatPath(0);
 
     if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
         (!utils.fileExists(fpath)))  {
@@ -1190,7 +1192,7 @@ function writeJobStats ( jobEntry )  {
           '--------------------------------\n';
     }
 
-    var wfId = jobClass.autoRunId;
+    let wfId = jobClass.autoRunId;
     if (wfId)
       wfId = '[' + wfId + ']:';
 
@@ -1232,7 +1234,7 @@ function writeJobStats ( jobEntry )  {
 }
 
 function readJobStats()  {
-  var stats = utils.readString ( getJobStatPath(0) );
+  let stats = utils.readString ( getJobStatPath(0) );
   if (!stats)
     stats = 'Job stats are not available.';
   return stats;
@@ -1242,15 +1244,15 @@ function readJobStats()  {
 // ===========================================================================
 
 function addJobAuto ( jobEntry,jobClass )  {
-var loginData   = jobEntry.loginData;
-var projectName = jobEntry.project;
-var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
-var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
+let loginData   = jobEntry.loginData;
+let projectName = jobEntry.project;
+let pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
+let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
   if (auto_meta)  {
 
-    // var projectData = prj.readProjectData ( loginData,projectName );
-    var projectDesc = prj.readProjectDesc ( loginData,projectName );
+    // let projectData = prj.readProjectData ( loginData,projectName );
+    let projectDesc = prj.readProjectDesc ( loginData,projectName );
 
     if (!projectDesc)  {
       log.error ( 20,'project data ' + projectName + ' not found, login ' +
@@ -1260,24 +1262,24 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
       if (!('_root' in auto_meta.context.job_register))
         auto_meta.context.job_register._root = jobEntry.jobId;
 
-      var shared_logins  = projectDesc.share;
-      var ownerLoginData = loginData;
+      let shared_logins  = projectDesc.share;
+      let ownerLoginData = loginData;
       if (projectDesc.owner.login!=loginData.login)
         ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
 
       user.topupUserRation ( ownerLoginData,function(rdata){
 
-        var check_list = ration.checkUserRation ( ownerLoginData,false );
+        let check_list = ration.checkUserRation ( ownerLoginData,false );
         if (check_list.length<=0)  {
   
-          var tasks = [];
-          var projectData = prj.readProjectData ( loginData,projectName );
+          let tasks = [];
+          let projectData = prj.readProjectData ( loginData,projectName );
           // pd.printProjectTree ( ' >>>auto-1',projectData );
   
-          for (var key in auto_meta)
+          for (let key in auto_meta)
             if (key!='context')  {
   
-              var task = class_map.makeTaskClass ( auto_meta[key]._type );
+              let task = class_map.makeTaskClass ( auto_meta[key]._type );
   
               if (!task)  {
                 log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
@@ -1285,11 +1287,11 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
   
                 // place job tree node
   
-                var pid = jobEntry.jobId;
+                let pid = jobEntry.jobId;
                 if (auto_meta[key].parentName in auto_meta.context.job_register)
                   pid = auto_meta.context.job_register[auto_meta[key].parentName];
   
-                var pnode = pd.getProjectNode ( projectData,pid );
+                let pnode = pd.getProjectNode ( projectData,pid );
                 if (!pnode)  {
                   log.error ( 22,'cannot get project node in workflow [' + loginData.login +
                                  ']:' + projectName + ':' + pid );
@@ -1303,7 +1305,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
                   // make job directory
   
-                  var mjd = prj.make_job_directory ( loginData,projectName,projectData.desc.jobCount+1 );
+                  let mjd = prj.make_job_directory ( loginData,projectName,projectData.desc.jobCount+1 );
 
                   if (mjd[0]<0)  {
                     // job directory cannot be created because if errors
@@ -1326,15 +1328,15 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                     task.input_data.data      = auto_meta[key].data;
                     task.start_time           = Date.now();
     
-                    for (var field in auto_meta[key].fields)
+                    for (let field in auto_meta[key].fields)
                       task[field] = auto_meta[key].fields[field];
     
                     task._clone_suggested ( task.parameters,auto_meta[key].parameters );
                     tasks.push ( [task,mjd[1]] );
     
-                    var pnode_json = JSON.stringify ( pnode );
+                    let pnode_json = JSON.stringify ( pnode );
     
-                    var cnode = JSON.parse ( pnode_json );
+                    let cnode = JSON.parse ( pnode_json );
                     cnode.id       = pnode.id + '_' + key;
                     cnode.parentId = pnode.id;
                     cnode.dataId   = task.id;
@@ -1368,19 +1370,19 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
           prj.writeProjectData ( loginData,projectData,true );
     // pd.printProjectTree ( ' >>>auto-2',projectData );
   
-          for (var i=0;i<tasks.length;i++)  {
+          for (let i=0;i<tasks.length;i++)  {
   
-            var task       = tasks[i][0];
-            var jobDirPath = tasks[i][1];
+            let task       = tasks[i][0];
+            let jobDirPath = tasks[i][1];
     
             // handle remarks and other pseudo-jobs here
-            var task_state = task.state;
+            let task_state = task.state;
             if (task_state==task_t.job_code.new)  {
               task.state = task_t.job_code.running;
               task.job_dialog_data.panel = 'output';
             }
 
-            var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
+            let jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
             if (!utils.writeObject(jobDataPath,task))  {
               log.error ( 24,'cannot write job metadata at ' + jobDataPath );
@@ -1400,7 +1402,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
               // Run the job
-              var job_token = crypto.randomBytes(20).toString('hex');
+              let job_token = crypto.randomBytes(20).toString('hex');
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
                           function(jtoken){} );
@@ -1428,11 +1430,11 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
 function getJobResults ( job_token,server_request,server_response )  {
 
-  var jobEntry = feJobRegister.getJobEntryByToken ( job_token );
+  let jobEntry = feJobRegister.getJobEntryByToken ( job_token );
 
   if (jobEntry)  {
 
-    var jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+    let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
 //    utils.setLock ( jobDir,100 );
 
@@ -1442,7 +1444,7 @@ function getJobResults ( job_token,server_request,server_response )  {
         // In case of client job, original jobball remains in job directory
         // (because client fetches it by pulling). Delete it now.
 
-        var jobball_path = send_dir.getJobballPath ( jobDir );
+        let jobball_path = send_dir.getJobballPath ( jobDir );
         if (utils.fileExists(jobball_path))
           utils.removeFile ( jobball_path );
 
@@ -1467,16 +1469,16 @@ function getJobResults ( job_token,server_request,server_response )  {
         if (!code)  {  // success
           // print usage stats and update the user ration state
 
-          var jobClass = writeJobStats ( jobEntry );
+          let jobClass = writeJobStats ( jobEntry );
           if (jobClass)  {
             if (jobClass.autoRunId && jobClass.isSuccessful())
               addJobAuto ( jobEntry,jobClass );
             ustats.registerJob ( jobClass );
-            var nhours = (jobClass.end_time-jobEntry.start_time)/3600000.0;
+            let nhours = (jobClass.end_time-jobEntry.start_time)/3600000.0;
             if (jobEntry.eoj_notification &&
                 jobEntry.eoj_notification.send &&
                 (nhours>jobEntry.eoj_notification.lapse))  {
-              var uData = user.readUserData ( jobEntry.loginData );
+              let uData = user.readUserData ( jobEntry.loginData );
               emailer.sendTemplateMessage ( uData,
                 cmd.appName() + ' Job Finished',
                 'job_finished',{
@@ -1491,7 +1493,7 @@ function getJobResults ( job_token,server_request,server_response )  {
           if ('tokens' in meta)
             feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
           // if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
-          //   var nc_servers = conf.getNCConfigs();
+          //   let nc_servers = conf.getNCConfigs();
           //   if (jobEntry.nc_number<nc_servers.length)  {
           //     nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
           //     log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
@@ -1548,15 +1550,15 @@ function getJobResults ( job_token,server_request,server_response )  {
 
 function checkJobs ( loginData,data )  {
 
-  var projectName = data.project;
-  var run_map     = data.run_map;
+  let projectName = data.project;
+  let run_map     = data.run_map;
 
-  var completed_map = {};
-  var empty = true;
+  let completed_map = {};
+  let empty = true;
 
-  for (var key in run_map)  {
-    var jobDataPath = prj.getJobDataPath ( loginData,projectName,key );
-    var jobData     = utils.readObject   ( jobDataPath );
+  for (let key in run_map)  {
+    let jobDataPath = prj.getJobDataPath ( loginData,projectName,key );
+    let jobData     = utils.readObject   ( jobDataPath );
     if (jobData)  {
       if ((jobData.state!=task_t.job_code.running) &&
           (jobData.state!=task_t.job_code.ending)  &&
@@ -1567,12 +1569,12 @@ function checkJobs ( loginData,data )  {
     }
   }
 
-  var rdata = {};
+  let rdata = {};
   rdata.completed_map = completed_map;
   rdata.reload        = 0;
 
   if ((!empty) || data.shared)  {
-    var pDesc = prj.readProjectDesc ( loginData,projectName );
+    let pDesc = prj.readProjectDesc ( loginData,projectName );
     if (pDesc)  {
       rdata.pdesc = pDesc;
       if ((data.shared) && (pDesc.timestamp>data.timestamp))  {
@@ -1597,15 +1599,15 @@ function checkJobs ( loginData,data )  {
 
 
 function wakeZombieJobs ( loginData,data,callback_func )  {
-var nc_servers = conf.getNCConfigs();
+let nc_servers = conf.getNCConfigs();
 
-  var projectName = data.project;
-  var tokens = [];
+  let projectName = data.project;
+  let tokens = [];
   if (projectName=='*')  {
     tokens = ['*'];
   } else  {
-    for (var token in feJobRegister.job_map)  {
-      var jobEntry = feJobRegister.job_map[token];
+    for (let token in feJobRegister.job_map)  {
+      let jobEntry = feJobRegister.job_map[token];
       // here to check for job expiration date (to be defined for FE)
       if ((jobEntry.loginData.login==loginData.login) &&
           (jobEntry.project==projectName))
@@ -1621,7 +1623,7 @@ var nc_servers = conf.getNCConfigs();
 
   if (tokens.length>0)  {
 
-    var nzombies = 0;
+    let nzombies = 0;
 
     function nc_wake_zombie ( n )  {
 
@@ -1840,7 +1842,7 @@ function cloudRun ( server_request,server_response )  {
 
                     let jobDirPath = mjd[1];
                     // utils.moveDir ( tmpJobDir,jobDirPath,true );
-                    // var tempJobDir = tmpJobDir;
+                    // let tempJobDir = tmpJobDir;
                     // tmpJobDir      = null;  // essential
 
                     utils.moveDirAsync ( tmpJobDir,jobDirPath,true,function(err){
