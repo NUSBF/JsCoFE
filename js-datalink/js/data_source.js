@@ -168,31 +168,35 @@ class dataSource {
       return;
     }
 
+    let ret = await this.unpackDirectory(user, id, dest_dir);
+
+    if (ret) {
+      this.setDataComplete(user, id, catalog);
+    }
+  }
+
+  async unpackDirectory(user, id, dest_dir) {
     // go through the contents of the archive and unpack any additional files
     // this is required as some data source images are gzipped/bzipped individually
-    let ret = await tools.fileCallback(dest_dir, async (file) => {
+    return await tools.fileCallback(dest_dir, async (file) => {
       const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
       if (cmd) {
         try {
-          log.info(`${this.name}/fetchDataHttp - Unpacking ${file}`);
+          log.info(`${this.name}/unpackDirectory - Unpacking ${file}`);
           await tools.unpack(file, dest_dir, cmd, args, (controller) => {
             this.addJob(user, id, controller);
           });
         } catch (err) {
-          log.error(`${this.name}/fetchDataHttp - ${err}`);
+          log.error(`${this.name}/unpackDirectory - ${err}`);
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
           if (err.code == 'ABORT_ERR') {
-            this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - The operation was aborted`);
+            this.setDataError(user, id, catalog, `${this.name}/unpackDirectory - The operation was aborted`);
             return false;
           }
         }
       }
       return true;
     });
-
-    if (ret) {
-      this.setDataComplete(user, id, catalog);
-    }
   }
 
   async fetchCatalogRsync(url, catalog) {
@@ -243,7 +247,11 @@ class dataSource {
       return;
     }
 
-    this.setDataComplete(user, id, catalog);
+    let ret = await this.unpackDirectory(user, id, dest);
+
+    if (ret) {
+      this.setDataComplete(user, id, catalog);
+    }
   }
 
   // parse rsync listing
