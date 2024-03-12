@@ -232,9 +232,10 @@ class dataSource {
       await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', '--include', id + '/***', '--exclude', '*', url, dest],
         (stdout) => {
           // extract transferred amount
-          let fields = stdout.toString().split(/\s+/)
-          let size = parseInt(fields[1].replaceAll(',', ''), 10);
-          entry.size = parseInt(size, 10);
+          let fields = stdout.toString().split(/\s+/);
+          if (fields[1]) {
+            entry.size = parseInt(fields[1].replaceAll(',', ''), 10);
+          }
         },
         (stderr) => {
           log.error(stderr.toString());
