@@ -38,15 +38,30 @@ function TaskFetchData()  {
   this.title   = 'Fetch diffraction images from WWW repositories';
 
   this.parameters = { // input parameters
-    PDB_CODE : {
+    SEARCH : {
           type      : 'string',   // empty string not allowed
-          keyword   : 'PDBCODE',
-          label     : '<b>PDB code:</b>',
-          tooltip   : 'PDB code of structure for which to find and fetch diffraction images',
-          iwidth    : 80,
+          keyword   : 'SEARCH',
+          label     : '<b>PDB or DOI code:</b>',
+          tooltip   : 'PDB code of structure or DOI url of data for which to find and fetch diffraction images',
+          iwidth    : 200,
           value     : '',
-          maxlength : 4,       // maximum input length
           position  : [0,0,1,1]
+        },
+    LABEL1 : {
+          type     : 'label',
+          label    : `
+            <p>This task can fetch raw X-ray diffraction data from the following sites:</p>
+            <ul>
+            <li><a href="https://data.sbgrid.org/" target="_new">https://data.sbgrid.org/</a></li>
+            <li><a href="https://proteindiffraction.org/" target="_new">https://proteindiffraction.org/</a></li>
+            <li><a href="https://xrda.pdbj.org/" target="_new">https://xrda.pdbj.org/</a></li>
+            </ul>
+            <p>
+            You can enter a 4 character PDB identifier or a Digital Object Identifier (DOI) from <br />
+            the sites above to fetch the corresponding data into CCP4 Cloud.
+            </p>
+            `,
+          position : [1,0,1,4]
         }
   };
 

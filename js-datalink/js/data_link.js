@@ -142,28 +142,63 @@ class dataLink {
     return true;
   }
 
-  async searchSourceCatalog(pdb) {
-    pdb = pdb.toLowerCase();
-    // check if id matches pdb indentifier format (4 alphanumberic characters)
-    if (! pdb.match(/^[a-z0-9]{4}$/)) {
-      return tools.errorMsg(`Invalid PDB identifier`, 400);
+  async searchSourceCatalogs(field, search) {
+    if (search === undefined || search === '') {
+      return tools.errorMsg(`Empty or invalid search string`, 400);
+    }
+
+    let pdb = null;
+
+    // default search field to pdb if not set
+    if (field === undefined || field === '') {
+      field = 'pdb';
+    }
+
+    switch(field) {
+      case 'pdb':
+        search = search.toLowerCase();
+        // check if id matches pdb indentifier format (4 alphanumberic characters)
+        if (! search.match(/^[a-z0-9]{4}$/)) {
+          return tools.errorMsg(`Invalid PDB identifier`, 400);
+        }
+        pdb = search;
+        break;
+      case 'doi':
+        break;
+      default:
+        return tools.errorMsg(`Unknown search field ${field}`, 400);
     }
 
     let results = [];
+    // loop through data sources
     for (const [, source] of Object.entries(this.source)) {
+      // if the source has a catalog
       if (source.catalog) {
+        // loop through catalog entries
         for (const [id, e] of Object.entries(source.catalog)) {
-          if (e.pdb == pdb ) {
-            results.push({ source: source.name, id: id, doi: e.doi, name: e.name });
+          if (e[field] && e[field] == search ) {
+            results.push({ source: source.name, id: id, doi: e.doi, name: e.name, pdb: e.pdb });
           }
         }
       }
     }
+
     let obj = {}, pdb_info;
     obj.results = results;
+
+    // add rcsb results if enabled in config
     if (config.get('other.rcsb_results')) {
-      pdb_info = await rcsb.getEntry(pdb);
-      obj.pdb = pdb_info;
+      // if we don't have a pdb identifier (when not searching for pdb identifier), try and get it from the results
+      if (! pdb && results.length > 0 && results[0].pdb) {
+        pdb = results[0].pdb;
+      }
+
+      // if there is a pdb identifier do the rcsb API call
+      if (pdb) {
+        pdb_info = await rcsb.getEntry(pdb);
+        obj.pdb = pdb_info;
+      }
+
     }
     return obj;
   }

@@ -54,7 +54,7 @@ class pdbj extends dataSource {
       const e = {};
       e.path = id.toString();
       e.pdb = r[res.pdb];
-      e.doi = r[res.doi];
+      e.doi = r[res.doi].toLowerCase();
       e.name = r[res.name];
       e.auth = r[res.auth];
 

@@ -80,7 +80,7 @@ class irrmc extends dataSource {
           // extract doi id
           found = link.match(RE_DOI);
           if (found) {
-            doi = found[1];
+            doi = found[1].toLowerCase();
           }
 
         }
