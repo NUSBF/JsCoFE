@@ -319,7 +319,7 @@ if (!__template)  {
                 .setTooltip('Path to master file of HDF5 set of diffraction images')
                 .setFontItalic(true).setFontBold(true).setNoWrap();
       if (dirpath)  {
-        inputPanel.grid1.setLabel (
+        dir_input.label = inputPanel.grid1.setLabel (
             'Image range and block size:',row+1,0,1,2 )
                   .setTooltip('Optional specification of image range and block size')
                   .setFontItalic(true).setFontBold(true).setNoWrap();
@@ -769,6 +769,7 @@ if (!__template)  {
               (!isInteger(lst[0])) || (!isInteger(lst[1])) || (!isInteger(lst[2])))
             msg += '|<b><i>Image range and block size specification misformatted</i></b>';
         }
+        empty = false;
       }
 
       if (this.imageDirMeta.length<=0)

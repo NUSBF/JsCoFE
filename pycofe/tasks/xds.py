@@ -52,9 +52,9 @@ class XDS(basic.TaskDriver):
 
         if "XDS_home" not in os.environ:
             self.fail ( "<h3>XDS Software is not installed</h3>" +\
-                    "This task requires XDS Software, " +\
-                    "installation of which was not found.",
-                    "XDS Software is not installed." )
+                        "This task requires XDS Software, " +\
+                        "installation of which was not found.",
+                        "XDS Software is not installed." )
             return
 
         imageMetadata = None
@@ -63,9 +63,11 @@ class XDS(basic.TaskDriver):
 
         if not imageMetadata:
             self.fail ( "<h3>Image Metadata Errors.</h3>" +\
-                    "Image metadata could not be passed to the task.",
-                    "Image metadata errors." )
+                        "Image metadata could not be passed to the task.",
+                        "Image metadata errors." )
             return
+
+        sec1 = self.task.parameters.sec1.contains
 
         ipath = None
         imageDirMeta = imageMetadata["imageDirMeta"]
@@ -75,33 +77,32 @@ class XDS(basic.TaskDriver):
                     sectors = imageDirMeta[i]["sectors"]
                     for j in range(len(sectors)):
                         ipath = os.path.join ( imageDirMeta[i]["path"],sectors[j]["name"] )
+
+            if not ipath:
+                self.fail ( "<h3>Image Path not Found.</h3>" +\
+                        "Image path not found in task metadata (this is a bug).",
+                        "Image path not found in task metadata." )
+                return
+
+            # Prepare path for the script
+            matches = re.findall ( r'0+[1-9]\d*(?=[^0-9]|$)',ipath )
+            if len(matches)<=0:
+                self.fail ( "<h3>Image names do not match expected pattern.</h3>"   +\
+                        "Image names must include fixed-length serial numbers, "    +\
+                        "e.g., <pre>mydata_1_00001.img</pre> for 1st image. Such "  +\
+                        "pattern was not identified. Consider renaming your image " +\
+                        "files.",
+                        "Image names do not match expected pattern." )
+                return
+
+            match0 = matches[0]
+            for i in range(len(matches)):
+                if len(matches[i])>len(match0):
+                    match0 = matches[i]
+            ipath = ipath.replace ( match0,"?"*len(match0) )
+
         else:
             ipath = imageDirMeta[0]["path"]
-
-        if not ipath:
-            self.fail ( "<h3>Image Path not Found.</h3>" +\
-                    "Image path not found in task metadata (this is a bug).",
-                    "Image path not found in task metadata." )
-            return
-
-        sec1 = self.task.parameters.sec1.contains
-
-        # Prepare path for the script
-        matches = re.findall ( r'0+[1-9]\d*(?=[^0-9]|$)',ipath )
-        if len(matches)<=0:
-            self.fail ( "<h3>Image names do not match expected pattern.</h3>"   +\
-                    "Image names must include fixed-length serial numbers, "    +\
-                    "e.g., <pre>mydata_1_00001.img</pre> for 1st image. Such "  +\
-                    "pattern was not identified. Consider renaming your image " +\
-                    "files.",
-                    "Image names do not match expected pattern." )
-            return
-
-        match0 = matches[0]
-        for i in range(len(matches)):
-            if len(matches[i])>len(match0):
-                match0 = matches[i]
-        ipath = ipath.replace ( match0,"?"*len(match0) )
 
         environ = os.environ.copy()
         environ["PATH"] = os.environ["XDS_home"] + ":" + os.environ["PATH"]

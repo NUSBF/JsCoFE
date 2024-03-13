@@ -34,15 +34,18 @@ function TaskXDS()  {
   if (__template)  __template.TaskXia2.call ( this );
              else  TaskXia2.call ( this );
 
-  this._type     = 'TaskXDS';
-  this.name      = 'xds';
+  this._type       = 'TaskXDS';
+  this.name        = 'xds';
   this.setOName ( 'xds' );  // default output file name template
-  this.title     = 'Image Processing with XDS';
-  this.autoRunId = '';
-  this.nc_type   = 'client-storage';  // job may be run only on either client NC or
+  this.title       = 'Image Processing with XDS';
+  this.autoRunId   = '';
+  this.nc_type     = 'client-storage';  // job may be run only on either client NC or
                                       // ordinary NC if cloud storage is there
 
-  this.maxNDirs  = 1; // maximum number of input directories
+  this.maxNDirs    = 1; // maximum number of input directories
+  this.hdf5_range  = '';       // for processing HDF5 files in blocks
+  this.datatype    = 'images'; //  images/hdf5
+  this.file_system = 'local';  //  local/cloud
 
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
@@ -124,15 +127,21 @@ if (!__template)  {
 
   TaskXDS.prototype.layDirLine = function ( inputPanel,dirNo,row )  {
     let dir_input = TaskXia2.prototype.layDirLine.call ( this,inputPanel,dirNo,row );
-    if ('sectors_inp' in dir_input)
-      for (let i=0;i<dir_input.sectors_inp.length;i++)  {
-        dir_input.sectors_inp[i].setReadOnly ( true );
-        dir_input.sectors_inp[i].setTooltip  ( 'Image range for your information' );
-      }
+    if (inputPanel.datatype=='images')  {
+      if ('sectors_inp' in dir_input)
+        for (let i=0;i<dir_input.sectors_inp.length;i++)  {
+          dir_input.sectors_inp[i].setReadOnly ( true );
+          dir_input.sectors_inp[i].setTooltip  ( 'Image range for your information' );
+        }
+    } else  {
+      dir_input.label     .setVisible ( false );
+      dir_input.hdf5_range.setVisible ( false );
+    }
     return dir_input;
   }
 
   TaskXDS.prototype.customDataClone = function ( cloneMode,task )  {
+    TaskXia2.prototype.customDataClone.call ( this,cloneMode,task );
     this.autoRunId  = '';
     this.autoRunId0 = '';
     return;
@@ -144,7 +153,7 @@ if (!__template)  {
   }
 
   TaskXDS.prototype.collectInput = function ( inputPanel )  {
-    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskXia2.prototype.collectInput.call ( this,inputPanel );
     if (this.parameters.sec1.contains.MODE_SEL.value!='M')
           this.autoRunId = 'auto-XDS';
     else  this.autoRunId = '';
