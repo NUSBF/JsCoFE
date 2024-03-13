@@ -1275,22 +1275,22 @@ if (!__template)  {
 
     }
 
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+  //   TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
-    /*
-    if (substr)
-      inpParamRef.grid.setRowVisible ( substr.dropdown[0].row,(nHKL<=0) && (!main_substructure) );
-    if (pmodel)
-      inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,(nHKL<=0) && (!main_xyz) );
-    */
+  //   /*
+  //   if (substr)
+  //     inpParamRef.grid.setRowVisible ( substr.dropdown[0].row,(nHKL<=0) && (!main_substructure) );
+  //   if (pmodel)
+  //     inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,(nHKL<=0) && (!main_xyz) );
+  //   */
 
-    if (hkl && native && isPModel)  {
-      // make sure that HKL comboboxes are hidden for MR-SAD
-      let row_hkl    = hkl.dropdown[0].row;
-      let row_native = native.dropdown[0].row;
-      for (let r=row_hkl;r<row_native;r++)
-        inpParamRef.grid.setRowVisible ( r,false );
-    }
+  //   if (hkl && native && isPModel)  {
+  //     // make sure that HKL comboboxes are hidden for MR-SAD
+  //     let row_hkl    = hkl.dropdown[0].row;
+  //     let row_native = native.dropdown[0].row;
+  //     for (let r=row_hkl;r<row_native;r++)
+  //       inpParamRef.grid.setRowVisible ( r,false );
+  //   }
 
   }
 
