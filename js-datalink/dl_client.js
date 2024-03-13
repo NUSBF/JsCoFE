@@ -78,6 +78,10 @@ class Client {
         catalog_all: {
           path: 'sources/*/catalog',
           method: 'GET',
+        },
+        stats: {
+          path: 'stats',
+          method: 'GET'
         }
       });
     }
@@ -430,7 +434,7 @@ class Client {
     console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update, remove, upload');
+    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update, remove, upload, stats');
     console.log('\nOptions:');
 
     let out;
@@ -603,6 +607,9 @@ class Client {
           break;
         }
         res = this.upload(this.opts.user, this.opts.source, this.opts.id);
+        break;
+      case 'stats':
+        res = await this.doCall('stats');
         break;
       default:
         res = { error: true, msg: `No such action <${this.action}>` };
