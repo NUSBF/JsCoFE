@@ -154,9 +154,7 @@ class Xia2(basic.TaskDriver):
         environ = os.environ.copy()
         if have_xds:
             #environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
-            environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
-                              os.environ["XDS_home"] + ":" +\
-                              os.environ["PATH"]
+            environ["PATH"] = os.environ["XDS_home"] + ":" + os.environ["PATH"]
         #
         # if sys.platform.startswith("win"):
         #     rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )
