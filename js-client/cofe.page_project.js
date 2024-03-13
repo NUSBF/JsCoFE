@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.02.24   <--  Date of Last Modification.
+ *    13.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ function ProjectPage ( sceneId )  {
       });
     });
 
-  this.title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
+  this.title_lbl = this.headerPanel.setLabel ( '',0,3,1,1 );
   this.title_lbl.setFont  ( 'times','150%',true,true )
                 .setNoWrap()
                 .setHorizontalAlignment ( 'left' );
@@ -95,7 +95,7 @@ function ProjectPage ( sceneId )  {
   // this.headerPanel.setCellSize ( '99%','',0,2 );
   // this.headerPanel.setCellSize ( '0px','',0,12 );
 
-  this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
+  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
 
   this.makeDock();
   this.dock.loadDockData();
@@ -186,11 +186,13 @@ function ProjectPage ( sceneId )  {
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';
+  const toolbar_width   = 50;
   this.toolbar_div = new Widget('div');
   this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
   let toolbar = new Grid('');
-  this.toolbar_div.setWidth_px ( parseInt(toolbutton_size)+16 );
-  this.toolbar_div.addWidget ( toolbar );
+  this.toolbar_div.setWidth_px ( toolbar_width )
+                  .setHorizontalAlignment ( 'center' )
+                  .addWidget   ( toolbar );
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
 
   this.panel = this.grid.setGrid ( '',1,1,1,1 );
@@ -202,8 +204,8 @@ function ProjectPage ( sceneId )  {
   this.grid.setCellSize ( '6px','' ,1,2,1,1 );
 
   // make the toolbar
-  const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbutton_size + 
-                    ';margin-top:6px;"></div>'
+  const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbar_width + 
+                    'px;margin-top:6px;"></div>'
   let   cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
@@ -351,7 +353,7 @@ function ProjectPage ( sceneId )  {
   this.makeLogoPanel ( 2,0,3 );
 
   for (let i=0;i<this.headerPanel.getNCols();i++)
-    if (i==2)  this.headerPanel.setCellSize ( '90%' ,'',0,i );
+    if (i==3)  this.headerPanel.setCellSize ( '90%' ,'',0,i );
          else  this.headerPanel.setCellSize ( 'auto','',0,i );
 
   // this.trimPageTitle();
@@ -1517,7 +1519,7 @@ ProjectPage.prototype.makeDock = function()  {
 ProjectPage.prototype.trimPageTitle = function()  {
   let wt = window.innerWidth - 60;
   for (let i=0;i<this.headerPanel.getNCols();i++)
-    if (i!=2)
+    if (i!=3)
       wt -= this.headerPanel.getCellSize(0,i)[0];
   wt = Math.max(100,wt);
   $(this.title_lbl.element).css({
