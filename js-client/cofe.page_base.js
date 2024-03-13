@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.24   <--  Date of Last Modification.
+ *    13.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -229,7 +229,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   this.grid.setVerticalAlignment  ( row,col,'middle'   );
   this.grid.setCellSize           ( '','30px', row,col );
   // logoGrid.setHeight_px ( 16 );
-  $(logoPanel.element).addClass ( 'logo-panel' );
+  $(logoPanel.element).addClass   ( 'logo-panel'  );
   // $(logoPanel.element).css ({
   //   // 'position'         : 'absolute',
   //   // 'left'             : '0px',
@@ -351,11 +351,12 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
   this.grid.setCellSize ( '','32px',0,0 );
 
+  this.headerPanel.setLabel  ( '&nbsp',0,0,1,1 );
   this.headerPanel.menu = new Menu('',image_path('menu'));
-  this.headerPanel.setWidget ( this.headerPanel.menu,0,0,1,1 );
+  this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
 
-  this.headerPanel.setLabel    ( '',0,1,1,1 ).setWidth ( '40px' );
-  this.headerPanel.setCellSize ( '40px','',0,1 );
+  this.headerPanel.setLabel    ( '',0,2,1,1 ).setWidth ( '40px' );
+  this.headerPanel.setCellSize ( '40px','',0,2 );
 
   if (__login_user)  {
     this.headerPanel.setCellSize ( '99%','',0,12 );
