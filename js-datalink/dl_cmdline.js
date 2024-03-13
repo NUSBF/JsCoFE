@@ -29,7 +29,8 @@ class appClient extends client {
       status: this.datalink.getDataStatus,
       status_all: this.datalink.getDataStatus,
       catalog: this.datalink.getSourceCatalog,
-      catalog_all: this.datalink.getAllSourceCatalogs
+      catalog_all: this.datalink.getAllSourceCatalogs,
+      stats: this.datalink.getDataStats
     }
 
     this.arg_info.user.def = '@local';
