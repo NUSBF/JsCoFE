@@ -623,4 +623,25 @@ eg. `GET /api/data`
   }
 }
 ```
+## GET /api/stats
 
+Gets some information about the data managed by Data Link.
+
+eg. `GET /api/stats`
+
+`HTTP/1.1 200 OK`
+
+```json
+{
+  "data_stats": {
+    "users": 4,
+    "entries": 10,
+    "size": 82437651053,
+    "size_gb": "82.44",
+    "free_space": "434237149184",
+    "free_space_gb": "434.24",
+    "usable_space": 334237149184,
+    "usable_space_gb": "334.24"
+  }
+}
+```

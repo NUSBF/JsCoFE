@@ -229,6 +229,11 @@ class server {
         (req, res, next) => this.uploadData(req, res, next) );
     }
 
+    // data link statistics
+    router.get('/stats', (req, res) => {
+      this.jsonResponse(res, this.datalink.getDataStats());
+    });
+
     const app = express();
     app.use(API_PREFIX, router);
 

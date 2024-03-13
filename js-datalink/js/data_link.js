@@ -580,6 +580,26 @@ class dataLink {
     return tools.successMsg(`Updated fields ${fields}`);
   }
 
+  getDataStats() {
+    let data_stats = this.catalog.getStats();
+    data_stats.size_gb = (data_stats.size / GB).toFixed(2);
+
+    let free = tools.getFreeSpace(tools.getDataDir(), '1');
+    let data_free = config.get('storage.data_free_gb') * GB;
+
+    // get free disk space
+    data_stats.free_space = free;
+    data_stats.free_space_gb = (data_stats.free_space / GB).toFixed(2);
+
+    // get free disk space minus amount to leave free from config
+    data_stats.usable_space = free - data_free;
+    data_stats.usable_space_gb = (data_stats.usable_space / GB).toFixed(2);
+
+    return {
+      data_stats: data_stats
+    }
+  }
+
 }
 
 module.exports = dataLink;

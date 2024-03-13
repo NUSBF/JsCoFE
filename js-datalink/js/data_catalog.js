@@ -211,6 +211,26 @@ class dataCatalog {
     }
   }
 
+  getStats() {
+    let users = 0;
+    let entries = 0;
+    let size = 0;
+    for (const user of Object.values(this.getCatalog())) {
+      users += 1;
+      for (const source of Object.values(user)) {
+        for (const entry of Object.values(source)) {
+          entries += 1;
+          size += entry.size;
+        }
+      }
+    }
+    return {
+      users: users,
+      entries: entries,
+      size: size
+    }
+  }
+
 }
 
 module.exports = dataCatalog;
