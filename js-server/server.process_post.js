@@ -43,7 +43,7 @@ function processPOSTData ( server_request,server_response,process_data_function,
 
   } else if (server_request.method=='POST')  {
 
-    var data = '';
+    let data = '';
     server_request.on ( 'data', function(d) {
       data += d;
       // Allow maximum 1MB, otherwise kill the connection
@@ -59,12 +59,12 @@ function processPOSTData ( server_request,server_response,process_data_function,
 
       if (data.length<=__max_post_length)  {
 
-        var data_obj = class_map.getClassInstance ( data );
+        let data_obj = class_map.getClassInstance ( data );
 
         if (data_obj)  {
           if (data_obj.hasOwnProperty('_type'))  {
             if (data_obj._type=='Request')  {
-              var loginData = user.getLoginEntry ( data_obj.token );
+              let loginData = user.getLoginEntry ( data_obj.token );
               if (loginData.login.length<=0)
                 cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
                                    'user not logged in','' );
