@@ -1188,11 +1188,16 @@ if (!__template)  {
     }
 
 //    if (['revision','hkl','native','substructure','pmodel'].indexOf(emitterId)>=0)  {
+
+    let hkl      = null;
+    let native   = null;
+    let isPModel = false;
+
     if (['revision','hkl','native'].indexOf(emitterId)>=0)  {
       let inpDataRef = inpParamRef.grid.inpDataRef;
       let revision   = this.getInputItem ( inpDataRef,'revision' ).dropdown[0];
-      let native     = this.getInputItem ( inpDataRef,'native' );
-      let hkl        = this.getInputItem ( inpDataRef,'hkl'    );
+      native         = this.getInputItem ( inpDataRef,'native' );
+      hkl            = this.getInputItem ( inpDataRef,'hkl'    );
       //let substr     = this.getInputItem ( inpDataRef,'substructure' );
       //let pmodel     = this.getInputItem ( inpDataRef,'pmodel'       );
 
@@ -1207,7 +1212,7 @@ if (!__template)  {
       let nHKL       = dataState['hkl'];
       let nNative    = dataState['native'];
       //let dt         = revision.dt[revision.getValue()];
-      let isPModel   = false;
+      // isPModel   = false;
       if (revision.customGrid.phasing_sel)
         isPModel = (revision.customGrid.phasing_sel.getValue()!='substructure');
       //let isPModel   = (dt.Options.phasing_sel!='substructure');
@@ -1275,7 +1280,7 @@ if (!__template)  {
 
     }
 
-  //   TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
 
   //   /*
   //   if (substr)
@@ -1284,13 +1289,13 @@ if (!__template)  {
   //     inpParamRef.grid.setRowVisible ( pmodel.dropdown[0].row,(nHKL<=0) && (!main_xyz) );
   //   */
 
-  //   if (hkl && native && isPModel)  {
-  //     // make sure that HKL comboboxes are hidden for MR-SAD
-  //     let row_hkl    = hkl.dropdown[0].row;
-  //     let row_native = native.dropdown[0].row;
-  //     for (let r=row_hkl;r<row_native;r++)
-  //       inpParamRef.grid.setRowVisible ( r,false );
-  //   }
+    if (hkl && native && isPModel)  {
+      // make sure that HKL comboboxes are hidden for MR-SAD
+      let row_hkl    = hkl.dropdown[0].row;
+      let row_native = native.dropdown[0].row;
+      for (let r=row_hkl;r<row_native;r++)
+        inpParamRef.grid.setRowVisible ( r,false );
+    }
 
   }
 
