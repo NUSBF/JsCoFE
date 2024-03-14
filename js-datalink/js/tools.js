@@ -11,7 +11,6 @@ const log = require('./log.js');
 const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
 const CATALOG_DIR = config.get('storage.catalog_dir');
-const CATALOGS_WITH_DATA = config.get('storage.catalogs_with_data')
 
 const status = {
   completed: 'completed',
@@ -71,30 +70,12 @@ class tools {
     return true;
   }
 
-  static getDataDest(user, source = '', id = '') {
-    return path.join(this.getDataDir(), user, source, id);
-  }
-
   static getCatalogDir() {
     return CATALOG_DIR;
   }
 
   static getUserPath(user) {
     return path.join(USER_DIR, user + '.user');
-  }
-
-  static getUserDataDir(user) {
-    return path.join(DATA_DIR, user);
-  }
-
-  static getUserCatalogFile(user) {
-    let dir;
-    if (CATALOGS_WITH_DATA) {
-      dir = path.join(this.getUserDataDir(user), 'catalog.json');
-    } else {
-      dir = path.join(tools.getCatalogDir(), 'users', user + '.json');
-    }
-    return dir;
   }
 
   static getUserCloudRunId(user) {
