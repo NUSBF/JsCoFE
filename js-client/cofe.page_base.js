@@ -140,6 +140,8 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 
 BasePage.prototype.makeSetupNamePanel = function()  {
+// This panel appears on login, account, authorisation reply, forgotten password
+// and new registration pages
   let setupPanel = new Grid ( '' );
 
   function _make_panel ( name,icon )  {
@@ -172,7 +174,6 @@ BasePage.prototype.makeSetupNamePanel = function()  {
     setupPanel.setHorizontalAlignment ( 1,0,'center' );
   }
 
-
   return setupPanel;
 
 }
@@ -184,6 +185,7 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 //let __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
+// This panel runs at the bottom of all pages
 
   if (!__setup_desc)  return;
   if (!('partners' in __setup_desc))    return;
@@ -293,9 +295,67 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
 
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
-  let icon_path;
-  let tooltip  = '<i>' + appName();
-  let ul_style = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+let icon_path = '';
+// let tooltip    = 'You are working with ' + appName() + ' Setup';
+let tooltip   = '<i>' + appName();
+let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+let iwidth    = '26px';
+
+  // if (__local_setup)
+  //   tooltip += ', running locally on your machine at ' + __fe_url + '.<br>&nbsp;';
+  // else if (__setup_desc)
+  //   tooltip += '<center>"' + __setup_desc.name + '"<br>at ' + __fe_url + '</center>'; 
+
+  // tooltip += '<br><i>' + appName();
+
+  if (__local_setup)  {
+    icon_path = image_path ( 'ccp4cloud_desktop'  );
+    if (__login_id=='localuser')
+          tooltip += ' is in <b>desktop</b> mode:</i>';
+    else  tooltip += ' is in <b>local</b> mode:</i>';
+    tooltip += ul_style + '<li>projects and data are stored on your system</li>';
+    if (__local_service)
+          tooltip += '<li>computation done on your computer</li>';
+    else  tooltip += '<li>non-interactive tasks run on your computer</li>'   +
+                     '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
+  } else  {
+    icon_path = image_path ( 'ccp4cloud_remote' );
+    tooltip  += ' is in <b>server</b> mode:</i>' + ul_style +
+                '<li>projects and data are stored on server</li>' +
+                '<li>non-interactive tasks run on server</li>';
+    if (__local_service)
+          tooltip += '<li>interactive tasks run on your computer</li>';
+    else  tooltip += '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
+    // if (__setup_desc)
+    //   tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
+    iwidth = '20px';
+  }
+
+  if ((!__local_setup) || (__login_id=='localuser'))
+    tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
+
+  if (__fe_url!=window.location.href)
+    tooltip += '<li>server url: <u>' + __fe_url + '</u></li></ul>';
+
+  let image_btn = this.headerPanel.setImageButton ( 
+                                        icon_path,iwidth,'20px',0,colNo,1,1 )
+            .setTooltip1    ( tooltip + '</ul>','show',false,0 )
+            .setFontSize    ( '90%' )
+            .setVerticalAlignment ( 'top' );
+  $(image_btn.element).css({'padding-top':'2px'});
+
+  this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
+  this.headerPanel.setLabel ( '&nbsp;', 0,colNo+2,1,1 )
+
+}
+
+/*  ---- OLD VERSION OF MODE INDICATORS (2 icons)
+BasePage.prototype._setModeIcon = function ( colNo )  {
+let icon_path = '';
+let tooltip   = '<i>' + appName();
+let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
   if (__local_setup)  {
     icon_path = image_path ( 'setup_local'  );
     tooltip  += ' is in <b>local</b> mode:</i>' + ul_style +
@@ -334,15 +394,14 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
                   .setTooltip1    ( setup_name,'show',false,0 )
                   .setFontSize    ( '90%' )
                   .setVerticalAlignment ( 'middle' );
-  /*
-  this.headerPanel.setLabel ( setup_name, 0,colNo+1,1,1 )
-                  .setFont  ( '','80%',false,true )
-                  .setFontLineHeight ( '85%' );
-  */
+  // this.headerPanel.setLabel ( setup_name, 0,colNo+1,1,1 )
+  //                 .setFont  ( '','80%',false,true )
+  //                 .setFontLineHeight ( '85%' );
   this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
   this.headerPanel.setVerticalAlignment ( 0,colNo+1,'top' );
   this.headerPanel.setLabel ( '&nbsp;', 0,colNo+2,1,1 )
 }
+*/
 
 
 BasePage.prototype.makeHeader0 = function ( colSpan )  {
