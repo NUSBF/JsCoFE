@@ -936,7 +936,7 @@ Fieldset.prototype.constructor = Fieldset;
 // Label class
 
 function Label(text) {
-  Widget.call(this, 'div');
+  Widget.call ( this,'div' );
   this.setText(text);
   //  this.element.innerHTML = text;
 }
@@ -1385,7 +1385,7 @@ Button.prototype.addOnClickListener = function (listener_func) {
 // Image Button class
 
 function ImageButton(icon_uri, width, height) {
-  Label.call(this, ' ');
+  Label.call ( this,' ' );
   this.image = new Image(icon_uri, width, height);
   this.addWidget(this.image);
   this.setWidth(width);
