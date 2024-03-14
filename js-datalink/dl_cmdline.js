@@ -22,7 +22,7 @@ class appClient extends client {
     this.datalink.standalone = true;
 
     this.action_map = {
-      search: this.datalink.searchSourceCatalog,
+      search: this.datalink.searchSourceCatalogs,
       fetch: this.datalink.fetchData,
       remove: this.datalink.removeData,
       update: this.datalink.updateData,
