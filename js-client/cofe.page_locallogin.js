@@ -54,10 +54,18 @@ function LocalLoginPage ( sceneId )  {
   serverCommand ( fe_command.getLocalInfo,{},'Local Login',
     function(response){
       // when success
-  
-      let paths = response.data.project_paths.join('<br>');
-      let dfree = Math.round ( response.data.disk_free/1024.0 );
-      console.log ( JSON.stringify(response.data) );
+      
+      let rData = response.data;
+      let paths = rData.project_paths.join('<br>');
+      let dfree = Math.round ( rData.disk_free/1024.0 );
+      
+      if (rData.userData)  {
+        let color_modes = __user_settings.color_modes;
+        __user_settings = rData.userData.settings;
+        if (!('color_modes' in __user_settings))
+          __user_settings.color_modes = color_modes;
+        bindToBrowserColorMode ( true ); 
+      }
 
       let row = 0;
 
