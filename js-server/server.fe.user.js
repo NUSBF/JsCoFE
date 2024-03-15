@@ -1834,6 +1834,10 @@ function getLocalInfo ( inData,callback_func )  {
 
     let rData = { code : 'ok' };
     if ('localuser' in fe_server)  {
+
+      let uLoginData = { login:'localuser', volume:null };
+      rData.userData = readUserData ( uLoginData );
+
       rData.project_paths = [];
       let disk_reserved   = [];
       for (let fsname in fe_server.projectsPath)  {

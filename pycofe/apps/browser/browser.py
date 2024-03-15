@@ -106,7 +106,7 @@ class MainWindow(QMainWindow):
         self.settings = QSettings ("CCP4","CCP4 Browser")
 
         geometry = self.settings.value('geometry','')
-        if geometry: 
+        if geometry:
             self.restoreGeometry ( geometry )
         else:
             self.setGeometry ( 100,100,1200,800 )
@@ -226,7 +226,7 @@ class MainWindow(QMainWindow):
 
     # method for updating url
     # this method is called by the QWebEngineView object
-    def update_urlbar(self, q):
+    def update_urlbar ( self,q ):
         if self.urlbar:
           # setting text to the url bar
           self.urlbar.setText(q.toString())
@@ -234,10 +234,10 @@ class MainWindow(QMainWindow):
           self.urlbar.setCursorPosition(0)
         return
 
-    def closeEvent(self, event):
+    def closeEvent ( self,event ):
         geometry = self.saveGeometry()
-        self.settings.setValue('geometry', geometry)
-        super(MainWindow, self).closeEvent(event)
+        self.settings.setValue ( 'geometry',geometry )
+        super(MainWindow,self).closeEvent ( event )
         return
 
 
