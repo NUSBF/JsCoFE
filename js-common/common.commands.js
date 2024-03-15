@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    13.03.24   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.019 [16.02.2024]';   // for the main server
-const jsCoFE_version = '1.7.019 [13.03.2024]';   // for update
+const jsCoFE_version = '1.7.019 [15.03.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -79,6 +79,7 @@ const fe_command = {
   whoareyou         : 'whoareyou',       // request server id
   status            : 'status',          // request server status, e.g., for uptime watchers
   getInfo           : '=getinfo',        // request server metadata
+  getLocalInfo      : '=getlocalinfo',   // request local server metadata
   getClientInfo     : '=getclientinfo',  // request client server metadata
   register          : '=register',       // register a new user
   login             : '=login',          // register a new user
@@ -288,7 +289,7 @@ Response.prototype.send = function ( server_response )  {
 }
 
 function sendResponse ( server_response, status,message,data )  {
-let resp = new Response ( status,message,data );
+  let resp = new Response ( status,message,data );
   resp.send ( server_response );
 }
 

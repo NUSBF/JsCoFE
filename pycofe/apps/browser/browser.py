@@ -247,8 +247,8 @@ argParser = argparse.ArgumentParser()
 argParser.add_argument ( "-u", "--url", 
 			              help="CCP4 Cloud's URL address; default: https://cloud.ccp4.ac.uk",
 										# default="http://localhost:8085" )
-										default="http://localhost:54862" )
-                    # default="https://cloud.ccp4.ac.uk" )
+										# default="http://localhost:54862" )
+                    default="https://cloud.ccp4.ac.uk" )
 args = argParser.parse_args()
 
 # creating a pyQt5 application
@@ -256,6 +256,29 @@ app = QApplication(sys.argv)
 
 # setting name to the application
 app.setApplicationName ( "CCP4 Browser" )
+
+# app.setQuitOnLastWindowClosed(False)
+
+# # Create the icon
+# icon = QIcon("icon.png")
+
+# # Create the tray
+# tray = QSystemTrayIcon()
+# tray.setIcon(icon)
+# tray.setVisible(True)
+
+# # Create the menu
+# menu = QMenu()
+# action = QAction("A menu item")
+# menu.addAction(action)
+
+# # Add a Quit option to the menu.
+# quit = QAction("Quit")
+# quit.triggered.connect(app.quit)
+# menu.addAction(quit)
+
+# # Add the menu to the tray
+# tray.setContextMenu(menu)
 
 # creating a main window object
 window = MainWindow ( args )
