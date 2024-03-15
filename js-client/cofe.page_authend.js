@@ -67,18 +67,18 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
   // adjust scene grid attributes such that login panel is centered
   this.grid.setCellSize          ( '45%','',0,0,1,1 );
   this.grid.setCellSize          ( '10%','',0,1,1,1 );
-  this.grid.setVerticalAlignment ( 0,1,'middle' );
-  this.grid.setHorizontalAlignment ( 0,1,'center' );
+  this.grid.setVerticalAlignment ( 0,1,'middle'     );
+  this.grid.setHorizontalAlignment ( 0,1,'center'   );
   this.grid.setCellSize          ( '45%','',0,2,1,1 );
   this.makeLogoPanel             ( 1,0,3 );
 
-  // make login panel
-  var panel = new Grid('');
+  // make message panel
+  let panel = new Grid('');
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var title   = 'Authorisation request for ' + software_title[software_key] + ' failed.';
-  var details = '';
+  let title   = 'Authorisation request for ' + software_title[software_key] + ' failed.';
+  let details = '';
   switch (auth_result)  {
 
     case 'ok'     : title = 'Authorisation request for ' + software_title[software_key] +
@@ -114,10 +114,10 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
 
   }
 
-  var title_lbl   = new Label ( appName() );
-  var result_lbl  = new Label ( title     );
-  var details_lbl = new Label ( details   );
-  var close_lbl   = new Label ( 'You may close this window now.' );
+  let title_lbl   = new Label ( appName() );
+  let result_lbl  = new Label ( title     );
+  let details_lbl = new Label ( details   );
+  let close_lbl   = new Label ( 'You may close this window now.' );
 
   title_lbl   .setFont          ( 'times','300%',true,true );
   result_lbl  .setFont          ( 'times','200%',true,true );
@@ -125,19 +125,19 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
   details_lbl.setFontSize       ( '125%' );
   close_lbl  .setFontItalic     ( true );
 
-  var row = 0;
-  panel.setWidget               ( title_lbl   ,row,0,1,1   );
-  panel.setHorizontalAlignment  ( row++ ,0    ,'center'    );
+  let row = 0;
+  panel.setWidget               ( title_lbl,row,0,1,1  );
+  panel.setHorizontalAlignment  ( row++ ,0 ,'center'   );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,1 );
-  panel.setCellSize             ( '','20pt'   ,row++,0     );
+  panel.setCellSize             ( '','20pt',row++,0    );
   panel.setWidget               ( result_lbl,row,0,1,1 );
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
-  panel.setCellSize             ( '','20pt',row++,0 );
+  panel.setHorizontalAlignment  ( row++ ,0,'center'    );
+  panel.setCellSize             ( '','20pt',row++,0    );
   panel.setWidget               ( details_lbl,row,0,1,1 );
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
-  panel.setCellSize             ( '','20pt',row++,0 );
-  panel.setWidget               ( close_lbl,row,0,1,1 );
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
+  panel.setHorizontalAlignment  ( row++ ,0,'center'    );
+  panel.setCellSize             ( '','20pt',row++,0    );
+  panel.setWidget               ( close_lbl,row,0,1,1  );
+  panel.setHorizontalAlignment  ( row++ ,0,'center'    );
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    14.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -120,13 +120,19 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
     serverRequest ( fe_reqtype.logout,0,'Logout',
       function(data){},
       function(){
-        makePage ( function(){ new LogoutPage(sceneId,reason_key) },
-                   onLogout_func );
+        if (__local_user)
+              makeLocalLoginPage ( sceneId );
+        else  makePage ( function(){ new LogoutPage(sceneId,reason_key) },
+                         onLogout_func );
       },
       null
     );
 
-  } else {
+  } else if (__local_user)  {
+
+    makeLocalLoginPage ( sceneId );
+  
+  } else  {
 
     makePage ( function(){ new LogoutPage(sceneId,reason_key) },
                onLogout_func );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    13.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,14 +35,15 @@ function AdminPage ( sceneId )  {
   }
 
   this.makeHeader ( 3,null );
-  var title_lbl = this.headerPanel.setLabel ( appName() + ' Administration Facility',0,2,1,1 );
+  var title_lbl = this.headerPanel.setLabel ( appName() + 
+                                          ' Administration Facility',0,3,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
-  this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
-  this.headerPanel.setCellSize ( '99%','',0,3 );
+  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
+  this.headerPanel.setCellSize ( '99%','',0,4 );
 
-  var col = 4;
+  var col = 5;
   var refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,col,1,1 );
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 

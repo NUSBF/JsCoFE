@@ -208,22 +208,22 @@ Widget.prototype.setWidth_px = function (width_int) {
   return this;
 }
 
-Widget.prototype.setHeight = function (height) {
+Widget.prototype.setHeight = function ( height )  {
   this.element.style.height = height;
   return this;
 }
 
-Widget.prototype.setMaxHeight = function (height_str) {
+Widget.prototype.setMaxHeight = function ( height_str )  {
   this.element.style.maxHeight = height_str;  // e.g., '200px'
   return this;
 }
 
-Widget.prototype.setHeight_px = function (height_int) {
+Widget.prototype.setHeight_px = function ( height_int )  {
   $(this.element).height(height_int);
   return this;
 }
 
-Widget.prototype.setSize = function (width, height) {
+Widget.prototype.setSize = function ( width,height )  {
   if (width.length > 0)
     this.element.style.width = width;
   if (height.length > 0)
@@ -231,42 +231,41 @@ Widget.prototype.setSize = function (width, height) {
   return this;
 }
 
-Widget.prototype.setSize_px = function (width_int, height_int) {
+Widget.prototype.setSize_px = function ( width_int, height_int )  {
   $(this.element).outerWidth(width_int);
   $(this.element).outerHeight(height_int);
   return this;
 }
 
-Widget.prototype.width_px = function () {
+Widget.prototype.width_px = function() {
   return $(this.element).outerWidth();
 }
 
-Widget.prototype.height_px = function () {
+Widget.prototype.height_px = function() {
   return $(this.element).outerHeight();
 }
 
-
-Widget.prototype.getBoundingRect = function () {
+Widget.prototype.getBoundingRect = function() {
   return this.element.getBoundingClientRect();
 }
 
-Widget.prototype.setFontSize = function (size) {
+Widget.prototype.setFontSize = function ( size ) {
   $(this.element).css({ "font-size": size });
   return this;
 }
 
-Widget.prototype.setFontBold = function (bold) {
+Widget.prototype.setFontBold = function ( bold ) {
   if (bold) this.element.style.fontWeight = 'bold';
   else this.element.style.fontWeight = 'normal';
   return this;
 }
 
-Widget.prototype.setFontWeight = function (weight) {
+Widget.prototype.setFontWeight = function ( weight ) {
   this.element.style.fontWeight = weight;  // 400 is normal, 700 is bold
   return this;
 }
 
-Widget.prototype.setFontItalic = function (italic) {
+Widget.prototype.setFontItalic = function ( italic ) {
   if (italic) this.element.style.fontStyle = 'italic';
   else this.element.style.fontStyle = 'normal';
   return this;
@@ -339,30 +338,30 @@ Widget.prototype.setScrollPosition = function (scrollPos) {
   this.element.scrollTop = scrollPos[1];
 }
 
-Widget.prototype.setScrollListener = function (callback_func) {
-  let self = this;
+Widget.prototype.setScrollListener = function ( callback_func )  {
+let self = this;
   $(this.element).scroll(function () {
     callback_func([self.element.scrollLeft, self.element.scrollTop]);
   });
 }
 
 
-Widget.prototype.setHorizontalAlignment = function (alignment) {
+Widget.prototype.setHorizontalAlignment = function ( alignment )  {
   $(this.element).css({ "text-align": alignment });
   return this;
 }
 
-Widget.prototype.setVerticalAlignment = function (alignment) {
+Widget.prototype.setVerticalAlignment = function ( alignment )  {
   $(this.element).css({ "vertical-align": alignment });
   return this;
 }
 
-Widget.prototype.setNoWrap = function () {
+Widget.prototype.setNoWrap = function() {
   $(this.element).css({ 'white-space': 'nowrap' });
   return this;
 }
 
-Widget.prototype.addWidget = function (widget) {
+Widget.prototype.addWidget = function ( widget ) {
   this.child.push(widget);
   this.element.appendChild(widget.element);
   widget.parent = this;
@@ -857,7 +856,8 @@ Grid.prototype.addIFrame = function ( url, row, col, rowSpan, colSpan ) {
   return iframe;
 }
 
-Grid.prototype.setSlider = function ( range,value, width_px,height_px, row, col, rowSpan, colSpan ) {
+Grid.prototype.setSlider = function ( range,value, width_px,height_px, row, col, 
+                                      rowSpan,colSpan )  {
   let slider = new Slider(range);
   this.setWidget ( slider, row, col, rowSpan, colSpan );
   slider.setWidth_px  ( width_px  );
@@ -866,7 +866,7 @@ Grid.prototype.setSlider = function ( range,value, width_px,height_px, row, col,
   return slider;
 }
 
-Grid.prototype.setCellSize = function (width, height, row, col) {
+Grid.prototype.setCellSize = function ( width,height,row,col )  {
   // Sets specified widths to cell in row,col
   let cell = this.getCell(row, col);
   if (width.length >0)  cell.style.width = width;
@@ -880,37 +880,37 @@ Grid.prototype.setCellSize = function (width, height, row, col) {
   return this;
 }
 
-Grid.prototype.getCellSize = function (row, col) {
+Grid.prototype.getCellSize = function ( row,col )  {
   let cell = this.getCell(row, col);
   return [$(cell).outerWidth(), $(cell).outerHeight()];
 }
 
-Grid.prototype.setFontFamily = function (row, col, family) {
+Grid.prototype.setFontFamily = function ( row,col,family )  {
   let cell = this.getCell(row, col);
   $(cell).css({ "font-family": family });
   return this;
 }
 
 
-Grid.prototype.setNoWrap = function (row, col) {
+Grid.prototype.setNoWrap = function ( row,col )  {
   let cell = this.getCell(row, col);
   cell.setAttribute('style', 'white-space: nowrap');
   return this;
 }
 
-Grid.prototype.setHorizontalAlignment = function (row, col, alignment) {
+Grid.prototype.setHorizontalAlignment = function ( row,col,alignment)  {
   let cell = this.getCell(row, col);
   $(cell).css({ "text-align": alignment });
   return this;
 }
 
-Grid.prototype.setVerticalAlignment = function (row, col, alignment) {
+Grid.prototype.setVerticalAlignment = function ( row,col,alignment )  {
   var cell = this.getCell(row, col);
   $(cell).css({ "vertical-align": alignment });
   return this;
 }
 
-Grid.prototype.setAlignment = function (row, col, valign, halign) {
+Grid.prototype.setAlignment = function ( row,col,valign,halign )  {
   var cell = this.getCell(row, col);
   $(cell).css({ "text-align": halign, "vertical-align": valign });
   return this;
@@ -936,7 +936,7 @@ Fieldset.prototype.constructor = Fieldset;
 // Label class
 
 function Label(text) {
-  Widget.call(this, 'div');
+  Widget.call ( this,'div' );
   this.setText(text);
   //  this.element.innerHTML = text;
 }
@@ -1224,9 +1224,9 @@ HLine.prototype.constructor = HLine;
 
 function Image(source, width, height) {
   Widget.call(this, 'img');
-  if (source.length > 0) this.element.setAttribute('src', source);
-  if (width.length > 0) this.element.setAttribute('width', width);
-  if (height.length > 0) this.element.setAttribute('height', height);
+  if (source.length > 0)  this.element.setAttribute ( 'src'   , source );
+  if (width .length > 0)  this.element.setAttribute ( 'width' , width  );
+  if (height.length > 0)  this.element.setAttribute ( 'height', height );
 }
 
 Image.prototype = Object.create(Widget.prototype);
@@ -1385,7 +1385,7 @@ Button.prototype.addOnClickListener = function (listener_func) {
 // Image Button class
 
 function ImageButton(icon_uri, width, height) {
-  Label.call(this, ' ');
+  Label.call ( this,' ' );
   this.image = new Image(icon_uri, width, height);
   this.addWidget(this.image);
   this.setWidth(width);
@@ -1399,20 +1399,19 @@ ImageButton.prototype.setImage = function (icon_uri) {
   this.image.setImage(icon_uri);
 }
 
-function setDefaultButton(button, context_widget) {
+function setDefaultButton ( button, context_widget )  {
   button.element.style.fontWeight = 'bold';
   $(context_widget.element).keydown(function (e) {
-    if (e.keyCode == 13) {
-      //if (e.which == 13) {
+    if (e.key == "Enter") {
       // handle click logic here
       button.click();
-      //e.preventDefault();
-      //return true;
+      e.preventDefault();
+      return true;
     }
   });
 }
 
-function unsetDefaultButton(button, context_widget) {
+function unsetDefaultButton ( button, context_widget ) {
   button.element.style.fontWeight = 'normal';
   $(context_widget.element).keydown();
 }
