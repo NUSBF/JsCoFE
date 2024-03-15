@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.12.23   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dock panel
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2023
+ *  (C) E. Krissinel, A. Lebedev 2020-2024
  *
  *  ==========================================================================
  *
@@ -134,22 +134,27 @@ Dock.prototype.removeTask = function ( taskId )  {  // taskId == task._type
   this.saveDockData();
 }
 
+
 Dock.prototype.saveDockData = function()  {
-let items    = this.sortable.getItems();
-let dockData = new DockData();
+  
+  if (this.sortable.isInitialised())  {
+  
+    let items    = this.sortable.getItems();
+    let dockData = new DockData();
 
-  dockData.opened = this.opened;
+    dockData.opened = this.opened;
 
-  for (let i=0;i<items.length;i++)
-    dockData.tasks.push ({
-      task  : items[i][0],  //  task._type
-      title : items[i][1],  //  task.title
-      icon  : items[i][2].split('\\').pop().split('/').pop()
-                         .split('.').slice(0, -1).join('.')
-    });
+    for (let i=0;i<items.length;i++)
+      dockData.tasks.push ({
+        task  : items[i][0],  //  task._type
+        title : items[i][1],  //  task.title
+        icon  : items[i][2].split('\\').pop().split('/').pop()
+                          .split('.').slice(0, -1).join('.')
+      });
 
-  serverRequest ( fe_reqtype.saveDockData,dockData,'Task Dock',
-                  function(rdata){},null,'persist' );
+    serverRequest ( fe_reqtype.saveDockData,dockData,'Task Dock',
+                    function(rdata){},null,'persist' );
+  }
 
 }
 
