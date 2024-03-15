@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.24   <--  Date of Last Modification.
+ *    14.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -310,7 +310,7 @@ let iwidth    = '26px';
 
   if (__local_setup)  {
     icon_path = image_path ( 'ccp4cloud_desktop'  );
-    if (__login_id=='localuser')
+    if (__local_user)
           tooltip += ' is in <b>desktop</b> mode:</i>';
     else  tooltip += ' is in <b>local</b> mode:</i>';
     tooltip += ul_style + '<li>projects and data are stored on your system</li>';
@@ -333,7 +333,7 @@ let iwidth    = '26px';
     iwidth = '20px';
   }
 
-  if ((!__local_setup) || (__login_id=='localuser'))
+  if ((!__local_setup) || __local_user)
     tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
 
   if (__fe_url!=window.location.href)
@@ -438,15 +438,14 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
     this._setModeIcon ( 18 );
   }
 
-  if (!__local_user)  {
-    this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
-    this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
-    this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
-    this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
-    this.headerPanel.setCellSize ( '32px','32px',0,22 );
-    this.logout_btn .setTooltip  ( 'Logout' );
-   } else
-    this.logout_btn = null;
+  this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
+  this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
+  this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
+  this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
+  this.headerPanel.setCellSize ( '32px','32px',0,22 );
+  if (__local_user)
+        this.logout_btn .setTooltip  ( 'End session' );
+  else  this.logout_btn .setTooltip  ( 'Logout'      );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -499,9 +498,11 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
-  if (!__local_user) 
-    this.headerPanel.menu.addItem('Log out',image_path('logout'))
-                         .addOnClickListener ( logout_func );
+  let menuLabel = 'Log out';
+  if (__local_user)
+    menuLabel = 'End session';
+  this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
+                       .addOnClickListener ( logout_func );
   return this;
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.23   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -49,8 +49,8 @@ var tipNo  = 0;
 
 function start ( callback_func )  {
 
-  var feConfig  = conf.getFEConfig();
-  var ncConfigs = conf.getNCConfigs();
+  let feConfig  = conf.getFEConfig();
+  let ncConfigs = conf.getNCConfigs();
 
   if (ncrash==0)  {
     feConfig.killPrevious();
@@ -60,7 +60,7 @@ function start ( callback_func )  {
   conf.setServerConfig ( feConfig );
 
   log.standard ( 1,'FE: url=' + feConfig.url() );
-  for (var i=0;i<ncConfigs.length;i++)
+  for (let i=0;i<ncConfigs.length;i++)
     log.standard ( 2,'NC[' + i + ']: type=' + ncConfigs[i].exeType +
                      ' url=' + ncConfigs[i].url() );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
@@ -86,7 +86,7 @@ function start ( callback_func )  {
   anl.readFEAnalytics();
 
   //  instantiate the server
-  var server = http.createServer();
+  let server = http.createServer();
 
   function commandServer ( nc_number,final_callback_function,command )  {
     if (nc_number<ncConfigs.length)  {
@@ -114,9 +114,9 @@ function start ( callback_func )  {
   }
 
   function controlSignal ( options )  {
-    var operation = options.operation;
-    var protocol  = options.protocol;
-    var node      = options.node;
+    let operation = options.operation;
+    let protocol  = options.protocol;
+    let node      = options.node;
 
     log.standard ( 7,'control signal received: <' + operation + ' ' +
                      protocol + ' ' + node + '>' );
@@ -139,12 +139,16 @@ function start ( callback_func )  {
 
     try {
 
-      var c = new comm.Communicate ( server_request,server_response );
+      let c = new comm.Communicate ( server_request,server_response );
 
       switch (c.command)  {
 
         case cmd.fe_command.getInfo :
             pp.processPOSTData ( server_request,server_response,user.getInfo,'active' );
+          break;
+
+        case cmd.fe_command.getLocalInfo :
+            pp.processPOSTData ( server_request,server_response,user.getLocalInfo,feConfig.state );
           break;
 
         case cmd.fe_command.getClientInfo :
@@ -195,7 +199,7 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.checkAnnouncement :
-            var rdata = {
+            let rdata = {
               message : utils.readString ( path.join('message_templates','announcement.html') ),
               tips    : utils.readObject ( path.join('manuals','tips.json') )
             }
@@ -250,7 +254,7 @@ function start ( callback_func )  {
 
       server.close();
 
-      var maxRestarts = 100;
+      let maxRestarts = 100;
       if ('maxRestarts' in feConfig)
         maxRestarts = feConfig.maxRestarts;
 

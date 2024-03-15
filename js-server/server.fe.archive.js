@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.03.23   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Archive management Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2022-2024
  *
  *  =================================================================
  *
@@ -24,7 +24,7 @@
 //  load system modules
 const fs        = require('fs-extra');
 const path      = require('path');
-const crypto    = require('crypto');
+const crypto_ex = require('crypto');
 const checkDiskSpace = require('check-disk-space').default;
 
 //  load application modules
@@ -37,12 +37,6 @@ const prj       = require('./server.fe.projects');
 const task_t    = require('../js-common/tasks/common.tasks.template');
 const ration    = require('./server.fe.ration');
 const emailer   = require('./server.emailer');
-// const com_utils = require('../js-common/common.utils');
-// var send_dir  = require('./server.send_dir');
-// var fcl       = require('./server.fe.facilities');
-// var class_map = require('./server.class_map');
-// var rj        = require('./server.fe.run_job');
-// var pd        = require('../js-common/common.data_project');
 
 //  prepare log
 const log = require('./server.log').newLog(27);
@@ -86,14 +80,14 @@ function clearIndex()  {
 
 
 function loadIndex()  {
-var primePath = conf.getFEConfig().archivePrimePath;
+  let primePath = conf.getFEConfig().archivePrimePath;
   
   if (!primePath)  {
     log.error ( 2,'attempt to load archive index while archive is not configured' );
     return -1;   // archive is not configured
   }
 
-  var ipath = path.join ( primePath,annot_fname );
+  let ipath = path.join ( primePath,annot_fname );
   if (!utils.fileExists(ipath))  {
     // all new index
     clearIndex();
@@ -124,7 +118,7 @@ var primePath = conf.getFEConfig().archivePrimePath;
 
 
 function saveIndex()  {
-var primePath = conf.getFEConfig().archivePrimePath;
+  let primePath = conf.getFEConfig().archivePrimePath;
 
   if (!primePath)  {
     log.error ( 5,'attempt to save archive index while archive is not configured' );
@@ -204,8 +198,8 @@ function _add_to_archive_index ( projectDesc )  {
 // }
 //
 
-var pa  = projectDesc.archive;
-var aid = pa.id;
+  let pa  = projectDesc.archive;
+  let aid = pa.id;
 
   function _add_to_index ( index,key )  {
     if (!(key in index))       
@@ -215,8 +209,8 @@ var aid = pa.id;
   }
 
   function _list_to_index ( index,keylist,minkeylength )  {
-    for (var i=0;i<keylist.length;i++)  {
-      var key = keylist[i].trim();
+    for (let i=0;i<keylist.length;i++)  {
+      let key = keylist[i].trim();
       if (key.length>=minkeylength)
         _add_to_index ( index,key.toUpperCase() );
     }
@@ -227,16 +221,16 @@ var aid = pa.id;
   
   _add_to_index ( deplogin_index,pa.depositor.login );
 
-  var name_lst = comut.replaceAll ( comut.replaceAll ( 
+  let name_lst = comut.replaceAll ( comut.replaceAll ( 
                             pa.depositor.name,'.',' '), ',',' ' ).split(' ');
   _list_to_index ( depname_index,name_lst,2 );
 
   _add_to_index ( depemail_index,pa.depositor.email.toUpperCase() );
 
-  for (var i=0;i<pa.date.length;i++)  {
-    var date  = new Date(pa.date[i]);
-    var year  = date.getFullYear();
-    var month = date.getMonth();
+  for (let i=0;i<pa.date.length;i++)  {
+    let date  = new Date(pa.date[i]);
+    let year  = date.getFullYear();
+    let month = date.getMonth();
     if (!(year in depdate_index))
       depdate_index[year] = [
         [],[],[], [],[],[], [],[],[], [],[],[]
@@ -268,7 +262,7 @@ function addToIndex ( projectDesc )  {
 
 
 function generateIndex()  {
-var fe_config = conf.getFEConfig();
+  let fe_config = conf.getFEConfig();
 
   if (!fe_config.isArchive())  {
     log.error ( 7,'attempt to generate archive index while archive is not configured' );
@@ -278,14 +272,14 @@ var fe_config = conf.getFEConfig();
   clearIndex();
   log.standard ( 12,'archive index is initialised' );
 
-  for (var fsname in fe_config.archivePath)  {
-    var adir_path = fe_config.archivePath[fsname].path;
+  for (let fsname in fe_config.archivePath)  {
+    let adir_path = fe_config.archivePath[fsname].path;
     fs.readdirSync(adir_path).forEach(function(file,index){
-      var curPath = path.join ( adir_path,file );
-      var lstat   = fs.lstatSync(curPath);
+      let curPath = path.join ( adir_path,file );
+      let lstat   = fs.lstatSync(curPath);
       if (lstat.isDirectory())  {
-        var pdesc_path  = path.join ( curPath,prj.projectDescFName );
-        var projectDesc = utils.readObject ( pdesc_path );
+        let pdesc_path  = path.join ( curPath,prj.projectDescFName );
+        let projectDesc = utils.readObject ( pdesc_path );
         if (projectDesc)  {
           _add_to_archive_index ( projectDesc );
           console.log ( ' ... added ' + curPath );
@@ -316,19 +310,19 @@ function chooseArchiveDisk ( archLocation,req_size,callback_func )  {
     callback_func ( archLocation[1] );
 
   } else  {
-    var adisks  = Object.entries ( conf.getFEConfig().archivePath );
-    var fsname0 = null;
-    var ffree   = 0.0;
+    let adisks  = Object.entries ( conf.getFEConfig().archivePath );
+    let fsname0 = null;
+    let ffree   = 0.0;
 
     function _check_disks ( n )  {
       if (n<adisks.length)  {
-        var fspath = path.resolve ( adisks[n][1].path );
+        let fspath = path.resolve ( adisks[n][1].path );
         checkDiskSpace(fspath).then ( (diskSpace) => {
-            var dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
-            var dnoise = Math.random();
+            let dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
+            let dnoise = Math.random();
             dfree -= dnoise;  // for choosing different disks in tests
-            var dsize = diskSpace.size/(1024.0*1024.0);  // MBytes
-            var rf = (dfree - adisks[n][1].diskReserve) /
+            let dsize = diskSpace.size/(1024.0*1024.0);  // MBytes
+            let rf = (dfree - adisks[n][1].diskReserve) /
                     (dsize - adisks[n][1].diskReserve);
             if ((rf>ffree) && (dfree>req_size))  {
               ffree   = rf;
@@ -349,9 +343,9 @@ function chooseArchiveDisk ( archLocation,req_size,callback_func )  {
 
 
 function randomString ( length, chars ) {
-const randomBytes = crypto.randomBytes(length);
-let   result = new Array(length);
-let   cursor = 0;
+  const randomBytes = crypto_ex.randomBytes(length);
+  let   result = new Array(length);
+  let   cursor = 0;
   for (let i = 0; i < length; i++) {
     cursor += randomBytes[i];
     result[i] = chars[cursor % chars.length];
@@ -361,11 +355,11 @@ let   cursor = 0;
 
 
 function findArchivedProject ( archiveID )  {
-var aconf = conf.getFEConfig().archivePath;
-var archPrjPath = [null,null];
+  let aconf = conf.getFEConfig().archivePath;
+  let archPrjPath = [null,null];
 
-  for (var fsn in aconf)  {
-    var apath = path.join ( aconf[fsn].path,archiveID );
+  for (let fsn in aconf)  {
+    let apath = path.join ( aconf[fsn].path,archiveID );
     if (utils.dirExists(apath))  {
       archPrjPath = [apath,fsn];
       break;
@@ -381,8 +375,8 @@ function makeArchiveID ( loginData )  {
 // generates unique archive ids CCP4-XXX.YYYY, where 'ccp4' is setup id from
 // FE configuration file, 'XXX' and 'YYYY' are random strings of letters and
 // numbers.
-var aid = null;
-var sid = conf.getFEConfig().description.id.toUpperCase();
+  let aid = null;
+  let sid = conf.getFEConfig().description.id.toUpperCase();
 
   while (!aid) {
     aid = randomString ( 7,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
@@ -398,10 +392,10 @@ var sid = conf.getFEConfig().description.id.toUpperCase();
 
 
 function annotateProject ( archiveDirPath,pAnnotation )  {
-var projectDescPath = path.join ( archiveDirPath,prj.projectDescFName );
-var projectDataPath = path.join ( archiveDirPath,prj.projectDataFName );
-var pDesc = utils.readObject ( projectDescPath );
-var pData = utils.readObject ( projectDataPath );
+  let projectDescPath = path.join ( archiveDirPath,prj.projectDescFName );
+  let projectDataPath = path.join ( archiveDirPath,prj.projectDataFName );
+  let pDesc = utils.readObject ( projectDescPath );
+  let pData = utils.readObject ( projectDataPath );
 
   if ((!pDesc) || (!pData))
     return 'project meta files are missing';
@@ -426,11 +420,11 @@ var pData = utils.readObject ( projectDataPath );
 
   // lock job directories by archive versioning
 
-  var dirlist = fs.readdirSync ( archiveDirPath );
-  for (var i=0;i<dirlist.length;i++)
+  let dirlist = fs.readdirSync ( archiveDirPath );
+  for (let i=0;i<dirlist.length;i++)
     if (dirlist[i].startsWith(prj.jobDirPrefix))  {
-      var jobMetaFPath = path.join ( archiveDirPath,dirlist[i],task_t.jobDataFName );
-      var job_meta     = utils.readObject ( jobMetaFPath );
+      let jobMetaFPath = path.join ( archiveDirPath,dirlist[i],task_t.jobDataFName );
+      let job_meta     = utils.readObject ( jobMetaFPath );
       if (job_meta && (!('archive_version' in job_meta)))  {
         job_meta.archive_version = pDesc.archive.version;
         job_meta.project = pDesc.name;
@@ -446,11 +440,11 @@ var pData = utils.readObject ( projectDataPath );
 // --------------------------------------------------------------------------
 
 function archiveProject ( loginData,data,callback_func )  {
-var uRation     = ration.getUserRation ( loginData );
-var pDesc       = data.pdesc;
-var pAnnotation = data.annotation;
-var archiveID   = pAnnotation.id.toUpperCase();
-var uData       = user.suspendUser ( loginData,true,'' );
+  let uRation     = ration.getUserRation ( loginData );
+  let pDesc       = data.pdesc;
+  let pAnnotation = data.annotation;
+  let archiveID   = pAnnotation.id.toUpperCase();
+  let uData       = user.suspendUser ( loginData,true,'' );
 
       // id        : this.aid,
       // coauthors : this.coauthors,
@@ -459,7 +453,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
       // kwds      : this.kwds
 
   if (!uData)  {
-    var msg = 'User data cannot be read, login=' + loginData.login;
+    let msg = 'User data cannot be read, login=' + loginData.login;
     log.error ( 1,msg );
     callback_func ( new cmd.Response(cmd.fe_retcode.readError,msg,'') );
   }
@@ -493,10 +487,10 @@ var uData       = user.suspendUser ( loginData,true,'' );
   //   return;
   // }
 
-  var archLocation = [null,null];
-  var update = false;
+  let archLocation = [null,null];
+  let update = false;
   if (archiveID)  {
-    var instanceID = conf.getFEConfig().description.id.toUpperCase();
+    let instanceID = conf.getFEConfig().description.id.toUpperCase();
     if (!archiveID.startsWith(instanceID))
       archiveID = instanceID + '-' + archiveID;
     archLocation = findArchivedProject ( archiveID );
@@ -527,7 +521,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
       }
     }
     // check whether archive ID clashes with one of user's project name
-    var checkPath = prj.getProjectDirPath ( loginData,archiveID );
+    let checkPath = prj.getProjectDirPath ( loginData,archiveID );
     if (utils.dirExists(checkPath) && (!utils.isSymbolicLink(checkPath)))  {
       user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
@@ -572,12 +566,12 @@ var uData       = user.suspendUser ( loginData,true,'' );
       setTimeout ( function(){
 
         // remove project from user's account
-        var unshared_users = prj.unshare_project ( pDesc );
+        let unshared_users = prj.unshare_project ( pDesc );
 
-        var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
-        var archiveDirPath = getArchiveDirPath ( adname,archiveID );
+        let projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
+        let archiveDirPath = getArchiveDirPath ( adname,archiveID );
 
-        var archiveBackupPath = null;
+        let archiveBackupPath = null;
         if (utils.dirExists(archiveDirPath))  {
           archiveBackupPath += '.bak';
           utils.moveDir ( archiveDirPath,archiveBackupPath,true );
@@ -585,7 +579,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
         utils.copyDirAsync ( projectDirPath,archiveDirPath,true,function(err){
 
-          var failcode = 0;
+          let failcode = 0;
           if (!err)  {
             // put archive metadata in project description, lock jobs for deletion
             pAnnotation.id         = archiveID;
@@ -598,8 +592,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
             pAnnotation.project_name = pDesc.name;
             annotateProject ( archiveDirPath,pAnnotation );
             // make archived project link in user's projects directory
-            var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
-            var linkedDir = path.resolve(archiveDirPath);
+            let linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
+            let linkedDir = path.resolve(archiveDirPath);
             if (update && utils.isSymbolicLink(linkDir))
               utils.removeFile ( linkDir );
             if (utils.makeSymLink(linkDir,linkedDir))  {
@@ -651,7 +645,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
                             projectTitle : pDesc.title
                         });
 
-              for (var i=0;i<unshared_users.length;i++)
+              for (let i=0;i<unshared_users.length;i++)
                 emailer.sendTemplateMessage ( unshared_users[i],
                           cmd.appName() + ' Project Archived',
                           'shared_project_archived',{
@@ -714,8 +708,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
 // --------------------------------------------------------------------------
 
 function accessArchivedProject ( loginData,data )  {
-var archiveID   = data.archiveID;
-var archPrjPath = findArchivedProject(archiveID)[0];
+  let archiveID   = data.archiveID;
+  let archPrjPath = findArchivedProject(archiveID)[0];
 
   // 1. Check that requested project exists in the archive
 
@@ -726,10 +720,10 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 
   // 2. Check that the project is not already in users' account
 
-  var projectDir = prj.getProjectDirPath ( loginData,archiveID );
+  let projectDir = prj.getProjectDirPath ( loginData,archiveID );
   if (utils.dirExists(projectDir))  {
-    var pDesc = prj.readProjectDesc ( loginData,archiveID );
-    var pList = prj.readProjectList ( loginData );  // this reads new project in
+    let pDesc = prj.readProjectDesc ( loginData,archiveID );
+    let pList = prj.readProjectList ( loginData );  // this reads new project in
     if (pDesc && pList)  {
       pList.current = pDesc.name;        // make it current
       if (!prj.writeProjectList(loginData,pList))  {
@@ -739,7 +733,7 @@ var archPrjPath = findArchivedProject(archiveID)[0];
         });
       }
     }
-    var code  = 'already_accessed';
+    let code  = 'already_accessed';
     if (!pDesc)  code = 'error_read_project';
     else if (!pDesc.archive)  code = 'duplicate_name';
     else if (pDesc.owner.login==loginData.login)  code = 'author_archive';
@@ -760,8 +754,8 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 
   try {
 
-    var pList = prj.readProjectList ( loginData );  // this reads new project in
-    var pDesc = prj.readProjectDesc ( loginData,archiveID );
+    let pList = prj.readProjectList ( loginData );  // this reads new project in
+    let pDesc = prj.readProjectDesc ( loginData,archiveID );
     // pList.projects.push ( pDesc );  // should be no need for this
     pList.current = pDesc.name;        // make it current
     if (!prj.writeProjectList(loginData,pList))  {
@@ -791,7 +785,7 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 // --------------------------------------------------------------------------
 
 function searchArchive ( loginData,data )  {
-var mlist = [];
+  let mlist = [];
 
   let code = 'ok';
   switch (loadIndex())  {
@@ -803,8 +797,8 @@ var mlist = [];
 
   if (code=='ok')  {
 
-    var aids = [];
-    var filtered = false;
+    let aids = [];
+    let filtered = false;
 
     function __filter_list ( index,key )  {
       if (key && (key in index))  {

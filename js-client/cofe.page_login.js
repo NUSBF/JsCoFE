@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -255,7 +255,7 @@ function LoginPage ( sceneId )  {
 
   });
 
-  setDefaultButton ( login_btn,this.grid );
+  setDefaultButton ( login_btn,{ element : window } );
 
   if (__url_parameters)  {
     if ('project' in __url_parameters)
