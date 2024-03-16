@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    16.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -451,15 +451,46 @@ if (!__template)  {
                   if (!response)
                     return false;  // issue standard AJAX failure message
                   if (response.status==nc_retcode.ok)  {
-                    if (response.data.path!='')  {
-                      //alert ( JSON.stringify(response.data) );
-                      task.collectRangesInput ( inputPanel );
-                      if (dirNo<inputPanel.imageDirMeta.length)
-                            inputPanel.imageDirMeta[dirNo] = response.data;
-                      else  inputPanel.imageDirMeta.push ( response.data );
-                      window.setTimeout ( function(){
-                        task.layDirectoryInput ( inputPanel );
-                      },0);
+                    let rData = response.data;
+                    if (rData.path!='')  {
+                      // alert ( JSON.stringify(response.data) );
+                      function _accept_dir()  {  
+                        task.collectRangesInput ( inputPanel );
+                        if (dirNo<inputPanel.imageDirMeta.length)
+                              inputPanel.imageDirMeta[dirNo] = rData;
+                        else  inputPanel.imageDirMeta.push ( rData );
+                        window.setTimeout ( function(){
+                          task.layDirectoryInput ( inputPanel );
+                        },0);
+                      }
+                      // check and confirm that selection does not contain HDF5 files
+                      let hdf5 = false;
+                      for (let i=0;(i<rData.sectors.length) && (!hdf5);i++)
+                        hdf5 = rData.sectors[i].name.toLowerCase().endsWith('.h5');
+                      if (hdf5)  {
+                        new QuestionBox ( 'HDF5 datasets or Image files',
+                          '<div style="width:500px"><h2>HDF5 datasets or Image files</h2>' + 
+                          'Selected directory contains files with .h5 extension, which ' +
+                          'is indicative of HDF5 container format.<p>'    +
+                          'If you are certain that these .h5 files are actually X-ray ' +
+                          'image files, choose <i>"proceed"</i> below.<p>' +
+                          'If you are unsure or selected this directory by mistake, ' +
+                          'choose <i>"double-check"</i>. To import HDF5 container files, ' +
+                          'switch data type selector from "X-ray images to "HDF5 datasets" ' +
+                          'and select <i>master</i> file (typically named ' +
+                          '<i>"*_master.h5"</i>).' +
+                          '<p>Please confirm.</div>',[
+                            { name    : 'My .h5 files are image files, proceed',
+                              onclick : function(){
+                                          _accept_dir();
+                                        }
+                            },{
+                              name    : 'I want to double-check',
+                              onclick : null
+                            }
+                          ],'msg_confirm' );
+                      } else
+                        _accept_dir();
                     }
                   } else  {
                     new MessageBox ( 'Select Directory Error',
@@ -479,14 +510,48 @@ if (!__template)  {
                   if (!response)
                     return false;  // issue standard AJAX failure message
                   if (response.status==nc_retcode.ok)  {
-                    if (response.data.file!='')  {
-                      inputPanel.imageDirMeta = [{
-                        'path'    : response.data.file,
-                        'sectors' : []
-                      }]
-                      window.setTimeout ( function(){
-                        task.layDirectoryInput ( inputPanel );
-                      },0);
+                    let rData = response.data;
+                    if (rData.file!='')  {
+                      function _accept_file()  {
+                        inputPanel.imageDirMeta = [{
+                          'path'    : rData.file,
+                          'sectors' : []
+                        }]
+                        window.setTimeout ( function(){
+                          task.layDirectoryInput ( inputPanel );
+                        },0);
+                      }
+                      // "validate" file
+                      let message = '';
+                      if (!rData.file.toLowerCase().endsWith('.h5'))
+                        message += '<li><b>file extension is not .h5</b></li>';
+                      let fnlist = rData.file.split(/[/\\]/);
+                      if (fnlist[fnlist.length-1].toLowerCase().indexOf('master')<0)
+                        message += '<li><b>file is not named as <i>master</i></li>';
+                      if (message)  {
+                        new QuestionBox ( 'HDF5 master file',
+                          '<div style="width:500px"><h2>HDF5 master file</h2>' + 
+                          'Selected file name does not follow common pattern for HDF5 ' +
+                          'master file in that<ul>' + message + '</li></ul>' +
+                          'Typically, HDF5 master files have .h5 extension and have '  +
+                          'word <i>"master"</i> in the name, for example, ' +
+                          '<i>*_master.h5</i>.<p>' +
+                          'If you are certain that you selected the right file, '   +
+                          'choose <i>"proceed"</i> below.<p>' +
+                          'If you are unsure or selected this file by mistake, ' +
+                          'choose <i>"double-check"</i>.' +
+                          '<p>Please confirm.</div>',[
+                            { name    : 'Yes I selected .h5 master file, proceed',
+                              onclick : function(){
+                                          _accept_dir();
+                                        }
+                            },{
+                              name    : 'I want to double-check',
+                              onclick : null
+                            }
+                          ],'msg_confirm' );
+                      } else
+                        _accept_file();
                     }
                   } else  {
                     new MessageBox ( 'Select File Error',
