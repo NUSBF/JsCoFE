@@ -70,14 +70,14 @@ function LocalLoginPage ( sceneId )  {
       let row = 0;
 
       panel.setLabel ( text +
-        'Projects and data are kept on your machine:<br>' +
+        'Projects and data stored on your machine:<br>' +
         // '<i style="font-size:85%">path(s): </i>' +
         '<span style="font-size:85%;font-family:courier;">' + paths + '</span>' +
         '</li><li style="padding-bottom:8px;">' +
-        'Data <b><i>are not</i></b> synced with your ' + appName() + ' account(s)<br>' +
+        'Projects and data <b><i>not</i></b> synced with ' + appName() + ' server(s)<br>' +
         '<i style="font-size:85%">(use project export/import for manual syncing)</i>' +
         '</li><li style="padding-bottom:8px;">' +
-        'Jobs are run on your machine<br>' +
+        'Jobs run on your machine<br>' +
         '<i style="font-size:85%">(except when 3rd party web-services are used)</i>' +
         '</li><li>' +
         'You have ' + dfree + 'GB free disk space' +
