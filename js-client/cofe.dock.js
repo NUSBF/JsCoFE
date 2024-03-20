@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.03.24   <--  Date of Last Modification.
+ *    20.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -32,12 +32,12 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
     //'width'            : '300px',
     //'height'           : '100px',
     'position'         : 'absolute',
-    'right'            : '16px',
-    'top'              : '46px',
+    'right'            : '28px',
+    'top'              : '40px',
     'padding-top'      : '4px',
-    'padding-left'     : '20px',
+    'padding-left'     : '8px',
     'padding-bottom'   : '4px',
-    'padding-right'    : '20px',
+    'padding-right'    : '8px',
     'background-color' : 'rgba(242,242,242,0.67)', // '#F3F3F3',
     //'background-color' : '#F3F3F3',
     //'opacity'          : '0.5',
@@ -70,7 +70,7 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
   );
 
   this.dock.addWidget ( this.sortable );
-  this.sortable.setWidth_px ( 256 );
+  this.sortable.setWidth_px ( 286 );
 
   this.addTask_func = addTask_func;
 
