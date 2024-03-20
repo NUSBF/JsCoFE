@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    16.03.24   <--  Date of Last Modification.
+ *    20.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -179,7 +179,6 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 FoldersBrowser.prototype.makeToolBar = function ( row,col )  {
 
   this.toolbar_div = new Widget('div');
-  // this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
   let toolbar = new Grid('-compact');
   this.toolbar_div.addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, row,col,1,1 );
