@@ -312,7 +312,6 @@ class dataLink {
     if (entry && ! force) {
       // check if already fetched
       if (entry.status === status.completed && fs.existsSync(this.catalog.getDataDest(user, source, id))) {
-        log.info(`${source} - ${user}/${source}/${id} already exists`);
         return tools.successMsg(`${source} - ${user}/${source}/${id} already exists`);
       }
 
@@ -325,13 +324,11 @@ class dataLink {
     // add a new or replace user catalog entry
     entry = this.addEntryFromSource(user, source, id);
     if (entry === false) {
-      return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
+      return tools.errorMsg(`${source} - Error fetching ${user}/${source}/${id}`, 500);
     }
 
     // prune old data if required
     this.pruneData(config.get('storage.data_free_gb'));
-
-    log.info(`${source} - Fetching ${user}/${source}/${id}`);
 
     this.ds[source].setErrorCallback((entry, err) => {
       this.dataError(entry);
@@ -346,7 +343,7 @@ class dataLink {
     // fetch the data from the data source
     this.ds[source].fetchData(entry);
 
-    return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
+    return tools.successMsg(`${source} - Fetching ${user}/${source}/${id}`);
   }
 
   dataComplete(entry) {
@@ -477,10 +474,10 @@ class dataLink {
     }
 
     if (this.catalog.removeEntry(user, source, id)) {
-      return tools.successMsg(`${source}: Removed ${id} for ${user}`);
+      return tools.successMsg(`${source} - Removed ${id} for ${user}`);
     }
 
-    return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
+    return tools.errorMsg(`${source} - Unable to remove ${id} for ${user}`, 405);
   }
 
   async pruneData(min_free_gb) {

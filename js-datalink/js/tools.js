@@ -26,6 +26,7 @@ class tools {
   }
 
   static successMsg(msg, code = 200) {
+    log.info(msg);
     return { success: true, code: code, msg: msg };
   }
 
