@@ -1,5 +1,6 @@
 import { libcootApi } from "../../src/types/libcoot"
 import { emscriptem } from "../../src/types/emscriptem"
+import { privateer } from "../../src/types/privateer";
 
 // @ts-ignore
 importScripts('./wasm/moorhen.js')
@@ -227,7 +228,7 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
 
 const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false): libcootApi.SimpleMeshJS => {
 
-    const print_timing = true;
+    const print_timing = false
     const ts = performance.now()
 
     const vertices = simpleMesh.vertices;
@@ -764,6 +765,20 @@ const ramachandranDataToJSArray = (ramachandraData: emscriptem.vector<libcootApi
     return returnResult
 }
 
+const vectorPairStringIntToJSArray = (vectorData: emscriptem.vector<{first: string; second: number}>) => {
+    let result: {residue: string; slice: number; }[] = []
+    const vectorSize = vectorData.size()
+    for(let i = 0; i < vectorSize; i++) {
+        const pair = vectorData.get(i)
+        const residue = pair.first
+        const slice = pair.second
+        const jspair = {residue: residue, slice: slice }
+        result.push(jspair)
+    }
+    vectorData.delete()
+    return result
+}
+
 const vectorPairClipperCoordFloatToJSArray = (vectorData: emscriptem.vector<{first: libcootApi.CootCartesian; second: number}>): libcootApi.DiffDiffMapPeaksJS => {
     let result: {value: number; coord: { x: number; y: number; z: number }}[] = []
     const vectorSize = vectorData.size()
@@ -851,10 +866,8 @@ const new_positions_for_residue_atoms = (molToUpDate: number, residues: libcootA
     const movedResidueVector  = new cootModule.Vectormoved_residue_t()
     residues.forEach(atoms => {
         if (atoms.length > 0) {
-            const cidFields = atoms[0].label.split('/')
-            let [resNoStr, insCode] = cidFields[3].split(".")
-            insCode = insCode ? insCode : ""
-            const movedResidue = new cootModule.moved_residue_t(cidFields[2], parseInt(resNoStr), insCode)
+            const atomInfo = atoms[0]
+            const movedResidue = new cootModule.moved_residue_t(atomInfo.chain_id, parseInt(atomInfo.res_no), "")
             atoms.forEach(atom => {
                 const movedAtom = new cootModule.moved_atom_t(atom.name, atom.alt_loc, atom.x, atom.y, atom.z, -1)
                 movedResidue.add_atom(movedAtom)
@@ -903,8 +916,14 @@ const read_ccp4_map = (mapData: ArrayBufferLike, name: string, isDiffMap: boolea
     cootModule.FS_createDataFile(".", `${theGuid}${fileExtension}`, asUint8Array, true, true);
     const tempFilename = `./${theGuid}${fileExtension}`
     const read_map_args: [string, boolean] = [tempFilename, isDiffMap]
-    const molNo = molecules_container.read_ccp4_map(...read_map_args)
-    cootModule.FS_unlink(tempFilename)
+    let molNo = -1
+    try {
+        molNo = molecules_container.read_ccp4_map(...read_map_args)
+    } catch (err) {
+        console.warn(err)
+    } finally {
+        cootModule.FS_unlink(tempFilename)
+    }
     return molNo
 }
 
@@ -923,6 +942,52 @@ const setUserDefinedBondColours = (imol: number, colours: { cid: string; rgb: [n
 
     indexedResiduesVec.delete()
     colourMap.delete()
+}
+
+const privateerValidationToJSArray = (results: emscriptem.vector<privateer.ResultsEntry>) : privateer.ResultsEntry[] => {
+
+    const sanitizeID = (id: string): string => {
+        const regex = /: *32/g;
+        return id.replace(regex, '');
+    }
+
+    const data: privateer.ResultsEntry[] = [];
+    const resultSize = results.size();
+    for (let i = 0; i < resultSize ; i++) {
+        const entry = results.get(i);
+
+        const collectedTorsions: privateer.TorsionEntry[] = [];
+        const torsionsVec = entry.torsions;
+        const torsionSize = torsionsVec.size();
+        for (let j = 0; j < torsionSize; j++) {
+            collectedTorsions.push(torsionsVec.get(j));
+        }
+        torsionsVec.delete()
+
+        const regex: RegExp = /: *32/g;
+        const sanitisedSVG = entry.svg.replace(regex, '');
+        const sanitisedID = sanitizeID(entry.id as string);
+        const entryJS: privateer.ResultsEntry = {
+            torsions: collectedTorsions,
+            svg: sanitisedSVG,
+            id: sanitisedID,
+            chain: entry.chain,
+            wurcs: entry.wurcs,
+            glyconnect_id: entry.glyconnect_id,
+            glytoucan_id: entry.glytoucan_id,
+            torsion_err: entry.torsion_err,
+            anomer_err: entry.anomer_err,
+            conformation_err: entry.conformation_err,
+            puckering_err: entry.puckering_err,
+            chirality_err: entry.chirality_err
+        }
+
+        data.push(entryJS);
+    }
+
+    results.delete();
+    return data;
+
 }
 
 const doCootCommand = (messageData: { 
@@ -1065,11 +1130,22 @@ const doCootCommand = (messageData: {
             case 'vector_pair_clipper_coord_float':
                 returnResult = vectorPairClipperCoordFloatToJSArray(cootResult)
                 break
+            case 'vector_pair_string_int':
+                returnResult = vectorPairStringIntToJSArray(cootResult)
+                break
+            case 'privateer_results':
+                returnResult = privateerValidationToJSArray(cootResult)
+                break
             case 'status':
             default:
                 returnResult = cootResult
                 break;
-            //cootResult.delete()
+        }
+
+        try {
+            cootResult.delete()
+        } catch (err) {
+            // pass
         }
 
         return {
@@ -1104,6 +1180,7 @@ onmessage = function (e) {
                 molecules_container = new cootModule.molecules_container_js(false)
                 molecules_container.set_use_gemmi(false)
                 molecules_container.set_show_timings(false)
+                molecules_container.set_refinement_is_verbose(false)
                 molecules_container.fill_rotamer_probability_tables()
                 molecules_container.set_map_sampling_rate(1.7)
                 molecules_container.set_map_is_contoured_with_thread_pool(true)
@@ -1129,6 +1206,17 @@ onmessage = function (e) {
                 console.log(e)
                 print(e);
             });
+    }
+
+    else if (e.data.message === 'close') {
+        molecules_container?.delete()
+        postMessage({
+            messageId: e.data.messageId,
+            myTimeStamp: e.data.myTimeStamp,
+            consoleMessage: `Closed molecules container`,
+            message: e.data.message,
+            result: {  }
+        })
     }
 
     else if (e.data.message === 'get_mtz_data') {
