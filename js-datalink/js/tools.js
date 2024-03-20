@@ -242,6 +242,12 @@ class tools {
           const file = fs.createWriteStream(dest, { 'flags': flags });
 
           res.on('data', (data) => {
+            // workaround for node v16 lacking AbortController support for http(s) requests
+            // if the AbortController was aborted, destroy the request and trigger an error
+            if (options.signal && options.signal.aborted) {
+              req.destroy(new Error('AbortError: The operation was aborted (compat)'));
+            }
+
             file.write(data);
             if (writeCallback) {
               writeCallback(data);
