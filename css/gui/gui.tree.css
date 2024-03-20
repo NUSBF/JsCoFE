@@ -1,7 +1,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.21   <--  Date of Last Modification.
+ *    20.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Tree Widget Stylesheet
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -21,17 +21,22 @@
  */
 
 
-.toolbox-content {
+.toolbar-content {
 /*    background-color: rgba(255,255,255,0.35); */
-    overflow: auto;
-    padding : 0px;
+    overflow-y     : auto;
+    overflow-x     : hidden;
+    text-align     : left;
+    padding-top    : 0px;
+    padding-left   : 8px;
+    padding-right  : 0px;
+    padding-bottom : 0px;
 /*   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
 }
 
 .tree-content {
 /*    background-color: rgba(255,255,255,0.35); */
-    overflow: auto;
-    padding : 0px;
+    overflow : auto;
+    padding  : 0px;
 /*   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
 }
 
@@ -75,9 +80,11 @@
 }
 */
 
+/*
 .toolbar-content {
     background-color: rgba(127,127,127,0.5);
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
+*/
 
 .jstree-themeicon-custom { background-size: 24px 24px !important; }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.03.24   <--  Date of Last Modification.
+ *    20.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -186,13 +186,11 @@ function ProjectPage ( sceneId )  {
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';
-  const toolbar_width   = 50;
+  const toolbar_width   = 58;
   this.toolbar_div = new Widget('div');
-  this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
+  this.toolbar_div.element.setAttribute ( 'class','toolbar-content' );
   let toolbar = new Grid('');
-  this.toolbar_div.setWidth_px ( toolbar_width )
-                  .setHorizontalAlignment ( 'center' )
-                  .addWidget   ( toolbar );
+  this.toolbar_div.setWidth_px ( toolbar_width ).addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
 
   this.panel = this.grid.setGrid ( '',1,1,1,1 );
@@ -200,12 +198,12 @@ function ProjectPage ( sceneId )  {
   // note that actual panel size is set in function resizeTreePanel() below
   this.grid.setCellSize ( '40px',''    ,1,0,1,1 );
   this.grid.setVerticalAlignment ( 1,1,'top' );
-  this.grid.setCellSize ( '100%','100%' ,1,1,1,1 );
-  this.grid.setCellSize ( '6px','' ,1,2,1,1 );
+  this.grid.setCellSize ( '100%','100%',1,1,1,1 );
+  this.grid.setCellSize ( '6px',''     ,1,2,1,1 );
 
   // make the toolbar
-  const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbar_width + 
-                    'px;margin-top:6px;"></div>'
+  const horz_line = '<div style="border-top: 1.5px dotted grey; width:' +
+                    toolbutton_size + '; margin-top:6px;"></div>';
   let   cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
@@ -1376,6 +1374,7 @@ ProjectPage.prototype.makeJobTree = function()  {
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '6px';
+  jobTree.element.style.paddingLeft   = '0px';
   // this.job_tree = jobTree;  // for external references
   let self = this;
   // (function(self){
@@ -1531,7 +1530,7 @@ ProjectPage.prototype.trimPageTitle = function()  {
 
 ProjectPage.prototype.onResize = function ( width,height )  {
   let h = (height - 88) + 'px';    // THESE NUMBERS DEFINE WIDTH AND HEIGHT
-  let w = (width  - 74) + 'px';    // OF THE JOB TREE 
+  let w = (width  - 80) + 'px';    // OF THE JOB TREE 
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
   // ***** development code, dormant
