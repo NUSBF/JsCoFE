@@ -12,119 +12,123 @@ class dataSource {
   name = this.constructor.name;
   description = '';
   url = '';
+  catalog = null;
+  catalog_size = 0;
+  catalog_status = null;
 
-  constructor() {
-    this.catalog_file = path.join(tools.getCatalogDir(), this.name + '.json');
-    this.catalog = null;
-    this.catalog_size = 0;
-    this.status = null;
-    this.jobs = {};
-  }
-
-  addCatalog(catalog) {
-    this.catalog = catalog;
-    this.catalog_size = Object.keys(catalog).length;
-    this.status = status.completed;
-    log.info(`${this.name} - Added catalog ${this.catalog_file}: ${this.catalog_size} entries`);
-  }
-
-  saveCatalog(catalog) {
-    log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
-    this.addCatalog(catalog);
-    let json = JSON.stringify(catalog);
-    try {
-      fs.mkdirSync(tools.getCatalogDir(), { recursive: true });
-    } catch (err) {
-      log.info(`${this.name} - Unable to create ${tools.getCatalogDir()} - ${err}`);
-    }
-    let file = fs.writeFile(this.catalog_file, json, (err) => {
-      if (err) {
-        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err.message}`);
-      } else {
-        this.status = status.completed;
-      }
-    });
-  }
-
-  loadCatalog() {
-    if (! fs.existsSync(this.catalog_file)) {
-      log.info(`${this.name} - Fetching Catalog`);
-      this.fetchCatalog();
-      return;
-    }
-
-    fs.readFile(this.catalog_file, (err, data) => {
-      if (err) {
-        log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
-      } else {
-        try {
-          const catalog = JSON.parse(data);
-          this.addCatalog(catalog);
-        } catch (err) {
-          log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
-        }
-      }
-    });
-  }
-
-  getJobId(user, id) {
-    return user + '/' + id;
-  }
-
-  addJob(user, id, pid) {
-    let jid = this.getJobId(user, id);
-    this.jobs[jid] = pid;
-  }
-
-  getJob(user, id) {
-    let jid = this.getJobId(user, id);
-    return this.jobs[jid];
-  }
-
-  deleteJob(user, id) {
-    let jid = this.getJobId(user, id);
-    if (this.jobs[jid]) {
-      delete this.jobs[jid];
-    }
+  constructor(data_dir, jobs) {
+    this.data_dir = data_dir;
+    this.jobs = jobs;
   }
 
   getEntry(id) {
     return this.catalog[id];
   }
 
-  setDataComplete(user, id, catalog) {
-    let fields = {
-      'status': status.completed,
-      'size': catalog.getStorageSize(user, this.name, id)
-    }
-    if (! catalog.updateEntry(user, this.name, id, fields)) {
-      log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
-    }
-
-    this.deleteJob(user, id);
-    log.info(`${this.name} - Fetched ${user}/${this.name}/${id} - size ${fields.size}`);
+  addCatalog(catalog) {
+    this.catalog = catalog;
+    this.catalog_size = Object.keys(catalog).length;
+    this.catalog_status = status.completed;
+    log.info(`${this.name} - Added catalog: ${this.catalog_size} entries`);
   }
 
-  setDataError(user, id, catalog, error) {
-    // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
-    if (catalog.hasEntry(user, this.name, id)) {
-      catalog.updateEntry(user, this.name, id, { status: status.failed });
+  saveCatalog(catalog_file, catalog) {
+    log.info(`${this.name} - Saving catalog to ${catalog_file}`);
+    this.addCatalog(catalog);
+    let json = JSON.stringify(catalog);
+    try {
+      fs.mkdirSync(path.dirname(catalog_file), { recursive: true });
+    } catch (err) {
+      log.info(`${this.name} - Unable to create ${tools.getCatalogDir()} - ${err}`);
     }
-    this.deleteJob(user, id);
-    log.error(`${this.name} - Failed to fetch ${user}/${this.name}/${id} - ${error}`);
+    let file = fs.writeFile(catalog_file, json, (err) => {
+      if (err) {
+        log.error(`${this.name} - Unable to save ${catalog_file} - ${err.message}`);
+      } else {
+        this.catalog_status = status.completed;
+      }
+    });
   }
 
-  async fetchDataHttp(url, user, id, catalog) {
-    let entry = catalog.getEntry(user, this.name, id);
+  async loadCatalog(catalog_file) {
+    if (! fs.existsSync(catalog_file)) {
+      log.info(`${this.name} - Fetching Catalog`);
+      const catalog = await this.fetchCatalog();
+      this.saveCatalog(catalog_file, catalog);
+      return;
+    }
 
+    fs.readFile(catalog_file, (err, data) => {
+      if (err) {
+        log.error(`${this.name} - Unable to load ${catalog_file} - ${err.message}`);
+      } else {
+        try {
+          log.info(`${this.name} - Loading catalog ${catalog_file}`);
+          const catalog = JSON.parse(data);
+          this.addCatalog(catalog);
+        } catch (err) {
+          log.error(`${this.name} - Unable to parse ${catalog_file} - ${err.message}`);
+        }
+      }
+    });
+  }
+
+  setErrorCallback(callback) {
+    this.errorCallback = callback;
+  }
+
+  setCompleteCallback(callback) {
+    this.completeCallback = callback;
+  }
+
+  dataError(entry, err) {
+    this.removeJob(entry);
+    this.errorCallback(entry, err);
+  }
+
+  dataComplete(entry) {
+    this.removeJob(entry);
+    this.completeCallback(entry);
+  }
+
+  getJobKey(entry) {
+    return entry.user + '/' + entry.id;
+  }
+
+  getJob(entry) {
+    return this.jobs[this.getJobKey(entry)];
+  }
+
+  addJob(entry, controller, status) {
+    const key = this.getJobKey(entry);
+    this.jobs[key] = { controller: controller, status: status }
+  }
+
+  removeJob(entry) {
+    this.abortJob(entry);
+    const key = this.getJobKey(entry);
+    if (this.jobs[key]) {
+      delete this.jobs[key];
+    }
+  }
+
+  abortJob(entry) {
+    const job = this.getJob(entry);
+    if (job && job.controller) {
+      job.controller.abort();
+    }
+  }
+
+  async fetchDataHttp(url, entry) {
     // get content-size from http headers
     let headers = await tools.httpGetHeaders(url);
     if (headers['content-length']) {
       entry.size_s = parseInt(headers['content-length'], 10);
     }
 
-    let dest_dir = tools.getDataDest(user, this.name, id);
-    let dest_file = path.join(dest_dir, path.basename(url));
+    let file = path.basename(url);
+    let data_dest = path.join(this.data_dir, entry.dir);
+    let dest_file = path.join(data_dest, file);
 
     let options = {};
     let file_size = 0;
@@ -138,7 +142,7 @@ class dataSource {
         }
       }
     } catch (err) {
-      this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - ${err.message}`);
+      this.dataError(entry, `${this.name}/fetchDataHttp - ${err.message}`);
       return;
     }
 
@@ -146,51 +150,55 @@ class dataSource {
       try {
         await tools.httpRequest(url, options, dest_file,
         (controller) => {
-          this.addJob(user, id, controller);
+          this.addJob(entry, controller, `Fetching ${url} to ${entry.dir}`);
         },
         (data) => {
           entry.size += data.length;
         });
       } catch (err) {
-        this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - ${err}`);
+        this.dataError(entry, `${this.name}/fetchDataHttp - ${err}`);
         return;
       };
     }
 
     // unpack the archive
     try {
-      log.info(`${this.name}/fetchDataHttp - Unpacking ${dest_file} to ${dest_dir}`);
-      await tools.unpack(dest_file, dest_dir, null, null, (controller) => {
-        this.addJob(user, id, controller);
+      const msg = `${this.name}/fetchDataHttp - Unpacking ${file} to ${entry.dir}`
+      log.info(msg);
+      await tools.unpack(dest_file, data_dest, null, null, (controller) => {
+        this.addJob(entry, controller, msg);
       });
     } catch (err) {
-      this.setDataError(user, id, catalog, err);
+      this.dataError(entry, err);
       return;
     }
 
-    let ret = await this.unpackDirectory(user, id, dest_dir);
+    let ret = await this.unpackDirectory(entry, data_dest);
 
-    if (ret) {
-      this.setDataComplete(user, id, catalog);
+    if (! ret) {
+      this.dataError(entry);
+      return;
     }
+    this.dataComplete(entry);
   }
 
-  async unpackDirectory(user, id, dest_dir) {
+  async unpackDirectory(entry, dest_dir) {
     // go through the contents of the archive and unpack any additional files
     // this is required as some data source images are gzipped/bzipped individually
     return await tools.fileCallback(dest_dir, async (file) => {
       const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
       if (cmd) {
         try {
-          log.info(`${this.name}/unpackDirectory - Unpacking ${file}`);
+          const msg = `unpackDirectory - Unpacking ${file}`;
+          log.info(msg);
           await tools.unpack(file, dest_dir, cmd, args, (controller) => {
-            this.addJob(user, id, controller);
+            this.addJob(entry, controller, msg);
           });
         } catch (err) {
-          log.error(`${this.name}/unpackDirectory - ${err}`);
+          log.error(`unpackDirectory - ${err}`);
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
           if (err.code == 'ABORT_ERR') {
-            this.setDataError(user, id, catalog, `${this.name}/unpackDirectory - The operation was aborted`);
+            this.dataError(entry, `unpackDirectory - The operation was aborted`);
             return false;
           }
         }
@@ -223,13 +231,13 @@ class dataSource {
     this.rsyncParseLines(catalog, lines);
   }
 
-  async fetchDataRsync(url, user, id, catalog) {
-    let dest = tools.getDataDest(user, this.name);
-    let entry = catalog.getEntry(user, this.name, id);
+  async fetchDataRsync(url, entry) {
+    let job_id;
 
+    const data_dest = path.join(this.data_dir, entry.dir);
     // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
     try {
-      await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', '--include', id + '/***', '--exclude', '*', url, dest],
+      await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', '--include', entry.id + '/***', '--exclude', '*', url, data_dest],
         (stdout) => {
           // extract transferred amount
           let fields = stdout.toString().split(/\s+/);
@@ -241,18 +249,21 @@ class dataSource {
           log.error(stderr.toString());
         },
         (controller) => {
-          this.addJob(user, id, controller);
+          this.addJob(entry, controller, `Fetching (rsync) ${url}/${entry.id} to ${entry.dir}`);
         });
     } catch (err) {
-      this.setDataError(user, id, catalog, err);
+      this.dataError(entry, err);
       return;
     }
 
-    let ret = await this.unpackDirectory(user, id, dest);
+    let ret = await this.unpackDirectory(entry, data_dest);
 
-    if (ret) {
-      this.setDataComplete(user, id, catalog);
+    if (! ret) {
+      this.dataError(entry);
+      return;
     }
+
+    this.dataComplete(entry);
   }
 
   // parse rsync listing

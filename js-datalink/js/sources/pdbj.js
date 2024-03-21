@@ -37,7 +37,7 @@ class pdbj extends dataSource {
 
   description = 'PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)';
   url = 'https://xrda.pdbjbk1.pdbj.org/';
-  type = 'rsync'
+  type = 'rsync';
 
   async fetchCatalog() {
     let catalog = {};
@@ -60,12 +60,12 @@ class pdbj extends dataSource {
 
       catalog[id] = e;
     }
-    await this.fetchCatalogRsync(URL_RSYNC, catalog)
-    this.saveCatalog(catalog);
+    await this.fetchCatalogRsync(URL_RSYNC, catalog);
+    return catalog;
   }
 
-  fetchData(user, id, catalog) {
-    this.fetchDataRsync(URL_RSYNC, user, id, catalog);
+  fetchData(entry) {
+    this.fetchDataRsync(URL_RSYNC, entry);
   }
 
 }
