@@ -20,8 +20,8 @@ const RE_PROJ = /dataset\/([^\"\/]+)/;
 class sbgrid extends dataSource {
 
   description = 'The SBGrid Data Bank';
-  url = 'https://data.sbgrid.org'
-  type = 'rsync'
+  url = 'https://data.sbgrid.org';
+  type = 'rsync';
 
   async fetchCatalog() {
     let catalog = {};
@@ -95,11 +95,11 @@ class sbgrid extends dataSource {
       page ++;
     }
     await this.fetchCatalogRsync(URL_RSYNC, catalog)
-    this.saveCatalog(catalog);
+    return catalog;
   }
 
-  fetchData(user, id, catalog) {
-    this.fetchDataRsync(URL_RSYNC, user, id, catalog);
+  fetchData(entry) {
+    this.fetchDataRsync(URL_RSYNC, entry);
   }
 
 }

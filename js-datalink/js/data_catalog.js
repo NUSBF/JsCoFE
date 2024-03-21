@@ -22,8 +22,9 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir) {
+  constructor(data_dir, keep_with_data = false) {
     this.data_dir = data_dir;
+    this.keep_with_data = keep_with_data;
     this.catalog = {};
   }
 
@@ -31,9 +32,29 @@ class dataCatalog {
     return this.catalog;
   }
 
+  // get the relative data directory for an entry
+  getRelDataDest(user, source, id) {
+    return path.join(user, source, id);
+  }
+
+  // get the absolute data directory for an entry
+  getDataDest(user = '', source = '', id = '') {
+    return path.join(this.data_dir, this.getRelDataDest(user, source, id));
+  }
+
+  getUserCatalogFile(user) {
+    let dir;
+    if (this.keep_with_data) {
+      dir = this.getDataDest(user, 'catalog.json');
+    } else {
+      dir = path.join(tools.getCatalogDir(), 'users', user + '.json');
+    }
+    return dir;
+  }
+
   loadUserCatalog(user) {
     const catalog = this.getCatalog();
-    const file = tools.getUserCatalogFile(user);
+    const file = this.getUserCatalogFile(user);
     try {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
@@ -46,27 +67,30 @@ class dataCatalog {
 
   saveUserCatalog(user) {
     const catalog = this.getCatalog()[user];
+
+    // if the users catalog has already been deleted then return
+    // this can happen when the catalog is removed during fetching
+    if (! catalog) {
+      return true;
+    }
+
     let json = JSON.stringify(catalog);
     try {
-      const user_data_dir = tools.getDataDest(user);
-      if (! fs.existsSync(user_data_dir)) {
-        fs.mkdirSync(user_data_dir, { recursive: true });
-      }
-      const user_catalog_file = tools.getUserCatalogFile(user);
+      const user_catalog_file = this.getUserCatalogFile(user);
       const user_catalog_dir = path.dirname(user_catalog_file);
       if (! fs.existsSync(user_catalog_dir)) {
         fs.mkdirSync(user_catalog_dir, { recursive: true });
       }
-      fs.writeFileSync(tools.getUserCatalogFile(user), json);
+      fs.writeFileSync(this.getUserCatalogFile(user), json);
     } catch (err) {
-      log.error(`saveUserCatalog (${user}) - ${err.message}`);
+      log.error(`saveUserCatalog (${user}) - ${err}`);
       return false;
     }
     return true;
   }
 
   removeUserCatalog(user) {
-    let file = tools.getUserCatalogFile(user);
+    let file = this.getUserCatalogFile(user);
     try {
       fs.rmSync(file);
     } catch (err) {
@@ -77,7 +101,7 @@ class dataCatalog {
   }
 
   removeUserData(user, source, id) {
-    let dir = path.join(tools.getUserDataDir(user), source, id);
+    let dir = this.getDataDest(user, source, id);
     try {
       fs.rmSync(dir, { recursive: true });
     } catch (err) {
@@ -91,7 +115,7 @@ class dataCatalog {
   }
 
   removeUserSource(user, source) {
-    let dir = path.join(tools.getUserDataDir(user), source);
+    let dir = this.getDataDest(user, source);
     try {
       fs.rmdirSync(dir);
     } catch (err) {
@@ -102,7 +126,7 @@ class dataCatalog {
   }
 
   removeUser(user) {
-    let dir = tools.getUserDataDir(user);
+    let dir = this.getDataDest(user);
     if (! this.removeUserCatalog(user)) {
       return false;
     }
@@ -117,16 +141,33 @@ class dataCatalog {
 
   getEntry(user, source, id) {
     const catalog = this.getCatalog();
-    return catalog[user][source][id];
+    if (catalog[user] && catalog[user][source] && catalog[user][source][id]) {
+      return catalog[user][source][id];
+    }
+    return null;
   }
 
-  addEntry(user, source, id, fields) {
+  addEntry(user, source, id, fields = {}) {
     // create directory for the data
     try {
-      fs.mkdirSync(tools.getDataDest(user, source, id), { recursive: true });
+      fs.mkdirSync(this.getDataDest(user, source, id), { recursive: true });
     } catch (err) {
+      log.error(`addEntry ${user}/${source}/${id} - ${err}`);
       return false;
     }
+
+    // add user, source and id to entry - so this information is available directly from the entry
+    fields.user = user;
+    fields.source = source;
+    fields.id = id;
+
+    // set the default status to in_progress
+    if (! fields.status) {
+      fields.status = status.inProgress;
+    }
+
+    // add data directory to entry
+    fields.dir = path.join(user, source, id);
 
     const catalog = this.getCatalog();
     // if there is no catalog for the user, create one
@@ -141,28 +182,21 @@ class dataCatalog {
 
     // add the catalog entry
     catalog[user][source][id] = new dataEntry(fields);
-    return this.saveUserCatalog(user);
-  }
-
-  hasEntry(user, source, id) {
-    const catalog = this.getCatalog();
-    if (catalog[user] && catalog[user][source] && catalog[user][source][id]) {
-      return true;
+    if (! this.saveUserCatalog(user)) {
+      return false;
     }
-    return false;
+
+    return catalog[user][source][id];
   }
 
-  getStatus(user, source, id) {
-    return this.getEntry(user, source, id).status;
-  }
-
-  updateEntry(user, source, id, fields) {
-    const entry = this.getEntry(user, source, id);
-
+  updateEntry(entry, fields) {
     Object.assign(entry, fields);
 
     entry.updated = new Date().toISOString();
-    return this.saveUserCatalog(user);
+
+    if (! this.saveUserCatalog(entry.user)) {
+      log.error(`${this.name} - Unable to save catalog entry for ${entry.user}/${entry.source}/${entry.id}`);
+    }
   }
 
   removeEntry(user, source, id) {
@@ -197,8 +231,13 @@ class dataCatalog {
     return this.saveUserCatalog(user);
   }
 
-  getStorageSize(user, source, id) {
-    let dir = path.join(this.data_dir, user, source, id);
+  updateEntrySize(entry) {
+    const size = this.getStorageSize(entry);
+    this.updateEntry(entry, { size: size });
+  }
+
+  getStorageSize(entry) {
+    const dir = path.join(this.getDataDest(), entry.dir);
     try {
       if (fs.existsSync(dir)) {
         return tools.getDirSize(dir);

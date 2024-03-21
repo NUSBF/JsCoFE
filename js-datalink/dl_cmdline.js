@@ -54,23 +54,15 @@ class appClient extends client {
       if (! called) {
         called = true;
         console.log("\nCaught interrupt signal");
-        this.abortAllJobs();
+        this.datalink.abortAllJobs();
         await tools.sleep(500);
         process.exit(1);
       }
     });
   }
 
-  abortAllJobs() {
-    for (const s of Object.values(this.datalink.source)) {
-      for (const j of Object.values(s.jobs)) {
-        j.abort();
-      }
-    }
-  }
-
   async waitForCatalogs() {
-    for (const s in this.datalink.source) {
+    for (const s in this.datalink.ds) {
       await this.datalink.waitForCatalog(s);
     }
   }
@@ -110,7 +102,7 @@ class appClient extends client {
 
   }
 
-  async sendFile(user, source, id, dir, file) {
+  async sendFile(entry, dir, file) {
     const in_stream = fs.createReadStream(file);
 
     in_stream.on('error', (err) => {
@@ -120,15 +112,16 @@ class appClient extends client {
 
     in_stream.on('data', (data) => {
       this.size_uploaded += data.length;
-      this.outputProgress(data.length);
+      this.outputProgress(file);
     });
 
-    await this.datalink.uploadData(user, source, id, in_stream, file,
-    (err) => {
-      log.error(err);
-      console.error(err.message);
-    });
-
+    try {
+      await this.datalink.uploadData(entry, in_stream, file, (err) => {
+      });
+    } catch (err) {
+        log.error(err);
+        console.error(err.message);
+    }
   }
 
   async upload(user, source, id) {
@@ -142,18 +135,18 @@ class appClient extends client {
       return check;
     }
 
-    let ret = this.datalink.uploadDataInit(user, source, id);
-    if (ret !== true) {
-      return ret;
-    }
-
     await this.waitForCatalogs();
 
-    for (let [i, file] of this.opts.files.entries()) {
+    const entry = this.datalink.addEntryFromSource(user, source, id);
+    if (! entry) {
+      return tools.errorMsg(`Unable to add catalog entry for ${entry.dir}`, 500);
+    }
+
+    for (const [i, file] of this.opts.files.entries()) {
       try {
         await this.fileCallback(file, async (f) => {
           try {
-            await this.sendFile(user, source, id, file, f);
+            await this.sendFile(entry, file, f);
           } catch (err) {
             return true;
           }
@@ -164,9 +157,9 @@ class appClient extends client {
       }
     }
 
-    this.datalink.uploadDataComplete(user, source, id);
+    this.datalink.dataComplete(entry);
     process.stdout.write('\x1b[K');
-    return tools.successMsg(`Added files to ${user}/${source}/${id}`);
+    return tools.successMsg(`Added files to ${entry.dir}`);
   }
 }
 

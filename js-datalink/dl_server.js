@@ -134,9 +134,9 @@ class server {
       return;
     }
 
-    let ret = this.datalink.uploadDataInit(req.params.user, req.params.source, req.params.id);
-    if (ret !== true) {
-      this.jsonResponse(res, ret);
+    const entry = this.datalink.addEntryFromSource(req.params.user, req.params.source, req.params.id);
+    if (! entry) {
+      this.jsonResponse(res, tools.errorMsg(`Unable to add catalog entry for ${user}/${source}/${id}`, 500));
       return;
     }
 
@@ -146,7 +146,7 @@ class server {
     let err_msg = `Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`;
 
     bb.on('file', (name, in_stream, info) => {
-      this.datalink.uploadData(req.params.user, req.params.source, req.params.id, in_stream, info.filename)
+      this.datalink.uploadData(entry, in_stream, info.filename)
       .catch( (err) => {
         // if an error has already been triggered, just return as otherwise jsonResponse will be called twice and throw an error.
         if (has_error) {
@@ -156,12 +156,13 @@ class server {
         // detach stream
         req.unpipe(bb);
         log.error(err);
+        this.datalink.dataError(entry);
         this.jsonResponse(res, err);
       });
     });
 
     bb.on('finish', () => {
-      this.datalink.uploadDataComplete(req.params.user, req.params.source, req.params.id);
+      this.datalink.dataComplete(entry);
       this.jsonResponse(res, tools.successMsg(`Added files to ${req.params.user}/${req.params.source}/${req.params.id}`));
     });
 
@@ -172,7 +173,7 @@ class server {
       has_error = true;
       req.unpipe(bb);
       log.error(err);
-      this.datalink.uploadDataError(req.params.user, req.params.source, req.params.id);
+      this.datalink.dataError(entry);
       this.jsonResponse(res, tools.errorMsg(err_msg, 500));
     });
 
