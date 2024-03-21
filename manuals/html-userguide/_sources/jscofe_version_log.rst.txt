@@ -4,9 +4,46 @@ CCP4 Cloud Version Log
 
 **Version 1.7.019** 
 
-    *Released with CCP4 8.0.017*
+    *Released with CCP4 8.0.018*
 
+    #. Moorhen 0.8.2 included
+
+    #. WebCoot/Moorhen can now be used to edit cooridinate data 
+
+    #. Fixed bug causing removal the entire branch after remark in case it 
+       was created with multiple selection of jobs 
+
+    #. ASU definition task rewritten such as to prioritise given stoichiometry
+       by default, and choose number of copies to approach solvent percent target
+       set in advance
+
+    #. Custom workflows introduced
+
+    #. Custom Workflows Creator introduced
+
+    #. Custom workflows may be imported in general Import task
     
+    #. Custom workflows may be pushed with data through Cloudrun utility 
+
+    #. Task Dock may be populated/unpopulated from Task List
+
+    #. Task list re-organised and optimised
+
+    #. Dimple-MR task added to Cloudrun utility
+
+    #. Make Ligand task can now recalculate given ligand restraints and 
+       has additional options
+
+    #. Hop-on task redesigned to allow for upload of ligand library 
+
+    #. Ligand object can be now re-processed in MakeLigand task 
+
+    #. Make Ligand task extended to include advanced AceDRG options
+
+    #. Project sharing facility redesigned to provide different levels of
+       access
+
+    #. Many cosmetic improvements and small bug fixes
 
 **Version 1.7.018** 
 
@@ -27,8 +64,6 @@ CCP4 Cloud Version Log
     #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
 
     #. Moorhen updated to version 0.6.1
-
-
 
     #. Fixed a bug in hop-on task causing neglect of the ligand library supplied
 

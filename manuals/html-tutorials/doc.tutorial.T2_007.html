@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -293,8 +292,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-007--page-root">Molecular replacement<a class="headerlink" href="#doc-tutorial-t2-007--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="molecular-replacement">
+<h1 id="doc-tutorial-t2-007--page-root">Molecular replacement<a class="headerlink" href="#doc-tutorial-t2-007--page-root" title="Permalink to this heading">¶</a></h1>
 <p>#. Import the tutorial data using the “Import from Cloud” option in “Data import”. Select “Workshops” -&gt; “Seacoast 2024” -&gt; “mr example 1”. Select all of the files using the Shift key. The import includes sequence, mtz (reflection data) and an Alphafold prediction for the unknown target.
 Examine the summary from the import. Find the reflection data details such as spacegroup and resolution. Find also the XYZ coordinates section for the Alphafold model and view the model in the “Uglymol” viewer.
 Next we need to determine the contents of the asymmetric unit. Add the “Asymmetric unit contents” task. Run  the task using default options. The result should be a prediction of 1 copy in the asymmetric unit with a high probability score.
@@ -303,7 +302,7 @@ After running the preparation task, you can compare the search model before and 
 The model is now ready for MR. Add a Phaser task from the “MR solvers menu”. All the data and model are provided to Phaser automatically. Run the task and view the output report. Examine the increase in the LLG score as each step is taken (rotation function, translation function, refinement steps). We expect the LLG to rise each time with the final refined LLG being greater than 60 for a good solution. A translation function Z-score (TFZ) of greater than 8 is also indicative of a good solution.
 When Phaser has finished follow that task with refinement using the “Refmacat” task from the “Refinement” menu. Use many cycles (200) of the “jelly-body” refinement option under  the “Restraints” section. Watch the R/Rfree values decline to a steady state over many cycles. The final R/Rfree values should be in the range 0.2-&gt;0.3
 View the resulting model and map in Uglymol or Coot and look for clear evidence in the difference map of parts of the model that don’t match the data. This could be positive difference density (green) for incorrect side chains or parts of the main chain that need building or water molecules that have not been added. At this point the model can be improved through iterative cycles of manual model building in Coot and refinement in Refmacat.</p>
-
+</section>
 
 
           </article>
@@ -324,7 +323,7 @@ View the resulting model and map in Uglymol or Coot and look for clear evidence 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
