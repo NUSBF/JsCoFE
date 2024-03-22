@@ -6,6 +6,9 @@ const path = require('path');
 const { tools, status } = require('./tools.js');
 const log = require('./log.js');
 
+const GB = 1000000000;
+const MB = 1000000;
+
 class dataEntry {
 
   constructor(fields = {}) {
@@ -22,9 +25,10 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false) {
+  constructor(data_dir, keep_with_data = false, data_free_gb) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
+    this.data_free_gb = data_free_gb;
     this.catalog = {};
   }
 
@@ -186,6 +190,9 @@ class dataCatalog {
       return false;
     }
 
+    // prune old data if required
+    this.pruneData(this.data_free_gb);
+
     return catalog[user][source][id];
   }
 
@@ -247,6 +254,54 @@ class dataCatalog {
     } catch (err) {
       log.error(`getStorageSize (${user}/${source}/${id}) - ${err.message}`);
       return 0;
+    }
+  }
+
+  async pruneData(min_free_gb) {
+    const min_free = min_free_gb * GB;
+    const free = tools.getFreeSpace(tools.getDataDir(), '1');
+
+    if (free === false) {
+      return;
+    }
+
+    if (free >= min_free) {
+      return;
+    }
+
+    const size_to_free = min_free - free;
+
+    let entries = [];
+    const catalog = this.getCatalog();
+    // build up list of data that is not in use by age
+    for (const user of Object.values(catalog)) {
+      for (const source of Object.values(user)) {
+        for (const entry of Object.values(source)) {
+          if (! entry.in_use && entry.status === status.completed) {
+            entries.push(entry);
+          }
+        }
+      }
+    }
+
+    entries.sort(function(a,b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+
+    let size = 0;
+    for (const entry of entries) {
+      if (this.removeEntry(entry.user, entry.source, entry.id)) {
+        log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
+        size += entry.size;
+        if (size >= size_to_free) {
+          break;
+        }
+      }
+    }
+    const size_mb = Math.ceil(size / MB);
+    const size_to_free_mb = Math.ceil(size_to_free / MB);
+    if (size > 0) {
+      log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
     }
   }
 
