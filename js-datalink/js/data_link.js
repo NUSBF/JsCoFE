@@ -27,7 +27,7 @@ class dataLink {
     this.ds = {};
     this.jobs = {};
 
-    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'));
+    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'), config.get('storage.data_free_gb'));
 
     // load data source classes
     for (let name of DATA_SOURCES) {
@@ -327,9 +327,6 @@ class dataLink {
       return tools.errorMsg(`${source} - Error fetching ${user}/${source}/${id}`, 500);
     }
 
-    // prune old data if required
-    this.pruneData(config.get('storage.data_free_gb'));
-
     this.ds[source].setErrorCallback((entry, err) => {
       this.dataError(entry);
       log.error(`${source} - Failed to fetch ${user}/${source}/${id} - ${err}`);
@@ -478,61 +475,6 @@ class dataLink {
     }
 
     return tools.errorMsg(`${source} - Unable to remove ${id} for ${user}`, 405);
-  }
-
-  async pruneData(min_free_gb) {
-    const min_free = min_free_gb * GB;
-    const free = tools.getFreeSpace(tools.getDataDir(), '1');
-
-    if (free === false) {
-      return;
-    }
-
-    if (free >= min_free) {
-      return;
-    }
-
-    const size_to_free = min_free - free;
-
-    let entries = [];
-    const catalog = this.catalog.getCatalog();
-    // build up list of data that is not in use by age
-    for (const user in catalog) {
-      for (const source in catalog[user]) {
-        for (const id in catalog[user][source]) {
-          const e = catalog[user][source][id];
-          if (! e.in_use && e.status === status.completed) {
-            entries.push( {
-              date: e.updated,
-              user: user,
-              source: source,
-              id: id,
-              size: e.size
-            });
-          }
-        }
-      }
-    }
-
-    entries.sort(function(a,b) {
-      return new Date(a.date) - new Date(b.date);
-    });
-
-    let size = 0;
-    for (const e of entries) {
-      if (this.catalog.removeEntry(e.user, e.source, e.id)) {
-        log.info(`pruneData - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
-        size += e.size;
-        if (size >= size_to_free) {
-          break;
-        }
-      }
-    }
-    const size_mb = Math.ceil(size / MB);
-    const size_to_free_mb = Math.ceil(size_to_free / MB);
-    if (size > 0) {
-      log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
-    }
   }
 
   updateData(user, source, id, obj) {
