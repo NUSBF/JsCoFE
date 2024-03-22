@@ -71,6 +71,14 @@ class Client {
           method: 'GET',
           auth: 'admin'
         },
+        sources: {
+          path: 'sources/@0',
+          method: 'GET',
+        },
+        sources_all: {
+          path: 'sources/*',
+          method: 'GET',
+        },
         catalog: {
           path: 'sources/@0/catalog',
           method: 'GET',
@@ -434,7 +442,7 @@ class Client {
     console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update, remove, upload, stats');
+    console.log('  action'.padEnd(pad) + 'sources, catalog/catalogue, search, fetch, status, update, remove, upload, stats');
     console.log('\nOptions:');
 
     let out;
@@ -572,6 +580,13 @@ class Client {
 
     // process actions
     switch(this.action) {
+      case 'sources':
+        if (this.opts.source) {
+          res = await this.doCall('sources', this.opts.source);
+        } else {
+          res = await this.doCall('sources_all', this.opts.source);
+        }
+        break;
       case 'catalog':
       case 'catalogue':
         if (this.opts.source) {
