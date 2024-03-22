@@ -28,6 +28,8 @@ class appClient extends client {
       update: this.datalink.updateData,
       status: this.datalink.getDataStatus,
       status_all: this.datalink.getDataStatus,
+      sources: this.datalink.getSource,
+      sources_all: this.datalink.getAllSources,
       catalog: this.datalink.getSourceCatalog,
       catalog_all: this.datalink.getAllSourceCatalogs,
       stats: this.datalink.getDataStats
