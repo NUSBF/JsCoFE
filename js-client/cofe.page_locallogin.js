@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,6 +67,11 @@ function LocalLoginPage ( sceneId )  {
         bindToBrowserColorMode ( true ); 
       }
 
+      let speed = 0;
+      for (let i=0;i<rData.cpus.length;i++)
+        speed = Math.max(speed,rData.cpus[i].speed);
+      speed = Math.round(speed/100)/10.0;
+
       let row = 0;
 
       panel.setLabel ( text +
@@ -80,7 +85,8 @@ function LocalLoginPage ( sceneId )  {
         'Jobs run on your machine<br>' +
         '<i style="font-size:85%">(except when 3rd party web-services are used)</i>' +
         '</li><li>' +
-        'You have ' + dfree + 'GB free disk space' +
+        'You have ' + dfree + 'GB free disk space & ' + rData.cpus.length + 
+        ' cores @ ' + speed + ' GHz' +
         '</li></ul>',
         row++,2,1,1
       ).setHorizontalAlignment('left').setNoWrap();
@@ -138,7 +144,6 @@ function LocalLoginPage ( sceneId )  {
     null,         // no 'always' function
     function(){ 
       // when fail
-
     });
 
 }
