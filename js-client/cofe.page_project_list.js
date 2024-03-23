@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1239,8 +1239,10 @@ function ProjectListPage ( sceneId )  {
   // let btn_width    = '30pt';
   let btn_width    = [];
   let btn_height   = '26pt';
-  let left_margin  = '18pt';
-  let right_margin = '28pt';
+  // let left_margin  = '18pt';
+  // let right_margin = '28pt';
+  let left_margin  = '6pt';
+  let right_margin = '8pt';
 
   //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
@@ -1248,7 +1250,7 @@ function ProjectListPage ( sceneId )  {
     // tight screen (smartphone)
 
     left_margin  = '2pt';
-    right_margin = '22pt';
+    right_margin = '4pt';
 
     open_btn    = new Button ( '',image_path('go'       ) );
     add_btn     = new Button ( '',image_path('add'      ) );

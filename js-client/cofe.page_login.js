@@ -64,7 +64,7 @@ function LoginPage ( sceneId )  {
 
   this.makeLogoPanel               ( 4,0,3 );
 
-  if (!__mobile_device)
+  if (!__mobile_device)  {
     window.setTimeout ( function(){
       if (__tips && __tips.use_tips && (__tips.tips.length>0))  {
         let tipNo = 0;
@@ -85,6 +85,7 @@ function LoginPage ( sceneId )  {
         );
       }
     },1000);
+  }
 
   let login_lbl   = new Label     ( 'Login name:' );
   let pwd_lbl     = new Label     ( 'Password:'   );
@@ -278,8 +279,10 @@ LoginPage.prototype = Object.create ( BasePage.prototype );
 LoginPage.prototype.constructor = LoginPage;
 
 function makeLoginPage ( sceneId )  {
-  makePage ( function() { new LoginPage(sceneId); } );
-  setHistoryState ( 'LoginPage' );
+  makePage ( function(){ 
+    new LoginPage(sceneId); 
+    setHistoryState ( 'LoginPage' );
+  });
 }
 
 function reloadBrowser()  {
