@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,11 +56,11 @@ function LoginPage ( sceneId )  {
   this.grid.setCellSize            ( '10%','',1,1,1,1 );
   this.grid.setCellSize            ( '45%','',1,2,1,1 );
 
-  let tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 );
+  let tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 ).setFontSize('80%');
   this.grid.setHorizontalAlignment ( 2,0,'center' );
-  this.grid.setVerticalAlignment   ( 2,0,'top' );
+  this.grid.setVerticalAlignment   ( 2,0,'top'    );
   this.grid.setCellSize            ( '','12px',2,0,1,3 );
-  this.grid.setCellSize            ( '','3px',3,0,1,3 );
+  this.grid.setCellSize            ( '','3px' ,3,0,1,3 );
 
   this.makeLogoPanel               ( 4,0,3 );
 
@@ -78,7 +78,7 @@ function LoginPage ( sceneId )  {
                                         'null,10)">';
         tip_lbl.setText (
           '<img src="' + image_path('tip') +
-          '" style="width:24px;height:24px;vertical-align:bottom;"/>' +
+          '" style="width:20px;height:20px;vertical-align:bottom;"/>' +
           '<span><i style="font-style:Garamond;color:#666666;">' +
           __tips.tips[tipNo].summary.replace('<a>',tipLink) +
           '</i></span>'

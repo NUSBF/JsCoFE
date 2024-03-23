@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,6 +54,7 @@
 'use strict';
 
 //  load system modules
+const os      = require('os');
 const crypto  = require('crypto');
 const fs      = require('fs-extra');
 const path    = require('path');
@@ -1845,6 +1846,8 @@ function getLocalInfo ( inData,callback_func )  {
                                      fe_server.projectsPath[fsname].path) );
         disk_reserved.push ( fe_server.projectsPath[fsname].diskReserve );
       }
+
+      rData.cpus = os.cpus();
       
       rData.disk_free = 0.0;
 
