@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -574,7 +574,8 @@ function AccountPage ( sceneId )  {
                 userData.email + '</i></b>.' +
                 '<p>You are logged out now.' );
               stopSessionChecks();
-              makeLoginPage ( sceneId );
+              reloadBrowser();
+              // makeLoginPage ( sceneId );
             }
           },null,'persist' );
 

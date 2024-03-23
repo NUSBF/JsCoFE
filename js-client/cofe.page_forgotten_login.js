@@ -89,7 +89,8 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidget               ( back_btn,row++,0,1,2 );
 
   back_btn.addOnClickListener  ( function(){
-     makeLoginPage(sceneId);
+     reloadBrowser();
+    //  makeLoginPage(sceneId);
   });
 
   send_btn.addOnClickListener   ( function(){
