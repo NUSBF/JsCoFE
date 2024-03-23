@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,7 +153,10 @@ function RegisterPage ( sceneId )  {
   let back_btn = null;
   if (__login_token=='')  {
     back_btn = new Button       ( 'Back to User Login',image_path('login') );
-    back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); } );
+    back_btn.addOnClickListener ( function(){ 
+      reloadBrowser();
+      // makeLoginPage(sceneId); 
+    });
   } else  {
     back_btn = new Button       ( 'Back to Admin Page',image_path('admin') );
     back_btn.addOnClickListener ( function(){ makeAdminPage(sceneId); } );
