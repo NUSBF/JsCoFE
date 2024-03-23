@@ -47,7 +47,7 @@ function LoginPage ( sceneId )  {
 
   // make login panel
   let panel = new Grid('');
-  panel.setWidth ( '300pt' );
+  panel.setWidth ( '300px' );
 
   this.grid.setCellSize            ( '45%','',0,0,1,1 );
   this.grid.setCellSize            ( '','15px',0,0,1,3 );
@@ -59,7 +59,7 @@ function LoginPage ( sceneId )  {
   let tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 ).setFontSize('80%');
   this.grid.setHorizontalAlignment ( 2,0,'center' );
   this.grid.setVerticalAlignment   ( 2,0,'top'    );
-  this.grid.setCellSize            ( '','12px',2,0,1,3 );
+  this.grid.setCellSize            ( '','20px',2,0,1,3 );
   this.grid.setCellSize            ( '','3px' ,3,0,1,3 );
 
   this.makeLogoPanel               ( 4,0,3 );
@@ -112,13 +112,13 @@ function LoginPage ( sceneId )  {
   login_inp.setWidth            ( '95%'  );
   pwd_inp  .setWidth            ( '95%'  );
 
-  let row = 0;
+  let row = 1;
   panel.setLabel ( appName() + ' Login', row,0,1,3 )
        .setFont  ( 'times','40px',true,true )
        .setNoWrap();
   panel.setHorizontalAlignment  ( row++ ,0,'center' );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,3 );
-  panel.setCellSize             ( '','10pt',row++,0 );
+  panel.setCellSize             ( '','10px',row++,0 );
 
   panel.setWidget               ( login_lbl,row  ,0,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
@@ -129,9 +129,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( vis_btn  ,row  ,2,1,1 );
   panel.setVerticalAlignment    ( row++,2,'middle' );
 
-  panel.setCellSize             ( '','4pt',row++,0 );
-  panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
-  //panel.setCellSize             ( '','1pt',row++,0 );
+  panel.setCellSize             ( '','4px',row++,0 );
+  panel.setWidget               ( new HLine('3px'), row++,0,1,3 );
+  //panel.setCellSize             ( '','1px',row++,0 );
 
   let login_btn = new Button    ( 'Login',image_path('login') );
   let pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
@@ -145,9 +145,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
 
   //panel.setLabel                ( '&nbsp;',row++,0,1,3 )
-  panel.setCellSize             ( '','6pt',row++,0 );
+  panel.setCellSize             ( '','6px',row++,0 );
 
-  if (__any_mobile_device)
+  if (__any_mobile_device)  {
     panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
                                   'cannot be used when<br>working ' +
                                   'from tablets and phones<br>&nbsp;' +
@@ -159,8 +159,8 @@ function LoginPage ( sceneId )  {
                                   'installed.'
                                 )
          .setNoWrap();
-
-  else if (!__local_service)
+    panel.setCellSize           ( '','24px',0,3 );
+  } else if (!__local_service)  {
     panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
                                   '<b>NOTE:</b> For using <span style="color:maroon">' +
                                   '<b>Coot, DUI, iMosflm</b></span> and similar<br>' +
@@ -171,6 +171,8 @@ function LoginPage ( sceneId )  {
                                   'style="height:36px;width:36px;padding-top:6px;"/>' +
                                   '</i></center></div>',
                                   row++,0,1,3 );
+    panel.setCellSize           ( '','96px',0,3 );
+  }
 
   if (!isProtectedConnection())
     panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
@@ -187,8 +189,7 @@ function LoginPage ( sceneId )  {
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></center>',
                                   row++,0,1,3 );
-  panel.setCellSize             ( '','24pt',row++,0 );
-
+  // panel.setCellSize             ( '','24px',row++,0 );
 
 
   vis_btn.addOnClickListener ( function(){
