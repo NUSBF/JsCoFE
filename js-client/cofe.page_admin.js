@@ -324,7 +324,7 @@ AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.setHeight_px ( height-104 );
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
   this.tabs.refresh();
-  let inner_height = (height-190)+'px';
+  let inner_height = (height-180)+'px';
   $(this.anlTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
