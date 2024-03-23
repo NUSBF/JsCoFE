@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function AdminPage ( sceneId )  {
   }
 
   this.makeHeader ( 3,null );
-  var title_lbl = this.headerPanel.setLabel ( appName() + 
+  let title_lbl = this.headerPanel.setLabel ( appName() + 
                                           ' Administration Facility',0,3,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
@@ -43,12 +43,12 @@ function AdminPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
   this.headerPanel.setCellSize ( '99%','',0,4 );
 
-  var col = 5;
-  var refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,col,1,1 );
+  let col = 5;
+  let refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,col,1,1 );
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  var accLbl = 'My Account';
+  let accLbl = 'My Account';
   if (__local_user)
     accLbl = 'Settings';
   this.addMenuItem ( accLbl,'settings',function(){ makeAccountPage(sceneId); })
@@ -66,9 +66,9 @@ function AdminPage ( sceneId )  {
   // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
-  this.grid.setCellSize ( '5pt','auto',1,0,1,1 );
-  this.grid.setWidget   ( this.tabs   ,1,1,1,1 );
-  this.grid.setCellSize ( '5pt','auto',1,2,1,1 );
+  this.grid.setCellSize ( '10px','auto',1,0,1,1 );
+  this.grid.setWidget   ( this.tabs    ,1,1,1,1 );
+  this.grid.setCellSize ( '1px','auto' ,1,2,1,1 );
 
   this.makeLogoPanel ( 2,0,3 );
 
@@ -90,16 +90,16 @@ function AdminPage ( sceneId )  {
   this.uaPanel.setLabel    ( '   ',0,0,1,1 );
   this.uaPanel.setCellSize ( '95%','32px',0,0 );
   col = 1;
-  var newuser_btn  = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
+  let newuser_btn  = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
                                  .setSize('30px','30px')
                                  .setTooltip('Make new user');
-  var dormant_btn  = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
+  let dormant_btn  = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
                                  .setSize('30px','30px')
                                  .setTooltip('Identify and mark dormant users');
-  var announce_btn = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
+  let announce_btn = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
                                  .setSize('30px','30px')
                                  .setTooltip('Send e-mail announcement to all users');
-  for (var i=1;i<col;i++)
+  for (let i=1;i<col;i++)
     this.uaPanel.setCellSize ( 'auto','32px',0,i );
 
   this.usageStats = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
@@ -123,18 +123,18 @@ function AdminPage ( sceneId )  {
   this.naPanel.setCellSize ( '95%','32px',0,0 );
 
   col = 1;
-  var zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
+  let zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
                                .setSize('30px','30px')
                                .setTooltip('Wake up zombies');
-  var update_btn = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
+  let update_btn = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
                                .setSize('30px','30px')
                                .setTooltip('Update and restart');
-  for (var i=1;i<col;i++)
+  for (let i=1;i<col;i++)
     this.naPanel.setCellSize ( 'auto','32px',0,i );
 
   this.onResize ( window.innerWidth,window.innerHeight );
 
-  var self = this;
+  let self = this;
   // (function(self){
 
     self.tabs.setTabChangeListener ( function(ui){
@@ -243,7 +243,7 @@ AdminPage.prototype.refresh = function()  {
       } else  {
 
         self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-        var lines = data.jobsStat.split(/\r\n|\r|\n/);
+        let lines = data.jobsStat.split(/\r\n|\r|\n/);
         if ((lines.length>0) && startsWith(lines[0],'--------'))  {
           lines[0] = lines[0].replace ( /-/g,'=' );
           lines[2] = lines[2].replace ( /-/g,'=' );
@@ -253,16 +253,16 @@ AdminPage.prototype.refresh = function()  {
           lines.push ( lines.shift() );
           lines.push ( lines.shift() );
         }
-        var nJobsToday = 0;
-        var usersToday = [];
-        var today_template = new Date(Date.now()).toUTCString().split(' ');
+        let nJobsToday = 0;
+        let usersToday = [];
+        let today_template = new Date(Date.now()).toUTCString().split(' ');
         today_template = '[' + today_template[0] + ' ' + today_template[1] +
                          ' ' + today_template[2] + ' ' + today_template[3];
-        for (var i=lines.length-1;i>=0;i--)
+        for (let i=lines.length-1;i>=0;i--)
           if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
             if (lines[i].indexOf(today_template)>=0) {
               nJobsToday++;
-              var user = lines[i].split(' (')[0].split(' ').pop();
+              let user = lines[i].split(' (')[0].split(' ').pop();
               if (usersToday.indexOf(user)<0)
                 usersToday.push ( user );
             } else
@@ -320,11 +320,11 @@ AdminPage.prototype.refresh = function()  {
 }
 
 AdminPage.prototype.onResize = function ( width,height )  {
-  this.tabs.setWidth_px  ( width -50  );
-  this.tabs.setHeight_px ( height-116 );
+  this.tabs.setWidth_px  ( width -42  );
+  this.tabs.setHeight_px ( height-104 );
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
   this.tabs.refresh();
-  var inner_height = (height-190)+'px';
+  let inner_height = (height-190)+'px';
   $(this.anlTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
@@ -336,7 +336,7 @@ AdminPage.prototype.onResize = function ( width,height )  {
 AdminPage.prototype.make_analytics_table = function (
       row,col,rowspan,title,nItems,label_empty,header_list,tooltip_list,
       makeRow_func,alignment )  {
-var r = row;
+let r = row;
 
   this.anlTab.grid.setLabel(title,r++,col,1,1).setNoWrap();
 
@@ -346,13 +346,13 @@ var r = row;
 
   } else  {
 
-    var anlTable = new Table();
+    let anlTable = new Table();
     $(anlTable.element).css({'width':'auto'});
     this.anlTab.grid.setWidget ( anlTable,r++,col,rowspan,1 );
 
     anlTable.setHeaderRow ( header_list,tooltip_list );
 
-    for (var i=0;i<nItems;i++)
+    for (let i=0;i<nItems;i++)
       makeRow_func ( anlTable,i );
 
     anlTable.setAllColumnCSS ({
@@ -379,11 +379,11 @@ AdminPage.prototype.loadAnalytics = function()  {
 
     serverRequest ( fe_reqtype.getAnalytics,0,'Admin Page',function(anldata){
 
-      var row = 1;
+      // let row = 1;
 
       // 1. Currently active users
 
-      var row = self.make_analytics_table (
+      let row = self.make_analytics_table (
         1,0,1,
         '<h3><i>Now on site</i></h3>',
         anldata.users_current.length,
@@ -426,8 +426,8 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Internet domains'
         ],
         function(anlTable,i){
-          var domains = [];
-          for (var j=0;j<anldata.geography_recent[i].domains.length;j++)
+          let domains = [];
+          for (let j=0;j<anldata.geography_recent[i].domains.length;j++)
             domains.push ( anldata.geography_recent[i].domains[j].domain + ' (' +
                            anldata.geography_recent[i].domains[j].count + ')' );
           anlTable.setRow ( '' + (i+1),'',[
@@ -486,19 +486,19 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Number of unique users detected last time'
         ],
         // function(anlTable,i){
-        //   var j = anldata.users_per_week.length - i;
+        //   let j = anldata.users_per_week.length - i;
         //   anlTable.setRow ( j.toString(),'',[
         //       anldata.users_per_week[j-1]
         //     ],i+1,(i & 1)==1 );
         // },
         function(anlTable,i){
-          var j = anldata.users_per_week.length - i;
+          let j = anldata.users_per_week.length - i;
           anlTable.setRow ( j.toString(),'',[
               anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
           if (j==1)  {
-            var total = 0;
-            for (var k=0;k<anldata.users_per_week.length;k++)
+            let total = 0;
+            for (let k=0;k<anldata.users_per_week.length;k++)
               total += anldata.users_per_week[k];
             anlTable.setRow ( 'Total:','Total number of active unique users',
                               [total],i+2,(i & 1)!=1 );
@@ -527,8 +527,8 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Internet domains'
         ],
         function(anlTable,i){
-          var domains = [];
-          for (var j=0;j<anldata.geography_year[i].domains.length;j++)
+          let domains = [];
+          for (let j=0;j<anldata.geography_year[i].domains.length;j++)
             domains.push ( anldata.geography_year[i].domains[j].domain + ' (' +
                            anldata.geography_year[i].domains[j].count + ')' );
           anlTable.setRow ( '' + (i+1),'',[
@@ -563,17 +563,17 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                                    'Space<br>(MB)','CPU<br>(hours)',
                                    'Known<br>since','Last<br>seen'] );
 
-  var loggedUsers;
+  let loggedUsers;
   if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
                          else  loggedUsers = udata.loginHash.loggedUsers;
-  for (var i=0;i<udata.userList.length;i++)  {
-    var trow  = this.userListTable.addRow();
-    var uDesc = udata.userList[i];
+  for (let i=0;i<udata.userList.length;i++)  {
+    let trow  = this.userListTable.addRow();
+    let uDesc = udata.userList[i];
     trow.addCell ( i+1         ).setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( uDesc.name  ).setNoWrap();
     trow.addCell ( uDesc.login ).setNoWrap();
-    var online = '&nbsp;';
-    for (var token in loggedUsers)
+    let online = '&nbsp;';
+    for (let token in loggedUsers)
       if (loggedUsers[token].login==uDesc.login)  {
         online = '&check;';
         break;
@@ -592,7 +592,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                                     .setNoWrap().setHorizontalAlignment('right');
     trow.addCell ( new Date(uDesc.knownSince).toISOString().slice(0,10) )
                                     .setNoWrap().setHorizontalAlignment('right');
-    var lastSeen = '';
+    let lastSeen = '';
     if ('lastSeen' in uDesc)  {
       if (uDesc.lastSeen)
         lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
@@ -680,15 +680,15 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     return '<font style="font-size:80%">' + S + '</font>';
   }
 
-  var row = 1;
+  let row = 1;
 
-  var FEname;
+  let FEname;
   if (__setup_desc)        FEname = __setup_desc.name;
   else if (__local_setup)  FEname = 'Home setup';
                      else  FEname = 'Unnamed setup';
 
 
-  var fe_url;
+  let fe_url;
   if (('FEProxy' in ndata) && ndata.FEProxy.fe_config)
         fe_url = ndata.FEProxy.fe_config.externalURL;
   else  fe_url = document.location.protocol + '//' +
@@ -697,7 +697,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   if (ndata.FEconfig.externalURL!=fe_url)
     fe_url += '<br><i>[' + ndata.FEconfig.externalURL + ']</i>';
 
-  var app_version = 'unspecified';
+  let app_version = 'unspecified';
   if ('jscofe_version' in ndata)
     app_version = ndata.jscofe_version;
   this.nodeListTable.setRow ( 'Front End','Front End Server',
@@ -718,31 +718,31 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     row++;
   }
 
-  var ncn = 1;
-  for (var i=0;i<ndata.ncInfo.length;i++)  {
-    var nci = ndata.ncInfo[i];
+  let ncn = 1;
+  for (let i=0;i<ndata.ncInfo.length;i++)  {
+    let nci = ndata.ncInfo[i];
 //    if (nci.config.name!='client')  {
     if (nci)  {
-      var fasttrack = '&check;';
+      let fasttrack = '&check;';
       if (!nci.config.fasttrack)
         fasttrack = '-';
-      var njobs     = 0;
-      var nzombies  = 0;
-      var njdone    = 0;
-      var state     = 'running';
-      var startDate = 'N/A';
+      let njobs     = 0;
+      let nzombies  = 0;
+      let njdone    = 0;
+      let state     = 'running';
+      let startDate = 'N/A';
       if (!nci.config.in_use)
         state = 'not in use';
       else if (nci.jobRegister)  {
         njdone  = nci.jobRegister.launch_count;
-        for (var item in nci.jobRegister.job_map)
+        for (let item in nci.jobRegister.job_map)
           if (nci.jobRegister.job_map[item].endTime)  nzombies++;
                                                 else  njobs++;
         startDate = small_font(nci.config.startDate);
       } else  {
         state = 'dead';
       }
-      var nc_name = 'NC-' + nci.config.exeType;
+      let nc_name = 'NC-' + nci.config.exeType;
       if (nci.config.jobManager!=nci.config.exeType)
         nc_name += '(' + nci.config.jobManager + ')';
       if ('jscofe_version' in nci)  app_version = nci.jscofe_version;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -410,7 +410,7 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
   this.grid.setCellSize ( '','32px',0,0 );
 
-  this.headerPanel.setLabel  ( '&nbsp',0,0,1,1 );
+  this.headerPanel.setLabel  ( ' ',0,0,1,1 ).setWidth_px(8);
   this.headerPanel.menu = new Menu('',image_path('menu'));
   this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
 
