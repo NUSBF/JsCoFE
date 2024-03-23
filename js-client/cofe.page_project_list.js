@@ -1348,7 +1348,7 @@ function ProjectListPage ( sceneId )  {
 
   let row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
-  panel.setCellSize            ( '','10pt'  ,row++,0    );
+  panel.setCellSize            ( '','4px'  ,row++,0    );
   nCols = 0;
   panel.setWidget              ( open_btn   ,row,nCols++,1,1 );
   panel.setWidget              ( add_btn    ,row,nCols++,1,1 );

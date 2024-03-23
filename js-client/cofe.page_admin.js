@@ -40,8 +40,8 @@ function AdminPage ( sceneId )  {
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
-  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
-  this.headerPanel.setCellSize ( '99%','',0,4 );
+  this.headerPanel.setVerticalAlignment ( 0,3,'top' );
+  this.headerPanel.setCellSize ( '99%','38px',0,4 );
 
   let col = 5;
   let refresh_btn = this.headerPanel.setButton ( '',image_path('refresh'),0,col,1,1 );
