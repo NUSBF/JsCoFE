@@ -171,7 +171,7 @@ function LoginPage ( sceneId )  {
                                   'style="height:36px;width:36px;padding-top:6px;"/>' +
                                   '</i></center></div>',
                                   row++,0,1,3 );
-    panel.setCellSize           ( '','96px',0,3 );
+    panel.setCellSize           ( '','64px',0,3 );
   }
 
   if (!isProtectedConnection())
