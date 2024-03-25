@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.24   <--  Date of Last Modification.
+ *    25.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,6 +40,7 @@
   left             : 0px;
 /*  bottom           : -1px;  this does not work in some cases, therefore ugly 'top' */
   top              : calc(100vh - 34px);
+  width            : 100%;
   margin-top       : 0px;
   margin-left      : 0px;
   margin-right     : 0px;
