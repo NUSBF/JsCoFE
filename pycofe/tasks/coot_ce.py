@@ -87,7 +87,7 @@ class CootCE(basic.TaskDriver):
         fpath = None
         fname = None
         for f in files:
-            if f.lower().endswith(".pdb.gz"):
+            if f.lower().endswith(".pdb.gz") or f.lower().endswith(".cif.gz"):
                 fp = os.path.join ( backup_dir,f )
                 mt = os.path.getmtime(fp)
                 if mt > mtime:
