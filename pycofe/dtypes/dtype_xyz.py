@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.03.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -191,11 +191,11 @@ class DType(dtype_template.DType):
         return
 
 
-    def fixBFactors ( self,dirPath,BF_correction ):
+    def fixBFactors ( self,dirPath,BF_correction,body=None ):
         # BF_correction = "alphafold" or "rosetta"
         if (self.BF_correction=="none" or self.BF_correction.endswith("-suggested")) and \
            (BF_correction!=self.BF_correction):
-            fpath = self.getXYZFilePath ( dirPath )
+            fpath = self.getPDBFilePath ( dirPath )
             if fpath and fpath.lower().endswith(".pdb"):
                 st = gemmi.read_structure ( fpath )
                 st.setup_entities()
@@ -212,10 +212,20 @@ class DType(dtype_template.DType):
                 mmcifout = os.path.splitext(fpath)[0] + ".mmcif"
                 st.make_mmcif_document().write_file ( mmcifout )
                 pdbout, pdb_nogood = mmcif_utils.convert_to_pdb ( mmcifout,gemmi_st=st )
-                self.setXYZFile ( mmcifout )
+                self.setXYZFile ( os.path.basename(mmcifout) )
                 if pdbout:
-                    self.setXYZFile ( pdbout )
+                    self.setXYZFile ( os.path.basename(pdbout) )
                 self.BF_correction = BF_correction
+                if body:
+                    body.stdoutln ( " ***** B-factore recalculated\n" +\
+                                    " ***** mmCIF file: " + str(mmcifout) + "\n" +\
+                                    " ***** PDB file:   " + str(pdbout) )
+            elif body:
+                body.stdoutln ( " +++++ B-factors not recalculated: not a PDB file" )
+        elif body:
+            body.stdoutln ( " +++++ B-factors not recalculated\n" +\
+                            " +++++ requested corection: " + str(BF_correction) + "\n" +\
+                            " +++++ existing correction: " + str(self.BF_correction) )
         return
 
 
