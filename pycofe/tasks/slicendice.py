@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -107,10 +107,10 @@ class SliceNDice(basic.TaskDriver):
             cmd += ["-no_mols",str(revision.getNofASUMonomers())]
         else:
             cmd += ["-no_mols",no_mols]
-            
-        if xyz.BF_correction=="alphafold-suggested":
+
+        if xyz.BF_correction.startswith("alphafold-suggested"):
             cmd += ['-xyz_source', 'alphafold']
-        elif xyz.BF_correction=="rosetta-suggested":
+        elif xyz.BF_correction.startswith("rosetta-suggested"):
             cmd += ['-xyz_source', 'rosetta']
         else:
             cmd += ['-xyz_source', 'alphafold_bfactor']

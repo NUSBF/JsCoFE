@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -63,9 +63,9 @@ class Slice(basic.TaskDriver):
             "-max_splits",nsplits,
         ]
 
-        if xyz.BF_correction=="alphafold-suggested":
+        if xyz.BF_correction.startswith("alphafold"):
             cmd += ['-xyz_source', 'alphafold']
-        elif xyz.BF_correction=="rosetta-suggested":
+        elif xyz.BF_correction.startswith("rosetta"):
             cmd += ['-xyz_source', 'rosetta']
         else:
             cmd += ['-xyz_source', 'alphafold_bfactor']

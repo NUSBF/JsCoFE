@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.24   <--  Date of Last Modification.
+ *    28.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -531,6 +531,54 @@ if (!__template)  {
 
   }
 
+
+/*
+  DataXYZ.prototype.collectCustomDropdownInput = function ( dropdown ) {
+
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
+
+        alert ( ' >>> ' );
+
+    if (dropdown.layCustom=='pisa')  {
+
+      this.exclLigs = [];
+      for (let i=0;i<this.xyzmeta.ligands.length;i++)
+        if (!customGrid.cbxs[i].getValue())
+          this.exclLigs.push ( this.xyzmeta.ligands[i] );
+
+    } else if ((startsWith(dropdown.layCustom,'chain-sel') && ('chainSel' in customGrid)) || 
+               (dropdown.layCustom=='BF_correction'))  {
+
+      this.chainSel = customGrid.chainSel.getValue();
+      let lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
+      if (lst.length>1)
+            this.chainSelType = lst[1];
+      else  this.chainSelType = '';
+
+      if (((dropdown.layCustom=='chain-sel-MR')         ||
+           (dropdown.layCustom=='chain-sel-protein-MR') || 
+           (dropdown.layCustom=='BF_correction')) && 
+          customGrid.BF_correction)  {
+        this.BF_correction = customGrid.BF_correction.getValue();
+        alert ( ' >>> ' + this.BF_correction );
+      }
+
+      if (dropdown.layCustom=='chain-sel-poly-2')  {
+        this.chainSel2 = customGrid.chainSel2.getValue();
+        lst = customGrid.chainSel2.getText().replace('(','').replace(')','').split(' ');
+        if (lst.length>1)
+              this.chainSel2Type = lst[1];
+        else  this.chainSel2Type = '';
+      }
+
+    }
+
+    return msg;
+
+  }
+*/
+
   DataXYZ.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
     let msg = '';   // Ok by default
@@ -543,19 +591,13 @@ if (!__template)  {
         if (!customGrid.cbxs[i].getValue())
           this.exclLigs.push ( this.xyzmeta.ligands[i] );
 
-    } else if (startsWith(dropdown.layCustom,'chain-sel') && ('chainSel' in customGrid))  {
+    } else if ((startsWith(dropdown.layCustom,'chain-sel') && ('chainSel' in customGrid)))  {
 
       this.chainSel = customGrid.chainSel.getValue();
       let lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
       if (lst.length>1)
             this.chainSelType = lst[1];
       else  this.chainSelType = '';
-
-      if (((dropdown.layCustom=='chain-sel-MR')         ||
-           (dropdown.layCustom=='chain-sel-protein-MR') || 
-           (dropdown.layCustom=='BF_correction')) && 
-          customGrid.BF_correction)
-        this.BF_correction = customGrid.BF_correction.getValue();
 
       if (dropdown.layCustom=='chain-sel-poly-2')  {
         this.chainSel2 = customGrid.chainSel2.getValue();
@@ -566,6 +608,9 @@ if (!__template)  {
       }
 
     }
+
+    if ('BF_correction' in customGrid)
+      this.BF_correction = customGrid.BF_correction.getValue();
 
     return msg;
 

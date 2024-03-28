@@ -1062,8 +1062,9 @@ function ncRunJob ( job_token,meta )  {
 
     let jobName = getJobName();
 
-    var command = task.getCommandLine ( ncConfig.jobManager,jobDir );
-    command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
+    let command = task.getCommandLine ( ncConfig.jobManager,jobDir );
+    // command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
+    command.push ( 'jscofe_version=' + cmd.appVersion() );
     command.push ( 'end_signal=' + cmd.endJobFName );
 
     switch (jobEntry.exeType)  {
