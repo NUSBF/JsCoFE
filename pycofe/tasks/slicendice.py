@@ -112,8 +112,8 @@ class SliceNDice(basic.TaskDriver):
             cmd += ['-xyz_source', 'alphafold']
         elif xyz.BF_correction.startswith("rosetta"):
             cmd += ['-xyz_source', 'rosetta']
-        else:
-            cmd += ['-xyz_source', 'alphafold_bfactor']
+        # else:
+        #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold", plddt_threshold]
