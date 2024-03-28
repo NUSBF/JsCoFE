@@ -63,9 +63,9 @@ class Slice(basic.TaskDriver):
             "-max_splits",nsplits,
         ]
 
-        if xyz.BF_correction.startswith("alphafold"):
+        if xyz.BF_correction=="alphafold-suggested":
             cmd += ['-xyz_source', 'alphafold']
-        elif xyz.BF_correction.startswith("rosetta"):
+        elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['-xyz_source', 'rosetta']
         # else:
         #     cmd += ['-xyz_source', 'alphafold_bfactor']
