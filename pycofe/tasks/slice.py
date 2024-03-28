@@ -67,8 +67,8 @@ class Slice(basic.TaskDriver):
             cmd += ['-xyz_source', 'alphafold']
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['-xyz_source', 'rosetta']
-            
-        self.stdoutln("&ˆ&% "+str(xyz.BF_correction))
+
+        # self.stdoutln("&ˆ&% "+str(xyz.BF_correction))
         # else:
         #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
