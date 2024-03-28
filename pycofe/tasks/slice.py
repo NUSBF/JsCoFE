@@ -75,8 +75,8 @@ class Slice(basic.TaskDriver):
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 
-        nmodels  = 0
-        models = []
+        nmodels = 0
+        models  = []
 
         if rc.msg:
             self.putTitle ( "Failure" )
