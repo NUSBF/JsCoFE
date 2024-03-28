@@ -609,7 +609,7 @@ if (!__template)  {
 
     }
 
-    if ('BF_correction' in customGrid)
+    if (('BF_correction' in customGrid) && customGrid.BF_correction)
       this.BF_correction = customGrid.BF_correction.getValue();
 
     return msg;
