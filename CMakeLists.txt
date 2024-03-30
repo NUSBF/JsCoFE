@@ -30,6 +30,7 @@ install(DIRECTORY
     js-utils
     manuals
     message_templates
+    workflow_scripts
     node_modules
     pycofe
   DESTINATION
