@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.11.23   <--  Date of Last Modification.
+ *    31.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -32,7 +32,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ./js-common/dtypes/common.dtypes.something.js . This convention is used
 // for class reconstruction from json strings
 
-var structure_subtype = {
+const structure_subtype = {
   XYZ          : 'xyz',
   SUBSTRUCTURE : 'substructure',
   PHASES       : 'phases'
@@ -108,7 +108,7 @@ DataStructure.prototype.icon  = function()  { return 'data';           }
 // when data class version is changed here, change it also in python
 // constructors
 DataStructure.prototype.currentVersion = function()  {
-  var version = 3;  // advanced on FitWaters/FitLigands
+  let version = 3;  // advanced on FitWaters/FitLigands
   if (__template)
         return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
@@ -152,7 +152,7 @@ if (!__template)  {
 
   DataStructure.prototype.makeDataSummaryPage = function ( task )  {
 
-    var dsp = DataXYZ.prototype.makeDataSummaryPage.call ( this,task );
+    let dsp = DataXYZ.prototype.makeDataSummaryPage.call ( this,task );
 
     if (this.files.hasOwnProperty(file_key.sol))
       dsp.makeRow ( 'Phaser\'s SOL file',this.files[file_key.sol],'SOL file with phaser\'s output metadata' );
@@ -188,8 +188,8 @@ if (!__template)  {
 
   DataStructure.prototype.layCustomDropdownInput = function ( dropdown ) {
 
-    var customGrid = dropdown.customGrid;
-    var row = customGrid.getNRows();
+    let customGrid = dropdown.customGrid;
+    let row = customGrid.getNRows();
 
     function setLabel ( title,row,col )  {
       customGrid.setLabel ( title,row,col,1,1 ).setFontItalic(true).setNoWrap();
@@ -281,7 +281,7 @@ if (!__template)  {
 
     } else if (['acorn','arpwarp'].indexOf(dropdown.layCustom)>=0)  {
 
-      var ddn_list = [];
+      let ddn_list = [];
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
         ddn_list.push ( ['model coordinates',structure_subtype.XYZ] );
       if (this.subtype.indexOf(structure_subtype.PHASES)>=0)
@@ -295,7 +295,7 @@ if (!__template)  {
         customGrid.initPhaseSel = new Dropdown();
         //customGrid.initPhaseSel.setWidth ( '120%' );
         customGrid.initPhaseSel.setWidth ( '240px' );
-        for (var i=0;i<ddn_list.length;i++)
+        for (let i=0;i<ddn_list.length;i++)
           customGrid.initPhaseSel.addItem ( ddn_list[i][0],'',ddn_list[i][1],
                                            this.initPhaseSel==ddn_list[i][1] );
         customGrid.setWidget ( customGrid.initPhaseSel, row,1,1,4 );
@@ -337,8 +337,8 @@ if (!__template)  {
 
   DataStructure.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
 
     if (startsWith(dropdown.layCustom,'phaser-ep'))  {
       if (this.subtype.indexOf(structure_subtype.XYZ)>=0)
@@ -381,10 +381,10 @@ if (!__template)  {
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
   DataStructure.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
-  var hints = [ 'Have imported a PDB or mmCIF file with coordinates and ' +
+  let hints = [ 'Have imported a PDB or mmCIF file with coordinates and ' +
                 'wonder why <i>"Structure"</i> data type is not available to ' +
                 'the task? <a href="javascript:' +
-                    'launchHelpBox(\'Structure and XYZ\',' +
+                    'launchHelpBox1(\'Structure and XYZ\',' +
                                   '\'./html/jscofe_faq_structure_xyz.html\',' +
                                   'null,10)"><i>' +
                 String('Check here').fontcolor('blue') + '</i></a>.'

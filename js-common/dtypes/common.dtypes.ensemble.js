@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.21   <--  Date of Last Modification.
+ *    31.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Ensemble Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -55,7 +55,7 @@ DataEnsemble.prototype.title = function()  { return 'MR ensemble'; }
 // when data class version is changed here, change it also in python
 // constructors
 DataEnsemble.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.DataModel.prototype.currentVersion.call ( this );
   else  return  version + DataModel.prototype.currentVersion.call ( this );
@@ -69,7 +69,7 @@ if (!__template)  {
   // for client side
 
   DataEnsemble.prototype.extend = function() {
-    var ensext = $.extend ( true,{},this );
+    let ensext = $.extend ( true,{},this );
     if (this.sequence)
       ensext.sequence = this.sequence.extend();
     return ensext;
@@ -78,12 +78,12 @@ if (!__template)  {
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
   DataEnsemble.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
-  var hints = [ 'An ensemble of MR models is missing. Use a suitable <i>"Ensemble ' +
+  let hints = [ 'An ensemble of MR models is missing. Use a suitable <i>"Ensemble ' +
                 'preparation"</i> task to create one.',
                 'Have you imported a PDB or mmCIF file with coordinates and ' +
                 'wonder why, instead, an <i>"Ensemble"</i> data type is ' +
                 'required for a Molecular Replacement task? <a href="javascript:' +
-                    'launchHelpBox(\'XYZ, Models and Ensembles\',' +
+                    'launchHelpBox1(\'XYZ, Models and Ensembles\',' +
                                   '\'' + __user_guide_base_url +
                                     '/jscofe_qna.xyz_model_ensemble.html\',' +
                                   'null,10)"><i>' +

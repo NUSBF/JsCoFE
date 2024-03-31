@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    31.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -122,10 +122,10 @@ function LocalLoginPage ( sceneId )  {
                               else  tipNo = round(Date.now()/5000,0);
             tipNo = tipNo % __tips.tips.length;
             let tipLink = '<a href="javascript:' +
-                              'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
+                              'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
                                             '\'' + __tips.tips[tipNo].doc   + '/'   +
-                                                  __tips.tips[tipNo].link  + '\',' +
-                                            'null,10)">';
+                                                   __tips.tips[tipNo].link  + '\',' +
+                                            'null,10);">';
             tip_lbl.setText (
               '<img src="' + image_path('tip') +
               '" style="width:20px;height:20px;vertical-align:bottom;"/>' +

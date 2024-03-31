@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.09.22   <--  Date of Last Modification.
+ *    31.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -226,7 +226,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
         this.grid.setLabel ( '&nbsp;<p>' + advise_info +
                              ' Check data types and respective job summary ' +
                              '<a href="javascript:' +
-                                'launchHelpBox(\'Data Management\',' +
+                                'launchHelpBox1(\'Data Management\',' +
                                 '\'' + __task_reference_base_url +
                                   'doc.task.Import.html#ccp4-cloud-data-management\',null,10)"><i>' +
                                 String('here').fontcolor('blue') + '</i></a>.',
