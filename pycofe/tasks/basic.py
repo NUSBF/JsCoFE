@@ -1821,7 +1821,7 @@ class TaskDriver(object):
         hothelp = "<sup><img src=\"xxJsCoFExx-fe/images_png/help.png\" "       +\
                           "title=\"" + tooltip + "\" "                         +\
                           "style=\"width:14px;height:14px;cursor:pointer;\" "  +\
-                        "onclick=\"javascript:window.parent.launchHelpBox('"   +\
+                        "onclick=\"javascript:window.parent.launchHelpBox1('"  +\
                              title + "','manuals/" + chapter + "/" + hflist[0] +\
                              ".html" + hflist[1] + "',null,10)\"/>"            +\
                   "</sup>"
@@ -1833,7 +1833,7 @@ class TaskDriver(object):
             hflist[1] = "#" + hflist[1]
         else:
             hflist.append ( "" )
-        doclink = "<a href=\"javascript:window.parent.launchHelpBox('"  +\
+        doclink = "<a href=\"javascript:window.parent.launchHelpBox1('" +\
                   hboxTitle + "','manuals/" + chapter + "/" + hflist[0] +\
                   ".html" + hflist[1] + "',null,10)\">" + text + "</a>"
         return doclink
