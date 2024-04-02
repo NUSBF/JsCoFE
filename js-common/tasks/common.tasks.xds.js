@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.03.24   <--  Date of Last Modification.
+ *    02.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -135,7 +135,8 @@ if (!__template)  {
         }
     } else  {
       dir_input.label     .setVisible ( false );
-      dir_input.hdf5_range.setVisible ( false );
+      if (('hdf5_range' in dir_input) && dir_input.hdf5_range)
+        dir_input.hdf5_range.setVisible ( false );
     }
     return dir_input;
   }
