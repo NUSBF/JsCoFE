@@ -43,9 +43,15 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
     //'opacity'          : '0.5',
     'border'           : '1px solid gray',
     'border-radius'    : '8px',
-    'box-shadow'       : '5px 5px 6px #888888',
+    // 'box-shadow'       : '5px 5px 6px #888888',
     'white-space'      : 'nowrap'
   });
+
+  if (__active_color_mode=='light')
+    $(this.dock.element).css({
+      'box-shadow'       : '4px 4px 6px 4px rgba(220,220,220,1.0)'
+      // 'box-shadow' : '8px 8px 16px 8px rgba(212,212,212,1.0)'
+    });
 
   $(this.dock.element).appendTo(parent.element);
 
