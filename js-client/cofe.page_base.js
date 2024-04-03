@@ -486,12 +486,12 @@ BasePage.prototype.addFullscreenToMenu = function()  {
     this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
-  if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
+  // if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
     this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
                         .addOnClickListener ( toggleDarkMode );
     this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
                         .addOnClickListener ( function(){ new DarkModeDialog(); } );
-  }
+  // }
   return this;
 }
 
