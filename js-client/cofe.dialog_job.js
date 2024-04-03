@@ -76,12 +76,13 @@ function JobDialog ( params,          // data and task projections up the tree b
   title += this.statusLine();
   this.element.setAttribute ( 'title',strip_html_tags(title) );
 
-  // if (__active_color_mode=='light')
-    $(this.element).css({'box-shadow':'8px 8px 16px 8px rgba(0,0,0,0.16)',
-                         'overflow':'hidden'});
-  // else
-  //   $(this.element).css({'box-shadow':'8px 8px 16px 16px rgba(0,0,0,0.1)',
-  //                        'overflow':'hidden'});
+  if (__active_color_mode=='light')
+    $(this.element).css({'box-shadow' : '8px 8px 16px 8px rgba(212,212,212,1.0)',
+                         'overflow'   : 'hidden'});
+  else
+    $(this.element).css({//'box-shadow' : '8px 8px 16px 8px rgba(255,255,255,1.0)',
+                         //'border'     : '1px solid lightgray',
+                         'overflow'   : 'hidden'});
   document.body.appendChild ( this.element );
   //document.body.style.fontSize = '16px';
 
