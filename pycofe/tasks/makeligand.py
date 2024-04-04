@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.12.23   <--  Date of Last Modification.
+#    01.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -31,12 +31,10 @@ import shutil
 
 #  ccp4-python imports
 import gemmi
-from   gemmi   import  cif
 
 #  application imports
 from . import basic
 from  pycofe.auto   import auto,auto_workflow
-from  pycofe.dtypes import dtype_template
 
 # ============================================================================
 # Make Refmac driver
@@ -71,7 +69,7 @@ class MakeLigand(basic.TaskDriver):
 
         sourceKey = self.getParameter ( sec1.SOURCE_SEL )
         cmd       = []
-        xyzPath   = None
+        cif       = None
         mmcifPath = None
         cifPath   = None
         lig_path  = None
@@ -98,7 +96,7 @@ class MakeLigand(basic.TaskDriver):
                 # are XYZ coordinates found in Monomer Library Entry?
                 if self.getParameter(sec1.FORCE_ACEDRG_CBX)=="False":
                     # AceDrg is not forced by user
-                    block = cif.read(lig_path)[-1]
+                    block = gemmi.cif.read(lig_path)[-1]
                     if block.find_values('_chem_comp_atom.x'):
                         # XYZ coordinates are found in dictionary, just copy
                         # them over
@@ -167,6 +165,12 @@ class MakeLigand(basic.TaskDriver):
                     self.runApp ( "acedrg.bat",cmd,logType="Main" )
                 else:
                     self.runApp ( "acedrg",cmd,logType="Main" )
+                if not os.path.exists(xyzPath):
+                    cif = gemmi.cif.read_file ( cifPath )
+                    st  = gemmi.make_structure_from_chemcomp_block ( cif["comp_" + code] )
+                    while len(st)>1:  # because of gemmi bug
+                        del st[1]
+                    st.write_pdb ( xyzPath )
             else:
                 # copy ORIGINAL restraints in place
                 shutil.copyfile ( lig_path,cifPath )
@@ -182,7 +186,7 @@ class MakeLigand(basic.TaskDriver):
                     xyzPath = code0 + ".pdb"
                     with open (xyzPath,"w") as fout:
                         fout.write ( xyzdata )
-                block = cif.read(cifPath)[-1]
+                block = gemmi.cif.read(cifPath)[-1]
                 if block.find_values('_chem_comp_atom.x'):
                     mmcifPath = code0 + ".mmcif"
                     # XYZ coordinates are found in dictionary, just copy

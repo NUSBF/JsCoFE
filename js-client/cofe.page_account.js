@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -352,9 +352,11 @@ function AccountPage ( sceneId )  {
   });
 
 
+  let licence_btn  = null;
+  let feedback_btn = null; 
   if (full_list)  {
     row += 6;
-    let licence_btn = new Button  ( 'choose',image_path('licence') );
+    licence_btn = new Button  ( 'choose',image_path('licence') );
     licence_btn.setWidth          ( '100%' );
     licence_btn.setTooltip        ( 'Type of licence must be chosen' );
     panel.setWidget               ( licence_btn,row,1,1,2 );
@@ -367,7 +369,7 @@ function AccountPage ( sceneId )  {
     });
 
     row++;
-    let feedback_btn = new Button ( 'choose',image_path('feedback') );
+    feedback_btn = new Button ( 'choose',image_path('feedback') );
     feedback_btn.setWidth         ( '100%' );
     feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
     panel.setWidget               ( feedback_btn,row,1,1,2 );
@@ -551,12 +553,14 @@ function AccountPage ( sceneId )  {
           return false;  // close dialog
         } else  {
 
-          userData.name     = user_inp    .getValue();
-          userData.email    = email_inp   .getValue();
-          userData.login    = login_inp   .getValue();
-          userData.pwd      = pswd_inp    .getValue();
-          userData.licence  = licence_btn .getText();
-          userData.feedback = feedback_btn.getText();
+          userData.name  = user_inp .getValue();
+          userData.email = email_inp.getValue();
+          userData.login = login_inp.getValue();
+          userData.pwd   = pswd_inp .getValue();
+          if (licence_btn)
+            userData.licence  = licence_btn .getText();
+          if (feedback_btn)
+            userData.feedback = feedback_btn.getText();
 
           serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
                           function(response){
@@ -570,7 +574,8 @@ function AccountPage ( sceneId )  {
                 userData.email + '</i></b>.' +
                 '<p>You are logged out now.' );
               stopSessionChecks();
-              makeLoginPage ( sceneId );
+              reloadBrowser();
+              // makeLoginPage ( sceneId );
             }
           },null,'persist' );
 

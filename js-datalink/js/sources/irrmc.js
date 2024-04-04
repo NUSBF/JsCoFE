@@ -24,13 +24,13 @@ const RE_DOI = /doi\.org\/([^\"]+)/;
 class irrmc extends dataSource {
 
   description = 'Integrated Resource for Reproducibility in Macromolecular Crystallography';
-  url = 'https://proteindiffraction.org'
-  type = 'http'
+  url = 'https://proteindiffraction.org';
+  type = 'http';
 
   async fetchCatalog() {
-    let entries = {};
+    let catalog = {};
     let pages = 1, page = 1;
-    log.debug(`${this.name} - Scraping entries...`);
+    log.debug(`${this.name} - Scraping catalog...`);
     while (page <= pages) {
       let url = URL_CAT + '?show=' + PAGE_SIZE + '&page=' + page;
 
@@ -80,7 +80,7 @@ class irrmc extends dataSource {
           // extract doi id
           found = link.match(RE_DOI);
           if (found) {
-            doi = found[1];
+            doi = found[1].toLowerCase();
           }
 
         }
@@ -91,7 +91,7 @@ class irrmc extends dataSource {
         e.name = name;
         e.doi = doi;
 
-        entries[id] = e;
+        catalog[id] = e;
       });
 
       if (page < pages) {
@@ -101,12 +101,12 @@ class irrmc extends dataSource {
 
       page ++;
     }
-    this.saveCatalog(entries);
+    return catalog;
   }
 
-  async fetchData(user, id, catalog) {
-    let url = path.join(URL_DATA, this.catalog[id].path);
-    this.fetchDataHttp(url, user, id, catalog);
+  async fetchData(entry) {
+    let url = path.join(URL_DATA, this.catalog[entry.id].path);
+    this.fetchDataHttp(url, entry);
   }
 
 }

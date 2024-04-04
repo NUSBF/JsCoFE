@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    03.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -16,7 +16,6 @@
 
 #  python native imports
 import os
-import sys
 import shutil
 
 #  application imports
@@ -154,8 +153,17 @@ class DType(jsonut.jObject):
     def makeDName ( self,serialNo ):
         if serialNo > 0:
             self.makeDataId ( serialNo )
-        for fileKey in self.files:
-            fname,fext = os.path.splitext(self.files[fileKey])
+        fkey  = None
+        if self._type in ["DataModel","DataEnsemble"]:
+            if file_key['xyz'] in self.files:
+               fkey = file_key['xyz']
+            elif file_key['mmcif'] in self.files:
+               fkey = file_key['mmcif']
+        if not fkey:
+            for fileKey in self.files:
+                fkey = fileKey
+        if fkey:
+            fname,fext = os.path.splitext(self.files[fkey])
             if fext == ".link":
                 fname = os.path.splitext(fname)[0]
             fname += " /" + self._type[4:].lower() + "/"
@@ -166,7 +174,6 @@ class DType(jsonut.jObject):
                 self.dname = "[" + self.dataId + "] " + fname
             else:
                 self.dname = fname
-            break
         return
 
     def makeUniqueFNames ( self,dirPath ):

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1176,25 +1176,25 @@ function ProjectListPage ( sceneId )  {
 
   this.makeHeader ( 3,null );
 
-  this.headerPanel.setCellSize ( '30%','',0,2 );
+  this.headerPanel.setCellSize ( '30%','',0,3 );
   folder_btn = new ImageButton ( image_path('folder_projects'),'34px','34px' )
                   .setTooltip ( 'Browse project folders' )
                   .setVisible ( false );
                   // .setSize ( '28pt','26pt' );
                   // .setWidth ( '28pt' ).setHeight ( '24pt' );
-  this.headerPanel.setWidget ( folder_btn,0,3,1,1 );
-  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
-  this.headerPanel.setHorizontalAlignment ( 0,3,'right' );
+  this.headerPanel.setWidget ( folder_btn,0,4,1,1 );
+  this.headerPanel.setVerticalAlignment ( 0,4,'middle' );
+  this.headerPanel.setHorizontalAlignment ( 0,4,'right' );
 
   pageTitle_lbl = this.headerPanel
-                  .setLabel   ( '&nbsp;My Projects',0,4,1,1 )
+                  .setLabel   ( '&nbsp;My Projects',0,5,1,1 )
                   .setFont    ( 'times','200%',true,true )
                   .setNoWrap  ()
                   .setVisible ( false );
                   // .setHorizontalAlignment ( 'center' );
-  this.headerPanel.setCellSize ( '60%','',0,4 );
-  this.headerPanel.setVerticalAlignment ( 0,4,'middle' );
-  this.headerPanel.setHorizontalAlignment ( 0,4,'left' );
+  this.headerPanel.setCellSize            ( '60%','',0,5 );
+  this.headerPanel.setVerticalAlignment   ( 0,5,'middle' );
+  this.headerPanel.setHorizontalAlignment ( 0,5,'left'   );
 
   folder_btn.addOnClickListener ( function(){
     browseFolders ( 'select' );
@@ -1239,8 +1239,10 @@ function ProjectListPage ( sceneId )  {
   // let btn_width    = '30pt';
   let btn_width    = [];
   let btn_height   = '26pt';
-  let left_margin  = '18pt';
-  let right_margin = '28pt';
+  // let left_margin  = '18pt';
+  // let right_margin = '28pt';
+  let left_margin  = '6pt';
+  let right_margin = '8pt';
 
   //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
@@ -1248,7 +1250,7 @@ function ProjectListPage ( sceneId )  {
     // tight screen (smartphone)
 
     left_margin  = '2pt';
-    right_margin = '22pt';
+    right_margin = '4pt';
 
     open_btn    = new Button ( '',image_path('go'       ) );
     add_btn     = new Button ( '',image_path('add'      ) );
@@ -1346,7 +1348,7 @@ function ProjectListPage ( sceneId )  {
 
   let row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
-  panel.setCellSize            ( '','10pt'  ,row++,0    );
+  panel.setCellSize            ( '','8px'   ,row++,0    );
   nCols = 0;
   panel.setWidget              ( open_btn   ,row,nCols++,1,1 );
   panel.setWidget              ( add_btn    ,row,nCols++,1,1 );

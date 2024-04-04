@@ -28,7 +28,6 @@
 
 #  python native imports
 import os
-import sys
 
 import pyrvapi
 

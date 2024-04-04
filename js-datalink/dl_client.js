@@ -5,6 +5,7 @@
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const path = require('path');
 
 class Client {
 
@@ -12,6 +13,8 @@ class Client {
   arg_info = {};
   action_map = {};
   boundary = null;
+  size_total = 0;
+  size_uploaded = 0;
 
   constructor(app_client = false) {
     this.app_client = app_client;
@@ -35,7 +38,7 @@ class Client {
 
       Object.assign(this.action_map, {
         search: {
-          path: 'search/@0',
+          path: 'search/?f=@0&q=@1',
           method: 'GET'
         },
         fetch: {
@@ -68,6 +71,14 @@ class Client {
           method: 'GET',
           auth: 'admin'
         },
+        sources: {
+          path: 'sources/@0',
+          method: 'GET',
+        },
+        sources_all: {
+          path: 'sources/*',
+          method: 'GET',
+        },
         catalog: {
           path: 'sources/@0/catalog',
           method: 'GET',
@@ -75,6 +86,10 @@ class Client {
         catalog_all: {
           path: 'sources/*/catalog',
           method: 'GET',
+        },
+        stats: {
+          path: 'stats',
+          method: 'GET'
         }
       });
     }
@@ -92,17 +107,17 @@ class Client {
         form: 'id',
         help: 'id of entries'
       },
-      pdb: {
-        form: 'id', 
-        help: 'PDB identifier'
-      },
       field: {
-        form: 'key=value',
-        help: 'Used for action <update> to update data catalog entry value (eg., in_use=true)'
+        form: 'field',
+        help: 'Used for actions <search> and <update> to select field to search or update'
       },
-      file: {
-        form: '<path>',
-        help: 'Path to file to upload'
+      value: {
+        form: 'value',
+        help: 'Used for action <search> and <update> for value to search for or set field to'
+      },
+      no_progress: {
+        type: 'boolean',
+        help: 'Don\'t output progress during upload'
       }
     });
 
@@ -120,18 +135,21 @@ class Client {
     let params = this.action_map[action];
 
     let res;
-    let path = params.path;
 
+    let url_path = params.path;
     // replace /@0, /@1 etc with args
     for (const i in args) {
       let r = args[i];
       if (r) {
-        r = '/' + args[i];
+        r = encodeURIComponent(args[i]);
       } else {
         r = '';
       }
-      path = path.replace('/@' + i, r);
+      url_path = url_path.replace('@' + i, r);
     }
+
+    // replace any double '//' leftover when empty arguments are included (eg. for status)
+    url_path = url_path.replace(/\/\//g,'/');
 
     // request method
     let method = params.method;
@@ -140,32 +158,25 @@ class Client {
     let options = {};
 
     // add authentication headers
-    if (params.auth === 'user') {
-      // if the argument requires user authentication and cloudrun_id is set, use it
-      if (this.opts.cloudrun_id) {
-        options.headers = { cloudrun_id: this.opts.cloudrun_id };
-      // otherwise use the admin_key if it's set
-      } else {
-        options.headers = { admin_key: this.opts.admin_key };
-      }
-    }
-
-    // if the argument requires admin authentication add the admin_key if it's set
-    if (params.auth === 'admin' && this.opts.admin_key) {
+    // if the action requires authentication and the admin_key is set, add to headers.
+    // otherwise, if the action requires user auth and cloudrun_id is set, use that.
+    if (params.auth && this.opts.admin_key) {
       options.headers = { admin_key: this.opts.admin_key };
+    } else if (params.auth === 'user' && this.opts.cloudrun_id) {
+      options.headers = { cloudrun_id: this.opts.cloudrun_id };
     }
 
     // handle file uploads
-    let file;
+    let files = null;
     if (action == 'upload') {
-      file = this.opts.file;
+      files = this.opts.files;
       options.headers['Content-Type'] = `multipart/form-data; boundary=${this.getBoundary()}`;
-      file = this.opts.file;
     }
 
     // make the request
     try {
-      res = await this.httpRequest(this.opts.url + '/' + path, method, options, file);
+      const url = this.opts.url + url_path;
+      res = await this.httpRequest(url, method, options, files);
       return JSON.parse(res.body);
     } catch (err) {
       return { error: true, msg: err };
@@ -173,29 +184,26 @@ class Client {
   }
 
   async fetch(user, source, id) {
-    const res = await this.doCall('fetch', user, source, id);
-
-    if (res.error) {
-      this.displayResult(res);
-    }
-
-    this.fetchMultiple(user, [ { source: source, id: id } ] );
+    return await this.doCall('fetch', user, source, id);
   }
 
-  async search(pdb) {
-    const res = await this.doCall('search', this.opts.pdb);
+  async search(field, value) {
+    if (field === undefined || field === '') {
+      field = 'pdb';
+    }
+
+    const res = await this.doCall('search', field, value);
     if (res.results && res.results.length == 0) {
-      return { error: true, msg: `No data sources found for ${this.opts.pdb}` };
+      return { error: true, msg: `No data sources found with ${field} of ${value}` };
     }
     return res;
   }
 
-  async fetchPDB(user, pdb) {
-    const res = await this.search(pdb);
+  async fetchSearch(user, field, value) {
+    const res = await this.search(field, value);
 
     if (res.error) {
-      this.displayResult(res);
-      return;
+      return res;
     }
 
     this.fetchMultiple(user, res.results);
@@ -203,16 +211,8 @@ class Client {
 
   async fetchMultiple(user, results) {
     for (const r of results) {
-      let res = await this.doCall('fetch', user, r.source, r.id);
-      if (res.success) {
-        let res = await this.doCall('status', user, r.source, r.id);
-        if (res.status === 'completed') {
-          console.log(`Already fetched ${r.source}/${r.id}\nName: ${res.name}`);
-        } else {
-          console.log(`Fetching ${r.source}/${r.id}\nName: ${res.name}`);
-        }
-      }
-      return res;
+      let res = await this.fetch(user, r.source, r.id);
+      this.displayResult(res);
     }
   }
 
@@ -245,7 +245,7 @@ class Client {
     return b;
   }
 
-  httpRequest(url, method, options = {}, file = null) {
+  httpRequest(url, method, options = {}, files = null) {
     if (method) {
       options.method = method;
     }
@@ -254,7 +254,7 @@ class Client {
       options.method = 'GET';
     }
 
-    return new Promise ((resolve, reject) => {
+    return new Promise (async (resolve, reject) => {
       let req = this.proto.request(url, options, (res) => {
         res.resume();
 
@@ -270,43 +270,189 @@ class Client {
       });
 
       req.on('error', (err) => {
+        req.end();
         reject(`${err.message}`);
       });
 
-      if (file) {
-        // composer the multipart/form-data body
+      let in_s;
+      let last = false;
+      if (files) {
         req.write(`--${this.getBoundary()}\r\n`);
-        req.write(`Content-Disposition: form-data; name="file"; filename="${file}"\r\n`);
-        req.write('Content-Type: application/octet-stream\r\n\r\n');
-
-        const s = fs.createReadStream(file);
-
-        s.on('data', (data) => {
-          req.write(data);
-        });
-
-        s.on('end', () => {
-          req.write(`\r\n--${this.getBoundary()}--\r\n`);
-          req.end();
-        });
-      } else {
-        req.end();
+        for (let [i, file] of files.entries()) {
+          try {
+            await this.fileCallback(file, async (f) => {
+              try {
+                await this.sendFile(req, file, f);
+              } catch (err) {
+                reject(err.message);
+                return false;
+              }
+              return true;
+            });
+          } catch (err) {
+            req.end();
+            reject(err.message);
+            return false;
+          }
+        }
+        req.write(`--${this.getBoundary()}--\r\n`);
       }
 
+      req.end();
+
     });
+  }
+
+  getDirectorySize(paths) {
+    let size = 0;
+    for (let [i, file] of paths.entries()) {
+      let stat;
+      try {
+        stat = fs.statSync(file);
+      } catch (err) {
+        throw err;
+        return false;
+      }
+      if (stat.isFile()) {
+        size += stat.size;
+      } else if (stat.isDirectory()) {
+        size += this.getDirSize(file);
+      }
+    }
+    return size;
+  }
+
+  getDirSize(dir, size = 0) {
+    try {
+      const files = fs.readdirSync(dir, { withFileTypes: true });
+      files.forEach((file) => {
+        if (! file.isSymbolicLink()) {
+          file.isDirectory() ? size = this.getDirSize(`${dir}/${file.name}`, size) : size += (fs.statSync(`${dir}/${file.name}`).size);
+        }
+      });
+    } catch (err) {
+      return 0;
+    }
+
+    return size;
+  }
+
+  async fileCallback(dir, callback) {
+    // check if dir is a file
+    try {
+      if (fs.statSync(dir).isFile()) {
+        return await callback(dir);
+      }
+    } catch (err) {
+      throw err;
+      return false;
+    }
+
+    let files;
+    try {
+      files = fs.readdirSync(dir, { withFileTypes: true });
+    } catch (err) {
+      throw err;
+      return false;
+    }
+    for (const file of files) {
+      if (file.isSymbolicLink() || file.isCharacterDevice()) {
+        continue;
+      }
+      if (file.isDirectory()) {
+        if (! await this.fileCallback(path.join(dir, file.name), callback)) {
+          return false;
+        }
+      } else {
+        if (! await callback(path.join(dir, file.name))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  async sendFile(req, rel_dir, file) {
+    // if relative dir is the same as file (when we are processing just a file)
+    if (rel_dir === file) {
+      rel_dir = path.dirname(file);
+    }
+
+    return new Promise((resolve, reject) => {
+
+      // if the request has been destroyed then exit
+      if (req.destroyed) {
+        reject(err);
+        return;
+      }
+
+      const in_s = fs.createReadStream(file);
+
+      const filename = path.relative(rel_dir, file);
+
+      in_s.on('data', (data) => {
+        if (req.destroyed) {
+          in_s.close();
+          reject();
+        }
+        if (! this.opts.no_progress) {
+          this.size_uploaded += data.length;
+          this.outputProgress(file);
+        }
+        req.write(data);
+      });
+
+      in_s.on('open', () => {
+        // compose the multipart/form-data body
+        req.write(`Content-Disposition: form-data; name="file"; filename="${filename}"\r\n`);
+        req.write('Content-Type: application/octet-stream\r\n\r\n');
+      });
+
+      in_s.on('end', () => {
+        req.write(`\r\n--${this.getBoundary()}\r\n`);
+        resolve();
+      });
+
+      in_s.on('error', (err) => {
+        reject(err);
+      });
+
+    });
+  }
+
+  outputProgress(file) {
+    let percent = (this.size_uploaded / this.size_total) * 100;
+    this.outputBlankLine();
+    let line = `Uploading (${percent.toFixed(2)}%) - `;
+    let width = process.stdout.columns - line.length;
+    if (width < file.length) {
+      file = '... ' + file.slice(-width + 4);
+    }
+    line += file + '\r';
+    process.stdout.write(line);
+  }
+
+  outputBlankLine() {
+    process.stdout.write('\x1b[K');
   }
 
   showHelp() {
     const pad = 25;
     const cmd = process.argv[1].split('/').pop();
-    console.log(`Usage: ${cmd} [options] <action>`);
+    console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'catalog/catalogue, search, fetch, status, update or remove');
+    console.log('  action'.padEnd(pad) + 'sources, catalog/catalogue, search, fetch, status, update, remove, upload, stats');
     console.log('\nOptions:');
- 
+
+    let out;
     for (const [n, o] of Object.entries(this.arg_info)) {
-      let out = `  --${n} <${o.form}>`.padEnd(pad) + o.help;
+      out = `  --${n}`;
+      if (o.type !== 'boolean') {
+        out += ` <${o.form}>`;
+      }
+      out = out.padEnd(pad) + o.help;
+
       // if we have a default for the argument
       if (o.def) {
         out += ` (default: ${o.def})`;
@@ -324,6 +470,9 @@ class Client {
   }
 
   async processArgs() {
+    // initialise file array
+    this.opts.files = [];
+
     const argv = process.argv;
 
     // get additional parameters
@@ -347,14 +496,31 @@ class Client {
       }
       // if it is an option starting with --
       if (key.startsWith('--')) {
-        // extract the option and value
+
+        // extract the option name
         let option = key.substring(2);
+
+        // if option is blank (--) the following arguments are files/directories
+        if (option === '') {
+          while (params.length) {
+            this.opts.files.push(params.shift());
+          }
+          break;
+        }
+
         // validate the option against arg_info, and set it in our options object
         if (this.arg_info[option]) {
-          this.opts[option] = params.shift();
+          // if the argument type is set to boolean, don't expect a value
+          if (this.arg_info[option].type === 'boolean') {
+            this.opts[option] = true;
+          } else {
+            // get the value
+            this.opts[option] = params.shift();
+          }
         } else {
           return { error: true, msg: `error: unknown option '${key}'`};
         }
+
       } else {
         this.action = key;
       }
@@ -373,14 +539,17 @@ class Client {
       } else {
         this.proto = http;
       }
+
+      // ensure the URL has a single trailing slash
+      this.opts.url = this.opts.url.replace(/(\/?)*$/, '/');
     }
 
     // check if the correct parameters are supplied
     let res, err_msg;
 
-    // check if --pdb is set for search
-    if (this.action == 'search') {
-      return { error: true, msg: 'You need to include a --pdb to search for' };
+    // check if value is set for search
+    if (this.action == 'search' && ! this.opts.value) {
+      return { error: true, msg: 'You need to include a <value> to search for' };
     }
 
     // check that fetch, remove, update and upload have a user set
@@ -391,8 +560,8 @@ class Client {
       }
 
       if (this.action == 'fetch') {
-        if (! this.opts.pdb && ! (this.opts.source && this.opts.id)) {
-          return { error: true, msg: `You need to provide a data <source> and <id> or a pdb <id> for the data to ${this.action}`};
+        if (! this.opts.value && ! (this.opts.source && this.opts.id)) {
+          return { error: true, msg: `You need to provide a data <source> and <id> or a search value <search> for the data to ${this.action}`};
         }
       }
 
@@ -403,7 +572,7 @@ class Client {
       }
 
       if (this.action == 'upload') {
-        if (! this.opts.file) {
+        if (! this.opts.files) {
           return { error: true, msg: `You need to provide a file to ${this.action}`};
         }
       }
@@ -411,6 +580,13 @@ class Client {
 
     // process actions
     switch(this.action) {
+      case 'sources':
+        if (this.opts.source) {
+          res = await this.doCall('sources', this.opts.source);
+        } else {
+          res = await this.doCall('sources_all', this.opts.source);
+        }
+        break;
       case 'catalog':
       case 'catalogue':
         if (this.opts.source) {
@@ -420,27 +596,35 @@ class Client {
         }
         break;
       case 'search':
-        res = this.search(this.opts.pdb);
+        res = this.search(this.opts.field, this.opts.value);
         break;
       case 'fetch':
-        if (this.opts.pdb) {
-          this.fetchPDB(this.opts.user, this.opts.pdb);
+        if (this.opts.value) {
+          res = this.fetchSearch(this.opts.user, this.opts.field, this.opts.value);
         } else {
-          this.fetch(this.opts.user, this.opts.source, this.opts.id);
+          res = this.fetch(this.opts.user, this.opts.source, this.opts.id);
         }
         break;
       case 'status':
         res = await this.status(this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'update':
-        let spl = this.opts.field.split('=');
-        res = await this.update(this.opts.user, this.opts.source, this.opts.id, spl[0], spl[1]);
+        res = await this.update(this.opts.user, this.opts.source, this.opts.id, this.opts.field, this.opts.value);
         break;
       case 'remove':
         res = await this.doCall('remove', this.opts.user, this.opts.source, this.opts.id);
         break;
       case 'upload':
+        try {
+          this.size_total = this.getDirectorySize(this.opts.files);
+        } catch (err) {
+          res = { error: true, msg: err.message };
+          break;
+        }
         res = this.upload(this.opts.user, this.opts.source, this.opts.id);
+        break;
+      case 'stats':
+        res = await this.doCall('stats');
         break;
       default:
         res = { error: true, msg: `No such action <${this.action}>` };
@@ -449,6 +633,10 @@ class Client {
   }
 
   displayResult(res) {
+    if (! this.opts.no_progress) {
+      this.outputBlankLine();
+    }
+
     if (! res) {
       return;
     }

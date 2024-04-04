@@ -46,7 +46,7 @@
   
   
   
-    <title>8. Software testing in CCP4 &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>10. Software testing in CCP4 &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -56,8 +56,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="10. CCP4 Cloud Client Setup" href="clientsetup.html" />
-    <link rel="prev" title="7. CCP4 Cloud Task Development: Hello World!" href="dev_hello_world.html" />
+    <link rel="next" title="12. CCP4 Cloud Client Setup" href="clientsetup.html" />
+    <link rel="prev" title="9. CCP4 Cloud Task Development: Hello World!" href="dev_hello_world.html" />
   
    
 
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> 8. Software testing in CCP4 </span>
+          <span class="md-header-nav__topic"> 10. Software testing in CCP4 </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -198,28 +198,42 @@
     <li class="md-nav__item">
     
     
-      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
+      <a href="pm2.html" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="mrparse_server_setup.html" class="md-nav__link">5. Linking MrParse to local databases</a>
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">6. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="dev_hello_world.html" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dev_hello_world.html" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a>
       
     
     </li>
@@ -227,31 +241,31 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 8. Software testing in CCP4 </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 10. Software testing in CCP4 </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">8. Software testing in CCP4</a>
+      <a href="#" class="md-nav__link md-nav__link--active">10. Software testing in CCP4</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">8. Software testing in CCP4</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">10. Software testing in CCP4</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
         </li>
-        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">8.2. Pytest</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">10.2. Pytest</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
         </li>
-        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">11.2. Inventory</a>
         </li></ul>
             </nav>
         </li>
@@ -261,19 +275,19 @@
     <li class="md-nav__item">
     
     
-      <a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+      <a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#pytest" class="md-nav__link">8.2. Pytest</a>
+      <a href="#pytest" class="md-nav__link">10.2. Pytest</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+      <a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
       
     
     </li></ul>
@@ -284,19 +298,19 @@
     <li class="md-nav__item">
     
     
-      <a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a>
+      <a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+      <a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+      <a href="#inventory" class="md-nav__link">11.2. Inventory</a>
       
     
     </li></ul>
@@ -305,21 +319,21 @@
     <li class="md-nav__item">
     
     
-      <a href="clientsetup.html" class="md-nav__link">10. CCP4 Cloud Client Setup</a>
+      <a href="clientsetup.html" class="md-nav__link">12. CCP4 Cloud Client Setup</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">11. What is CCP4 Cloud Client Software</a>
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">12. How to add a new Sphinx theme</a>
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -337,23 +351,23 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">8. Software testing in CCP4</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#tests--page-root" class="md-nav__link">10. Software testing in CCP4</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">8.1. Unix scripts</a>
+        <li class="md-nav__item"><a href="#unix-scripts" class="md-nav__link">10.1. Unix scripts</a>
         </li>
-        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">8.2. Pytest</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pytest" class="md-nav__link">10.2. Pytest</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">8.2.1. Test new build manually</a>
+        <li class="md-nav__item"><a href="#test-new-build-manually" class="md-nav__link">10.2.1. Test new build manually</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">9.1. Data for Cloud tests</a>
+        <li class="md-nav__item"><a href="#data-for-cloud-tests" class="md-nav__link">11.1. Data for Cloud tests</a>
         </li>
-        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">9.2. Inventory</a>
+        <li class="md-nav__item"><a href="#inventory" class="md-nav__link">11.2. Inventory</a>
         </li></ul>
             </nav>
         </li>
@@ -367,10 +381,10 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="software-testing-in-ccp4">
-<h1 id="tests--page-root"><span class="section-number">8. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="tests--page-root"><span class="section-number">10. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4 command line tests contains <strong>unix scripts</strong> and <strong>pytest</strong> tests.</p>
 <section id="unix-scripts">
-<h2 id="unix-scripts"><span class="section-number">8.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this heading">¶</a></h2>
+<h2 id="unix-scripts"><span class="section-number">10.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>$CEXAM/unix/runnable:</dt><dd><p>unix scripts using the rnase/toxd data which should actually run</p>
@@ -385,7 +399,7 @@
 </ul>
 </section>
 <section id="pytest">
-<h2 id="pytest"><span class="section-number">8.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this heading">¶</a></h2>
+<h2 id="pytest"><span class="section-number">10.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this heading">¶</a></h2>
 <p>Pytests are designed using the Arrange-Act-Assert model:</p>
 <ol class="arabic simple">
 <li><p><strong>Arrange</strong>, or set up, the conditions for the test</p></li>
@@ -420,7 +434,7 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 </div>
 <p>In order to get emails after tests run all emails should be listed in <strong>emailNotification.groovy</strong></p>
 <section id="test-new-build-manually">
-<h3 id="test-new-build-manually"><span class="section-number">8.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this heading">¶</a></h3>
+<h3 id="test-new-build-manually"><span class="section-number">10.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Download build from Jenkins =&gt; build (for example, Series 8.0 python3 pyside2 on windows (msvc/intel) =&gt; Build # or name =&gt; Build Artifacts</p></li>
 <li><p>Run <strong>postinstall.bat</strong> (Windows) or <strong>BINARY.setup</strong> (Mac/Linux)</p></li>
@@ -436,7 +450,7 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 </section>
 </section>
 <section id="ccp4-cloud-tests">
-<h1 id="ccp4-cloud-tests"><span class="section-number">9. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this heading">¶</a></h1>
+<h1 id="ccp4-cloud-tests"><span class="section-number">11. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this heading">¶</a></h1>
 <p>Performed using <a class="reference external" href="https://www.selenium.dev/documentation/" rel="noopener noreferrer" target="_blank">Selenium WebDriver</a></p>
 <p>Tests can be found in <code class="docutils literal notranslate"><span class="pre">jsCoFE/setests</span></code></p>
 <blockquote>
@@ -536,7 +550,7 @@ it will start on STFC Cloud VM). This Cloud machine is accessible only from STFC
 </pre></div>
 </div>
 <section id="data-for-cloud-tests">
-<h2 id="data-for-cloud-tests"><span class="section-number">9.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this heading">¶</a></h2>
+<h2 id="data-for-cloud-tests"><span class="section-number">11.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this heading">¶</a></h2>
 <p>#. Directory <code class="docutils literal notranslate"><span class="pre">test_data</span></code> shall be copied into <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> of the current user, so Cloud tests would be able
 to upload data to the Cloud from that location (required for tests of imports and WorkFlows).
 Python code addresses this as <code class="docutils literal notranslate"><span class="pre">~/test_data</span></code> or <code class="docutils literal notranslate"><span class="pre">%userprofile%\\test_data</span></code> on Windows.
@@ -551,7 +565,7 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
 <p>Cloud tests are run on setest machine on <a class="reference external" href="https://openstack.stfc.ac.uk/auth/login/" rel="noopener noreferrer" target="_blank">https://openstack.stfc.ac.uk/auth/login/</a></p>
 </section>
 <section id="inventory">
-<h2 id="inventory"><span class="section-number">9.2. </span>Inventory<a class="headerlink" href="#inventory" title="Permalink to this heading">¶</a></h2>
+<h2 id="inventory"><span class="section-number">11.2. </span>Inventory<a class="headerlink" href="#inventory" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference external" href="http://devtools.fg.oisin.rc-harwell.ac.uk/tests/" rel="noopener noreferrer" target="_blank">CCP4 tests</a></p>
 <p><a class="reference external" href="http://devtools.fg.oisin.rc-harwell.ac.uk/tests/CCP4%20tests%2051ebb87582b44485825c2d5a19e24fd3/Failing%20tests%209284330721fb4b8d9c61fa5f265dd301.html" rel="noopener noreferrer" target="_blank">Failing tests</a></p>
 </section>
@@ -567,7 +581,7 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="dev_hello_world.html" title="7. CCP4 Cloud Task Development: Hello World!"
+            <a href="dev_hello_world.html" title="9. CCP4 Cloud Task Development: Hello World!"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -576,17 +590,17 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">7. </span>CCP4 Cloud Task Development: Hello World! </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">9. </span>CCP4 Cloud Task Development: Hello World! </span>
               </div>
             </a>
           
           
-            <a href="clientsetup.html" title="10. CCP4 Cloud Client Setup"
+            <a href="clientsetup.html" title="12. CCP4 Cloud Client Setup"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10. </span>CCP4 Cloud Client Setup </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">12. </span>CCP4 Cloud Client Setup </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

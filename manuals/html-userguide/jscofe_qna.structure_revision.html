@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -352,28 +351,28 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-qna-structure-revision--page-root"><span class="section-number">8.3. </span>What is <em>Structure Revision</em>?<a class="headerlink" href="#jscofe-qna-structure-revision--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="what-is-structure-revision">
+<h1 id="jscofe-qna-structure-revision--page-root"><span class="section-number">8.3. </span>What is <em>Structure Revision</em>?<a class="headerlink" href="#jscofe-qna-structure-revision--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>Structure Revision</strong> may be viewed as a box, where CCP4 Cloud keeps various data items corresponding to particular stages of the structure solution project. The minimal <strong>Structure Revision contains a reflection dataset (HKL), and description of asymmetric unit (ASU).</strong> Usually, the minimal Structure Revision is created by the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html" rel="noopener noreferrer" target="_blank">ASU Content Definition Task</a>, which starts the phasing stage of structure solution. As the structure solution project develops, <strong>Structure Revision</strong> is passed from one task to another, getting updated with new or improved data (such as atomic coordinates, phases, ligands), until the structure is considered solved. The final <strong>Structure Revision</strong> is passed to the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Deposition.html" rel="noopener noreferrer" target="_blank">PDB Deposition task</a>, which generates files necessary for the deposition of solved structure in the <a class="reference external" href="https://www.rcsb.org/" rel="noopener noreferrer" target="_blank">Protein Data Bank</a> and acquires provisional <a class="reference external" href="https://www.wwpdb.org/validation/validation-reports/" rel="noopener noreferrer" target="_blank">PDB Validation Report</a>.</p>
-
-<h2 id="structure-revision-s-scope-of-visibility-and-project-development"><span class="section-number">8.3.1. </span><em>Structure Revision</em>’s scope of visibility and Project development<a class="headerlink" href="#structure-revision-s-scope-of-visibility-and-project-development" title="Permalink to this headline">¶</a></h2>
+<section id="structure-revision-s-scope-of-visibility-and-project-development">
+<h2 id="structure-revision-s-scope-of-visibility-and-project-development"><span class="section-number">8.3.1. </span><em>Structure Revision</em>’s scope of visibility and Project development<a class="headerlink" href="#structure-revision-s-scope-of-visibility-and-project-development" title="Permalink to this heading">¶</a></h2>
 <p>As a general rule, <strong>“Structure Revision”, produced by a task, shields all revisions produced by that task’s parents</strong>. Therefore, if a particular <strong>Structure Revision</strong> should be used in more than one task, the Project <em>must</em> branch at that point; this means that several tasks get appended as children to the task where that <strong>Structure Revision</strong> was produced. The only exception from this rule is given by data import tasks, which do not obscure revisions visible to them.</p>
 <p>CCP4 Cloud tasks can accept only one <strong>Structure Revision</strong> on input, and most of them produce a single <strong>Structure Revision</strong> on output. Therefore, only one <strong>Structure Revision</strong> appears as an input choice in most cases. A few tasks can produce several <strong>Structure Revisions</strong>: <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">MAD phasing with Crank-2</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Experimental Phasing with Phaser-EP</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">Model Building with CCP4Build</a>. Any task, which follows these, will have a choice of <strong>Structure Revisions</strong> on input, and the user should exercise attention in these cases.</p>
-
-
-<h2 id="structure-revision-naming"><span class="section-number">8.3.2. </span><em>Structure Revision</em> naming<a class="headerlink" href="#structure-revision-naming" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="structure-revision-naming">
+<h2 id="structure-revision-naming"><span class="section-number">8.3.2. </span><em>Structure Revision</em> naming<a class="headerlink" href="#structure-revision-naming" title="Permalink to this heading">¶</a></h2>
 <p><strong>Structure Revisions</strong> are named as in the following example:  <code class="docutils literal notranslate"><span class="pre">R0258.01:</span> <span class="pre">refmac</span> <span class="pre">(protein)/xyz,phases</span></code></p>
 <p>where <code class="docutils literal notranslate"><span class="pre">R</span></code> stands for “Revision”, <code class="docutils literal notranslate"><span class="pre">0258</span></code> is the serial number of the job, which produced the revision, <code class="docutils literal notranslate"><span class="pre">01</span></code> is the serial number of output revision in that job, <code class="docutils literal notranslate"><span class="pre">refmac</span></code> is the task name of the job (either generic or user-provided), and the rest is a variable list of descriptors. In the above example, the revision describes a crystal with protein content, for which some atomic coordinates and phases are calculated. If <code class="docutils literal notranslate"><span class="pre">xyz</span></code> prepends <code class="docutils literal notranslate"><span class="pre">phases</span></code>, then the latter was calculated using the former (e.g., as in molecular replacement); otherwise, phases were obtained in course of Experimental Phasing or imported in the project, and atomic coordinates were obtained by building model in the corresponding electron density.</p>
-
-
-<h2 id="structure-revision-content-inspection"><span class="section-number">8.3.3. </span><em>Structure Revision</em> content inspection<a class="headerlink" href="#structure-revision-content-inspection" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="structure-revision-content-inspection">
+<h2 id="structure-revision-content-inspection"><span class="section-number">8.3.3. </span><em>Structure Revision</em> content inspection<a class="headerlink" href="#structure-revision-content-inspection" title="Permalink to this heading">¶</a></h2>
 <p>The content of <strong>Structure Revision</strong> may be inspected in both input and output pages. In input pages, use the button with <strong>magnifying glass</strong> on the left from the <strong>Structure Revision selection widget</strong>. In output pages, use <strong>Inspect</strong> button on the left from the revision specification.</p>
-
-
-<h2 id="what-is-the-difference-between-structure-and-structure-revision"><span class="section-number">8.3.4. </span>What is the difference between <em>Structure</em> and <em>Structure Revision</em>?<a class="headerlink" href="#what-is-the-difference-between-structure-and-structure-revision" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="what-is-the-difference-between-structure-and-structure-revision">
+<h2 id="what-is-the-difference-between-structure-and-structure-revision"><span class="section-number">8.3.4. </span>What is the difference between <em>Structure</em> and <em>Structure Revision</em>?<a class="headerlink" href="#what-is-the-difference-between-structure-and-structure-revision" title="Permalink to this heading">¶</a></h2>
 <p>In CCP4 Cloud, <strong>Structure</strong> provides description of crystal structure (defined as a combination of atomic coordinates, phases, and electron density), and <strong>Structure Revision</strong> represents the state of the structure solution project in terms of data, both experimental and generated along the given branch of the project. <strong>“Structure Revision” includes “Structure” as one of its items.</strong> Effectively, <strong>Structure Revision</strong> is a check-point in the structure solution project, which can be used for branching on a range of parameters or structure solution approaches/scenarios.</p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -418,7 +417,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

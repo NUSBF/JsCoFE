@@ -2,6 +2,11 @@
 CCP4 Cloud Launch Scripts
 =========================
 
+There is now a new launch script for CCP4 Cloud that supports using
+PM2 (https://pm2.keymetrics.io/).
+
+See: :ref:`Managing CCP4 Cloud with PM2<pm2>`
+
 ----------------------------------
 Launch script for Front-End Server
 ----------------------------------

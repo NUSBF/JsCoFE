@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -107,13 +107,13 @@ class SliceNDice(basic.TaskDriver):
             cmd += ["-no_mols",str(revision.getNofASUMonomers())]
         else:
             cmd += ["-no_mols",no_mols]
-            
+
         if xyz.BF_correction=="alphafold-suggested":
             cmd += ['-xyz_source', 'alphafold']
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['-xyz_source', 'rosetta']
-        else:
-            cmd += ['-xyz_source', 'alphafold_bfactor']
+        # else:
+        #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold", plddt_threshold]
@@ -246,6 +246,11 @@ class SliceNDice(basic.TaskDriver):
                             "R_free"   : str(r_free)
                         }
 
+                    auto.makeNextTask(self, {
+                            "revision" : revision,
+                            "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                        }, log=self.file_stderr)
+
         # self.generic_parser_summary["slicendice"] = {
         #   "summary_line" : str(nmodels) + " model(s) generated"
         # }
@@ -255,10 +260,6 @@ class SliceNDice(basic.TaskDriver):
         #     "model" : models[0]
         # })
 
-        auto.makeNextTask(self, {
-                "revision" : revision,
-                "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
-            }, log=self.file_stderr)
 
         self.success ( have_results )
         return

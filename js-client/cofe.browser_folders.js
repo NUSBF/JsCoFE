@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    04.08.23   <--  Date of Last Modification.
+ *    20.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FoldersBrowser
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2022-2024
  *
  *  ===========================================================================
  *
@@ -49,7 +49,7 @@ function FoldersBrowser ( title,projectList,currentFolder,currentPDesc,funcKey,
   this.nprojects     = currentFolder.nprojects; // 0;
   this.nprjtree      = currentFolder.nprjtree;  // 0;
 
-  // var crFolder = this.findFolder(currentFolder.path);
+  // let crFolder = this.findFolder(currentFolder.path);
   // if (crFolder)
   //   this.nprojects = crFolder.nprojects;
 
@@ -108,8 +108,8 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
   this.tree_div.addWidget ( this.ftree );
   this.grid.setWidget ( this.tree_div,row,col,1,colSpan );
 
-  var w = 550;
-  var h = 310;
+  let w = 550;
+  let h = 310;
   this.tree_div.setSize_px ( w-50,h );
 
   this.btn_ids = {
@@ -120,9 +120,9 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
     delete : this.id + '_delete_btn',
   };
 
-  var self = this;
+  let self = this;
 
-  var funcTitle = 'Select';
+  let funcTitle = 'Select';
   if (this.funcKey!='select')
     funcTitle = 'Move';
 
@@ -179,15 +179,14 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 FoldersBrowser.prototype.makeToolBar = function ( row,col )  {
 
   this.toolbar_div = new Widget('div');
-  // this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
-  var toolbar = new Grid('-compact');
+  let toolbar = new Grid('-compact');
   this.toolbar_div.addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, row,col,1,1 );
 
   // make the toolbar
 
-  var bsize = '36px';
-  var cnt   = 0;
+  let bsize = '36px';
+  let cnt   = 0;
   this.add_folder_btn = toolbar.setButton ( '',image_path('folder_new'),0,cnt++,1,1 )
                            .setSize(bsize,bsize).setTooltip('Add sub-folder');
   this.add_list_btn   = toolbar.setButton ( '',image_path('folder_list_custom_new'),0,cnt++,1,1 )
@@ -199,7 +198,7 @@ FoldersBrowser.prototype.makeToolBar = function ( row,col )  {
   this.help_btn       = toolbar.setButton ( '',image_path('help'),0,cnt++,1,1 )
                            .setSize(bsize,bsize).setTooltip('Help');
 
-  var self = this;
+  let self = this;
 
   this.add_folder_btn.addOnClickListener ( function(){ self.onAddFolder   (); });
   this.add_list_btn  .addOnClickListener ( function(){ self.onAddList     (); });
@@ -218,8 +217,8 @@ FoldersBrowser.prototype.disableButton = function ( btn_id,disable_bool )  {
 }
 
 FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
-  for (var i=0;i<folders.length;i++)  {
-    var node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprjtree + ')',
+  for (let i=0;i<folders.length;i++)  {
+    let node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprjtree + ')',
                                image_path('folder_projects'),
                                null );
     node.dataId     = folders[i].path;
@@ -231,10 +230,10 @@ FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
 }
 
 FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
-  var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
-  for (var i=0;i<folders.length;i++)  {
-    var icon = 'folder_projects_user';
-    var nprj = ' <i>(' + folders[i].nprjtree + ')</i>';
+  let ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
+  for (let i=0;i<folders.length;i++)  {
+    let icon = 'folder_projects_user';
+    let nprj = ' <i>(' + folders[i].nprjtree + ')</i>';
     switch (folders[i].type)  {
       case folder_type.shared        :
       case folder_type.joined        :
@@ -243,9 +242,9 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
       case folder_type.archived      : icon = 'folder_my_archive';     break;
       case folder_type.cloud_archive : icon = 'folder_cloud_archive';  break;
       case folder_type.tutorials     : icon = 'folder_tutorials';      break;
-      default :     var nprj = ' (' + folders[i].nprjtree + ')';
+      default :     let nprj = ' (' + folders[i].nprjtree + ')';
     }
-    var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id) +
+    let node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id) +
                                    nprj,image_path(icon),null );
     if (i==0)
       this.node0_id = node.id;
@@ -256,7 +255,7 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
     this.setFolders ( node,folders[i].folders,ftree );
   }
 
-  var self = this;
+  let self = this;
   // ftree.createTree ( true,onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
   ftree.createTree ( true,
     function(){
@@ -275,11 +274,11 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
 }
 
 FoldersBrowser.prototype.onSelect = function()  {
-var selNode = this.ftree.getSelectedNode();
+  let selNode = this.ftree.getSelectedNode();
   if (selNode)  {
-    var myprojects = selNode.dataId.startsWith(__login_id+'\'s ');
+    let myprojects = selNode.dataId.startsWith(__login_id+'\'s ');
     this.add_folder_btn.setEnabled ( myprojects );
-    var enable_rd  = (myprojects && selNode.parentId) ||
+    let enable_rd  = (myprojects && selNode.parentId) ||
                      (selNode.icon.indexOf('folder_list_custom')>=0);
     this.rename_btn.setEnabled ( enable_rd );
     this.delete_btn.setEnabled ( enable_rd );
@@ -295,7 +294,7 @@ var selNode = this.ftree.getSelectedNode();
 /*
 FoldersBrowser.prototype.onSelectBtn = function()  {
 // Select button switches to the selected folder
-var selNode = this.ftree.getSelectedNode();
+let selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     if (((selNode.dataId!=folder_path.archived) && 
          (selNode.dataId!=folder_path.cloud_archive)) ||
@@ -325,7 +324,7 @@ var selNode = this.ftree.getSelectedNode();
 
 FoldersBrowser.prototype.onSelectBtn = function()  {
 // Select button switches to the selected folder
-var selNode = this.ftree.getSelectedNode();
+  let selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     if (((selNode.dataId==folder_path.archived) || 
          (selNode.dataId==folder_path.cloud_archive)) &&
@@ -348,8 +347,8 @@ var selNode = this.ftree.getSelectedNode();
 
 
 FoldersBrowser.prototype._find_folder = function ( fpath,folders )  {
-var folder = null;
-  for (var i=0;(i<folders.length) && (!folder);i++)
+  let folder = null;
+  for (let i=0;(i<folders.length) && (!folder);i++)
     if (folders[i].path==fpath)
           folder = folders[i];
     else  folder = this._find_folder ( fpath,folders[i].folders );
@@ -361,8 +360,8 @@ FoldersBrowser.prototype.findFolder = function ( fpath )  {
 }
 
 FoldersBrowser.prototype._delete_folder = function ( fpath,folders )  {
-var k = -1;
-  for (var i=0;(i<folders.length) && (k==-1);i++)
+  let k = -1;
+  for (let i=0;(i<folders.length) && (k==-1);i++)
     if (folders[i].path==fpath)
           k = i;
     else  k = this._delete_folder ( fpath,folders[i].folders );
@@ -378,13 +377,13 @@ FoldersBrowser.prototype.deleteFolder = function ( fpath )  {
 }
 
 FoldersBrowser.prototype.onAddFolder = function()  {
-var self = this;
-var inputBox = new InputBox ( 'Add folder' );
+  let self = this;
+  let inputBox = new InputBox ( 'Add folder' );
   inputBox.setText ( '','folder_projects_new' );
-  var ibx_grid = inputBox.grid;
+  let ibx_grid = inputBox.grid;
   ibx_grid.setLabel    ( '<h2>Add new folder</h2>',0,2,2,3 );
   ibx_grid.setLabel    ( 'Name:',2,3,1,1 );
-  var name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
+  let name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
         .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., XX-Series','' )
         .setFontItalic ( true )
         .setWidth      ( '400px' );
@@ -392,7 +391,7 @@ var inputBox = new InputBox ( 'Add folder' );
   ibx_grid.setVerticalAlignment ( 2,3,'middle' );
   inputBox.addWidget   ( ibx_grid );
   inputBox.launch ( 'Add',function(){
-    var folderName = name_inp.getValue();
+    let folderName = name_inp.getValue();
     if (folderName.length<=0)  {
       new MessageBox ( 'No folder name',
                '<h2>Folder name not given</h2>New folder name must be specified.',
@@ -404,8 +403,8 @@ var inputBox = new InputBox ( 'Add folder' );
             'msg_stop' );
       return false;
     }
-    var selNode = self.ftree.getSelectedNode();
-    var pFolder = self.findFolder ( selNode.dataId );
+    let selNode = self.ftree.getSelectedNode();
+    let pFolder = self.findFolder ( selNode.dataId );
     if (!pFolder)  {
       new MessageBox ( 'No current folder ',
                '<h2>Current folder not found</h2>' +
@@ -415,14 +414,14 @@ var inputBox = new InputBox ( 'Add folder' );
                'msg_error' );
       return false;
     }
-    var fpath = selNode.dataId + '/' + folderName;
+    let fpath = selNode.dataId + '/' + folderName;
     if (self.findFolder(fpath))  {
       new MessageBox ( 'Duplicate folder name',
             '<h2>Duplicate folder name</h2>Folder names must be unique within any folder.',
             'msg_stop' );
       return false;
     }
-    var newNode = self.ftree.addNode ( selNode,folderName + ' (0)',
+    let newNode = self.ftree.addNode ( selNode,folderName + ' (0)',
                                        image_path('folder_projects'),null );
     newNode.dataId = fpath;
     self.projectList.addFolderPath ( fpath,0,false );
@@ -433,14 +432,14 @@ var inputBox = new InputBox ( 'Add folder' );
 }
 
 FoldersBrowser.prototype.onAddList = function()  {
-var self = this;
-var inputBox = new InputBox ( 'Add list' );
+  let self = this;
+  let inputBox = new InputBox ( 'Add list' );
 
   inputBox.setText ( '','folder_list_custom_new' );
-  var ibx_grid = inputBox.grid;
+  let ibx_grid = inputBox.grid;
   ibx_grid.setLabel    ( '<h2>Add new list</h2>',0,2,2,3 );
   ibx_grid.setLabel    ( 'Name:',2,3,1,1 );
-  var name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
+  let name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
         .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., XX-Series','' )
         .setFontItalic ( true )
         .setWidth      ( '400px' );
@@ -448,7 +447,7 @@ var inputBox = new InputBox ( 'Add list' );
   ibx_grid.setVerticalAlignment ( 2,3,'middle' );
   inputBox.addWidget   ( ibx_grid );
   inputBox.launch ( 'Add',function(){
-    var folderName = name_inp.getValue();
+    let folderName = name_inp.getValue();
     if (folderName.length<=0)  {
       new MessageBox ( 'No list name',
                '<h2>List name not given</h2>New list name must be specified.',
@@ -460,7 +459,7 @@ var inputBox = new InputBox ( 'Add list' );
             'msg_stop' );
       return false;
     }
-    var fpath = folderName;
+    let fpath = folderName;
     if (self.findFolder(fpath))  {
       new MessageBox ( 'Duplicate list name',
             '<h2>Duplicate list name</h2>List names must be unique and different ' +
@@ -470,7 +469,7 @@ var inputBox = new InputBox ( 'Add list' );
     }
     self.projectList.addFolderPath ( fpath,0,true );
     self.folders = self.projectList.folders;
-    var folder   = self.findFolder ( fpath );
+    let folder   = self.findFolder ( fpath );
     if (folder)  {
       folder.type = folder_type.custom_list;
       self.projectList.setCurrentFolder ( folder );
@@ -487,8 +486,8 @@ var inputBox = new InputBox ( 'Add list' );
 }
 
 FoldersBrowser.prototype.onDeleteFolder = function()  {
-var selNode = this.ftree.getSelectedNode();
-var folder  = this.findFolder ( selNode.dataId );
+  let selNode = this.ftree.getSelectedNode();
+  let folder  = this.findFolder ( selNode.dataId );
 
   if (folder)  {
     if ((folder.type!=folder_type.custom_list) &&
@@ -499,11 +498,11 @@ var folder  = this.findFolder ( selNode.dataId );
             'before deleting it.','msg_stop' );
     } else  {
 
-      var self  = this;
-      var label = 'Folder';
+      let self  = this;
+      let label = 'Folder';
       if (folder.type==folder_type.custom_list)
         label = 'List';
-      var label_l = folder.name.toLowerCase();
+      let label_l = folder.name.toLowerCase();
 
       new QuestionBox ( 'Delete ' + label_l,
                         '<h2>' + label + ' ' + folder.name + ' will be deleted</h2>' +
@@ -511,10 +510,10 @@ var folder  = this.findFolder ( selNode.dataId );
           { name    : 'Yes, delete',
             onclick : function(){
                         self.deleteFolder ( selNode.dataId );
-                        var fpath = self.folders[0].path;
+                        let fpath = self.folders[0].path;
                         if (selNode.parentId)  {
                           self.ftree.deleteNode ( selNode );
-                          var node = self.ftree.getSelectedNode();
+                          let node = self.ftree.getSelectedNode();
                           if (node)
                             fpath = node.dataId;
                         } else  {
@@ -540,14 +539,14 @@ var folder  = this.findFolder ( selNode.dataId );
 }
 
 FoldersBrowser.prototype.onMoveTo = function()  {
-var selNode = this.ftree.getSelectedNode();
-var folder  = this.findFolder ( selNode.dataId );
-var fldPath = folderPathTitle ( folder,__login_id,0 );
-var label   = 'Folder';
+  let selNode = this.ftree.getSelectedNode();
+  let folder  = this.findFolder ( selNode.dataId );
+  let fldPath = folderPathTitle ( folder,__login_id,0 );
+  let label   = 'Folder';
 
   if (folder.type==folder_type.custom_list)
     label = 'List';
-  var label_l = label.toLowerCase();
+  let label_l = label.toLowerCase();
 
   // sanity check
   if ((!selNode.dataId.startsWith(__login_id+'\'s ')) &&
@@ -571,12 +570,12 @@ var label   = 'Folder';
       self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
     });
   } else  {
-    var self     = this;
-    var title    = 'Move project to ' + label_l;
-    var message  = '<h2>Move project to ' + label + '</h2>' + 'Project <i><b>"' +
+    let self     = this;
+    let title    = 'Move project to ' + label_l;
+    let message  = '<h2>Move project to ' + label + '</h2>' + 'Project <i><b>"' +
                    this.currentPDesc.name + '"</b></i> will be moved to ' +
                    label_l + ' <i><b>"' + fldPath + '"</b></i>';
-    var btn_name = 'Please move';
+    let btn_name = 'Please move';
     if (folder.type==folder_type.custom_list)  {
       title    = 'Add project to ' + label_l;
       message  = '<h2>Add project to ' + label + '</h2>' + 'Project <i><b>"' +
@@ -602,29 +601,29 @@ var label   = 'Folder';
 }
 
 FoldersBrowser.prototype.onRenameFolder = function()  {
-var selNode = this.ftree.getSelectedNode();
-var label   = 'Folder';
+  let selNode = this.ftree.getSelectedNode();
+  let label   = 'Folder';
 
   if (selNode.dataId.startsWith(folder_type.custom_list))
     label = 'List';
-  var label_l = name.toLowerCase();
+  let label_l = name.toLowerCase();
 
-  var inputBox  = new InputBox ( 'Rename ' + label_l );
+  let inputBox  = new InputBox ( 'Rename ' + label_l );
   inputBox.setText ( '','renameprj' );
-  var ibx_grid = inputBox.grid;
+  let ibx_grid = inputBox.grid;
   ibx_grid.setLabel    ( '<h2>Rename ' + label_l + ' "' + selNode.dataId.split('/').pop() +
                          '"</h2>',0,2,2,3 ).setWidth ( '400px' );
   ibx_grid.setLabel    ( 'New name:',2,3,1,1 ).setNoWrap();
-  var name_inp = ibx_grid.setInputText ( '',2,4,1,1 )
+  let name_inp = ibx_grid.setInputText ( '',2,4,1,1 )
         .setStyle      ( 'text','','','' )
         .setFontItalic ( true   )
         .setWidth      ( '300px' );
   ibx_grid.setVerticalAlignment ( 2,3,'middle' );
   inputBox.addWidget   ( ibx_grid );
 
-  var self = this;
+  let self = this;
   inputBox.launch ( 'Rename',function(){
-    var newName = name_inp.getValue();
+    let newName = name_inp.getValue();
     if (newName.length<=0)  {
       new MessageBox ( 'No ' + label_l + ' name',
                '<h2>' + label + ' name not given</h2>New ' + label_l +
@@ -638,13 +637,13 @@ var label   = 'Folder';
             'msg_stop' );
       return false;
     }
-    var oldPath       = selNode.dataId;
-    var fpl           = oldPath.split('/');
+    let oldPath       = selNode.dataId;
+    let fpl           = oldPath.split('/');
     fpl[fpl.length-1] = newName;
-    var folder        = self.findFolder ( selNode.dataId );
-    var oldName       = folder.name;
+    let folder        = self.findFolder ( selNode.dataId );
+    let oldName       = folder.name;
     folder.name       = newName;
-    var newPath       = fpl.join('/');
+    let newPath       = fpl.join('/');
     self.projectList.renameFolders ( selNode.dataId,newPath );
     self.onReturn_fnc  ( 'rename',{
         folder_path : oldPath,
@@ -661,8 +660,8 @@ var label   = 'Folder';
 
 
 // FoldersBrowser.prototype.onResize = function ( width,height )  {
-//   var h = (height - 108) + 'px';
-//   var w = (width  - 110) + 'px';
+//   let h = (height - 108) + 'px';
+//   let w = (width  - 110) + 'px';
 //   this.tree_div.element.style.height = h;
 //   this.tree_div.element.style.width  = w;
 // }

@@ -11,7 +11,6 @@ const log = require('./log.js');
 const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
 const CATALOG_DIR = config.get('storage.catalog_dir');
-const CATALOGS_WITH_DATA = config.get('storage.catalogs_with_data')
 
 const status = {
   completed: 'completed',
@@ -27,6 +26,7 @@ class tools {
   }
 
   static successMsg(msg, code = 200) {
+    log.info(msg);
     return { success: true, code: code, msg: msg };
   }
 
@@ -71,30 +71,12 @@ class tools {
     return true;
   }
 
-  static getDataDest(user, source = '', id = '') {
-    return path.join(this.getDataDir(), user, source, id);
-  }
-
   static getCatalogDir() {
     return CATALOG_DIR;
   }
 
   static getUserPath(user) {
     return path.join(USER_DIR, user + '.user');
-  }
-
-  static getUserDataDir(user) {
-    return path.join(DATA_DIR, user);
-  }
-
-  static getUserCatalogFile(user) {
-    let dir;
-    if (CATALOGS_WITH_DATA) {
-      dir = path.join(this.getUserDataDir(user), 'catalog.json');
-    } else {
-      dir = path.join(tools.getCatalogDir(), 'users', user + '.json');
-    }
-    return dir;
   }
 
   static getUserCloudRunId(user) {
@@ -242,6 +224,12 @@ class tools {
           const file = fs.createWriteStream(dest, { 'flags': flags });
 
           res.on('data', (data) => {
+            // workaround for node v16 lacking AbortController support for http(s) requests
+            // if the AbortController was aborted, destroy the request and trigger an error
+            if (options.signal && options.signal.aborted) {
+              req.destroy(new Error('AbortError: The operation was aborted (compat)'));
+            }
+
             file.write(data);
             if (writeCallback) {
               writeCallback(data);
@@ -394,8 +382,13 @@ class tools {
   }
 
   static sanitizeFilename(file) {
-    file = path.basename(file);
-    return file.replace(/[^\w\-_=\+\.()]/g,'');
+    // resolve any ../ ./ in path
+    file = path.normalize(file);
+    let p = path.parse(file);
+    // get the path relative to root (this will ensure any root prefix is removed)
+    file = path.relative(p.root, file);
+    // limit allowed characters for file
+    return file.replace(/[^\w\-_=\+\.,()'!~@\/\\ \[\]]/g,'');
   }
 }
 

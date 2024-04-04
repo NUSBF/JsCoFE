@@ -11,7 +11,8 @@ const log = require('../log.js');
 
 const URL_CAT = 'https://data.sbgrid.org/data/';
 // primary server = data.sbgrid.org::10.15785/SBGRID/
-const URL_RSYNC = 'sbgrid.icm.uu.se::10.15785/SBGRID/';
+// mirror server = sbgrid.icm.uu.se::10.15785/SBGRID/
+const URL_RSYNC = 'data.sbgrid.org::10.15785/SBGRID/';
 
 const RE_PDB = /structureId=([^\"]+)/;
 const RE_PROJ = /dataset\/([^\"\/]+)/;
@@ -19,8 +20,8 @@ const RE_PROJ = /dataset\/([^\"\/]+)/;
 class sbgrid extends dataSource {
 
   description = 'The SBGrid Data Bank';
-  url = 'https://data.sbgrid.org'
-  type = 'rsync'
+  url = 'https://data.sbgrid.org';
+  type = 'rsync';
 
   async fetchCatalog() {
     let catalog = {};
@@ -59,6 +60,9 @@ class sbgrid extends dataSource {
           if (found) {
             proj = found[1].toLowerCase();
             doi = links[j].children[0].data;
+            if (doi) {
+              doi = doi.toLowerCase();
+            }
           }
 
           // extract the PDB id
@@ -91,11 +95,11 @@ class sbgrid extends dataSource {
       page ++;
     }
     await this.fetchCatalogRsync(URL_RSYNC, catalog)
-    this.saveCatalog(catalog);
+    return catalog;
   }
 
-  fetchData(user, id, catalog) {
-    this.fetchDataRsync(URL_RSYNC, user, id, catalog);
+  fetchData(entry) {
+    this.fetchDataRsync(URL_RSYNC, entry);
   }
 
 }

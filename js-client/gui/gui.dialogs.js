@@ -378,7 +378,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
     if (dlg.navigation)  {
 
-        dlg.options.buttons[0].click = function() {
+        dlg.options.buttons[0].click = function() {  //  "Back" in history
         // var history = dlg.display.getDocument().history;
         // alert ( ' >>> ' + history.length );
         // if (history.length>0)
@@ -402,7 +402,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
         }
       };
 
-      dlg.options.buttons[1].click = function() {
+      dlg.options.buttons[1].click = function() {  //  "Forward" in history
         if (dlg.history_position<dlg.history_length)  {
           dlg.history_position++;
           dlg.history_control = 1;
@@ -420,13 +420,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
         }
       };
 
-      dlg.options.buttons[2].click = function() {
+      dlg.options.buttons[2].click = function() {  //  "Return" in history
         dlg.history_length   = -1;
         dlg.history_position = -1;
         dlg.display.loadPage ( helpURL );
       };
 
-      dlg.options.buttons[3].click = function() {
+      dlg.options.buttons[3].click = function() {  //  "Detach"
         let url = helpURL;
         try {
           url = dlg.display.getDocument().location.href;

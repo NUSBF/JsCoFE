@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    09.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,17 +26,12 @@
 
 #  python native imports
 import os
-import json
-
-import gemmi
 
 #  application imports
 from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_template, dtype_revision
 from  pycofe.dtypes import dtype_xyz, dtype_model, dtype_ensemble
-# from  pycofe.dtypes import dtype_structure,dtype_revision
-from  pycofe.dtypes import dtype_sequence, dtype_ligand, dtype_library
-# from  pycofe.proc   import import_sequence,import_filetype
+from  pycofe.dtypes import dtype_sequence, dtype_ligand
 from  pycofe.proc   import import_seqcp
 
 
@@ -87,7 +82,7 @@ class TextEditor(basic.TaskDriver):
             self.putTitle   ( "Edited coordinates" )
             oxyz = self.registerXYZ ( None,ufname,checkout=True )
             if oxyz:
-                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
                     "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     oxyz.dname )
@@ -108,7 +103,7 @@ class TextEditor(basic.TaskDriver):
                 seq = self.makeClass ( object.sequence )
             oxyz = self.registerModel ( seq,ufname,checkout=True )
             if oxyz:
-                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates:&nbsp;",oxyz )
                 summary_line = "MR model coordinates edited"
                 have_results = True
             else:

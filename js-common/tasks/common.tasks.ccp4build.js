@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -429,8 +429,8 @@ TaskCCP4Build.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function CCP4BuildHotButton()  {
   return {
-    'task'    : 'TaskCCP4Build',
-    'tooltip' : 'Automated model building with CCP4Build'
+    'task_name' : 'TaskCCP4Build',
+    'tooltip'   : 'Automated model building with CCP4Build'
   };
 }
 

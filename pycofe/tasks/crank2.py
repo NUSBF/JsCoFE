@@ -714,9 +714,11 @@ class Crank2(basic.TaskDriver):
             self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         self.stdoutln ( " >>>>>  path=" + self.subout_fpath )
-        with open(self.subout_fpath,"r") as ff:
-            self.stdoutln ( "\n\n" + ff.read() + "\n\n" )
-
+        try:
+            with open(self.subout_fpath,"r") as ff:
+                self.stdoutln ( "\n\n" + ff.read() + "\n\n" )
+        except:
+            self.stdoutln ( " >>>>>  -- does not exist" )
 
         """
         cad hklin1 x.mtz hklin2 x.mtz  hklout y.mtz <<eof

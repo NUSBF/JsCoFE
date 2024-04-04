@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    16.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -41,6 +41,7 @@ function TaskXia2()  {
   this.nc_type = 'client-storage';  // job may be run only on either client NC or
                                     // ordinary NC if cloud storage is there
 
+  this.maxNDirs     = 10;       // maximum number of image directories
   this.imageDirMeta = [];       // paths, ranges and sectors
   this.hdf5_range   = '';       // for processing HDF5 files in blocks
   this.datatype     = 'images'; //  images/hdf5
@@ -251,7 +252,7 @@ TaskXia2.prototype.clipboard_name      = function() { return '"Xia-2"';   }
 TaskXia2.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskXia2.prototype.currentVersion      = function() {
-  var version = 2;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -270,13 +271,13 @@ if (!__template)  {
   // for client side
 
   TaskXia2.prototype.desc_title = function()  {
-    // this appears under task title in the task list
-      return 'performs X-ray diffraction data processing';
-    };
+  // this appears under task title in the task list
+    return 'performs X-ray diffraction data processing';
+  };
 
 
   TaskXia2.prototype.disableDirectoryInput = function ( inputPanel,disable_bool ) {
-    for (var i=0;i<inputPanel.dir_input.length;i++)
+    for (let i=0;i<inputPanel.dir_input.length;i++)
       inputPanel.dir_input[i].browse_btn.setDisabled ( disable_bool );
     if (inputPanel.source_select_ddn)
       inputPanel.source_select_ddn.setDisabled ( disable_bool );
@@ -285,18 +286,18 @@ if (!__template)  {
   }
 
   TaskXia2.prototype.collectRangesInput = function ( inputPanel ) {
-    for (var i=0;i<inputPanel.dir_input.length;i++)
+    for (let i=0;i<inputPanel.dir_input.length;i++)
       if (inputPanel.dir_input[i].dir_path.getValue()!='')  {
-        var sectors_inp = inputPanel.dir_input[i].sectors_inp;
-        var sectors     = inputPanel.imageDirMeta[i].sectors;
-        for (var j=0;j<sectors_inp.length;j++)
+        let sectors_inp = inputPanel.dir_input[i].sectors_inp;
+        let sectors     = inputPanel.imageDirMeta[i].sectors;
+        for (let j=0;j<sectors_inp.length;j++)
           sectors[j].ranges_inp = sectors_inp[j].getValue();
       }
   }
 
   TaskXia2.prototype.layDirLine = function ( inputPanel,dirNo,row )  {
-    var dir_input = {};
-    var dirpath   = '';
+  let dir_input = {};
+  let dirpath   = '';
 
     if (dirNo<inputPanel.imageDirMeta.length)
       dirpath = inputPanel.imageDirMeta[dirNo].path;
@@ -305,7 +306,7 @@ if (!__template)  {
       this.hdf5_range = '';
 
     if (inputPanel.datatype=='images')  {
-      var dlabel = 'directory';
+      let dlabel = 'directory';
       if (dirNo>0)
         dlabel = 'directory #' + (dirNo+1);
       dir_input.label = inputPanel.grid1.setLabel (
@@ -318,7 +319,7 @@ if (!__template)  {
                 .setTooltip('Path to master file of HDF5 set of diffraction images')
                 .setFontItalic(true).setFontBold(true).setNoWrap();
       if (dirpath)  {
-        inputPanel.grid1.setLabel (
+        dir_input.label = inputPanel.grid1.setLabel (
             'Image range and block size:',row+1,0,1,2 )
                   .setTooltip('Optional specification of image range and block size')
                   .setFontItalic(true).setFontBold(true).setNoWrap();
@@ -349,16 +350,16 @@ if (!__template)  {
 
     dir_input.sectors_inp = [];
     if (dirNo<inputPanel.imageDirMeta.length)  {
-      var sectors = inputPanel.imageDirMeta[dirNo].sectors;
+      let sectors = inputPanel.imageDirMeta[dirNo].sectors;
       if (sectors.length>0)  {
         dir_input.sectors_grid = inputPanel.grid1.setGrid ( '',row+1,2,1,1 );
-        for (var i=0;i<sectors.length;i++)  {
+        for (let i=0;i<sectors.length;i++)  {
           dir_input.sectors_grid.setLabel ( sectors[i].template,i,0,1,1 )
                                 .setFontItalic(true)
                                 .setTooltip ( 'Image files template' )
                                 .setNoWrap();
-          var ranges = '';
-          for (var j=0;j<sectors[i].ranges.length;j++)  {
+          let ranges = '';
+          for (let j=0;j<sectors[i].ranges.length;j++)  {
             if (ranges!='')  ranges += ',';
             ranges += sectors[i].ranges[j][0] + '-' + sectors[i].ranges[j][1];
           }
@@ -392,7 +393,7 @@ if (!__template)  {
     inputPanel.grid1.setCellSize ( '95%' ,'', row,2 );
     //inputPanel.grid1.setCellSize ( 'auto','', row,3 );
 
-    var ndirs = inputPanel.imageDirMeta.length;
+    let ndirs = inputPanel.imageDirMeta.length;
     if ((ndirs<=1) || ((dirNo==ndirs) && (dirpath=='')))
       dir_input.remove_btn.setVisible ( false );
 
@@ -403,9 +404,9 @@ if (!__template)  {
 
   TaskXia2.prototype.layDirectoryInput = function ( inputPanel )  {
 
-    var row   = inputPanel.drow;
-    var row0  = row + inputPanel.dir_input.length;
-    var ndirs = inputPanel.imageDirMeta.length;
+    let row   = inputPanel.drow;
+    // let row0  = row + inputPanel.dir_input.length;
+    let ndirs = inputPanel.imageDirMeta.length;
     if ((ndirs>0) && (inputPanel.datatype=='images'))  {
       if (inputPanel.imageDirMeta[ndirs-1].path!='')
         ndirs++;
@@ -413,18 +414,20 @@ if (!__template)  {
       ndirs = 1;
     }
 
+    ndirs = Math.min(ndirs,this.maxNDirs);
+
     inputPanel.grid1.truncateRows ( row );
 
     inputPanel.dir_input = [];
-    var task = this;
+    let task = this;
 
-    for (var i=0;i<ndirs;i++)  {
+    for (let i=0;i<ndirs;i++)  {
 
       inputPanel.dir_input.push ( this.layDirLine(inputPanel,i,row) );
 
       (function(dirNo){
 
-        var dinput = inputPanel.dir_input[dirNo];
+        let dinput = inputPanel.dir_input[dirNo];
 
         dinput.remove_btn.addOnClickListener ( function(){
           task.collectRangesInput ( inputPanel );
@@ -448,15 +451,46 @@ if (!__template)  {
                   if (!response)
                     return false;  // issue standard AJAX failure message
                   if (response.status==nc_retcode.ok)  {
-                    if (response.data.path!='')  {
-                      //alert ( JSON.stringify(response.data) );
-                      task.collectRangesInput ( inputPanel );
-                      if (dirNo<inputPanel.imageDirMeta.length)
-                            inputPanel.imageDirMeta[dirNo] = response.data;
-                      else  inputPanel.imageDirMeta.push ( response.data );
-                      window.setTimeout ( function(){
-                        task.layDirectoryInput ( inputPanel );
-                      },0);
+                    let rData = response.data;
+                    if (rData.path!='')  {
+                      // alert ( JSON.stringify(response.data) );
+                      function _accept_dir()  {  
+                        task.collectRangesInput ( inputPanel );
+                        if (dirNo<inputPanel.imageDirMeta.length)
+                              inputPanel.imageDirMeta[dirNo] = rData;
+                        else  inputPanel.imageDirMeta.push ( rData );
+                        window.setTimeout ( function(){
+                          task.layDirectoryInput ( inputPanel );
+                        },0);
+                      }
+                      // check and confirm that selection does not contain HDF5 files
+                      let hdf5 = false;
+                      for (let i=0;(i<rData.sectors.length) && (!hdf5);i++)
+                        hdf5 = rData.sectors[i].name.toLowerCase().endsWith('.h5');
+                      if (hdf5)  {
+                        new QuestionBox ( 'HDF5 datasets or Image files',
+                          '<div style="width:500px"><h2>HDF5 datasets or Image files</h2>' + 
+                          'Selected directory contains files with .h5 extension, which ' +
+                          'is indicative of HDF5 container format.<p>'    +
+                          'If you are certain that these .h5 files are actually X-ray ' +
+                          'image files, choose <i>"proceed"</i> below.<p>' +
+                          'If you are unsure or selected this directory by mistake, ' +
+                          'choose <i>"double-check"</i>. To import HDF5 container files, ' +
+                          'switch data type selector from "X-ray images to "HDF5 datasets" ' +
+                          'and select <i>master</i> file (typically named ' +
+                          '<i>"*_master.h5"</i>).' +
+                          '<p>Please confirm.</div>',[
+                            { name    : 'My .h5 files are image files, proceed',
+                              onclick : function(){
+                                          _accept_dir();
+                                        }
+                            },{
+                              name    : 'I want to double-check',
+                              onclick : null
+                            }
+                          ],'msg_confirm' );
+                      } else
+                        _accept_dir();
                     }
                   } else  {
                     new MessageBox ( 'Select Directory Error',
@@ -476,14 +510,48 @@ if (!__template)  {
                   if (!response)
                     return false;  // issue standard AJAX failure message
                   if (response.status==nc_retcode.ok)  {
-                    if (response.data.file!='')  {
-                      inputPanel.imageDirMeta = [{
-                        'path'    : response.data.file,
-                        'sectors' : []
-                      }]
-                      window.setTimeout ( function(){
-                        task.layDirectoryInput ( inputPanel );
-                      },0);
+                    let rData = response.data;
+                    if (rData.file!='')  {
+                      function _accept_file()  {
+                        inputPanel.imageDirMeta = [{
+                          'path'    : rData.file,
+                          'sectors' : []
+                        }]
+                        window.setTimeout ( function(){
+                          task.layDirectoryInput ( inputPanel );
+                        },0);
+                      }
+                      // "validate" file
+                      let message = '';
+                      if (!rData.file.toLowerCase().endsWith('.h5'))
+                        message += '<li><b>file extension is not .h5</b></li>';
+                      let fnlist = rData.file.split(/[/\\]/);
+                      if (fnlist[fnlist.length-1].toLowerCase().indexOf('master')<0)
+                        message += '<li><b>file is not named as <i>master</i></li>';
+                      if (message)  {
+                        new QuestionBox ( 'HDF5 master file',
+                          '<div style="width:500px"><h2>HDF5 master file</h2>' + 
+                          'Selected file name does not follow common pattern for HDF5 ' +
+                          'master file in that<ul>' + message + '</li></ul>' +
+                          'Typically, HDF5 master files have .h5 extension and have '  +
+                          'word <i>"master"</i> in the name, for example, ' +
+                          '<i>*_master.h5</i>.<p>' +
+                          'If you are certain that you selected the right file, '   +
+                          'choose <i>"proceed"</i> below.<p>' +
+                          'If you are unsure or selected this file by mistake, ' +
+                          'choose <i>"double-check"</i>.' +
+                          '<p>Please confirm.</div>',[
+                            { name    : 'Yes I selected .h5 master file, proceed',
+                              onclick : function(){
+                                          _accept_dir();
+                                        }
+                            },{
+                              name    : 'I want to double-check',
+                              onclick : null
+                            }
+                          ],'msg_confirm' );
+                      } else
+                        _accept_file();
                     }
                   } else  {
                     new MessageBox ( 'Select File Error',
@@ -521,7 +589,7 @@ if (!__template)  {
               function(file_items){
                 //alert ( JSON.stringify(file_items) );
                 if (file_items.length>0)  {
-                  var cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + file_items[0].name;
+                  let cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + file_items[0].name;
                   inputPanel.imageDirMeta = [{
                     'path'    : cfpath,
                     'sectors' : []
@@ -553,7 +621,7 @@ if (!__template)  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
 
-    var div = this.makeInputLayout();
+    let div = this.makeInputLayout();
     div.grid.setWidth ( '100%' );
     div.task = this;
 
@@ -586,7 +654,7 @@ if (!__template)  {
     div.grid1 = div.grid.setGrid ( '',1,0,1,4 );
     div.grid.setLabel ( '&nbsp;',2,0,1,4 );
 
-    var row = 0;
+    let row = 0;
     div.grid2 = div.grid1.setGrid ( '-compact',row,0,1,4 );
 
     div.grid2.setLabel ( 'Look for&nbsp;&nbsp;',0,0,1,1 )
@@ -612,7 +680,7 @@ if (!__template)  {
 
     if (__local_service && __cloud_storage)  {
 
-      var tooltip = 'Choose "local" if diffraction images are found in ' +
+      let tooltip = 'Choose "local" if diffraction images are found in ' +
                     'your computer, and choose "cloud" if images are ' +
                     'stored in cloud.';
 
@@ -642,7 +710,7 @@ if (!__template)  {
       if (__local_service)  div.file_system = 'local';
                       else  div.file_system = 'cloud';
       this.file_system = div.file_system;
-      var tooltip = '';
+      let tooltip = '';
       if (this.file_system=='local')  {
         this.nc_type = 'client';
         tooltip = 'Only images in local file system are available.';
@@ -656,7 +724,7 @@ if (!__template)  {
       div.grid2.setLabel ( 'in&nbsp;&nbsp;',0,2,1,1 )
                .setTooltip ( tooltip )
                .setFontItalic(true).setFontBold(true).setNoWrap();
-      var source_select_ddn = new Dropdown();
+      let source_select_ddn = new Dropdown();
       div.grid2.addWidget ( source_select_ddn,0,3,1,1 );
       if (div.file_system=='local')
             source_select_ddn.addItem ( 'local file system','','local',true );
@@ -683,10 +751,12 @@ if (!__template)  {
     div.dir_input = [];
     this.layDirectoryInput ( div );
 
-    var defprj = this.project.replace(/[^a-zA-Z0-9]/g, '_');
-    if (('0'<=defprj[0]) && (defprj[0]<='9'))
-      defprj = 'P' + defprj;
-    this.parameters.sec1.contains.PROJECT.default = defprj;
+    if ('PROJECT' in this.parameters.sec1.contains)  {  // check works in TaskXDS
+      let defprj = this.project.replace(/[^a-zA-Z0-9]/g, '_');
+      if (('0'<=defprj[0]) && (defprj[0]<='9'))
+        defprj = 'P' + defprj;
+      this.parameters.sec1.contains.PROJECT.default = defprj;
+    }
 
     this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 
@@ -699,7 +769,7 @@ if (!__template)  {
   TaskXia2.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
-    var msg = '';  // Ok if stays empty
+    let msg = '';  // Ok if stays empty
 
     if (__local_service || __cloud_storage)  {
 
@@ -711,27 +781,27 @@ if (!__template)  {
       this.collectRangesInput ( inputPanel );
       this.imageDirMeta = [];
 
+      let empty = true;
       if (this.datatype=='images')  {
 
-        var empty = true;
-        for (var i=0;i<inputPanel.dir_input.length;i++)
+        for (let i=0;i<inputPanel.dir_input.length;i++)
           if (inputPanel.dir_input[i].dir_path.getValue()!='')  {
-            var sectors = inputPanel.imageDirMeta[i].sectors;
-            for (var j=0;j<sectors.length;j++)  {
-              var ranges = sectors[j].ranges;
+            let sectors = inputPanel.imageDirMeta[i].sectors;
+            for (let j=0;j<sectors.length;j++)  {
+              let ranges = sectors[j].ranges;
               sectors[j].ranges_sel = [];
               if (sectors[j].ranges_inp!='')  {
-                var lst = sectors[j].ranges_inp.split(',');
-                for (var k=0;k<lst.length;k++)  {
-                  var plst = lst[k].split('-');
-                  var err  = (plst.length!=2);
+                let lst = sectors[j].ranges_inp.split(',');
+                for (let k=0;k<lst.length;k++)  {
+                  let plst = lst[k].split('-');
+                  let err  = (plst.length!=2);
                   if (!err)  {
                     err = isNaN(plst[0]) || isNaN(plst[1]);
                     if (!err)  {
-                      var n1 = parseInt ( plst[0] );
-                      var n2 = parseInt ( plst[1] );
-                      var rc = 0;
-                      for (var l=0;(l<ranges.length) && (!rc);l++)
+                      let n1 = parseInt ( plst[0] );
+                      let n2 = parseInt ( plst[1] );
+                      let rc = 0;
+                      for (let l=0;(l<ranges.length) && (!rc);l++)
                         if ((ranges[l][0]<=n1) && (n1<=ranges[l][1]))  {
                           if ((ranges[l][0]<=n2) && (n2<=ranges[l][1]))  rc =  1;
                                                                    else  rc = -1;
@@ -759,11 +829,12 @@ if (!__template)  {
         this.imageDirMeta = [ inputPanel.imageDirMeta[0] ];
         this.hdf5_range   = inputPanel.dir_input[0].hdf5_range.getValue();
         if (this.hdf5_range)  {
-          var lst = this.hdf5_range.split(':');
+          let lst = this.hdf5_range.split(':');
           if ((lst.length!=3) ||
               (!isInteger(lst[0])) || (!isInteger(lst[1])) || (!isInteger(lst[2])))
             msg += '|<b><i>Image range and block size specification misformatted</i></b>';
         }
+        empty = false;
       }
 
       if (this.imageDirMeta.length<=0)
@@ -775,23 +846,25 @@ if (!__template)  {
 
     msg += TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    var pname = this.parameters.sec1.contains.PROJECT.value;
-    if (pname && (!(/^[A-Za-z]([A-Za-z0-9\\-\\._-]{0,})$/.test(pname))))
-//        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
-//        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
-      msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
-             'underscores,<br>dashes and dots, and must start with a letter</i></b>';
+    if (this.parameters.sec1.contains.PROJECT)  { // if works in TaskXDS
+      let pname = this.parameters.sec1.contains.PROJECT.value;
+      if (pname && (!(/^[A-Za-z]([A-Za-z0-9\\-\\._-]{0,})$/.test(pname))))
+  //        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
+  //        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
+        msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
+              'underscores,<br>dashes and dots, and must start with a letter</i></b>';
 
+      if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
+        // check XDS availability
+        let env = __environ_server;
+        if (this.file_system=='local')
+          env = __environ_client;
+  //      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
+        if (!this.compareEnvironment(['CCP4','XDS_home'],env))
+          msg += '|<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
+                'however, it was not found installed</i></b>';
+      }
 
-    if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
-      // check XDS availability
-      var env = __environ_server;
-      if (this.file_system=='local')
-        env = __environ_client;
-//      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
-      if (!this.compareEnvironment(['CCP4','XDS_home'],env))
-        msg += '|<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
-               'however, it was not found installed</i></b>';
     }
 
     return  msg;
@@ -803,7 +876,7 @@ if (!__template)  {
   TaskXia2.prototype.customDataClone = function ( cloneMode,task )  {
     this.currentCloudPath = task.currentCloudPath;
     this.imageDirMeta     = [];       // paths, ranges and sectors
-    for (var i=0;i<task.imageDirMeta.length;i++)
+    for (let i=0;i<task.imageDirMeta.length;i++)
       this.imageDirMeta.push ( $.extend(true,{},task.imageDirMeta[i]) );
     this.file_system  = task.file_system;  //  local/cloud
     this.datatype     = task.datatype;     //  local/cloud
@@ -818,12 +891,12 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var path  = require('path');
+  let path  = require('path');
 
-  var conf  = require('../../js-server/server.configuration');
-  var fcl   = require('../../js-server/server.fe.facilities');
-  var prj   = require('../../js-server/server.fe.projects');
-  var utils = require('../../js-server/server.utils');
+  let conf  = require('../../js-server/server.configuration');
+  let fcl   = require('../../js-server/server.fe.facilities');
+  let prj   = require('../../js-server/server.fe.projects');
+  let utils = require('../../js-server/server.utils');
 
   TaskXia2.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,
@@ -836,7 +909,7 @@ if (!__template)  {
 
   TaskXia2.prototype.makeInputData = function ( loginData,jobDir )  {
 
-    var imageDirMeta = [];
+    let imageDirMeta = [];
     if (this.file_system=='local')  {
 
       imageDirMeta = this.imageDirMeta;
@@ -844,14 +917,14 @@ if (!__template)  {
 
     } else  {
 
-      var cloudMounts = fcl.getUserCloudMounts ( loginData );
-      for (var i=0;i<this.imageDirMeta.length;i++)  {
+      let cloudMounts = fcl.getUserCloudMounts ( loginData );
+      for (let i=0;i<this.imageDirMeta.length;i++)  {
         imageDirMeta.push ( this.imageDirMeta[i] );
-        var lst = imageDirMeta[i].path.split('/');
+        let lst = imageDirMeta[i].path.split('/');
         if (lst.length>2)  {
           if (lst[0]=='cloudstorage::')  {
-            var cm = null;
-            for (var j=0;(j<cloudMounts.length) && (!cm);j++)
+            let cm = null;
+            for (let j=0;(j<cloudMounts.length) && (!cm);j++)
               if (cloudMounts[j][0]==lst[1])
                 cm = cloudMounts[j];
             if (cm)

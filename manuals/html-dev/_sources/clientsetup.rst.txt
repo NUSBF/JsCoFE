@@ -2,14 +2,11 @@
 CCP4 Cloud Client Setup
 =======================
 
-----------
-
-
 .. Note::
    This article applies only to CCP4 Setups series 7.0; in later series,
    Client setup is automatic and does not require any manual intervention.
 
-
+----------
 MS Windows
 ----------
 
