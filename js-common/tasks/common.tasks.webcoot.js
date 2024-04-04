@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.01.24   <--  Date of Last Modification.
+ *    02.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Web-Coot Model Building Task Class (for local server)
+ *  **** Content :  Web-Coot Model Building Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2023-2024
@@ -41,16 +41,19 @@ function TaskWebCoot()  {
   this.fasttrack = true;  // forces immediate execution
 
   this.input_dtypes = [{        // input data types
-      data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',         // label for input dialog
+      data_type   : {'DataRevision' :['!phases']}, // data type(s) and subtype(s)
+      label       : 'Structure revision', // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'coot-mb',  // lay custom fields below the dropdown
-      version     : 4,          // minimum data version allowed
+      version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':[],'DataEnsemble':[],
-                     'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
+      data_type   : {'DataStructure':[],
+                     'DataEnsemble' :[],
+                     'DataModel'    :[],
+                     'DataXYZ'      :[]
+                    },  // data type(s) and subtype(s)
       label       : 'Additional structures', // label for input dialog
       inputId     : 'aux_struct', // input Id for referencing input fields
       version     : 0,            // minimum data version allowed
@@ -176,8 +179,12 @@ if (!__template)  {
     wab.launch();
     // setCommunicationFrameData ( wab.fid,'was_output',false );
 
-    let istruct    = this.input_data.data['revision'][0].Structure;
-    let isubstruct = this.input_data.data['revision'][0].Substructure;
+    let istruct    = this.input_data.data['revision'][0];
+    let isubstruct = null;
+    if (istruct._type=='DataRevision')  {
+      istruct    = this.input_data.data['revision'][0].Structure;
+      isubstruct = this.input_data.data['revision'][0].Substructure;
+    }
 
     let viewSettings = null;
 
@@ -384,10 +391,11 @@ if (!__template)  {
     // put structure data in input databox for copying their files in
     // job's 'input' directory
 
-    let istruct  = null;
+    let revision = null;
+    let istruct  = this.input_data.data['revision'][0];
     let istruct2 = null;
-    if ('revision' in this.input_data.data)  {
-      let revision = this.input_data.data['revision'][0];
+    if (istruct._type=='DataRevision')  {
+      revision = this.input_data.data['revision'][0];
       if (revision.Options.leading_structure=='substructure')  {
         istruct  = revision.Substructure;
         istruct2 = revision.Structure;
@@ -395,10 +403,10 @@ if (!__template)  {
         istruct  = revision.Structure;
         istruct2 = revision.Substructure;
       }
-      this.input_data.data['istruct'] = [istruct];
       if (istruct2 && ('load_all' in revision.Options) && revision.Options.load_all)
         this.input_data.data['istruct2'] = [istruct2];
     }
+    this.input_data.data['istruct'] = [istruct];
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
@@ -416,113 +424,6 @@ if (!__template)  {
     let backupsListFPath = path.join ( backupsDirPath,'backups.json' );
     if (!utils.fileExists(backupsListFPath))
       utils.writeString ( backupsListFPath,'[]' );
-
-    // let cfg = conf.getFEProxyConfig();
-    // if (!cfg)
-    //   cfg = conf.conf.getFEConfig();
-
-    // let html = utils.readString ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html') );
-
-    // html = html.replace ( '[[baseurl]]',cfg.externalURL + '/js-lib/webCoot/webcoot.html' );
-
-    // inputFiles = [];
-    // if (istruct)  {
-    //   inputFiles.push ({
-    //     'type' : 'pdb',
-    //     'args' : [this.getURL('input/'),'molecule']
-    //   });
-    // }
-
-    // let inputFiles = [
-    //   '[',
-    //     '{type: "pdb", args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},',
-    //     '{type: "mtz", args: ["./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",',
-    //       '{F: "FWT", PHI: "PHWT", Fobs: "F", SigFobs: "SIGF", FreeR: "FREER", isDifference: false, useWeight: false, calcStructFact: true}',
-    //     ']},',
-    //     '{type: "mtz", args: ["./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",',
-    //       '{F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}',
-    //     ']}',
-    //   ']'
-    // ];
-
-    // let inputFiles = [];
-    // if (istruct)  {
-    //   if (dtemp.file_key.xyz in istruct.files)  {
-    //     let pdbURL = this.getURL ( 'input/' + istruct.files[dtemp.file_key.xyz] );
-    //     inputFiles.push ({
-    //       type : 'pdb',
-    //       args : [ pdbURL,'molecule' ]
-    //     });
-    //   }
-    //   if (dtemp.file_key.mtz in istruct.files)  {
-    //     let mtzURL = this.URL ( 'input/' + istruct.files[dtemp.file_key.mtz] );
-    //     if (istruct.FWT)
-    //       inputFiles.push ({
-    //         type : 'mtz',
-    //         args : [ mtzURL,'map',{
-    //                   F              : istruct.FWT,
-    //                   PHI            : istruct.PHWT,
-    //                   Fobs           : istruct.FP,
-    //                   SigFobs        : istruct.SigFP,
-    //                   FreeR          : istruct.FreeR_flag,
-    //                   isDifference   : false,
-    //                   useWeight      : false,
-    //                   calcStructFact : true
-    //                 }]
-    //       });
-    //   }
-    // }
-
-
-    // let inputFiles = [
-    //   { type: "pdb", 
-    //     args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule" ]
-    //   },
-    //   { type: "mtz", 
-    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",
-    //             { F              : "FWT",
-    //               PHI            : "PHWT",
-    //               Fobs           : "F",
-    //               SigFobs        : "SIGF",
-    //               FreeR          : "FREER",
-    //               isDifference   : false,
-    //               useWeight      : false,
-    //               calcStructFact : true
-    //             }
-    //           ]
-    //   },
-    //   { type: "mtz", 
-    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",
-    //             { F              : "DELFWT",
-    //               PHI            : "PHDELWT", 
-    //               isDifference   : true, 
-    //               useWeight      : false, 
-    //               calcStructFact : false
-    //             }
-    //           ]
-    //   }
-    // ];
-
-    // html = html.replace ( '[[inputFiles]]',JSON.stringify(inputFiles,null,2) );
-    // html = html.replace ( '[[inputFiles]]',inputFiles.join('\n') )
-
-    // utils.writeString ( path.join(jobDir,'webcoot.html'),html );
-
-    // utils.copyFile ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html'),
-    //                  path.join(jobDir,'webcoot.html') );
-
-
-    // inputFiles: [
-    //   {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
-    //   {type: 'mtz', args: [
-    //     "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map", 
-    //     {F: "FWT", PHI: "PHWT", Fobs: 'F', SigFobs: 'SIGF', FreeR: 'FREER', isDifference: false, useWeight: false, calcStructFact: true}
-    //   ]},
-    //   {type: 'mtz', args: [
-    //     "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", 'diff-map',
-    //     {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
-    //   ]}
-    // ]
 
   }
 

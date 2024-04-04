@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *
  *    function hashPassword     ( pwd )
@@ -54,6 +54,7 @@
 'use strict';
 
 //  load system modules
+const os      = require('os');
 const crypto  = require('crypto');
 const fs      = require('fs-extra');
 const path    = require('path');
@@ -99,8 +100,8 @@ function getWorkflowsFName ( loginData )  {
 }
 
 function _make_new_user ( userData,callback_func )  {  // gets UserData object
-let response  = null;  // must become a cmd.Response object to return
-let fe_server = conf.getFEConfig();
+  let response  = null;  // must become a cmd.Response object to return
+  let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
   let pwd = '';
@@ -176,9 +177,9 @@ let fe_server = conf.getFEConfig();
 
 
 function makeNewUser ( userData,callback_func )  {  // gets UserData object
-let vconf = conf.getFEConfig().projectsPath;  // volumes configuration
-let vdata = [];  // volumes actual data
-let index = {};  // links volumes in config file and in vdata
+  let vconf = conf.getFEConfig().projectsPath;  // volumes configuration
+  let vdata = [];  // volumes actual data
+  let index = {};  // links volumes in config file and in vdata
 
   for (let vname in vconf)  {
     index[vname] = vdata.length;
@@ -282,8 +283,8 @@ let index = {};  // links volumes in config file and in vdata
 // ===========================================================================
 
 function recoverUserLogin ( userData,callback_func )  {  // gets UserData object
-let response  = null;  // must become a cmd.Response object to return
-let fe_server = conf.getFEConfig();
+  let response  = null;  // must become a cmd.Response object to return
+  let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
 
@@ -477,7 +478,7 @@ UserLoginHash.prototype.getLoginEntry = function ( token )  {
 }
 
 UserLoginHash.prototype.getToken = function ( login_name )  {
-let token = null;
+  let token = null;
   for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login==login_name)  {
       token = key;
@@ -493,7 +494,6 @@ UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
       break;
     }
 }
-
 
 
 var __userLoginHash = new UserLoginHash();
@@ -512,8 +512,8 @@ let __userLoginHash = {
 
 
 function readUserLoginHash()  {
-let fe_server  = conf.getFEConfig();
-let updateHash = false;
+  let fe_server  = conf.getFEConfig();
+  let updateHash = false;
 
   __userLoginHash = new UserLoginHash();
 
@@ -531,7 +531,7 @@ let updateHash = false;
 
   if (('localuser' in fe_server) &&
       (!__userLoginHash.getToken(ud.__local_user_id)))  {
-    userData = new ud.UserData();
+    let userData = new ud.UserData();
     userData.name    = fe_server.localuser;
     // userData.email   = conf.getEmailerConfig().maintainerEmail;
     userData.email   = 'localuser@localhost';
@@ -567,8 +567,8 @@ function signalUser ( login_name,signal )  {
 const __suspend_prefix = '**suspended**';
 
 function userLogin ( userData,callback_func )  {  // gets UserData object
-let response  = null;  // must become a cmd.Response object to return
-let fe_server = conf.getFEConfig();
+  let response  = null;  // must become a cmd.Response object to return
+  let fe_server = conf.getFEConfig();
 
   // Get user data object and generate a temporary password
 //  let userData = JSON.parse ( user_data_json );
@@ -642,6 +642,7 @@ let fe_server = conf.getFEConfig();
         rData.strict_dormancy = fe_server.dormancy_control.strict;
         rData.treat_private   = fe_server.treat_private;
         rData.jobs_safe       = (fe_server.getJobsSafePath().length>0);
+        rData.has_datalink    = fe_server.hasDataLink();
         rData.demo_projects   = fe_server.getDemoProjectsMount();
         rData.auth_software   = fe_server.auth_software;
         if (fe_server.hasOwnProperty('description'))
@@ -726,9 +727,9 @@ function getUserLoginData ( login )  {
 }
 
 function readUsersData()  {
-let usersData = {};
-let fe_config = conf.getFEConfig();
-let udir_path = fe_config.userDataPath;
+  let usersData = {};
+  let fe_config = conf.getFEConfig();
+  let udir_path = fe_config.userDataPath;
 
   usersData.loginHash = __userLoginHash;
   usersData.userList  = [];
@@ -798,7 +799,7 @@ let udir_path = fe_config.userDataPath;
 
 
 function getUserData ( loginData )  {
-let response = 0;  // must become a cmd.Response object to return
+  let response = null;  // must become a cmd.Response object to return
 
   //log.debug ( 5,'user get data ' + login );
 
@@ -825,8 +826,8 @@ let response = 0;  // must become a cmd.Response object to return
 
 
 function topupUserRation ( loginData,callback_func )  {
-let uRation = ration.getUserRation ( loginData );
-let rData   = { code : 'ok', message : '', ration : uRation };
+  let uRation = ration.getUserRation ( loginData );
+  let rData   = { code : 'ok', message : '', ration : uRation };
   if (!uRation)  {
     rData.code    = 'errors';
     rData.message = 'user ration file not found';
@@ -913,7 +914,7 @@ function getUserRation ( loginData,data,callback_func )  {
 // ===========================================================================
 
 function saveHelpTopics ( loginData,userData )  {
-let response = 0;  // must become a cmd.Response object to return
+  let response = null;  // must become a cmd.Response object to return
 
   log.standard ( 6,'user save help topics ' + loginData.login );
 
@@ -963,8 +964,8 @@ function userLogout ( loginData )  {
 // ===========================================================================
 
 function updateUserData ( loginData,userData )  {
-let response = null;  // must become a cmd.Response object to return
-let notify   = false;
+  let response = null;  // must become a cmd.Response object to return
+  let notify   = false;
 
   let uData = userData;
   let pwd   = userData.pwd;
@@ -1020,8 +1021,8 @@ let notify   = false;
 
 
 function updateUserData_admin ( loginData,userData )  {
-let response     = null;  // must become a cmd.Response object to return
-let userFilePath = getUserDataFName ( loginData );
+  let response     = null;  // must become a cmd.Response object to return
+  let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 9,'update ' + userData.login +
                    '\' account settings by admin, login: ' + loginData.login );
@@ -1173,7 +1174,7 @@ let userFilePath = getUserDataFName ( loginData );
 // ===========================================================================
 
 function deleteUser ( loginData,userData )  {
-let response = null;  // must become a cmd.Response object to return
+  let response = null;  // must become a cmd.Response object to return
 
   log.standard ( 10,'delete user, login ' + loginData.login );
 
@@ -1235,8 +1236,8 @@ let response = null;  // must become a cmd.Response object to return
 
 
 function deleteUser_admin ( loginData,userData )  {
-let response     = null;  // must become a cmd.Response object to return
-let userFilePath = getUserDataFName ( loginData );
+  let response     = null;  // must become a cmd.Response object to return
+  let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 11,'delete user ' + userData.login +
                     ' by admin, login ' + loginData.login );
@@ -1306,7 +1307,7 @@ let userFilePath = getUserDataFName ( loginData );
 
 
 function suspendUser ( loginData,suspend_bool,message )  {
-let uData = readUserData ( loginData );
+  let uData = readUserData ( loginData );
   if (uData)  {
     let ulogin = uData.login;
     if (suspend_bool)  {
@@ -1323,10 +1324,10 @@ let uData = readUserData ( loginData );
 
 
 function retireUser_admin ( loginData,meta )  {
-let admData    = readUserData ( loginData );
-let userData   = meta.userData;
-let uData      = readUserData ( userData );
-let sLoginData = getUserLoginData ( meta.successor );
+  let admData    = readUserData ( loginData );
+  let userData   = meta.userData;
+  let uData      = readUserData ( userData );
+  let sLoginData = getUserLoginData ( meta.successor );
 
   log.standard ( 16,'retire user ' + userData.login +
                     ' by admin, login ' + loginData.login );
@@ -1495,9 +1496,9 @@ let sLoginData = getUserLoginData ( meta.successor );
 
 
 function resetUser_admin ( loginData,userData )  {
-let response     = null;  // must become a cmd.Response object to return
-let fe_server    = conf.getFEConfig();
-let userFilePath = getUserDataFName ( loginData );
+  let response     = null;  // must become a cmd.Response object to return
+  let fe_server    = conf.getFEConfig();
+  let userFilePath = getUserDataFName ( loginData );
 
   log.standard ( 141,'reset pasword for user ' + userData.login +
                      ' by admin, login ' + loginData.login );
@@ -1639,8 +1640,8 @@ function sendAnnouncement ( loginData,message )  {
 // ===========================================================================
 
 function manageDormancy ( loginData,params )  {
-let userFilePath = getUserDataFName ( loginData );
-let ddata = { 'status' : 'ok' };
+  let userFilePath = getUserDataFName ( loginData );
+  let ddata = { 'status' : 'ok' };
 
   // Check that we're having a new login name
 
@@ -1756,7 +1757,7 @@ let ddata = { 'status' : 'ok' };
 // ===========================================================================
 
 function saveMyWorkflows ( loginData,params )  {
-let workflowsFPath = getWorkflowsFName ( loginData );
+  let workflowsFPath = getWorkflowsFName ( loginData );
   utils.writeObject ( workflowsFPath,params );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
@@ -1764,8 +1765,8 @@ let workflowsFPath = getWorkflowsFName ( loginData );
 // ===========================================================================
 
 function getInfo ( inData,callback_func )  {
-let response  = null;  // must become a cmd.Response object to return
-let fe_server = conf.getFEConfig();
+  let response  = null;  // must become a cmd.Response object to return
+  let fe_server = conf.getFEConfig();
 
   if (fe_server)  {
 
@@ -1820,6 +1821,65 @@ let fe_server = conf.getFEConfig();
   }
 
   callback_func ( response );
+
+}
+
+
+// ===========================================================================
+
+function getLocalInfo ( inData,callback_func )  {
+  let response  = null;  // must become a cmd.Response object to return
+  let fe_server = conf.getFEConfig();
+
+  if (fe_server)  {
+
+    let rData = { code : 'ok' };
+    if ('localuser' in fe_server)  {
+
+      let uLoginData = { login:'localuser', volume:null };
+      rData.userData = readUserData ( uLoginData );
+
+      rData.project_paths = [];
+      let disk_reserved   = [];
+      for (let fsname in fe_server.projectsPath)  {
+        rData.project_paths.push ( path.resolve(
+                                     fe_server.projectsPath[fsname].path) );
+        disk_reserved.push ( fe_server.projectsPath[fsname].diskReserve );
+      }
+
+      rData.cpus = os.cpus();
+      
+      rData.disk_free = 0.0;
+
+      function _calc_disk_free ( n )  {
+        if (n<rData.project_paths.length)  {
+          let fspath = path.resolve ( rData.project_paths[n] );
+          checkDiskSpace(fspath).then ( (diskSpace) => {
+              let dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
+              rData.disk_free += dfree - disk_reserved[n];
+              _calc_disk_free ( n+1 );
+            }
+          );
+        } else  {
+          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rData ) );
+        }
+      }
+
+      _calc_disk_free ( 0 );
+
+    } else  {
+      rData.code = 'no_local_user';
+      response   = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
+    }
+
+  } else  {
+
+    response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
+
+  }
+
+  if (response)
+    setTimeout ( function(){ callback_func ( response ); },0);
 
 }
 
@@ -1949,4 +2009,5 @@ module.exports.sendAnnouncement     = sendAnnouncement;
 module.exports.manageDormancy       = manageDormancy;
 module.exports.saveMyWorkflows      = saveMyWorkflows;
 module.exports.getInfo              = getInfo;
+module.exports.getLocalInfo         = getLocalInfo;
 module.exports.authResponse         = authResponse;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Documentation Development Task
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -126,8 +126,8 @@ TaskDocDev.prototype.currentVersion = function()  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function DocDevHotButton()  {
   return {
-    'task'    : 'TaskDocDev',
-    'tooltip' : 'Documentation Development with Sphinx'
+    'task_name' : 'TaskDocDev',
+    'tooltip'   : 'Documentation Development with Sphinx'
   };
 }
 

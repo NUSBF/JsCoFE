@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#00020a">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>4. Managing CCP4 Cloud with PM2 &#8212; CCP4 Cloud 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Configuration of CCP4 Cloud with Nginx" href="nginx.html" />
+    <link rel="prev" title="3. CCP4 Cloud Configuration" href="configuration.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=#005BBB data-md-color-accent=yellow>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#pm2" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">cloud</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic"> 4. Managing CCP4 Cloud with PM2 </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "_static/versions.json",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">cloud</i>
+      
+    </a>
+    <a href="index.html"
+       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="setup.html" class="md-nav__link">1. Setup</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="launchers.html" class="md-nav__link">2. CCP4 Cloud Launch Scripts</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="configuration.html" class="md-nav__link">3. CCP4 Cloud Configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 4. Managing CCP4 Cloud with PM2 </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">4. Managing CCP4 Cloud with PM2</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#pm2--page-root" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#what-is-pm2" class="md-nav__link">4.1. What is PM2?</a>
+        </li>
+        <li class="md-nav__item"><a href="#setup-launcher-script" class="md-nav__link">4.2. Setup/Launcher script</a>
+        </li>
+        <li class="md-nav__item"><a href="#installing-setup" class="md-nav__link">4.3. Installing/Setup</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#the-start-d-folder" class="md-nav__link">4.3.1. The start.d folder</a>
+        </li>
+        <li class="md-nav__item"><a href="#the-ecosystem-config-js-configuration" class="md-nav__link">4.3.2. The ecosystem.config.js configuration</a>
+        </li>
+        <li class="md-nav__item"><a href="#the-front-end-or-number-cruncher-config-json" class="md-nav__link">4.3.3. The Front End or Number Cruncher config.json</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#launching-a-front-end-or-number-cruncher" class="md-nav__link">4.4. Launching a Front End or Number Cruncher</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#installing-pm2" class="md-nav__link">4.4.1. Installing PM2</a>
+        </li>
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">4.4.2. Managing CCP4 Cloud with PM2</a>
+        </li>
+        <li class="md-nav__item"><a href="#starting-ccp4-cloud-on-system-boot" class="md-nav__link">4.4.3. Starting CCP4 Cloud on system boot</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#useful-pm2-commands" class="md-nav__link">4.5. Useful PM2 commands</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#what-is-pm2" class="md-nav__link">4.1. What is PM2?</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#setup-launcher-script" class="md-nav__link">4.2. Setup/Launcher script</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#installing-setup" class="md-nav__link">4.3. Installing/Setup</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#the-start-d-folder" class="md-nav__link">4.3.1. The start.d folder</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#the-ecosystem-config-js-configuration" class="md-nav__link">4.3.2. The ecosystem.config.js configuration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#the-front-end-or-number-cruncher-config-json" class="md-nav__link">4.3.3. The Front End or Number Cruncher config.json</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#launching-a-front-end-or-number-cruncher" class="md-nav__link">4.4. Launching a Front End or Number Cruncher</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#installing-pm2" class="md-nav__link">4.4.1. Installing PM2</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#id1" class="md-nav__link">4.4.2. Managing CCP4 Cloud with PM2</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#starting-ccp4-cloud-on-system-boot" class="md-nav__link">4.4.3. Starting CCP4 Cloud on system boot</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#useful-pm2-commands" class="md-nav__link">4.5. Useful PM2 commands</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dev_hello_world.html" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="tests.html" class="md-nav__link">10. Software testing in CCP4</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="clientsetup.html" class="md-nav__link">12. CCP4 Cloud Client Setup</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#pm2--page-root" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#what-is-pm2" class="md-nav__link">4.1. What is PM2?</a>
+        </li>
+        <li class="md-nav__item"><a href="#setup-launcher-script" class="md-nav__link">4.2. Setup/Launcher script</a>
+        </li>
+        <li class="md-nav__item"><a href="#installing-setup" class="md-nav__link">4.3. Installing/Setup</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#the-start-d-folder" class="md-nav__link">4.3.1. The start.d folder</a>
+        </li>
+        <li class="md-nav__item"><a href="#the-ecosystem-config-js-configuration" class="md-nav__link">4.3.2. The ecosystem.config.js configuration</a>
+        </li>
+        <li class="md-nav__item"><a href="#the-front-end-or-number-cruncher-config-json" class="md-nav__link">4.3.3. The Front End or Number Cruncher config.json</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#launching-a-front-end-or-number-cruncher" class="md-nav__link">4.4. Launching a Front End or Number Cruncher</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#installing-pm2" class="md-nav__link">4.4.1. Installing PM2</a>
+        </li>
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">4.4.2. Managing CCP4 Cloud with PM2</a>
+        </li>
+        <li class="md-nav__item"><a href="#starting-ccp4-cloud-on-system-boot" class="md-nav__link">4.4.3. Starting CCP4 Cloud on system boot</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#useful-pm2-commands" class="md-nav__link">4.5. Useful PM2 commands</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="managing-ccp4-cloud-with-pm2">
+<span id="pm2"></span><h1 id="pm2--page-root"><span class="section-number">4. </span>Managing CCP4 Cloud with PM2<a class="headerlink" href="#pm2--page-root" title="Permalink to this heading">¶</a></h1>
+<section id="what-is-pm2">
+<h2 id="what-is-pm2"><span class="section-number">4.1. </span>What is PM2?<a class="headerlink" href="#what-is-pm2" title="Permalink to this heading">¶</a></h2>
+<p>PM2 is an advanced production process manager for Node.JS.</p>
+<p>Using PM2 we can manage the Front End and Number Cruncher processes, including
+automatic restarting on failure, managing processes on system startup, and
+logging.</p>
+<p>The official site with documentation for PM2 is <a class="reference external" href="https://pm2.keymetrics.io/" rel="noopener noreferrer" target="_blank">https://pm2.keymetrics.io/</a>.</p>
+</section>
+<section id="setup-launcher-script">
+<h2 id="setup-launcher-script"><span class="section-number">4.2. </span>Setup/Launcher script<a class="headerlink" href="#setup-launcher-script" title="Permalink to this heading">¶</a></h2>
+<p>CCP4 Cloud now contains a new script <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> that works as both a set-up
+and launcher script for both Front Ends and Number Crunchers.</p>
+<p>This can be used with or without PM2.</p>
+</section>
+<section id="installing-setup">
+<h2 id="installing-setup"><span class="section-number">4.3. </span>Installing/Setup<a class="headerlink" href="#installing-setup" title="Permalink to this heading">¶</a></h2>
+<p>The current command line usage of setup.sh is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ /path/to/jsCoFE/setup.sh
+Use start-fe or start-nc to start Front End or Number Cruncher
+Use setup-fe or setup-nc to install to current folder
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script is designed to be left in the <code class="docutils literal notranslate"><span class="pre">jsCoFE/setup.sh</span></code>
+folder and to be run from elsewhere - there is no need to copy it.</p>
+<p>Initially you should call it with the arguments <code class="docutils literal notranslate"><span class="pre">setup-fe</span></code> or <code class="docutils literal notranslate"><span class="pre">setup-nc</span></code>
+from an empty folder you want to install to. It will then copy some example
+configurations across, and set up a symbolic link to <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code>.</p>
+<p>The symbolic link will be named <code class="docutils literal notranslate"><span class="pre">start-fe.sh</span></code> or <code class="docutils literal notranslate"><span class="pre">start-nc.sh</span></code> depending on
+the install mode. The <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> script detects when it has been run via the
+symbolic link and will start up either the Front End or a Number Cruncher
+depending on the name.</p>
+<p>When running setup.sh it will never overwrite existing configs.</p>
+<p>For example - create a folder and change to it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir frontend
+$ cd frontend
+</pre></div>
+</div>
+<p>Run the <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> with <code class="docutils literal notranslate"><span class="pre">setup-fe</span></code> to install the Front End example configurations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ /path/to/jsCoFE/setup.sh setup-fe
+
+Are you sure you want to install the start script and configs in /path/to/frontend?
+Type Y/y to confirm.
+'start-fe.sh' -&gt; '/path/to/jsCoFE/setup.sh'
+'/path/to/jsCoFE/setup/pm2/fe-ecosystem.config.js' -&gt; 'ecosystem.config.js'
+'/path/to/jsCoFE/setup/fe-config.json' -&gt; 'frontend/config.json'
+Start up script and default configurations copied to frontend
+Copy start.d/env.sh.dist to start.d/env.sh and edit accordingly.
+If managing with pm2, please edit ecosystem.cfg as required.
+</pre></div>
+</div>
+<p>If installed with <code class="docutils literal notranslate"><span class="pre">setup.sh</span> <span class="pre">setup-fe</span></code> you should now have the following
+files installed in your folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">start</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">dist</span>
+<span class="o">./</span><span class="n">ecosystem</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">js</span>
+<span class="o">./</span><span class="n">start</span><span class="o">-</span><span class="n">fe</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start.d/env.sh.dist</span></code> is an example configuration to set environment variables for CCP4 Cloud. See below for more details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ecosystem.config.js</span></code> is a configuration for managing the Front End with PM2.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start-fe.sh</span></code> is the launch script (which is a symlink to /path/to/jsCoFE/setup.sh).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.json</span></code> is an example configuration file for the CCP4 Cloud Front End</p></li>
+</ul>
+<p>If installed with <code class="docutils literal notranslate"><span class="pre">setup.sh</span> <span class="pre">setup-nc.sh</span></code> you should now have the following
+files installed in your folder:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">start</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">env</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">dist</span>
+<span class="o">./</span><span class="n">ecosystem</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">js</span>
+<span class="o">./</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start.d/env.sh.dist</span></code> as above</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ecosystem.config.js</span></code> is a configuration for managing the Number Cruncher with PM2.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start-nc.sh</span></code> is the launch script (which is a symlink to /path/to/jsCoFE/setup.sh).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.json</span></code> is an example configuration file for the CCP4 Cloud Number Cruncher</p></li>
+</ul>
+<section id="the-start-d-folder">
+<h3 id="the-start-d-folder"><span class="section-number">4.3.1. </span>The start.d folder<a class="headerlink" href="#the-start-d-folder" title="Permalink to this heading">¶</a></h3>
+<p>Any files in <code class="docutils literal notranslate"><span class="pre">start.d</span></code> with the extension <code class="docutils literal notranslate"><span class="pre">.sh</span></code> are executed by the launch
+script.</p>
+<p>This allows splitting out configurations into multiple files which allows
+flexibility to easily enable/disable environment variables or other custom
+scripts.</p>
+<p>An example <code class="docutils literal notranslate"><span class="pre">env.sh.dist</span></code> file is included. This file should be copied to
+<code class="docutils literal notranslate"><span class="pre">start.d/env.sh</span></code> and edited accordingly.</p>
+<p>The file <code class="docutils literal notranslate"><span class="pre">env.sh.dist</span></code> includes environment variables that need to be
+configured for CCP4 Cloud.</p>
+<p>By default it contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copy to env.sh and uncomment and edit as appropriate.</span>
+
+<span class="c1"># Path to CCP4 installation</span>
+<span class="n">CCP4_DIR</span><span class="o">=</span><span class="s2">"/PATH/TO/ccp4"</span>
+
+<span class="c1"># Uncomment if Buster is installed</span>
+<span class="c1"># BUSTER_DIR=/PATH/TO/buster-main</span>
+
+<span class="c1"># Not having PDB archive locally (optional but strongly recommended) will cause</span>
+<span class="c1"># downloading from PDB each time a PDB file is required. This may slow down</span>
+<span class="c1"># certain tasks considerably.</span>
+<span class="c1"># export PDB_DIR=/PATH/TO/pdb</span>
+<span class="c1"># export PDB_SEQDB=/PATH/TO/pdb_derived_data/pdb_seqres.txt</span>
+
+<span class="c1"># export AFDB_SEQDB=/PATH/TO/afdb/sequences.fasta</span>
+
+<span class="c1"># export SIMBAD_DB=/PATH/TO/simbad_db</span>
+
+<span class="c1"># Gesamt archive (optional) is needed for fast structural searches</span>
+<span class="c1"># in the PDB with Gesamt</span>
+<span class="c1"># export GESAMT_ARCHIVE=/PATH/TO/db/gesamt_archive</span>
+
+<span class="c1"># CCP4 Cloud documentation repository (optional) is needed for making</span>
+<span class="c1"># contributions to the CCP4 Cloud documentation project</span>
+<span class="c1"># export DOCREPO=/PATH/TO/jscofe-dev/jscofe-doc</span>
+
+<span class="c1"># no path is required for AF2 configuration on the Front End, but the variable should be defined</span>
+<span class="c1"># export ALPHAFOLD_CFG=1</span>
+
+<span class="c1"># uncomment to enable CCP4(i2) demo data</span>
+<span class="c1"># export USE_CDEMODATA=1</span>
+</pre></div>
+</div>
+</section>
+<section id="the-ecosystem-config-js-configuration">
+<h3 id="the-ecosystem-config-js-configuration"><span class="section-number">4.3.2. </span>The ecosystem.config.js configuration<a class="headerlink" href="#the-ecosystem-config-js-configuration" title="Permalink to this heading">¶</a></h3>
+<p>This is the PM2 configuration file.</p>
+<p>By default for a Front End install it contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">module</span><span class="o">.</span><span class="n">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">apps</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s2">"FE"</span><span class="p">,</span>
+    <span class="n">script</span><span class="p">:</span> <span class="s2">"start-fe.sh"</span><span class="p">,</span>
+    <span class="n">exp_backoff_restart_delay</span><span class="p">:</span> <span class="mi">100</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For a Number Cruncher install it contains:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">module</span><span class="o">.</span><span class="n">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">apps</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="n">name</span><span class="p">:</span> <span class="s2">"NC"</span><span class="p">,</span>
+    <span class="n">script</span><span class="p">:</span> <span class="s2">"start-nc.sh"</span><span class="p">,</span>
+    <span class="n">exp_backoff_restart_delay</span><span class="p">:</span> <span class="mi">100</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ecosystem.config.js</span></code> file describes which application PM2 should start and
+can contain additional options for PM2. The structure of this file
+is described at <a class="reference external" href="https://pm2.keymetrics.io/docs/usage/application-declaration/" rel="noopener noreferrer" target="_blank">https://pm2.keymetrics.io/docs/usage/application-declaration/</a>.</p>
+<ul class="simple">
+<li><p><strong>name</strong>: this will reflect what the process is referred to within PM2. If a
+machine has a number of Front Ends running (e.g., for production, and development),
+then the name field can be changed accordingly.</p></li>
+<li><p><strong>script</strong>: refers to the application it will be managing. In this case it is <code class="docutils literal notranslate"><span class="pre">start-fe.sh</span></code>.</p></li>
+<li><p><strong>exp_backoff_restart_delay</strong>: If the application crashes PM2 will restart it.
+Using this option, if the application crashes again immediately, instead of
+restarting repeatedly (e.g., in the case of a major failure), this causes it
+to incrementally increase the delay time between restarts. Our default value
+for this is 100ms. This option is described on
+<a class="reference external" href="https://pm2.keymetrics.io/docs/usage/restart-strategies/" rel="noopener noreferrer" target="_blank">https://pm2.keymetrics.io/docs/usage/restart-strategies/</a></p></li>
+</ul>
+</section>
+<section id="the-front-end-or-number-cruncher-config-json">
+<h3 id="the-front-end-or-number-cruncher-config-json"><span class="section-number">4.3.3. </span>The Front End or Number Cruncher config.json<a class="headerlink" href="#the-front-end-or-number-cruncher-config-json" title="Permalink to this heading">¶</a></h3>
+<p>This is an example Front End or Number Cruncher configuration depending on
+which <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> install method was used. This needs to be configured for
+your system - as detailed in <a class="reference internal" href="configuration.html#ccp4-cloud-configuration"><span class="std std-ref">CCP4 Cloud configuration reference</span></a></p>
+</section>
+</section>
+<section id="launching-a-front-end-or-number-cruncher">
+<h2 id="launching-a-front-end-or-number-cruncher"><span class="section-number">4.4. </span>Launching a Front End or Number Cruncher<a class="headerlink" href="#launching-a-front-end-or-number-cruncher" title="Permalink to this heading">¶</a></h2>
+<p>A CCP4 Cloud Front End can be started by running <code class="docutils literal notranslate"><span class="pre">./start-fe.sh</span></code> or a
+Number Cruncher by running <code class="docutils literal notranslate"><span class="pre">./start-nc.sh</span></code> - note this method
+of launching a Front End does not utilise PM2. It is also possible to launch
+<code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> from the install folder with the arguments <code class="docutils literal notranslate"><span class="pre">start-fe</span></code> or <code class="docutils literal notranslate"><span class="pre">start-nc</span></code>.</p>
+<section id="installing-pm2">
+<h3 id="installing-pm2"><span class="section-number">4.4.1. </span>Installing PM2<a class="headerlink" href="#installing-pm2" title="Permalink to this heading">¶</a></h3>
+<p>PM2 can either be installed for the user that the Front End/Number Cruncher will
+be running under, or it can be installed system-wide. If installed for just the
+user, the pm2 binary will need to be added to the users PATH environment
+variable (e.g., via <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code>).</p>
+<p>PM2 can be installed using <code class="docutils literal notranslate"><span class="pre">npm</span></code>. <code class="docutils literal notranslate"><span class="pre">npm</span></code> is included with Debian/Ubuntu and
+can be installed with <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">npm</span></code>.</p>
+<p><strong>Installing for a user:</strong></p>
+<p>To install npm for the user that CCP4 Cloud will be running under, switch to
+that user and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
+<span class="n">npm</span> <span class="n">install</span> <span class="n">pm2</span>
+</pre></div>
+</div>
+<p>In this case the pm2 binaries will be installed in <code class="docutils literal notranslate"><span class="pre">~/node_modules/pm2/bin/</span></code></p>
+<p><strong>Installing system-wide:</strong></p>
+<p>To install npm system-wide, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">npm</span> <span class="n">install</span> <span class="o">-</span><span class="n">g</span> <span class="n">pm2</span>
+</pre></div>
+</div>
+<p>Installing PM2 systemwide can be useful as it will be available for all
+users and will be in the system path (as a symlink will be created to it from
+<code class="docutils literal notranslate"><span class="pre">/usr/local/bin/pm2</span></code>)</p>
+</section>
+<section id="id1">
+<h3 id="id1"><span class="section-number">4.4.2. </span>Managing CCP4 Cloud with PM2<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>Once a Front End/Number Cruncher is configured and working (and tested with
+launching via <code class="docutils literal notranslate"><span class="pre">./start-fe.sh</span></code> or <code class="docutils literal notranslate"><span class="pre">./start-nc.sh</span></code>) it can be started and managed
+via PM2.</p>
+<p>To start a Front End or Number Cruncher process with PM2, just <code class="docutils literal notranslate"><span class="pre">cd</span></code> to the
+install folder with the <code class="docutils literal notranslate"><span class="pre">ecosystem.config.js</span></code> in and run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="n">start</span>
+</pre></div>
+</div>
+<p>PM2 will output its status which should look like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌────┬───────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name  │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ FE    │ default     │ N/A     │ fork    │ 13108    │ 3h     │ 2    │ online    │ 0%       │ 4.0mb    │ ccp4cloud│ disabled │
+└────┴───────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+</pre></div>
+</div>
+<p>Or with both a Front End and Number cruncher started via PM2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>┌────┬───────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name  │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ FE    │ default     │ N/A     │ fork    │ 13108    │ 3h     │ 2    │ online    │ 0%       │ 4.0mb    │ ccp4cloud│ disabled │
+│ 1  │ NC    │ default     │ N/A     │ fork    │ 13135    │ 3h     │ 2    │ online    │ 0%       │ 4.1mb    │ ccp4cloud│ disabled │
+└────┴───────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+</pre></div>
+</div>
+</section>
+<section id="starting-ccp4-cloud-on-system-boot">
+<h3 id="starting-ccp4-cloud-on-system-boot"><span class="section-number">4.4.3. </span>Starting CCP4 Cloud on system boot<a class="headerlink" href="#starting-ccp4-cloud-on-system-boot" title="Permalink to this heading">¶</a></h3>
+<p>Once everything is configured and running via PM2 you can tell PM2 to start
+these processes on system startup.</p>
+<p>To do this you execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="n">startup</span>
+</pre></div>
+</div>
+<p>PM2 will then give you the command line to run to install its systemd service
+to start the processes on system boot:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[PM2] Init System found: systemd
+[PM2] To setup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ccp4cloud --hp /home/ccp4cloud
+</pre></div>
+</div>
+<p>To disable PM2 from starting on system boot, you can run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="n">unstartup</span>
+</pre></div>
+</div>
+<p>And PM2 will give you the command line to disable the systemd service:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[PM2] Init System found: systemd
+[PM2] To unsetup the Startup Script, copy/paste the following command:
+sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 unstartup systemd -u ccp4cloud --hp /home/ccp4cloud
+</pre></div>
+</div>
+</section>
+</section>
+<section id="useful-pm2-commands">
+<h2 id="useful-pm2-commands"><span class="section-number">4.5. </span>Useful PM2 commands<a class="headerlink" href="#useful-pm2-commands" title="Permalink to this heading">¶</a></h2>
+<p>To get help on all available pm2 commands run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="o">--</span><span class="n">help</span>
+</pre></div>
+</div>
+<p>To get more help on a specific command including showing additional options use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="p">[</span><span class="n">command</span><span class="p">]</span> <span class="o">-</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>Here are some common pm2 commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pm2</span> <span class="n">status</span> <span class="o">-</span> <span class="n">show</span> <span class="n">the</span> <span class="n">current</span> <span class="n">status</span>
+<span class="n">pm2</span> <span class="n">stop</span> <span class="p">[</span><span class="nb">id</span><span class="o">/</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">stop</span> <span class="n">a</span> <span class="n">running</span> <span class="n">process</span>
+<span class="n">pm2</span> <span class="n">start</span> <span class="p">[</span><span class="nb">id</span><span class="o">/</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">start</span> <span class="n">a</span> <span class="n">process</span>
+<span class="n">pm2</span> <span class="n">restart</span> <span class="p">[</span><span class="nb">id</span><span class="o">/</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">restart</span> <span class="n">a</span> <span class="n">process</span>
+<span class="n">pm2</span> <span class="n">delete</span> <span class="p">[</span><span class="nb">id</span><span class="o">/</span><span class="n">name</span><span class="p">]</span> <span class="o">-</span> <span class="n">delete</span> <span class="n">a</span> <span class="n">running</span> <span class="n">process</span> <span class="kn">from</span> <span class="nn">being</span> <span class="n">managed</span> <span class="n">by</span> <span class="n">pm2</span><span class="o">.</span>
+<span class="n">pm2</span> <span class="n">logs</span> <span class="o">-</span> <span class="n">view</span> <span class="n">logs</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="configuration.html" title="3. CCP4 Cloud Configuration"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">3. </span>CCP4 Cloud Configuration </span>
+              </div>
+            </a>
+          
+          
+            <a href="nginx.html" title="5. Configuration of CCP4 Cloud with Nginx"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">5. </span>Configuration of CCP4 Cloud with Nginx </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

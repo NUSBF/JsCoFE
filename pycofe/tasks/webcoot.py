@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,25 +110,27 @@ class WebCoot(basic.TaskDriver):
 
     def run(self):
 
-        # revision  = self.makeClass ( self.input_data.data.revision[0] )
-        istruct   = self.makeClass ( self.input_data.data.istruct[0] )
+        iobject = self.makeClass ( self.input_data.data.revision[0] )
+        istruct = self.makeClass ( self.input_data.data.istruct [0] )
         # mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
         # lead_key  = istruct.leadKey
 
-        ligand  = None
-        ligCode = None
-        ligPath = None
-        if hasattr(self.input_data.data,"ligand"):
-            ligand  = self.makeClass ( self.input_data.data.ligand[0] )
-            ligCode = ligand.code
-            ligPath = ligand.getLibFilePath ( self.inputDir() )
-            # self.stderrln ( " >>>> ligand " + str(ligand.code) + " found" )
+        if iobject._type=="DataRevision":
+          ligand  = None
+          ligCode = None
+          ligPath = None
+          if hasattr(self.input_data.data,"ligand"):
+              ligand  = self.makeClass ( self.input_data.data.ligand[0] )
+              ligCode = ligand.code
+              ligPath = ligand.getLibFilePath ( self.inputDir() )
+              # self.stderrln ( " >>>> ligand " + str(ligand.code) + " found" )
 
-        libPath, ligList = self.addLigandToLibrary (
-                                    istruct.getLibFilePath(self.inputDir()),
-                                    ligCode,ligPath,istruct.ligands )
+          libPath, ligList = self.addLigandToLibrary (
+                                      istruct.getLibFilePath(self.inputDir()),
+                                      ligCode,ligPath,istruct.ligands )
 
-        # Check for PDB files left by Coot and make the corresponding output revisions
+        # Check for output files left by Moorhen and make the corresponding
+        # output data objects
 
         mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
         hasResults = False
@@ -137,8 +139,6 @@ class WebCoot(basic.TaskDriver):
             self.putTitle   ( "No Output Structure Produced" )
             self.putMessage ( "<i style=\"color:maroon\">" +\
                               "Have you saved your results in CCP4 Cloud?</i>" )
-        else:
-            self.putTitle ( "Output Results" )
 
         refkeys = None
         try:
@@ -156,58 +156,118 @@ class WebCoot(basic.TaskDriver):
                                     -1 if len(mmcifout)<=1 else outputSerialNo )
             if mmcif_utils.clean_mmcif(mmcif_f,mmcif_fname):
 
-                molName = os.path.splitext ( os.path.basename(mmcif_fname) )[0]
-                self.putMessage ( "<h3>Output Structure" +\
-                        self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
-                        " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
-                
+                molName   = os.path.splitext ( os.path.basename(mmcif_fname) )[0]
                 pdb_fname = None
-                if mmcif_utils.can_convert_to_pdb(mmcif_fname):
+                if mmcif_utils.convert_to_pdb(mmcif_fname):
                     pdb_fname = os.path.splitext(mmcif_fname)[0] + ".pdb"
                     if not os.path.isfile(pdb_fname):
+                        self.stderrln ( " >>>> converted output PDB " + pdb_fname +\
+                                        " not found" )
                         pdb_fname = None
-
-                ostruct = self.registerStructure ( 
-                                mmcif_fname,
-                                pdb_fname,
-                                istruct.getSubFilePath(self.inputDir()),
-                                istruct.getMTZFilePath(self.inputDir()),
-                                libPath    = libPath,
-                                mapPath    = istruct.getMapFilePath(self.inputDir()),
-                                dmapPath   = istruct.getDMapFilePath(self.inputDir()),
-                                leadKey    = istruct.leadKey,
-                                copy_files = False,
-                                map_labels = istruct.mapLabels,
-                                refiner    = istruct.refiner 
-                            )
-                if ostruct:
-                    ostruct.copy_refkeys_parameters  ( istruct )
-                    ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
-                    ostruct.copyAssociations   ( istruct )
-                    ostruct.addDataAssociation ( istruct.dataId )  # ???
-                    ostruct.mergeSubtypes      ( istruct )
-                    ostruct.copyLigands        ( istruct )
-                    ostruct.copyLabels         ( istruct )
-                    # if not xyzout:
-                    #     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
-                    #self.putMessage (
-                    #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                    #    oxyz.dname )
-                    self.putStructureWidget ( self.getWidgetId("structure_btn"),
-                                                "Structure and electron density",
-                                                ostruct )
-                    # update structure revision
-                    revision = self.makeClass ( self.input_data.data.revision[0] )
-                    revision.setStructureData ( ostruct  )
-
-                    self.putMessage ( "<h3>Structure Revision" +\
-                        self.hotHelpLink ( "Structure Revision",
-                                        "jscofe_qna.structure_revision") + "</h3>" )
-                    self.registerRevision ( revision,serialNo=outputSerialNo,
-                                            title="" )
-                    hasResults = True
                 else:
-                    self.stderrln ( "\n ***** output structure was not formed" )
+                    self.stderrln ( " >>>> cannot convert output mmCIF to PDB" )
+
+                if iobject._type in ["DataRevision","DataStructure"]:
+
+                    self.putTitle ( "Output Results" )
+
+                    self.putMessage ( "<h3>Output Structure" +\
+                            self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
+                            " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
+                    
+                    ostruct = self.registerStructure ( 
+                                    mmcif_fname,
+                                    pdb_fname,
+                                    istruct.getSubFilePath(self.inputDir()),
+                                    istruct.getMTZFilePath(self.inputDir()),
+                                    libPath    = libPath,
+                                    mapPath    = istruct.getMapFilePath(self.inputDir()),
+                                    dmapPath   = istruct.getDMapFilePath(self.inputDir()),
+                                    leadKey    = istruct.leadKey,
+                                    copy_files = False,
+                                    map_labels = istruct.mapLabels,
+                                    refiner    = istruct.refiner 
+                                )
+                    if ostruct:
+                        ostruct.copy_refkeys_parameters  ( istruct )
+                        ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
+                        ostruct.copyAssociations   ( istruct )
+                        ostruct.addDataAssociation ( istruct.dataId )  # ???
+                        ostruct.mergeSubtypes      ( istruct )
+                        ostruct.copyLigands        ( istruct )
+                        ostruct.copyLabels         ( istruct )
+                        # if not xyzout:
+                        #     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                        #self.putMessage (
+                        #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                        #    oxyz.dname )
+                        self.putStructureWidget ( self.getWidgetId("structure_btn"),
+                                                    "Structure and electron density",
+                                                    ostruct )
+
+                        if iobject._type=="DataRevision":
+                            # update structure revision
+                            iobject.setStructureData ( ostruct  )
+                            self.putMessage ( "<h3>Structure Revision" +\
+                                self.hotHelpLink ( "Structure Revision",
+                                                   "jscofe_qna.structure_revision" ) +\
+                                                   "</h3>" )
+                            self.registerRevision ( iobject,serialNo=outputSerialNo,
+                                                    title="" )
+                        hasResults = True
+
+                    else:
+                        self.stderrln ( "\n ***** output structure was not formed" )
+
+                elif iobject._type=="DataEnsemble":
+                    self.putMessage ( "<b>Edited MR ensemble:</b> " + iobject.dname )
+                    self.putTitle   ( "Output MR Ensemble" )
+                    if iobject.sequence:
+                        iobject.sequence = self.makeClass ( iobject.sequence )
+                    ensemble = self.registerEnsemble ( iobject.sequence,pdb_fname,checkout=True )
+                    if ensemble:
+                        self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
+                                                 "Coordinates:&nbsp;",ensemble )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: MR ensemble could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: MR ensemble could not be formed" )
+                        
+                elif iobject._type=="DataModel":
+                    self.putMessage ( "<b>Edited MR model:</b> " + iobject.dname )
+                    self.putTitle   ( "Output MR Model" )
+                    if iobject.sequence:
+                        iobject.sequence = self.makeClass ( iobject.sequence )
+                    model = self.registerModel ( iobject.sequence,pdb_fname,checkout=True )
+                    if model:
+                        self.putModelWidget ( self.getWidgetId("model_btn"),
+                                              "Coordinates:&nbsp;",model )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: MR model could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: MR model could not be formed" )
+
+                elif iobject._type=="DataXYZ":
+                    self.putMessage ( "<b>Edited structure model:</b> " + iobject.dname )
+                    self.putTitle   ( "Output Structure Model" )
+                    xyz = self.registerXYZ ( mmcif_fname,pdb_fname,checkout=True )
+                    if xyz:
+                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        self.putMessage (
+                            "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                            xyz.dname )
+                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                            "Coordinates:&nbsp;",xyz )
+                        hasResults = True
+                    else:
+                        self.putMessage ( "<b>Error: structure model could not be formed</b>" )
+                        self.stderrln   ( " ***** Error: structure model could not be formed" )
+
+                else:
+                    self.putMessage ( "<b>Unsupported data type (this is a bug)</b> " )
+                    self.stderrln   ( " ***** Error: unsupported data type " + iobject._type )
+                    self.putTitle   ( "No Output Produced" )
+
             else:
                 self.stderrln ( "\n ***** " + mmcif_f + " output file not found" )
 
@@ -218,8 +278,10 @@ class WebCoot(basic.TaskDriver):
                 summaryLine += " model saved"
             else:
                 summaryLine += " models saved"
+        elif len(mmcifout)<=0:
+            self.stderrln ( "\n ***** no output .mmcf files found" )
         else:
-            self.stderrln ( "\n ***** " + str(len(mmcifout)) + " output .mmcf files found, but" +\
+            self.stderrln ( "\n ***** " + str(len(mmcifout)) + " output .mmcf files found, but " +\
                             "none is found suitable" )
 
         self.generic_parser_summary["web_coot"] = {

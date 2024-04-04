@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,6 @@ import time
 
 #  application imports
 from . import basic
-from   pycofe.dtypes  import  dtype_xyz, dtype_ensemble
 from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox
@@ -58,8 +57,8 @@ class CootCE(basic.TaskDriver):
             if not expire:
                 expire = "30"  # days
             expire = 86400*int(expire)  # in seconds
-            files = os.listdir ( coot_backups_dir )
-            mtime = time.time()
+            files  = os.listdir ( coot_backups_dir )
+            mtime  = time.time()
             for f in files:
                 fp = os.path.join ( coot_backups_dir,f )
                 mt = os.path.getmtime(fp)
@@ -88,7 +87,7 @@ class CootCE(basic.TaskDriver):
         fpath = None
         fname = None
         for f in files:
-            if f.lower().endswith(".pdb.gz"):
+            if f.lower().endswith(".pdb.gz") or f.lower().endswith(".cif.gz"):
                 fp = os.path.join ( backup_dir,f )
                 mt = os.path.getmtime(fp)
                 if mt > mtime:
@@ -136,7 +135,7 @@ class CootCE(basic.TaskDriver):
         coot_scr = "coot_jscofe.py"
         coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
         #args += ["--python",coot_scr,"--no-guano"]
-        args += ["--script",coot_scr]
+        args    += ["--script",coot_scr]
 
         # Run coot
         if sys.platform.startswith("win"):
@@ -169,11 +168,11 @@ class CootCE(basic.TaskDriver):
 
         have_results = False
 
-        restored = False
+        # restored = False
         if len(mlist)<=0:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             if fname:
-                restored = True
+                # restored = True
                 mt       = os.path.getmtime(fname)
                 fdic[mt] = fname
                 mlist.append ( mt )
@@ -183,9 +182,9 @@ class CootCE(basic.TaskDriver):
             self.putTitle ( "Output coordinate data" )
 
             f = ixyz[0].getPDBFileName()
-            if not f:
-                f = istruct.getSubFileName()
-            fnprefix = f[:f.find("_")]
+            if not f and (ixyz[0]._type=="DataStructure"):
+                f = ixyz[0].getSubFileName()
+            # fnprefix = f[:f.find("_")]
 
             mlist = sorted(mlist)
             for i in range(len(mlist)):
@@ -197,7 +196,7 @@ class CootCE(basic.TaskDriver):
 
                 xyz = self.registerXYZ ( None,fname )
                 if xyz:
-                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         xyz.dname )

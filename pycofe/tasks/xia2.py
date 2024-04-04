@@ -102,8 +102,8 @@ class Xia2(basic.TaskDriver):
         misigma      = self.getParameter ( sec2.MISIGMA     )
         isigma       = self.getParameter ( sec2.ISIGMA      )
 
-        space_group = "".join(space_group.split())
-        unit_cell   = ",".join(unit_cell.replace(",", " ").split())
+        space_group  = "".join(space_group.split())
+        unit_cell    = ",".join(unit_cell.replace(",", " ").split())
 
         cmd = [ "project="  + projectName,
                 "crystal="  + crystalName,
@@ -126,7 +126,7 @@ class Xia2(basic.TaskDriver):
             if self.getParameter(sec2.PLUGIN)!="none":
                 cmd.append ( "plugin=" + os.environ["Xia2_durin"] )
 
-        if hatom      :  cmd.append ( "atom="          + hatom.upper()   )
+        if hatom      :  cmd.append ( "atom="          + hatom.upper()      )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )
         if unit_cell  :  cmd.append ( "unit_cell=\""   + unit_cell   + "\"" )
         if d_min      :  cmd.append ( "d_min="         + d_min   )
@@ -154,9 +154,7 @@ class Xia2(basic.TaskDriver):
         environ = os.environ.copy()
         if have_xds:
             #environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
-            environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
-                              os.environ["XDS_home"] + ":" +\
-                              os.environ["PATH"]
+            environ["PATH"] = os.environ["XDS_home"] + ":" + os.environ["PATH"]
         #
         # if sys.platform.startswith("win"):
         #     rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )

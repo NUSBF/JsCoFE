@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
@@ -28,7 +26,7 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 import shutil
 
 #  application imports

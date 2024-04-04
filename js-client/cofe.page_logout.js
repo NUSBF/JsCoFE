@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,12 +45,12 @@ function LogoutPage ( sceneId,reason_key )  {
   this.makeLogoPanel             ( 1,0,3 );
 
   // make login panel
-  var panel = new Grid('');
+  let panel = new Grid('');
   panel.setWidth      ( '500pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var thank_lbl = new Label ( 'Thank you for using ' + appName() );
-  var msg = '';
+  let thank_lbl = new Label ( 'Thank you for using ' + appName() );
+  let msg = '';
   switch (reason_key)  {
     case 1  :  msg = 'Your session in this window was closed ' +
                      'because you have logged in somewhere else.';
@@ -74,13 +74,13 @@ function LogoutPage ( sceneId,reason_key )  {
     case 0  :
     default : msg = 'You are now logged out.';
   }
-  var logout_lbl = new Label    ( msg );
+  let logout_lbl = new Label    ( msg );
 
   thank_lbl .setFont            ( 'times','200%',true,true );
   thank_lbl .setNoWrap          ();
   logout_lbl.setFontSize        ( '125%' );
 
-  var row = 0;
+  let row = 0;
   panel.setWidget               ( thank_lbl,row,0,1,1 );
   panel.setHorizontalAlignment  ( row++,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
@@ -89,11 +89,10 @@ function LogoutPage ( sceneId,reason_key )  {
   panel.setCellSize             ( '','20pt',row++,0 );
 
   if ((!__local_user) && (reason_key!=10))  {
-    var back_btn = new Button    ( 'Back to User Login',image_path('login') );
+    let back_btn = new Button    ( 'Back to User Login',image_path('login') );
     panel.setWidget              ( back_btn,row,0,1,1 );
     panel.setHorizontalAlignment ( row++,0,'center' );
     back_btn  .setWidth          ( '300px' );
-    // back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); });
     back_btn.addOnClickListener  ( function(){ reloadBrowser(); });
     // setDefaultButton             ( back_btn,this.grid );
     setDefaultButton             ( back_btn,panel );
@@ -120,13 +119,19 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
     serverRequest ( fe_reqtype.logout,0,'Logout',
       function(data){},
       function(){
-        makePage ( function(){ new LogoutPage(sceneId,reason_key) },
-                   onLogout_func );
+        if (__local_user)
+              makeLocalLoginPage ( sceneId );
+        else  makePage ( function(){ new LogoutPage(sceneId,reason_key) },
+                         onLogout_func );
       },
       null
     );
 
-  } else {
+  } else if (__local_user)  {
+
+    makeLocalLoginPage ( sceneId );
+  
+  } else  {
 
     makePage ( function(){ new LogoutPage(sceneId,reason_key) },
                onLogout_func );

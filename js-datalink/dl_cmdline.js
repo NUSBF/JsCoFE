@@ -22,14 +22,17 @@ class appClient extends client {
     this.datalink.standalone = true;
 
     this.action_map = {
-      search: this.datalink.searchSourceCatalog,
+      search: this.datalink.searchSourceCatalogs,
       fetch: this.datalink.fetchData,
       remove: this.datalink.removeData,
       update: this.datalink.updateData,
       status: this.datalink.getDataStatus,
       status_all: this.datalink.getDataStatus,
+      sources: this.datalink.getSource,
+      sources_all: this.datalink.getAllSources,
       catalog: this.datalink.getSourceCatalog,
-      catalog_all: this.datalink.getAllSourceCatalogs
+      catalog_all: this.datalink.getAllSourceCatalogs,
+      stats: this.datalink.getDataStats
     }
 
     this.arg_info.user.def = '@local';
@@ -53,23 +56,15 @@ class appClient extends client {
       if (! called) {
         called = true;
         console.log("\nCaught interrupt signal");
-        this.abortAllJobs();
+        this.datalink.abortAllJobs();
         await tools.sleep(500);
         process.exit(1);
       }
     });
   }
 
-  abortAllJobs() {
-    for (const s of Object.values(this.datalink.source)) {
-      for (const j of Object.values(s.jobs)) {
-        j.abort();
-      }
-    }
-  }
-
   async waitForCatalogs() {
-    for (const s in this.datalink.source) {
+    for (const s in this.datalink.ds) {
       await this.datalink.waitForCatalog(s);
     }
   }
@@ -82,6 +77,7 @@ class appClient extends client {
       let size = 0;
       let size_s = 0;
       let percent = 0;
+      status_c = 0;
       for (const r of results) {
         let s = await this.doCall('status', user, r.source, r.id);
         if (s.status == status.completed) {
@@ -93,7 +89,7 @@ class appClient extends client {
         size_s += s.size_s;
       }
       if (size_s > 0) {
-        percent = size / size_s * 100
+        percent = (size / size_s) * 100
         if (percent >= 100) {
             percent = 100
         }
@@ -108,40 +104,65 @@ class appClient extends client {
 
   }
 
+  async sendFile(entry, dir, file) {
+    const in_stream = fs.createReadStream(file);
+
+    in_stream.on('error', (err) => {
+      log.error(err);
+      console.error(err.message);
+    });
+
+    in_stream.on('data', (data) => {
+      this.size_uploaded += data.length;
+      this.outputProgress(file);
+    });
+
+    try {
+      await this.datalink.uploadData(entry, in_stream, file, (err) => {
+      });
+    } catch (err) {
+        log.error(err);
+        console.error(err.message);
+    }
+  }
+
   async upload(user, source, id) {
+    // check username
+    if (! tools.validUserName(user)) {
+      return tools.errorMsg(`Invalid user name ${req.params.user}`, 400);
+    }
+
     let check = tools.validSourceId(source, id);
     if (check !== true) {
       return check;
     }
 
-    const in_s = fs.createReadStream(this.opts.file);
-    const out_file = tools.sanitizeFilename(this.opts.file);
+    await this.waitForCatalogs();
 
-    in_s.on('error', (err) => {
-      this.displayResult(tools.errorMsg(`${err}`, 500));
-    });
+    const entry = this.datalink.addEntryFromSource(user, source, id);
+    if (! entry) {
+      return tools.errorMsg(`Unable to add catalog entry for ${entry.dir}`, 500);
+    }
 
-    let out_s = await this.datalink.uploadData(user, source, id, out_file, in_s);
-
-    if (out_s) {
-      if (out_s instanceof stream.Writable) {
-        out_s.on('finish', async () => {
-          await this.datalink.uploadDataComplete(user, source, id, out_file);
-          this.displayResult(tools.successMsg(`Added ${out_file} to ${user}/${source}/${id}`));
+    for (const [i, file] of this.opts.files.entries()) {
+      try {
+        await this.fileCallback(file, async (f) => {
+          try {
+            await this.sendFile(entry, file, f);
+          } catch (err) {
+            return true;
+          }
+          return true;
         });
-
-        out_s.on('error', (err) => {
-          this.displayResult(tools.errorMsg(`Error adding to ${user}/${source}/${id}`, 500));
-        });
-      }
-
-      if (out_s.error) {
-        return tools.errorMsg(`${r.message}`, 500);
+      } catch (err) {
+        console.log(err);
       }
     }
 
+    this.datalink.dataComplete(entry);
+    process.stdout.write('\x1b[K');
+    return tools.successMsg(`Added files to ${entry.dir}`);
   }
-
 }
 
 const appclient = new appClient();

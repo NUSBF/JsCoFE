@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.01.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -2123,7 +2123,9 @@ class TaskDriver(object):
         # else:
         #     xyz = dtype_xyz.register ( mmcifPath,xyzPath,self.dataSerialNo,
         #                                self.job_id,None,self.outputDir() )
-        if not xyz:
+        if xyz:
+            xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+        else:
             self.file_stderr.write ( "  NONE XYZ DATA\n" )
             self.file_stderr.flush()
 
@@ -2181,7 +2183,6 @@ class TaskDriver(object):
                               self.outputDir() )
             model.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                   self.file_stderr,None )
-
         return model
 
     def registerEnsemble ( self,sequence,ensemblePath,checkout=True ):
@@ -2221,11 +2222,11 @@ class TaskDriver(object):
         if model.meta:
             msg += "<br><b>Estimated</b> "
             if "eLLG" in model.meta and model.meta["eLLG"]:
-                msg += "<b>eLLG :</b> " + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                msg += "<b>eLLG :</b> "  + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["seqId"]:
                 msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "%&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["rmsd"]:
-                msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&Aring;"
+                msg += "<b>RMSD :</b> "  + str(model.meta["rmsd"]) + "&Aring;"
             if "h_score" in model.meta and model.meta["h_score"]:
                 msg += "<b>H-score :</b> " + str(model.meta["h_score"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
 
@@ -2263,7 +2264,7 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def checkSpaceGroupChanged ( self,sol_spg,hkl,mtzfilepath,title=None ):
+    def checkSpaceGroupChanged ( self,sol_spg,hkl,mtzfilepath,title=None,force=False ):
         # Parameters:
         #  sol_spg      a string with space group obtained from solution's XYZ file
         #  hkl          HKL class of reflection data used to produce the XYZ file
@@ -2278,17 +2279,26 @@ class TaskDriver(object):
         #    def import_summary_id(self):  return None   # don't make summary table
 
         solSpg = sol_spg.replace(" ", "")
-        if solSpg and (solSpg!=hkl.getSpaceGroup().replace(" ", "")):
+        sp_changed = solSpg != hkl.getSpaceGroup().replace(" ", "")
+        if solSpg and (sp_changed or force):
 
             if title:
                 self.putTitle ( title )
-            self.putMessage ( "<font style='font-size:120%;'><b>Space Group changed to " +\
-                              sol_spg + "</b></font>" )
+            if sp_changed:
+                self.putMessage ( "<font style='font-size:120%;'>" +\
+                                  "<b>Space Group changed to " + sol_spg +\
+                                  "</b></font>" )
+            else:
+                self.putMessage ( "<font style='font-size:120%;'><b>" +\
+                                  "Reflection dataset reindexed</b></font>" )
             rvrow0      = self.rvrow
             self.rvrow += 1
             #if not self.generic_parser_summary:
             #    self.generic_parser_summary = {}
-            self.generic_parser_summary["z01"] = {'SpaceGroup':sol_spg}
+            if sp_changed:
+                self.generic_parser_summary["z01"]  = {'SpaceGroup':sol_spg}
+            else:
+                self.generic_parser_summary["z011"] = {'SpaceGroup':sol_spg}
             newHKLFPath = self.getOFName ( "_" + solSpg + "_" + hkl.getHKLFileName(),-1 )
             os.rename ( mtzfilepath,newHKLFPath )
             self.resetFileImport()
@@ -2303,9 +2313,10 @@ class TaskDriver(object):
                 pyrvapi.rvapi_set_text ( "<b>New reflection dataset created:</b> " +\
                         sol_hkl[0].dname,self.report_page_id(),rvrow0,0,1,1 )
 
-                self.putMessage (
-                    "<p><i>Consider re-merging your original dataset using " +\
-                    "this new one as a reference</i>" )
+                if sp_changed:
+                    self.putMessage (
+                        "<p><i>Consider re-merging your original dataset using " +\
+                        "this new one as a reference</i>" )
 
                 # Copy new reflection file to input directory in order to serve
                 # Refmac job(s) (e.g. as part of self.finaliseStructure()). The

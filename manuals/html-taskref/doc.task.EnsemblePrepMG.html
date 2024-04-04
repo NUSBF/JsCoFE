@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -436,14 +435,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-ensembleprepmg--page-root">Prepare MR Ensemble with CCP4mg<a class="headerlink" href="#doc-task-ensembleprepmg--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="prepare-mr-ensemble-with-ccp4mg">
+<h1 id="doc-task-ensembleprepmg--page-root">Prepare MR Ensemble with CCP4mg<a class="headerlink" href="#doc-task-ensembleprepmg--page-root" title="Permalink to this heading">¶</a></h1>
 <p>This task starts <a class="reference external" href="https://www.ccp4.ac.uk/MG/" rel="noopener noreferrer" target="_blank">CCP4mg</a> graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target protein, trim and ensemble them interactively with full visual control in real-time. This task uses <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a> software to make the <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensemble</span></a> from given structural homologs.</p>
 <p>MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and <a class="reference external" href="https://doi.org/10.1038/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AFDB (AlphaFold DataBase)</a> with a sequence-based search.</p>
 <p>Automatically generated ensembles may be further improved by manual selection of found homologs and removing unsuitable structural features. That can be especially useful in cases where homologous structures, found by <a class="reference external" href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195" rel="noopener noreferrer" target="_blank">phmmer</a>, have multiple domains and no structural alignment can adequately superpose all domains simultaneously. For such proteins, the user may wish to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.</p>
 <p>It may be convenient to group, or cluster, the homologs found on the basis of their structural similarity. This can be done in CCP4mg interface with the rainbow colouring of structures displayed, using their <a class="reference external" href="https://academic.oup.com/bioinformatics/article/21/7/951/268976" rel="noopener noreferrer" target="_blank">phmmer score</a>. The colouring scheme corresponds to that of the <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1160169/" rel="noopener noreferrer" target="_blank">HHpred</a> web-application, with red indicating a high-scoring match through to blue at the lower end of the scale.</p>
-
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<section id="parameters">
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
 <p><strong>PDB sequence redundancy level</strong> specifies the highest acceptable degree of similarity between structural models in the ensemble. The task offers a choice of 100%, 95%, 90%, 70% and 50% redundancy levels.</p>
 <p>At 100% redundancy level, all models with identical sequences, if found, are included in the ensemble. This option can be particularly useful for a protein that can adopt a range of different conformations or in cases where minor variations in the alignment between a set of very similar structures can guide the identification of the most conserved core residues.</p>
 <p>At redundancy level lower than 100%, only one out of two or more models with sequence similarity higher than the redundancy level, can be used. In such cases, a model from crystal with higher resolution and lower R-factor is selected as a representative of the redundant subset of models.</p>
@@ -452,24 +451,24 @@
 <blockquote>
 <div><p><strong>EBI-AFDB pLDDT cut-off:</strong> AlphaFold produces a per-residue estimate of its confidence score, called <strong>pLDDT</strong> on a scale from 0 - 100. This option sets the minimum level of <strong>pLDDT</strong> of selected residues.</p>
 <ul class="simple">
-<li><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</li>
-<li><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</li>
-<li><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</li>
-<li><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</li>
+<li><p><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</p></li>
+<li><p><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</p></li>
+<li><p><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</p></li>
+<li><p><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</p></li>
 </ul>
 </div></blockquote>
 <p>You can search only the PDB or EBI-AFDB by unticking the relevant box in task interface.</p>
-
-
-<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="workflow">
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permalink to this heading">¶</a></h2>
 <p>The task requires only amino acid sequence to prepare MR Ensemble with MrBump and CCP4mg.</p>
 <blockquote>
 <div><ul class="simple">
-<li>homologous structures are found in PDB and/or AFDB by <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a>, which uses <a class="reference external" href="https://www.ebi.ac.uk/Tools/hmmer/search/phmmer" rel="noopener noreferrer" target="_blank">phmmer</a> for scanning the corresponding sequence databases.</li>
-<li>Based on the sequence alignment, search models are made from found homologs using <a class="reference external" href="https://doi.org/10.1107/S0907444910051218" rel="noopener noreferrer" target="_blank">Sculptor</a>, which can modify the the structures in three different ways: main-chain deletion, side-chain pruning and B-factor modification.</li>
-<li>Prepared MR search models are superposed using <a class="reference internal" href="doc.task.Gesamt.html"><span class="doc">GESAMT</span></a>, and displayed in CCP4mg.</li>
-<li>Finally, MR ensemble(s) need to be composed from prepared and superposed models. This is achieved by manual selection of models and pruning the resulting ensembles on the basis of r.m.s.d. between superposed residues. The models are selected using graphical controls in the <strong>show ranges view</strong> window, and outlier residues are removed using the <strong>GESAMT variance slider</strong>.</li>
-<li>once suitable ensembles are created, they should be saved back to the Cloud, using <strong>File =&gt; Save all visible to the CCP4 Cloud</strong> menu item of CCP4mg.</li>
+<li><p>homologous structures are found in PDB and/or AFDB by <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a>, which uses <a class="reference external" href="https://www.ebi.ac.uk/Tools/hmmer/search/phmmer" rel="noopener noreferrer" target="_blank">phmmer</a> for scanning the corresponding sequence databases.</p></li>
+<li><p>Based on the sequence alignment, search models are made from found homologs using <a class="reference external" href="https://doi.org/10.1107/S0907444910051218" rel="noopener noreferrer" target="_blank">Sculptor</a>, which can modify the the structures in three different ways: main-chain deletion, side-chain pruning and B-factor modification.</p></li>
+<li><p>Prepared MR search models are superposed using <a class="reference internal" href="doc.task.Gesamt.html"><span class="doc">GESAMT</span></a>, and displayed in CCP4mg.</p></li>
+<li><p>Finally, MR ensemble(s) need to be composed from prepared and superposed models. This is achieved by manual selection of models and pruning the resulting ensembles on the basis of r.m.s.d. between superposed residues. The models are selected using graphical controls in the <strong>show ranges view</strong> window, and outlier residues are removed using the <strong>GESAMT variance slider</strong>.</p></li>
+<li><p>once suitable ensembles are created, they should be saved back to the Cloud, using <strong>File =&gt; Save all visible to the CCP4 Cloud</strong> menu item of CCP4mg.</p></li>
 </ul>
 </div></blockquote>
 <p>Created ensembles can be used in both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> tasks.</p>
@@ -483,8 +482,8 @@
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911007281" rel="noopener noreferrer" target="_blank">McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M. (2011) Presenting your structures: the CCP4mg molecular-graphics software. Acta Cryst. D67: 386-394</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798318003455" rel="noopener noreferrer" target="_blank">Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182</a></p>
 <p><a class="reference external" href="https://doi.org/10.1038/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">Jumper, J., Evans, R., Pritzel, A. et al. Highly accurate protein structure prediction with AlphaFold. Nature 596, 583–589 (2021).</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -529,7 +528,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

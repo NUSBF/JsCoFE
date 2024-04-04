@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2024
 #
 # ============================================================================
 #
@@ -67,16 +67,16 @@ class Slice(basic.TaskDriver):
             cmd += ['-xyz_source', 'alphafold']
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['-xyz_source', 'rosetta']
-        else:
-            cmd += ['-xyz_source', 'alphafold_bfactor']
+        # else:
+        #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold",plddt_threshold]
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 
-        nmodels  = 0
-        models = []
+        nmodels = 0
+        models  = []
 
         if rc.msg:
             self.putTitle ( "Failure" )
@@ -107,7 +107,7 @@ class Slice(basic.TaskDriver):
                         model.rmsd  = "1.2"
                         self.add_seqid_remark ( model,["100.0"] )
                         self.putModelWidget ( self.getWidgetId("model_btn"),
-                                              "Coordinates",model )
+                                              "Coordinates:&nbsp;",model )
                         models.append(model)
                     else:
                         self.putMessage ( "<h3>*** Failed to form Model object for " +\

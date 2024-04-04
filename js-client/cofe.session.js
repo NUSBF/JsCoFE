@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    14.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,12 +60,20 @@ function startSession ( sceneId,dev_switch )  {
     if (!rc)  {
 
       if (__local_user)  {
+        // start with CCP4 Cloud Desktop
+
+        // makeLoginPage ( sceneId );
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
-        __offline_message = 'on';  // show prompt "working offline"
-        login ( '**' + __local_user_id + '**','',sceneId,0 );
+        // __offline_message = 'on';  // show prompt "working offline"
+
+        // login ( '**' + __local_user_id + '**','',sceneId,0 );
+
+        makeLocalLoginPage ( sceneId );
+
         //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
+
       } else  {
 
         if (dev_switch==0)  {
@@ -180,6 +188,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __strict_dormancy    = response.data.strict_dormancy;
               __treat_private      = response.data.treat_private;
               __jobs_safe          = response.data.jobs_safe;
+              __has_datalink       = response.data.has_datalink;
               __demo_projects      = response.data.demo_projects;
               __environ_server     = response.data.environ_server;
               __my_workflows       = response.data.my_workflows;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,8 +112,8 @@ let version = 0;
 
 function CootMBHotButton()  {
   return {
-    'task'    : 'TaskCootMB',
-    'tooltip' : 'Launch Coot for model building'
+    'task_name' : 'TaskCootMB',
+    'tooltip'   : 'Launch Coot for model building'
   };
 }
 

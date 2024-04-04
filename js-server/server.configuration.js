@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -51,7 +51,7 @@ var emailer       = null;   // E-mailer configuration
 
 // ===========================================================================
 
-var windows_drives = [];   // list of Windows drives
+var windows_drives = [];    // list of Windows drives
 
 function listWindowsDrives ( callback_func )  {
   if (isWindows())  {
@@ -108,7 +108,7 @@ ServerConfig.prototype.url = function()  {
 ServerConfig.prototype.getQueueName = function()  {
   if ('exeType' in this)  {
     if (this.exeType=='SGE')  {
-      var n = this.exeData.indexOf('-q');
+      let n = this.exeData.indexOf('-q');
       if ((n>=0) && (n<this.exeData.length-1))
         return this.exeData[n+1];
     }
@@ -118,7 +118,7 @@ ServerConfig.prototype.getQueueName = function()  {
 
 
 ServerConfig.prototype.getPIDFilePath = function()  {
-var pidfilepath = null;
+let pidfilepath = null;
   if (this.storage)
     pidfilepath = path.join ( this.storage,'pids.dat' );
   else if (fe_server && fe_server.storage)
@@ -127,8 +127,8 @@ var pidfilepath = null;
 }
 
 ServerConfig.prototype.savePID = function()  {
-var pidfile = this.getPIDFilePath();
-var pids = utils.readObject ( pidfile );
+let pidfile = this.getPIDFilePath();
+let pids = utils.readObject ( pidfile );
   if (!pids)
     pids = {};
   pids[this.type] = process.pid.toString();
@@ -137,15 +137,15 @@ var pids = utils.readObject ( pidfile );
 }
 
 ServerConfig.prototype.killPrevious = function()  {
-var pidfile = this.getPIDFilePath();
-var pids    = utils.readObject ( pidfile );
+let pidfile = this.getPIDFilePath();
+let pids    = utils.readObject ( pidfile );
   if (pids && (this.type in pids) && (pids[this.type]!=process.pid))  {
     utils.killProcess ( pids[this.type] );
     delete pids[this.type];
     utils.writeObject ( pidfile,pids );
   }
 /*
-var pid     = utils.readString ( pidfile );
+let pid     = utils.readString ( pidfile );
   if (pid && (pid!=process.pid))  {
     utils.killProcess ( pid     );
     utils.removeFile  ( pidfile );
@@ -155,7 +155,7 @@ var pid     = utils.readString ( pidfile );
 
 ServerConfig.prototype.getMaxNProc = function()  {
 // returns maximal number of process a task is allowed to spawn
-var nproc = 1;
+let nproc = 1;
   if ('exeType' in this)  {
     if ('capacity' in this)
       nproc = this.capacity;
@@ -169,17 +169,17 @@ var nproc = 1;
 
 
 function _make_path ( filepath,login )  {
-var plist;
+let plist;
   if (filepath.constructor === Array)  {
     // list of paths is used when environmental variables depend on OS
-    for (var i=0;i<filepath.length;i++)  {
+    for (let i=0;i<filepath.length;i++)  {
       // paths in config file always to have '/' separator
       if (login)  plist = filepath[i].replace(/\$LOGIN/g,login).split('/');
             else  plist = filepath[i].split ( '/' );
-      var found = false;
-      for (var j=0;j<plist.length;j++)  {
+      let found = false;
+      for (let j=0;j<plist.length;j++)  {
         if (plist[j].startsWith('$'))  {
-          var env_name = plist[j].slice(1)
+          let env_name = plist[j].slice(1)
           if (process.env.hasOwnProperty(env_name))  {
             plist[j] = process.env[env_name];
             found    = true;
@@ -223,11 +223,13 @@ let paths = [];
   return paths;
 }
 
+
 ServerConfig.prototype.getJobsSafePath = function()  {
   if (this.hasOwnProperty('jobs_safe'))
     return this.jobs_safe.path;
   return '';
 }
+
 
 ServerConfig.prototype.getDemoProjectsMount = function()  {
   let mount = null;
@@ -255,6 +257,7 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
   }
   return mount;
 }
+
 
 ServerConfig.prototype.getVolumeDir = function ( loginData )  {
   if ((loginData.volume=='*storage*') || (!this.hasOwnProperty('projectsPath')))
@@ -311,6 +314,7 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 
 }
 
+
 ServerConfig.prototype.checkNCCapacity = function ( callback_func )  {
 
   if (this.in_use)  {
@@ -330,6 +334,7 @@ ServerConfig.prototype.checkNCCapacity = function ( callback_func )  {
 
 }
 
+
 ServerConfig.prototype._checkLocalStatus = function()  {
 
   this.isLocalHost = (this.host.toLowerCase()=='localhost') ||
@@ -343,13 +348,14 @@ ServerConfig.prototype._checkLocalStatus = function()  {
   }
 }
 
+
 ServerConfig.prototype.checkLogChunks = function ( nNewJobs,logNo )  {
   if (nNewJobs>this.logflow.chunk_length)  {
     if (this.logflow.log_file)  {
-      var logfpath = this.logflow.log_file + '.log';
+      let logfpath = this.logflow.log_file + '.log';
       if (utils.fileExists(logfpath))  {
-        var errfpath = this.logflow.log_file + '.err';
-        var mod = '.' + com_utils.padDigits(logNo+1,3)
+        let errfpath = this.logflow.log_file + '.err';
+        let mod = '.' + com_utils.padDigits(logNo+1,3)
         utils.moveFile ( logfpath,this.logflow.log_file + mod + '.log' );
         utils.moveFile ( errfpath,this.logflow.log_file + mod + '.err' );
         utils.writeString ( logfpath,'' );
@@ -361,16 +367,40 @@ ServerConfig.prototype.checkLogChunks = function ( nNewJobs,logNo )  {
   return false;
 }
 
+
 ServerConfig.prototype.isArchive = function()  {
 // returns true if CCP4 Cloud Archive is configured
   return ('archivePath' in fe_server) && fe_server.archivePath;
 }
   
+
 ServerConfig.prototype.getExchangeDirectory = function()  {
   if ('exchangeDir' in this)
     return this.exchangeDir;
   return null; // not a client server
 }
+
+
+ServerConfig.prototype.hasDataLink = function()  {
+  if (this.hasOwnProperty('datalink') && this.datalink.hasOwnProperty('api_url'))
+    return true;
+  return false;
+}
+
+
+ServerConfig.prototype.getDataLinkUrl = function()  {
+  if (this.hasDataLink())
+    return this.datalink.api_url;
+  return null;
+}
+
+
+ServerConfig.prototype.getDataLinkMountName = function()  {
+  if (this.hasDataLink() && this.datalink.hasOwnProperty('mount_name'))
+    return this.datalink.mount_name;
+  return '';
+}
+
 
 // ===========================================================================
 // Config service functions
@@ -416,10 +446,10 @@ function getEmailerConfig()  {
 }
 
 function CCP4Version()  {
-var version = '';
+let version = '';
   if (process.env.hasOwnProperty('CCP4'))  {
     // if ('CCP4' in process.env)  {
-      var s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
+      let s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
       if (s)
         version = s.split(/,?\s+/)[0];
     // }
@@ -689,11 +719,12 @@ function CCP4DirName()  {
 // --------------------------------------------------------------------------
 
 var _python_name = 'ccp4-python';
+var _python_ver  = '0.0.0';
+
 function pythonName()  {
   return path.join ( process.env.CCP4,'bin',_python_name );
 }
 
-var _python_ver = '0.0.0';
 function pythonVersion()  {
   return _python_ver;
 }
@@ -731,7 +762,7 @@ function readConfiguration ( confFilePath,serverType )  {
   if (_python_ver=='0.0.0')
     checkPythonVersion();
 
-  var confObj = utils.readObject ( confFilePath );
+  let confObj = utils.readObject ( confFilePath );
 
   if (!confObj)
     return 'cannot load configuration file ' + confFilePath + ' (missing/invalid?)';
@@ -763,7 +794,7 @@ function readConfiguration ( confFilePath,serverType )  {
 
 
     // read configuration file
-    for (var key in confObj.FrontEnd)
+    for (let key in confObj.FrontEnd)
       fe_server[key] = confObj.FrontEnd[key];
 
     // complete configuration
@@ -815,9 +846,9 @@ function readConfiguration ( confFilePath,serverType )  {
 
     // check disk volumes configuration
 
-    var storagePath = '';
+    let storagePath = '';
 
-    for (var fsname in fe_server.projectsPath)  {
+    for (let fsname in fe_server.projectsPath)  {
       fe_server.projectsPath[fsname].path =
                         _make_path ( fe_server.projectsPath[fsname].path,null );
       if ((!storagePath) || (fsname=='***'))
@@ -833,7 +864,7 @@ function readConfiguration ( confFilePath,serverType )  {
     else  fe_server.storage = storagePath;
 
     if (fe_server.isArchive())  {
-      for (var fsname in fe_server.archivePath)
+      for (let fsname in fe_server.archivePath)
         if (fe_server.archivePath[fsname].type=='prime-volume')
         fe_server.archivePrimePath = fe_server.archivePath[fsname].path;
       if (!fe_server.archivePrimePath)  {
@@ -869,10 +900,10 @@ function readConfiguration ( confFilePath,serverType )  {
       listWindowsDrives ( function(){
         if (fe_server.hasOwnProperty('cloud_mounts'))  {
           if (fe_server.cloud_mounts.hasOwnProperty('My Computer'))  {
-            var cmounts = {};
-            for (var i=0;i<windows_drives.length;i++)
+            let cmounts = {};
+            for (let i=0;i<windows_drives.length;i++)
               cmounts['My Computer ' + windows_drives[i]] = windows_drives[i] + '/';
-            for (var mount in fe_server.cloud_mounts)
+            for (let mount in fe_server.cloud_mounts)
               if (mount!='My Computer')
                cmounts[mount] = fe_server.cloud_mounts[mount];
             fe_server.cloud_mounts = cmounts;
@@ -888,7 +919,7 @@ function readConfiguration ( confFilePath,serverType )  {
   if (confObj.hasOwnProperty('FEProxy')) {
     fe_proxy = new ServerConfig('FEProxy');
     fe_proxy.localisation = 1;  // default
-    for (var key in confObj.FEProxy)
+    for (let key in confObj.FEProxy)
       fe_proxy[key] = confObj.FEProxy[key];
     if (!fe_proxy.externalURL)
       fe_proxy.externalURL = fe_proxy.url();
@@ -899,9 +930,9 @@ function readConfiguration ( confFilePath,serverType )  {
   if (confObj.hasOwnProperty('NumberCrunchers')) {
     client_server = null;
     nc_servers    = [];
-    for (var i=0;i<confObj.NumberCrunchers.length;i++)  {
-      var nc_server = new ServerConfig('NC'+i);
-      for (var key in confObj.NumberCrunchers[i])
+    for (let i=0;i<confObj.NumberCrunchers.length;i++)  {
+      let nc_server = new ServerConfig('NC'+i);
+      for (let key in confObj.NumberCrunchers[i])
         nc_server[key] = confObj.NumberCrunchers[i][key];
       nc_server.current_capacity = nc_server.capacity;  // initially, assume full capacity
       if (!nc_server.externalURL)
@@ -954,9 +985,9 @@ function readConfiguration ( confFilePath,serverType )  {
       emailer.maintainerEmail = 'ccp4@ccp4.ac.uk';
     if (emailer.hasOwnProperty('auth'))  {
       if (emailer.auth.hasOwnProperty('file'))  {
-        var auth = utils.readString ( emailer.auth.file );
+        let auth = utils.readString ( emailer.auth.file );
         if (auth)  {
-          var up = auth.split(/\r?\n/)[0].split(' ').filter(function(i){return i});
+          let up = auth.split(/\r?\n/)[0].split(' ').filter(function(i){return i});
           emailer.auth.user = up[0].trim();
           emailer.auth.pass = up[1].trim();
           //console.log ( '"' + emailer.auth.user + '"' );
@@ -964,7 +995,7 @@ function readConfiguration ( confFilePath,serverType )  {
         } else  {
           emailer.auth.user = 'xxx';  // will fail
           emailer.auth.pass = 'xxx';  // will fail
-          var msg = 'cannot read e-mail account data file ' + emailer.auth.file;
+          let msg = 'cannot read e-mail account data file ' + emailer.auth.file;
           log.standard ( 4,msg );
           log.error    ( 4,msg );
           log.standard ( 4,'e-mailer will not work' );
@@ -990,12 +1021,12 @@ function setServerConfig ( server_config )  {
 
 function assignPorts ( assigned_callback )  {
 
-  var servers = [];
+  let servers = [];
 
   function set_server ( config,callback )  {
-    var server  = http.createServer();
+    let server  = http.createServer();
     servers.push ( server );
-    var port    = config.port;
+    let port    = config.port;
     config.port = 0;
     server.on('error',function(e){
       if (e.code=='EADDRINUSE') {
@@ -1069,7 +1100,7 @@ function assignPorts ( assigned_callback )  {
   // ===========================================================================
 
   function checkServers ( callback )  {
-    var b = (!fe_server.isLocalHost) || (fe_server.port>0);
+    let b = (!fe_server.isLocalHost) || (fe_server.port>0);
     if (fe_proxy)
       b = b && ((!fe_proxy.isLocalHost) || (fe_proxy.port>0));
     nc_servers.forEach ( function(config){
@@ -1086,12 +1117,12 @@ function assignPorts ( assigned_callback )  {
     log.standard ( 1,'FE: url=' + fe_server.url() );
     if (fe_proxy)
       log.standard ( 1,'FE-Proxy: url=' + fe_proxy.url() );
-    for (var i=0;i<nc_servers.length;i++)
+    for (let i=0;i<nc_servers.length;i++)
       log.standard ( 2,'NC['    + i + ']: name=' + nc_servers[i].name +
                        ' type=' + nc_servers[i].exeType +
                        ' url='  + nc_servers[i].url() );
 
-    var nServers = servers.length;
+    let nServers = servers.length;
     function oneDown()  {
       nServers--;
       if ((nServers<=0) && (assigned_callback))
@@ -1108,13 +1139,13 @@ function assignPorts ( assigned_callback )  {
 
 
 function getClientInfo ( inData,callback_func )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
   if (fe_server)  {
-    var rData = {};
+    let rData = {};
     if (client_server) rData.local_service = client_server.url();
                   else rData.local_service = null;
-    if (fe_server && (inData==null)) rData.fe_url = fe_server.url();
-                                else rData.fe_url = null;
+    if (fe_server && (inData==null))  rData.fe_url = fe_server.url();
+                                else  rData.fe_url = null;
     rData.via_proxy = false;  // will be changed by porxy if necessary
     response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
   } else  {
@@ -1125,9 +1156,9 @@ var response = null;  // must become a cmd.Response object to return
 
 
 function getFEProxyInfo ( inData,callback_func )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
   if (fe_server)  {
-    var rData = {};
+    let rData = {};
     rData.proxy_config   = fe_proxy;
     rData.fe_config      = fe_server;
     rData.ccp4_version   = CCP4Version();
@@ -1142,14 +1173,14 @@ var response = null;  // must become a cmd.Response object to return
 
 
 function getAppStatus ( callback_func )  {
-var status  = [];
-var msg     = cmd.appName() + ' status: HEALTHY\n';
-var nNCs    = 0;
-var nNCDead = 0;
+let status  = [];
+let msg     = cmd.appName() + ' status: HEALTHY\n';
+let nNCs    = 0;
+let nNCDead = 0;
 
   function __trim_name ( name )  {
     if (name)  {
-      var nm = com_utils.padStringRight ( name,' ',15 );
+      let nm = com_utils.padStringRight ( name,' ',15 );
       if (nm.length>15) 
         nm = nm.slice(0,15);
       return nm;
@@ -1167,16 +1198,16 @@ var nNCDead = 0;
     } else if (nc_servers[server_no] && nc_servers[server_no].in_use)  {
       nNCs++;
       nc_servers[server_no].checkNCStatus ( function(error,response,body,config){
-        var servName = '\nNC' + com_utils.padStringLeft ( '' + server_no,'0',2 ) +
+        let servName = '\nNC' + com_utils.padStringLeft ( '' + server_no,'0',2 ) +
             ' ' + __trim_name(nc_servers[server_no].name);
         if ((error=='not-in-use') && (nc_counter>0))  {
           nNCDead++;
           msg += servName + '    misconfigured/not-in-use';
         } else if ((!error) && (response.statusCode==200))  {
 
-          var codeVersion = response.body.version;
-          var startDate   = response.body.data.config.startDate;
-          var ccp4Version = response.body.data.ccp4_version;
+          let codeVersion = response.body.version;
+          let startDate   = response.body.data.config.startDate;
+          let ccp4Version = response.body.data.ccp4_version;
   
           msg += servName + '    active   \"' + codeVersion + '\"   ' + ccp4Version + 
                  '      \"' + startDate + '\"';
@@ -1227,7 +1258,7 @@ var nNCDead = 0;
 
 function writeConfiguration ( fpath )  {
 
-  var confObj = {};
+  let confObj = {};
   if (desktop)    confObj['Desktop']         = desktop;
   if (fe_server)  confObj['FrontEnd']        = fe_server;
   if (fe_proxy)   confObj['FEProxy']         = fe_proxy;
@@ -1244,11 +1275,11 @@ function writeConfiguration ( fpath )  {
 function isSharedFileSystem()  {
 // Returns true in case of shared file system setup, i.e. when access to data
 // on client and at least one NC is possible via the file system mount.
-var isFSClient = false;
-var isFSNC     = false;
-var isClient   = false;
+let isFSClient = false;
+let isFSNC     = false;
+let isClient   = false;
 
-  for (var i=0;i<nc_servers.length;i++)
+  for (let i=0;i<nc_servers.length;i++)
     if (nc_servers[i].in_use)  {
       if (nc_servers[i].exeType=='CLIENT')  {
         isClient   = true;
@@ -1264,15 +1295,15 @@ var isClient   = false;
 
 function isLocalSetup()  {
 // Returns true if all servers are running on localhost.
-var isLocal = fe_server.localSetup;
-  for (var i=0;(i<nc_servers.length) && isLocal;i++)
+let isLocal = fe_server.localSetup;
+  for (let i=0;(i<nc_servers.length) && isLocal;i++)
     isLocal = nc_servers[i].localSetup;
   return isLocal;
 }
 
 
 function getRegMode()  {
-  var mode = 'email';
+  let mode = 'email';
   if ('regMode' in fe_server)
     mode = fe_server.regMode;
   if (mode=='email')  {
@@ -1333,14 +1364,14 @@ function getTmpDir()  {
 }
 
 function getTmpFile()  {
-  var tmpDir = getTmpDir();
+  let tmpDir = getTmpDir();
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
       log.error ( 5,'temporary directory ' + tmpDir + ' cannot be created' );
       return null;
     }
   }
-  var fname  = '';
+  let fname  = '';
   do {
     fname = path.join ( tmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
   } while (utils.fileExists(fname));
@@ -1356,20 +1387,20 @@ function isWindows()  {
 function getExcludedTasks()  {
 // Returns list of tasks excluded on all number crunchers.
 // NB: does not take into account servers with 'only_tasks' lists.
-var excluded = [];
+let excluded = [];
 
-  for (var i=0;i<nc_servers.length;i++)
+  for (let i=0;i<nc_servers.length;i++)
     if (nc_servers[i].in_use)  {
-      var excl = nc_servers[i].exclude_tasks;
-      for (var j=0;j<excl.length;j++)
+      let excl = nc_servers[i].exclude_tasks;
+      for (let j=0;j<excl.length;j++)
         if (excluded.indexOf(excl[j])<0)
           excluded.push ( excl[j] );
     }
 
-  for (var i=0;i<nc_servers.length;i++)
+  for (let i=0;i<nc_servers.length;i++)
     if (nc_servers[i].in_use)  {
-      var excl = nc_servers[i].exclude_tasks;
-      for (var j=excluded.length-1;j>=0;j--)
+      let excl = nc_servers[i].exclude_tasks;
+      for (let j=excluded.length-1;j>=0;j--)
         if (excl.indexOf(excluded[j])<0)
           excluded.splice ( j,1 );
     }
@@ -1381,9 +1412,9 @@ var excluded = [];
 function checkOnUpdate ( callback_func )  {
   try {
     if ('CCP4' in process.env)  {
-      var ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
+      let ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists(ccp4um))  {
-        var job = utils.spawn ( ccp4um,['-check-silent'],{} );
+        let job = utils.spawn ( ccp4um,['-check-silent'],{} );
         job.on ( 'close',function(code){
           callback_func ( code );  // <254:  number of updates available
                                    //  254:  CCP4 release

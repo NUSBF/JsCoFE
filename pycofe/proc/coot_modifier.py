@@ -3,7 +3,7 @@
 # first version of script and idea from Bernhard Lohkamp for Eugene
 # run: --script coot_jscofe.py
 #
-#  23.03.2020
+#  25.03.2024
 #
 
 #info_dialog ( "In order to save the edited structure in your Project,\n" +\
@@ -84,7 +84,7 @@ if (have_coot_python):
                     ccp4_python,
                     select_file_dialog,
                     "Select Coot backup file",
-                    "Coot backup files (*.pdb.gz)",
+                    "Coot backup files (*.cif.gz);Coot backup PDB files (*.pdb.gz)",
                     "--start-dir",cloud_backup_dir,
                     "--no-settings"
                 ], stdout=subprocess.PIPE

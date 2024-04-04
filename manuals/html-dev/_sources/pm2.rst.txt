@@ -1,0 +1,300 @@
+.. _pm2:
+
+============================
+Managing CCP4 Cloud with PM2
+============================
+
+What is PM2?
+------------
+PM2 is an advanced production process manager for Node.JS.
+
+Using PM2 we can manage the Front End and Number Cruncher processes, including
+automatic restarting on failure, managing processes on system startup, and
+logging.
+
+The official site with documentation for PM2 is https://pm2.keymetrics.io/.
+
+Setup/Launcher script
+---------------------
+CCP4 Cloud now contains a new script ``setup.sh`` that works as both a set-up
+and launcher script for both Front Ends and Number Crunchers.
+
+This can be used with or without PM2.
+
+Installing/Setup
+----------------
+The current command line usage of setup.sh is::
+
+   $ /path/to/jsCoFE/setup.sh
+   Use start-fe or start-nc to start Front End or Number Cruncher
+   Use setup-fe or setup-nc to install to current folder
+
+The ``setup.sh`` script is designed to be left in the ``jsCoFE/setup.sh``
+folder and to be run from elsewhere - there is no need to copy it.
+
+Initially you should call it with the arguments ``setup-fe`` or ``setup-nc``
+from an empty folder you want to install to. It will then copy some example
+configurations across, and set up a symbolic link to ``setup.sh``.
+
+The symbolic link will be named ``start-fe.sh`` or ``start-nc.sh`` depending on
+the install mode. The ``setup.sh`` script detects when it has been run via the
+symbolic link and will start up either the Front End or a Number Cruncher
+depending on the name.
+
+When running setup.sh it will never overwrite existing configs.
+
+For example - create a folder and change to it::
+
+   $ mkdir frontend
+   $ cd frontend
+
+Run the ``setup.sh`` with ``setup-fe`` to install the Front End example configurations::
+
+   $ /path/to/jsCoFE/setup.sh setup-fe
+
+   Are you sure you want to install the start script and configs in /path/to/frontend?
+   Type Y/y to confirm.
+   'start-fe.sh' -> '/path/to/jsCoFE/setup.sh'
+   '/path/to/jsCoFE/setup/pm2/fe-ecosystem.config.js' -> 'ecosystem.config.js'
+   '/path/to/jsCoFE/setup/fe-config.json' -> 'frontend/config.json'
+   Start up script and default configurations copied to frontend
+   Copy start.d/env.sh.dist to start.d/env.sh and edit accordingly.
+   If managing with pm2, please edit ecosystem.cfg as required.
+
+If installed with ``setup.sh setup-fe`` you should now have the following
+files installed in your folder::
+
+   ./start.d/env.sh.dist
+   ./ecosystem.config.js
+   ./start-fe.sh
+   ./config.json
+
+* ``start.d/env.sh.dist`` is an example configuration to set environment variables for CCP4 Cloud. See below for more details.
+* ``ecosystem.config.js`` is a configuration for managing the Front End with PM2.
+* ``start-fe.sh`` is the launch script (which is a symlink to /path/to/jsCoFE/setup.sh).
+* ``config.json`` is an example configuration file for the CCP4 Cloud Front End
+
+If installed with ``setup.sh setup-nc.sh`` you should now have the following
+files installed in your folder::
+
+   ./start.d/env.sh.dist
+   ./ecosystem.config.js
+   ./start-nc.sh
+   ./config.json
+
+* ``start.d/env.sh.dist`` as above
+* ``ecosystem.config.js`` is a configuration for managing the Number Cruncher with PM2.
+* ``start-nc.sh`` is the launch script (which is a symlink to /path/to/jsCoFE/setup.sh).
+* ``config.json`` is an example configuration file for the CCP4 Cloud Number Cruncher
+
+The start.d folder
+~~~~~~~~~~~~~~
+Any files in ``start.d`` with the extension ``.sh`` are executed by the launch
+script.
+
+This allows splitting out configurations into multiple files which allows
+flexibility to easily enable/disable environment variables or other custom
+scripts.
+
+An example ``env.sh.dist`` file is included. This file should be copied to
+``start.d/env.sh`` and edited accordingly.
+
+The file ``env.sh.dist`` includes environment variables that need to be
+configured for CCP4 Cloud.
+
+By default it contains::
+
+   # Copy to env.sh and uncomment and edit as appropriate.
+
+   # Path to CCP4 installation
+   CCP4_DIR="/PATH/TO/ccp4"
+
+   # Uncomment if Buster is installed
+   # BUSTER_DIR=/PATH/TO/buster-main
+
+   # Not having PDB archive locally (optional but strongly recommended) will cause
+   # downloading from PDB each time a PDB file is required. This may slow down
+   # certain tasks considerably.
+   # export PDB_DIR=/PATH/TO/pdb
+   # export PDB_SEQDB=/PATH/TO/pdb_derived_data/pdb_seqres.txt
+
+   # export AFDB_SEQDB=/PATH/TO/afdb/sequences.fasta
+
+   # export SIMBAD_DB=/PATH/TO/simbad_db
+
+   # Gesamt archive (optional) is needed for fast structural searches
+   # in the PDB with Gesamt
+   # export GESAMT_ARCHIVE=/PATH/TO/db/gesamt_archive
+
+   # CCP4 Cloud documentation repository (optional) is needed for making
+   # contributions to the CCP4 Cloud documentation project
+   # export DOCREPO=/PATH/TO/jscofe-dev/jscofe-doc
+
+   # no path is required for AF2 configuration on the Front End, but the variable should be defined
+   # export ALPHAFOLD_CFG=1
+
+   # uncomment to enable CCP4(i2) demo data
+   # export USE_CDEMODATA=1
+
+The ecosystem.config.js configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is the PM2 configuration file.
+
+By default for a Front End install it contains::
+
+   module.exports = {
+     apps: [{
+       name: "FE",
+       script: "start-fe.sh",
+       exp_backoff_restart_delay: 100
+     }]
+   }
+
+For a Number Cruncher install it contains::
+
+   module.exports = {
+     apps: [{
+       name: "NC",
+       script: "start-nc.sh",
+       exp_backoff_restart_delay: 100
+     }]
+   }
+
+The ``ecosystem.config.js`` file describes which application PM2 should start and
+can contain additional options for PM2. The structure of this file
+is described at https://pm2.keymetrics.io/docs/usage/application-declaration/.
+
+* **name**: this will reflect what the process is referred to within PM2. If a
+  machine has a number of Front Ends running (e.g., for production, and development),
+  then the name field can be changed accordingly.
+* **script**: refers to the application it will be managing. In this case it is ``start-fe.sh``.
+* **exp_backoff_restart_delay**: If the application crashes PM2 will restart it.
+  Using this option, if the application crashes again immediately, instead of
+  restarting repeatedly (e.g., in the case of a major failure), this causes it
+  to incrementally increase the delay time between restarts. Our default value
+  for this is 100ms. This option is described on
+  https://pm2.keymetrics.io/docs/usage/restart-strategies/
+
+The Front End or Number Cruncher config.json
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is an example Front End or Number Cruncher configuration depending on
+which ``setup.sh`` install method was used. This needs to be configured for
+your system - as detailed in :ref:`CCP4 Cloud configuration reference<ccp4-cloud-configuration>`
+
+Launching a Front End or Number Cruncher
+----------------------------------------
+A CCP4 Cloud Front End can be started by running ``./start-fe.sh`` or a
+Number Cruncher by running ``./start-nc.sh`` - note this method
+of launching a Front End does not utilise PM2. It is also possible to launch
+``setup.sh`` from the install folder with the arguments ``start-fe`` or ``start-nc``.
+
+Installing PM2
+~~~~~~~~~~~~~~
+PM2 can either be installed for the user that the Front End/Number Cruncher will
+be running under, or it can be installed system-wide. If installed for just the
+user, the pm2 binary will need to be added to the users PATH environment
+variable (e.g., via ``~/.bashrc``).
+
+PM2 can be installed using ``npm``. ``npm`` is included with Debian/Ubuntu and
+can be installed with ``sudo apt-get install npm``.
+
+**Installing for a user:**
+
+To install npm for the user that CCP4 Cloud will be running under, switch to
+that user and run::
+
+   cd ~
+   npm install pm2
+
+In this case the pm2 binaries will be installed in ``~/node_modules/pm2/bin/``
+
+**Installing system-wide:**
+
+To install npm system-wide, use::
+
+   sudo npm install -g pm2
+
+Installing PM2 systemwide can be useful as it will be available for all
+users and will be in the system path (as a symlink will be created to it from
+``/usr/local/bin/pm2``)
+
+Managing CCP4 Cloud with PM2
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once a Front End/Number Cruncher is configured and working (and tested with
+launching via ``./start-fe.sh`` or ``./start-nc.sh``) it can be started and managed
+via PM2.
+
+To start a Front End or Number Cruncher process with PM2, just ``cd`` to the
+install folder with the ``ecosystem.config.js`` in and run::
+
+   pm2 start
+
+PM2 will output its status which should look like the following::
+
+   ┌────┬───────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+   │ id │ name  │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+   ├────┼───────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+   │ 0  │ FE    │ default     │ N/A     │ fork    │ 13108    │ 3h     │ 2    │ online    │ 0%       │ 4.0mb    │ ccp4cloud│ disabled │
+   └────┴───────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+Or with both a Front End and Number cruncher started via PM2::
+
+   ┌────┬───────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+   │ id │ name  │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+   ├────┼───────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+   │ 0  │ FE    │ default     │ N/A     │ fork    │ 13108    │ 3h     │ 2    │ online    │ 0%       │ 4.0mb    │ ccp4cloud│ disabled │
+   │ 1  │ NC    │ default     │ N/A     │ fork    │ 13135    │ 3h     │ 2    │ online    │ 0%       │ 4.1mb    │ ccp4cloud│ disabled │
+   └────┴───────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+
+Starting CCP4 Cloud on system boot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once everything is configured and running via PM2 you can tell PM2 to start
+these processes on system startup.
+
+To do this you execute::
+
+   pm2 startup
+
+PM2 will then give you the command line to run to install its systemd service
+to start the processes on system boot::
+
+   [PM2] Init System found: systemd
+   [PM2] To setup the Startup Script, copy/paste the following command:
+   sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u ccp4cloud --hp /home/ccp4cloud
+
+To disable PM2 from starting on system boot, you can run::
+
+   pm2 unstartup
+
+And PM2 will give you the command line to disable the systemd service::
+
+   [PM2] Init System found: systemd
+   [PM2] To unsetup the Startup Script, copy/paste the following command:
+   sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 unstartup systemd -u ccp4cloud --hp /home/ccp4cloud
+
+Useful PM2 commands
+-------------------
+
+To get help on all available pm2 commands run::
+
+   pm2 -h
+
+or::
+
+   pm2 --help
+
+To get more help on a specific command including showing additional options use::
+
+   pm2 [command] -h
+
+Here are some common pm2 commands::
+
+   pm2 status - show the current status
+   pm2 stop [id/name] - stop a running process
+   pm2 start [id/name] - start a process
+   pm2 restart [id/name] - restart a process
+   pm2 delete [id/name] - delete a running process from being managed by pm2.
+   pm2 logs - view logs

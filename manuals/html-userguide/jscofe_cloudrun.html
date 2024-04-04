@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -319,15 +318,15 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<span id="cloudrun"></span><h1 id="jscofe-cloudrun--page-root"><span class="section-number">3. </span>Starting CCP4 Cloud projects from the command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="starting-ccp4-cloud-projects-from-the-command-line">
+<span id="cloudrun"></span><h1 id="jscofe-cloudrun--page-root"><span class="section-number">3. </span>Starting CCP4 Cloud projects from the command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4 Cloud projects can be initiated and executed from the command line, which may be useful in many scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, automatically to the specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by custom script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Functionality, described in this article, requires local CCP4 setup version 8.0.003 or higher.</p>
+<p class="admonition-title">Note</p>
+<p>Functionality, described in this article, requires local CCP4 setup version 8.0.003 or higher.</p>
 </div>
-
-<h2 id="cloudrun-utility"><span class="section-number">3.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this headline">¶</a></h2>
+<section id="cloudrun-utility">
+<h2 id="cloudrun-utility"><span class="section-number">3.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this heading">¶</a></h2>
 <p>CloudRun utility, included in <a class="reference external" href="https://www.ccp4.ac.uk/download/" rel="noopener noreferrer" target="_blank">CCP4 Software Suite</a>, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, <strong>use CCP4 Console</strong> on Windows):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -c command_file
 </pre></div>
@@ -347,13 +346,13 @@ eof
 <p>where <code class="docutils literal notranslate"><span class="pre">task</span></code> is one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">import</span></code>: create standard project, <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">import data</a> and stop</li>
-<li><code class="docutils literal notranslate"><span class="pre">hop-on</span></code>: create <a class="reference external" href="../html-taskref/doc.task.Migrate.html" rel="noopener noreferrer" target="_blank">hop-on</a> project, import data and stop</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAFMR.html" rel="noopener noreferrer" target="_blank">workflow</a> based on structure prediction with AlphaFold-2</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> utilising <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.Simbad.html" rel="noopener noreferrer" target="_blank">Simbad</a> pipelines</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAEP.html" rel="noopener noreferrer" target="_blank">Auto-EP workflow</a> based in <a class="reference external" href="../html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">Crank-2</a> pipeline</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-ref</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowREL.html" rel="noopener noreferrer" target="_blank">Auto-REL workflow</a> , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules</li>
-<li><code class="docutils literal notranslate"><span class="pre">dimple</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.Dimple.html" rel="noopener noreferrer" target="_blank">Dimple</a> workflow for fast ligand blob identification and fitting</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">import</span></code>: create standard project, <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">import data</a> and stop</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hop-on</span></code>: create <a class="reference external" href="../html-taskref/doc.task.Migrate.html" rel="noopener noreferrer" target="_blank">hop-on</a> project, import data and stop</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAFMR.html" rel="noopener noreferrer" target="_blank">workflow</a> based on structure prediction with AlphaFold-2</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> utilising <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.Simbad.html" rel="noopener noreferrer" target="_blank">Simbad</a> pipelines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAEP.html" rel="noopener noreferrer" target="_blank">Auto-EP workflow</a> based in <a class="reference external" href="../html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">Crank-2</a> pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto-ref</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowREL.html" rel="noopener noreferrer" target="_blank">Auto-REL workflow</a> , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dimple</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.Dimple.html" rel="noopener noreferrer" target="_blank">Dimple</a> workflow for fast ligand blob identification and fitting</p></li>
 </ul>
 </div></blockquote>
 <p>Example:</p>
@@ -399,17 +398,17 @@ $
 </div>
 <p><strong>The use of CloudRun utility is capped by the maximum number of runs per day</strong> (<em>configurable</em>).</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<p class="last">The remaining number of available runs is shown in CCP4 Cloud pages only if it is less than the maximum.</p>
+<p class="admonition-title">Important</p>
+<p>The remaining number of available runs is shown in CCP4 Cloud pages only if it is less than the maximum.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The CloudRun quota may be adjusted by CCP4 Cloud administrator for individual users.</p>
+<p class="admonition-title">Note</p>
+<p>The CloudRun quota may be adjusted by CCP4 Cloud administrator for individual users.</p>
 </div>
-
-
-<h2 id="command-file-keywords"><span class="section-number">3.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
+</section>
+<section id="command-file-keywords">
+<h2 id="command-file-keywords"><span class="section-number">3.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this heading">¶</a></h2>
+<dl>
 <dt><strong>URL</strong></dt><dd><p><em>(mandatory)</em></p>
 <p>CCP4 Cloud server URL, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL</span>   <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cloud</span><span class="o">.</span><span class="n">ccp4</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span>
@@ -444,12 +443,12 @@ for example:</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Using <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> instead of keyword pair <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> is recommended
+<p class="admonition-title">Note</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> instead of keyword pair <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> is recommended
 if a collection of cloudrun scripts should be maintained and/or exchanged between users.</p>
 </div>
 </div></blockquote>
-<dl class="docutils">
+<dl>
 <dt><strong>PROJECT</strong></dt><dd><p><em>(mandatory)</em></p>
 <p>Project Id, where the data should be imported, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PROJECT</span>   <span class="n">cloudrun</span><span class="o">-</span><span class="n">amr</span>
@@ -478,7 +477,7 @@ as a root node. If <code class="docutils literal notranslate"><span class="pre">
 created in <em>“My Projects”</em>.</p>
 </dd>
 </dl>
-<dl class="docutils" id="cloudrun-task">
+<dl id="cloudrun-task">
 <dt><strong>TASK</strong></dt><dd><p><em>(optional)</em></p>
 <p>The task that should be performed after data is uploaded.</p>
 <p>Can be one of <code class="docutils literal notranslate"><span class="pre">import</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>, <code class="docutils literal notranslate"><span class="pre">hop-on</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ref</span></code> or <code class="docutils literal notranslate"><span class="pre">dimple</span></code>,
@@ -488,8 +487,8 @@ as described above.</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">if <code class="docutils literal notranslate"><span class="pre">TASK</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
+<p class="admonition-title">Note</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">TASK</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
 </div>
 </dd>
 </dl>
@@ -501,7 +500,7 @@ as described above.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<dl class="docutils" id="cloudrun-file">
+<dl id="cloudrun-file">
 <dt><strong>FILE</strong></dt><dd><p><em>(required)</em></p>
 <p>Path to file that should be uploaded, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FILE</span>   <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">/</span><span class="n">my_file</span><span class="o">.</span><span class="n">mtz</span>
@@ -510,8 +509,8 @@ as described above.</p>
 <p>The following files extensions are acceptable: <code class="docutils literal notranslate"><span class="pre">.mtz</span></code>, <code class="docutils literal notranslate"><span class="pre">.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>,
 <code class="docutils literal notranslate"><span class="pre">.pir</span></code>, <code class="docutils literal notranslate"><span class="pre">.cif</span></code>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet confusion
+<p class="admonition-title">Note</p>
+<p>CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet confusion
 may arise when complex MTZ file (combining several datasets and/or phases), non-protein sequences or CIF files are
 uploaded. In order to avoid possible ambiguity, use specific keywords described below.</p>
 </div>
@@ -533,8 +532,8 @@ uploaded. In order to avoid possible ambiguity, use specific keywords described 
 </div>
 <p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The file may contain several aminoacid sequences in FASTA/PIR formats, but it <strong>must not</strong> include nucleic acid
+<p class="admonition-title">Note</p>
+<p>The file may contain several aminoacid sequences in FASTA/PIR formats, but it <strong>must not</strong> include nucleic acid
 sequence(s)</p>
 </div>
 </dd>
@@ -544,8 +543,8 @@ sequence(s)</p>
 </div>
 <p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only DNA sequence(s) must be found in the file.</p>
+<p class="admonition-title">Note</p>
+<p>Only DNA sequence(s) must be found in the file.</p>
 </div>
 </dd>
 <dt><strong>SEQ_RNA</strong></dt><dd><p>Path to file with RNA sequence, for example:</p>
@@ -554,8 +553,8 @@ sequence(s)</p>
 </div>
 <p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only RNA sequence(s) must be found in the file.</p>
+<p class="admonition-title">Note</p>
+<p>Only RNA sequence(s) must be found in the file.</p>
 </div>
 </dd>
 <dt><strong>XYZ</strong></dt><dd><p>Path to file with macromolecular atomic model, for example:</p>
@@ -580,8 +579,8 @@ sequence(s)</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">SMILES</span></code> and <code class="docutils literal notranslate"><span class="pre">LIG_CODE</span></code> are mutually exclusive and can be used only for describing a single
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">SMILES</span></code> and <code class="docutils literal notranslate"><span class="pre">LIG_CODE</span></code> are mutually exclusive and can be used only for describing a single
 ligand that should be fitted in a structure solution workflow. For <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> and <code class="docutils literal notranslate"><span class="pre">import</span></code>
 tasks, use <code class="docutils literal notranslate"><span class="pre">LIGAND</span></code> keyword instead.</p>
 </div>
@@ -591,15 +590,15 @@ tasks, use <code class="docutils literal notranslate"><span class="pre">LIGAND</
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The project will be loaded in browser only if browser was displaying the <em>Project List Page</em> when
+<p class="admonition-title">Note</p>
+<p>The project will be loaded in browser only if browser was displaying the <em>Project List Page</em> when
 the CloudRun utility was run.</p>
 </div>
 </dd>
 </dl>
-
-
-<h2 id="example"><span class="section-number">3.3. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example">
+<h2 id="example"><span class="section-number">3.3. </span>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
 <p>The following commands will import data and start automatic Molecular Replacement workflow including the
 generation of AlphaFold-2 model and ligand fitting, for solving MDM2 Protein bound to Nutlin molecule
 from the standard set of CCP4 examples:</p>
@@ -621,18 +620,18 @@ eof
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Use your actual CCP4 Cloud login name and cloudrun id in <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> fields; both can be found in
+<p class="admonition-title">Note</p>
+<p>Use your actual CCP4 Cloud login name and cloudrun id in <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> fields; both can be found in
 “My Account” page in CCP4 Cloud.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
+<p class="admonition-title">Note</p>
+<p>AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
 CCP4 Cloud instance is supported by CCP4 (<a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>), but it may be unavailable on other servers.
 In this case, this example is solvable by changing TASK from <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code> to <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>.</p>
 </div>
-
-
+</section>
+</section>
 
 
           </article>
@@ -677,7 +676,7 @@ In this case, this example is solvable by changing TASK from <code class="docuti
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -134,7 +134,7 @@ if (forceStart)  {
 } else  {
   startFE = feConfig.isLocalHost;
   startNC = [];
-  for (var i=0;i<ncConfigs.length;i++)
+  for (let i=0;i<ncConfigs.length;i++)
     startNC.push ( (ncConfigs[i].exeType=='CLIENT') || ncConfigs[i].isLocalHost );
 }
 

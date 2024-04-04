@@ -1,0 +1,72 @@
+======================================
+Configuration of CCP4 Cloud with Nginx
+======================================
+
+`Nginx <https://Nginx.org/en/>`_ is a high performance web and reverse proxy.
+It can be configured to work as a reverse proxy for use with CCP4 Cloud.
+
+The example below is a basic proxy configuration to serve up CCP4 Cloud over
+an https connection (on port 443).
+
+``HOST_NAME`` should be set to the domain name you want the site served from. The SSL certificate
+and key should be changed to point to where your SSL certificates are stored.
+
+The ``proxy_pass http://localhost:8081/;`` should be changed to point to the IP and port of
+the CCP4 Cloud FrontEnd. In this case the FrontEnd is running on the same machine as Nginx.
+
+Nginx configuration::
+
+   server {
+     listen 443 ssl;
+     listen [::]:443 ssl;
+
+     # change these to point to your SSL certificate/key
+     ssl_certificate     /etc/ssl/private/CERTIFICATE.crt;
+     ssl_certificate_key /etc/ssl/private/CERTIFICATE_KEY.key;
+
+     server_name HOST_NAME;
+
+     location / {
+
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header X-Forwarded-Proto $scheme;
+       proxy_set_header Host $http_host;
+
+       proxy_redirect off;
+
+       # The following 3 configuration lines are required for proxying WebSockets.
+       # They are not used by CCP4 Cloud but are included here for completeness.
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "upgrade";
+
+       # The hostname and port that CCP4 Cloud FrontEnd is running on
+       proxy_pass http://localhost:8081/;
+     }
+
+   }
+
+In the example above, the CCP4 Cloud FrontEnd ``config.json`` configuration would contain the following::
+
+   "protocol"         : "http",
+   "host"             : "localhost",
+   "port"             : 8081,
+   "externalURL"      : "https://localhost",
+   "reportURL"        : "https://localhost/",
+
+With this configuration CCP4 Cloud would be available from the URL ``https://HOST_NAME``.
+If you wanted to serve the site up from a subdirectory, the ``Location`` directive in the Nginx configuration and
+the ``externalURL`` line in the CCP4 Configuration would need to be changed. eg for Nginx::
+
+   location /ccp4cloud/ {
+
+Note: The trailing slash on the location is required.
+
+And for the FrontEnd `config.json`::
+
+    "externalURL"      : "https://localhost/ccp4cloud",
+    "reportURL"        : "https://localhost/ccp4cloud/",
+
+Note: No end ``/`` should be included on externalURL, but should be included for reportURL. More details about the CCP4 Cloud
+FrontEnd Configuration can be found in :ref:`Appendix C <appendix-c>`

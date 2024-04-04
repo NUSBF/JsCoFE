@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,14 +41,14 @@ function ForgottenLoginPage ( sceneId )  {
   this.makeLogoPanel             ( 1,0,3 );
 
   // make login panel
-  var panel = new Grid('');
+  let panel = new Grid('');
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  var title_lbl  = new Label     ( 'CCP4 Login Recovery'  );
-  var email_lbl  = new Label     ( 'E-mail:' );
-  var email_inp  = new InputText ( '' );
-  var prompt_lbl = new Label     ( 'Please specify e-mail address, which was '  +
+  let title_lbl  = new Label     ( 'CCP4 Login Recovery'  );
+  let email_lbl  = new Label     ( 'E-mail:' );
+  let email_inp  = new InputText ( '' );
+  let prompt_lbl = new Label     ( 'Please specify e-mail address, which was '  +
                                    'used for registering with ' + appName()     +
                                    ', and push the "E-mail ..." button below. ' +
                                    'Your login name(s) and password(s) will '   +
@@ -63,7 +63,7 @@ function ForgottenLoginPage ( sceneId )  {
   email_inp.setFontItalic       ( true   );
   email_inp.setWidth            ( '95%'  );
 
-  var row = 0;
+  let row = 0;
   panel.setWidget               ( title_lbl, row,0,1,2 );
   panel.setHorizontalAlignment  ( row++,0,'center'  );
   panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,2 );
@@ -78,8 +78,8 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,2 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
-  var send_btn = new Button     ( 'E-mail my login details to me',image_path('email') );
-  var back_btn = new Button     ( 'Back to User Login',image_path('login') );
+  let send_btn = new Button     ( 'E-mail my login details to me',image_path('email') );
+  let back_btn = new Button     ( 'Back to User Login',image_path('login') );
 
   send_btn.setWidth             ( '100%' );
   back_btn.setWidth             ( '100%' );
@@ -89,13 +89,14 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidget               ( back_btn,row++,0,1,2 );
 
   back_btn.addOnClickListener  ( function(){
-     makeLoginPage(sceneId);
+     reloadBrowser();
+    //  makeLoginPage(sceneId);
   });
 
   send_btn.addOnClickListener   ( function(){
 
     // Validate the input
-    var msg = '';
+    let msg = '';
 
     if (email_inp.getValue().length<=0)
       msg += '<b>E-mail address</b> must be provided.<p>';

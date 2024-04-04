@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.01.24   <--  Date of Last Modification.
+#    26.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,13 +25,14 @@
 #
 
 #  python native imports
-import sys
 import os
 import time
 
 import pyrvapi
 import json
 import requests
+import urllib.parse
+import re
 
 #  application imports
 from  pycofe.tasks  import basic
@@ -43,23 +44,18 @@ from  pycofe.tasks  import basic
 # ============================================================================
 # Make FetchData Utilities driver
 
-# hardcoded to get the settings from the environment
-DL_URL = os.environ['DL_URL']
-CLOUD_USER = os.environ['CLOUD_USER']
-CLOUDRUN_ID = os.environ['CLOUDRUN_ID']
-
 # class to handle communication with the Data Link API
 class DataLink:
 
     # initialise API url, user and cloudrun_id
     def __init__(self, url, user, cloudrun_id):
-        self.url = url
+        self.url = url + '/'
         self.user = user
         self.cloudrun_id = cloudrun_id
 
     # send a request to the Data Link API
     def api(self, method, endpoint, use_auth = True):
-        url = self.url + '/api/' + endpoint
+        url = urllib.parse.urljoin(self.url, endpoint)
         auth_headers = {}
 
         if use_auth:
@@ -77,7 +73,10 @@ class DataLink:
             return False, e
 
         # parse JSON
-        obj = json.loads(res.text)
+        try:
+            obj = json.loads(res.text)
+        except:
+            return False, 'Error communicating with DataLink API'
 
         # on error return false and the error message
         if 'error' in obj:
@@ -87,19 +86,21 @@ class DataLink:
         return True, obj
 
     # search the API for data source entries matching the PDB Identifier
-    def search(self, pdb):
-        return self.api('GET', 'search/' + pdb, use_auth = False)
+    def search(self, field, value):
+        field = urllib.parse.quote_plus(field)
+        value = urllib.parse.quote_plus(value)
+        return self.api('GET', f'search/?f={field}&q={value}' , use_auth = False)
 
     # get information about a data source
     def source_info(self, source):
         return self.api('GET', 'sources/' + source)
 
-    # acquire data for the user from a data source
-    def acquire(self, source, id):
+    # fetch data for the user from a data source
+    def fetch(self, source, id):
         endpoint = f'data/{self.user}/{source}/{id}'
         return self.api('PUT', endpoint)
 
-    # get the status of an existing data acquire
+    # get the status of an existing data fetch
     def status(self, source, id):
         endpoint = f'data/{self.user}/{source}/{id}'
         return self.api('GET', endpoint)
@@ -133,37 +134,60 @@ class FetchData(basic.TaskDriver):
         pyrvapi.rvapi_flush()
         return
 
+    def dlSummary(self, msg):
+        self.generic_parser_summary["fetchdata"] = {
+            "summary_line" : msg
+        }
+        return
+
+    def dlError(self, msg):
+        summary = msg
+        if type(msg).__name__ == 'ConnectionError':
+            summary = "connection error"
+        self.dlSummary(f'datalink error {type(msg)}: {summary}')
+        self.fail(f'<b>Data Link Error:</b> {msg}', str(msg))
+        return
+
     def run(self):
 
-        # get the user entered PDB code
-        pdb_code = self.getParameter ( self.task.parameters.PDB_CODE )
+        # get the user entered PDB/DOI code
+        search = self.getParameter ( self.task.parameters.SEARCH )
+        search = search.lower()
+        field = 'pdb'
+        if not re.match('^[0-9a-z]{4}$', search):
+            field = 'doi'
 
-        self.putMessage (f'<p><b>PDB code:</b> {pdb_code}</p>')
+        # if the doi code contains a full url, extract the path
+        url = urllib.parse.urlparse(search);
+        search = url.path.strip('/');
 
         # create a DataLink class instance - DL_URL, CLOUD_USER and CLOUDRUN_ID are currently hardcoded
         # but I assume they can be passed in as a task parameter or similar?
 
-        cloud_user  = self.task.submitter
-        cloudrun_id = sys.argv[4]
+        cloud_user  = None
+        cloudrun_id = None
+        with open("__fetch_meta.json","r") as f:
+            fetch_meta = json.loads ( f.read() )
+            cloud_user  = fetch_meta["login"]
+            cloudrun_id = fetch_meta["cloudrun_id"]
+            api_url = fetch_meta["api_url"]
+            mount_name = fetch_meta["mount_name"]
 
-        #  this will print in "Errors" tab of the Job Dialog, just to make sure
-        #  that correct values are obtained;  delete in final version
-        self.stderrln ( " >>>>> cloud_user = "  + str(cloud_user) )
-        self.stderrln ( " >>>>> cloudrun_id = " + str(cloudrun_id) )
-
-        dl = DataLink(DL_URL, CLOUD_USER, CLOUDRUN_ID)
+        dl = DataLink(api_url, cloud_user, cloudrun_id)
 
         # search the API for data source entries that match the PDB code
-        res, search_info = dl.search(pdb_code)
+        res, search_info = dl.search(field, search)
         if not res:
-            self.fail(f'<b>Error:</b> {search_info}', 'Data Link Error')
+            self.dlError(search_info)
             return
 
-        results = search_info['results'];
+        results = search_info['results']
 
         # if there are no results, return
         if len(results) == 0:
-            self.putMessage( f'<b>Sorry - no results for {pdb_code}</b>' )
+            msg = f'no results for {field} {search}'
+            self.dlSummary(msg)
+            self.putMessage( f'<b>Sorry - {msg}' )
             self.success(False)
             return
 
@@ -173,46 +197,48 @@ class FetchData(basic.TaskDriver):
             data_id = data['id']
             data_name = data['name']
             data_doi = data['doi']
+            data_pdb = data['pdb']
 
             # get info about data source
             res, source_info = dl.source_info(data_source)
             if not res:
-                self.fail(f'<b>Error:</b> {source_info}', 'Data Link Error')
+                self.dlError(source_info)
                 return
 
             # display information about the data source
             data_source_desc = source_info['description']
             data_source_url = source_info['url']
+            self.putMessage(f'<b>PDB:</b> {data_pdb}')
+            self.putMessage(f'<b>DOI:</b> <a href="https://www.doi.org/{data_doi}" target="_new">https://www.doi.org/{data_doi}</a>')
             self.putMessage(f'<b>Name:</b> {data_name}')
-            self.putMessage(f'<b>Source:</b> {data_source_desc} (<a href="{data_source_url}" target="_new">{data_source_url}</a>)' )
-            self.putMessage(f'<b>DOI:</b> <a href="https://www.doi.org/{data_doi}" target="_new">https://www.doi.org/{data_doi}</a><br /><br />')
+            self.putMessage(f'<b>Source:</b> {data_source_desc} (<a href="{data_source_url}" target="_new">{data_source_url}</a>)<br />' )
 
-            # send an acquire request in to the API
-            res, acquire_info = dl.acquire(data_source, data_id)
+            # send a fetch request in to the API
+            res, fetch_info = dl.fetch(data_source, data_id)
             if not res:
-                self.fail(f'<b>Error:</b> {acquire_info}','Data Link Error')
+                self.dlError(fetch_info)
                 return
 
         # initialise progress bar
-        pbarMeta = self.putProgressBar('Data is being acquired', 100)
+        pbarMeta = self.putProgressBar('Fetching data:', 100)
 
         status_c = 0
-        # status_c is incremented when a data acquire status is "completed"
-        # so when all data acquires are complete, the loop will end
+        # status_c is incremented when a data fetch status is "completed"
+        # so when all data fetchs are complete, the loop will end
         while status_c != len(results):
             time.sleep(10)
             status_c = 0
             size = 0
             size_s = 0
-            # loop through the results and check the status of each acquire
+            # loop through the results and check the status of each fetch
             for result in results:
                 res, data_info = dl.status(data['source'], data['id'])
                 if not res:
-                    self.fail(f'<b>Error:</b> {data_info}', 'Data Link Error')
+                    self.dlError(data_info)
                     return
 
                 if data_info['status'] == 'failed':
-                    self.fail('<p><b>Error: Acquire of {data_info["source"]}/{data_info["id"]} Failed</b>', 'Data Link Error')
+                    self.dlError(f'Fetch of {data_info["source"]}/{data_info["id"]} failed')
                     return
 
                 if data_info['status'] == 'completed':
@@ -236,13 +262,18 @@ class FetchData(basic.TaskDriver):
                 self.setProgressBar ( pbarMeta, percent, note )
 
         # display finish message and data size
-        self.putMessage ('<p><b>Data Acquire Finished. Status: OK</b>')
-        self.putMessage (f'<b>Data Size: {size}</b></p>')
+        self.putMessage ('<p><b>Data fetch finished. Status: OK</b>')
+        self.putMessage (f'<b>Data size: {size}</b></p>')
 
         # loop through the results, and display data locations
-        self.putMessage (f'<b>Data Location(s):</b>')
+        self.putMessage (f'<b>For processing images with Xia-2 and importing data with "Cloud import" tasks, use the following location(s):</b>')
+        msgs = []
         for data in results:
-            self.putMessage (f'<tt>{data["source"]}/{data["id"]}</tt>')
+            msgs.append(data["source"] + '/' + data["id"])
+            path = os.path.join(mount_name, data["source"], data["id"])
+            self.putMessage (f'<tt>{path}</tt>')
+
+        self.dlSummary(f'fetched data set(s) for PDB {data_pdb}: {",".join(msgs)}')
 
         self.success(True)
 

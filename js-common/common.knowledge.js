@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    16.08.23   <--  Date of Last Modification.
+ *    09.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
  *
  *  ========================================================================
  *
@@ -194,6 +194,7 @@ var _taskIndex = {
 
   // suggest Xia2 after root
   'h'  : { type: 'TaskXia2'               , after: ['0'] },
+  'h1' : { type: 'TaskXDS'                , after: ['0'] },
 
   // suggest Dimple after phasing
   'i'  : { type: 'TaskDimple'             , after: ['M','N','O','P','Q','U','r'] },

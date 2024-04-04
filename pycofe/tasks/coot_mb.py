@@ -468,7 +468,7 @@ class Coot(coot_ce.CootCE):
                     revision.addLigandData ( ligand      )
                 if ligand_coot:
                     revision.addLigandData ( ligand_coot )
-                self.registerRevision     ( revision )
+                self.registerRevision ( revision )
 
                 have_results = True
                 summary_line = "model saved"

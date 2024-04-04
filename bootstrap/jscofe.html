@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    12.02.24   <..  Date of Last Modification.
+ *    14.03.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -129,6 +129,7 @@
   <script type="text/javascript" src="js-client/cofe.page_account.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_admin.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_forgotten_login.js"></script>
+  <script type="text/javascript" src="js-client/cofe.page_locallogin.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_login.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_logout.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_project_list.js"></script>
@@ -271,6 +272,7 @@
   <script type="text/javascript" src="js-common/tasks/common.tasks.symmatch.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.texteditor.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.webcoot.js"></script>
+  <script type="text/javascript" src="js-common/tasks/common.tasks.webcootce.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.wflowaep.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.wflowdpl.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.wflowdplmr.js"></script>
@@ -281,6 +283,8 @@
   <script type="text/javascript" src="js-common/tasks/common.tasks.workflow.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.xdsgui.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.xia2.js"></script>
+  <script type="text/javascript" src="js-common/tasks/common.tasks.xds.js"></script>
+  <script type="text/javascript" src="js-common/tasks/common.tasks.xds3.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.xyz2revision.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.xyzutils.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.zanuda.js"></script>
@@ -297,15 +301,16 @@
 
   <!-- <div id='scene' style="width:100%;font-size:16px;"></div>  -->
   <!-- <div id='scene' class="main-page"></div> -->
-  <div id='scene'></div>
+  <!-- <div id='scene'></div> now in BasePage class -->
 
   <script>
-    document.body.style.fontSize = '16px';   // this is necessary for jquery
-                                             // dialogs to have correct layout
-                                             // despite explicit sizing set in
-                                             // main-page CSS class; it is
-                                             // unclear why
-    document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
+    // now in main-page css
+    // document.body.style.fontSize = '16px';   // this is necessary for jquery
+    //                                          // dialogs to have correct layout
+    //                                          // despite explicit sizing set in
+    //                                          // main-page CSS class; it is
+    //                                          // unclear why
+    // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
     //$(window).on ( 'load', function(){
     $(document).ready ( function(){
       // setDarkMode ( isDarkMode() );

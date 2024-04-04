@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    13.12.23   <--  Date of Last Modification.
+//    15.03.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  Sortable module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2021-2023
+//  (C) E. Krissinel 2021-2024
 //
 //  =================================================================
 //
@@ -40,8 +40,14 @@ function Sortable ( cellwidth_px,cellheight_px,
   this.onclick      = onclick_func;
   this.onrightclick = onrightclick_func;
 
+  let self = this;
+  this.initialised  = false;
+
   $(this.element).sortable({
-    update : function(event,ui) {
+    create : function ( event,ui ) {
+               self.initialised = true;
+             },
+    update : function ( event,ui ) {
                onupdate_func ( event,ui );
              }
   });
@@ -62,15 +68,15 @@ let found = false;
 
 Sortable.prototype.addItem = function ( icon_uri,tooltip,itemId )  {
 
-  // for (var i=0;i<this.child.length;i++)
+  // for (let i=0;i<this.child.length;i++)
   //   if (this.child[i].itemId==itemId)
   //     return null;
 
   if (this.hasItem(itemId))
     return null;
 
-  var button = new ImageButton ( icon_uri,this.cellwidth,this.cellheight );
-  var item   = new Widget ( 'li' );
+  let button = new ImageButton ( icon_uri,this.cellwidth,this.cellheight );
+  let item   = new Widget ( 'li' );
 
   item.addWidget  ( button  );
   item.setTooltip ( tooltip );
@@ -107,8 +113,8 @@ Sortable.prototype.addItem = function ( icon_uri,tooltip,itemId )  {
 
 
 Sortable.prototype.removeItem = function ( itemId )  {
-var item = null;
-  for (var i=0;(i<this.child.length) && (!item);i++)
+let item = null;
+  for (let i=0;(i<this.child.length) && (!item);i++)
     if ((this.child[i].type=='li') && (this.child[i].itemId==itemId))
       item = this.child[i];
   if (item)
@@ -127,17 +133,22 @@ Sortable.prototype.getNItems = function()  {
   return this.child.length;
 }
 
+Sortable.prototype.isInitialised = function()  {
+  return this.initialised;
+}
 
 Sortable.prototype.getItems = function()  {
-  var sortedIDs = $(this.element).sortable ( 'toArray' );
-  var items     = [];
-  for (var j=0;j<sortedIDs.length;j++)
-    for (var i=0;i<this.child.length;i++)
-      if (this.child[i].id==sortedIDs[j])
-        items.push ([
-          this.child[i].itemId,
-          this.child[i].tooltip,
-          this.child[i].icon_uri
-        ]);
+  let items = [];
+  if (this.initialised)  {
+    let sortedIDs = $(this.element).sortable ( 'toArray' );
+    for (let j=0;j<sortedIDs.length;j++)
+      for (let i=0;i<this.child.length;i++)
+        if (this.child[i].id==sortedIDs[j])
+          items.push ([
+            this.child[i].itemId,
+            this.child[i].tooltip,
+            this.child[i].icon_uri
+          ]);
+  }
   return items;
 }

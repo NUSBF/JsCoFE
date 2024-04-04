@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    06.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -254,7 +254,7 @@ class Gemmi(basic.TaskDriver):
                     #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     #    xyz.dname )
                     self.putModelWidget ( self.getWidgetId("model_btn"),
-                                          "Coordinates",model )
+                                          "Coordinates:&nbsp;",model )
                     have_results = True
                 else:
                     # close execution logs and quit
@@ -264,7 +264,7 @@ class Gemmi(basic.TaskDriver):
             elif struct0._type=="DataXYZ":
                 oxyz = self.registerXYZ ( None,outfname,checkout=True )
                 if oxyz:
-                    oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         oxyz.dname )

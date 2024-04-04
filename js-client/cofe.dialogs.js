@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.22   <--  Date of Last Modification.
+ *    15.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Various message dialogs
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -30,11 +30,11 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data=null )  {
 //  job_dialog_data : optional dialog data structure
 //
 
-  //var w0 = $(window).width ();
-  //var h0 = $(window).height();
-  var w0 = window.innerWidth;
-  var h0 = window.innerHeight;
-  var w,h;
+  //let w0 = $(window).width ();
+  //let h0 = $(window).height();
+  let w0 = window.innerWidth;
+  let h0 = window.innerHeight;
+  let w,h;
 
   if (__any_mobile_device)  {
 
@@ -82,7 +82,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data=null )  {
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {
 
-  var msg = '<h2>Communication errors</h2>';
+  let msg = '<h2>Communication errors</h2>';
   if (!jqXHR)  {
     msg += '<b><i>Unknown error.</i></b>';
   } else {
@@ -118,7 +118,7 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
 
 
 function MessageNoProjectDataError ( title,message )  {
-var msg = '<h2>General failure: project metadata not found on server</h2>';
+  let msg = '<h2>General failure: project metadata not found on server</h2>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
@@ -127,7 +127,7 @@ var msg = '<h2>General failure: project metadata not found on server</h2>';
 }
 
 function MessageDataWriteError ( title,message )  {
-var msg = '<h2>General failure: data cannot be written</h2>';
+  let msg = '<h2>General failure: data cannot be written</h2>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
@@ -136,7 +136,7 @@ var msg = '<h2>General failure: data cannot be written</h2>';
 }
 
 function MessageMkDirError ( title,message )  {
-var msg = '<h2>General failure: cannot create a directory.</h2>';
+  let msg = '<h2>General failure: cannot create a directory.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
@@ -145,7 +145,7 @@ var msg = '<h2>General failure: cannot create a directory.</h2>';
 }
 
 function MessageDataReadError ( title,message )  {
-var msg = '<h2>General failure: data cannot be read.</h2>';
+  let msg = '<h2>General failure: data cannot be read.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
@@ -171,7 +171,7 @@ function MessageNotLoggedIn ( title )  {
 }
 
 function MessageUploadErrors ( title,message )  {
-var msg = '<h2>General failure: upload errors.</h2>';
+  let msg = '<h2>General failure: upload errors.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +

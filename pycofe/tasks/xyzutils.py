@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.02.24   <--  Date of Last Modification.
+#    28.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,7 +71,7 @@ class XyzUtils(basic.TaskDriver):
             self.putTitle ( "Modified coordinate data" )
             oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
             if oxyz:
-                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
                     "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                     oxyz.dname )
@@ -90,7 +90,7 @@ class XyzUtils(basic.TaskDriver):
                 seq = self.makeClass ( ixyz.sequence )
             oxyz = self.registerModel ( seq,pdbout,checkout=True )
             if oxyz:
-                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates:&nbsp;",oxyz )
                 results = True
             else:
                 # close execution logs and quit
@@ -104,7 +104,7 @@ class XyzUtils(basic.TaskDriver):
                 seq = self.makeClass ( ixyz.sequence )
             oxyz = self.registerEnsemble ( seq,pdbout,checkout=True )
             if oxyz:
-                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates",oxyz )
+                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates:&nbsp;",oxyz )
                 results = True
             else:
                 # close execution logs and quit
@@ -410,7 +410,7 @@ class XyzUtils(basic.TaskDriver):
                         st1.make_mmcif_document().write_file ( mmcifout )
                         oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
                         if oxyz:
-                            oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                            # oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                             self.putMessage (
                                 "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                                 oxyz.dname )

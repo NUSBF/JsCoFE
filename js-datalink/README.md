@@ -301,13 +301,23 @@ Here's an example response for the call
 }
 ```
 
-### GET /api/search/{pdb_id}
+### GET /api/search/{pdb_id} *Deprecated - please use newer search query below*
 
 *Does not require authentication*
 
 Searches all data source catalogs for entries with a PDB identifier matching `pdb_id`. It also searches against the RCSB API (https://rcsb.org) to get PDB information.
 
-The returned JSON has two keys, one with the PDB information from RCSB , and a results key with an array of matches from data sources.
+Returns the same results as the newer search call detailed here:
+
+### GET /api/search/?q={search}&f={field}
+
+*Does not require authentication*
+
+Searches all data source catalogs with `field` matching `search`. Currently supports searching the `pdb` identifier and the `doi` (Digital Object Identifier).
+If left empty, the field parameter defaults to 'pdb'.
+It also optionally query against the RCSB API (https://rcsb.org) to get PDB information for the search.
+
+The returned JSON has two keys, one with the PDB information from RCSB, and a results key with an array of matches from data sources.
 
 eg. for `GET /api/search/7p5l`
 
@@ -316,13 +326,13 @@ eg. for `GET /api/search/7p5l`
   pdb: {
     ... rcsb PDB API results (https://data.rcsb.org/rest/v1/core/entry/{PDBID})
   }
-    results: [
-    {
-      desc: "X-Ray Diffraction data from Mycobacterial glucosyl-3-phosphoglycerate synthase, source of 7P5L structure"
-      doi: "10.15785/SBGRID/995"
-      id: "995"
-      source: "sbgrid"
-    }
+  results: [
+  {
+    desc: "X-Ray Diffraction data from Mycobacterial glucosyl-3-phosphoglycerate synthase, source of 7P5L structure"
+    doi: "10.15785/SBGRID/995"
+    id: "995"
+    source: "sbgrid"
+  }
   ]
 }
 ```
@@ -613,4 +623,25 @@ eg. `GET /api/data`
   }
 }
 ```
+## GET /api/stats
 
+Gets some information about the data managed by Data Link.
+
+eg. `GET /api/stats`
+
+`HTTP/1.1 200 OK`
+
+```json
+{
+  "data_stats": {
+    "users": 4,
+    "entries": 10,
+    "size": 82437651053,
+    "size_gb": "82.44",
+    "free_space": "434237149184",
+    "free_space_gb": "434.24",
+    "usable_space": 334237149184,
+    "usable_space_gb": "334.24"
+  }
+}
+```

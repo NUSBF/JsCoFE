@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,8 +97,8 @@ TaskPDBDepFiles.prototype.checkKeywords = function ( keywords )  {
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function PDBDepFilesHotButton()  {
   return {
-    'task'    : 'TaskPDBDepFiles',
-    'tooltip' : 'Prepare files for PDB deposition'
+    'task_name' : 'TaskPDBDepFiles',
+    'tooltip'   : 'Prepare files for PDB deposition'
   };
 }
 

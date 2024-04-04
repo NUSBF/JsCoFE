@@ -46,7 +46,7 @@
   
   
   
-    <title>7. CCP4 Cloud Task Development: Hello World! &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>9. CCP4 Cloud Task Development: Hello World! &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -56,8 +56,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. Software testing in CCP4" href="tests.html" />
-    <link rel="prev" title="6. Task Interface Description" href="interface_desc.html" />
+    <link rel="next" title="10. Software testing in CCP4" href="tests.html" />
+    <link rel="prev" title="8. Task Interface Description" href="interface_desc.html" />
   
    
 
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> 7. CCP4 Cloud Task Development: Hello World! </span>
+          <span class="md-header-nav__topic"> 9. CCP4 Cloud Task Development: Hello World! </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -198,21 +198,35 @@
     <li class="md-nav__item">
     
     
-      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
+      <a href="pm2.html" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="mrparse_server_setup.html" class="md-nav__link">5. Linking MrParse to local databases</a>
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">6. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
       
     
     </li>
@@ -220,27 +234,27 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. CCP4 Cloud Task Development: Hello World! </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 9. CCP4 Cloud Task Development: Hello World! </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">7. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="#" class="md-nav__link md-nav__link--active">9. CCP4 Cloud Task Development: Hello World!</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ccp4-cloud-source-code-structure" class="md-nav__link">7.1. CCP4 Cloud source code structure</a>
+        <li class="md-nav__item"><a href="#ccp4-cloud-source-code-structure" class="md-nav__link">9.1. CCP4 Cloud source code structure</a>
         </li>
-        <li class="md-nav__item"><a href="#hello-world-task-in-stages" class="md-nav__link">7.2. “Hello, World!” task in stages</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#hello-world-task-in-stages" class="md-nav__link">9.2. “Hello, World!” task in stages</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#create-task-class" class="md-nav__link">7.2.1. Create Task Class</a>
+        <li class="md-nav__item"><a href="#create-task-class" class="md-nav__link">9.2.1. Create Task Class</a>
         </li>
-        <li class="md-nav__item"><a href="#create-task-documentation" class="md-nav__link">7.2.2. Create Task Documentation</a>
+        <li class="md-nav__item"><a href="#create-task-documentation" class="md-nav__link">9.2.2. Create Task Documentation</a>
         </li>
-        <li class="md-nav__item"><a href="#insert-new-task-in-the-task-list" class="md-nav__link">7.2.3. Insert New Task in the Task List</a>
+        <li class="md-nav__item"><a href="#insert-new-task-in-the-task-list" class="md-nav__link">9.2.3. Insert New Task in the Task List</a>
         </li>
-        <li class="md-nav__item"><a href="#making-the-task-driver" class="md-nav__link">7.2.4. Making the Task Driver</a>
+        <li class="md-nav__item"><a href="#making-the-task-driver" class="md-nav__link">9.2.4. Making the Task Driver</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -252,40 +266,40 @@
     <li class="md-nav__item">
     
     
-      <a href="#ccp4-cloud-source-code-structure" class="md-nav__link">7.1. CCP4 Cloud source code structure</a>
+      <a href="#ccp4-cloud-source-code-structure" class="md-nav__link">9.1. CCP4 Cloud source code structure</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#hello-world-task-in-stages" class="md-nav__link">7.2. “Hello, World!” task in stages</a>
+      <a href="#hello-world-task-in-stages" class="md-nav__link">9.2. “Hello, World!” task in stages</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#create-task-class" class="md-nav__link">7.2.1. Create Task Class</a>
+      <a href="#create-task-class" class="md-nav__link">9.2.1. Create Task Class</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#create-task-documentation" class="md-nav__link">7.2.2. Create Task Documentation</a>
+      <a href="#create-task-documentation" class="md-nav__link">9.2.2. Create Task Documentation</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#insert-new-task-in-the-task-list" class="md-nav__link">7.2.3. Insert New Task in the Task List</a>
+      <a href="#insert-new-task-in-the-task-list" class="md-nav__link">9.2.3. Insert New Task in the Task List</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#making-the-task-driver" class="md-nav__link">7.2.4. Making the Task Driver</a>
+      <a href="#making-the-task-driver" class="md-nav__link">9.2.4. Making the Task Driver</a>
       
     
     </li></ul>
@@ -296,35 +310,35 @@
     <li class="md-nav__item">
     
     
-      <a href="tests.html" class="md-nav__link">8. Software testing in CCP4</a>
+      <a href="tests.html" class="md-nav__link">10. Software testing in CCP4</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a>
+      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientsetup.html" class="md-nav__link">10. CCP4 Cloud Client Setup</a>
+      <a href="clientsetup.html" class="md-nav__link">12. CCP4 Cloud Client Setup</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">11. What is CCP4 Cloud Client Software</a>
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">12. How to add a new Sphinx theme</a>
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -342,19 +356,19 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ccp4-cloud-source-code-structure" class="md-nav__link">7.1. CCP4 Cloud source code structure</a>
+        <li class="md-nav__item"><a href="#ccp4-cloud-source-code-structure" class="md-nav__link">9.1. CCP4 Cloud source code structure</a>
         </li>
-        <li class="md-nav__item"><a href="#hello-world-task-in-stages" class="md-nav__link">7.2. “Hello, World!” task in stages</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#hello-world-task-in-stages" class="md-nav__link">9.2. “Hello, World!” task in stages</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#create-task-class" class="md-nav__link">7.2.1. Create Task Class</a>
+        <li class="md-nav__item"><a href="#create-task-class" class="md-nav__link">9.2.1. Create Task Class</a>
         </li>
-        <li class="md-nav__item"><a href="#create-task-documentation" class="md-nav__link">7.2.2. Create Task Documentation</a>
+        <li class="md-nav__item"><a href="#create-task-documentation" class="md-nav__link">9.2.2. Create Task Documentation</a>
         </li>
-        <li class="md-nav__item"><a href="#insert-new-task-in-the-task-list" class="md-nav__link">7.2.3. Insert New Task in the Task List</a>
+        <li class="md-nav__item"><a href="#insert-new-task-in-the-task-list" class="md-nav__link">9.2.3. Insert New Task in the Task List</a>
         </li>
-        <li class="md-nav__item"><a href="#making-the-task-driver" class="md-nav__link">7.2.4. Making the Task Driver</a>
+        <li class="md-nav__item"><a href="#making-the-task-driver" class="md-nav__link">9.2.4. Making the Task Driver</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -370,7 +384,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="ccp4-cloud-task-development-hello-world">
-<span id="hello-world"></span><h1 id="dev-hello-world--page-root"><span class="section-number">7. </span>CCP4 Cloud Task Development: Hello World!<a class="headerlink" href="#dev-hello-world--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="hello-world"></span><h1 id="dev-hello-world--page-root"><span class="section-number">9. </span>CCP4 Cloud Task Development: Hello World!<a class="headerlink" href="#dev-hello-world--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4 Cloud runs <em>tasks</em>. A <em>task</em> may be anything; it may or may not have input
 data and parameters, it may or may not produce output data, and the least what
 a <em>task</em> should do is to print messages. CCP4 Cloud is designed to run complex
@@ -380,7 +394,7 @@ introduction into task development for CCP4 Cloud with a simplest possible task
 that only prints “Hello World!”.</p>
 <p>First, let’s overview parts of CCP4 Cloud code relevant to task development.</p>
 <section id="ccp4-cloud-source-code-structure">
-<h2 id="ccp4-cloud-source-code-structure"><span class="section-number">7.1. </span>CCP4 Cloud source code structure<a class="headerlink" href="#ccp4-cloud-source-code-structure" title="Permalink to this heading">¶</a></h2>
+<h2 id="ccp4-cloud-source-code-structure"><span class="section-number">9.1. </span>CCP4 Cloud source code structure<a class="headerlink" href="#ccp4-cloud-source-code-structure" title="Permalink to this heading">¶</a></h2>
 <p>From task developer perspective, CCP4 Cloud source code has 6 main parts:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">js-client</span></code>: javascript code that runs on client side (browser). Task
@@ -408,9 +422,9 @@ CCP4 Cloud framework. In addition, data and task classes and respective file nam
 must follow conventions as described below.</p>
 </section>
 <section id="hello-world-task-in-stages">
-<h2 id="hello-world-task-in-stages"><span class="section-number">7.2. </span>“Hello, World!” task in stages<a class="headerlink" href="#hello-world-task-in-stages" title="Permalink to this heading">¶</a></h2>
+<h2 id="hello-world-task-in-stages"><span class="section-number">9.2. </span>“Hello, World!” task in stages<a class="headerlink" href="#hello-world-task-in-stages" title="Permalink to this heading">¶</a></h2>
 <section id="create-task-class">
-<span id="task-class"></span><h3 id="create-task-class"><span class="section-number">7.2.1. </span>Create Task Class<a class="headerlink" href="#create-task-class" title="Permalink to this heading">¶</a></h3>
+<span id="task-class"></span><h3 id="create-task-class"><span class="section-number">9.2.1. </span>Create Task Class<a class="headerlink" href="#create-task-class" title="Permalink to this heading">¶</a></h3>
 <p>In CCP4 Cloud, task classes must be named as <code class="docutils literal notranslate"><span class="pre">TaskClassName</span></code> and be placed in
 file named <code class="docutils literal notranslate"><span class="pre">js-common/tasks/common.tasks.classname.js</span></code>. The absolute minimal
 class should be defined as follows:</p>
@@ -522,7 +536,7 @@ code mentions <code class="docutils literal notranslate"><span class="pre">hello
 as specified in the source code.</p>
 </section>
 <section id="create-task-documentation">
-<h3 id="create-task-documentation"><span class="section-number">7.2.2. </span>Create Task Documentation<a class="headerlink" href="#create-task-documentation" title="Permalink to this heading">¶</a></h3>
+<h3 id="create-task-documentation"><span class="section-number">9.2.2. </span>Create Task Documentation<a class="headerlink" href="#create-task-documentation" title="Permalink to this heading">¶</a></h3>
 <p>Task Documentation should be written in HTML and placed in <code class="docutils literal notranslate"><span class="pre">html</span></code> directory
 under the name given by <code class="docutils literal notranslate"><span class="pre">helpURL</span></code> variable of the task class (<em>cf.</em>
 <a class="reference internal" href="#task-class"><span class="std std-ref">Create Task Class</span></a>). In order to comply with with the rest of documentation on
@@ -570,7 +584,7 @@ style, use template downloadable from
 as necessary and copy it in <code class="docutils literal notranslate"><span class="pre">html</span></code> directory of your CCP4 Cloud setup.</p>
 </section>
 <section id="insert-new-task-in-the-task-list">
-<h3 id="insert-new-task-in-the-task-list"><span class="section-number">7.2.3. </span>Insert New Task in the Task List<a class="headerlink" href="#insert-new-task-in-the-task-list" title="Permalink to this heading">¶</a></h3>
+<h3 id="insert-new-task-in-the-task-list"><span class="section-number">9.2.3. </span>Insert New Task in the Task List<a class="headerlink" href="#insert-new-task-in-the-task-list" title="Permalink to this heading">¶</a></h3>
 <p>Open file <code class="docutils literal notranslate"><span class="pre">js-client/cofe.dialog_tasklist.js</span></code> in any text editor and look for
 the following fragment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">__login_user</span><span class="o">==</span><span class="s1">'Developer'</span><span class="p">)</span>
@@ -615,7 +629,7 @@ should appear in the <em>Job Tree</em>, and the corresponding <em>Job Dialog</em
 start.</p>
 </section>
 <section id="making-the-task-driver">
-<span id="task-driver"></span><h3 id="making-the-task-driver"><span class="section-number">7.2.4. </span>Making the Task Driver<a class="headerlink" href="#making-the-task-driver" title="Permalink to this heading">¶</a></h3>
+<span id="task-driver"></span><h3 id="making-the-task-driver"><span class="section-number">9.2.4. </span>Making the Task Driver<a class="headerlink" href="#making-the-task-driver" title="Permalink to this heading">¶</a></h3>
 <p>At this point, the new <em>task</em> appears on the client side, but it cannot be
 started as we have not supplied the corresponding module, called <em>Task Driver</em>,
 to run on a number cruncher. <em>Task Driver</em> is a program, which is started with
@@ -677,7 +691,7 @@ standard output and standard error streams.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="interface_desc.html" title="6. Task Interface Description"
+            <a href="interface_desc.html" title="8. Task Interface Description"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -686,17 +700,17 @@ standard output and standard error streams.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>Task Interface Description </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">8. </span>Task Interface Description </span>
               </div>
             </a>
           
           
-            <a href="tests.html" title="8. Software testing in CCP4"
+            <a href="tests.html" title="10. Software testing in CCP4"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>Software testing in CCP4 </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10. </span>Software testing in CCP4 </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

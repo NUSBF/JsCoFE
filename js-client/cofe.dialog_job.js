@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.01.24   <--  Date of Last Modification.
+ *    10.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.initialWidth  = size[0];
   this.initialHeight = size[1];
 
-  // var taskId = this.task.id;
+  // let taskId = this.task.id;
   let dlg = this;
   dlg.dialog_options = {
     resizable : true,
@@ -216,7 +216,7 @@ JobDialog.prototype.delete = function()  {
 
 
 JobDialog.prototype.changeTitle = function ( new_title )  {
-  var title = '[' + padDigits(this.task.id,4) + '] ' + new_title +
+  let title = '[' + padDigits(this.task.id,4) + '] ' + new_title +
               this.statusLine();
   $(this.element).dialog({ title : strip_html_tags(title) });
 }
@@ -270,10 +270,10 @@ JobDialog.prototype.setDlgState = function()  {
     this.onDlgResize();
   }
 
-  var isNew     = (this.task.state==job_code.new)    ||
+  let isNew     = (this.task.state==job_code.new)    ||
                   (this.task.state==job_code.remark) ||
                   (this.task.state==job_code.remdet);
-  var isRunning = (this.task.state==job_code.running) ||
+  let isRunning = (this.task.state==job_code.running) ||
                   (this.task.state==job_code.ending);
 
   if (this.inputPanel)  {
@@ -297,7 +297,7 @@ JobDialog.prototype.setDlgState = function()  {
 
   if (isRunning && (!this.stop_btn.isVisible()))  {
     // (function(dlg){
-    var dlg = this;
+    let dlg = this;
       dlg.ind_timer = window.setTimeout ( function(){
         if (dlg.run_image) dlg.run_image.setVisible ( true );
         if (dlg.stop_btn)  dlg.stop_btn .setVisible ( !dlg.nc_browser );
@@ -310,16 +310,16 @@ JobDialog.prototype.setDlgState = function()  {
     if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (!this.nc_browser) );
   }
 
-  var title = '';
+  let title = '';
   if (this.task.uname.length>0)  title += this.task.uname;
                            else  title += this.task.name;
   this.changeTitle ( title );
 
-  var show_hot_buttons = this.dlg_active && this.task.isComplete();
-  // var enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
+  let show_hot_buttons = this.dlg_active && this.task.isComplete();
+  // let enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
   //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
   //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
-  for (var i=0;i<this.hot_btn.length;i++)  {
+  for (let i=0;i<this.hot_btn.length;i++)  {
     this.hot_btn[i].setVisible ( show_hot_buttons );
     this.hot_btn[i].setEnabled ( this.dlg_active && 
                                  (this.task.state==job_code.finished) ||
@@ -356,7 +356,7 @@ JobDialog.prototype.getDlgSize = function ()  {
   if (!__any_mobile_device)  {
     this.task.job_dialog_data.width  = this.width_px ();
     this.task.job_dialog_data.height = this.height_px();
-    var p = $(this.element).dialog ( "option", "position" );
+    let p = $(this.element).dialog ( "option", "position" );
     this.task.job_dialog_data.position.my = p.my;
     this.task.job_dialog_data.position.at = p.at;
   }
@@ -368,8 +368,8 @@ JobDialog.prototype.onDlgResize = function ()  {
   //if (__any_mobile_device)
   //  return;
 
-  var panelHeight;
-  var panelWidth;
+  let panelHeight;
+  let panelWidth;
   if (this.toolBar)  {
     if (__any_mobile_device)  {
       panelHeight = this.initialHeight - 36 -
@@ -436,7 +436,7 @@ JobDialog.prototype.show = function()  {
 
 JobDialog.prototype.loadReport = function()  {
   if (this.outputPanel)  {  // check because the function may be called from outside
-    var reportURL;
+    let reportURL;
     if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
         __local_service && this.task.job_dialog_data.job_token)  {
       reportURL = __special_url_tag + '/' +
@@ -485,7 +485,7 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   data.ancestors = [];
   if (this.tree.projectData)  data.is_shared = this.tree.isShared();
                         else  data.is_shared = false;
-  for (var i=1;i<this.ancestors.length;i++)
+  for (let i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
     this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
@@ -534,7 +534,7 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.col = 2;
 
-  var dlg = this;
+  let dlg = this;
 
   if (this.task.runButtonName())  {
     this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
@@ -606,25 +606,26 @@ JobDialog.prototype.makeToolBar = function()  {
                                           'but unavailable for subsequent jobs.');
 
   // (function(dlg){
-    var hot_list = dlg.task.hotButtons();
-    var gap      = false;
-    var dBox     = null;
-//    var branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
-    for (var i=0;i<hot_list.length;i++)  {
-      var task_obj  = eval ( 'new ' + hot_list[i].task + '()' );
-      var avail_key = task_obj.isTaskAvailable();
+    let hot_list = dlg.task.hotButtons();
+    let gap      = false;
+    let dBox     = null;
+//    let branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
+    for (let i=0;i<hot_list.length;i++)  {
+      let task_obj  = eval ( 'new ' + hot_list[i].task_name + '()' );
+      let avail_key = task_obj.isTaskAvailable();
       if (avail_key[0]=='ok')  {
         if (!dBox)
           dBox = dlg.tree.harvestTaskData ( 1,[] );
         if (dBox.getDataSummary(task_obj).status>0)  {
           task_obj.hot_launch = true;  // signal that the task is launched from hpt button
           (function(task){
-            var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
+            let hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
                           .addOnClickListener ( function(){
                             dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
                                                    task );
                           });
-            hbtn.task = hot_list[i].task;
+            hbtn.task_name = hot_list[i].task_name;
+            hbtn.task      = task;
             gap = true;
             dlg.hot_btn.push ( hbtn );
           }(task_obj))
@@ -660,14 +661,16 @@ JobDialog.prototype.makeToolBar = function()  {
 
 }
 
-JobDialog.prototype.runHotButtonJob = function ( task )  {
+JobDialog.prototype.runHotButtonJob = function ( task_name,options )  {
   let n = -1;
   for (let i=0;(i<this.hot_btn.length) && (n<0);i++)
-    if (this.hot_btn[i].task==task)
+    if (this.hot_btn[i].task_name==task_name)
       n = i;
-  if (n>=0)
+  if (n>=0)  {
+    if (options && options.prevent_autostart)
+      this.hot_btn[n].task.prevent_autostart = options.prevent_autostart;
     this.hot_btn[n].click();
-  else
+  } else
     new MessageBox ( 
       'Error',
       '<div style="width:300px"><h2>Error</h2>' +
@@ -678,7 +681,7 @@ JobDialog.prototype.runHotButtonJob = function ( task )  {
 }
 
 JobDialog.prototype.enableCloseButton = function ( do_close )  {
-  var dlg = this;
+  let dlg = this;
   window.setTimeout ( function(){
     if (dlg.parent_page.can_reload)  {
       dlg.close_btn.setDisabled ( false );
@@ -814,7 +817,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       dlg.run_btn.addOnClickListener ( function(){
 
-        var avail_key = dlg.task.isTaskAvailable();
+        let avail_key = dlg.task.isTaskAvailable();
         if (avail_key[0]!='ok')  {
 
           new MessageBox ( 'The task cannot be run',avail_key[2], 'msg_warning' );
@@ -825,8 +828,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           serverRequest ( fe_reqtype.getUserRation,{ topup : true },'User Ration',
             function(rdata){   // on success
 
-              var pdesc  = dlg.parent_page.ration.pdesc;
-              var ration = rdata.ration;
+              let pdesc  = dlg.parent_page.ration.pdesc;
+              let ration = rdata.ration;
               dlg.parent_page.ration = ration;
               dlg.parent_page.displayUserRation ( pdesc );
               // console.log ( ration.storage );
@@ -834,7 +837,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               // dlg.parent_page.ration = ration;
               // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
 
-              var tiplink = ' <a href="javascript:launchHelpBox1(\'Project storage\',' +
+              let tiplink = ' <a href="javascript:launchHelpBox1(\'Project storage\',' +
                             '\'' + __user_guide_base_url + 
                             'jscofe_tips.store_completed_projects.html\',null,10)">' +
                             '<span style="color:blue">here</span>.';
@@ -938,7 +941,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     if (dlg.task.nc_type=='client')  {
 
                       dlg.task.job_dialog_data.job_token = rdata.job_token;
-                      var data_obj       = {};
+                      let data_obj       = {};
                       data_obj.job_token = rdata.job_token;
                       data_obj.feURL     = getFEURL();
                       data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
@@ -1055,7 +1058,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
                          '] ' + dlg.task.title +
             '</title>' +
-            '<script>var __user_settings=' + JSON.stringify(__user_settings) +
+            '<script>let __user_settings=' + JSON.stringify(__user_settings) +
             ';</script>' +
             '</head><body>' +
             '<iframe src="' + dlg.outputPanel.getURL() +

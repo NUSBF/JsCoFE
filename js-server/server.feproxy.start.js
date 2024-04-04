@@ -47,31 +47,31 @@ const log = require('./server.log').newLog(22);
 
 function start ( callback_func )  {
 
-  var proxy_config  = conf.getFEProxyConfig ();
-  var fe_config     = conf.getFEConfig      ();
-  var client_config = conf.getClientNCConfig();
-  var fe_url        = fe_config.url();
-  var client_url    = null;
+  let proxy_config  = conf.getFEProxyConfig ();
+  let fe_config     = conf.getFEConfig      ();
+  let client_config = conf.getClientNCConfig();
+  let fe_url        = fe_config.url();
+  let client_url    = null;
 
   log.standard ( 1,'setting up proxy for ' + fe_url + ' ' + fe_config.host );
 
   proxy_config.killPrevious();
   proxy_config.savePID();
 
-  //var options_proxy = { proxyTimeout : 100, timeout : 0 };
-  //var options_web   = { target  : fe_url, timeout : 0 };
-  var options_proxy = {
+  //let options_proxy = { proxyTimeout : 100, timeout : 0 };
+  //let options_web   = { target  : fe_url, timeout : 0 };
+  let options_proxy = {
     target       : fe_url,
     changeOrigin : true
   };
-  var options_web = {
+  let options_web = {
     // target : fe_url
     // rejectUnauthorized : proxy_config.rejectUnauthorized
   };
   if (fe_config.protocol=='https')  {
 
     // https://git.coolaj86.com/coolaj86/ssl-root-cas.js
-    // var rootCas = require('ssl-root-cas').create();
+    // let rootCas = require('ssl-root-cas').create();
     // https.globalAgent.options.ca = rootCas;
 
     options_proxy.secure = true;
@@ -119,7 +119,7 @@ function start ( callback_func )  {
   }).listen(8000);
 */
 
-  var local_prefixes = [];
+  let local_prefixes = [];
   //console.log ( ' localisation='+proxy_config.localisation );
   switch (proxy_config.localisation)  {
     case 3 : local_prefixes = local_prefixes.concat ([
@@ -139,7 +139,7 @@ function start ( callback_func )  {
   // --------------------------------------------------------------------------
   // Create a proxy server with custom application logic
 
-  var proxy = httpProxy.createProxyServer ( options_proxy );
+  let proxy = httpProxy.createProxyServer ( options_proxy );
 
   proxy.on ( 'error', function(err,server_request,server_response){
     /*
@@ -169,14 +169,14 @@ function start ( callback_func )  {
   // -----------------------------------------------------------
   // Set proxy for client server
 
-  var proxy_client = null;
-  var options_proxy_client = null;
+  let proxy_client = null;
+  let options_proxy_client = null;
 
   if (client_config)  {
 
     client_url = client_config.url();
     log.standard ( 2,'setting up proxy for ' + client_url + ' ' + client_config.host );
-    var options_proxy_client = {
+    let options_proxy_client = {
       target       : client_url,
       changeOrigin : true,
       secure       : false,
@@ -202,9 +202,9 @@ function start ( callback_func )  {
   }
 
 
-  var server = http.createServer ( function(server_request,server_response){
+  let server = http.createServer ( function(server_request,server_response){
 
-    var command = url.parse(server_request.url).pathname.substr(1);
+    let command = url.parse(server_request.url).pathname.substr(1);
 
     // console.log ( ' >>>>client ' + command );
 
@@ -227,11 +227,11 @@ function start ( callback_func )  {
           break;
 
       default :
-            var n = -1;
-            for (var i=0;(i<local_prefixes.length) && (n<0);i++)
+            let n = -1;
+            for (let i=0;(i<local_prefixes.length) && (n<0);i++)
               n = command.lastIndexOf ( local_prefixes[i] );
             if (n>=0)  {
-              var fpath;
+              let fpath;
               if (local_prefixes[i]=='/jsrview/')
                     fpath = path.join ( 'js-lib',command.slice(n+1) );
               else  fpath = command.slice(n);

@@ -196,63 +196,77 @@
     <li class="md-nav__item">
     
     
-      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
+      <a href="pm2.html" class="md-nav__link">4. Managing CCP4 Cloud with PM2</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="mrparse_server_setup.html" class="md-nav__link">5. Linking MrParse to local databases</a>
+      <a href="nginx.html" class="md-nav__link">5. Configuration of CCP4 Cloud with Nginx</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">6. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">6. Linking AlphaFold setup with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="dev_hello_world.html" class="md-nav__link">7. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="mrparse_server_setup.html" class="md-nav__link">7. Linking MrParse to local databases</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html" class="md-nav__link">8. Software testing in CCP4</a>
+      <a href="interface_desc.html" class="md-nav__link">8. Task Interface Description</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">9. CCP4 Cloud tests</a>
+      <a href="dev_hello_world.html" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientsetup.html" class="md-nav__link">10. CCP4 Cloud Client Setup</a>
+      <a href="tests.html" class="md-nav__link">10. Software testing in CCP4</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">11. What is CCP4 Cloud Client Software</a>
+      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">11. CCP4 Cloud tests</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">12. How to add a new Sphinx theme</a>
+      <a href="clientsetup.html" class="md-nav__link">12. CCP4 Cloud Client Setup</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="clientwhatfor.html" class="md-nav__link">13. What is CCP4 Cloud Client Software</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="documentation.html" class="md-nav__link">14. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -507,13 +521,15 @@ mkdir ccp4cloud-data/tutorials</p>
 </ol>
 <p>At list one disk must be allocated for user and project data. Additional disks (<code class="docutils literal notranslate"><span class="pre">disk2</span></code> in this example) may be added later.</p>
 <ol class="arabic" start="5">
-<li><p>Make necessary changes in <strong>NC</strong> configuration files (see details in <a class="reference internal" href="#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
+<li><p>Make necessary changes in <strong>NC</strong> configuration files (see details in
+<a class="reference internal" href="#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 <span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
 </li>
-<li><p>Make necessary changes in <strong>FE</strong> configuration file (see details in <a class="reference internal" href="#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
+<li><p>Make necessary changes in <strong>FE</strong> configuration file (see details in
+<a class="reference internal" href="#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>

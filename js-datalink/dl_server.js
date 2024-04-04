@@ -89,8 +89,8 @@ class server {
     this.jsonResponse(res, data);
   }
 
-  async searchSourceCatalog(req, res) {
-    this.jsonResponse(res, await this.datalink.searchSourceCatalog(req.params.search));
+  async searchSourceCatalogs(res, field, value) {
+    this.jsonResponse(res, await this.datalink.searchSourceCatalogs(field, value));
   }
 
   updateSourceCatalog(req, res) {
@@ -127,40 +127,54 @@ class server {
     this.jsonResponse(res, this.datalink.updateData(req.params.user, req.params.source, req.params.id, req.body));
   }
 
-  uploadData(req, res) {
+  uploadData(req, res, next) {
     // check username
     if (! tools.validUserName(req.params.user)) {
       this.jsonResponse(res, tools.errorMsg(`Invalid user name ${req.params.user}`, 400));
       return;
     }
 
-    const bb = busboy( { headers: req.headers } );
+    const entry = this.datalink.addEntryFromSource(req.params.user, req.params.source, req.params.id);
+    if (! entry) {
+      this.jsonResponse(res, tools.errorMsg(`Unable to add catalog entry for ${user}/${source}/${id}`, 500));
+      return;
+    }
 
-    let file;
+    const bb = busboy( { headers: req.headers, preservePath: true } );
+
+    let has_error = false;
+    let err_msg = `Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`;
 
     bb.on('file', (name, in_stream, info) => {
-      file = tools.sanitizeFilename(info.filename);
-      let r = this.datalink.uploadData(req.params.user, req.params.source, req.params.id, file, in_stream);
-      if (r) {
-        if (r instanceof stream.Writable) {
-          r.on('finish', () => {
-            this.datalink.uploadDataComplete(req.params.user, req.params.source, req.params.id, file);
-          });
-
-          r.on('error', (err) => {
-            req.unpipe(bb);
-            this.jsonResponse(res, tools.errorMsg(`Error adding to ${req.params.user}/${req.params.source}/${req.params.id}`, 500));
-          });
+      this.datalink.uploadData(entry, in_stream, info.filename)
+      .catch( (err) => {
+        // if an error has already been triggered, just return as otherwise jsonResponse will be called twice and throw an error.
+        if (has_error) {
+          return;
         }
-        if (r.error) {
-          req.unpipe(bb);
-          this.jsonResponse(res, r);
-        }
-      }
+        has_error = true;
+        // detach stream
+        req.unpipe(bb);
+        log.error(err);
+        this.datalink.dataError(entry);
+        this.jsonResponse(res, err);
+      });
     });
 
     bb.on('finish', () => {
-      this.jsonResponse(res, tools.successMsg(`Added ${file} to ${req.params.user}/${req.params.source}/${req.params.id}`));
+      this.datalink.dataComplete(entry);
+      this.jsonResponse(res, tools.successMsg(`Added files to ${req.params.user}/${req.params.source}/${req.params.id}`));
+    });
+
+    bb.on('error', (err) => {
+      if (has_error) {
+        return;
+      }
+      has_error = true;
+      req.unpipe(bb);
+      log.error(err);
+      this.datalink.dataError(entry);
+      this.jsonResponse(res, tools.errorMsg(err_msg, 500));
     });
 
     req.pipe(bb);
@@ -176,7 +190,11 @@ class server {
     // data source info/catalog endpoints
     router.get(['/sources', '/sources/:id'], (req, res) => this.getSources(req, res) );
     router.get(['/sources/:id/catalog'], (req, res) => this.getSourceCatalog(req, res) );
-    router.get('/search/:search', (req, res) => this.searchSourceCatalog(req, res) );
+
+    // search endpoint
+    router.get('/search', (req, res) => this.searchSourceCatalogs(res, req.query.f, req.query.q) );
+    // pdb only search (for backwards compatibility)
+    router.get('/search/:search', (req, res) => this.searchSourceCatalogs(res, 'pdb', req.params.search) );
 
     router.put('/sources/:id/update',
       (req, res, next) => this.checkAdminKey(req, res, next),
@@ -204,11 +222,18 @@ class server {
       (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.updateData(req, res) );
 
-    // data upload for user
-    router.post(['/data/:user/:source/:id/upload'],
-      (req, res, next) => this.checkValidSourceId(req, res, next),
-      (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.uploadData(req, res) );
+    if (config.get('data_sources.upload.enabled')) {
+      // data upload for user
+      router.post(['/data/:user/:source/:id/upload'],
+        (req, res, next) => this.checkValidSourceId(req, res, next),
+        (req, res, next) => this.checkCloudRunId(req, res, next),
+        (req, res, next) => this.uploadData(req, res, next) );
+    }
+
+    // data link statistics
+    router.get('/stats', (req, res) => {
+      this.jsonResponse(res, this.datalink.getDataStats());
+    });
 
     const app = express();
     app.use(API_PREFIX, router);
@@ -217,9 +242,13 @@ class server {
       res.send(router.stack.map( r => r.route?.path ));
     });
 
+    app.use((req, res, next) => {
+      this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));
+    });
+
     app.listen( port, host, function(err) {
       if (err) {
-        log.info(err)
+        log.error(err)
       } else {
         log.info(`Data Link Server - Running on ${host}:${port}`);
       }

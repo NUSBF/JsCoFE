@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.02.24   <--  Date of Last Modification.
+ *    20.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ function ProjectPage ( sceneId )  {
       });
     });
 
-  this.title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
+  this.title_lbl = this.headerPanel.setLabel ( '',0,3,1,1 );
   this.title_lbl.setFont  ( 'times','150%',true,true )
                 .setNoWrap()
                 .setHorizontalAlignment ( 'left' );
@@ -95,7 +95,7 @@ function ProjectPage ( sceneId )  {
   // this.headerPanel.setCellSize ( '99%','',0,2 );
   // this.headerPanel.setCellSize ( '0px','',0,12 );
 
-  this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
+  this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
 
   this.makeDock();
   this.dock.loadDockData();
@@ -186,11 +186,11 @@ function ProjectPage ( sceneId )  {
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';
+  const toolbar_width   = 58;
   this.toolbar_div = new Widget('div');
-  this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
+  this.toolbar_div.element.setAttribute ( 'class','toolbar-content' );
   let toolbar = new Grid('');
-  this.toolbar_div.setWidth_px ( parseInt(toolbutton_size)+16 );
-  this.toolbar_div.addWidget ( toolbar );
+  this.toolbar_div.setWidth_px ( toolbar_width ).addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
 
   this.panel = this.grid.setGrid ( '',1,1,1,1 );
@@ -198,12 +198,12 @@ function ProjectPage ( sceneId )  {
   // note that actual panel size is set in function resizeTreePanel() below
   this.grid.setCellSize ( '40px',''    ,1,0,1,1 );
   this.grid.setVerticalAlignment ( 1,1,'top' );
-  this.grid.setCellSize ( '100%','100%' ,1,1,1,1 );
-  this.grid.setCellSize ( '6px','' ,1,2,1,1 );
+  this.grid.setCellSize ( '100%','100%',1,1,1,1 );
+  this.grid.setCellSize ( '6px',''     ,1,2,1,1 );
 
   // make the toolbar
-  const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbutton_size + 
-                    ';margin-top:6px;"></div>'
+  const horz_line = '<div style="border-top: 1.5px dotted grey; width:' +
+                    toolbutton_size + '; margin-top:6px;"></div>';
   let   cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
@@ -351,7 +351,7 @@ function ProjectPage ( sceneId )  {
   this.makeLogoPanel ( 2,0,3 );
 
   for (let i=0;i<this.headerPanel.getNCols();i++)
-    if (i==2)  this.headerPanel.setCellSize ( '90%' ,'',0,i );
+    if (i==3)  this.headerPanel.setCellSize ( '90%' ,'',0,i );
          else  this.headerPanel.setCellSize ( 'auto','',0,i );
 
   // this.trimPageTitle();
@@ -401,14 +401,20 @@ ProjectPage.prototype.confirmLeaving = function ( callback_func )  {
   if (getNofCommunicatingIFrames()+this.jobTree.getNofJobDialogs(true)>0)  {
     new QuestionBox ( 'Active task dialogs',
                       '<div style="width:360px;"><h2>Active task dialogs</h2>'  +
-                      'Some task are open in this Project Page. Closing them '  +
+                      'Some task are open in this Project Page (' +
+                      getNofCommunicatingIFrames() + ':' +
+                      this.jobTree.getNofJobDialogs(true) +
+                      '). Closing them '  +
                       'them automatically may cause losing last changes.<p>'    +
                       'It is recommended that you review and close open tasks ' +
                       'manually before leaving this page.<p>What you would '    +
                       'like to do?</div',
                       [
                         { name    : 'Close them',
-                          onclick : function(){ callback_func(true); }
+                          onclick : function(){ 
+                                      removeAllCommunicatingIFrames();
+                                      callback_func(true); 
+                                    }
                         },{
                           name    : 'I will review and close manually',
                           onclick : function(){ callback_func(false); }
@@ -1368,6 +1374,7 @@ ProjectPage.prototype.makeJobTree = function()  {
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '6px';
+  jobTree.element.style.paddingLeft   = '0px';
   // this.job_tree = jobTree;  // for external references
   let self = this;
   // (function(self){
@@ -1511,7 +1518,7 @@ ProjectPage.prototype.makeDock = function()  {
 ProjectPage.prototype.trimPageTitle = function()  {
   let wt = window.innerWidth - 60;
   for (let i=0;i<this.headerPanel.getNCols();i++)
-    if (i!=2)
+    if (i!=3)
       wt -= this.headerPanel.getCellSize(0,i)[0];
   wt = Math.max(100,wt);
   $(this.title_lbl.element).css({
@@ -1523,7 +1530,7 @@ ProjectPage.prototype.trimPageTitle = function()  {
 
 ProjectPage.prototype.onResize = function ( width,height )  {
   let h = (height - 88) + 'px';    // THESE NUMBERS DEFINE WIDTH AND HEIGHT
-  let w = (width  - 74) + 'px';    // OF THE JOB TREE 
+  let w = (width  - 80) + 'px';    // OF THE JOB TREE 
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
   // ***** development code, dormant
@@ -1565,9 +1572,9 @@ ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
   });
 }
 
-ProjectPage.prototype.runHotButtonJob = function ( jobId,task )  {
+ProjectPage.prototype.runHotButtonJob = function ( jobId,task_name,options )  {
   if (jobId in this.jobTree.dlg_map)
-    this.jobTree.dlg_map[jobId].runHotButtonJob ( task );
+    this.jobTree.dlg_map[jobId].runHotButtonJob ( task_name,options );
   else
     new MessageBox ( 
         'Error',
@@ -1608,9 +1615,9 @@ function rvapi_cloneJob ( jobId )  {
     __current_page.cloneJobWithSuggestedParameters ( jobId );
 }
 
-function rvapi_runHotButtonJob ( jobId,task )  {
+function rvapi_runHotButtonJob ( jobId,task_name,options )  {
   if (rvapi_canRunJob())
-    __current_page.runHotButtonJob ( jobId,task );
+    __current_page.runHotButtonJob ( jobId,task_name,options );
 }
 
 

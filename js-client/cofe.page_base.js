@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    23.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
 function BasePage ( sceneId,gridStyle,pageType )  {
 
   // clear the page first
-  $(document.body).empty();
+  $(document.body).empty().addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
 
   checkBrowser();
@@ -140,6 +140,8 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 
 BasePage.prototype.makeSetupNamePanel = function()  {
+// This panel appears on login, account, authorisation reply, forgotten password
+// and new registration pages
   let setupPanel = new Grid ( '' );
 
   function _make_panel ( name,icon )  {
@@ -172,7 +174,6 @@ BasePage.prototype.makeSetupNamePanel = function()  {
     setupPanel.setHorizontalAlignment ( 1,0,'center' );
   }
 
-
   return setupPanel;
 
 }
@@ -184,6 +185,7 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 //let __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
+// This panel runs at the bottom of all pages
 
   if (!__setup_desc)  return;
   if (!('partners' in __setup_desc))    return;
@@ -229,16 +231,17 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   this.grid.setVerticalAlignment  ( row,col,'middle'   );
   this.grid.setCellSize           ( '','30px', row,col );
   // logoGrid.setHeight_px ( 16 );
-  $(logoPanel.element).addClass ( 'logo-panel' );
+  $(logoPanel.element).addClass   ( 'logo-panel'  );
   // $(logoPanel.element).css ({
-  //   'position'         : 'absolute',
-  //   'left'             : '0px',
-  //   'bottom'           : '0px',
-  //   'padding'          : '0px',
-  //   'margin'           : '0px',
-  //   // 'height'           : '16px',
-  //   'border'           : '1px solid lightgray',
-  //   'background-color' : 'rgba(240,250,255,0.67)'
+  //   // 'position'         : 'absolute',
+  //   // 'left'             : '0px',
+  //   // 'bottom'           : '0px',
+  //   'top'           : window.innerHeight-34 + 'px',
+  //   // 'padding'          : '0px',
+  //   // 'margin'           : '0px',
+  //   // // 'height'           : '16px',
+  //   // 'border'           : '1px solid lightgray',
+  //   // 'background-color' : 'rgba(240,250,255,0.67)'
   // });
 }
 
@@ -292,9 +295,67 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
 
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
-  let icon_path;
-  let tooltip  = '<i>' + appName();
-  let ul_style = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+let icon_path = '';
+// let tooltip    = 'You are working with ' + appName() + ' Setup';
+let tooltip   = '<i>' + appName();
+let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+let iwidth    = '26px';
+
+  // if (__local_setup)
+  //   tooltip += ', running locally on your machine at ' + __fe_url + '.<br>&nbsp;';
+  // else if (__setup_desc)
+  //   tooltip += '<center>"' + __setup_desc.name + '"<br>at ' + __fe_url + '</center>'; 
+
+  // tooltip += '<br><i>' + appName();
+
+  if (__local_setup)  {
+    icon_path = image_path ( 'ccp4cloud_desktop'  );
+    if (__local_user)
+          tooltip += ' is in <b>desktop</b> mode:</i>';
+    else  tooltip += ' is in <b>local</b> mode:</i>';
+    tooltip += ul_style + '<li>projects and data are stored on your system</li>';
+    if (__local_service)
+          tooltip += '<li>computation done on your computer</li>';
+    else  tooltip += '<li>non-interactive tasks run on your computer</li>'   +
+                     '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
+  } else  {
+    icon_path = image_path ( 'ccp4cloud_remote' );
+    tooltip  += ' is in <b>server</b> mode:</i>' + ul_style +
+                '<li>projects and data are stored on server</li>' +
+                '<li>non-interactive tasks run on server</li>';
+    if (__local_service)
+          tooltip += '<li>interactive tasks run on your computer</li>';
+    else  tooltip += '<li><b>interactive tasks are not available</b>' +
+                     '<br><i>(' + appName() + ' Client not used)</i></li>';
+    // if (__setup_desc)
+    //   tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
+    iwidth = '20px';
+  }
+
+  if ((!__local_setup) || __local_user)
+    tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
+
+  if (__fe_url!=window.location.href)
+    tooltip += '<li>server url: <u>' + __fe_url + '</u></li></ul>';
+
+  let image_btn = this.headerPanel.setImageButton ( 
+                                        icon_path,iwidth,'20px',0,colNo,1,1 )
+            .setTooltip1    ( tooltip + '</ul>','show',false,0 )
+            .setFontSize    ( '90%' )
+            .setVerticalAlignment ( 'top' );
+  $(image_btn.element).css({'padding-top':'2px'});
+
+  this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
+  this.headerPanel.setLabel ( '&nbsp;', 0,colNo+2,1,1 )
+
+}
+
+/*  ---- OLD VERSION OF MODE INDICATORS (2 icons)
+BasePage.prototype._setModeIcon = function ( colNo )  {
+let icon_path = '';
+let tooltip   = '<i>' + appName();
+let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
   if (__local_setup)  {
     icon_path = image_path ( 'setup_local'  );
     tooltip  += ' is in <b>local</b> mode:</i>' + ul_style +
@@ -333,15 +394,14 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
                   .setTooltip1    ( setup_name,'show',false,0 )
                   .setFontSize    ( '90%' )
                   .setVerticalAlignment ( 'middle' );
-  /*
-  this.headerPanel.setLabel ( setup_name, 0,colNo+1,1,1 )
-                  .setFont  ( '','80%',false,true )
-                  .setFontLineHeight ( '85%' );
-  */
+  // this.headerPanel.setLabel ( setup_name, 0,colNo+1,1,1 )
+  //                 .setFont  ( '','80%',false,true )
+  //                 .setFontLineHeight ( '85%' );
   this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
   this.headerPanel.setVerticalAlignment ( 0,colNo+1,'top' );
   this.headerPanel.setLabel ( '&nbsp;', 0,colNo+2,1,1 )
 }
+*/
 
 
 BasePage.prototype.makeHeader0 = function ( colSpan )  {
@@ -350,11 +410,12 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
   this.grid.setCellSize ( '','32px',0,0 );
 
+  this.headerPanel.setLabel  ( ' ',0,0,1,1 ).setWidth_px(8);
   this.headerPanel.menu = new Menu('',image_path('menu'));
-  this.headerPanel.setWidget ( this.headerPanel.menu,0,0,1,1 );
+  this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
 
-  this.headerPanel.setLabel    ( '',0,1,1,1 ).setWidth ( '40px' );
-  this.headerPanel.setCellSize ( '40px','',0,1 );
+  this.headerPanel.setLabel    ( '',0,2,1,1 ).setWidth ( '40px' );
+  this.headerPanel.setCellSize ( '40px','',0,2 );
 
   if (__login_user)  {
     this.headerPanel.setCellSize ( '99%','',0,12 );
@@ -377,15 +438,14 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
     this._setModeIcon ( 18 );
   }
 
-  if (!__local_user)  {
-    this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
-    this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
-    this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
-    this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
-    this.headerPanel.setCellSize ( '32px','32px',0,22 );
-    this.logout_btn .setTooltip  ( 'Logout' );
-   } else
-    this.logout_btn = null;
+  this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
+  this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
+  this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
+  this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
+  this.headerPanel.setCellSize ( '32px','32px',0,22 );
+  if (__local_user)
+        this.logout_btn .setTooltip  ( 'End session' );
+  else  this.logout_btn .setTooltip  ( 'Logout'      );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -438,9 +498,11 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
-  if (!__local_user) 
-    this.headerPanel.menu.addItem('Log out',image_path('logout'))
-                         .addOnClickListener ( logout_func );
+  let menuLabel = 'Log out';
+  if (__local_user)
+    menuLabel = 'End session';
+  this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
+                       .addOnClickListener ( logout_func );
   return this;
 }
 

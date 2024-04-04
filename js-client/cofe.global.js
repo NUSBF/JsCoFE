@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.02.24   <--  Date of Last Modification.
+ *    14.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ var __login_user      = '';
 var __user_settings   = {
   color_modes : {
     preferred_mode : 'light',  // light|dark|system; make 'system' in final version
-    normal_mode :  {
+    light_mode :  {
       invert     : 0.0,   // 0 - 1
       sepia      : 0.0,   // 0 - 1
       hue        : 0,     // integer deg +/- 180
@@ -45,12 +45,12 @@ var __user_settings   = {
       grayscale  : 0.0    // 0 -1
     },
     dark_mode :  {
-      invert     : 0.95,  // 0 - 1
+      invert     : 0.9,  // 0 - 1
       sepia      : 0.1,   // 0 - 1
-      hue        : 0,     // integer deg +/-180
+      hue        : 180,   // integer deg +/-180
       saturate   : 1.0,   // >0
-      contrast   : 1.0,   // >0
-      brightness : 1.0,   // > 0
+      contrast   : 0.89,  // >0
+      brightness : 0.93,  // > 0
       grayscale  : 0.0    // 0 -1
     }
   }
@@ -76,6 +76,7 @@ var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
 var __jobs_safe       = false;  // true if FE supports failed jobs safe
+var __has_datalink    = false;  // true if datalink server is configured
 var __strict_dormancy = false;  // true if dormancy includes deactivation of user account
 var __treat_private   = ['none']; // list of data not to be sent out
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
@@ -260,7 +261,10 @@ var __active_color_mode = 'light';
 
 function setDarkMode ( darkMode )  {
   
-  let color_mode = __user_settings.color_modes.normal_mode;
+  let color_mode = null;
+  if ('light_mode' in __user_settings.color_modes)
+        color_mode = __user_settings.color_modes.light_mode;
+  else  color_mode = __user_settings.color_modes.normal_mode;
   if (darkMode)  {
     color_mode = __user_settings.color_modes.dark_mode;
     __active_color_mode = 'dark';
