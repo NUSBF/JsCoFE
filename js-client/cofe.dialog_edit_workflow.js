@@ -77,7 +77,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
            .setNoWrap   ();
 
   this.editor = new ACEditor ( 760,400,{
-       'border'     : '1px solid black',
+       'border'     : '1px solid gray',
        'box-shadow' : '6px 6px lightgray',
        'font-size'  : '14px',
        'theme'      : 'chrome',
@@ -553,7 +553,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
       inputPanel.setSize_px ( dlg_size[0]-56,dlg_size[1]-272 );
       $(inputPanel.element).css({
         'overflow'   : 'auto',
-        'border'     : '1px solid lightgray',
+        'border'     : '1px solid gray',
         'box-shadow' : '6px 6px lightgray',
         'padding'    : '8px'
       });
