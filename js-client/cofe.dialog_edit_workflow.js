@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -554,9 +554,11 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
       $(inputPanel.element).css({
         'overflow'   : 'auto',
         'border'     : '1px solid gray',
-        'box-shadow' : '6px 6px lightgray',
+        // 'box-shadow' : '6px 6px lightgray',
         'padding'    : '8px'
       });
+      inputPanel.setShade ( '6px 6px lightgray','none',
+                            __active_color_mode );
       panel.addWidget ( inputPanel );
       help_btn.show();
       $('#' + add_btn_id ).button('enable');
