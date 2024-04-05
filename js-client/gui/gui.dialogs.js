@@ -750,10 +750,15 @@ function WebAppBox ( title )  {
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element  );
 
-  $(this.element).css({
-    'box-shadow': '8px 8px 16px 16px rgba(0,0,0,0.2)',
-    'overflow'  : 'hidden'
-  });
+  // $(this.element).css({
+  //   'box-shadow': '8px 8px 16px 16px rgba(0,0,0,0.2)',
+  //   'overflow'  : 'hidden'
+  // });
+
+  this.setScrollable ( 'hidden','hidden' );
+  this.setShade      ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
+                       'none',
+                       __active_color_mode );
 
   this.iframe = new IFrame ( '' );
   $(this.iframe.element).css({

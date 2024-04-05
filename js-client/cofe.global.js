@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -280,6 +280,16 @@ function setDarkMode ( darkMode )  {
                ') brightness('  + color_mode.brightness + 
                ') grayscale('   + color_mode.grayscale  + ')'
   });
+
+  if (darkMode)  {
+    $( "[dark_shadow]" ).each(function(){
+      this.style.boxShadow = this.getAttribute ( 'dark_shadow' );
+    });
+  } else  {
+    $( "[light_shadow]" ).each(function(){
+      this.style.boxShadow = this.getAttribute ( 'light_shadow' );
+    });
+  }
 
 }
 

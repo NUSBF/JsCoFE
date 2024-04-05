@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    05.02.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -65,47 +65,57 @@ Widget.prototype.delete = function () {
   //   this.element.parentNode.removeChild ( this.element );
 }
 
-Widget.prototype.setAttribute = function (attr, value) {
-  this.element.setAttribute(attr, value);
+Widget.prototype.setAttribute = function ( attr,value ) {
+  this.element.setAttribute ( attr,value );
   return this;
 }
 
-Widget.prototype.hasAttribute = function (attr) {
+Widget.prototype.hasAttribute = function ( attr ) {
   return this.element.hasAttribute(attr);
 }
 
-Widget.prototype.getAttribute = function (attr) {
+Widget.prototype.getAttribute = function ( attr ) {
   return this.element.getAttribute(attr);
 }
 
-Widget.prototype.removeAttribute = function (attr) {
+Widget.prototype.removeAttribute = function ( attr ) {
   this.element.removeAttribute(attr);
   return this;
 }
 
-Widget.prototype.setText = function (text) {
+Widget.prototype.setText = function ( text ) {
   this.element.innerHTML = text.toString();
   // if (text)  this.element.innerHTML = text;
   //      else  this.element.innerHTML = ' ';  // Safari 14 fix
   return this;
 }
 
-Widget.prototype.addClass = function (class_name) {
+Widget.prototype.setShade = function ( light_shadow,dark_shadow,color_mode )  {
+  this.element.setAttribute ( 'light_shadow',light_shadow );
+  this.element.setAttribute ( 'dark_shadow' ,dark_shadow  );
+  if (color_mode=='light')
+    $(this.element).css ({ 'box-shadow':light_shadow });
+  else
+    $(this.element).css ({ 'box-shadow':dark_shadow });
+  return this;
+}
+
+Widget.prototype.addClass = function ( class_name ) {
   this.element.classList.add(class_name);
   return this;
 }
 
-Widget.prototype.removeClass = function (class_name) {
+Widget.prototype.removeClass = function ( class_name ) {
   this.element.classList.remove(class_name);
   return this;
 }
 
-Widget.prototype.toggleClass = function (class_name) {
+Widget.prototype.toggleClass = function ( class_name ) {
   this.element.classList.toggle(class_name);
   return this;
 }
 
-Widget.prototype.setCursor = function (cursor) {
+Widget.prototype.setCursor = function ( cursor ) {
   // e.g., cursor='pointer'
   $(this.element).css('cursor', cursor);
   return this;
@@ -1018,7 +1028,8 @@ InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
     if ((pattern == 'integer') || (pattern == 'integer_'))
       this.element.setAttribute('pattern', '^(-?[0-9]+\d*)$|^0$');
     else if ((pattern == 'real') || (pattern == 'real_'))
-      this.element.setAttribute('pattern', '^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$');
+      // this.element.setAttribute('pattern', '^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$');
+      this.element.setAttribute ( 'pattern','[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?' );
     else
       //this.element.pattern = pattern;
       this.element.setAttribute('pattern', pattern);
