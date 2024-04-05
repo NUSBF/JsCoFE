@@ -291,6 +291,26 @@ function setDarkMode ( darkMode )  {
     });
   }
 
+  // let elementsWithBoxShadow = $('*:has([style*="box-shadow"])');
+  // if (darkMode)  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let dark_shadow = 'none';
+  //     if (this.hasAttribute('dark_shadow'))
+  //           dark_shadow = this.getAttribute ( 'dark_shadow' );
+  //     else  this.setAttribute ( 'dark_shadow',dark_shadow );
+  //     this.style.boxShadow = dark_shadow;
+  //   });
+  // } else  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let light_shadow = this.style.boxShadow;
+  //     if (this.hasAttribute('light_shadow'))
+  //           light_shadow = this.getAttribute ( 'light_shadow' );
+  //     else  this.setAttribute ( 'light_shadow',light_shadow );
+  //     this.style.boxShadow = light_shadow;
+  //   });
+  // }
+
+
 }
 
 function toggleDarkMode() {

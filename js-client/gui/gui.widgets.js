@@ -71,15 +71,15 @@ Widget.prototype.setAttribute = function ( attr,value ) {
 }
 
 Widget.prototype.hasAttribute = function ( attr ) {
-  return this.element.hasAttribute(attr);
+  return this.element.hasAttribute ( attr );
 }
 
 Widget.prototype.getAttribute = function ( attr ) {
-  return this.element.getAttribute(attr);
+  return this.element.getAttribute ( attr );
 }
 
 Widget.prototype.removeAttribute = function ( attr ) {
-  this.element.removeAttribute(attr);
+  this.element.removeAttribute ( attr );
   return this;
 }
 
@@ -1087,7 +1087,7 @@ InputText.prototype.setOnEnterListener = function (socket_function) {
 // -------------------------------------------------------------------------
 // ACEditor class
 
-function ACEditor(width, height, options) {
+function ACEditor ( width,height,options ) {
   // all optional options:
   //  options = {
   //    'border'     : '1px solid black',
@@ -1104,14 +1104,17 @@ function ACEditor(width, height, options) {
     'position': 'relative',
     'width'   : width,
     'height'  : height,
-    'border'  : '1px solid gray'
+    'border'  : '1px solid lightgray'
   };
   if ('border' in options)
     css1.border = options.border;
-  if ('box-shadow' in options)
-    css1['box-shadow'] = options['box-shadow'];
+  // if ('box-shadow' in options)
+  //   css1['box-shadow'] = options['box-shadow'];
 
   $(this.element).css(css1);
+
+  if ('box-shadow' in options)
+    this.setShade ( options['box-shadow'],'none',__active_color_mode );
 
   this.panel = new Widget('div');
   this.element.appendChild(this.panel.element);
