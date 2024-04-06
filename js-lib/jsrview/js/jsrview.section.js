@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    16.06.16   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,13 @@
 //  **** Content :  RVAPI javascript layer's section module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
+
 
 function addSection ( secId,secTitle,holderId,row,col,rowSpan,colSpan,
                       isOpen )  {
@@ -26,7 +29,7 @@ function addSection ( secId,secTitle,holderId,row,col,rowSpan,colSpan,
   if (document.getElementById(secId+"-accordion"))
     return;
 
-  var div = element ( "div","id",secId+"-accordion","" );
+  let div = element ( "div","id",secId+"-accordion","" );
 
   $("<h1><a>"+secTitle+"</a></h1><div id='"+secId+"'></div>").appendTo(div);
   addGridItem ( holderId,div,row,col,rowSpan,colSpan );

@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    25.10.15   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's global definitions
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2015
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
@@ -63,3 +63,5 @@ var _waitDialogTitle     = "";
 var _waitDialogMessage   = "";
 var _waitDialogId        = "_wait_dialog";
 var _waitDialogCountdown = -1;
+
+var __color_mode = 'light';

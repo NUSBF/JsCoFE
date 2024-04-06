@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    05.02.24   <--  Date of Last Modification.
+ *    06.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -65,47 +65,57 @@ Widget.prototype.delete = function () {
   //   this.element.parentNode.removeChild ( this.element );
 }
 
-Widget.prototype.setAttribute = function (attr, value) {
-  this.element.setAttribute(attr, value);
+Widget.prototype.setAttribute = function ( attr,value ) {
+  this.element.setAttribute ( attr,value );
   return this;
 }
 
-Widget.prototype.hasAttribute = function (attr) {
-  return this.element.hasAttribute(attr);
+Widget.prototype.hasAttribute = function ( attr ) {
+  return this.element.hasAttribute ( attr );
 }
 
-Widget.prototype.getAttribute = function (attr) {
-  return this.element.getAttribute(attr);
+Widget.prototype.getAttribute = function ( attr ) {
+  return this.element.getAttribute ( attr );
 }
 
-Widget.prototype.removeAttribute = function (attr) {
-  this.element.removeAttribute(attr);
+Widget.prototype.removeAttribute = function ( attr ) {
+  this.element.removeAttribute ( attr );
   return this;
 }
 
-Widget.prototype.setText = function (text) {
+Widget.prototype.setText = function ( text ) {
   this.element.innerHTML = text.toString();
   // if (text)  this.element.innerHTML = text;
   //      else  this.element.innerHTML = ' ';  // Safari 14 fix
   return this;
 }
 
-Widget.prototype.addClass = function (class_name) {
+Widget.prototype.setShade = function ( light_shadow,dark_shadow,color_mode )  {
+  this.element.setAttribute ( 'light_shadow',light_shadow );
+  this.element.setAttribute ( 'dark_shadow' ,dark_shadow  );
+  if (color_mode=='light')
+    $(this.element).css ({ 'box-shadow':light_shadow });
+  else
+    $(this.element).css ({ 'box-shadow':dark_shadow });
+  return this;
+}
+
+Widget.prototype.addClass = function ( class_name ) {
   this.element.classList.add(class_name);
   return this;
 }
 
-Widget.prototype.removeClass = function (class_name) {
+Widget.prototype.removeClass = function ( class_name ) {
   this.element.classList.remove(class_name);
   return this;
 }
 
-Widget.prototype.toggleClass = function (class_name) {
+Widget.prototype.toggleClass = function ( class_name ) {
   this.element.classList.toggle(class_name);
   return this;
 }
 
-Widget.prototype.setCursor = function (cursor) {
+Widget.prototype.setCursor = function ( cursor ) {
   // e.g., cursor='pointer'
   $(this.element).css('cursor', cursor);
   return this;
@@ -1018,7 +1028,8 @@ InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
     if ((pattern == 'integer') || (pattern == 'integer_'))
       this.element.setAttribute('pattern', '^(-?[0-9]+\d*)$|^0$');
     else if ((pattern == 'real') || (pattern == 'real_'))
-      this.element.setAttribute('pattern', '^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$');
+      // this.element.setAttribute('pattern', '^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$');
+      this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$' );
     else
       //this.element.pattern = pattern;
       this.element.setAttribute('pattern', pattern);
@@ -1076,7 +1087,7 @@ InputText.prototype.setOnEnterListener = function (socket_function) {
 // -------------------------------------------------------------------------
 // ACEditor class
 
-function ACEditor(width, height, options) {
+function ACEditor ( width,height,options ) {
   // all optional options:
   //  options = {
   //    'border'     : '1px solid black',
@@ -1093,14 +1104,17 @@ function ACEditor(width, height, options) {
     'position': 'relative',
     'width'   : width,
     'height'  : height,
-    'border'  : '1px solid gray'
+    'border'  : '1px solid lightgray'
   };
   if ('border' in options)
     css1.border = options.border;
-  if ('box-shadow' in options)
-    css1['box-shadow'] = options['box-shadow'];
+  // if ('box-shadow' in options)
+  //   css1['box-shadow'] = options['box-shadow'];
 
   $(this.element).css(css1);
+
+  if ('box-shadow' in options)
+    this.setShade ( options['box-shadow'],'none',__active_color_mode );
 
   this.panel = new Widget('div');
   this.element.appendChild(this.panel.element);
@@ -1399,21 +1413,22 @@ ImageButton.prototype.setImage = function (icon_uri) {
   this.image.setImage(icon_uri);
 }
 
+function unsetDefaultButton ( button, context_widget ) {
+  button.element.style.fontWeight = 'normal';
+  $(context_widget.element).off('keydown');
+}
+
 function setDefaultButton ( button, context_widget )  {
   button.element.style.fontWeight = 'bold';
   $(context_widget.element).keydown(function (e) {
     if (e.key == "Enter") {
+      unsetDefaultButton ( button,context_widget );
       // handle click logic here
       button.click();
       e.preventDefault();
       return true;
     }
   });
-}
-
-function unsetDefaultButton ( button, context_widget ) {
-  button.element.style.fontWeight = 'normal';
-  $(context_widget.element).keydown();
 }
 
 
@@ -1644,14 +1659,14 @@ function IFrame(uri) {
 IFrame.prototype = Object.create(Widget.prototype);
 IFrame.prototype.constructor = IFrame;
 
-IFrame.prototype.setFramePosition = function (left, top, width, height) {
+IFrame.prototype.setFramePosition = function ( left,top,width,height ) {
   this.setAttribute('style', 'border:none;position:absolute;top:' + top +
     ';left:' + left + ';width:' + width +
     ';height:' + height + ';');
   return this;
 }
 
-IFrame.prototype.setOnLoadListener = function (onload_func) {
+IFrame.prototype.setOnLoadListener = function ( onload_func ) {
   // this does not wait until ready
   this.element.addEventListener('load', function () {
     onload_func();
@@ -1671,7 +1686,7 @@ IFrame.prototype.setOnLoadListener = function (onload_func) {
   */
 }
 
-IFrame.prototype.loadPage = function (uri) {
+IFrame.prototype.loadPage = function ( uri ) {
   this.element.src = uri;
   return this;
 }
@@ -1710,6 +1725,12 @@ IFrame.prototype.getDocument = function () {
   // return this.element.contentDocument || this.element.contentWindow;
   //return this.element.contentWindow || this.element.contentDocument.document ||
   //       this.element.contentDocument;
+}
+
+IFrame.prototype.postMessage = function ( message ) {
+  let url = this.getURL();
+  if (url)
+    this.getDocument().postMessage ( message,url );
 }
 
 IFrame.prototype.getWindow = function () {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    28.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,37 +44,41 @@
 
 function extendToolbar ( dialog,options={} )  {
 
-  var opt = {
-    "closable"         : true,
-    "maximizable"      : true,
-    "minimizable"      : true,
-    "collapsable"      : true,
-    "dblclick"         : "collapse", // 'collapse', 'maximize', 'minimize', ''
-    // "titlebar"         : "",         // 'transparent', 'none', ''
-    "minimizeLocation" : "left"      // 'left' or 'right'
-    // "icons" : {
-    //   "close"    : "ui-icon-circle-close",
-    //   "maximize" : "ui-icon-circle-plus",
-    //   "minimize" : "ui-icon-circle-minus",
-    //   "collapse" : "ui-icon-triangle-1-s",
-    //   "restore"  : "ui-icon-bullet"
-    // }
-    // "load"           : function(evt, dlg){ alert(evt.type); },
-    // "beforeCollapse" : function(evt, dlg){ alert(evt.type); },
-    // "beforeMaximize" : function(evt, dlg){ alert(evt.type); },
-    // "beforeMinimize" : function(evt, dlg){ alert(evt.type); },
-    // "beforeRestore"  : function(evt, dlg){ alert(evt.type); },
-    // "collapse"       : function(evt, dlg){ alert(evt.type); },
-    // "maximize"       : function(evt, dlg){ alert(evt.type); },
-    // "minimize"       : function(evt, dlg){ alert(evt.type); },
-    // "restore"        : function(evt, dlg){ alert(evt.type); }
-  };
+  if (!__any_mobile_device)  {
 
-  for (let key in options)
-    if ((key in opt) && (!options[key]))  delete opt[key];
-                                    else  opt[key] = options[key];
+    let opt = {
+      "closable"         : true,
+      "maximizable"      : true,
+      "minimizable"      : true,
+      "collapsable"      : true,
+      "dblclick"         : "maximize", // 'collapse', 'maximize', 'minimize', ''
+      // "titlebar"         : "",         // 'transparent', 'none', ''
+      "minimizeLocation" : "left"      // 'left' or 'right'
+      // "icons" : {
+      //   "close"    : "ui-icon-circle-close",
+      //   "maximize" : "ui-icon-circle-plus",
+      //   "minimize" : "ui-icon-circle-minus",
+      //   "collapse" : "ui-icon-triangle-1-s",
+      //   "restore"  : "ui-icon-bullet"
+      // }
+      // "load"           : function(evt, dlg){ alert(evt.type); },
+      // "beforeCollapse" : function(evt, dlg){ alert(evt.type); },
+      // "beforeMaximize" : function(evt, dlg){ alert(evt.type); },
+      // "beforeMinimize" : function(evt, dlg){ alert(evt.type); },
+      // "beforeRestore"  : function(evt, dlg){ alert(evt.type); },
+      // "collapse"       : function(evt, dlg){ alert(evt.type); },
+      // "maximize"       : function(evt, dlg){ alert(evt.type); },
+      // "minimize"       : function(evt, dlg){ alert(evt.type); },
+      // "restore"        : function(evt, dlg){ alert(evt.type); }
+    };
 
-  $(dialog.element).dialogExtend(opt);
+    for (let key in options)
+      if ((key in opt) && (!options[key]))  delete opt[key];
+                                      else  opt[key] = options[key];
+
+    $(dialog.element).dialogExtend(opt);
+
+  }
 
   return dialog;
 
@@ -121,7 +125,7 @@ function MessageBox ( title,message,icon_name='' )  {
   document.body.appendChild ( this.element );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -162,7 +166,7 @@ function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
   document.body.appendChild ( this.element );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -173,7 +177,7 @@ function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
   } else
     this.element.innerHTML = message;
 
-  var w = Math.round(width_ratio*$(window).width()) + 'px';
+  let w = Math.round(width_ratio*$(window).width()) + 'px';
 
   $(this.element).dialog({
     resizable : false,
@@ -201,7 +205,7 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool,
   Dialog.call ( this,title );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -263,7 +267,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
-  var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
+  let loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
   this.display.setText ( loading_msg );
 
   $(this.display.element).css({'overflow':'hidden'});
@@ -277,8 +281,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
   document.body.appendChild ( this.element );
 //  document.body.style.fontSize = '16px';
 
-  var w0 = 1000;
-  var h0 = Math.min ( $(window).height()-180,600 );
+  let w0 = 1000;
+  let h0 = Math.min ( $(window).height()-180,600 );
   if (params)  {
     if ('width'  in params)  w0 = params.width;
     if ('height' in params)  h0 = params.height;
@@ -297,7 +301,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     this.display.setSize_px ( w-16,h-4 );
   }
 
-  var tstamp = Date.now();
+  let tstamp = Date.now();
   this.options = {
     width   : w0,
     height  : h0,
@@ -360,7 +364,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     ]);
   }
 
-  var body = this.display.element.contentWindow.document.querySelector('body');
+  let body = this.display.element.contentWindow.document.querySelector('body');
   body.style.fontSize = '16px';
 
   if (!__any_mobile_device)  {
@@ -368,13 +372,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     this.options.height = h0 + 116;
   }
 
-  var dlg = this;
+  let dlg = this;
 
   // (function(dlg){
 
     if (dlg.navigation)  {
 
-        dlg.options.buttons[0].click = function() {
+        dlg.options.buttons[0].click = function() {  //  "Back" in history
         // var history = dlg.display.getDocument().history;
         // alert ( ' >>> ' + history.length );
         // if (history.length>0)
@@ -398,7 +402,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
         }
       };
 
-      dlg.options.buttons[1].click = function() {
+      dlg.options.buttons[1].click = function() {  //  "Forward" in history
         if (dlg.history_position<dlg.history_length)  {
           dlg.history_position++;
           dlg.history_control = 1;
@@ -416,14 +420,14 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
         }
       };
 
-      dlg.options.buttons[2].click = function() {
+      dlg.options.buttons[2].click = function() {  //  "Return" in history
         dlg.history_length   = -1;
         dlg.history_position = -1;
         dlg.display.loadPage ( helpURL );
       };
 
-      dlg.options.buttons[3].click = function() {
-        var url = helpURL;
+      dlg.options.buttons[3].click = function() {  //  "Detach"
+        let url = helpURL;
         try {
           url = dlg.display.getDocument().location.href;
         } catch(e) {}
@@ -444,14 +448,24 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
   // }(this))
 
-  var dialog = $(this.element).dialog ( this.options );
-  if (__any_mobile_device)
-    dialog.siblings('.ui-dialog-titlebar').remove();
+    let resize_func = function()  {
+      dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
+    }
+
+    let dialog = $(this.element).dialog ( this.options );
+    if (__any_mobile_device)
+          dialog.siblings('.ui-dialog-titlebar').remove();
+    else  extendToolbar ( this,{
+            "maximize" : function(evt,d){ resize_func(); },
+            // "minimize" : function(evt, dlg){ resize_func(); },
+            "restore"  : function(evt,d){ resize_func(); }
+          });
 
   // (function(dlg){
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
-      dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
+      resize_func();
+      // dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
     });
 
     $(dlg.display.element).on('load',function(){
@@ -522,6 +536,10 @@ function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=n
   },delay_msec);
 }
 
+function launchHelpBox1 ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null )  {
+// need this function in onCLick responses because of bugs in Firefox
+  launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null );
+}
 
 // -------------------------------------------------------------------------
 // WaitDialog class
@@ -556,7 +574,7 @@ WaitDialog.prototype.constructor = WaitDialog;
 // -------------------------------------------------------------------------
 // QuestionBox class
 
-function QuestionBox ( title,message,buttons,icon_name='' )  {
+function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true,modal=true )  {
 // buttons = [{
 //   name    : button_name,
 //   onclick : button_function(){}
@@ -569,26 +587,28 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element );
 
+  this.grid = null;
+
   if (icon_name)  {
-    var grid = new Grid ( '' );
-    this.addWidget   ( grid );
-    grid.setLabel    ( ' ',0,0,1,1 );
-    grid.setCellSize ( '','6px', 0,0 );
-    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
-    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
-    grid.setLabel    ( message,0,2,2,1 );
-    grid.setVerticalAlignment ( 0,2,'middle' );
-  } else
+    this.grid = new Grid  ( '' );
+    this.addWidget        ( this.grid );
+    this.grid.setLabel    ( ' ',0,0,1,1 );
+    this.grid.setCellSize ( '','6px', 0,0 );
+    this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    this.grid.setLabel    ( message,0,2,2,1 );
+    this.grid.setVerticalAlignment ( 0,2,'middle' );
+  } else if (message)
     this.element.innerHTML = message;
 
-  var self = this;
+  let self = this;
   this.initiated = false;
 
   this.options = {
     resizable     : false,
     height        : 'auto',
     width         : 'auto',
-    modal         : true,
+    modal         : modal,
     closeOnEscape : false,
     open          : function(event, ui) {
                       self.initiated = true;
@@ -598,7 +618,7 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
     buttons       : {}
   };
 
-  for (var i=0;i<buttons.length;i++)
+  for (let i=0;i<buttons.length;i++)
     (function(self,btn){
       self.options.buttons[btn.name] = function() {
         $(this).dialog ( 'close' );
@@ -607,12 +627,18 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
       }
     }(this,buttons[i]))
 
-  $(this.element).dialog ( this.options );
+  if (autoLaunch)
+    $(this.element).dialog ( this.options );
 
 }
 
 QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;
+
+QuestionBox.prototype.launch = function()  {
+// for use if autoLaunch=false in constructor
+  $(this.element).dialog ( this.options );
+}
 
 QuestionBox.prototype.close = function()  {
   if (this.initiated)
@@ -626,6 +652,7 @@ QuestionBox.prototype.close = function()  {
 function InputBox ( title )  {
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
+  this.grid = null;
   document.body.appendChild ( this.element );
 }
 
@@ -639,14 +666,19 @@ InputBox.prototype.setText = function ( text,icon_name='' )  {
     this.addWidget        ( this.grid );
     this.grid.setLabel    ( ' ',0,0,1,1 );
     this.grid.setCellSize ( '','6px', 0,0 );
-    this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    // this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    this.setIcon          ( icon_name );
     this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
     this.grid.setLabel    ( text,0,2,2,1 );
     this.grid.setVerticalAlignment ( 0,2,'middle' );
   } else
     this.element.innerHTML = message;
 
-  // this.element.innerHTML = text.toString();
+}
+
+InputBox.prototype.setIcon = function ( icon_name )  {
+  if (this.grid)
+    this.grid.setImage ( image_path(icon_name),'48px','48px', 1,0,1,1 );
 }
 
 InputBox.prototype.launch = function ( name_btn,add_func )  {
@@ -682,10 +714,10 @@ function _calc_viewer_size ( widthF,heightF )  {
   //var w  = jq(window.parent).width () - 40;
   //var h  = jq(window.parent).height() - 64;
 
-  var w0 = window.parent.innerWidth;
-  var h0 = window.parent.innerHeight;
-  var w = w0 - 40;
-  var h = h0 - 56;
+  let w0 = window.parent.innerWidth;
+  let h0 = window.parent.innerHeight;
+  let w = w0 - 40;
+  let h = h0 - 56;
 
   if (!window.parent.__any_mobile_device) {
     h -= 8;
@@ -711,16 +743,22 @@ function WebAppBox ( title )  {
   //   $ = window.$;
   // }
 
-  this.onClose_func = null;
+  this.onClose_func        = null;
+  this.onToolbarClose_func = null;
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element  );
 
-  $(this.element).css({
-    'box-shadow': '8px 8px 16px 16px rgba(0,0,0,0.2)',
-    'overflow'  : 'hidden'
-  });
+  // $(this.element).css({
+  //   'box-shadow': '8px 8px 16px 16px rgba(0,0,0,0.2)',
+  //   'overflow'  : 'hidden'
+  // });
+
+  this.setScrollable ( 'hidden','hidden' );
+  this.setShade      ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
+                       'none',
+                       __active_color_mode );
 
   this.iframe = new IFrame ( '' );
   $(this.iframe.element).css({
@@ -731,7 +769,7 @@ function WebAppBox ( title )  {
   this.addWidget ( this.iframe );
   this.fid = setCommunicatingIFrame ( this,this.iframe );
 
-  var size;
+  let size;
   if (window.parent.__any_mobile_device)
        size = _calc_viewer_size ( 1.0, 1.0 );
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
@@ -746,7 +784,7 @@ function WebAppBox ( title )  {
 
   //dialog.style.fontSize = '16px';
 
-  var self = this;
+  let self = this;
 
   this.options = {
     resizable     : true,
@@ -756,11 +794,28 @@ function WebAppBox ( title )  {
     title         : title,
     effect        : 'fade',
     headerVisible : false,
-    create        : function() { self.iframe.getDocument().focus(); },
+    create        : function() { 
+                      self.iframe.getDocument().focus(); 
+                      // $(this).closest('div.ui-dialog')
+                      //        .find('.ui-dialog-titlebar-close')
+                      //        .click(function(e) {
+                      //          alert('hi');
+                      //          e.preventDefault();
+                      //          return true;
+                      //        });
+                    },
     focus         : function() { self.iframe.getDocument().focus(); },
     open          : function() { self.iframe.getDocument().focus(); },
     dragStop      : function() { self.iframe.getDocument().focus(); },
     resizeStop    : function() { self.iframe.getDocument().focus(); },
+    beforeClose   : function (e, ui)  {
+      if ($(e.currentTarget).hasClass('ui-dialog-titlebar-close'))  {
+        if (self.onToolbarClose_func && self.onToolbarClose_func())  {
+          // alert ( ' prevented' );
+          e.preventDefault();
+        }
+      }
+    },
     buttons       : {}
   };
 
@@ -798,16 +853,33 @@ WebAppBox.prototype.setOnCloseFunction = function ( onClose_func )  {
   this.onClose_func = onClose_func;
 }
 
+WebAppBox.prototype.setOnToolbarCloseFunction = function ( onToolbarClose_func )  {
+  this.onToolbarClose_func = onToolbarClose_func;
+}
+
 WebAppBox.prototype.launch = function() {
 
   $(this.element).dialog ( this.options );
 
-  var self = this;
+  let self = this;
+
+  let resize_func = function()  {
+    let w = $(self.element).width ();
+    let h = $(self.element).height();
+    self.iframe.setSize_px ( w,h );
+  }
+
+  extendToolbar ( this,{
+    "maximize" : function(evt, dlg){ resize_func(); },
+    // "minimize" : function(evt, dlg){ resize_func(); },
+    "restore"  : function(evt, dlg){ resize_func(); }
+  });
 
   $(this.element).on('dialogresize', function(event,ui){
-    var w = $(self.element).width();
-    var h = $(self.element).height();
-    self.iframe.setSize_px ( w,h );
+    resize_func();
+    // var w = $(self.element).width();
+    // var h = $(self.element).height();
+    // self.iframe.setSize_px ( w,h );
   });
 
   $(this.element).on("dialogclose", function(event,ui){
@@ -825,4 +897,8 @@ WebAppBox.prototype.launch = function() {
     self.iframe.getDocument().focus();
   });
 
+}
+
+WebAppBox.prototype.close = function()  {
+  $(this.element).dialog ( 'close' );
 }

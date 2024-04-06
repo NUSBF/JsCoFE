@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
            .setNoWrap   ();
 
   this.editor = new ACEditor ( 760,400,{
-       'border'     : '1px solid black',
+       'border'     : '1px solid gray',
        'box-shadow' : '6px 6px lightgray',
        'font-size'  : '14px',
        'theme'      : 'chrome',
@@ -553,10 +553,12 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
       inputPanel.setSize_px ( dlg_size[0]-56,dlg_size[1]-272 );
       $(inputPanel.element).css({
         'overflow'   : 'auto',
-        'border'     : '1px solid lightgray',
-        'box-shadow' : '6px 6px lightgray',
+        'border'     : '1px solid gray',
+        // 'box-shadow' : '6px 6px lightgray',
         'padding'    : '8px'
       });
+      inputPanel.setShade ( '6px 6px lightgray','none',
+                            __active_color_mode );
       panel.addWidget ( inputPanel );
       help_btn.show();
       $('#' + add_btn_id ).button('enable');

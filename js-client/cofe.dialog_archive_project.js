@@ -318,7 +318,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   );
 
   this.coauthors_edt = new ACEditor ( 650,100,{
-       'border'     : '1px solid black',
+       'border'     : '1px solid gray',
        'box-shadow' : '6px 6px lightgray',
        'font-size'  : '16px',
        'theme'      : 'chrome',
