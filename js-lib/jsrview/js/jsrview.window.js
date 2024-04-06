@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,13 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
+
 
 function popupWindow ( uri )  {
   winref = window.open ( uri,"",toolbar=0,directories=0,status=0,menubar=0,resizable=1 );

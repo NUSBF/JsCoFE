@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.09.17   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,12 @@
 //  **** Content :  RVAPI javascript layer's html form module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2017
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
 
 function addForm ( formId,action,method,holderId,
                    row,col,rowSpan,colSpan )  {
@@ -27,7 +29,7 @@ function addForm ( formId,action,method,holderId,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var form = element ( "form","id",formId,"" );
+  let form = element ( "form","id",formId,"" );
   form.setAttribute ( "action" ,action );
   form.setAttribute ( "method" ,method );
   form.setAttribute ( "enctype","multipart/form-data" );
@@ -47,7 +49,7 @@ function addFileUpload ( inpId,name,value,length,required,onChange,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var input = element ( "input","id",inpId,"" );
+  let input = element ( "input","id",inpId,"" );
   input.setAttribute ( "type","file" );
   if (name.length>0)     input.setAttribute ( "name"    ,name     );
   if (value.length>0)    input.setAttribute ( "value"   ,value    );
@@ -69,7 +71,7 @@ function addLineEdit ( inpId,name,text,size,holderId,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var input = element ( "input","id",inpId,"" );
+  let input = element ( "input","id",inpId,"" );
   input.setAttribute ( "type","text" );
   if (name.length>0) input.setAttribute ( "name"     ,name );
   if (text.length>0) input.setAttribute ( "value"    ,text );
@@ -92,7 +94,7 @@ function addHiddenText ( inpId,name,text,holderId,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var input = element ( "input","id",inpId,"" );
+  let input = element ( "input","id",inpId,"" );
   input.setAttribute ( "type" ,"hidden" );
   input.setAttribute ( "name" ,name     );
   input.setAttribute ( "value",text     );

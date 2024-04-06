@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    06.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1029,7 +1029,7 @@ InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
       this.element.setAttribute('pattern', '^(-?[0-9]+\d*)$|^0$');
     else if ((pattern == 'real') || (pattern == 'real_'))
       // this.element.setAttribute('pattern', '^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$');
-      this.element.setAttribute ( 'pattern','[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?' );
+      this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$' );
     else
       //this.element.pattern = pattern;
       this.element.setAttribute('pattern', pattern);
@@ -1413,21 +1413,22 @@ ImageButton.prototype.setImage = function (icon_uri) {
   this.image.setImage(icon_uri);
 }
 
+function unsetDefaultButton ( button, context_widget ) {
+  button.element.style.fontWeight = 'normal';
+  $(context_widget.element).off('keydown');
+}
+
 function setDefaultButton ( button, context_widget )  {
   button.element.style.fontWeight = 'bold';
   $(context_widget.element).keydown(function (e) {
     if (e.key == "Enter") {
+      unsetDefaultButton ( button,context_widget );
       // handle click logic here
       button.click();
       e.preventDefault();
       return true;
     }
   });
-}
-
-function unsetDefaultButton ( button, context_widget ) {
-  button.element.style.fontWeight = 'normal';
-  $(context_widget.element).keydown();
 }
 
 
@@ -1658,14 +1659,14 @@ function IFrame(uri) {
 IFrame.prototype = Object.create(Widget.prototype);
 IFrame.prototype.constructor = IFrame;
 
-IFrame.prototype.setFramePosition = function (left, top, width, height) {
+IFrame.prototype.setFramePosition = function ( left,top,width,height ) {
   this.setAttribute('style', 'border:none;position:absolute;top:' + top +
     ';left:' + left + ';width:' + width +
     ';height:' + height + ';');
   return this;
 }
 
-IFrame.prototype.setOnLoadListener = function (onload_func) {
+IFrame.prototype.setOnLoadListener = function ( onload_func ) {
   // this does not wait until ready
   this.element.addEventListener('load', function () {
     onload_func();
@@ -1685,7 +1686,7 @@ IFrame.prototype.setOnLoadListener = function (onload_func) {
   */
 }
 
-IFrame.prototype.loadPage = function (uri) {
+IFrame.prototype.loadPage = function ( uri ) {
   this.element.src = uri;
   return this;
 }
@@ -1724,6 +1725,12 @@ IFrame.prototype.getDocument = function () {
   // return this.element.contentDocument || this.element.contentWindow;
   //return this.element.contentWindow || this.element.contentDocument.document ||
   //       this.element.contentDocument;
+}
+
+IFrame.prototype.postMessage = function ( message ) {
+  let url = this.getURL();
+  if (url)
+    this.getDocument().postMessage ( message,url );
 }
 
 IFrame.prototype.getWindow = function () {

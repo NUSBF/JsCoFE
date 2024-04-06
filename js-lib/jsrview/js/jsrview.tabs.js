@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    12.07.19   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,24 +12,26 @@
 //  **** Content :  RVAPI javascript layer's tabs module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2019
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
+
 
 function makeTabs()  {
-var div = element ( "div","id",mainTabBarId,"" );
+let div = element ( "div","id",mainTabBarId,"" );
 
   div.appendChild ( element ( "ul","","","" ) );
   _document_body.appendChild ( div );
 
-  var tabs = $("#"+mainTabBarId);
+  let tabs = $("#"+mainTabBarId);
 
   tabs.tabs({
     heightStyle: "fill",
  //   beforeActivate: function(event,ui) {
- //     for (var i=0;i<graphWidgetIds.length;i++)  {
+ //     for (let i=0;i<graphWidgetIds.length;i++)  {
  //       drawLogGraph ( graphWidgetIds[i],null,null );
  //     }
  //   }
@@ -42,7 +44,7 @@ var div = element ( "div","id",mainTabBarId,"" );
 
   // close icon: removing the tab on click
   tabs.delegate( "span.ui-icon-circle-close", "click", function() {
-    var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+    let panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
     $( "#" + panelId ).remove();
     tabs.tabs( "refresh" );
   });
@@ -50,7 +52,7 @@ var div = element ( "div","id",mainTabBarId,"" );
   // close icon: removing the tab on Alt-Backspace
   tabs.bind( "keyup", function( event ) {
     if ( event.altKey && event.keyCode === $.ui.keyCode.BACKSPACE ) {
-      var panelId = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
+      let panelId = tabs.find( ".ui-tabs-active" ).remove().attr( "aria-controls" );
       $( "#" + panelId ).remove();
       tabs.tabs( "refresh" );
     }
@@ -63,19 +65,19 @@ var div = element ( "div","id",mainTabBarId,"" );
 }
 
 function getSelectedTabId() {
-  var tabIndex = $("#"+mainTabBarId).tabs('option','active');
-  var selected = $("#"+mainTabBarId+" ul>li a").eq(tabIndex).attr('href');
+  let tabIndex = $("#"+mainTabBarId).tabs('option','active');
+  let selected = $("#"+mainTabBarId+" ul>li a").eq(tabIndex).attr('href');
   return selected.substring(1);
 }
 
-var __iOS_device = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
+let __iOS_device = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream );
 
 function resizeTabBar() {
 // this resizes the tab bar when window is resized by user
-var mainToolBar = $("#"+mainToolBarId);
-var mainTabBar  = $("#"+mainTabBarId);
-var header      = $("#"+pageHeaderId);
-var h;
+let mainToolBar = $("#"+mainToolBarId);
+let mainTabBar  = $("#"+mainTabBarId);
+let header      = $("#"+pageHeaderId);
+let h;
 
   if (__iOS_device)
     h = window.parent.innerHeight - 46;
@@ -102,7 +104,7 @@ function numberOfTabs ( tabBarId )  {
 }
 
 function getTabNo ( tabBarId,tabId )  {
-var tab = document.getElementById(tabId);
+let tab = document.getElementById(tabId);
   if (!tab)  return -1;
   return $("#"+tabBarId+" >div").index(tab);
 }
@@ -118,7 +120,7 @@ function makeToolBarModificationObject ( tab )  {
 
 function makeToolBarModification ( tab )  {
   if (tab)  {
-    var showdocs = (tab['tabmod']['helpfile'].length>0);
+    let showdocs = (tab['tabmod']['helpfile'].length>0);
     setToolBtnVisible ( sep2BtnId,showdocs );
     setToolBtnVisible ( helpPgmBtnId,showdocs );
     setToolBtnVisible ( goBackBtnId   ,tab['tabmod']['shownav']  );
@@ -137,15 +139,15 @@ function addTab ( tabBarId,tabId,tabName,isOpen,closable )  {
 //   tabBarId  (string) id of tab bar
 //   tabId     (string) id of new tab
 //   tabName   (string) tab name
-var tab = document.getElementById(tabId);
+let tab = document.getElementById(tabId);
 
   if (tab)  {
     if (isOpen)
       $( "#"+tabBarId ).tabs ( "option", "active",
                                        getTabNo(tabBarId,tabId) );
   } else  {
-    var tabBar = $( "#"+tabBarId );
-    var closeAttr = "";
+    let tabBar = $( "#"+tabBarId );
+    let closeAttr = "";
     if (closable)
       closeAttr = "<span class='ui-icon ui-icon-circle-close' role='presentation'>Remove Tab</span>";
 //      closeAttr = "<span class='ui-icon ui-icon-circle-close ui-closable-tab'></span>";
@@ -167,7 +169,7 @@ var tab = document.getElementById(tabId);
 }
 
 function removeTab ( tabBarId,tabId )  {
-var tabBar = $("#"+tabBarId);
+let tabBar = $("#"+tabBarId);
    tabBar.find("[href='#"+tabId+"']").closest("li").remove();
    $( "#"+tabId ).remove();
    tabBar.tabs( "refresh" );
@@ -184,20 +186,20 @@ function insertTab ( tabBarId,beforeTabId,tabId,tabName,isOpen,closable )  {
 //                        to tab bar
 //   tabId       (string) id of new tab
 //   tabName     (string) tab name
-var beforeTab = document.getElementById(beforeTabId);
+let beforeTab = document.getElementById(beforeTabId);
 
   if (!beforeTab)
     return addTab ( tabBarId,tabId,tabName,isOpen,closable );
 
-  var tab = document.getElementById(tabId);
+  let tab = document.getElementById(tabId);
 
   if (tab)  {
     if (isOpen)
       $( "#"+tabBarId ).tabs ( "option", "active",
                                          getTabNo(tabBarId,tabId) );
   } else  {
-    var tabBar = $( "#"+tabBarId );
-    var closeAttr = "";
+    let tabBar = $( "#"+tabBarId );
+    let closeAttr = "";
     if (closable)
       closeAttr = "<span class='ui-icon ui-icon-circle-close' role='presentation'>Remove Tab</span>";
     $( "<li><a href='#"+tabId+"'>" + tabName +
@@ -226,7 +228,7 @@ function addHelpTab ( helpFile )  {
 //  If helpFile is an empty string then file name is taken from current
 //  tab modification fields, by this making for tab-specific help
 //  support
-var tab,hfile;
+let tab,hfile;
 
   if (helpFile.length<=0)  {
      tab = document.getElementById ( getSelectedTabId() );
@@ -252,7 +254,7 @@ function openHelpWindow ( helpFile )  {
 //  If helpFile is an empty string then file name is taken from current
 //  tab modification fields, by this making for tab-specific help
 //  support
-var tab,hfile;
+let tab,hfile;
 
   if (helpFile.length<=0)  {
      tab = document.getElementById ( getSelectedTabId() );
@@ -278,11 +280,11 @@ function replaceAll ( str,find,rep )  {
 
 function displayData ( uri )  {
 // uri may be given like [tabName]uri...
-var tabName,uri0,tabId;
+let tabName,uri0,tabId;
 
 
   if (uri.charAt(0)=="[")  {
-    var n   = uri.indexOf ( "]" );
+    let n   = uri.indexOf ( "]" );
     tabName = uri.slice(1,n);
     uri0    = uri.slice(n+1);
   } else  {
@@ -301,7 +303,7 @@ var tabName,uri0,tabId;
 
     processFile ( uri0,"post",true,
       function(data)  {
-        var pre = element ( "pre","class","display-text",data );
+        let pre = element ( "pre","class","display-text",data );
         setGridItem ( tabId,pre,0,0,1,1 );
       },
       function() {
@@ -313,7 +315,7 @@ var tabName,uri0,tabId;
     );
 
 //    $.post(uri0,function(data)  {
-//      var pre = element ( "pre","class","display-text",data );
+//      let pre = element ( "pre","class","display-text",data );
 //      setGridItem ( tabId,pre,0,0,1,1 );
 //    },"text").always(function()  {
 //      $("body").css("cursor", "default");

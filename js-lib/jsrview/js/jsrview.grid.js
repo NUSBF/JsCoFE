@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    07.12.19   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,12 @@
 //  **** Content :  RVAPI javascript layer's grid module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2019
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
 
 function addGrid ( holderId )  {
 // Adds grid layout to node identified by id 'holderId'. The layout
@@ -50,14 +52,14 @@ function addGridCompact ( holderId )  {
 }
 
 function getGridCell ( holderId,row,col )  {
-var grid = document.getElementById ( holderId+"-grid" );
+let grid = document.getElementById ( holderId+"-grid" );
 
   if (grid)  {
 
     while (grid.rows.length<=row)
       grid.insertRow ( -1 ); // this adds a row
 
-    var gridRow = grid.rows[row];
+    let gridRow = grid.rows[row];
     while (gridRow.cells.length<=col)
       gridRow.insertCell ( -1 ); // this adds a cell
 
@@ -70,7 +72,7 @@ var grid = document.getElementById ( holderId+"-grid" );
 
 function setGridItem ( holderId,item,row,col,rowSpan,colSpan )  {
 // Adds 'item' to the specified cell of table with id='holderId'+'-grid'
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
@@ -82,7 +84,7 @@ var cell = getGridCell ( holderId,row,col );
 }
 
 function addGridItem ( holderId,item,row,col,rowSpan,colSpan )  {
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
@@ -98,7 +100,7 @@ function nestGrid ( gridId,holderId,row,col,rowSpan,colSpan )  {
 // appended automatically, i.e., 'gridId' should be used as normal.
 
   if (!document.getElementById(gridId+"-grid"))  {
-    var cell = getGridCell ( holderId,row,col );
+    let cell = getGridCell ( holderId,row,col );
     if (cell)  {
       cell.rowSpan = rowSpan;
       cell.colSpan = colSpan;
@@ -118,7 +120,7 @@ function nestGridCompact ( gridId,holderId,row,col,rowSpan,colSpan )  {
 // appended automatically, i.e., 'gridId' should be used as normal.
 
   if (!document.getElementById(gridId+"-grid"))  {
-    var cell = getGridCell ( holderId,row,col );
+    let cell = getGridCell ( holderId,row,col );
     if (cell)  {
       cell.rowSpan = rowSpan;
       cell.colSpan = colSpan;
@@ -132,7 +134,7 @@ function nestGridCompact ( gridId,holderId,row,col,rowSpan,colSpan )  {
 }
 
 function setHtmlGrid ( holderId,htmlString,row,col,rowSpan,colSpan )  {
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
@@ -145,7 +147,7 @@ var cell = getGridCell ( holderId,row,col );
 }
 
 function addHtmlGrid ( holderId,htmlString,row,col,rowSpan,colSpan )  {
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
@@ -165,7 +167,7 @@ function loadGridItem ( uri,holderId,row,col,rowSpan,colSpan )  {
 
   processFile ( uri,"post",true,
     function(data)  {
-      var div = element ( "div","","",data );
+      let div = element ( "div","","",data );
       setGridItem ( holderId,div,row,col,rowSpan,colSpan );
     },
     function() {},
@@ -175,7 +177,7 @@ function loadGridItem ( uri,holderId,row,col,rowSpan,colSpan )  {
   );
 
 //  $.post(uri,function(data)  {
-//    var div = element ( "div","","",data );
+//    let div = element ( "div","","",data );
 //    setGridItem ( holderId,div,row,col,rowSpan,colSpan );
 //  },"text");
 
@@ -188,8 +190,8 @@ function loadGridContent ( uri,watch,taskUri,holderId,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var cntId = holderId+"-"+row+"-"+col;
-  var elem  = document.getElementById ( cntId );
+  let cntId = holderId+"-"+row+"-"+col;
+  let elem  = document.getElementById ( cntId );
 
   if (!elem)  {
     elem = element ( "div","id",cntId,"" );
@@ -208,7 +210,7 @@ function addPanel ( panelId,holderId,row,col,rowSpan,colSpan )  {
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var div = element ( "div","id",panelId,"" );
+  let div = element ( "div","id",panelId,"" );
   addGridItem ( holderId,div,row,col,rowSpan,colSpan );
   addGrid     ( panelId );
 
@@ -221,8 +223,8 @@ function addFieldset ( fsetId,title,holderId,row,col,rowSpan,colSpan )  {
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var fieldset = element ( "fieldset","id",fsetId,"" );
-  var legend   = element ( "legend","id",fsetId+"_legend","" );
+  let fieldset = element ( "fieldset","id",fsetId,"" );
+  let legend   = element ( "legend","id",fsetId+"_legend","" );
   legend.innerHTML = title;
   fieldset.appendChild ( legend );
   fieldset.setAttribute ( "class","fieldset1" );
@@ -234,7 +236,7 @@ function addFieldset ( fsetId,title,holderId,row,col,rowSpan,colSpan )  {
 
 function setCellStretch ( gridId, width,height, row,col )  {
 // SET_CELL_STRETCH gridId width height row col
-var cell = getGridCell ( gridId,row,col );
+let cell = getGridCell ( gridId,row,col );
   if (cell)  {
     if (width!='0%')  cell.style.width  = width;
     if (height!='0%') cell.style.height = height;
@@ -243,7 +245,7 @@ var cell = getGridCell ( gridId,row,col );
 
 
 function addTextBoxGrid ( tbxId,text,holderId,row,col,rowSpan,colSpan )  {
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
