@@ -1729,7 +1729,7 @@ IFrame.prototype.getDocument = function () {
 
 IFrame.prototype.postMessage = function ( message ) {
   let url = this.getURL();
-  if (url)
+  if (url && (!url.startsWith('about:')))
     this.getDocument().postMessage ( message,url );
 }
 
