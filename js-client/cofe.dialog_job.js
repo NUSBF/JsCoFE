@@ -723,6 +723,13 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
   //$(this.outputPanel.element).css({'overflow':'hidden'});
 //  "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:92%;\"></iframe>",
 
+  this.outputPanel.setOnLoadListener ( function(){
+    dlg.outputPanel.postMessage ({
+      action : 'theme',
+      data   : __active_color_mode
+    });
+  });
+
   if (this.task.state!=job_code.remdoc)  {
     this.outputPanel.setFramePosition ( '16px','58px','100%','100%' );
 

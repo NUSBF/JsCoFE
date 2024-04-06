@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.09.17   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,11 +12,12 @@
 //  **** Content :  RVAPI javascript layer's checkbox module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2017
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function addCheckboxGrid ( cbxId,title,name,value,command,data,checked,
                            onChange,holderId,
@@ -25,14 +26,14 @@ function addCheckboxGrid ( cbxId,title,name,value,command,data,checked,
   if (document.getElementById(cbxId))
     return;
 
-  var cell = getGridCell ( holderId,row,col );
+  let cell = getGridCell ( holderId,row,col );
 
   if (cell)  {
 
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
 
-    var options = "";
+    let options = "";
     if (name.length>0)
       options = options + " name=\"" + name + "\"";
     if (value.length>0)
@@ -62,10 +63,10 @@ function checkboxClicked ( checkbox,command,data )  {
 
   if (command=="{showline}")  {
 
-    var d = data.split(",");
-    var c = 0;
-    for (var i=0;i<d.length;i++)  {
-      var g = d[i].split("/");
+    let d = data.split(",");
+    let c = 0;
+    for (let i=0;i<d.length;i++)  {
+      let g = d[i].split("/");
       c += showGraphLine ( $.trim(g[0]),$.trim(g[1]),$.trim(g[2]),$.trim(g[3]),
                            checkbox.checked );
     }
@@ -73,8 +74,8 @@ function checkboxClicked ( checkbox,command,data )  {
     if ((!checkbox.checked) && (c>0))  {
       // one or more plots ran out of lines, which is disallowed
       checkbox.checked = true;
-      for (var i=0;i<d.length;i++)  {
-        var g = d[i].split("/");
+      for (let i=0;i<d.length;i++)  {
+        let g = d[i].split("/");
         showGraphLine ( $.trim(g[0]),$.trim(g[1]),$.trim(g[2]),$.trim(g[3]),
                         checkbox.checked );
       }

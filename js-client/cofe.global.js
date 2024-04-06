@@ -282,14 +282,23 @@ function setDarkMode ( darkMode )  {
   });
 
   if (darkMode)  {
-    $( "[dark_shadow]" ).each(function(){
+    $( "[dark_shadow]" ).each ( function(){
       this.style.boxShadow = this.getAttribute ( 'dark_shadow' );
     });
   } else  {
-    $( "[light_shadow]" ).each(function(){
+    $( "[light_shadow]" ).each ( function(){
       this.style.boxShadow = this.getAttribute ( 'light_shadow' );
     });
   }
+  $('iframe').each ( function(){
+    if (this.src)  {
+      let win = this.contentWindow || this.contentDocument;
+      win.postMessage ({
+        action : 'theme',
+        data   : __active_color_mode
+      },this.src );
+    }
+  });
 
   // let elementsWithBoxShadow = $('*:has([style*="box-shadow"])');
   // if (darkMode)  {

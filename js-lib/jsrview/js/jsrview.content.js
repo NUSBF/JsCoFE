@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    02.02.18   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,20 +12,21 @@
 //  **** Content :  RVAPI javascript layer's html content module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2018
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function loadContent ( cntId,uri,watch,taskUri )  {
 
   if (watch)  {
-    var watched = false;
-    for (var i=0;(i<watchedContent.length) && (!watched);i++)
+    let watched = false;
+    for (let i=0;(i<watchedContent.length) && (!watched);i++)
       watched = watchedContent[i][0]==cntId;
     if (!watched)  {
-      var holder = document.getElementById ( cntId );
+      let holder = document.getElementById ( cntId );
       if (holder!=null)
         watchedContent.push ( [cntId,uri] );
     }
@@ -37,7 +38,7 @@ function loadContent ( cntId,uri,watch,taskUri )  {
         $("#"+cntId).html ( data );
         processFile ( taskUri,"post",true,
           function(tdata)  {
-            var cmdNo = 0;
+            let cmdNo = 0;
             processCommands ( tdata,cmdNo );
           },
           function(){},
@@ -81,12 +82,12 @@ function loadContentTablesort ( uri,paging,tableId,holderId )  {
 /*   -- old version with possible memory leaks
 function updateWatchedContent()  {
 
-  for (var i=0;i<watchedContent.length;i++)  {
+  for (let i=0;i<watchedContent.length;i++)  {
     (function(hId,uri) {
       processFile ( uri,"post",true,function(data){
-          var preId = hId + "-pre";
+          let preId = hId + "-pre";
           removeElement ( preId );
-          var pre = element ( "pre","id",preId,"" );
+          let pre = element ( "pre","id",preId,"" );
           pre.setAttribute ( "class","display-text" );
           document.getElementById ( hId ).appendChild ( pre );
           pre.appendChild ( document.createTextNode(data) );
@@ -105,21 +106,21 @@ function updateWatchedContent ( updateHidden_bool )  {
 
 //$(this.element).is(':visible');
 
-  for (var i=0;i<watchedContent.length;i++)  {
+  for (let i=0;i<watchedContent.length;i++)  {
     (function(hId,uri) {
       if (updateHidden_bool || $('#'+hId).is(':visible'))
         processFile ( uri,"post",true,function(data){
 
-          var n = 0;
+          let n = 0;
           if (data.lastIndexOf('[[[[]]]]',0) === 0)  {  // for old JS engines (jsrview)
 //          if (data.startsWith('[[[[]]]]'))  {  // for modern JS engines
             // Capped file (e.g. a long log file); put a message and a
             // download button on the top of the page
-            var divId = hId + '-div';
-            var div   = document.getElementById ( divId );
+            let divId = hId + '-div';
+            let div   = document.getElementById ( divId );
             if (!div)  {
               div = element ( 'div','id',divId,'' );
-              var holder = document.getElementById ( hId );
+              let holder = document.getElementById ( hId );
               if (holder)
                 holder.appendChild ( div );
               $( '<div class="cap-div"><b><i>File is too large and shown ' +
@@ -131,11 +132,11 @@ function updateWatchedContent ( updateHidden_bool )  {
             n = 8;
           }
 
-          var preId = hId + "-pre";
-          var pre = document.getElementById ( preId );
+          let preId = hId + "-pre";
+          let pre = document.getElementById ( preId );
           if (!pre)  {
             pre = element ( "pre","id",preId,"" );
-            var holder = document.getElementById ( hId );
+            let holder = document.getElementById ( hId );
             if (holder)
               holder.appendChild ( pre );
           } else {
@@ -170,7 +171,7 @@ function addHtml ( cntId,htmlString )  {
 
 
 function loadFrame ( cntId,uri )  {
-var frame = document.getElementById ( cntId+"-frame" );
+let frame = document.getElementById ( cntId+"-frame" );
   if (!frame)
     $("<iframe id=\""+cntId+"-frame\" class=\"frame-seamless\" " +
       "src=\"" + uri + "\" />").appendTo($("#"+cntId));
