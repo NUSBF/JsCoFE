@@ -296,7 +296,8 @@ function setDarkMode ( darkMode )  {
       win.postMessage ({
         action : 'theme',
         data   : __active_color_mode
-      },this.src );
+      },window.location.href );
+      // },this.src );
     }
   });
 
