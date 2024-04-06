@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -280,6 +280,45 @@ function setDarkMode ( darkMode )  {
                ') brightness('  + color_mode.brightness + 
                ') grayscale('   + color_mode.grayscale  + ')'
   });
+
+  if (darkMode)  {
+    $( "[dark_shadow]" ).each ( function(){
+      this.style.boxShadow = this.getAttribute ( 'dark_shadow' );
+    });
+  } else  {
+    $( "[light_shadow]" ).each ( function(){
+      this.style.boxShadow = this.getAttribute ( 'light_shadow' );
+    });
+  }
+  $('iframe').each ( function(){
+    if (this.src)  {
+      let win = this.contentWindow || this.contentDocument;
+      win.postMessage ({
+        action : 'theme',
+        data   : __active_color_mode
+      },this.src );
+    }
+  });
+
+  // let elementsWithBoxShadow = $('*:has([style*="box-shadow"])');
+  // if (darkMode)  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let dark_shadow = 'none';
+  //     if (this.hasAttribute('dark_shadow'))
+  //           dark_shadow = this.getAttribute ( 'dark_shadow' );
+  //     else  this.setAttribute ( 'dark_shadow',dark_shadow );
+  //     this.style.boxShadow = dark_shadow;
+  //   });
+  // } else  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let light_shadow = this.style.boxShadow;
+  //     if (this.hasAttribute('light_shadow'))
+  //           light_shadow = this.getAttribute ( 'light_shadow' );
+  //     else  this.setAttribute ( 'light_shadow',light_shadow );
+  //     this.style.boxShadow = light_shadow;
+  //   });
+  // }
+
 
 }
 

@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.09.17   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,15 +12,16 @@
 //  **** Content :  RVAPI javascript layer's dropdown widget module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2017
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function toggleDropDown ( ddnId )  {
-var btn    = document.getElementById ( ddnId+"-btn" );
-var ddbody = document.getElementById ( ddnId );
+let btn    = document.getElementById ( ddnId+"-btn" );
+let ddbody = document.getElementById ( ddnId );
   if (ddbody.style.display!="block")  {
     btn.setAttribute ( "class","icon_item_collapsed" );
     ddbody.style.display = "block";
@@ -42,7 +43,7 @@ function addDropDown ( ddnId,ddnTitle,holderId,row,col,rowSpan,colSpan,
     return;
   }
 
-  var table = document.getElementById ( ddnId+"_dd-grid" );
+  let table = document.getElementById ( ddnId+"_dd-grid" );
 
   if (table)  {
     removeElement ( table );
@@ -85,8 +86,8 @@ function addDropDown ( ddnId,ddnTitle,holderId,row,col,rowSpan,colSpan,
         "</tr>"
        ).appendTo(table);
       addGridItem ( holderId,table,row,col,rowSpan,colSpan );
-      var btn    = document.getElementById ( ddnId+"-btn" );
-      var ddbody = document.getElementById ( ddnId );
+      let btn    = document.getElementById ( ddnId+"-btn" );
+      let ddbody = document.getElementById ( ddnId );
       if (foldState.indexOf("_folded")>=0)  {
         btn.setAttribute ( "class","icon_item_expanded" );
         ddbody.style.display = "none";

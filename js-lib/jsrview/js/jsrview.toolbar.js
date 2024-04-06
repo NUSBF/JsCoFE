@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,13 @@
 //  **** Content :  RVAPI javascript layer's toolbar module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
+
 
 function addToolBarButton ( toolBarId,col,btnId,button_class,
                             button_onclick,button_text )  {
@@ -23,18 +26,18 @@ function addToolBarButton ( toolBarId,col,btnId,button_class,
   if (document.getElementById(btnId))
     return;
 
-  var button = element ( "div","class",button_class,"" );
+  let button = element ( "div","class",button_class,"" );
   button.setAttribute ( "id"     ,btnId          );
   button.setAttribute ( "onclick",button_onclick );
 
   addGridItem ( toolBarId,button,0,col,1,1 );
-  var cell = getGridCell ( toolBarId,1,col );
+  let cell = getGridCell ( toolBarId,1,col );
   $("<div id='"+btnId+"-text"+"' class='toolbar-legend'>" +
     button_text + "</div>").appendTo ( cell );
 }
 
 function addToolBarSpacer ( toolBarId,col )  {
-var cell = addGridItem ( mainToolBarId,document.createTextNode(" "),
+let cell = addGridItem ( mainToolBarId,document.createTextNode(" "),
                            0,col,1,1 );
   cell.setAttribute ( "style","width: 100%" );
 //  cell = addGridItem ( mainToolBarId,document.createTextNode(" "),
@@ -46,8 +49,8 @@ var cell = addGridItem ( mainToolBarId,document.createTextNode(" "),
 }
 
 function setToolBtnVisible ( btnId,visible )  {
-var btn     = document.getElementById ( btnId );
-var btnText = document.getElementById ( btnId+"-text" );
+let btn     = document.getElementById ( btnId );
+let btnText = document.getElementById ( btnId+"-text" );
   if (btn)  {
     if (visible)  {
       btn    .style.display = "block";
@@ -60,7 +63,7 @@ var btnText = document.getElementById ( btnId+"-text" );
 }
 
 function addToolBarProgress ( toolBarId,col,width )  {
-var cell = getGridCell ( toolBarId,0,col );
+let cell = getGridCell ( toolBarId,0,col );
   cell.rowSpan = 1;
   cell.style.verticalAlign = "middle";
   cell.style.fontSize = "1.25em";
@@ -75,9 +78,9 @@ var cell = getGridCell ( toolBarId,0,col );
 }
 
 function showToolBarProgress ( visible )  {
-var sep = document.getElementById ( sep4BtnId             );
-var pbr = document.getElementById ( progressBarId         );
-var txt = document.getElementById ( progressBarId+"-text" );
+let sep = document.getElementById ( sep4BtnId             );
+let pbr = document.getElementById ( progressBarId         );
+let txt = document.getElementById ( progressBarId+"-text" );
   if (pbr)  {
     if (visible)  {
       sep.style.display = "block";
@@ -100,11 +103,11 @@ function makeToolbar()  {
   if (document.getElementById(mainToolBarId))
     return;
 
-  var div = element ( "div","id",mainToolBarId,"" );
-  var pos = 0;
+  let div = element ( "div","id",mainToolBarId,"" );
+  let pos = 0;
 
   div.setAttribute ( "class","toolbar" );
-  var cell = getGridCell ( pageTopId,1,0 );
+  let cell = getGridCell ( pageTopId,1,0 );
   cell.setAttribute ( "style","text-align:left;width:100%;" );
   cell.appendChild ( div );
 
@@ -117,7 +120,7 @@ function makeToolbar()  {
                      "findString('This')","" );
   addToolBarButton ( mainToolBarId,pos++,refreshBtnId,"icon_refresh",
                     "refreshPage()","Refresh" );
-  var showdocs = (programDocFile.length>0);
+  let showdocs = (programDocFile.length>0);
   addToolBarButton ( mainToolBarId,pos++,sep2BtnId,"icon_separator",
                        "","" );
   setToolBtnVisible ( sep2BtnId,showdocs );
