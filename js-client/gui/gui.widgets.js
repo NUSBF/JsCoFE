@@ -1728,9 +1728,10 @@ IFrame.prototype.getDocument = function () {
 }
 
 IFrame.prototype.postMessage = function ( message ) {
-  let url = this.getURL();
-  if (url && (!url.startsWith('about:')))
-    this.getDocument().postMessage ( message,url );
+  // let url = this.getURL();
+  // if (url && (!url.startsWith('about:')))
+    // this.getDocument().postMessage ( message,url );
+  this.getDocument().postMessage ( message,window.location.href );
 }
 
 IFrame.prototype.getWindow = function () {
