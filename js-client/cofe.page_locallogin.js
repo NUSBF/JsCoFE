@@ -70,7 +70,9 @@ function LocalLoginPage ( sceneId )  {
       let speed = 0;
       for (let i=0;i<rData.cpus.length;i++)
         speed = Math.max(speed,rData.cpus[i].speed);
-      speed = Math.round(speed/100)/10.0;
+      if (speed<100)  // due to a bug in some versions of nodejs
+            speed /= 10;
+      else  speed  = Math.round(speed/100)/10.0;
 
       let row = 0;
 
