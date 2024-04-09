@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    09.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskParrot()  {
 
   this.input_dtypes = [  // input data types
     {
-      data_type   : {'DataRevision':['phases','~mmcif_only']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'parrot',   // lay custom fields below the dropdown
