@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    09.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -145,7 +145,7 @@ function checkBrowser()  {
 }
 
 function isProtectedConnection()  {
-let fe_url = __fe_url.toLowerCase();
+  let fe_url = __fe_url.toLowerCase();
   return fe_url.startsWith('https://') ||
          fe_url.startsWith('http://localhost') ||
          (fe_url.indexOf('127.0.0.1') >= 0);
@@ -161,7 +161,7 @@ $(window).resize ( function(){
 
 function report_problem ( subject,message,label )  {
 
-  var body = encodeURIComponent (
+  let body = encodeURIComponent (
     'CCP4 Cloud Report\n' +
     'Login ID   : ' + __login_id    + '\n' +
     'Login Name : ' + __login_user  + '\n' +
@@ -171,7 +171,7 @@ function report_problem ( subject,message,label )  {
     message
   );
 
-  var text = label;
+  let text = label;
   if (!text)
     text = appName() + ' maintainer';
 
@@ -197,7 +197,7 @@ function isFullScreen() {
 
 function setFullScreen() {
   if (!isFullScreen())  {
-    var docElm = document.documentElement;
+    let docElm = document.documentElement;
     if (docElm.requestFullscreen) {
       docElm.requestFullscreen();
     }
@@ -215,7 +215,7 @@ function setFullScreen() {
 
 
 function quitFullScreen() {
-  var ifs = isFullScreen();
+  let ifs = isFullScreen();
   if ((ifs!=-1) && ifs)  {
     if (document.exitFullscreen) {
       document.exitFullscreen();
