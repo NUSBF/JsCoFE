@@ -1848,7 +1848,7 @@ function getLocalInfo ( inData,callback_func )  {
       }
 
       rData.cpus = os.cpus();
-      
+
       rData.disk_free = 0.0;
 
       function _calc_disk_free ( n )  {
