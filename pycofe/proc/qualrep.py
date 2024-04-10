@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    21.06.21   <--  Date of Last Modification.
+#    10.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  GENERATE STRUCTURE QUALITY REPORT
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -19,7 +17,7 @@
 import os
 import sys, copy
 import xml.etree.ElementTree as ET
-import traceback
+# import traceback
 
 #  ccp4-python imports
 import pyrvapi
