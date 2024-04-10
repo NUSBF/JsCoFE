@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    09.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -474,7 +474,7 @@ class Pdbredo(basic.TaskDriver):
                     final_mtz = os.path.join(self.resultDir,fname)
                 elif fname.endswith("_final.log"):
                     refmac_log = os.path.join(self.resultDir,fname)
-                elif fname.endswith(".refmac"):
+                elif fname.endswith(".refmac") or fname.endswith(".rest"):
                     refmac_kwd = os.path.join(self.resultDir,fname)
 
         xyzout = self.getXYZOFName()
