@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    11.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,6 +67,7 @@ class SliceNDice(basic.TaskDriver):
         max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
         no_mols     =  self.getParameter ( sec1.NO_MOLS)
         plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
+        mr_prog = self.getParameter ( sec1.MR_PROG)
        
 
         # prepare input MTZ file by selecting original reflection data
@@ -94,29 +95,30 @@ class SliceNDice(basic.TaskDriver):
         self.makeFullASUSequenceFile ( seq,"full_asu",input_seq )
 
         cmd = [
-            "-xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
-            "-hklin"     ,input_mtz,
-            "-seqin"     ,input_seq,
-            "-min_splits",min_nsplits,
-            "-max_splits",max_nsplits,
-            "-sga"       ,"all",
-            "-nproc"     ,str(min(6,int(max_nsplits)))
+            "--xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
+            "--hklin"     ,input_mtz,
+            "--seqin"     ,input_seq,
+            "--min_splits",min_nsplits,
+            "--max_splits",max_nsplits,
+            "--sgalternative","all",
+            "--nproc"     ,str(min(6,int(max_nsplits))),
+            "--mr_program", mr_prog
         ]
 
         if no_mols=="":
-            cmd += ["-no_mols",str(revision.getNofASUMonomers())]
+            cmd += ["-n",str(revision.getNofASUMonomers())]
         else:
-            cmd += ["-no_mols",no_mols]
+            cmd += ["-n",no_mols]
 
         if xyz.BF_correction=="alphafold-suggested":
-            cmd += ['-xyz_source', 'alphafold']
+            cmd += ['--bfactor_column', 'plddt']
         elif xyz.BF_correction=="rosetta-suggested":
-            cmd += ['-xyz_source', 'rosetta']
+            cmd += ['--bfactor_column', 'rms']
         # else:
         #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
-            cmd += ["-plddt_threshold", plddt_threshold]
+            cmd += ["--plddt_threshold", plddt_threshold]
 
         self.putWaitMessageLF ( "Solution in progress ..." )
 
