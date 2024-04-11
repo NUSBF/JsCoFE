@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    09.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -527,7 +527,6 @@ let r = 0;  // grid row
   //grid.setLabel ( 'Switch to full set for more tasks',r++,0,1,3 )
   //    .setFontItalic(true).setFontSize('85%');
 
-
   grid.setLabel ( 'Essential Tasks',r++,0,1,4 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
@@ -544,24 +543,15 @@ let r = 0;  // grid row
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('20%');
 
   let task_list = [
-    "Refinement",
+    
+    "Refinement and Interactive Model Building",
     new TaskRefmac       (),
+    new TaskCootMB       (),
     new TaskBuster       (),
     new TaskLorestr      (),
     new TaskDimple       (),
-    new TaskCombStructure(),
-    new TaskSheetbend    (),  
     new TaskPhaserRB     (),
     new TaskPDBREDO      (),
-    new TaskPaiRef       ()
-  ]
-
-  // if (!isSafari())
-  task_list.push ( new TaskWebCoot()   );
-  task_list.push ( new TaskWebCootCE() );
-
-  task_list = task_list.concat ([
-    new TaskLorestr(),
 
     "Ligands",
     new TaskMakeLigand(),
@@ -571,19 +561,18 @@ let r = 0;  // grid row
     "Import Additional Data",
     new TaskImport        (),
     new TaskImportReplace (),
-  ]);
+    new TaskImportSeqCP   (),
+  
+  ];
 
   if (key==30)
     task_list.push ( new TaskMigrate() );
 
   task_list = task_list.concat ([
-    //new TaskImport     (),
-    //new TaskImportSeqCP(),
 
-    "Model Building",
-    new TaskCootMB (),
+    "Automatic Model Building and Density Modification",
     new TaskParrot    (),
-    new TaskModelCraft (),
+    new TaskModelCraft(),
     new TaskCCP4Build (),
     new TaskArpWarp   (),
 
@@ -593,7 +582,16 @@ let r = 0;  // grid row
     new TaskPrivateer (),
 
     // new TaskDeposition()
-    "Toolbox",
+    "Toolbox"
+
+  ]);
+
+  // if (!isSafari())
+  task_list.push ( new TaskWebCoot()   );
+  task_list.push ( new TaskWebCootCE() );
+
+  task_list = task_list.concat ([
+
     new TaskXyzUtils  (),
     new TaskGesamt    (),
     new TaskLsqKab    (),
@@ -601,6 +599,7 @@ let r = 0;  // grid row
     new TaskSymMatch  ()
 
   ]);
+
 
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
@@ -1181,7 +1180,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskShelxEMR()
   ],true);
 
-  this.makeSection ( grid,'Model Building',[
+  this.makeSection ( grid,'Automatic Model Building',[
     'Model building -- polypeptides and polynucleotides',
     new TaskModelCraft   (),
     'Model building -- polypeptides',
@@ -1203,7 +1202,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskPaiRef       (),
   ],true);
 
-  this.makeSection ( grid,'Coot',[
+  this.makeSection ( grid,'Coot (Interactive Model Building)',[
     new TaskCootMB   (),
     new TaskCootCE   (),
     new TaskWebCoot  (),
