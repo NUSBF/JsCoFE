@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    06.04.24   <--  Date of Last Modification.
+//    11.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -267,11 +267,36 @@ function _start_viewer ( title,html_str )  {
     jq  = window.$;
   }
 
+  let dark_mode = 
+    (
+     ('__active_color_mode' in window) && 
+     (window.__active_color_mode=='dark')
+    ) || (
+     ('__active_color_mode' in window.parent) && 
+     (window.parent.__active_color_mode=='dark')
+    );
+
+  let light_shadow = '8px 8px 16px 16px rgba(0,0,0,0.2)';
+  let dark_shadow  = 'none';
+
   let dialog = doc.createElement ( 'div' );
-  jq(dialog).css({
-    'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
-    'overflow'   : 'hidden'
-  });
+  jq(dialog).css({ 'overflow' : 'hidden' });
+  // if (!dark_mode)
+  //   jq(dialog).css({ 'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)' });
+
+  dialog.setAttribute ( 'light_shadow',light_shadow );
+  dialog.setAttribute ( 'dark_shadow' ,dark_shadow  );
+  if (dark_mode)
+    $(dialog).css ({ 'box-shadow':dark_shadow  });
+  else
+    $(dialog).css ({ 'box-shadow':light_shadow });
+  
+
+
+  // jq(dialog).css({
+  //   'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
+  //   'overflow'   : 'hidden'
+  // });
   doc.body.appendChild ( dialog );
 
   let iframe = doc.createElement ( 'iframe' );
