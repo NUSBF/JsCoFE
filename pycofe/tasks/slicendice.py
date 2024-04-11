@@ -148,18 +148,23 @@ class SliceNDice(basic.TaskDriver):
             if results:
                 lowest_rfree=1.0
                 best_split=None
-                for split in results['dice'].keys():
-                    if results['dice'][split]['final_r_free'] <= lowest_rfree:
-                        lowest_rfree=results['dice'][split]['final_r_free']
-                        best_split=split
+                if 'dice' in results:
+                    for split in results['dice'].keys():
+                        if results['dice'][split]['final_r_free'] <= lowest_rfree:
+                            lowest_rfree=results['dice'][split]['final_r_free']
+                            best_split=split
 
-                r_free     = float(results["dice"][best_split]["final_r_free"])
-                r_fact     = float(results["dice"][best_split]["final_r_fact"])
-                llg        = float(results["dice"][best_split]["phaser_llg"])
-                tfz        = float(results["dice"][best_split]["phaser_tfz"])
-                splitId    = best_split.split()[-1]
-                refmac_pdb = results["dice"][best_split]["xyzout"]
-                refmac_mtz = results["dice"][best_split]["hklout"]
+                    r_free     = float(results["dice"][best_split]["final_r_free"])
+                    r_fact     = float(results["dice"][best_split]["final_r_fact"])
+                    llg        = float(results["dice"][best_split]["phaser_llg"])
+                    tfz        = float(results["dice"][best_split]["phaser_tfz"])
+                    splitId    = best_split.split()[-1]
+                    refmac_pdb = results["dice"][best_split]["xyzout"]
+                    refmac_mtz = results["dice"][best_split]["hklout"]
+                else:
+                    self.putTitle ( "No solution generated" )
+                    self.putMessage ( "<i>No results found</i>" )
+
 
             if not refmac_pdb or not refmac_mtz:
                 self.putTitle ( "No solution generated" )
