@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.05.16   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,21 +12,22 @@
 //  **** Content :  RVAPI javascript layer's tree module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2016
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function makeTreeLeaf ( treeId,taskUri )  {
 
   processFile ( taskUri,"post",true,
     function(data)  {
       removeElement ( treeId );
-      var div = element ( "div","id",treeId,"" );
+      let div = element ( "div","id",treeId,"" );
       setGridItem ( treeId+"_outer",div,0,1,1,1 ).width = "100%";
       addGrid ( treeId );
-      var cmdNo = 0;
+      let cmdNo = 0;
       processCommands ( data,cmdNo );
     },
     function() {},
@@ -43,8 +44,8 @@ function checkOpenMode ( node,tree )  {
 
   if (node==null)  {
 
-    var root = tree.tree('getTree');
-    for (var i=0;i<root.children.length;i++)
+    let root = tree.tree('getTree');
+    for (let i=0;i<root.children.length;i++)
       checkOpenMode ( root.children[i],tree );
 
   } else  {
@@ -53,7 +54,7 @@ function checkOpenMode ( node,tree )  {
     if (node.openMode=='always_open') tree.tree ( 'openNode',node,false );
     if (node.openMode=='closed')      tree.tree ( 'closeNode',node,false );
 
-    for (var i=0;i<node.children.length;i++)
+    for (let i=0;i<node.children.length;i++)
       checkOpenMode ( node.children[i],tree );
 
   }
@@ -74,7 +75,7 @@ function addTreeWidget ( treeId, title, holderId, treeData,
 //###    processFile ( treeData,"post",false,
     processFile ( treeData,"post",true,
       function(data)  {
-        var dataArray = eval ( "(" + data + ")" );
+        let dataArray = eval ( "(" + data + ")" );
         _add_tree_widget ( treeId, title, holderId, dataArray,
                            row,col,rowSpan,colSpan );
       },
@@ -87,7 +88,7 @@ function addTreeWidget ( treeId, title, holderId, treeData,
     $("body").css("cursor", "default");
 
   } else  {
-    var dataArray = eval ( "(" + treeData + ")" );
+    let dataArray = eval ( "(" + treeData + ")" );
     _add_tree_widget ( treeId, title, holderId, dataArray,
                                row,col,rowSpan,colSpan );
   }
@@ -96,11 +97,11 @@ function addTreeWidget ( treeId, title, holderId, treeData,
 
 function _add_tree_widget ( treeId, title, holderId, dataArray,
                             row,col,rowSpan,colSpan )  {
-var cell         = getGridCell ( holderId,row,col );
-var selNodeId    = "";
-var openNodesIds = new Array();
-var tree;
-var node;
+let cell         = getGridCell ( holderId,row,col );
+let selNodeId    = "";
+let openNodesIds = new Array();
+let tree;
+let node;
 
   if (cell)  {
 
@@ -116,7 +117,7 @@ var node;
          "</table>" )
        .appendTo ( cell );
 
-      var table = element ( "table","class","treewidget-table","" );
+      let table = element ( "table","class","treewidget-table","" );
       table.setAttribute ( "id",treeId+"_panel-grid" );
       $( "<tr><th>" + title + "</th></tr>" ).appendTo ( table );
       $( "<tr><td style='height: 100%;'><div id='"+treeId+"-tree'></div></td></tr>" )
@@ -144,7 +145,7 @@ var node;
 
     }
 
-    var div = document.getElementById ( treeId+"-tree" );
+    let div = document.getElementById ( treeId+"-tree" );
     div.setAttribute ( "class","treewidget-box" );
 
     tree = $("#"+treeId+"-tree");
@@ -160,7 +161,7 @@ var node;
     tree.bind (
       'tree.click',
       function(event) {
-        var node = event.node; // the clicked node
+        let node = event.node; // the clicked node
         if ($(this).tree('isNodeSelected',node))
           event.preventDefault();
     });
@@ -200,7 +201,7 @@ var node;
         // this time-out construct is equivalent to flush(), which is
         // nececssary in this particular case
 
-        for (var i=0;i<openNodesIds.length;i++)  {
+        for (let i=0;i<openNodesIds.length;i++)  {
           node = tree.tree ( 'getNodeById',openNodesIds[i] );
           if (node!=null)
             tree.tree ( 'openNode',node,false );

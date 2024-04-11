@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    10.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -454,6 +454,11 @@ class Refmac(basic.TaskDriver):
                 # make anomolous ED map widget
                 if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
 
+                    self.putMessage ( "&nbsp;" )
+                    anomsec_id = self.getWidgetId ( "anomsec" )
+                    self.putSection ( anomsec_id,"Anomalous maps and scatterers",openState_bool=False )
+                    self.setReportWidget ( anomsec_id )
+
                     mapfname = self.calcCCP4Maps ( self.getMTZOFName(),
                                         "refmac_ano",source_key="refmac_anom" )
                     hatype   = revision.ASU.ha_type.upper()
@@ -486,7 +491,10 @@ class Refmac(basic.TaskDriver):
                                             hatype,out_merged 
                                         )
 
-                        self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
+                        # self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
+                        self.putMessage ( "<h3>Output structure added with heavy-atom substructure, " +\
+                                          "and anomolous maps</h3>" )
+                        
                         struct_ano = self.formStructure ( 
                                             out_merged + ".mmcif",
                                             out_merged + ".pdb",
@@ -519,6 +527,8 @@ class Refmac(basic.TaskDriver):
                         self.putMessage ( "<i>Structure with anomalous maps " +\
                                           "could not be formed due to exception " +\
                                           " (possible bug)</i>" )
+                        
+                    self.resetReportPage()
 
                 # self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
                 # self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
