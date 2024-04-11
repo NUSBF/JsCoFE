@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.21   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -78,9 +78,9 @@ MenuItem.prototype.constructor = MenuItem;
 var __onclick_ignore_counter = -1;
 
 function __close_all_menus()  {
-  var dropdowns = document.getElementsByClassName("menu-dropdown-content");
-  for (var i=0;i<dropdowns.length;i++) {
-    var openDropdown = dropdowns[i];
+  let dropdowns = document.getElementsByClassName("menu-dropdown-content");
+  for (let i=0;i<dropdowns.length;i++) {
+    let openDropdown = dropdowns[i];
     if (openDropdown.classList.contains('menu-show')) {
       openDropdown.classList.remove('menu-show');
     }
@@ -116,7 +116,7 @@ document.onclick = function(event)  {
 // -------------------------------------------------------------------------
 // Menu class
 
-function Menu ( text,icon_uri )  {
+function Menu ( text,icon_uri,right_click=false )  {
   Widget.call ( this,'div' );
   this.addClass ( 'menu-dropdown' );
   this.disabled = false;
@@ -135,18 +135,35 @@ function Menu ( text,icon_uri )  {
     }
     this.addWidget ( this.button );
     (function(menu){
-      menu.button.addOnClickListener ( function(e){
-      //menu.addOnClickListener ( function(){
-        __close_all_menus();
-        if (!menu.disabled)  {
-          if (menu.onclick_custom_function)
-            menu.onclick_custom_function();
-          if (__onclick_ignore_counter<0)
-                __onclick_ignore_counter = 1;
-          else  __onclick_ignore_counter++;
-          menu.dropdown.toggleClass ( 'menu-show' );
-        }
-      });
+      if (right_click)  {
+        menu.button.addOnRightClickListener ( function(e){
+          let oic = __onclick_ignore_counter;
+          __close_all_menus();
+          if ((!menu.disabled) && oic)  {
+            if (menu.onclick_custom_function)
+              menu.onclick_custom_function();
+            // if (__onclick_ignore_counter<0)
+            //       __onclick_ignore_counter = 1;
+            // else  __onclick_ignore_counter++;
+            __onclick_ignore_counter = 1;
+            menu.dropdown.toggleClass ( 'menu-show' );
+          }
+        });
+      } else  {
+        menu.button.addOnClickListener ( function(e){
+          let oic = __onclick_ignore_counter;
+          __close_all_menus();
+          if ((!menu.disabled) && oic)  {
+            if (menu.onclick_custom_function)
+              menu.onclick_custom_function();
+            // if (__onclick_ignore_counter<0)
+            //       __onclick_ignore_counter = 1;
+            // else  __onclick_ignore_counter++;
+            __onclick_ignore_counter = 1;
+            menu.dropdown.toggleClass ( 'menu-show' );
+          }
+        });
+      }
     }(this));
   } else {
     this.button = null;
@@ -182,7 +199,7 @@ var mi = new MenuItem ( text,icon_uri );
 
 Menu.prototype.addSeparator = function ()  {
 var mi = new MenuItem ( '<hr/>','' );
-  this.dropdown.addWidget ( mi   );
+  this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
 }
@@ -235,7 +252,7 @@ function ContextMenu ( widget,custom_func )  {
       if (custom_func)
         custom_func();
       if (!menu.disabled)  {
-        // __onclick_ignore_counter++;
+        __onclick_ignore_counter++;
         if (__onclick_ignore_counter<0)
           __onclick_ignore_counter = 0;
         menu.dropdown.element.classList.toggle ( 'menu-show' );
@@ -717,18 +734,18 @@ function ComboDropdown ( content,width_list,direction )  {
     this.headers   = [];
     this.dropdowns = [];
 
-    var data = this.content;
-    var i    = 0;
+    let data = this.content;
+    let i    = 0;
     while (data)  {
 
-      var dropdown = new Dropdown();
+      let dropdown = new Dropdown();
       dropdown.setTooltip1 ( data.tooltip,'slideDown',true,7000 );
       this.dropdowns.push  ( dropdown     );
       this.headers.push    ( data.title   );
 
       this.dropdowns[i].content = data;
       this.dropdowns[i].setWidth ( width_list[i] );
-      for (var j=0;j<data.items.length;j++)
+      for (let j=0;j<data.items.length;j++)
         this.dropdowns[i].addItem ( data.items[j].label,'',j,j==data.select );
       this.dropdowns[i].make();
 
@@ -744,7 +761,7 @@ function ComboDropdown ( content,width_list,direction )  {
           function(e){
             ddn.content.select = e.detail.item;
             comboddn.makeDropdowns();
-            var event = new CustomEvent ( 'state_changed',{
+            let event = new CustomEvent ( 'state_changed',{
               'detail' : {
                 'values' : comboddn.getValues()
               }
@@ -753,7 +770,7 @@ function ComboDropdown ( content,width_list,direction )  {
           },false );
       }(this,this.dropdowns[i]));
 
-      var item = data.items[this.dropdowns[i].getValue()];
+      let item = data.items[this.dropdowns[i].getValue()];
       if ('next' in item)
             data = item.next;
       else  data = null;

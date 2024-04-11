@@ -42,10 +42,10 @@ Table.prototype.constructor = Table;
 
 Table.prototype.setHeaderWidget = function ( widget, row,col, rowSpan,colSpan ) {
 var cell = this.getCell ( row,col );
-  cell.rowSpan = rowSpan;
-  cell.colSpan = colSpan;
   $(cell).empty();
   cell.setAttribute ( 'class','table-blue-hh' );
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
   if (widget)  {
     cell.appendChild ( widget.element );
     widget.parent = this;
@@ -91,17 +91,57 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
     col_cnt++;
   }
 
-  for (var i=0;i<cell_list.length;i++)  {
+  for (let i=0;i<cell_list.length;i++)  {
     var cell = this.getCell ( row,col_cnt++ );
+    $(cell).empty();
     cell.rowSpan = 1;
     cell.colSpan = 1;
-    $(cell).empty();
     if (alt_bool)
           cell.setAttribute ( 'class','table-blue-alt' );
     else  cell.setAttribute ( 'class','table-blue-td'  );
     cell.innerHTML = cell_list[i];
   }
 
+}
+
+Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
+  var cell = this.getCell ( row,col );
+  $(cell).empty();
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  cell.innerHTML = text;
+}
+
+Table.prototype.setWidget = function ( widget,row,col,alt_bool )  {
+let cell = this.getCell ( row,col );
+  cell.rowSpan = 1;
+  cell.colSpan = 1;
+  $(cell).empty();
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  if (widget)  {
+    cell.appendChild ( widget.element );
+    widget.parent = this;
+  }
+  return cell;
+}
+
+Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
+let label = new Label ( text );
+let cell = this.getCell ( row,col );
+  $(cell).empty();
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  cell.appendChild ( label.element );
+  label.parent = this;
+  return label;
 }
 
 

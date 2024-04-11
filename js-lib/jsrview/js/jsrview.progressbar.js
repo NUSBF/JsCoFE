@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    25.10.15   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,10 +12,12 @@
 //  **** Content :  RVAPI javascript layer's progress bar module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2015
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
 
 function addProgressBar ( progBarId,range,width,holderId,
                           row,col,rowSpan,colSpan )  {
@@ -23,19 +25,19 @@ function addProgressBar ( progBarId,range,width,holderId,
   if (document.getElementById(progBarId))
     return;
 
-  var cell = getGridCell ( holderId,row,col );
+  let cell = getGridCell ( holderId,row,col );
 
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
     $("<div style='position:relative;' id='"+progBarId+"'><div id='"+progBarId+"_lbl' class=\"progress-label\"></div></div>").appendTo(cell);
-    var pbr = document.getElementById ( progBarId );
-    var plb = $( "#" + progBarId + "_lbl" );
+    let pbr = document.getElementById ( progBarId );
+    let plb = $( "#" + progBarId + "_lbl" );
     if (width>0)
       pbr.style.width = width + "px";
-    var pbar = $(pbr).progressbar ( {max:range,
+    let pbar = $(pbr).progressbar ( {max:range,
       change: function() {
-                var rmax = pbar.progressbar('option','max');
+                let rmax = pbar.progressbar('option','max');
                 plb.text( (100*pbar.progressbar("value"))/rmax + "%" );
               },
       complete: function() {
@@ -63,7 +65,7 @@ function disableProgressBar ( progBarId )  {
 }
 
 function showProgressBar ( progBarId,visible )  {
-var pbr = document.getElementById ( progBarId );
+let pbr = document.getElementById ( progBarId );
   if (pbr)  {
     if (visible)  pbr.style.display = "block";
             else  pbr.style.display = "none";

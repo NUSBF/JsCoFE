@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    13.01.18   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,11 +12,12 @@
 //  **** Content :  RVAPI javascript layer's head module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2018
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 $(function() {
   $( document ).tooltip();
@@ -29,17 +30,17 @@ var __timestamp2 = "";
 
 
 function processCommands ( commands,command_no )  {
-var last_cmd_no,i,j;
-var statement = commands.replace(/\\/g,"\\\\")
+let last_cmd_no,i,j;
+let statement = commands.replace(/\\/g,"\\\\")
                         .replace(/\r\n|\n\r|\n|\r/g,"\n")
                         .split(";;;\n");
-var cmd_no = command_no;
+let cmd_no = command_no;
 
   if (statement.length<=0)
     return 0;
 
   if (__timestamp1!="")  {
-    var p0 = statement[0].split(":::");
+    let p0 = statement[0].split(":::");
     if ((p0[0]=="TASK_STAMP") &&
         (p0.length==4)        &&  // to be removed later
         ((p0[1]!=__timestamp1) || (p0[2]!=__timestamp2)) &&
@@ -82,14 +83,14 @@ var cmd_no = command_no;
 
   while (cmd_no<statement.length)  {
 
-    var p = statement[cmd_no].split(":::");
+    let p = statement[cmd_no].split(":::");
 
     if ((p.length>0) && (p[0]!="DUMMY"))  {
 
-      for (var i=0;i<p.length;i++)
+      for (let i=0;i<p.length;i++)
         p[i] = $.trim(p[i]);
 
-      var last_cmd_no_save = last_cmd_no;
+      let last_cmd_no_save = last_cmd_no;
       last_cmd_no = cmd_no;
 
       switch (p[0])  {
@@ -351,7 +352,7 @@ function processFile ( uri,method,asynchronous,
     if ((window.location.protocol!="http:") &&
         (window.location.protocol!="https:"))  {
       if (asynchronous)  {
-        var tdata = window.rvGate.readFile(uri);
+        let tdata = window.rvGate.readFile(uri);
         (function(data){
           window.setTimeout ( function(){
             if (window.rvGate.ioresult==0)  {
@@ -363,7 +364,7 @@ function processFile ( uri,method,asynchronous,
           },0);
         }(tdata))
       } else  {
-        var tdata = window.rvGate.readFile(uri);
+        let tdata = window.rvGate.readFile(uri);
         if (window.rvGate.ioresult==0)  {
           functionSuccess(tdata);
         } else  {
@@ -376,7 +377,7 @@ function processFile ( uri,method,asynchronous,
 
   }
 
-  var prefix = "";
+  let prefix = "";
   if (uri.length>2)  {
     // check for absolute paths on Windows
     if ((uri.charAt(1)==':') &&
@@ -396,8 +397,8 @@ function processFile ( uri,method,asynchronous,
   .fail   ( functionFail    );
   */
 
-  var oReq = new XMLHttpRequest();
-  var moduri = prefix + uri;
+  let oReq = new XMLHttpRequest();
+  let moduri = prefix + uri;
   if (uri.indexOf('?')>=0)  moduri += ';'
                       else  moduri += '?';
   oReq.open ( method, moduri+'nocache='+new Date().getTime(), asynchronous );
@@ -405,7 +406,7 @@ function processFile ( uri,method,asynchronous,
   oReq.timeout      = 9999999;
 
   oReq.onload = function(oEvent) {
-    var tdata = oReq.responseText; // Note: not oReq.responseText
+    let tdata = oReq.responseText; // Note: not oReq.responseText
     if (tdata)
       functionSuccess ( tdata );
     functionAlways();
@@ -454,7 +455,7 @@ function readTaskTimed()  {
   if ((_waitDialogMessage.length>1) && (_waitDialogCountdown>=0))  {
     _waitDialogCountdown = _waitDialogCountdown - _taskTimerInterval;
     if (_waitDialogCountdown<=0)  {
-      var dialog = element ( "div","id",_waitDialogId,"" );
+      let dialog = element ( "div","id",_waitDialogId,"" );
       dialog.setAttribute ( "title",_waitDialogTitle );
       dialog.innerHTML = _waitDialogMessage;
       _document_body.appendChild ( dialog );
@@ -470,7 +471,7 @@ function readTaskTimed()  {
     function(data)  {  // on success
       if (data.length>0)  {
 
-        var change = 1;
+        let change = 1;
         if (data.length == _taskData.length)  {
           if (data == _taskData)  change = 0;
         }
@@ -484,7 +485,7 @@ function readTaskTimed()  {
             _formSubmittedID = "";
           }
 
-          var dialog = document.getElementById ( _waitDialogId );
+          let dialog = document.getElementById ( _waitDialogId );
           if (dialog)  {
             $( "#"+_waitDialogId).dialog("destroy");
             _document_body.removeChild ( dialog );
@@ -519,3 +520,67 @@ function startTaskTimed()  {
     clearInterval ( _taskTimer );
   _taskTimer = setInterval ( readTaskTimed,_taskTimerInterval );
 }
+
+var __original_styles = {};
+
+window.addEventListener ( 'message',function(event) {
+
+  if (event.data.action=='theme')
+    __color_mode = event.data.data;
+
+  if (__color_mode=='dark')  {
+    for (let i=0;i<document.styleSheets.length;i++)  {
+      let styleSheet = document.styleSheets[i];
+      if (styleSheet && styleSheet.cssRules)
+        for (let j=0;j<styleSheet.cssRules.length;j++)  {
+          let style = styleSheet.cssRules[j].style;
+          if ('boxShadow' in style)  {
+            let key = 's_' + i + '_' + j;
+            if (!(key in __original_styles))
+              __original_styles[key] = style.boxShadow;
+            style.boxShadow = 'none';
+          }
+      }
+    }
+  } else  {
+    for (let key in __original_styles)  {
+      let lst = key.split('_');
+      let i   = parseInt(lst[1]);
+      let j   = parseInt(lst[2]);
+      document.styleSheets[i].cssRules[j].style.boxShadow = __original_styles[key];
+    }
+  }
+
+  // let message = event.data;
+  // if (message.action=='theme')  {
+  //   setTimeout ( function(){
+  //     let elementsWithBoxShadow = $('*:has([style*="box-shadow"])');
+  //     if (message.data=='dark')  {
+  //       elementsWithBoxShadow.each(function(){
+  //         let shadow = 'none';
+  //         if (this.hasAttribute('dark_shadow'))
+  //           shadow = this.getAttribute ( 'dark_shadow' );
+  //         else if (!this.hasAttribute('box_shadow'))
+  //           this.setAttribute ( 'box_shadow',this.style.boxShadow );
+  //         this.style.boxShadow = shadow;
+  //         console.log ( ' set ' + shadow + ' to ' + this.id );
+  //       });
+  //     } else  {
+  //       elementsWithBoxShadow.each(function(){
+  //         let shadow = 'none';
+  //         if (this.hasAttribute('light_shadow'))
+  //           shadow = this.getAttribute ( 'light_shadow' );
+  //         else if (this.hasAttribute('box_shadow'))
+  //           shadow = this.getAttribute ( 'box_shadow' );
+  //         this.style.boxShadow = shadow;
+  //         console.log ( ' unset ' + shadow + ' to ' + this.id );
+  //       });
+  //     }
+  //     console.log('Message from parent window:', JSON.stringify(message.data) );
+  //   },1000);
+  // }
+      
+  // You can also send a response back to the parent window if needed
+  // event.source.postMessage('Hello from iframe!', event.origin);
+
+});

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,13 +76,22 @@ function JobDialog ( params,          // data and task projections up the tree b
   title += this.statusLine();
   this.element.setAttribute ( 'title',strip_html_tags(title) );
 
-  if (__active_color_mode=='light')
-    $(this.element).css({'box-shadow' : '8px 8px 16px 8px rgba(212,212,212,1.0)',
-                         'overflow'   : 'hidden'});
-  else
-    $(this.element).css({//'box-shadow' : '8px 8px 16px 8px rgba(255,255,255,1.0)',
-                         //'border'     : '1px solid lightgray',
-                         'overflow'   : 'hidden'});
+
+  // $(this.element).css({ 'overflow':'hidden' });
+
+  this.setScrollable ( 'hidden','hidden' );
+  this.setShade      ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
+                      //  '0px 0px 16px 8px rgba(212,212,212,1.0) inset',
+                       'none',
+                       __active_color_mode );
+
+  // if (__active_color_mode=='light')
+  //   $(this.element).css({'box-shadow' : '8px 8px 16px 8px rgba(212,212,212,1.0) inset',
+  //                        'overflow'   : 'hidden'});
+  // else
+  //   $(this.element).css({//'box-shadow' : '8px 8px 16px 8px rgba(255,255,255,1.0)',
+  //                        //'border'     : '1px solid lightgray',
+  //                        'overflow'   : 'hidden'});
   document.body.appendChild ( this.element );
   //document.body.style.fontSize = '16px';
 
@@ -713,6 +722,13 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
   //this.outputPanel.setWidth ( '100%' );
   //$(this.outputPanel.element).css({'overflow':'hidden'});
 //  "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:92%;\"></iframe>",
+
+  this.outputPanel.setOnLoadListener ( function(){
+    dlg.outputPanel.postMessage ({
+      action : 'theme',
+      data   : __active_color_mode
+    });
+  });
 
   if (this.task.state!=job_code.remdoc)  {
     this.outputPanel.setFramePosition ( '16px','58px','100%','100%' );

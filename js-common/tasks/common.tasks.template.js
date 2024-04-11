@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    05.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2451,10 +2451,12 @@ if (!dbx)  {
                                         placeholder, nrows,ncols, r,c, rs,cs );
                               textarea.setTooltip ( item.tooltip );
                               $(textarea.element).css ({
-                                'box-shadow'  : '6px 6px lightgray',
+                                // 'box-shadow'  : '6px 6px lightgray',
                                 'resize'      : 'none',
                                 'font-family' : 'monospace'
                               });
+                              textarea.setShade ( '6px 6px lightgray','none',
+                                                  __active_color_mode );
                               if (item.hasOwnProperty('iwidth'))  {
 //                                if (item.iwidth.toString().endsWith('%'))
                                 if (endsWith(item.iwidth.toString(),'%'))
