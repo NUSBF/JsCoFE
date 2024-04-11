@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.24   <--  Date of Last Modification.
+ *    10.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,7 +54,27 @@ function TaskPDBREDO()  {   // must start with Task...
     max       : 1           // maximum acceptable number of data instances
   }];
 
-  this.parameters = {};
+  this.parameters = {
+    sec1 : { type     : 'section',
+             title    : 'Refinement settings',
+             open     : true,  // true for the section to be initially open
+             position : [1,0,1,5],
+             contains : {
+                 RESTRAINTS : {
+                      type     : 'combobox',
+                      keyword  : '',
+                      label    : 'Refinement restraints',
+                      tooltip  : '',
+                      range    : ['none|auto',
+                                  'tighter|tighter',
+                                  'looser|looser',
+                                 ],
+                      value    : 'list',
+                      iwidth   : 300,
+                      position : [1,0,1,2]
+                },
+              }}
+  };
 
 }
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.04.24   <--  Date of Last Modification.
+#    10.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -335,6 +335,8 @@ class Pdbredo(basic.TaskDriver):
         hklin = hkl.getHKLFilePath(self.inputDir())
         libin = istruct.getLibFilePath(self.inputDir())
 
+        sec1 = self.task.parameters.sec1.contains
+
         pdbredo_seq = None
         if len(seq)>0:
             pdbredo_seq = "__pdbredo.seq"
@@ -420,6 +422,7 @@ class Pdbredo(basic.TaskDriver):
             cmd += [ "--sequence",pdbredo_seq ]
 
         #  add other keyword-parameter pairs here from task's Input tab
+        
 
         if not self.do_submit(cmd):
             self.success ( False )
