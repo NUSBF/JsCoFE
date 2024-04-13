@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    13.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -406,13 +406,13 @@ TaskCCP4Build.prototype.clipboard_name = function()  { return '"CCP4Build"';    
 
 TaskCCP4Build.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'automatic model building after MR or EP with a combination of several CCP4 programs';
+    return 'automatic model building of polypeptides with a combination of several CCP4 programs';
   };
 
 TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {
-  var version = 6;
+  let version = 6;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -453,7 +453,7 @@ if (!__template)  {
       input_msg += '|<b>' + label + ':</b> ' + message;
     }
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     if (this.parameters.sec1.contains.NCYCLES_MAX.value <
         this.parameters.sec1.contains.NCYCLES_MIN.value)
@@ -478,7 +478,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskCCP4Build.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -486,7 +486,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.Options.leading_structure=='substructure')

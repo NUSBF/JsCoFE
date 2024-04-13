@@ -545,18 +545,19 @@ let r = 0;  // grid row
   let task_list = [
     
     "Refinement and Interactive Model Building",
-    new TaskRefmac       (),
-    new TaskCootMB       (),
-    new TaskBuster       (),
-    new TaskLorestr      (),
-    new TaskDimple       (),
-    new TaskPhaserRB     (),
-    new TaskPDBREDO      (),
+    new TaskRefmac        (),
+    new TaskCootMB        (),
+    new TaskWebCoot       (),
+    new TaskBuster        (),
+    new TaskLorestr       (),
+    new TaskDimple        (),
+    new TaskPhaserRB      (),
+    new TaskPDBREDO       (),
 
     "Ligands",
-    new TaskMakeLigand(),
-    new TaskFitLigand (),
-    new TaskFitWaters (),
+    new TaskMakeLigand    (),
+    new TaskFitLigand     (),
+    new TaskFitWaters     (),
 
     "Import Additional Data",
     new TaskImport        (),
@@ -571,10 +572,10 @@ let r = 0;  // grid row
   task_list = task_list.concat ([
 
     "Automatic Model Building and Density Modification",
-    new TaskParrot    (),
     new TaskModelCraft(),
     new TaskCCP4Build (),
     new TaskArpWarp   (),
+    new TaskParrot    (),
 
     "Validation and Deposition",
     new TaskPDBVal    (),
@@ -1166,27 +1167,24 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   this.makeSection ( grid,'Experimental Phasing',[
     'Automated EP',
-    new TaskCrank2     (),
-    new TaskShelxAuto  (),
+    new TaskCrank2      (),
+    new TaskShelxAuto   (),
     'Fundamental EP',
-    new TaskShelxSubstr(),
-    new TaskShelxCD    (),
-    new TaskPhaserEP   ()
+    new TaskShelxSubstr (),
+    new TaskShelxCD     (),
+    new TaskPhaserEP    ()
   ],true);
 
   this.makeSection ( grid,'Density Modification',[
-    new TaskParrot  (),
-    new TaskAcorn   (),
-    new TaskShelxEMR()
+    new TaskParrot       (),
+    new TaskAcorn        (),
+    new TaskShelxEMR     ()
   ],true);
 
   this.makeSection ( grid,'Automatic Model Building',[
-    'Model building -- polypeptides and polynucleotides',
     new TaskModelCraft   (),
-    'Model building -- polypeptides',
     new TaskCCP4Build    (),
     new TaskArpWarp      (),
-    'Model building -- polynucleotides',
     new TaskAWNuce       (),
   ],true);
 
