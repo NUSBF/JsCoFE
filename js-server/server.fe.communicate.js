@@ -131,7 +131,7 @@ function Communicate ( server_request )  {
 //   // params /?demo=a
 //   // params /?demo=/a/b/c/demo.ccp4cloud
 // }
-// console.log ( "filePath " + this.filePath );
+console.log ( "filePath " + this.filePath );
 
   if (this.command.startsWith(cmd.fe_command.jobFinished))  {
     this.job_token = this.command.substr(cmd.fe_command.jobFinished.length);
