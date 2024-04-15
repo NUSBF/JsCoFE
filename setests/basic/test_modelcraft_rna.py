@@ -253,8 +253,8 @@ def startModecraft(driver):
 
     
         
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
-    # textEl = driver.find_elements(By.XPATH, "//*[starts-with(text(), '%s')]" % 'Model Building')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
+    # textEl = driver.find_elements(By.XPATH, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
     driver.execute_script("window.scrollTo(0, 500)")
     time.sleep(1)
 
