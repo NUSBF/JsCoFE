@@ -235,9 +235,9 @@ class dataSource {
     let job_id;
 
     const data_dest = path.join(this.data_dir, entry.dir);
-    // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
+    // rsync -rz --no-motd --info=progress2 --partial data.pdbjbk1.pdbj.org::rsync/xrda/ID/ DEST/
     try {
-      await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', '--include', entry.id + '/***', '--exclude', '*', url, data_dest],
+      await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', url + entry.id + '/', data_dest],
         (stdout) => {
           // extract transferred amount
           let fields = stdout.toString().split(/\s+/);
