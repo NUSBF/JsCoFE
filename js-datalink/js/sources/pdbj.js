@@ -36,7 +36,7 @@ const res = {
 class pdbj extends dataSource {
 
   description = 'PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)';
-  url = 'https://xrda.pdbjbk1.pdbj.org/';
+  url = 'https://xrda.pdbj.org/';
   type = 'rsync';
 
   async fetchCatalog() {
