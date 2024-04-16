@@ -532,16 +532,23 @@ class Client {
       return;
     }
 
-    // set this.proto to http or https depending on url
-    if (this.opts.url) {
-      if (this.opts.url.startsWith('https')) {
-        this.proto = https;
-      } else {
-        this.proto = http;
-      }
+    if (this.app_client == false) {
+      // set this.proto to http or https depending on url or return an error
+      if (this.opts.url) {
+        if (this.opts.url.startsWith('http://')) {
+          this.proto = http;
+        } else if (this.opts.url.startsWith('https://')) {
+          this.proto = https;
+        } else {
+          return { error: true, msg: 'Invalid API URL - it must start with http:// or https://' };
+        }
 
-      // ensure the URL has a single trailing slash
-      this.opts.url = this.opts.url.replace(/(\/?)*$/, '/');
+        // ensure the URL has a single trailing slash
+        this.opts.url = this.opts.url.replace(/(\/?)*$/, '/');
+
+      } else {
+        return { error: true, msg: 'You need to include an API URL' };
+      }
     }
 
     // check if the correct parameters are supplied
