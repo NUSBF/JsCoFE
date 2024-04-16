@@ -579,8 +579,8 @@ class Client {
       }
 
       if (this.action == 'upload') {
-        if (! this.opts.files) {
-          return { error: true, msg: `You need to provide a file to ${this.action}`};
+        if (this.opts.files.length == 0) {
+          return { error: true, msg: `You need to provide at least one file to ${this.action}`};
         }
       }
     }
