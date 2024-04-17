@@ -1342,7 +1342,7 @@ def startModelcraft_basic(driver):
     time.sleep(1)
 
     
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
     time.sleep(1)
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
     time.sleep(1)

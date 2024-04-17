@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.09.23   <--  Date of Last Modification.
+ *    15.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PDB Valiation Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -106,7 +106,7 @@ function TaskPDBVal()  {
           type     : 'checkbox',
           label    : 'Remove hydrogens with zero occupancy',
           tooltip  : 'Check to remove hydrogens with zero occupancy',
-          value    : false,
+          value    : true,
           iwidth   : 340,
           position : [2,0,1,4]
         }

@@ -154,7 +154,7 @@ def startModelCraft(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         time.sleep(2)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
         time.sleep(2)
