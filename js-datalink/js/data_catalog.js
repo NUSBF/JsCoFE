@@ -201,9 +201,7 @@ class dataCatalog {
 
     entry.updated = new Date().toISOString();
 
-    if (! this.saveUserCatalog(entry.user)) {
-      log.error(`${this.name} - Unable to save catalog entry for ${entry.user}/${entry.source}/${entry.id}`);
-    }
+    return this.saveUserCatalog(entry.user);
   }
 
   removeEntry(user, source, id) {
