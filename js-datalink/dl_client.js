@@ -134,18 +134,15 @@ class Client {
     // client mode - talk to http server
     let params = this.action_map[action];
 
-    let res;
-
     let url_path = params.path;
+
     // replace /@0, /@1 etc with args
-    for (const i in args) {
-      let r = args[i];
-      if (r) {
-        r = encodeURIComponent(args[i]);
-      } else {
-        r = '';
+    for (let [i, arg] of args.entries()) {
+      if (! arg) {
+        arg = '';
       }
-      url_path = url_path.replace('@' + i, r);
+      arg = encodeURIComponent(arg);
+      url_path = url_path.replace('@' + i, arg);
     }
 
     // replace any double '//' leftover when empty arguments are included (eg. for status)
@@ -173,10 +170,21 @@ class Client {
       options.headers['Content-Type'] = `multipart/form-data; boundary=${this.getBoundary()}`;
     }
 
+    // if we are updating a field, get the last argument to use as the body
+    let body = null;
+    if (action == 'update') {
+      body = args.pop();
+      // if the argument is an object, then convert to json
+      if (typeof body == 'object') {
+        body = JSON.stringify(body);
+      }
+      options.headers['Content-Type'] = 'application/json; charset=utf-8';
+    }
+
     // make the request
     try {
       const url = this.opts.url + url_path;
-      res = await this.httpRequest(url, method, options, files);
+      const res = await this.httpRequest(url, method, options, body, files);
       return JSON.parse(res.body);
     } catch (err) {
       return { error: true, msg: err };
@@ -234,7 +242,6 @@ class Client {
     const obj = {};
     obj[field] = value;
     return await this.doCall('update', user, source, id, obj);
-    return this.datalink.updateData(user, source, id, obj);
   }
 
   generateBoundary() {
@@ -245,7 +252,7 @@ class Client {
     return b;
   }
 
-  httpRequest(url, method, options = {}, files = null) {
+  httpRequest(url, method, options = {}, body = null, files = null) {
     if (method) {
       options.method = method;
     }
@@ -274,8 +281,10 @@ class Client {
         reject(`${err.message}`);
       });
 
-      let in_s;
-      let last = false;
+      if (body) {
+        req.write(body);
+      }
+
       if (files) {
         req.write(`--${this.getBoundary()}\r\n`);
         for (let [i, file] of files.entries()) {
