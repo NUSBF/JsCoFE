@@ -6,6 +6,8 @@ __pycache__
 *.old
 *.new
 webCoot.bak/
+images_png_0/
+images_png_new/
 package-lock.json
 node_modules/
 settings.json

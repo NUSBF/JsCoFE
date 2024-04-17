@@ -266,7 +266,7 @@ def startBuccaneer(driver):
         pass
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         driver.execute_script("window.scrollTo(0, 500)")
         time.sleep(1)
     except:
