@@ -288,7 +288,7 @@ def verifyMorda(driver, waitLong, jobNumber, targetRwork, targetRfree):
 
 #         assert "CCP4 Cloud" in d.driver.title
 #         if not nologin:
-#             sf.loginToCloud(d.driver, login, password)
+#             sf.loginToCloud(d.driver, login, password, nologin)
         
         
 #         removeProject(d.driver, d.testName)
