@@ -131,8 +131,7 @@ def test_4_DPL_Validation(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
+        sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.enterProject(d.driver, d.testName)
         validate4DPL(d.driver, 600)
