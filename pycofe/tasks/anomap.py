@@ -46,8 +46,6 @@ class AnoMap(basic.TaskDriver):
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
-        sec1     = self.task.parameters.sec1.contains
-
         # --------------------------------------------------------------------
 
         labin_fo = hkl.getMeanF()
@@ -83,40 +81,10 @@ class AnoMap(basic.TaskDriver):
         mapout = dtype_template.makeDataId(self.job_id,1) + "_" + self.getMapOFName()
         mapout_fpath = os.path.join ( self.outputDir(),mapout )
 
-        scale_fobs = self.getParameter ( sec1.SCALE_FOBS )
-        scale_fc   = self.getParameter ( sec1.SCALE_FC   )
-        if not scale_fobs or not scale_fc:
-            scale_fobs = "2"
-            scale_fc   = "-1"
 
         keywords = [
-            "LABIN FP=" + labin_fo[0] + " FC=" + labin_fc[0] + " PHI=" + labin_fc[1],
-            "SCALE " + str(scale_fobs) + " " + str(scale_fc)
+            "LABIN FP=" + labin_fo[0] + " FC=" + labin_fc[0] + " PHI=" + labin_fc[1]
         ]
-
-        res_min = self.getParameter ( sec1.RES_MIN )
-        res_max = self.getParameter ( sec1.RES_MAX )
-        if res_min and res_max:
-            keywords.append ( "RESOLUTION " + str(res_min) + " " + str(res_max) )
-
-        if self.getParameter ( sec1.TRUNCATE_SEL )=="1":
-            keywords.append ( "TRUNCATE " )
-        if self.getParameter(sec1.HISTOGRAM_SEL)=="1":
-            keywords.append ( "HISTOGRAM" )
-
-        dlimit = self.getParameter ( sec1.DST_LIM )
-        if dlimit:
-            keywords.append ( "DLIMIT " + str(dlimit) )
-
-        grid = self.getParameter (sec1.GRID )
-        if grid:
-            keywords.append ( "GRID " + str(grid) )
-
-        format = self.getParameter (sec1.FORMAT_SEL )
-        if format=="MFF":
-            self.putMessage ( "<i>Groningen Master Fourier File format is requested " +\
-                              "-- map will not be visualisable</i>" )
-            keywords.append ( "MFFOUTPUT" )
 
         keywords.append ( "END" )
 
