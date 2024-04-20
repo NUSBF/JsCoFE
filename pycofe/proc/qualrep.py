@@ -74,6 +74,8 @@ def getEDStatsMetrics ( stdout_fpath ):
 
 
 def put_edstats_section ( body,revision ):
+    
+    # return None
 
     edmeta = None
 
