@@ -266,7 +266,7 @@ class PhaserEP(basic.TaskDriver):
         if hkl.res_high:
             self.write_stdin ( "\nRESOLUTION HIGH " + str(hkl.res_high) )
         if hkl.res_low:
-            self.write_stdin ( "\nRESOLUTION LOW " + str(hkl.res_low) )
+            self.write_stdin ( "\nRESOLUTION LOW "  + str(hkl.res_low) )
 
         # self.write_stdin ( "\nCOMPOSITION BY ASU" )
         # for i in range(len(seq)):

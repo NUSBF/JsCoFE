@@ -217,6 +217,8 @@ TaskAnoMap.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['omit','map'] );
 }
 
+TaskAnoMap.prototype.cleanJobDir = function ( keywords )  {}
+
 if (!__template)  {
   // client side
 
@@ -224,6 +226,7 @@ if (!__template)  {
   // this appears under task title in the task list
     return 'calculates anomalous maps';
   }
+
 
   // TaskAnoMap.prototype.collectInput = function ( inputPanel )  {
 
