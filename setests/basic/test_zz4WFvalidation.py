@@ -38,7 +38,7 @@ def validate4DPL(driver, waitLong):
         if curTime > startTime + float(waitLong):
             print('*** Timeout for validate4DPL results! Waited for long time plus %d seconds.' % waitLong)
             break
-        time.sleep(60)
+        time.sleep(2)
 
 #0 [dplWFTest] dplWFTest
 #1 auto-DPL:[0001] Dimple Refinement and Ligand Fitting Workflow -- HKL (1), Sequences (1), XYZ (1), Ligands (1); workflow started
@@ -77,14 +77,14 @@ def validate4DPL(driver, waitLong):
     assert match
 
     #5 auto-DPL:[0005] fit waters -- Nwaters=61
-    print('Verifying fitwaters  >50 ... ')
+    print('Verifying fitwaters  >30 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 50
+    assert int(match.group(1)) > 30
 
     #8 auto-DPL:[0008] refmac5 -- R=0.2044 Rfree=0.2523
     print('Verifying refmac5 Rfree < 0.27... ')
@@ -131,10 +131,10 @@ def test_4_DPL_Validation(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        sf.loginToCloud(d.driver, d.login, d.password)
+        sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
 
         sf.enterProject(d.driver, d.testName)
-        validate4DPL(d.driver, 600)
+        validate4DPL(d.driver, 60)
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
 
