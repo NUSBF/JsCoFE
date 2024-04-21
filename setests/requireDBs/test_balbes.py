@@ -98,7 +98,7 @@ def test_BalbesBasic(browser,
         d.driver.get(d.cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        sf.loginToCloud(d.driver, d.login, d.password)
+        sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
