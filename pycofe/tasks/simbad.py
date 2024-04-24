@@ -163,21 +163,41 @@ class Simbad(asudef.ASUDef):
                   ]
 
         if level in ["S","LCS"]:
+            morda_path    = ''
             morda_default = os.path.join ( os.environ["CCP4"],"share","simbad","static","morda" )
-            morda_path    = os.environ["SIMBAD_DB"]
+            try: 
+                morda_path    = os.environ["SIMBAD_DB"]
+            except:
+                pass
             if not os.path.exists(morda_path):
                 morda_path = morda_default
-            if not os.path.exists(morda_path):
-                self.fail ( "<h3>No SIMBAD database.</h3>" +\
-                    "Structural searches with SIMBAD require SIMBAD database, " +\
-                    "which is not installed.",
-                    "No SIMBAD database" )
-                return
-            # sec2 = self.task.parameters.sec2.contains
-            # cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
 
             if morda_path != morda_default:
                 cmd += [ "-morda_db",morda_path ]
+
+            if not os.path.exists(morda_path):
+                if level in ["LCS"]:
+                 app = "simbad"
+                 self.putMessage ( "<h3>No SIMBAD database.</h3>" +\
+                    "Running a task in <b>lattice and contaminants mode</b>, " +\
+                    "since SIMBAD database is not installed.\n " +
+                    "Add path to SIMBAD_DB as shown " +\
+                    "<a href='../../../../../manuals/html-dev/launchers.html' style='color:blue;' target='_blank'>here</a>)<p>")
+            
+
+                else:
+                    self.putMessage ( "<h3>No SIMBAD database.</h3>" +\
+                    "Structural searches with SIMBAD require SIMBAD database, " +\
+                    "which is not installed.\n " +\
+                    "Add path to SIMBAD_DB as shown " +\
+                    "<a href='../../../../../manuals/html-dev/launchers.html' style='color:blue;' target='_blank'>here</a>)<p>")
+
+                    self.fail ( "", "No SIMBAD database.")
+                
+            # sec2 = self.task.parameters.sec2.contains
+            # cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
+
+            
 
         if len(qtype)>0:
             cmd += qtype
