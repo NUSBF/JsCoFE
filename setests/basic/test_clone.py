@@ -402,8 +402,7 @@ def test_cloneBasic(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.removeProject(d.driver, 'clonedTest')

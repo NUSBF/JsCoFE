@@ -57,30 +57,34 @@ def doubleClickByXpath(driver, xpath):
             break
 
 
-def loginToCloud(driver, cloudLogin, cloudPassword):
+def loginToCloud(driver, cloudLogin, cloudPassword, nologin):
     # potential maintenance message
-    time.sleep(1)
-    msgButtons = driver.find_elements_by_xpath("//button[normalize-space()='Ok']")
-    if len(msgButtons) > 0:
-        msgButtons[-1].click()
+    if not nologin:
+        time.sleep(1)
+        msgButtons = driver.find_elements_by_xpath("//button[normalize-space()='Ok']")
+        if len(msgButtons) > 0:
+            msgButtons[-1].click()
+            time.sleep(2)
+
+        # Shall return list of two elements for login and password
+        loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
+
+        # First element in the list is login
+        loginInputs[0].click()
+        loginInputs[0].clear()
+        loginInputs[0].send_keys(cloudLogin)
+
+        # Second is password
+        loginInputs[1].click()
+        loginInputs[1].clear()
+        loginInputs[1].send_keys(cloudPassword)
+
+        # Login button
+        loginButton = driver.find_element_by_xpath("//button[normalize-space()='Login']")
+        loginButton.click()
+    else:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Go to your projects')
         time.sleep(2)
-
-    # Shall return list of two elements for login and password
-    loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
-
-    # First element in the list is login
-    loginInputs[0].click()
-    loginInputs[0].clear()
-    loginInputs[0].send_keys(cloudLogin)
-
-    # Second is password
-    loginInputs[1].click()
-    loginInputs[1].clear()
-    loginInputs[1].send_keys(cloudPassword)
-
-    # Login button
-    loginButton = driver.find_element_by_xpath("//button[normalize-space()='Login']")
-    loginButton.click()
 
     return ()
 
