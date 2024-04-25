@@ -119,8 +119,7 @@ def test_8BusterValidation(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
+        sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
 
         sf.enterProject(d.driver, d.testName)
         validateBusterRun(d.driver, 3000)

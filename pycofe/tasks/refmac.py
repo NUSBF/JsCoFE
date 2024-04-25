@@ -40,6 +40,7 @@ from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
 from   pycofe.auto      import auto,auto_workflow
 from   pycofe.proc      import covlinks
+from   pycofe.varut     import mmcif_utils
 
 # ============================================================================
 # Make Refmac driver
@@ -103,9 +104,10 @@ class Refmac(basic.TaskDriver):
                             atom.name    = ha_type
                             atom.element = gemmi.Element ( ha_type )
                     st_xyz[0].add_chain ( chain )
-        if pdbpath:
-            st_xyz.write_pdb ( outpath + ".pdb" )
         st_xyz.make_mmcif_document().write_file ( outpath + ".mmcif" )
+        if pdbpath:
+            # st_xyz.write_pdb ( outpath + ".pdb" )
+            mmcif_utils.translate_to_pdb ( st_xyz,pdb_outfile_path=outpath+".pdb" )
         return is_substr
 
     # ------------------------------------------------------------------------
