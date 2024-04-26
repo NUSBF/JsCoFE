@@ -176,7 +176,7 @@ def test_1LORESTRBasic(browser,
         sf.editRevisionStructure_rnase(d.driver, d.waitShort)
         startLORESTRAfterRevision(d.driver)
         verifyLORESTR(d.driver)
-        # sf.renameProject(d.driver, d.testName)
+        sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
 
