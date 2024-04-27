@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.24   <--  Date of Last Modification.
+ *    27.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,7 +46,8 @@ function LocalLoginPage ( sceneId )  {
              'Science and Technology Facilities Council UK<br>' +
              'Rutherford Appleton Laboratory<br>' +
              'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
-             'https://www.ccp4.ac.uk</div>' +
+             '<a href="https://www.ccp4.ac.uk" target="_blank">' +
+             'https://www.ccp4.ac.uk</a></div>' +
              '<b style="font-size:250%">' + appName() + '</b><br>' +
              '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
              '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
