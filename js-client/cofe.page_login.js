@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.24   <--  Date of Last Modification.
+ *    28.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,6 +28,10 @@ function _privacyStatement()  {
   new HelpBox ( 'Privacy Statement','./html/privacy_statement.html',null );
 }
 
+function _aboutCCP4Cloud()  {
+  new HelpBox ( '',__user_guide_base_url + 'jscofe_about.html',null );
+}
+
 function _ccp4_download()  {
   window.open ( "https://www.ccp4.ac.uk/download/" );
   //new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
@@ -47,7 +51,7 @@ function LoginPage ( sceneId )  {
 
   // make login panel
   let panel = new Grid('');
-  panel.setWidth ( '640px' );
+  panel.setWidth ( '700px' );
 
   this.grid.setCellSize            ( '45%','', 0,0,1,1 );
   this.grid.setCellSize            ( '','15px',0,0,1,3 );
@@ -111,8 +115,7 @@ function LoginPage ( sceneId )  {
   //      .setNoWrap();
   // panel.setHorizontalAlignment  ( row++ ,0,'center' );
   // panel.setWidget               ( this.makeSetupNamePanel(false), row++,col,1,3 );
-  panel.setCellSize             ( '','18px',row++,col );
-
+  panel.setCellSize               ( '','18px',row++,col );
 
   let login_lbl = new Label       ( 'Login name:' );
   let pwd_lbl   = new Label       ( 'Password:'   );
@@ -125,8 +128,7 @@ function LoginPage ( sceneId )  {
   login_inp.setFontSize         ( '100%' );
   login_inp.setStyle            ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
-  vis_btn  .setTooltip          ( 'Toggle password visibility' );
-  vis_btn  .icon_hidden = true;
+  vis_btn  .setTooltip          ( 'Toggle password visibility' ).icon_hidden = true;
   login_inp.setFontItalic       ( true   );
   pwd_inp  .setFontSize         ( '100%' );
   pwd_inp  .setStyle            ( 'password','','Your CCP4 password','' );
@@ -144,7 +146,7 @@ function LoginPage ( sceneId )  {
   panel.setVerticalAlignment    ( row++,2,'middle' );
 
   panel.setCellSize             ( '','4px',row++,col );
-  panel.setWidget               ( new HLine('3px'), row++,col,1,3 );
+  // panel.setWidget               ( new HLine('3px'), row++,col,1,3 );
   //panel.setCellSize             ( '','1px',row++,0 );
 
   let login_btn = new Button    ( 'Login',image_path('login') );
@@ -152,14 +154,24 @@ function LoginPage ( sceneId )  {
   let reg_btn   = new Button    ( 'Registration',image_path('new_file') );
 
   login_btn.setWidth            ( '100%' );
+  login_btn.setHeight           ( '30px' );
   pwd_btn  .setWidth            ( '100%' );
   reg_btn  .setWidth            ( '100%' );
   pwd_btn  .setFontSize         ( '80%'  );
   reg_btn  .setFontSize         ( '80%'  );
+
   panel.setWidget               ( login_btn,row++,col,1,3 );
-  panel.setWidget               ( pwd_btn  ,row++,col,1,3 );
-  panel.setWidget               ( reg_btn  ,row++,col,1,3 );
-  panel.setCellSize             ( '','6px' ,row++,col );
+  let btn_grid = panel.setGrid  ( '',row++,col,1,3 );
+  btn_grid.setWidget            ( pwd_btn  ,0,0,1,1 );
+  btn_grid.setWidget            ( reg_btn  ,0,1,1,1 );
+  btn_grid.setCellSize          ( '50%','',0,0 );
+  btn_grid.setCellSize          ( '50%','',0,1 );
+
+  panel.setWidget               ( new HLine('3px'), row++,col,1,3 );
+
+  // panel.setWidget               ( pwd_btn  ,row++,col,1,3 );
+  // panel.setWidget               ( reg_btn  ,row++,col,1,3 );
+  // panel.setCellSize             ( '','6px' ,row++,col );
 
   /*
   if (__any_mobile_device)  {
@@ -195,12 +207,22 @@ function LoginPage ( sceneId )  {
                                   '<b>Moorhen</b></span> will not work' +
                                   '</i></center></div>',
                                   row++,col,1,3 );
-  */
 
   panel.setLabel                ( '<center><i>Check ' + appName() +
                                   ' <a target="_blank" href="html/roadmap.html">' +
                                   'roadmap<a></i> for new users</center>',
                                   row++,col,1,3 );
+  */
+
+  panel.setLabel                ( '<div style="font-size:80%">' + appName() + 
+                                  ' provides computational resources ' +
+                                  'and online access to CCP4 Software for ' +
+                                  'determining macromoleculare structures in 3D ' +
+                                  'from X-ray diffraction images. Read more details ' +
+                                  ' <a href="javascript:_aboutCCP4Cloud()">' +
+                                  'here<a>.</div>',
+                                  row++,col,1,3 );
+
   panel.setLabel                ( '<div style="padding-top:6px;"><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
                                   'Privacy Statement<a></i></div>',
