@@ -138,7 +138,7 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 }
 
-
+/*
 BasePage.prototype.makeSetupNamePanel = function()  {
 // This panel appears on login, account, authorisation reply, forgotten password
 // and new registration pages
@@ -173,6 +173,58 @@ BasePage.prototype.makeSetupNamePanel = function()  {
     setupPanel.setVerticalAlignment   ( 1,0,'bottom' );
     setupPanel.setHorizontalAlignment ( 1,0,'center' );
   }
+
+  return setupPanel;
+
+}
+*/
+
+BasePage.prototype.makeSetupNamePanel = function ( center_bool=true )  {
+// This panel appears on login, account, authorisation reply, forgotten password
+// and new registration pages
+  let setupPanel = new Grid ( '' );
+
+  function _make_panel ( name,icon )  {
+    if (center_bool)  {
+      setupPanel.setImage ( icon,'30px','30px', 0,1,1,1 );
+      setupPanel.setLabel ( name, 0,2,1,1 )
+                .setFont  ( 'times','150%',true,true ).setNoWrap();
+      setupPanel.setCellSize ( '40%','',0,0 );
+      setupPanel.setCellSize ( '10%','',0,1 );
+      setupPanel.setCellSize ( '10%','',0,2 );
+      setupPanel.setCellSize ( '40%','',0,3 );
+      setupPanel.setVerticalAlignment ( 0,1,'bottom' );
+      setupPanel.setVerticalAlignment ( 0,2,'bottom' );
+    } else  {
+      setupPanel.setImage ( icon,'22px','22px', 0,0,1,1 );
+      setupPanel.setLabel ( name, 0,1,1,1 )
+                .setFont  ( 'times','125%',true,true ).setNoWrap();
+      setupPanel.setCellSize ( '10%','',0,0 );
+      setupPanel.setCellSize ( '30%','',0,1 );
+      setupPanel.setCellSize ( '60%','',0,2 );
+      setupPanel.setVerticalAlignment ( 0,0,'bottom' );
+      setupPanel.setVerticalAlignment ( 0,1,'bottom' );
+    }
+  }
+
+  if (__setup_desc)  {
+    _make_panel ( __setup_desc.name,__setup_desc.icon );
+  } else if (__local_setup)  {
+    _make_panel ( 'Home setup',image_path('setup_home') );
+  } else  {
+    _make_panel ( 'Unnamed setup',image_path('setup_unknown') );
+  }
+
+  // if (__fe_url != document.location.protocol + '//' +
+  //                 document.location.host     +
+  //                 document.location.pathname)  {
+  //   setupPanel.setLabel ( __fe_url, 1,0,1,4 )
+  //             .setFontSize ( '100%' ).setFontItalic(true).setNoWrap();
+  //   setupPanel.setCellSize ( '','20pt',1,0 );
+  //   setupPanel.setVerticalAlignment ( 1,0,'bottom' );
+  //   if (center_bool)
+  //     setupPanel.setHorizontalAlignment ( 1,0,'center' );
+  // }
 
   return setupPanel;
 

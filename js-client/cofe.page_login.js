@@ -87,19 +87,32 @@ function LoginPage ( sceneId )  {
     },1000);
   }
 
-  let row = 0;
+  let row = 1;
   let col = 2;
 
-  panel.setLabel ( '<b>Collaborative Computational Project No.4</b><br>' +
-                   '<div style="font-size:80%;padding-bottom:28px;">' +
+  panel.setLabel ( '<b style="font-size:85%;">Collaborative Computational Project No.4</b><br>' +
+                   '<div style="font-size:70%;padding-bottom:28px;">' +
                    'Science and Technology Facilities Council UK<br>' +
                    'Rutherford Appleton Laboratory<br>' +
                    'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
                    '<a href="https://www.ccp4.ac.uk" target="_blank">' +
-                   'https://www.ccp4.ac.uk</a></div>',
-                   row++,col+2,1,3 )
-      //  .setFont  ( 'times','12px',true,true )
+                   'https://www.ccp4.ac.uk</a></div>' +
+                   '<b style="font-size:200%">' + appName() + '</b><br>' +
+                   '<b style="font-size:100%">' + '@ ' + __setup_desc.name + 
+                   '</b>',
+                   row++,col,1,3 )
        .setNoWrap();
+
+  // panel.setLabel ( appName(), row++,col,1,3 )
+  //      .setFont  ( 'times','32px',true,true )
+  //      .setNoWrap();
+  // panel.setLabel ( '@ ' + __setup_desc.name, row++,col,1,3 )
+  //      .setFont  ( 'times','18px',true,true )
+  //      .setNoWrap();
+  // panel.setHorizontalAlignment  ( row++ ,0,'center' );
+  // panel.setWidget               ( this.makeSetupNamePanel(false), row++,col,1,3 );
+  panel.setCellSize             ( '','18px',row++,col );
+
 
   let login_lbl = new Label       ( 'Login name:' );
   let pwd_lbl   = new Label       ( 'Password:'   );
@@ -107,26 +120,19 @@ function LoginPage ( sceneId )  {
   let pwd_inp   = new InputText   ( '' );
   let vis_btn   = new ImageButton ( image_path('pwd_hidden'),'32px','14px' );
   login_lbl.setNoWrap();
-  login_lbl.setFontSize         ( '125%' );
-  pwd_lbl  .setFontSize         ( '125%' );
-  login_inp.setFontSize         ( '112%' );
+  login_lbl.setFontSize         ( '100%' );
+  pwd_lbl  .setFontSize         ( '100%' );
+  login_inp.setFontSize         ( '100%' );
   login_inp.setStyle            ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
   vis_btn  .setTooltip          ( 'Toggle password visibility' );
   vis_btn  .icon_hidden = true;
   login_inp.setFontItalic       ( true   );
-  pwd_inp  .setFontSize         ( '112%' );
+  pwd_inp  .setFontSize         ( '100%' );
   pwd_inp  .setStyle            ( 'password','','Your CCP4 password','' );
   pwd_inp  .setFontItalic       ( true   );
   login_inp.setWidth            ( '95%'  );
   pwd_inp  .setWidth            ( '95%'  );
-
-  panel.setLabel ( appName() + ' Login', row++,col,1,3 )
-       .setFont  ( 'times','32px',true,true )
-       .setNoWrap();
-  // panel.setHorizontalAlignment  ( row++ ,0,'center' );
-  panel.setWidget               ( this.makeSetupNamePanel(), row++,col,1,3 );
-  panel.setCellSize             ( '','10px',row++,col );
 
   panel.setWidget               ( login_lbl,row  ,col,1,1 );
   panel.setWidget               ( pwd_lbl  ,row+1,col,1,1 );
@@ -148,11 +154,14 @@ function LoginPage ( sceneId )  {
   login_btn.setWidth            ( '100%' );
   pwd_btn  .setWidth            ( '100%' );
   reg_btn  .setWidth            ( '100%' );
+  pwd_btn  .setFontSize         ( '80%'  );
+  reg_btn  .setFontSize         ( '80%'  );
   panel.setWidget               ( login_btn,row++,col,1,3 );
   panel.setWidget               ( pwd_btn  ,row++,col,1,3 );
   panel.setWidget               ( reg_btn  ,row++,col,1,3 );
   panel.setCellSize             ( '','6px' ,row++,col );
 
+  /*
   if (__any_mobile_device)  {
     panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
                                   'cannot be used when<br>working ' +
@@ -182,18 +191,19 @@ function LoginPage ( sceneId )  {
 
   if (!isProtectedConnection())
     panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
-                                  'Connection is not secure – <span style="color:maroon">' +
+                                  'Connection is not secure - <span style="color:maroon">' +
                                   '<b>Moorhen</b></span> will not work' +
                                   '</i></center></div>',
                                   row++,col,1,3 );
+  */
 
   panel.setLabel                ( '<center><i>Check ' + appName() +
                                   ' <a target="_blank" href="html/roadmap.html">' +
                                   'roadmap<a></i> for new users</center>',
                                   row++,col,1,3 );
-  panel.setLabel                ( '<center style="padding-top:6px;"><i>' +
+  panel.setLabel                ( '<div style="padding-top:6px;"><i>' +
                                   '<a href="javascript:_privacyStatement()">' +
-                                  'Privacy Statement<a></i></center>',
+                                  'Privacy Statement<a></i></div>',
                                   row++,col,1,3 );
 
   vis_btn.addOnClickListener ( function(){
