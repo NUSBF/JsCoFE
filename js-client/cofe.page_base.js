@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.24   <--  Date of Last Modification.
+ *    29.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,6 +49,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
     $('#'+sceneId).addClass('main-scene');
 
+    /*
     if (pageType=='LoginPage')  {
       let css = {
         "background-image"    : "url('" + image_path('background_remote') + "')",
@@ -60,6 +61,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
         css['background-image'] = "url('" + image_path('background_local') + "')"
       $('#'+sceneId).css ( css );
     }
+    */
 
   } else
     $('#'+sceneId).css({

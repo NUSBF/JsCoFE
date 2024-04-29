@@ -39,6 +39,8 @@ function _ccp4_download()  {
 
 function LoginPage ( sceneId )  {
 
+  stopSessionChecks();
+
   __login_token = '';
   __login_user  = '';
 
@@ -151,7 +153,7 @@ function LoginPage ( sceneId )  {
 
   let login_btn = new Button    ( 'Login',image_path('login') );
   let pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
-  let reg_btn   = new Button    ( 'Registration',image_path('new_file') );
+  let reg_btn   = new Button    ( 'Registration',image_path('user') );
 
   login_btn.setWidth            ( '100%' );
   login_btn.setHeight           ( '30px' );
@@ -320,6 +322,9 @@ LoginPage.prototype = Object.create ( BasePage.prototype );
 LoginPage.prototype.constructor = LoginPage;
 
 function makeLoginPage ( sceneId )  {
+  // if (__current_page)
+  //  logout ( sceneId,0 );
+  // else
   makePage ( function(){ 
     new LoginPage(sceneId); 
     setHistoryState ( 'LoginPage' );
