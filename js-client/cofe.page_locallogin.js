@@ -30,12 +30,12 @@ function LocalLoginPage ( sceneId )  {
   BasePage.call ( this,sceneId,'-full','LocalLoginPage' );
 
   // adjust scene grid attributes such that login panel is centered
-  this.grid.setCellSize          ( '45%','',0,0,1,1 );
-  this.grid.setCellSize          ( '10%','',0,1,1,1 );
-  this.grid.setVerticalAlignment ( 0,1,'middle'     );
-  this.grid.setHorizontalAlignment ( 0,1,'center'   );
-  this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  this.grid.setCellSize            ( '45%','',0,0,1,1 );
+  this.grid.setCellSize            ( '10%','',0,1,1,1 );
+  this.grid.setVerticalAlignment   ( 0,1,'middle'     );
+  this.grid.setHorizontalAlignment ( 0,1,'center'     );
+  this.grid.setCellSize            ( '45%','',0,2,1,1 );
+  this.makeLogoPanel               ( 1,0,3 );
 
   let panel = new Grid('');
   panel.setWidth      ( '300pt' );
