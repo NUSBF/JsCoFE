@@ -52,22 +52,22 @@ function LoginPage ( sceneId )  {
 
   let mrow = 0;
 
-  let menu_panel = this.grid.setGrid ( '',mrow++,1,1,3 )
-                       .setHeight ( '32px' );
-  menu_panel.addClass   ( 'upper-panel'  );
+  let menu_panel = this.grid.setGrid ( '',mrow++,0,1,3 );
+                      //  .setHeight ( '32px' );
+  // menu_panel.addClass   ( 'upper-panel'  );
 
-  this.grid.setCellSize ( '45%','35%',mrow++,0,1,3 );
+  this.grid.setCellSize ( '45%','45%',mrow++,0,1,1 );
 
   // $('#'+sceneId).addClass ( 'login-scene' );
 
   // make central panel
-  let cpanel = this.grid.setGrid  ( '',mrow,1,1,1 ).setWidth('700px');
+  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('700px');
 
   // adjust scene grid attributes such that login panel is centered
-  this.grid.setVerticalAlignment ( mrow,1,'middle' );
+  // this.grid.setVerticalAlignment ( mrow,1,'middle' );
   this.grid.setCellSize          ( 'auto','auto', mrow,  1,1,1 );
   this.grid.setCellSize          ( '45%' ,'auto', mrow++,2,1,1 );
-  this.grid.setCellSize          ( ''    ,'55%' , mrow++,0,1,3 );
+  this.grid.setCellSize          ( '45%' ,'45%' , mrow++,0,1,1 );
 
   // let synopsis_lbl = this.grid.setLabel ( '&nbsp;',mrow,1,1,1 )
   //                        .setWidth ( '640px' )
@@ -109,12 +109,12 @@ function LoginPage ( sceneId )  {
   }
 
   // put logo
-  cpanel.setCellSize ( '','64px',0,0 );
-  cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 1,0,1,1 );
-  cpanel.setCellSize ( '40px','',1,1 );
-  cpanel.setVerticalAlignment ( 1,0,'middle' );
+  // cpanel.setCellSize ( '','64px',0,0 );
+  cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
+  cpanel.setCellSize ( '40px','',0,1 );
+  cpanel.setVerticalAlignment ( 0,0,'middle' );
 
-  let panel       = cpanel.setGrid ( '',1,2,1,1 );
+  let panel       = cpanel.setGrid ( '',0,2,1,1 );
   let label_color = '#6A6A6A';
   let row         = 0;
 
