@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    02.01.22   <--  Date of Last Modification.
+#    21.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  HKL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2024
 #
 # ============================================================================
 #
@@ -231,6 +229,19 @@ class DType(dtype_template.DType):
             cols = [None,None,None,None,"X"]
 
         return cols
+
+
+    def getAnomalousFColumns ( self ):
+        #  returns column names as either
+        #       [F+,sigF+,F-,sigF-,"F"]   or
+        #       [None,None,None,None,"X"]
+        if hasattr(self.dataset,"Fpm") and self.dataset.Fpm is not None and\
+                                           self.dataset.Fpm.plus is not None and\
+                                           self.dataset.Fpm.minus is not None:
+            return [self.dataset.Fpm.plus.value ,self.dataset.Fpm.plus.sigma,
+                    self.dataset.Fpm.minus.value,self.dataset.Fpm.minus.sigma,
+                    "F"]
+        return [None,None,None,None,"X"]
 
 
     def makeDName ( self,serialNo ):

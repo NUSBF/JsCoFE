@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    21.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -367,6 +367,11 @@ class DType(dtype_xyz.DType):
         self.HLB     = struct_class.HLB
         self.HLC     = struct_class.HLC
         self.HLD     = struct_class.HLD
+        self.FAN     = struct_class.FAN
+        self.PHAN    = struct_class.PHAN
+        self.DELFAN  = struct_class.DELFAN
+        self.PHDELAN = struct_class.PHDELAN
+
         self.FreeR_flag = struct_class.FreeR_flag
         return
 

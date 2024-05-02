@@ -1384,12 +1384,15 @@ class TaskDriver(object):
             cmd.append ( mtzlbl[i]["path"] )
             labin = mtzlbl[i]["labin"]
             self.write_stdin ( "LABIN  FILE " + str(i+1) )
-            for j in range(len(labin)):
-                self.write_stdin ( " E%d=%s" % (j+1,labin[j]) )
-            labout = mtzlbl[i]["labout"]
-            self.write_stdin ( "\nLABOUT FILE " + str(i+1) )
-            for j in range(len(labout)):
-                self.write_stdin ( " E%d=%s" % (j+1,labout[j]) )
+            if len(labin)==1 and labin[0].lower()=="all":
+                self.write_stdin ( " ALL" )
+            else:
+                for j in range(len(labin)):
+                    self.write_stdin ( " E%d=%s" % (j+1,labin[j]) )
+                labout = mtzlbl[i]["labout"]
+                self.write_stdin ( "\nLABOUT FILE " + str(i+1) )
+                for j in range(len(labout)):
+                    self.write_stdin ( " E%d=%s" % (j+1,labout[j]) )
             self.write_stdin ( "\n" )
 
         self.close_stdin()
