@@ -272,7 +272,7 @@ var generate_report = false;
       conf.checkOnUpdate ( function(code){
         if ((code>0) && (code<255))  {
           var userData   = new ud.UserData();
-          userData.name  = cmd.appName() + ' Mainteiner';
+          userData.name  = cmd.appName() + ' Maintainer';
           userData.email = emailer_conf.maintainerEmail;
           if (code==254)  {
             log.standard ( 20,'New CCP4 series released, please upgrade' );

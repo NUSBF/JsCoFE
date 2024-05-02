@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    25.04.20   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -68,20 +68,20 @@ class DUI(basic.TaskDriver):
         #    rc = self.runApp ( "dui.bat",[],logType="Main",quitOnError=False )
         #else:
         #    rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
-        rc = self.runApp ( "dui",[],logType="Main",quitOnError=False )
+        rc = self.runApp ( "dui2",[],logType="Main",quitOnError=False )
         self.addCitation ( "dials" )
 
         # Check for MTZ files left by DUI and import them as Unmerged
 
         have_results = False
 
-        if os.path.isdir("dui_files"):
-
-            files = os.listdir ( "dui_files" )
+        if os.path.isdir("run_dui2_nodes"):
+            from os import walk
             fname = []
-            for f in files:
-                if f.lower().endswith(".mtz"):
-                    fname.append ( os.path.join("dui_files",f) )
+            for (dirpath, dirnames, filenames) in os.walk("run_dui2_nodes"):
+                    for f in filenames:
+                        if f.lower().endswith(".mtz"):
+                            fname.append(os.path.join(dirpath, f))
 
             if len(fname)>0:
                 if len(fname)<2:
@@ -120,7 +120,8 @@ class DUI(basic.TaskDriver):
                 self.putTitle ( "No Output Data Generated" )
 
             # clean directories
-            shutil.rmtree ( "dui_files" )
+            shutil.rmtree ( "run_dui2_nodes" )
+            shutil.rmtree ( "run_dui_tmp" )
 
         else:
             self.putTitle ( "No DUI Data Found" )

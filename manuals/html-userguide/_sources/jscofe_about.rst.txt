@@ -1,0 +1,84 @@
+:orphan:
+
+================
+About CCP4 Cloud
+================
+
+CCP4 Cloud is a computational resource and platform specifically designed for 
+structural biology research. `CCP4 <https://www.ccp4.ac.uk>`_ stands for 
+*"Collaborative Computational Project Number 4"* which is a longstanding 
+project in the field of macromolecular crystallography. It provides software 
+tools and resources for the determination of macromolecular structures by 
+X-ray crystallography, and other biophysical techniques.
+
+CCP4 Cloud extends the capabilities of the CCP4 software suite by providing 
+a cloud-based platform where researchers can access computational resources 
+for tasks such as X-ray data processing, phasing, model building, refinement,
+validation, analysis, and preparation for `PDB <https://www.wwpdb.org/>`_ 
+deposition. By leveraging cloud computing infrastructure, CCP4 Cloud allows 
+researchers to perform complex calculations without the need for significant 
+local computational resources. This can be particularly beneficial for 
+laboratories or institutions with limited computing infrastructure or for 
+researchers who require on-demand access to scalable computing resources.
+
+--------------------
+Accessing CCP4 Cloud
+--------------------
+
+Accessing CCP4 Cloud involves the following steps:
+
+**Registration:** Visit the CCP4 Cloud website and register for an account 
+if you haven't already. You will need to provide some basic information
+(your name, chosen login name and e-mail address), indicate whether you are 
+academic or commercial user, and choose one of feedback options.
+
+**Login:** After registration, log in to your CCP4 Cloud account using your 
+username and temporary password which you obtain in your mailbox.
+
+**Usage:** Once logged in first time, choose new password in "My Account"
+page. After that, you can access the CCP4 Cloud platform and its resources.
+This involves uploading your data, running computational tasks using the 
+available software tools, and accessing the results.
+
+**Documentation and Support:** Familiarize yourself with the documentation 
+and support resources provided by CCP4 Cloud. This includes user guides, 
+tutorials, FAQs, and support channels where you can get assistance if needed.
+
+**Licence:** Using CCP4 Cloud is covered by CCP4 Licence Agreement. CCP4 Licence
+is free for academic users; commercial users must be covered by appropriate
+licence agreement. Please find more details
+`here <https://www.ccp4.ac.uk/ccp4-licence-and-conditions-2/>`_.
+
+----------------------------------------
+CCP4 Cloud and CCP4 desktop applications
+----------------------------------------
+
+Selected CCP4 applications, such as **Coot**, **CCP4mg**, **DUI**, **iMosflm**, 
+and some others, require CCP4 Software installed on your machine (see 
+installation packages and instructions in 
+`CCP4 Download <https://www.ccp4.ac.uk/download/>`_). To use them in CCP4 Cloud, 
+just start your Cloud session by clicking on one of CCP4 Cloud icons, found in 
+CCP4 directory. To connect to remote CCP4 Cloud setup, click on:
+
+.. image:: images/ccp4cloud_remote.png
+      :scale: 8 %
+      :align: center
+
+In remote mode, your projects and data are kept on remote servers, and 
+computational tasks run on cloud machines.
+
+To start CCP4 Cloud locally on your machine, click on:
+
+.. image:: images/ccp4cloud_desktop.png
+      :scale: 8 %
+      :align: center
+
+In local mode, your projects and data are kept on your machine, and 
+computational tasks run on your machine as well.
+
+.. tip::
+        Note that projects and data in your CCP4 Cloud account are not 
+        synchronised with projects and data on your machine. You may,
+        however, export projects from your account and import them into 
+        CCP4 Cloud on your machine, and vice versa.
+

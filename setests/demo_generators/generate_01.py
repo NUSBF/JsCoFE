@@ -704,7 +704,7 @@ def generate_01(browser,
         d.driver.get(d.cloud)
         assert "CCP4 Cloud" in d.driver.title
         if not d.nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
+            sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
         sf.enterProject(d.driver, d.testName)
         time.sleep(3)
         sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
@@ -730,7 +730,7 @@ def generate_01(browser,
         d.driver.get(d.cloud)
         assert "CCP4 Cloud" in d.driver.title
         if not d.nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
+            sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
         sf.enterProject(d.driver, d.testName)
         time.sleep(3)
 
