@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    03.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,18 +24,18 @@
 // -------------------------------------------------------------------------
 // login page class
 
-function _privacyStatement()  {
-  new HelpBox ( 'Privacy Statement','./html/privacy_statement.html',null );
-}
+// function _privacyStatement()  {
+//   new HelpBox ( 'Privacy Statement','./html/privacy_statement.html',null );
+// }
 
-function _aboutCCP4Cloud()  {
-  new HelpBox ( '',__user_guide_base_url + 'jscofe_about.html',null );
-}
+// function _aboutCCP4Cloud()  {
+//   new HelpBox ( '',__user_guide_base_url + 'jscofe_about.html',null );
+// }
 
-function _ccp4_download()  {
-  window.open ( "https://www.ccp4.ac.uk/download/" );
-  //new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
-}
+// function _ccp4_download()  {
+//   window.open ( "https://www.ccp4.ac.uk/download/" );
+//   //new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
+// }
 
 function LoginPage ( sceneId )  {
 
@@ -49,7 +49,6 @@ function LoginPage ( sceneId )  {
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','LoginPage' );
 
-
   let mrow = 0;
 
   let menu_panel = this.grid.setGrid ( '',mrow++,0,1,3 );
@@ -58,10 +57,12 @@ function LoginPage ( sceneId )  {
 
   this.grid.setCellSize ( '45%','45%',mrow++,0,1,1 );
 
-  // $('#'+sceneId).addClass ( 'login-scene' );
+  // ****
+  $('#'+sceneId).addClass ( 'login-scene' );
 
   // make central panel
-  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('700px');
+  // **** let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('700px');
+  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('600px');
 
   // adjust scene grid attributes such that login panel is centered
   // this.grid.setVerticalAlignment ( mrow,1,'middle' );
@@ -110,8 +111,10 @@ function LoginPage ( sceneId )  {
 
   // put logo
   // cpanel.setCellSize ( '','64px',0,0 );
-  cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
-  cpanel.setCellSize ( '40px','',0,1 );
+
+  //*** */ cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
+  cpanel.setCellSize ( '100px','',0,0 );
+  cpanel.setCellSize ( '40px','' ,0,1 );
   cpanel.setVerticalAlignment ( 0,0,'middle' );
 
   let panel       = cpanel.setGrid ( '',0,2,1,1 );
