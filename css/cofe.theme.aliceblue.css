@@ -35,17 +35,17 @@
   /* background-position : center center; */
 }
 
-/* 
 .login-scene  {
-  margin: 0;
-  padding: 0;
-  background-image: url("../images_png/background_login.png");
-  background-size: auto 100vh;
-  background-repeat: no-repeat;
-  background-position: left middle;
-  height: 100vh;
+  margin              : 0;
+  padding             : 0;
+  background-image    : url("../images_png/background_login.png");
+  /* background-size: auto 100vh; */
+  /* background-size     : 30vw auto; */
+  background-size     : 480px auto;
+  background-repeat   : no-repeat;
+  background-position : left center;
+  /* height: 100vh; */
 }
-*/
 
 
 .logo-panel  {
