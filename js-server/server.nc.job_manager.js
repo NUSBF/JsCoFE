@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.23   <--  Date of Last Modification.
+ *    04.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -1097,9 +1097,10 @@ function ncRunJob ( job_token,meta )  {
                       // that we want to be able to identify job completions
                       // in situations when NC's Node was taken down (or
                       // crashed) and then resumed.
-                      job.on ( 'close',function(code){
+                      job.on ( 'close',function(returncode){
 
-//                        if (code!=0)
+                        let code = utils.getJobSignalCode ( jobEntry.jobDir );
+
                         if (code)
                           log.debug ( 103,'[' + comut.padDigits(task.id,4) +
                                           '] code=' + code );
