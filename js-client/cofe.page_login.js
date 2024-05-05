@@ -62,13 +62,13 @@ function LoginPage ( sceneId )  {
 
   // make central panel
   // **** let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('700px');
-  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('200px');
+  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ); //.setWidth('200px');
 
   // adjust scene grid attributes such that login panel is centered
   // this.grid.setVerticalAlignment ( mrow,1,'middle' );
   this.grid.setCellSize          ( 'auto','auto', mrow,  1,1,1 );
   this.grid.setCellSize          ( '40%' ,'auto', mrow++,2,1,1 );
-  this.grid.setCellSize          ( '50%' ,'45%' , mrow++,0,1,1 );
+  this.grid.setCellSize          ( '40%' ,'45%' , mrow++,0,1,1 );
 
   // let synopsis_lbl = this.grid.setLabel ( '&nbsp;',mrow,1,1,1 )
   //                        .setWidth ( '640px' )
@@ -77,7 +77,7 @@ function LoginPage ( sceneId )  {
   // this.grid.setHorizontalAlignment ( mrow,0,'center' );
   // this.grid.setVerticalAlignment   ( mrow++,0,'top'    );
   // this.grid.setCellSize            ( '','40px',mrow++,0,1,1 );
-  let tip_lbl = this.grid.setLabel ( '&nbsp;',mrow,0,1,3 ).setFontSize('80%');
+  let tip_lbl = this.grid.setLabel ( '',mrow,0,1,3 ).setFontSize('80%');
   this.grid.setHorizontalAlignment ( mrow,0,'center' );
   this.grid.setVerticalAlignment   ( mrow,0,'top'    );
   this.grid.setCellSize            ( '','20px',mrow++,0,1,3 );
@@ -94,13 +94,13 @@ function LoginPage ( sceneId )  {
                           else  tipNo = round(Date.now()/5000,0);
         tipNo = tipNo % __tips.tips.length;
         let tipLink = '<a href="javascript:' +
-                          'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
+                         'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
                                         '\'' + __tips.tips[tipNo].doc   + '/'   +
                                                __tips.tips[tipNo].link  + '\',' +
                                         'null,10)">';
         tip_lbl.setText (
           '<img src="' + image_path('tip') +
-          '" style="width:20px;height:20px;vertical-align:bottom;"/>' +
+          '" style="padding-left:80px;width:20px;height:20px;vertical-align:bottom;"/>' +
           '<span><i style="font-style:Garamond;color:#666666;">' +
           __tips.tips[tipNo].summary.replace('<a>',tipLink) +
           '</i></span>'
@@ -114,7 +114,7 @@ function LoginPage ( sceneId )  {
 
   //*** */ cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
   cpanel.setCellSize ( '0px','',0,0 );
-  cpanel.setCellSize ( '40px','' ,0,1 );
+  cpanel.setCellSize ( '0px','' ,0,1 );
   cpanel.setVerticalAlignment ( 0,0,'middle' );
 
   let panel       = cpanel.setGrid ( '',0,2,1,1 );
