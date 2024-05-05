@@ -62,13 +62,13 @@ function LoginPage ( sceneId )  {
 
   // make central panel
   // **** let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('700px');
-  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('600px');
+  let cpanel = this.grid.setGrid ( '',mrow,1,1,1 ).setWidth('200px');
 
   // adjust scene grid attributes such that login panel is centered
   // this.grid.setVerticalAlignment ( mrow,1,'middle' );
   this.grid.setCellSize          ( 'auto','auto', mrow,  1,1,1 );
-  this.grid.setCellSize          ( '45%' ,'auto', mrow++,2,1,1 );
-  this.grid.setCellSize          ( '45%' ,'45%' , mrow++,0,1,1 );
+  this.grid.setCellSize          ( '40%' ,'auto', mrow++,2,1,1 );
+  this.grid.setCellSize          ( '50%' ,'45%' , mrow++,0,1,1 );
 
   // let synopsis_lbl = this.grid.setLabel ( '&nbsp;',mrow,1,1,1 )
   //                        .setWidth ( '640px' )
@@ -113,7 +113,7 @@ function LoginPage ( sceneId )  {
   // cpanel.setCellSize ( '','64px',0,0 );
 
   //*** */ cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
-  cpanel.setCellSize ( '100px','',0,0 );
+  cpanel.setCellSize ( '0px','',0,0 );
   cpanel.setCellSize ( '40px','' ,0,1 );
   cpanel.setVerticalAlignment ( 0,0,'middle' );
 
