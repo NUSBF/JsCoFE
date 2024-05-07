@@ -136,13 +136,13 @@ function LoginPage ( sceneId )  {
 
   let login_inp = panel.setInputText ( '',row++,0,1,2 )
                        .setStyle     ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
-                                       'Your ' + appName() + ' login','' )
+                                       '','' )
                        .setWidth     ( '200px' )
                        .setHeight    ( '32px'  )
                        .setVerticalAlignment ( 'middle' )
                        .setPaddings  ( '8px','','8px','2px' )
                        .setMargins   ( '','','','20px' )
-                       .setFontSize  ( '120%' );
+                       .setFontSize  ( '100%' );
 
   panel.setLabel ( 'PASSWORD&nbsp;&nbsp;',row,0,1,1 )
        .setFontSize  ( '90%'     )
@@ -156,13 +156,13 @@ function LoginPage ( sceneId )  {
 
   let pwd_inp   = panel.setInputText ( '',row++,0,1,2 )
                        .setStyle     ( 'password','',
-                                       'Your ' + appName() + ' password','' )
+                                       '','' )
                        .setWidth     ( '200px' )
                        .setHeight    ( '32px'  )
                        .setVerticalAlignment ( 'middle' )
                        .setPaddings  ( '8px','','8px','2px' )
                        .setMargins   ( '','','','24px' )
-                       .setFontSize  ( '120%' );
+                       .setFontSize  ( '100%' );
 
   let login_btn = panel.setButton ( 'Login',image_path('login'),row++,0,1,2 )
                        .setHeight ( '36px' );
