@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.03.24   <--  Date of Last Modification.
+ *    07.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1067,7 +1067,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         };
     }
 
-    if (__clipboard.task)  {
+    if (__clipboard.task && crTask.isComplete())  {
       items.pasteJobFromClipboard = { // The "Clone job" menu item
         label : 'Paste ' + __clipboard.task.clipboard_name() + ' from clipboard',
         icon  : image_path('paste'),
