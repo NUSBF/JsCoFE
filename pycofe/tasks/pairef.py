@@ -472,7 +472,6 @@ class PaiRef(basic.TaskDriver):
                 "summary_line" : "failed"
             }
 
-
         # close execution logs and quit
         self.success ( have_results )
         return
