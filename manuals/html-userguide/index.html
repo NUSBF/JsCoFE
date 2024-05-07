@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,12 +51,13 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1. CCP4 Cloud interface documentation" href="jscofe_interface.html" />
+    <link rel="next" title="1. About CCP4 Cloud" href="jscofe_about.html" />
   
    
 
@@ -176,70 +177,77 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_interface.html" class="md-nav__link">1. CCP4 Cloud interface documentation</a>
+      <a href="jscofe_about.html" class="md-nav__link">1. About CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_workflows.html" class="md-nav__link">2. Structure solution with CCP4 Cloud</a>
+      <a href="jscofe_interface.html" class="md-nav__link">2. CCP4 Cloud interface documentation</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">3. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_workflows.html" class="md-nav__link">3. Structure solution with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">4. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">5. Custom (user-created) project workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">5. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">6. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">6. Custom (user-created) project workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">7. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">7. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">8. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">9. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">9. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">10. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">10. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">11. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -272,84 +280,89 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="user-guide">
-<h1 id="index--page-root">User Guide<a class="headerlink" href="#index--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="index--page-root">User Guide<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_interface.html">1. CCP4 Cloud interface documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_myprojects.html">1.1. My Projects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_project.html">1.2. Project Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_tasklist.html">1.3. Task List</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_jobdialog.html">1.4. Job Dialog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_tips.html">1.5. Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_about.html">1. About CCP4 Cloud</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_about.html#accessing-ccp4-cloud">1.1. Accessing CCP4 Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_about.html#ccp4-cloud-and-ccp4-desktop-applications">1.2. CCP4 Cloud and CCP4 desktop applications</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_workflows.html">2. Structure solution with CCP4 Cloud</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_start_project.html">2.1. Work with CCP4 Cloud</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_workflow_with_predicted_models.html">2.2. AlphaFold and RoseTTAFold models in CCP4 Cloud</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_automated_workflows.html">2.3. Automatic workflows</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CCP4Cloud_Atlas.html">2.4. CCP4 Cloud Atlas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_interface.html">2. CCP4 Cloud interface documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_myprojects.html">2.1. My Projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_project.html">2.2. Project Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_tasklist.html">2.3. Task List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_jobdialog.html">2.4. Job Dialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_tips.html">2.5. Tips and Tricks</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_cloudrun.html">3. Starting CCP4 Cloud projects from the command line</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#cloudrun-utility">3.1. CloudRun utility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#command-file-keywords">3.2. Command file keywords</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#example">3.3. Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_workflows.html">3. Structure solution with CCP4 Cloud</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_start_project.html">3.1. Work with CCP4 Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_workflow_with_predicted_models.html">3.2. AlphaFold and RoseTTAFold models in CCP4 Cloud</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_automated_workflows.html">3.3. Automatic workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CCP4Cloud_Atlas.html">3.4. CCP4 Cloud Atlas</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_i1toCloud.html">4. Cloud Run facility in CCP4i interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_custom_workflows.html">5. Custom (user-created) project workflows</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#what-are-custom-workflows-and-how-one-can-use-them">5.1. What are custom workflows and how one can use them</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#writing-the-workflow-script-wscript">5.2. Writing the Workflow script (WScript)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#custom-workflow-library">5.3. Custom Workflow Library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#wscript-reference">5.4. WScript Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_cloudrun.html">4. Starting CCP4 Cloud projects from the command line</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#cloudrun-utility">4.1. CloudRun utility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#command-file-keywords">4.2. Command file keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_cloudrun.html#example">4.3. Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_archive.html">6. CCP4 Cloud Archive</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#general-description-and-use-cases">6.1. General description and use cases</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#before-archiving">6.2. Before archiving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#archiving-procedure">6.3. Archiving procedure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#accessing-projects-in-ccp4-cloud-archive">6.4. Accessing projects in CCP4 Cloud Archive</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#revising-projects-in-ccp4-cloud-archive">6.5. Revising projects in CCP4 Cloud Archive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_i1toCloud.html">5. Cloud Run facility in CCP4i interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_custom_workflows.html">6. Custom (user-created) project workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#what-are-custom-workflows-and-how-one-can-use-them">6.1. What are custom workflows and how one can use them</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#writing-the-workflow-script-wscript">6.2. Writing the Workflow script (WScript)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#custom-workflow-library">6.3. Custom Workflow Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_custom_workflows.html#wscript-reference">6.4. WScript Reference</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_CloudED.html">7. CCP4 Cloud education capabilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_CloudED.html#ccp4-cloud-tutorials">7.1. CCP4 Cloud tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_archive.html">7. CCP4 Cloud Archive</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#general-description-and-use-cases">7.1. General description and use cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#before-archiving">7.2. Before archiving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#archiving-procedure">7.3. Archiving procedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#accessing-projects-in-ccp4-cloud-archive">7.4. Accessing projects in CCP4 Cloud Archive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_archive.html#revising-projects-in-ccp4-cloud-archive">7.5. Revising projects in CCP4 Cloud Archive</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_QnA.html">8. Questions and Answers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.xyz_model_ensemble.html">8.1. What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.structure.html">8.2. What is <em>Structure</em>?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.structure_revision.html">8.3. What is <em>Structure Revision</em>?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_CloudED.html">8. CCP4 Cloud education capabilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_CloudED.html#ccp4-cloud-tutorials">8.1. CCP4 Cloud tutorials</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_troubleshooting.html">9. Troubleshooting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#some-tasks-cannot-be-created-or-added-to-the-job-tree">9.1. Some tasks cannot be created or added to the job tree</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#job-seems-to-never-finish">9.2. Job seems to never finish</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#ccp4-cloud-says-that-the-task-cannot-be-cloned">9.3. CCP4 Cloud says that the task cannot be cloned</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_QnA.html">9. Questions and Answers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.xyz_model_ensemble.html">9.1. What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.structure.html">9.2. What is <em>Structure</em>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_qna.structure_revision.html">9.3. What is <em>Structure Revision</em>?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="jscofe_version_log.html">10. CCP4 Cloud Version Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_troubleshooting.html">10. Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#some-tasks-cannot-be-created-or-added-to-the-job-tree">10.1. Some tasks cannot be created or added to the job tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#job-seems-to-never-finish">10.2. Job seems to never finish</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jscofe_troubleshooting.html#ccp4-cloud-says-that-the-task-cannot-be-cloned">10.3. CCP4 Cloud says that the task cannot be cloned</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jscofe_version_log.html">11. CCP4 Cloud Version Log</a></li>
 </ul>
 </div>
-</section>
-<section id="search">
-<h1 id="search">Search<a class="headerlink" href="#search" title="Permalink to this heading">¶</a></h1>
+
+
+<h1 id="search">Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
-</section>
-<section id="authors-and-contributors">
-<h1 id="authors-and-contributors">Authors and Contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this heading">¶</a></h1>
-<dl class="simple">
+
+
+<h1 id="authors-and-contributors">Authors and Contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils">
 <dt>User Guide for CCP4 Cloud was prepared by:</dt><dd><ul class="simple">
-<li><p><em>Maria Fando (CCP4, STFC, Harwell, UK)</em></p></li>
-<li><p><em>Eugene Krissinel (CCP4, STFC, Harwell, UK)</em></p></li>
+<li><em>Maria Fando (CCP4, STFC, Harwell, UK)</em></li>
+<li><em>Eugene Krissinel (CCP4, STFC, Harwell, UK)</em></li>
 </ul>
 </dd>
 </dl>
 <p>Please send questions and suggestions to: <a class="reference external" href="mailto:ccp4_cloud%40listserv.stfc.ac.uk?Subject=CCP4%20Cloud%20question" rel="noopener noreferrer" target="_blank">CCP4 Cloud Reception</a> .</p>
-</section>
+
 
 
           </article>
@@ -362,12 +375,12 @@
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="jscofe_interface.html" title="1. CCP4 Cloud interface documentation"
+            <a href="jscofe_about.html" title="1. About CCP4 Cloud"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">1. </span>CCP4 Cloud interface documentation </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">1. </span>About CCP4 Cloud </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -381,7 +394,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

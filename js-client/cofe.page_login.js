@@ -35,6 +35,8 @@ function _ccp4_download()  {
 
 function LoginPage ( sceneId )  {
 
+  stopSessionChecks();
+
   __login_token = '';
   __login_user  = '';
 
