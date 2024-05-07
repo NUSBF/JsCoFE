@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.04.24   <--  Date of Last Modification.
+#    04.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -622,6 +622,9 @@ class Refmac(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Output Generated" )
+            self.generic_parser_summary["refmac"] = {
+              "summary_line" : "refinment failed"
+            }
 
         # close execution logs and quit
         self.success ( have_results )

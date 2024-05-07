@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    21.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -147,6 +147,9 @@ function Menu ( text,icon_uri,right_click=false )  {
             // else  __onclick_ignore_counter++;
             __onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
+            if (('__active_color_mode' in window) && (__active_color_mode=='dark'))
+                  menu.dropdown.element.style.boxShadow = 'none';
+            else  menu.dropdown.element.style.boxShadow = menu.dropdown.light_shadow;
           }
         });
       } else  {
@@ -161,6 +164,9 @@ function Menu ( text,icon_uri,right_click=false )  {
             // else  __onclick_ignore_counter++;
             __onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
+            if (('__active_color_mode' in window) && (__active_color_mode=='dark'))
+                  menu.dropdown.element.style.boxShadow = 'none';
+            else  menu.dropdown.element.style.boxShadow = menu.dropdown.light_shadow;
           }
         });
       }
@@ -170,6 +176,7 @@ function Menu ( text,icon_uri,right_click=false )  {
   }
   this.dropdown = new Widget ( 'div' );
   this.dropdown.addClass ( 'menu-dropdown-content' );
+  this.dropdown.light_shadow = this.dropdown.element.style.boxShadow;
   this.addWidget ( this.dropdown );
   this.n_items = 0;
 }
