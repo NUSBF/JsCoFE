@@ -62,6 +62,7 @@ function UserData()  {
   this.name          = '';
   this.email         = '';
   this.login         = '';
+  this.globusId      = '';
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
@@ -111,6 +112,9 @@ var msg = '';
           msg = '<li>change your <b>password</b></li>';
     else  msg = '<li>confirm your account details</li>';
   }
+
+  if (!uData.hasOwnProperty('globusId'))
+    uData.globusId = '';
 
   if (!uData.hasOwnProperty('authorisation'))
     uData.authorisation = {};
