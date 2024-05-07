@@ -1067,7 +1067,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         };
     }
 
-    if (__clipboard.task && crTask.isComplete())  {
+    if (__clipboard.task && crTask.isSuccessful())  {
       items.pasteJobFromClipboard = { // The "Clone job" menu item
         label : 'Paste ' + __clipboard.task.clipboard_name() + ' from clipboard',
         icon  : image_path('paste'),
