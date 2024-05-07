@@ -39,6 +39,8 @@
   margin              : 0;
   padding             : 0;
   background-image    : url("../images_png/background_login.png");
+  /* background-color: rgba(243,250,255,0.0);
+  background-blend-mode: lighten; */
   /* background-size: auto 120vh; */
   background-size     : 30vw auto;
   /* background-size     : 480px auto; */
