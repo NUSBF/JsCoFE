@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    03.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -301,13 +301,13 @@ JobTree.prototype.readProjectData = function ( page_title,
       let root_title = __projectStyle ( author + '[' + pName  + ']' + archiveID );
 
       if (tree.projectData.tree.length<=0)  {
-
         tree.addRootNode ( root_title,image_path('project'),tree.customIcon() );
 
       } else  {
 
         // enforce title of root node just in case it was renamed
-        data.meta.tree[0].text = root_title;
+        data.meta.tree[0].text  = root_title;
+        data.meta.tree[0].text0 = root_title;
 
         tree.setNodes ( data.meta.tree,allow_selection );
 
