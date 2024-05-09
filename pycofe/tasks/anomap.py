@@ -127,6 +127,23 @@ class AnoMap(basic.TaskDriver):
             view_pdb = os.path.join ( self.outputDir(),self.getXYZOFName() )
             shutil.copyfile ( xyzin,view_pdb )
 
+            struct_mtz = view_mtz  #self.getMTZOFName()
+            # self.makeMTZ ( [
+            #     { "path"   : phaser_mtz,
+            #       "labin"  : ["all"],
+            #       "labout" : ["all"]
+            #     },{
+            #     { "path"   : istruct.getMTZFilePath ( self.inputDir() ),
+            #       "labin"  : ["all"],
+            #       "labout" : ["all"]
+            #     },{
+            #       "path"   : anomap_mtz,
+            #       "labin"  : ["FLLG_AX","PHLLG_AX"],
+            #       "labout" : ["FLLG_AX","PHLLG_AX"]
+            #       # "labout" : ["DELFWT","PHDELWT"]
+            #     }
+            # ],view_mtz )
+
             substructure = self.registerStructure (
                                 None,
                                 None,
@@ -160,7 +177,8 @@ class AnoMap(basic.TaskDriver):
                 # revision.setStructureData ( substructure )
                 revision.Substructure = substructure
                 revision.addSubtypes  ( substructure.subtype )
-                self.registerRevision ( revision )
+                istruct.setMTZFile    ( struct_mtz )
+                self.registerRevision ( revision   )
 
                 have_results = True
                 summary      = "anomalous map calculated" 
