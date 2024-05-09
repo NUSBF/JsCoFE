@@ -26,12 +26,7 @@
 
 #  python native imports
 import os
-import sys
 import shutil
-
-#  ccp4-python imports
-import pyrvapi
-import pyrvapi_ext.parsers
 
 #  application imports
 from pycofe.dtypes import dtype_template
