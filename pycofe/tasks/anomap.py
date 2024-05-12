@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.04.24   <--  Date of Last Modification.
+#    12.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,11 +26,9 @@
 
 #  python native imports
 import os
-import shutil
 
 #  application imports
 from  pycofe.tasks  import basic
-from  pycofe.dtypes import dtype_template
 
 
 # ============================================================================
@@ -108,138 +106,60 @@ class AnoMap(basic.TaskDriver):
                 phaser_mtz = fname
 
         if phaser_mtz and anomap_mtz:
-            
-            self.putTitle ( "Calculated anomalous map" )
 
-            view_mtz = os.path.join ( self.outputDir(),self.getOFName(".anom.mtz") )
+            output_mtz = os.path.join ( self.outputDir(),self.getOFName(".anom.mtz") )
             self.makeMTZ ( [
                 { "path"   : phaser_mtz,
                   "labin"  : ["all"],
                   "labout" : ["all"]
                 },{
+                  "path"   : istruct.getMTZFilePath ( self.inputDir() ),
+                  "labin"  : ["DELFWT","PHDELWT"],
+                  "labout" : ["DELFWT","PHDELWT"]
+                },{
                   "path"   : anomap_mtz,
                   "labin"  : ["FLLG_AX","PHLLG_AX"],
                   "labout" : ["FAN","PHAN"]
-                  # "labout" : ["DELFWT","PHDELWT"]
                 }
-            ],view_mtz )
+            ],output_mtz )
 
-            view_pdb = os.path.join ( self.outputDir(),self.getXYZOFName() )
-            shutil.copyfile ( xyzin,view_pdb )
+            struct = self.registerStructure ( 
+                            istruct.getMMCIFFilePath(self.inputDir()),
+                            istruct.getPDBFilePath(self.inputDir()),
+                            None,
+                            output_mtz,
+                            libPath    = istruct.getLibFilePath(self.inputDir()),
+                            leadKey    = istruct.leadKey,
+                            map_labels = "FWT,PHWT,FAN,PHAN",
+                            refiner    = istruct.refiner 
+                        )
 
-            struct_mtz = view_mtz  #self.getMTZOFName()
-            # self.makeMTZ ( [
-            #     { "path"   : phaser_mtz,
-            #       "labin"  : ["all"],
-            #       "labout" : ["all"]
-            #     },{
-            #     { "path"   : istruct.getMTZFilePath ( self.inputDir() ),
-            #       "labin"  : ["all"],
-            #       "labout" : ["all"]
-            #     },{
-            #       "path"   : anomap_mtz,
-            #       "labin"  : ["FLLG_AX","PHLLG_AX"],
-            #       "labout" : ["FLLG_AX","PHLLG_AX"]
-            #       # "labout" : ["DELFWT","PHDELWT"]
-            #     }
-            # ],view_mtz )
+            if struct:
+                struct.copy_refkeys_parameters ( istruct )
+                struct.copyAssociations ( istruct )
+                struct.copySubtype      ( istruct )
+                struct.putCootMeta      ( self.job_id )
+                struct.makeXYZSubtype   ()
+                struct.copyLabels       ( istruct )
+                struct.copyLigands      ( istruct )
+                struct.FAN  = "FAN"
+                struct.PHAN = "PHAN"
 
-            substructure = self.registerStructure (
-                                None,
-                                None,
-                                None,
-                                anomap_mtz,
-                                leadKey    = 2,
-                                copy_files = False,
-                                map_labels = "FLLG_AX,PHLLG_AX",
-                                refiner    = "refmac" 
-                            )
+                # create output data widget in the report page
+                self.putTitle ( "Output Structure" )
+                self.putStructureWidget ( "structure_btn",
+                      "Output Structure and Anomalous Map",struct )
 
-            if substructure:
-                substructure.copyAssociations   ( istruct )
-                substructure.addDataAssociation ( hkl.dataId     )
-                substructure.addDataAssociation ( istruct.dataId )  # ???
-                substructure.setSubstrSubtype() # substructure
-                substructure.addPhasesSubtype()
-
-                self.putStructureWidget ( "structure_btn","Anomalous map",
-                                          substructure )
-                
-                self.putMessage ( "&nbsp;" )
-                grid_id = self.getWidgetId ( "grid" )
-                self.putGrid ( grid_id )
-                # self.putMessage1 ( grid_id,"<b>Structure and maps:</b>&nbsp;",0,0 )
-                self.putUglyMolButton ( view_pdb,view_mtz,"FWT,PHWT,FAN,PHAN",
-                                        "Structure and maps",
-                                        "View structure and maps",grid_id,0,0 )
-                # self.putDownloadButton ( view_mtz,"Export maps",grid_id,0,2 )
-
-                # revision.setStructureData ( substructure )
-                revision.Substructure = substructure
-                revision.addSubtypes  ( substructure.subtype )
-                istruct.setMTZFile    ( struct_mtz )
-                self.registerRevision ( revision   )
+                # update structure revision
+                revision.setStructureData ( struct   )
+                self.registerRevision     ( revision )
 
                 have_results = True
                 summary      = "anomalous map calculated" 
 
             else:
-                self.putMessage ( "<i>Substructure could not be " +\
+                self.putMessage ( "<i>Structure could not be " +\
                                   "formed (possible bug)</i>" )
-
-
-
-            # view_mtz = os.path.join ( self.outputDir(),"view.mtz" )
-            # shutil.copyfile ( output_mtz,view_mtz )
-            # view_pdb = os.path.join ( self.outputDir(),"view.mmcif" )
-            # shutil.copyfile ( xyzin,view_pdb )
-
-            # grid_id = self.getWidgetId ( "grid" )
-            # self.putGrid ( grid_id )
-            # self.putMessage1 ( grid_id,"<b>Structure and maps:</b>&nbsp;",0,0 )
-            # self.putUglyMolButton ( view_pdb,view_mtz,"FWT,PHWT,FAN,PHAN",
-            #                         "Structure and maps",
-            #                         "View",grid_id,0,1 )
-            # self.putDownloadButton ( view_mtz,"Export maps",grid_id,0,2 )
-
-            # struct = self.registerStructure ( 
-            #                 istruct.getMMCIFFilePath(self.inputDir()),
-            #                 istruct.getPDBFilePath(self.inputDir()),
-            #                 None,
-            #                 output_mtz,
-            #                 libPath    = istruct.getLibFilePath(self.inputDir()),
-            #                 leadKey    = istruct.leadKey,
-            #                 # map_labels = "FWT,PHWT,FLLG_AX,PHLLG_AX",
-            #                 refiner    = istruct.refiner 
-            #             )
-
-            # if struct:
-            #     struct.copy_refkeys_parameters ( istruct )
-            #     struct.copyAssociations ( istruct )
-            #     struct.copySubtype      ( istruct )
-            #     struct.putCootMeta      ( self.job_id )
-            #     struct.makeXYZSubtype   ()
-            #     struct.copyLabels       ( istruct )
-            #     struct.copyLigands      ( istruct )
-            #     # struct.FAN  = "FLLG_AX"
-            #     # struct.PHAN = "PHLLG_AX"
-
-            #     # create output data widget in the report page
-            #     self.putTitle ( "Output Structure" )
-            #     self.putStructureWidget ( "structure_btn","Output Structure",struct )
-            #     self.putMessage ( "<i style=\"color:darkblue\">" +\
-            #         "&nbsp;<p>NOTE: for visualisation purposes, anomalous map " +\
-            #         "is presented as difference map in this task's output. To " +\
-            #         "use the difference map, branch from task where it was "    +\
-            #         "calculated.</i>"
-            #     )
-
-            #     # update structure revision
-            #     revision.setStructureData ( struct   )
-            #     self.registerRevision     ( revision )
-
-            #     have_results = True
-            #     summary      = "anomalous map calculated" 
 
         # this will go in the project tree line
         self.generic_parser_summary["anomap"] = {
