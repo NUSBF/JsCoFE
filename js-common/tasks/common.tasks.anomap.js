@@ -75,7 +75,7 @@ TaskAnoMap.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['omit','map'] );
 }
 
-TaskAnoMap.prototype.cleanJobDir = function ( keywords )  {}
+// TaskAnoMap.prototype.cleanJobDir = function ( keywords )  {}
 
 if (!__template)  {
   // client side
