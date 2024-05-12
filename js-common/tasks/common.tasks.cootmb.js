@@ -110,6 +110,8 @@ let version = 0;
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// TaskCootMB.prototype.cleanJobDir = function ( keywords )  {}
+
 function CootMBHotButton()  {
   return {
     'task_name' : 'TaskCootMB',
@@ -134,11 +136,11 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var path  = require('path');
+  const path  = require('path');
 
-  var conf  = require('../../js-server/server.configuration');
-  var prj   = require('../../js-server/server.fe.projects');
-  var utils = require('../../js-server/server.utils');
+  const conf  = require('../../js-server/server.configuration');
+  const prj   = require('../../js-server/server.fe.projects');
+  const utils = require('../../js-server/server.utils');
 
   TaskCootMB.prototype.makeInputData = function ( loginData,jobDir )  {
 
