@@ -36,7 +36,6 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
     if (task)  {
       startRSViewer ( title,task.getProjectURL(jobId,rlpFilePath),
                             task.getProjectURL(jobId,mapFilePath) );
-      //startRSViewer ( title,rlpFilePath,mapFilePath );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
                        'please contact ' + appName() + ' developer.', 'msg_error' );
