@@ -8303,7 +8303,7 @@ var ReciprocalViewer = /*@__PURE__*/(function (Viewer) {
 
   ReciprocalViewer.prototype.load_data = function load_data (url, options) {
     if ( options === void 0 ) options = {};
-
+// alert (options.callback)
     var self = this;
     this.load_file(url, {binary: false, progress: true}, function (req) {
       var ok = self.load_from_string(req.responseText, options);
@@ -8327,8 +8327,10 @@ var ReciprocalViewer = /*@__PURE__*/(function (Viewer) {
     for (var i = 1; i <= last_group; i++) {
       SPOT_SEL.push('#' + (i + 1));
     }
-    this.set_axes();
-    this.set_points(this.data);
+    try {
+      this.set_axes();
+      this.set_points(this.data);
+    } catch(e) {}
     this.camera.zoom = 0.5 * (this.camera.top - this.camera.bottom);
     // default scale is set to 100 - same as default_camera_pos
     var d = 1.01 * this.max_dist;
