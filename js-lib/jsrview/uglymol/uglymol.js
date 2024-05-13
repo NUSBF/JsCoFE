@@ -8403,13 +8403,15 @@ var ReciprocalViewer = /*@__PURE__*/(function (Viewer) {
   };
 
   ReciprocalViewer.prototype.colorize_by_id = function colorize_by_id (color_arr, group_id) {
-    var palette = this.config.colors.lattices;
-    for (var i = 0; i < group_id.length; i++) {
-      var c = palette[(group_id[i] + 1) % 4];
-      color_arr[3*i] = c.r;
-      color_arr[3*i+1] = c.g;
-      color_arr[3*i+2] = c.b;
-    }
+    try {
+      var palette = this.config.colors.lattices;
+      for (var i = 0; i < group_id.length; i++) {
+        var c = palette[(group_id[i] + 1) % 4];
+        color_arr[3*i] = c.r;
+        color_arr[3*i+1] = c.g;
+        color_arr[3*i+2] = c.b;
+      }
+    } catch(e) {}
   };
 
   ReciprocalViewer.prototype.mousewheel_action = function mousewheel_action (delta) {
