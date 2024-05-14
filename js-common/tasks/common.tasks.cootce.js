@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    12.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,7 +98,7 @@ TaskCootCE.prototype.taskDescription = function()  {
 TaskCootCE.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskCootCE.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -112,7 +112,7 @@ TaskCootCE.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskCootCE.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.coot_ce', jobManager, jobDir, this.id];
