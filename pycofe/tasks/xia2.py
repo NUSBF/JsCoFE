@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
@@ -155,11 +153,16 @@ class Xia2(basic.TaskDriver):
         if have_xds:
             #environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
             environ["PATH"] = os.environ["XDS_home"] + ":" + os.environ["PATH"]
-        #
-        # if sys.platform.startswith("win"):
-        #     rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )
-        # else:
+
+        # put progress spinner
+        rvrow0 = self.rvrow
+        self.putWaitMessageLF ( "Image processing in progress ..." )
+
         rc = self.runApp ( "xia2",cmd,logType="Main",env=environ )
+
+        # remove progress spinner
+        self.putMessage1 ( self.report_page_id()," ",rvrow0 )
+
 
         if pipeline=="2d":
             self.addCitations ( ["dials","mosflm","aimless"] )
