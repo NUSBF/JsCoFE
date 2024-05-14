@@ -26,12 +26,9 @@
 
 #  python native imports
 import os
-# import sys
-# import shutil
 
 #  ccp4-python imports
 import pyrvapi
-#import pyrvapi_ext.parsers
 import gemmi
 
 #  application imports

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.04.24   <--  Date of Last Modification.
+#    12.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,6 @@ import os
 
 #  application imports
 from  pycofe.tasks  import basic
-from  pycofe.dtypes import dtype_template
 
 
 # ============================================================================
@@ -62,6 +61,7 @@ class AnoMap(basic.TaskDriver):
         if not wavelength:
             wavelength = hkl.getWavelength()
 
+        xyzin    = istruct.getPDBFilePath ( self.inputDir() )
         keywords = [
             "MODE EP_SAD",
             "ROOT \""     + self.outputFName + "\"",
@@ -77,8 +77,7 @@ class AnoMap(basic.TaskDriver):
             "LLGCOMPLETE SCATTERER AX",
             "LLGCOMPLETE NCYCLE 0",
             "LLGMAPS ON",
-            "PARTIAL PDB " + istruct.getPDBFilePath(self.inputDir()) +\
-                             " RMS 0.8",
+            "PARTIAL PDB " + xyzin + " RMS 0.8",
             "OUTPUT LEVEL SUMMARY",
             "END"
         ]    
@@ -108,15 +107,19 @@ class AnoMap(basic.TaskDriver):
 
         if phaser_mtz and anomap_mtz:
 
-            output_mtz = self.getMTZOFName()
+            output_mtz = os.path.join ( self.outputDir(),self.getOFName(".anom.mtz") )
             self.makeMTZ ( [
                 { "path"   : phaser_mtz,
                   "labin"  : ["all"],
                   "labout" : ["all"]
                 },{
+                  "path"   : istruct.getMTZFilePath ( self.inputDir() ),
+                  "labin"  : ["DELFWT","PHDELWT"],
+                  "labout" : ["DELFWT","PHDELWT"]
+                },{
                   "path"   : anomap_mtz,
                   "labin"  : ["FLLG_AX","PHLLG_AX"],
-                  "labout" : ["DELFWT","PHDELWT"]
+                  "labout" : ["FAN","PHAN"]
                 }
             ],output_mtz )
 
@@ -127,7 +130,7 @@ class AnoMap(basic.TaskDriver):
                             output_mtz,
                             libPath    = istruct.getLibFilePath(self.inputDir()),
                             leadKey    = istruct.leadKey,
-                            # map_labels = "FWT,PHWT,FLLG_AX,PHLLG_AX",
+                            map_labels = "FWT,PHWT,FAN,PHAN",
                             refiner    = istruct.refiner 
                         )
 
@@ -139,18 +142,13 @@ class AnoMap(basic.TaskDriver):
                 struct.makeXYZSubtype   ()
                 struct.copyLabels       ( istruct )
                 struct.copyLigands      ( istruct )
-                # struct.FAN  = "FLLG_AX"
-                # struct.PHAN = "PHLLG_AX"
+                struct.FAN  = "FAN"
+                struct.PHAN = "PHAN"
 
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
-                self.putStructureWidget ( "structure_btn","Output Structure",struct )
-                self.putMessage ( "<i style=\"color:darkblue\">" +\
-                    "&nbsp;<p>NOTE: for visualisation purposes, anomalous map " +\
-                    "is presented as difference map in this task's output. To " +\
-                    "use the difference map, branch from task where it was "    +\
-                    "calculated.</i>"
-                )
+                self.putStructureWidget ( "structure_btn",
+                      "Output Structure and Anomalous Map",struct )
 
                 # update structure revision
                 revision.setStructureData ( struct   )
@@ -158,6 +156,10 @@ class AnoMap(basic.TaskDriver):
 
                 have_results = True
                 summary      = "anomalous map calculated" 
+
+            else:
+                self.putMessage ( "<i>Structure could not be " +\
+                                  "formed (possible bug)</i>" )
 
         # this will go in the project tree line
         self.generic_parser_summary["anomap"] = {
