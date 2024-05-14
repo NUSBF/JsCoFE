@@ -137,8 +137,8 @@ class OmitMap(basic.TaskDriver):
             self.putGrid ( grid_id )
             self.putMessage1 ( grid_id,"<b>Omit map:</b>&nbsp;",0,0 )
             if format=="CCP4":
-                self.putUglyMolButton ( "","",mapout_fpath, # structure.getDMapFilePath(self.outputDir()),
-                                        mapout,"Display",grid_id,0,1 )
+                self.putUglyMolButton_map ( "","",mapout_fpath, # structure.getDMapFilePath(self.outputDir()),
+                                            mapout,"View",grid_id,0,1 )
             self.putDownloadButton ( mapout_fpath,"Export",grid_id,0,2 )
             sfo = float(scale_fobs)
             sfc = float(scale_fc)

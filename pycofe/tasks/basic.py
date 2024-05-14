@@ -1750,13 +1750,23 @@ class TaskDriver(object):
         return
 
 
-    def putUglyMolButton ( self,xyzFilePath,mapFilePath,dmapFilePath,title,
+    def putUglyMolButton ( self,xyzFilePath,mtzFilePath,mapLabels,title,
                                 text_btn,gridId,row,col ):
-        #  currently this function is used only with patterson plot, so mtz is
-        #  not relevant
         buttonId = self.getWidgetId ( "uglymol" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
                     "window.parent.rvapi_umviewer(" + self.job_id +\
+                    ",'" + title + "','" + xyzFilePath + "','" +\
+                    mtzFilePath  + "','" + mapLabels   + "')",
+                    False,gridId, row,col,1,1 )
+        self.addCitations ( ['uglymol'] )
+        return
+
+
+    def putUglyMolButton_map ( self,xyzFilePath,mapFilePath,dmapFilePath,title,
+                                    text_btn,gridId,row,col ):
+        buttonId = self.getWidgetId ( "uglymol" )
+        pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
+                    "window.parent.rvapi_umviewer_map(" + self.job_id +\
                     ",'" + title + "','" + xyzFilePath + "','" +\
                     mapFilePath + "','" + dmapFilePath + "')",
                     False,gridId, row,col,1,1 )
