@@ -1,6 +1,21 @@
 ======================
 CCP4 Cloud Version Log
 ======================
+**Version 1.7.020** 
+    *Released with CCP4 8.0.020*
+
+    #. added new keywords for slice and slice'n'dice + added new parameter for Slice'N'Dice task: chose the MR program
+    
+    #. Task list update
+    
+    #. Dark mode activated and fixed shadows
+
+    #. Changed default Phaser parameters
+
+    #. Simbad database handling
+
+    #. moved to dui2
+
 
 **Version 1.7.019** 
 
@@ -44,6 +59,7 @@ CCP4 Cloud Version Log
        access
 
     #. Many cosmetic improvements and small bug fixes
+    
 
 **Version 1.7.018** 
 

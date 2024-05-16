@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    04.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -46,7 +46,7 @@ function fileExists ( fpath )  {
 
 function isSymbolicLink ( fpath )  {
   try {
-    var stat = fs.lstatSync(fpath); // || fs.lstatSync(path);
+    let stat = fs.lstatSync(fpath); // || fs.lstatSync(path);
     if (stat && stat.isSymbolicLink())
       return stat;
     return null;
@@ -57,7 +57,7 @@ function isSymbolicLink ( fpath )  {
 
 function dirExists ( fpath )  {
   try {
-    var stat = fs.statSync(fpath);
+    let stat = fs.statSync(fpath);
     if (stat)
       return stat.isDirectory();
     return null;
@@ -141,7 +141,7 @@ function readClass ( fpath ) {  // same as object but with class functions
 /*
 function writeString ( path,data_string )  {
 
-  var backup = null;
+  let backup = null;
   try {
     if (fs.statSync(path))  {
       backup = path + '~';
@@ -152,7 +152,7 @@ function writeString ( path,data_string )  {
     return false;
   }
 
-  var ok = true;
+  let ok = true;
   try {
     fs.writeFileSync ( path,data_string );
     //return true;
@@ -205,7 +205,7 @@ function appendString ( fpath,data_string )  {
 /*
 function writeObject ( path,dataObject )  {
 
-  var json_str = '';
+  let json_str = '';
   try {
     json_str = JSON.stringify ( dataObject,null,2 );
   } catch (e) {
@@ -213,7 +213,7 @@ function writeObject ( path,dataObject )  {
     return false;
   }
 
-  var backup = null;
+  let backup = null;
   try {
     if (fs.statSync(path))  {
       backup = path + '~';
@@ -224,7 +224,7 @@ function writeObject ( path,dataObject )  {
     return false;
   }
 
-  var ok = true;
+  let ok = true;
   try {
     fs.writeFileSync ( path,json_str );
     //return true;
@@ -251,7 +251,7 @@ function writeObject ( path,dataObject )  {
 
 function writeObject ( fpath,dataObject )  {
 
-  var json_str = '';
+  let json_str = '';
   try {
     // json_str = JSON.stringify ( dataObject );
     json_str = JSON.stringify ( dataObject,null,2 );
@@ -308,8 +308,8 @@ function moveFile ( old_path,new_path )  {
 //    fs.renameSync ( old_path,new_path );
     return true;
   } catch (e)  {
-    var old_exist = '(non-existing)';
-    var new_exist = '(non-existing)';
+    let old_exist = '(non-existing)';
+    let new_exist = '(non-existing)';
     if (fileExists(old_path))  old_exist = '(existing)';
     if (fileExists(new_path))  new_exist = '(existing)';
     log.error ( 41,'cannot move ' + old_exist + ' file ' + old_path +
@@ -335,8 +335,8 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
     fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
     return true;
   } catch (e)  {
-    var old_exist = '(non-existing)';
-    var new_exist = '(non-existing)';
+    let old_exist = '(non-existing)';
+    let new_exist = '(non-existing)';
     if (fileExists(old_path))  old_exist = '(existing)';
     if (fileExists(new_path))  new_exist = '(existing)';
     log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
@@ -358,8 +358,8 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   }
   fs.move ( old_path,new_path,{'overwrite':overwrite_bool},function(err){
     if (err)  {
-      var old_exist = '(non-existing)';
-      var new_exist = '(non-existing)';
+      let old_exist = '(non-existing)';
+      let new_exist = '(non-existing)';
       if (fileExists(old_path))  old_exist = '(existing)';
       if (fileExists(new_path))  new_exist = '(existing)';
       log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
@@ -456,8 +456,8 @@ function mkPath ( dirPath )  {
 
 
 function removePath ( dir_path )  {
-var rc   = true;
-var stat = fileExists(dir_path);
+let rc   = true;
+let stat = fileExists(dir_path);
 
 //  removeLock ( dir_path );
 
@@ -498,7 +498,7 @@ var stat = fileExists(dir_path);
 
 // function removeLockedPath ( dir_path ) {
 //   if (fileExists(dir_path))  {
-//     var n = checkLock ( dir_path );
+//     let n = checkLock ( dir_path );
 //     if (n<=0)
 //       removePath ( dir_path );
 //     else  {
@@ -513,7 +513,7 @@ var stat = fileExists(dir_path);
 
 function cleanDir ( dir_path ) {
   // removes everything in the directory, but does not remove it
-  var rc = true;
+  let rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       let curPath = path.join ( dir_path,file );
@@ -541,7 +541,7 @@ function cleanDir ( dir_path ) {
 function cleanDirExt ( dir_path,fext )  {
   // removes all files with given extension recursively in the directory,
   // but does not remove any directories, even if they are empty
-  var rc = true;
+  let rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       let curPath = path.join ( dir_path,file );
@@ -568,7 +568,7 @@ function cleanDirExt ( dir_path,fext )  {
 
 function removeSymLinks ( dir_path )  {
 // removes all symbolic links recursively in the directory
-  var rc = true;
+  let rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       let curPath = path.join ( dir_path,file );
@@ -580,7 +580,7 @@ function removeSymLinks ( dir_path )  {
         removeSymLinks ( curPath );
       } else if (curstat.isSymbolicLink())
         try {
-          var fpath = fs.readlinkSync( curPath );
+          let fpath = fs.readlinkSync( curPath );
           fs.unlinkSync ( curPath );
           fs.copyFileSync ( fpath, curPath );
         } catch (e)  {
@@ -596,7 +596,7 @@ function removeSymLinks ( dir_path )  {
 
 function getDirectorySize ( dir_path )  {
   try {
-    var size = 0.0;
+    let size = 0.0;
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
         let curPath = path.join ( dir_path,file );
@@ -624,7 +624,7 @@ function searchTree ( dir_path,filename,matchKey ) {
 // name, if found, or empty list.
 //  matchKey = 0 :   exact match
 //             1 :   match 'filename' as leading part of file name
-  var filepaths = [];
+  let filepaths = [];
   try {
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
@@ -651,7 +651,7 @@ function walk(dir, callback) {
 	fs.readdir(dir, function(err, files) {
 		if (err) throw err;
 		files.forEach(function(file) {
-			var filepath = path.join(dir, file);
+			let filepath = path.join(dir, file);
 			fs.stat(filepath, function(err,stats) {
 				if (stats.isDirectory()) {
 					walk(filepath, callback);
@@ -666,7 +666,7 @@ function walk(dir, callback) {
 
 
 function removeFiles ( dir_path,extList ) {
-var rc = true;
+let rc = true;
 
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
@@ -720,9 +720,9 @@ function killProcess ( pid )  {
 // ===========================================================================
 
 function writeJobReportMessage ( jobDirPath, message, updating_bool )  {
-var fpath = path.join ( jobDirPath,task_t.jobReportDirName,
+let fpath = path.join ( jobDirPath,task_t.jobReportDirName,
                                    task_t.jobReportHTMLName );
-var html  = '<!DOCTYPE html>\n<html><link rel="stylesheet" type="text/css" ' +
+let html  = '<!DOCTYPE html>\n<html><link rel="stylesheet" type="text/css" ' +
                         'href="jsrview/css/jsrview.css">';
 
   if (updating_bool)
@@ -747,17 +747,17 @@ function removeJobSignal ( jobDir ) {
 }
 
 function writeJobSignal ( jobDir,signal_name,signal_message,signal_code )  {
-  var line = signal_name;
+  let line = signal_name;
   if (signal_message.length>0)
     line += ' ' + signal_message;
   writeString ( path.join(jobDir,signal_file_name),line + '\n' + signal_code );
 }
 
 function getJobSignalCode ( jobDir )  {
-var code   = 0;
-var signal = readString ( path.join(jobDir,signal_file_name) );
+let code   = 0;
+let signal = readString ( path.join(jobDir,signal_file_name) );
   if (signal)  {
-    var sigl = signal.split('\n');
+    let sigl = signal.split('\n');
     if (sigl.length>1)  code = parseInt(sigl[sigl.length-1]);
                   else  code = 300;
   } else
@@ -767,7 +767,7 @@ var signal = readString ( path.join(jobDir,signal_file_name) );
 
 // ===========================================================================
 
-// var lock_map = {};
+// let lock_map = {};
 //
 // function setLock ( lockName,value )  {
 //   lock_map[lockName] = true;
@@ -788,13 +788,13 @@ var signal = readString ( path.join(jobDir,signal_file_name) );
 
 
 function clearRVAPIreport ( jobDirPath,taskFileName )  {
-var fpath = path.join ( jobDirPath,task_t.jobReportDirName,taskFileName );
+let fpath = path.join ( jobDirPath,task_t.jobReportDirName,taskFileName );
   writeString ( fpath,'TASK_STAMP:::1:::1:::RELOAD;;;\n' );
 }
 
 
 function getMIMEType ( path )  {
-var mimeType = '';
+let mimeType = '';
 
   // mime types from
   //    https://www.sitepoint.com/web-foundations/mime-types-complete-list/
@@ -828,8 +828,8 @@ var mimeType = '';
 
 function capData ( data,n )  {
   if (data.length>n)  {
-    var dstr  = data.toString();
-    var sdata = '[[[[]]]]\n' +
+    let dstr  = data.toString();
+    let sdata = '[[[[]]]]\n' +
                 dstr.substring(0,dstr.indexOf('\n',n/2))  +
   '\n\n' +
   ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
@@ -860,7 +860,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
                         persistance-1,nofile_callback );
           },50 );
         } else  {
-          var rc = true;
+          let rc = true;
           if (nofile_callback)
             rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
           else if (deleteOnDone)
@@ -884,7 +884,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
             //'Content-Disposition' : 'inline'
         });
 
-        var fReadStream = fs.createReadStream ( fpath );
+        let fReadStream = fs.createReadStream ( fpath );
         fReadStream.on ( 'end',function(){
           server_response.end();
           if (deleteOnDone)
@@ -909,7 +909,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
           server_response.write ( '[[[[]]]]\n' );
 
-          var inlet =
+          let inlet =
             '\n\n' +
             ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
             ' ************************************************************************\n' +
@@ -918,19 +918,19 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
             ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
             '\n';
 
-          var ncut1 = (capSize - inlet.length)/2;
-          var ncut2 = stats.size - ncut1;
-          var nsent = 0;
+          let ncut1 = (capSize - inlet.length)/2;
+          let ncut2 = stats.size - ncut1;
+          let nsent = 0;
           fReadStream.on ( 'data',function(chunk){
-            var key = 0;  // do not write by default
-            var ns  = nsent + chunk.length;
-            var s;
+            let key = 0;  // do not write by default
+            let ns  = nsent + chunk.length;
+            let s;
             if (nsent<ncut1)  {
               if (ns<ncut1)
                 key = 1;  // write the whole chunk
               else if (ns>ncut1)  {
                 key = 2;  // write modified data from s
-                var cstr = chunk.toString();
+                let cstr = chunk.toString();
                 s   = cstr.substring(0,cstr.indexOf('\n',cstr.length-(ns-ncut1))) + inlet;
                 if (ns>ncut2)  {
                   cstr = cstr.slice ( ncut2-ns );
@@ -940,7 +940,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
             } else if (nsent>=ncut1)  {
               if (ns>ncut2)  {
                 key = 2;
-                var cstr = chunk.toString().slice(ncut2-ns);
+                let cstr = chunk.toString().slice(ncut2-ns);
                 s   = cstr.substr(cstr.indexOf('\n'));
               }
             } else  {

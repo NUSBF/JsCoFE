@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    11.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,20 +58,20 @@ class Slice(basic.TaskDriver):
         self.fixBFactors ( [xyz] )
 
         cmd = [
-            "-xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
-            "-min_splits",nsplits,
-            "-max_splits",nsplits,
+            "--xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
+            "--min_splits",nsplits,
+            "--max_splits",nsplits,
         ]
 
         if xyz.BF_correction=="alphafold-suggested":
-            cmd += ['-xyz_source', 'alphafold']
+            cmd += ['--bfactor_column', 'plddt']
         elif xyz.BF_correction=="rosetta-suggested":
-            cmd += ['-xyz_source', 'rosetta']
+            cmd += ['--bfactor_column', 'rms']
         # else:
         #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
         if int(plddt_threshold)!=0:
-            cmd += ["-plddt_threshold",plddt_threshold]
+            cmd += ["--plddt_threshold",plddt_threshold]
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 

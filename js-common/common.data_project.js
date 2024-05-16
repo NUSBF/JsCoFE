@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.01.24   <--  Date of Last Modification.
+ *    06.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -103,6 +103,7 @@ function ProjectDesc()  {
   this._type = 'ProjectDesc';
   this.name  = '';    // short project ID
   this.title = '';    // descriptive title
+  this.ccp4cloud_version = '';  // CCP4 Cloud version
 
   this.owner = {
     login  : '',   // login where project was created

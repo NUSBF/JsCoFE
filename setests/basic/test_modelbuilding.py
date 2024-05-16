@@ -94,7 +94,7 @@ def startBuccaneer(driver):
         pass
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
         time.sleep(1)
@@ -141,7 +141,7 @@ def startCCP4Build(driver):
         pass
         
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
         time.sleep(1)
@@ -193,7 +193,7 @@ def startModelcraft(driver):
         pass
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
         time.sleep(3)
@@ -353,8 +353,7 @@ def test_modelBuildingBasic(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
@@ -372,10 +371,10 @@ def test_modelBuildingBasic(browser,
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         time.sleep(6)
         startModelcraft(d.driver) # 7
-
-        verifyCCP4Build(d.driver, 900, '0005', 0.25, 0.28) # run takes long
-        # verifyBuccaneer(d.driver, 10, '0005', 0.28, 0.3) # 
         verifyModelcraft(d.driver, 900, '0006', 0.2, 0.255) # 
+        verifyCCP4Build(d.driver, 1000, '0005', 0.25, 0.28) # run takes long
+        # verifyBuccaneer(d.driver, 10, '0005', 0.28, 0.3) # 
+        
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()

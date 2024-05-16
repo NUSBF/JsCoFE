@@ -75,10 +75,10 @@ def putPattersonMap ( body,            # reference on Basic class
     mapfpath = os.path.join ( dirPath,mapfname )
     os.rename ( mapfname,mapfpath )
 
-    body.putUglyMolButton ( "",mapfpath,"",
-                            "Patterson map for " + hkl.dname,
-                            "View Patterson map",
-                            holderId,row,col )
+    body.putUglyMolButton_map ( "",mapfpath,"",
+                                "Patterson map for " + hkl.dname,
+                                "View Patterson map",
+                                holderId,row,col )
 
     pyrvapi.rvapi_flush()
 

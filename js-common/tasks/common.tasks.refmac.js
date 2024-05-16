@@ -676,7 +676,7 @@ TaskRefmac.prototype.canShare = function()  {
   return ['xyz','mtz','lib'];
 }
 
-//TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
+TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function RefmacHotButton()  {

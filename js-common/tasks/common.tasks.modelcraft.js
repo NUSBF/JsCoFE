@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    13.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -241,7 +241,7 @@ TaskModelCraft.prototype.icon           = function() { return 'task_modelcraft';
 TaskModelCraft.prototype.clipboard_name = function()  { return '"Modelcraft"';   }
 
 TaskModelCraft.prototype.desc_title     = function()  {
-  return 'automatic model building after MR or Experimental Phasing';
+  return 'automatic model building of polypeptides and polynucleotides';
 }
 
 // TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}

@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -335,53 +336,52 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="refinement-using-refmac5-part-2-twin-refinement">
-<h1 id="doc-tutorial-t4-002--page-root"><span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement<a class="headerlink" href="#doc-tutorial-t4-002--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-tutorial-t4-002--page-root"><span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement<a class="headerlink" href="#doc-tutorial-t4-002--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Written by: Rob Nicholls</p>
-<section id="preliminary-notes">
-<h2 id="preliminary-notes"><span class="section-number">10.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="preliminary-notes"><span class="section-number">10.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</p></li>
+<li>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</li>
 </ul>
 <ul class="simple">
-<li><dl class="simple">
-<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha simple">
-<li><p>The structure is already phased and built</p></li>
-<li><p>Protein sequence is not imported (and not needed)</p></li>
-<li><p>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</p></li>
+<li><dl class="first docutils">
+<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha">
+<li>The structure is already phased and built</li>
+<li>Protein sequence is not imported (and not needed)</li>
+<li>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</li>
 </ol>
 </dd>
 </dl>
 </li>
 </ul>
-</section>
-<section id="tutorial">
-<h2 id="tutorial"><span class="section-number">10.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="tutorial"><span class="section-number">10.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span> <span class="pre">Reflection</span> <span class="pre">data</span> <span class="pre">(1irm.mtz),</span> <span class="pre">Phases</span> <span class="pre">(1irm.mtz)</span> <span class="pre">and</span> <span class="pre">Atomic</span> <span class="pre">coordinates</span> <span class="pre">(1irm.pdb)</span> <span class="pre">are</span> <span class="pre">already</span> <span class="pre">imported</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">project</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span> <span class="pre">Perform</span> <span class="pre">model</span> <span class="pre">refinement</span> <span class="pre">twice</span> <span class="pre">–</span> <span class="pre">first</span> <span class="pre">using</span> <span class="pre">default</span> <span class="pre">settings,</span> <span class="pre">and</span> <span class="pre">then</span> <span class="pre">assuming</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">data</span> <span class="pre">are</span> <span class="pre">twinned</span></code></p>
 <ul class="simple">
-<li><p>Add a follow-on job, and choose <strong>Refinement with Refmac</strong> from the task list. Provide a meaningful job description, such as: “Refine with default settings”, run the job, and close the dialog window.</p></li>
-<li><p>Clone the refinement job. Change the <strong>Refine using</strong> field to <strong>Mean Amplitudes assuming twinning</strong>. Provide a meaningful job description, such as: “Refine assuming twinning”, and run the job. Leave this dialog window open.</p></li>
+<li>Add a follow-on job, and choose <strong>Refinement with Refmac</strong> from the task list. Provide a meaningful job description, such as: “Refine with default settings”, run the job, and close the dialog window.</li>
+<li>Clone the refinement job. Change the <strong>Refine using</strong> field to <strong>Mean Amplitudes assuming twinning</strong>. Provide a meaningful job description, such as: “Refine assuming twinning”, and run the job. Leave this dialog window open.</li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span> <span class="pre">Inspect</span> <span class="pre">the</span> <span class="pre">results</span> <span class="pre">of</span> <span class="pre">assuming</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">data</span> <span class="pre">correspond</span> <span class="pre">to</span> <span class="pre">a</span> <span class="pre">twinned</span> <span class="pre">crystal</span></code></p>
 <p>While the job is running, the results page will be updated. Summary information will be displayed in the <strong>Report</strong> tab.</p>
 <p>Twinning information can be found in the REFMAC5 logfile, which is displayed in the <strong>Main Log</strong> tab.</p>
 <ul class="simple">
-<li><p>Once the job is finished, select the <strong>Main Log</strong> tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find, etc.) in order to search for the word <strong>twin</strong> in the log file. Cycle through the results in order to find information about potential twinning in this dataset.</p>
-<ul>
-<li><p>How many potential twin domains could there be, given the space group?</p></li>
-<li><p>How many of the potential twin operators have a sufficiently low Rmerge to imply that twinning is likely?</p></li>
-<li><p>How many of the twin fractions are large enough to justify treating them as twinned for purposes of refinement?</p></li>
-<li><p>How many twin domains are assumed during refinement?</p></li>
+<li>Once the job is finished, select the <strong>Main Log</strong> tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find, etc.) in order to search for the word <strong>twin</strong> in the log file. Cycle through the results in order to find information about potential twinning in this dataset.<ul>
+<li>How many potential twin domains could there be, given the space group?</li>
+<li>How many of the potential twin operators have a sufficiently low Rmerge to imply that twinning is likely?</li>
+<li>How many of the twin fractions are large enough to justify treating them as twinned for purposes of refinement?</li>
+<li>How many twin domains are assumed during refinement?</li>
 </ul>
 </li>
-<li><p>Close the job dialog window, so that you are looking at the main job tree. With both refinement jobs finished, you will see that the final R-factors have been appended to the job titles. Compare the R-factors from the two jobs. Which refinement protocol is more appropriate?</p></li>
-<li><p>Open the results pages from the two jobs, and compare the initial R-factors. Why are they different? Is there any evidence to suggest whether or not the model was previously refined assuming twinning?</p></li>
-<li><p>Go back to the main job tree. For each of the two jobs, add a follow-on <strong>Model Building with Coot</strong> job in order to display the post-refinement models and maps in Coot. You should now have two Coot windows open – one corresponding to each of the two refinement runs. Zoom in so that you can see the model and density with more clarity. Is it evident that one of the refinement runs produced a dramatically better model/map?</p></li>
-<li><p>Given the improvement in R-factors when assuming twinning, would you have expected the corresponding map to appear to be of higher quality? In what way is the model better after assuming twinning during refinement?</p></li>
+<li>Close the job dialog window, so that you are looking at the main job tree. With both refinement jobs finished, you will see that the final R-factors have been appended to the job titles. Compare the R-factors from the two jobs. Which refinement protocol is more appropriate?</li>
+<li>Open the results pages from the two jobs, and compare the initial R-factors. Why are they different? Is there any evidence to suggest whether or not the model was previously refined assuming twinning?</li>
+<li>Go back to the main job tree. For each of the two jobs, add a follow-on <strong>Model Building with Coot</strong> job in order to display the post-refinement models and maps in Coot. You should now have two Coot windows open – one corresponding to each of the two refinement runs. Zoom in so that you can see the model and density with more clarity. Is it evident that one of the refinement runs produced a dramatically better model/map?</li>
+<li>Given the improvement in R-factors when assuming twinning, would you have expected the corresponding map to appear to be of higher quality? In what way is the model better after assuming twinning during refinement?</li>
 </ul>
-</section>
-</section>
+
+
 
 
           </article>
@@ -426,7 +426,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

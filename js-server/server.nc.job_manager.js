@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.23   <--  Date of Last Modification.
+ *    04.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -72,7 +72,7 @@ const log = require('./server.log').newLog(11);
 // ===========================================================================
 
 // for debugging
-//var __use_fake_fe_url = false;
+//let __use_fake_fe_url = false;
 
 // ===========================================================================
 
@@ -104,9 +104,9 @@ function NCJobRegister()  {
 
 
 NCJobRegister.prototype.addJob = function ( jobDir )  {
-var job_token     = crypto.randomBytes(20).toString('hex');
-var maxSendTrials = conf.getServerConfig().maxSendTrials;
-var crTime        = Date.now();
+let job_token     = crypto.randomBytes(20).toString('hex');
+let maxSendTrials = conf.getServerConfig().maxSendTrials;
+let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
     jobDir        : jobDir,
@@ -126,8 +126,8 @@ var crTime        = Date.now();
 
 
 NCJobRegister.prototype.addJob1 = function ( jobDir,job_token )  {
-var maxSendTrials = conf.getServerConfig().maxSendTrials;
-var crTime        = Date.now();
+let maxSendTrials = conf.getServerConfig().maxSendTrials;
+let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
     jobDir        : jobDir,
@@ -155,7 +155,7 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     let jobEntry = this.job_map[job_token];
-    var crTime   = Date.now();
+    let crTime   = Date.now();
     // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
     // if (jobEntry && jobEntry.endTime &&
     //      ((jobEntry.jobStatus==task_t.job_code.exiting) ||
@@ -191,8 +191,8 @@ NCJobRegister.prototype.removeJob = function ( job_token )  {
 }
 
 NCJobRegister.prototype.getListOfTokens = function()  {
-  var tlist = '';
-  for (var job_token in this.job_map)  {
+  let tlist = '';
+  for (let job_token in this.job_map)  {
     if (tlist)  tlist += ',';
     tlist += job_token;
   }
@@ -203,42 +203,42 @@ NCJobRegister.prototype.getListOfTokens = function()  {
 /*
 NCJobRegister.prototype.checkJobTokens = function ( token_list )  {
 // returns a list of non-existing tokens
-var tlist = [];
-  for (var i=0;i<token_list.length;i++)
+let tlist = [];
+  for (let i=0;i<token_list.length;i++)
     if (!(token_list[i] in this.job_map))
       tlist.push ( token_list[i] );
   return tlist;
 }
 */
 
-var ncJobRegister = null;
+let ncJobRegister = null;
 
 function readNCJobRegister ( readKey )  {
 
   if (!ncJobRegister)  {
 
-    var fpath = path.join ( conf.getServerConfig().storage,registerFName );
-    var saveRegister = true;
+    let fpath = path.join ( conf.getServerConfig().storage,registerFName );
+    let saveRegister = true;
 
     ncJobRegister = new NCJobRegister();
-    var obj       = utils.readObject ( fpath );
+    let obj       = utils.readObject ( fpath );
 
     if (obj)  {
 
       saveRegister = false;
 
-      for (var key in obj)
+      for (let key in obj)
         ncJobRegister[key] = obj[key];
 
       if (readKey==0)  {
         // set all finished but not sent jobs for sending
-        var maxSendTrials = conf.getServerConfig().maxSendTrials;
-        for (var job_token in ncJobRegister.job_map)
+        let maxSendTrials = conf.getServerConfig().maxSendTrials;
+        for (let job_token in ncJobRegister.job_map)
           if (ncJobRegister.job_map.hasOwnProperty(job_token))  {
             if (ncJobRegister.job_map[job_token].jobStatus==task_t.job_code.exiting) {
               ncJobRegister.job_map[job_token].jobStatus  = task_t.job_code.running;
               ncJobRegister.job_map[job_token].sendTrials = maxSendTrials;
-              var saveRegister = true;
+              let saveRegister = true;
             }
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('endTime'))
               ncJobRegister.job_map[job_token].endTime = null;
@@ -305,8 +305,8 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   // 1. Check for and remove runaway registry entries
 
-  var mask = {};
-  var n    = 0;
+  let mask = {};
+  let n    = 0;
   for (let job_token in ncJobRegister.job_map)
     if (utils.dirExists(ncJobRegister.job_map[job_token].jobDir))  {
       // job directory exists; mask token against deletion
@@ -321,15 +321,15 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   // 2. Check for and remove runaway job directories
 
-  var jobsDir = ncGetJobsDir();
+  let jobsDir = ncGetJobsDir();
   n = 0;
   fs.readdirSync(jobsDir).forEach(function(file,index){
-    var curPath = path.join ( jobsDir,file );
-    var lstat   = fs.lstatSync(curPath);
+    let curPath = path.join ( jobsDir,file );
+    let lstat   = fs.lstatSync(curPath);
     if (lstat.isDirectory()) {
       // check if the directory is found in job registry
-      var dir_found = false;
-      for (var job_token in ncJobRegister.job_map)
+      let dir_found = false;
+      for (let job_token in ncJobRegister.job_map)
         if (ncJobRegister.job_map[job_token].jobDir==curPath)
           dir_found = true;
       if (!dir_found)  {
@@ -345,22 +345,22 @@ function cleanNC ( cleanDeadJobs_bool )  {
   // 3. Check for and remove directories and registry entries for dead jobs
 
   if (cleanDeadJobs_bool)  {
-    // var _day = __day_ms; // 86400000.0;
-    var srvConfig = conf.getServerConfig();
-    var _false_start = srvConfig.jobFalseStart;   // days; should come from config
-    var _timeout     = srvConfig.jobTimeout;      // days; should come from config
-    var _zombie_life = srvConfig.zombieLifeTime;  // days
-    var t = Date.now()/__day_ms;
-    var n = 0;
-    var nzombies = 0;
+    // let _day = __day_ms; // 86400000.0;
+    let srvConfig = conf.getServerConfig();
+    let _false_start = srvConfig.jobFalseStart;   // days; should come from config
+    let _timeout     = srvConfig.jobTimeout;      // days; should come from config
+    let _zombie_life = srvConfig.zombieLifeTime;  // days
+    let t = Date.now()/__day_ms;
+    let n = 0;
+    let nzombies = 0;
     for (let job_token in ncJobRegister.job_map)  {
-      var jobEntry = ncJobRegister.job_map[job_token];
-      var endTime  = ncJobRegister.job_map[job_token].endTime;
+      let jobEntry = ncJobRegister.job_map[job_token];
+      let endTime  = ncJobRegister.job_map[job_token].endTime;
       if (endTime)  {
         endTime /= __day_ms;
         nzombies++;
       }
-      var startTime = t;
+      let startTime = t;
       if ('startTime' in jobEntry)
             startTime = jobEntry.startTime/__day_ms;
       else  jobEntry.startTime = t*__day_ms;
@@ -400,7 +400,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
 function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )  {
 
-var msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
+let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
 
   if (stdout)
     msg += '<p>Catched stdout:<pre>' + stdout + '</pre>';
@@ -435,14 +435,14 @@ function checkJobsOnTimer()  {
 
   ncJobRegister.timer = null;  // indicate that job check loop is suspended
                                // (this is paranoid)
-  var crTime = Date.now();
-  var zombieLifeTime = __day_ms*conf.getServerConfig().zombieLifeTime;
-  var pulseLifeTime  = __day_ms*conf.getServerConfig().pulseLifeTime;
+  let crTime = Date.now();
+  let zombieLifeTime = __day_ms*conf.getServerConfig().zombieLifeTime;
+  let pulseLifeTime  = __day_ms*conf.getServerConfig().pulseLifeTime;
 
   // loop over all entries in job registry
-  for (var job_token in ncJobRegister.job_map)  {
+  for (let job_token in ncJobRegister.job_map)  {
 
-    var jobEntry = ncJobRegister.job_map[job_token];
+    let jobEntry = ncJobRegister.job_map[job_token];
 
     if (jobEntry.endTime && (crTime-jobEntry.endTime>zombieLifeTime))  {
       // job was not sent to FE for long time -- delete it now
@@ -457,11 +457,11 @@ function checkJobsOnTimer()  {
       // process of being sent to FE.
 
       // check that signal file exists: it may be put in by task or job manager
-      var is_signal = utils.jobSignalExists ( jobEntry.jobDir );
+      let is_signal = utils.jobSignalExists ( jobEntry.jobDir );
 
       if ((!is_signal) && (jobEntry.exeType=='SGE'))  {
         // check if job failed on sge level
-        var sge_err_path = path.join(jobEntry.jobDir,'_job.stde');
+        let sge_err_path = path.join(jobEntry.jobDir,'_job.stde');
         if (utils.fileSize(sge_err_path)>0)  {
           writeJobDriverFailureMessage ( 301,
                       utils.readString(path.join(jobEntry.jobDir,'_job.stdo')),
@@ -481,12 +481,12 @@ function checkJobsOnTimer()  {
         // we do not save changed registry here -- this will be done in
         // ncJobFinished() before asynchronous send to FE
         */
-        var code = utils.getJobSignalCode ( jobEntry.jobDir );
+        let code = utils.getJobSignalCode ( jobEntry.jobDir );
         // whichever the code is, wrap-up the job
         ncJobFinished ( job_token,code );
       } else if (crTime-jobEntry.startTime>pulseLifeTime)  {
         // check pulse
-        var progress = utils.fileSize ( path.join(jobEntry.jobDir,'_stdout.log') );
+        let progress = utils.fileSize ( path.join(jobEntry.jobDir,'_stdout.log') );
         if (progress>jobEntry.progress)  {
           jobEntry.progress  = progress;
           jobEntry.lastAlive = crTime;
@@ -508,8 +508,8 @@ function checkJobsOnTimer()  {
 
 function startJobCheckTimer()  {
   if (!ncJobRegister.timer)  {
-    var areJobs = false;
-    for (var job_token in ncJobRegister.job_map)
+    let areJobs = false;
+    for (let job_token in ncJobRegister.job_map)
       if (ncJobRegister.job_map.hasOwnProperty(job_token))  {
         if (ncJobRegister.job_map[job_token].jobStatus==task_t.job_code.running) {
           areJobs = true;
@@ -536,13 +536,13 @@ function stopJobCheckTimer()  {
 function ncSendFile ( url,server_response,url_search )  {
 // function to send a file from running job directory on NC in response to
 // request from a client through FE.
-var fname = null;
-var cap   = false;
+let fname = null;
+let cap   = false;
 
   if (url_search)
     cap = (url_search.indexOf('?capsize')>=0);
 
-  var ix = url.indexOf('jsrview');
+  let ix = url.indexOf('jsrview');
   if (ix>=0)  {  // request for jsrview library file, load it from js-lib
                  // REGARDLESS the actual path requested
 
@@ -550,7 +550,7 @@ var cap   = false;
 
   } else  {
 
-    var rtag = cmd.__special_url_tag + '-fe/';
+    let rtag = cmd.__special_url_tag + '-fe/';
     ix = url.lastIndexOf(rtag);
     if (ix>=0)  {
 
@@ -561,14 +561,14 @@ var cap   = false;
     } else  {
 
   //console.log ( ' NC: url=' + url );
-      var plist    = url.split('/');
-      var jobEntry = ncJobRegister.getJobEntry( plist[1] );
+      let plist    = url.split('/');
+      let jobEntry = ncJobRegister.getJobEntry( plist[1] );
 
       if (jobEntry)  {  // job token is valid
 
         // calculate path within job directory
         fname = jobEntry.jobDir;
-        for (var i=2;i<plist.length;i++)
+        for (let i=2;i<plist.length;i++)
           fname = path.join ( fname,plist[i] );
 
   //console.log ( ' jobEntry found, fname=' + fname );
@@ -641,10 +641,10 @@ function calcCapacity ( onFinish_func )  {
 // with positive capacity, or to NC with least negative capacity if all NCs 
 // are overloaded.
 //
-var ncConfig = conf.getServerConfig();
-var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
+let ncConfig = conf.getServerConfig();
+let capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                                    // can accept without stretching
-var nRegJobs = 0;  // number of jobs listed as active in registry
+let nRegJobs = 0;  // number of jobs listed as active in registry
 
   for (let item in ncJobRegister.job_map)
     // if (!ncJobRegister.job_map[item].endTime)
@@ -660,14 +660,14 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                     onFinish_func ( capacity );
                break;
 
-    case 'SGE'    : var job = utils.spawn ( 'qstat',['-u',process.env.USER],{} );
-                    var qstat_output = '';
-                    job.stdout.on('data', function(data) {
+    case 'SGE'    : let sge_job = utils.spawn ( 'qstat',['-u',process.env.USER],{} );
+                    let qstat_output = '';
+                    sge_job.stdout.on('data', function(data) {
                       qstat_output += data.toString();
                     });
-                    job.on ( 'close', function(code) {
-                      var regExp = new RegExp('  qw  ','gi');
-                      var n = (qstat_output.match(regExp) || []).length;
+                    sge_job.on ( 'close', function(code) {
+                      let regExp = new RegExp('  qw  ','gi');
+                      let n = (qstat_output.match(regExp) || []).length;
                       if (n>0)  capacity  = -n;
                           else  capacity -= nRegJobs;
                       //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
@@ -675,19 +675,19 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                     });
                 break;
 
-    case 'SLURM' :  var job = utils.spawn ( 'squeue',['-u',process.env.USER],{} );
-                    var slurm_output = '';
-                    job.stdout.on ( 'data', function(data) {
+    case 'SLURM' :  let slurm_job = utils.spawn ( 'squeue',['-u',process.env.USER],{} );
+                    let slurm_output = '';
+                    slurm_job.stdout.on ( 'data', function(data) {
                       slurm_output += data.toString();
                     });
-                    job.on ( 'close', function(code) {
+                    slurm_job.on ( 'close', function(code) {
                       // should return just the number but escape just in case
-                      var n = 0;
+                      let n = 0;
                       try {
-                        var lines = slurm_output.trim().split(/\s*[\r\n]+\s*/g);
+                        let lines = slurm_output.trim().split(/\s*[\r\n]+\s*/g);
                         // count lines indicating waiting jobs
-                        for (var i=1;i<lines.length;i++)  {
-                          var llist = lines[i].match(/[^ ]+/g);
+                        for (let i=1;i<lines.length;i++)  {
+                          let llist = lines[i].match(/[^ ]+/g);
                           if ((llist.length>5) && (comut.isInteger(llist[0])) &&
                                                   (llist[4].toLowerCase()!='r'))
                             n++;
@@ -704,15 +704,15 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                 break;
 
 
-    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,
+    case 'SCRIPT' : let script_job = utils.spawn ( ncConfig.exeData,
                                             ['check_waiting',process.env.USER],{} );
-                    var job_output = '';
-                    job.stdout.on ( 'data', function(data) {
+                    let job_output = '';
+                    script_job.stdout.on ( 'data', function(data) {
                       job_output += data.toString();
                     });
-                    job.on ( 'close', function(code) {
+                    script_job.on ( 'close', function(code) {
                       // should return just the number but escape just in case
-                      var n = 0;
+                      let n = 0;
                       try {
                         n = parseInt(job_output);
                       } catch(err)  {
@@ -737,8 +737,8 @@ function copyToSafe ( task,jobEntry )  {
 
   if ([ud.feedback_code.agree1,ud.feedback_code.agree2].indexOf(jobEntry.feedback)>=0)  {
 
-    var jobsSafe    = conf.getServerConfig().getJobsSafe();
-    var safeDirPath = path.join ( jobsSafe.path,task._type );
+    let jobsSafe    = conf.getServerConfig().getJobsSafe();
+    let safeDirPath = path.join ( jobsSafe.path,task._type );
 
     try {
 
@@ -753,25 +753,25 @@ function copyToSafe ( task,jobEntry )  {
       } else  {
         // check that the safe is not full
 
-        var files  = fs.readdirSync ( safeDirPath );
-        var dpaths = [];
-        for (var i=0;i<files.length;i++)  {
-          var fpath = path.join ( safeDirPath,files[i] );
-          var stat  = fs.statSync ( fpath );
+        let files  = fs.readdirSync ( safeDirPath );
+        let dpaths = [];
+        for (let i=0;i<files.length;i++)  {
+          let fpath = path.join ( safeDirPath,files[i] );
+          let stat  = fs.statSync ( fpath );
           if (stat && stat.isDirectory())
             dpaths.push ( fpath );
         }
 
         if (dpaths.length>=jobsSafe.capacity)  {
           // safe is full, remove old entries
-          for (var i=0;i<dpaths.length;i++)
-            for (var j=i+1;j<dpaths.length;j++)
+          for (let i=0;i<dpaths.length;i++)
+            for (let j=i+1;j<dpaths.length;j++)
               if (dpaths[j]>dpaths[i])  {
-                var dname = dpaths[j];
+                let dname = dpaths[j];
                 dpaths[j] = dpaths[i];
                 dpaths[i] = dname;
               }
-          for (var i=Math.max(0,jobsSafe.capacity-1);i<dpaths.length;i++)
+          for (let i=Math.max(0,jobsSafe.capacity-1);i<dpaths.length;i++)
             utils.removePath ( dpaths[i] );
         }
 
@@ -802,12 +802,12 @@ function copyToSafe ( task,jobEntry )  {
 
 
 function ncJobFinished ( job_token,code )  {
-var cfg = conf.getServerConfig();
+let cfg = conf.getServerConfig();
 
   log.debug2 ( 100,'term code=' + code );
 
   // acquire the corresponding job entry
-  var jobEntry = ncJobRegister.getJobEntry ( job_token );
+  let jobEntry = ncJobRegister.getJobEntry ( job_token );
 
   if (!jobEntry)  {
     log.error ( 51,'job token ' + job_token + 'not found in registry upon job end' );
@@ -848,8 +848,8 @@ var cfg = conf.getServerConfig();
 
   writeNCJobRegister();  // this is redundant at repeat sends, but harmless
 
-  var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
-  var task         = utils.readClass ( taskDataPath );
+  let taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
+  let task         = utils.readClass ( taskDataPath );
 
   if (!task)  {
     log.error ( 52,'cannot read job metadata at ' + taskDataPath );
@@ -925,10 +925,10 @@ var cfg = conf.getServerConfig();
     log.standard ( 104,'NC current capacity: ' + current_capacity );
 
     // get original front-end url
-    var feURL = jobEntry.feURL;
+    let feURL = jobEntry.feURL;
 
     // but, if FE is configured, take it from configuration
-    var fe_config = conf.getFEConfig();
+    let fe_config = conf.getFEConfig();
     if (fe_config && fe_config.localSetup)
       feURL = fe_config.externalURL;
 
@@ -1010,7 +1010,7 @@ function ncRunJob ( job_token,meta )  {
 // This function must not contain asynchronous code.
 
   // acquire the corresponding job entry
-  var jobEntry = ncJobRegister.getJobEntry ( job_token );
+  let jobEntry = ncJobRegister.getJobEntry ( job_token );
   jobEntry.feURL     = meta.sender;
   jobEntry.feedback  = meta.feedback;
   jobEntry.user_name = meta.user_name;
@@ -1018,7 +1018,7 @@ function ncRunJob ( job_token,meta )  {
   writeNCJobRegister();
 
   // get number cruncher configuration object
-  var ncConfig = conf.getServerConfig();
+  let ncConfig = conf.getServerConfig();
 
   // clear/initiate report directory
   utils.clearRVAPIreport ( jobEntry.jobDir,'task.tsk' );
@@ -1030,9 +1030,9 @@ function ncRunJob ( job_token,meta )  {
 
   // Now start the job.
   // Firstly, acquire the corresponding task class.
-  var taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
-  var jobDir       = path.dirname ( taskDataPath );
-  var task         = utils.readClass ( taskDataPath );
+  let taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
+  let jobDir       = path.dirname ( taskDataPath );
+  let task         = utils.readClass ( taskDataPath );
 
   function getJobName()  {
     //return 'cofe_' + ncJobRegister.launch_count;
@@ -1046,8 +1046,8 @@ function ncRunJob ( job_token,meta )  {
 
   if (task)  { // the task is instantiated, start the job
 
-    var nproc  = ncConfig.getMaxNProc();
-    var ncores = task.getNCores ( nproc );
+    let nproc  = ncConfig.getMaxNProc();
+    let ncores = task.getNCores ( nproc );
     utils.writeObject ( path.join(jobEntry.jobDir,'__despatch.meta'),{
       'sender'   : meta.sender,
       'setup_id' : meta.setup_id,
@@ -1073,15 +1073,15 @@ function ncRunJob ( job_token,meta )  {
       case 'CLIENT':
       case 'SHELL' :  log.standard ( 5,'starting... ' );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var job = utils.spawn ( command[0],command.slice(1),{} );
+                      let job = utils.spawn ( command[0],command.slice(1),{} );
                       jobEntry.pid = job.pid;
 
                       log.standard ( 5,'task ' + task.id + ' started, pid=' +
                                        jobEntry.pid + ', token:' + job_token );
 
                       // make stdout and stderr catchers for debugging purposes
-                      var stdout = '';
-                      var stderr = '';
+                      let stdout = '';
+                      let stderr = '';
                       job.stdout.on('data', function(buf) {
                         stdout += buf;
                       });
@@ -1097,9 +1097,10 @@ function ncRunJob ( job_token,meta )  {
                       // that we want to be able to identify job completions
                       // in situations when NC's Node was taken down (or
                       // crashed) and then resumed.
-                      job.on ( 'close',function(code){
+                      job.on ( 'close',function(returncode){
 
-//                        if (code!=0)
+                        let code = utils.getJobSignalCode ( jobEntry.jobDir );
+
                         if (code)
                           log.debug ( 103,'[' + comut.padDigits(task.id,4) +
                                           '] code=' + code );
@@ -1124,22 +1125,22 @@ function ncRunJob ( job_token,meta )  {
       case 'SGE'   :  command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var qsub_params = ncConfig.exeData.concat ([
+                      let qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N',jobName
                       ]);
-                      var job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
+                      let sge_job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just SGE job scheduler, which
                       // quits nearly immediately; however, we use listeners to
                       // get the standard output and infer job id from there
-                      var qsub_output = '';
-                      job.stdout.on('data', function(data) {
+                      let qsub_output = '';
+                      sge_job.stdout.on('data', function(data) {
                         qsub_output += data.toString();
                       });
-                      job.on('close', function(code) {
-                        var w = qsub_output.split(/\s+/);
+                      sge_job.on('close', function(code) {
+                        let w = qsub_output.split(/\s+/);
                         jobEntry.pid = 0;
                         if (w.length>=3)  {
                           if ((w[0]=='Your') && (w[1]=='job'))
@@ -1171,10 +1172,10 @@ function ncRunJob ( job_token,meta )  {
                         '-c',ncores
                       ]);
                       let sbatch_cmd = sbatch_params.concat(command);
-                      var job = utils.spawn ( 'sbatch',sbatch_cmd );
+                      let slurm_job  = utils.spawn ( 'sbatch',sbatch_cmd );
 
                       /*
-                      var script_params = [
+                      let script_params = [
                         '--export=ALL',
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
@@ -1182,24 +1183,24 @@ function ncRunJob ( job_token,meta )  {
                         '-c',ncores
                       ];
                       let sbatch_cmd = script_params.concat(command);
-                      var job = utils.spawn ( 'sbatch',sbatch_cmd );
+                      let job = utils.spawn ( 'sbatch',sbatch_cmd );
                       */
-                      // var job = utils.spawn ( 'sbatch',script_params.concat(command),{} );
+                      // let job = utils.spawn ( 'sbatch',script_params.concat(command),{} );
                       // sbatch --export=ALL -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
 
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to
                       // get the standard output and infer job id from there
-                      var slurm_output = '';
-                      job.stdout.on('data', function(data) {
+                      let slurm_output = '';
+                      slurm_job.stdout.on('data', function(data) {
                         slurm_output += data.toString();
                       });
-                      job.on('close', function(code) {
+                      slurm_job.on('close', function(code) {
                         // the script is supposed to retun only jobID, but
                         // escape just in case
                         try {
-                          var slurm_output_split = slurm_output.split(' ');
+                          let slurm_output_split = slurm_output.split(' ');
                           jobEntry.pid = -1;
                           for (let i=0;(i<slurm_output_split.length) && (jobEntry.pid<0);i++)
                             if (comut.isInteger(slurm_output_split[i]))
@@ -1226,24 +1227,24 @@ function ncRunJob ( job_token,meta )  {
       case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var script_params = [
+                      let script_params = [
                         'start',
                         path.join(jobDir,'_job.stdo'),  // qsub stdout
                         path.join(jobDir,'_job.stde'),  // qsub stderr
                         jobName,
                         ncores
                       ];
-                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
+                      let script_job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
                                               // { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to
                       // get the standard output and infer job id from there
-                      var job_output = '';
-                      job.stdout.on('data', function(data) {
+                      let job_output = '';
+                      script_job.stdout.on('data', function(data) {
                         job_output += data.toString();
                       });
-                      job.on('close', function(code) {
+                      script_job.on('close', function(code) {
                         // the script is supposed to retun only jobID, but
                         // escape just in case
                         try {
@@ -1301,9 +1302,9 @@ function ncMakeJob ( server_request,server_response )  {
   readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
-  var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
+  let jobDir = ncGetJobDir ( ncJobRegister.launch_count );
   // make new entry in job registry
-  var job_token = ncJobRegister.addJob ( jobDir ); // assigns 'new' status
+  let job_token = ncJobRegister.addJob ( jobDir ); // assigns 'new' status
   writeNCJobRegister();
 
   if (!utils.mkDir(jobDir))  {
@@ -1363,6 +1364,7 @@ function ncMakeJob ( server_request,server_response )  {
 // ===========================================================================
 
 function _stop_job ( jobEntry )  {
+  let pids, subjobs;
 
   // write the respective signal in job directory
 
@@ -1385,12 +1387,12 @@ function _stop_job ( jobEntry )  {
 
       default       :
       case 'CLIENT' :
-      case 'SHELL'  : //var isWindows = /^win/.test(process.platform);
+      case 'SHELL'  : //let isWindows = /^win/.test(process.platform);
                       if(!conf.isWindows()) {
                         psTree ( jobEntry.pid, function (err,children){
-                          var pids = ['-9',jobEntry.pid].concat (
+                          let wpids = ['-9',jobEntry.pid].concat (
                                   children.map(function(p){ return p.PID; }));
-                          child_process.spawn ( 'kill',pids );
+                          child_process.spawn ( 'kill',wpids );
                         });
                       } else {
                         child_process.exec ( 'taskkill /PID ' + jobEntry.pid +
@@ -1398,8 +1400,8 @@ function _stop_job ( jobEntry )  {
                       }
                 break;
 
-      case 'SGE'    : var pids = [jobEntry.pid];
-                      var subjobs = utils.readString (
+      case 'SGE'    : pids = [jobEntry.pid];
+                      subjobs = utils.readString (
                                       path.join(jobEntry.jobDir,'subjobs'));
                       if (subjobs)
                         pids = pids.concat ( subjobs
@@ -1408,8 +1410,8 @@ function _stop_job ( jobEntry )  {
                       utils.spawn ( 'qdel',pids,{} );
                 break;
 
-      case 'SLURM'  : var pids = ['kill',jobEntry.pid];
-                      var subjobs = utils.readString (
+      case 'SLURM'  : pids = ['kill',jobEntry.pid];
+                      subjobs = utils.readString (
                                       path.join(jobEntry.jobDir,'subjobs'));
                       if (subjobs)
                         pids = pids.concat ( subjobs
@@ -1418,8 +1420,8 @@ function _stop_job ( jobEntry )  {
                       utils.spawn ( 'scancel',pids,{} );
                 break;
 
-      case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
-                      var subjobs = utils.readString (
+      case 'SCRIPT' : pids = ['kill',jobEntry.pid];
+                      subjobs = utils.readString (
                                       path.join(jobEntry.jobDir,'subjobs'));
                       if (subjobs)
                         pids = pids.concat ( subjobs
@@ -1435,7 +1437,7 @@ function _stop_job ( jobEntry )  {
 
 
 function ncStopJob ( post_data_obj,callback_func )  {
-var response = null;
+let response = null;
 
   log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
 
@@ -1443,7 +1445,7 @@ var response = null;
 
   if (post_data_obj.hasOwnProperty('job_token'))  {
 
-    var jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
+    let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
 
     if (jobEntry)  {
 
@@ -1511,27 +1513,27 @@ var response = null;
 }
 
 // function ncWakeAllZombiJobs()  {
-//   var nzombies = 0;
-//   for (var token in ncJobRegister.job_map)
+//   let nzombies = 0;
+//   for (let token in ncJobRegister.job_map)
 //     if (ncJobRegister.wakeZombi(token))
 //       nzombies++;
 //   return nzombies;
 // }
 
 function ncWakeZombieJobs ( post_data_obj,callback_func )  {
-var job_tokens = post_data_obj.job_tokens;
+let job_tokens = post_data_obj.job_tokens;
 
 // *** for debugging
 //__use_fake_fe_url = false;
 
-  var nzombies = 0;
+  let nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
     // nzombies = ncWakeAllZombiJobs();
-    for (var token in ncJobRegister.job_map)
+    for (let token in ncJobRegister.job_map)
       if (ncJobRegister.wakeZombi(token))
         nzombies++;
   } else  {  // take from the list given
-    for (var i=0;i<job_tokens.length;i++)
+    for (let i=0;i<job_tokens.length;i++)
       if (ncJobRegister.wakeZombi(job_tokens[i]))
         nzombies++;
   }
@@ -1622,20 +1624,20 @@ function make_local_job ( args,exts,base_url,jobDir,job_token,callback_func )  {
 
     if (ix<args.length)  {  // process ixth argument
 
-      var ip = args[ix].lastIndexOf('.');  // is there a file extension?
+      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
 
       if (ip>=0)  {
 
-        var ext = args[ix].substring(ip).toLowerCase();
+        let ext = args[ix].substring(ip).toLowerCase();
 
         if (exts.indexOf(ext)>=0)  {  // file extension is recognised
 
           // compute full download url
-          var url   = base_url + '/' + args[ix];
+          let url   = base_url + '/' + args[ix];
           // compute full local path to accept the download
-          var fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
+          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
 
-          var get_options = {
+          let get_options = {
             url                : url,
             rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
           };
@@ -1770,20 +1772,20 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
     if (ix<args.length)  {  // process ixth argument
 
-      var ip = args[ix].lastIndexOf('.');  // is there a file extension?
+      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
 
       if (ip>=0)  {
 
-        var ext = args[ix].substring(ip).toLowerCase();
+        let ext = args[ix].substring(ip).toLowerCase();
 
         if (exts.indexOf(ext)>=0)  {  // file extension is recognised
 
           // compute full download url
-          var url   = post_data_obj.base_url + '/' + args[ix];
+          let url   = post_data_obj.base_url + '/' + args[ix];
           // compute full local path to accept the download
-          var fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
+          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
 
-          var get_options = {
+          let get_options = {
             url: url,
             rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
           };
@@ -1826,7 +1828,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
       // 'input' of the job directory; prepare job metadata and start the
       // job
 
-      var taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
+      let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
       taskRVAPIApp.id            = ncJobRegister.launch_count;
       taskRVAPIApp.rvapi_command = post_data_obj.command;
       taskRVAPIApp.rvapi_args    = args;
@@ -1969,13 +1971,13 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
   readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
-  var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
+  let jobDir = ncGetJobDir ( ncJobRegister.launch_count );
   // make new entry in job registry
-  var job_token = ncJobRegister.addJob1 ( jobDir,post_data_obj.job_token );
+  let job_token = ncJobRegister.addJob1 ( jobDir,post_data_obj.job_token );
 
   writeNCJobRegister();
 
-  var ok = utils.mkDir(jobDir) && utils.mkDir(path.join(jobDir,'input'))  &&
+  let ok = utils.mkDir(jobDir) && utils.mkDir(path.join(jobDir,'input'))  &&
                                   utils.mkDir(path.join(jobDir,'output')) &&
                                   utils.mkDir(path.join(jobDir,'report'));
   if (!ok)  {
@@ -1992,9 +1994,9 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 
   // 2. Download and unpack jobball
 
-  var dnlURL = post_data_obj.feURL + post_data_obj.dnlURL;
+  let dnlURL = post_data_obj.feURL + post_data_obj.dnlURL;
 
-  var get_options = {
+  let get_options = {
     url : dnlURL,
     rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
   };

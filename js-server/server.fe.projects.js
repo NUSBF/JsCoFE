@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.24   <--  Date of Last Modification.
+ *    06.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,62 @@
  *     function getOutputDirPath        ( jobDir )
  *     function getOutputFilePath       ( jobDir,fileName )
  *     function getJobDataPath          ( loginData,projectName,jobId )
+ *     function writeProjectData        ( loginData,projectData,putTimeStamp )
+ *     function checkProjectDescData    ( projectDesc,loginData )
+ *     function checkProjectData        ( projectData,loginData )
+ *     function readProjectData         ( loginData,projectName )
+ *     function readProjectDesc         ( loginData,projectName )
+ *     function writeProjectList        ( loginData,projectList )
+ *     function readProjectList         ( loginData )
+ *     function writeDockData           ( loginData,dockData )
+ *     function readDockData            ( loginData )
+ *     function makeNewUserProjectsDir  ( loginData )
+ *     function getProjectList          ( loginData )
+ *     function getDockData             ( loginData )
+ *     function _make_unique_list       ( line      )
+ *     function readProjectShare        ( loginData )
+ *     function writeProjectShare       ( loginData,pShare )
+ *     function getSharedPrjList        ( loginData )
+ *     function getUserKnowledgeData    ( loginData )
+ *     function makeNewProject          ( loginData,projectDesc )
+ *     function delete_project          ( loginData,projectName,disk_space,projectDirPath )
+ *     function deleteProject           ( loginData,projectName )
+ *     function saveProjectList         ( loginData,newProjectList )
+ *     function saveDockData            ( loginData,newDockData )
+ *     function getJobMetas             ( loginData,projectName )
+ *     function prepareProjectExport    ( loginData,projectList )
+ *     function checkProjectExport      ( loginData,projectList )
+ *     function finishProjectExport     ( loginData,projectList )
+ *     function getJobExportNames       ( loginData,task   )
+ *     function prepareJobExport        ( loginData,task   )
+ *     function checkJobExport          ( loginData,task   )
+ *     function finishJobExport         ( loginData,task   )
+ *     function getFailedJobExportNames ( fjdata           )
+ *     function prepareFailedJobExport  ( loginData,fjdata )
+ *     function checkFailedJobExport    ( loginData,fjdata )
+ *     function finishFailedJobExport   ( loginData,fjdata )
+ *     function getProjectData          ( loginData,data   )
+ *     function checkTimestamps         ( loginData,projectDesc     )
+ *     function makeNodeName            ( task,title       )
+ *     function make_job_directory      ( loginData,projectName,id0 )
+ *     function saveProjectData         ( loginData,data   )
+ *     function shareProjectConfirm     ( loginData,data   )
+ *     function shareProject            ( loginData,data   )
+ *     function rename_project_0        ( projectDirPath,new_name,check_running )
+ *     function renameProject           ( loginData,data   )
+ *     function cloneProject            ( loginData,data   )
+ *     function checkCloneProject       ( loginData,projectName )
+ *     function _import_project         ( loginData,tempdir,prjDir,chown_key,duplicate_key )
+ *     function getProjectTmpDir        ( loginData,make_clean  )
+ *     function importProject           ( loginData,upload_meta )
+ *     function startDemoImport         ( loginData,meta   )
+ *     function startSharedImport       ( loginData,meta   )
+ *     function checkProjectImport      ( loginData,data   )
+ *     function finishProjectImport     ( loginData,data   )
+ *     function saveJobData             ( loginData,data   )
+ *     function saveJobFile             ( loginData,data   )
+ *     function saveJobFiles            ( loginData,data   )
+ *     function getJobFile              ( loginData,data   )
  * 
  *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
@@ -215,6 +271,7 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
     projectData.desc.timestamp = Date.now();
 //    console.log ( ' >>>>> wpd timestamp='+projectData.desc.timestamp);
   }
+  projectData.desc.ccp4cloud_version = cmd.appVersion();  // CCP4 Cloud version
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
                       projectData.desc );
 
@@ -301,6 +358,11 @@ let update = false;
   
   if (!('autorun' in projectDesc))  {
     projectDesc.autorun = false;
+    update = true;
+  }
+
+  if ((!('ccp4cloud_version' in projectDesc)) || (!projectDesc.ccp4cloud_version))  {
+    projectDesc.ccp4cloud_version = cmd.appVersion();
     update = true;
   }
   
@@ -2161,6 +2223,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       projectDesc.folderPath   = prj_meta.desc.folderPath;
       projectDesc.share        = prj_meta.desc.share;
+      if ('ccp4cloud_version' in prj_meta.desc)
+        projectDesc.ccp4cloud_version = prj_meta.desc.ccp4cloud_version;
 
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;
@@ -2204,7 +2268,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
   if (!prj_meta)  {
 
     utils.writeString ( signal_path,'Invalid or corrupt project data\n' +
-                                    projectDesc.name );
+                                    projectDesc.name +'\n' +
+                                    projectDesc.ccp4cloud_version );
 
   } else  {
 
@@ -2230,16 +2295,20 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         if (pList.currentFolder.path!=pd.folder_type.all_projects)
           pList.setCurrentFolder ( pList.findFolder(projectDesc.folderPath) );
         if (writeProjectList(loginData,pList))
-              utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+              utils.writeString ( signal_path,'Success\n' + 
+                                              projectDesc.name + '\n' +
+                                              projectDesc.ccp4cloud_version );
         else  utils.writeString ( signal_path,'Cannot write project list\n' +
-                                              projectDesc.name );
+                                              projectDesc.name + '\n' +
+                                              projectDesc.ccp4cloud_version );
 
       } else  {
       // } else if (duplicate==0)  {
 
         utils.writeString ( signal_path,'Project "' + projectDesc.name +
                                         '" already exists (check all folders)\n' +
-                                        projectDesc.name );
+                                        projectDesc.name + '\n' + 
+                                        projectDesc.ccp4cloud_version );
       }
 
     } else  {
@@ -2262,7 +2331,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
           if (mod)  {
             rename_project_0 ( tempdir,new_name,false );
             utils.writeString ( signal_path,'Renamed "' + new_name + '"\n' +
-                                projectDesc.name );
+                                projectDesc.name + '\n' +
+                                projectDesc.ccp4cloud_version );
           }
         }
         if (utils.moveDir(tempdir,projectDir,true))  {
@@ -2273,14 +2343,16 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
             if (!pData)  {
               utils.writeString ( signal_path,'Cannot read copied project ' +
                                               '(bug or file errors?)\n' +
-                                              projectDesc.name );
+                                              projectDesc.name + '\n' +
+                                              projectDesc.ccp4cloud_version );
               placed = false;
             } else  {
               pData.desc.name = new_name;
               if (!writeProjectData(loginData,pData,true))  {
                 utils.writeString ( signal_path,'Cannot write renamed project ' +
                                                 '(bug or file errors?)\n' +
-                                                projectDesc.name );
+                                                projectDesc.name + '\n' +
+                                                projectDesc.ccp4cloud_version );
                 placed = false;
               }
             }
@@ -2313,7 +2385,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         } else {
           utils.writeString ( signal_path,'Cannot copy to project ' +
                                           'directory (disk full?)\n' +
-                                          projectDesc.name );
+                                          projectDesc.name + '\n' +
+                                          projectDesc.ccp4cloud_version );
           placed = false;
         }
       }
@@ -2335,12 +2408,15 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         }
         if (writeProjectList(loginData,pList))  {
           if (!mod)
-                utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+                utils.writeString ( signal_path,'Success\n' + projectDesc.name +
+                                          '\n' + projectDesc.ccp4cloud_version );
           else  utils.writeString ( signal_path,'Success\n' + projectDesc.name +
-                                                        ' ' + old_name );
+                                                        ' ' + old_name +
+                                          '\n' + projectDesc.ccp4cloud_version );
         } else  {
           utils.writeString ( signal_path,'Cannot write project list\n' +
-                                          projectDesc.name );
+                                          projectDesc.name + '\n' +
+                                          projectDesc.ccp4cloud_version );
         }
 
         //if (loginData.login==projectDesc.owner.login)
@@ -2351,7 +2427,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 
         utils.writeString ( signal_path,'Project "' + projectDesc.name +
                                         '" cannot be allocated (disk full?)\n' +
-                                        projectDesc.name );
+                                        projectDesc.name + '\n' +
+                                        projectDesc.ccp4cloud_version );
 
       }
 
@@ -2562,9 +2639,11 @@ function checkProjectImport ( loginData,data )  {
     let msg = signal.split('\n');
     rdata.signal = msg[0];
     rdata.name   = msg[1];
+    rdata.ccp4cloud_version = msg[2];
   } else  {
     rdata.signal = null;
     rdata.name   = '???';
+    rdata.ccp4cloud_version = cmd.appVersion();
   }
   return new cmd.Response ( cmd.fe_retcode.ok,'success',rdata );
 }

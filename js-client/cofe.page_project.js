@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.03.24   <--  Date of Last Modification.
+ *    07.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -917,6 +917,7 @@ let has_remark    = false;
   this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0)  );
 
   if (task)  {
+
     let is_remark   = task.isRemark();
     let add_enabled = is_remark;
     if (is_remark)  {
@@ -924,14 +925,15 @@ let has_remark    = false;
       if (tparent)
         add_enabled = (tparent.state==job_code.finished);
     }
+
     let can_add = (!__dormant) && not_view_only &&
                   ((task.state==job_code.finished) || (is_remark && add_enabled));
-    this.add_btn  .setEnabled ( can_add );
 
     let dsel1 = (this.jobTree.permissions==share_permissions.full) || 
                 (('submitter' in task) && task.submitter && 
                  (task.submitter==__login_id));
 
+    this.add_btn  .setEnabled ( can_add );
     this.del_btn  .setEnabled ( (!__dormant) && dsel && dsel1 && (!('archive_version' in task)) );
     this.dock     .setEnabled ( can_add );
     this.clone_btn.setEnabled ( (!__dormant) && dsel &&
@@ -945,7 +947,9 @@ let has_remark    = false;
     if (is_remark)
           this.del_btn.setTooltip ( 'Delete remark' );
     else  this.del_btn.setTooltip ( 'Delete job' );
+
   } else  {  // root
+    
     this.add_btn  .setEnabled ( (!__dormant) && not_view_only );
     this.del_btn  .setEnabled ( (!__dormant) && not_view_only && dsel );
     this.dock     .setEnabled ( (!__dormant) && not_view_only );
@@ -954,7 +958,9 @@ let has_remark    = false;
       this.moveup_btn.setEnabled ( false );
     this.stop_btn    .setEnabled ( false );
     this.add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) && not_view_only );
+
   }
+
   this.thlight_btn.setEnabled ( true );
 
   // ***** development code, dormant
@@ -1061,7 +1067,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         };
     }
 
-    if (__clipboard.task)  {
+    if (__clipboard.task && crTask.isSuccessful())  {
       items.pasteJobFromClipboard = { // The "Clone job" menu item
         label : 'Paste ' + __clipboard.task.clipboard_name() + ' from clipboard',
         icon  : image_path('paste'),

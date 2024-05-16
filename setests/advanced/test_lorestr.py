@@ -165,8 +165,7 @@ def test_1LORESTRBasic(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
@@ -177,7 +176,7 @@ def test_1LORESTRBasic(browser,
         sf.editRevisionStructure_rnase(d.driver, d.waitShort)
         startLORESTRAfterRevision(d.driver)
         verifyLORESTR(d.driver)
-        # sf.renameProject(d.driver, d.testName)
+        sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
 
