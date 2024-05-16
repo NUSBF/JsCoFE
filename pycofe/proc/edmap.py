@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    28.11.22   <--  Date of Last Modification.
+#    16.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -69,10 +69,13 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
     elif source_key.startswith("acorn:"):
         LAB_F1  = source_key[6:]
         LAB_PHI = _columns["acorn-map"][1]
+    elif source_key.startswith("labels:"):
+        labels  = source_key.split(":")[1].split(",")
+        LAB_F1  = labels[0]
+        LAB_PHI = labels[1]
     else:
         LAB_F1  = _columns[source_key][0]
         LAB_PHI = _columns[source_key][1]
-
 
     # Start cfft
     rc = command.call ( "cfft",
