@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.04.24   <--  Date of Last Modification.
+ *    15.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1240,6 +1240,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     'Map tools',
     new TaskOmitMap   (),
     new TaskAnoMap    (),
+    new TaskExportMaps(),
     'Coordinate data tools',
     new TaskXyzUtils  (),
     gemmi_task,
