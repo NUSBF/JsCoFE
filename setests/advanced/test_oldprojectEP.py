@@ -227,7 +227,7 @@ def startBuccaneer(driver):
         pass
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
     except:
         pass
     time.sleep(1)
@@ -344,7 +344,7 @@ def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
 #         d.driver.get(cloud)
 #         assert "CCP4 Cloud" in d.driver.title
 #         if not nologin:
-#             sf.loginToCloud(d.driver, login, password)
+#             sf.loginToCloud(d.driver, login, password, nologin)
 
 #         sf.removeProject(d.driver, d.testName)
 

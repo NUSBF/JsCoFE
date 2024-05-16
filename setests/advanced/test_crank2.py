@@ -94,11 +94,7 @@ def test_1Crank2start(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, d.login, d.password)
-
-
-
+        sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)

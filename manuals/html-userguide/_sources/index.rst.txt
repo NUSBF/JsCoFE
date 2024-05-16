@@ -11,6 +11,7 @@ User Guide
    :numbered:
    :maxdepth: 2
 
+   jscofe_about
    jscofe_interface
    jscofe_workflows
    jscofe_cloudrun

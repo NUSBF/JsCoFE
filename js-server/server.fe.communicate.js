@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.09.23   <--  Date of Last Modification.
+ *    13.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -102,8 +102,8 @@ function Communicate ( server_request )  {
 */
 
   // Parse the server request command
-  var url_parse  = url.parse(server_request.url);
-  var url_path   = url_parse.pathname.substr(1);
+  let url_parse  = url.parse(server_request.url);
+  let url_path   = url_parse.pathname.substr(1);
   this.command   = url_path.toLowerCase();
   this.search    = url_parse.search;
 
@@ -151,7 +151,7 @@ function Communicate ( server_request )  {
 //    console.log ( ' >>>>>> 1 ' + this.filePath );
   }
   if (ix<0) {
-    var rtag = cmd.__special_url_tag + '-fe/';
+    let rtag = cmd.__special_url_tag + '-fe/';
     ix = this.filePath.lastIndexOf(rtag);
     if (ix>=0)  {
       this.filePath = this.filePath.substr(ix+rtag.length);
@@ -159,7 +159,7 @@ function Communicate ( server_request )  {
     }
   }
   if (ix<0) {
-    var utag = cmd.__special_url_tag + '/' + ustats.statsDirName + '/';
+    let utag = cmd.__special_url_tag + '/' + ustats.statsDirName + '/';
     ix = this.filePath.lastIndexOf(utag);
     if (ix>=0)  {
       this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
@@ -217,14 +217,14 @@ function Communicate ( server_request )  {
     ix = this.filePath.lastIndexOf ( cmd.__special_url_tag );
     if (ix>=0)  {
 
-      var flist     = this.filePath.slice(ix).split('/');
-      var loginData = user.getLoginEntry ( flist[1] );
+      let flist     = this.filePath.slice(ix).split('/');
+      let loginData = user.getLoginEntry ( flist[1] );
 
       if (loginData.login.length>0)  {  // login is valid
 
         // calculate path within job directory
-        var localPath = '';
-        for (var i=4;i<flist.length;i++)
+        let localPath = '';
+        for (let i=4;i<flist.length;i++)
           localPath = path.join ( localPath,flist[i] );
 
         // make full path for local (FE-based) file
@@ -237,7 +237,7 @@ function Communicate ( server_request )  {
 
         // now check whether the job is currently running, in which case the
         // requested file should be fetched from the respective number cruncher
-        var jobEntry = rj.getEFJobEntry ( loginData,flist[2],flist[3] );
+        let jobEntry = rj.getEFJobEntry ( loginData,flist[2],flist[3] );
 //      if (jobEntry && ((jobEntry.nc_type=='ordinary') ||
 //                       (conf.isLocalFE() &&
 //                        (!localPath.endsWith('__dir.tar.gz')))))  {  // yes the job is running
@@ -363,7 +363,7 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   } else if (this.filePath)  {
 
-    var fpath = this.filePath;
+    let fpath = this.filePath;
     if (fpath.endsWith('favicon.ico'))  {
       if (conf.isLocalSetup())  fpath = 'favicon-desktop.ico';
                           else  fpath = 'favicon-remote.ico';

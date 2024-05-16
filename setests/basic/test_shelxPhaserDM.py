@@ -471,7 +471,7 @@ def startBuccaneer(driver):
         pass
     time.sleep(1)
     try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building')
         driver.execute_script("window.scrollTo(0, 500)")
         time.sleep(1)
     except:
@@ -557,8 +557,7 @@ def test_1shelx_phaser(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
