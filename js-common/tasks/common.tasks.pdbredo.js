@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.24   <--  Date of Last Modification.
+ *    16.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,8 +54,212 @@ function TaskPDBREDO()  {   // must start with Task...
     max       : 1           // maximum acceptable number of data instances
   }];
 
-  this.parameters = {};
+  this.parameters = {
 
+    PAIRED : {
+      type     : 'checkbox',
+      label    : 'Perform paired refinement',
+      keyword  : '--paired',
+      tooltip  : '',
+      value    : false,
+      iwidth   : 220,
+      position : [0,0,1,7]
+    },
+    sec1 : { type     : 'section',
+             title    : 'Refinement settings',
+             open     : false,  // true for the section to be initially open
+             position : [1,0,1,5],
+             contains : {
+              REF_RES : {
+                  type     : 'combobox',
+                  keyword  : '',
+                  label    : 'Refinement restraints',
+                  range    : ['none|auto',
+                              'tighter2|much tighter',
+                              'tighter|tighten',
+                              'looser|loosen',
+                              'looser2|much looser'
+                             ],
+                  value    : 'list',
+                  position : [0,0,1,1]
+            },
+              // TIGHTER : {
+              //     type     : 'integer',
+              //     keyword  : 'TIGHTER',
+              //     label    : 'value',
+              //     range    : [0,'*'],
+              //     value    : '0',
+              //     showon   : {'REF_RES':['tighter']},
+              //     position : [0,3,1,1]
+              //   },
+              // LOOSER : {
+              //     type     : 'integer',
+              //     keyword  : 'LOOSER',
+              //     label    : 'value',
+              //     range    : [0,'*'],
+              //     value    : '0',
+              //     showon   : {'REF_RES':['looser']},
+              //     position : [0,3,1,1]
+              //   },
+              SEPARATOR_LBL : {
+                  type     : 'label',
+                  label    : '&nbsp;',
+                  position : [0,6,1,1],
+                  lwidth   : '90%'
+                },
+
+              ISOTROPIC : {
+                  type     : 'checkbox',
+                  label    : 'Force isotropic B-factors',
+                  keyword  : '--isotropic',
+                  tooltip  : '',
+                  value    : false,
+                  iwidth   : 550,
+                  position : [1,0,1,7]
+                },
+              NOTLS : {
+                  type     : 'checkbox',
+                  label    : 'TLS refinement',
+                  keyword  : '--notls',
+                  tooltip  : 'If not checked, TLS refinement will not be performed',
+                  value    : true,
+                  iwidth   : 550,
+                  position : [2,0,1,7]
+                },
+              LEGACY : {
+                  type     : 'checkbox',
+                  label    : 'Ignore R-factors of the input model and do more extensive refinement',
+                  keyword  : '--legacy',
+                  tooltip  : 'for legacy PDB entries. R-factor is not checked and the number of refinement cycles is increased (a lot)',
+                  value    : false,
+                  iwidth   : 550,
+                  position : [3,0,1,7]
+                },
+              NEWMODEL : {
+                  type     : 'checkbox',
+                  label    : 'Use an updated model for rebuilding, even if initial refinement made it worse',
+                  keyword  : '--newmodel',
+                  tooltip  : 'always take an updated model from the re-refinement for the rebuilding steps. Only use this option when all else fails',
+                  value    : false,
+                  iwidth   : 550,
+                  position : [4,0,1,7]
+                }
+              }
+             },
+      sec2 : { type     : 'section',
+                title    : 'Restraint settings',
+                open     : false,  // true for the section to be initially open
+                position : [2,0,1,5],
+                contains : {
+                  NOMETAL : {
+                    type     : 'checkbox',
+                    label    : 'Use special metal restraints',
+                    keyword  : '--nometalrest',
+                    value    : true,
+                    iwidth   : 400,
+                    position : [3,0,1,7]
+                    },
+                  NONUCREST : {
+                    type     : 'checkbox',
+                    label    : 'Use nucleic acid restraints',
+                    keyword  : '--nonucrest',
+                    value    : true,
+                    iwidth   : 400,
+                    position : [4,0,1,7]
+                    },
+                  NOHOMOLOGY : {
+                      type     : 'checkbox',
+                      label    : 'Use homology restraints',
+                      keyword  : '--nohomology',
+                      value    : true,
+                      iwidth   : 400,
+                      position : [5,0,1,7]
+                      },
+                  HOMOLOGY : {
+                    type     : 'checkbox',
+                    label    : 'Force homology restraints even at high resolution',
+                    keyword  : '--homology',
+                    value    : false,
+                    iwidth   : 400,
+                    position : [6,0,1,7]
+                    },
+                  HBONDREST : {
+                    type     : 'checkbox',
+                    label    : 'Force hydrogen bond restraints even at high resolution',
+                    keyword  : '--hbondrest',
+                    value    : false,
+                    iwidth   : 400,
+                    position : [7,0,1,7]
+                    },
+
+
+              }},
+      sec3 : {  type     : 'section',
+                title    : 'Restraint settings',
+                open     : false,  // true for the section to be initially open
+                position : [3,0,1,5],
+                contains : {
+                  NOFIXDMC : {
+                    type     : 'checkbox',
+                    label    : 'Add missing backbone atoms',
+                    keyword  : '--nofixdmc',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [1,0,1,7]
+                    },
+                  NOLOOPS : {
+                    type     : 'checkbox',
+                    label    : 'Add missing loops',
+                    keyword  : '--noloops',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [2,0,1,7]
+                    },
+                  NOPEPFLIP : {
+                    type     : 'checkbox',
+                    label    : 'Perform peptide flips',
+                    keyword  : '--nopepflip',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [3,0,1,7]
+                    },
+                  NOSCBUILD : {
+                    type     : 'checkbox',
+                    label    : '(Re)build side chains',
+                    keyword  : '--noscbuild',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [4,0,1,7]
+                    },
+                  NOCENTRIFUGE : {
+                    type     : 'checkbox',
+                    label    : 'Remove poor waters',
+                    keyword  : '--nocentrifuge',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [5,0,1,7]
+                    },
+                  NOSUGARS : {
+                    type     : 'checkbox',
+                    label    : '(Re)build N-glycan',
+                    keyword  : '--nosugarbuild',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [6,0,1,7]
+                    },
+                  NOREBUILD : {
+                    type     : 'checkbox',
+                    label    : 'Rebuild the model at all',
+                    keyword  : '--norebuild',
+                    value    : true,
+                    iwidth   : 300,
+                    position : [7,0,1,7]
+                    },
+                }
+
+
+
+}}
 }
 
 // finish constructor definition
@@ -80,7 +284,7 @@ TaskPDBREDO.prototype.authorisationID = function() { return 'pdb-redo'; }
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskPDBREDO.prototype.currentVersion = function()  {
-let version = 1;
+let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
