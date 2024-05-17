@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.05.24   <--  Date of Last Modification.
+#    17.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,8 +15,6 @@
 #
 
 #  python native imports
-import os
-import sys
 import shutil
 
 #  application imports
