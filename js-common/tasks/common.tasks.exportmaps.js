@@ -2,15 +2,15 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    15.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.anomap.js
+ *  **** Module  :  js-common/cofe.tasks.exportmaps.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Anomalous Map Task Class
+ *  **** Content :  Export Maps Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2024
@@ -26,19 +26,19 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.tasks.template' );
 
 // ===========================================================================
-function TaskAnoMap()  {
+function TaskExportMaps()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type  = 'TaskAnoMap';
-  this.name   = 'anomap';
-  this.setOName ( 'anomap' );  // default output file name template
-  this.title  = 'Calculate anomalous map with Phaser';
+  this._type  = 'TaskExportMaps';
+  this.name   = 'exportmaps';
+  this.setOName ( 'exportmap' );  // default output file name template
+  this.title  = 'Export density maps';
 
   this.input_dtypes = [{      // input data types
     data_type   : { 'DataRevision' : [  // data type(s) and subtype(s)
-                      '!phases','!xyz','!anomalous','~mmcif_only'
+                      '!phases'
                     ]
                   },
     label       : 'Structure revision', // label for input dialog
@@ -52,42 +52,37 @@ function TaskAnoMap()  {
 }
 
 if (__template)
-      TaskAnoMap.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAnoMap.prototype = Object.create ( TaskTemplate.prototype );
-TaskAnoMap.prototype.constructor = TaskAnoMap;
+      TaskExportMaps.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskExportMaps.prototype = Object.create ( TaskTemplate.prototype );
+TaskExportMaps.prototype.constructor = TaskExportMaps;
 
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAnoMap.prototype.icon           = function()  { return 'task_anomap'; }
-TaskAnoMap.prototype.clipboard_name = function()  { return '"Ano Map"';   }
+TaskExportMaps.prototype.icon           = function()  { return 'task_exportmaps'; }
+TaskExportMaps.prototype.clipboard_name = function()  { return '"Export Maps"';   }
 
-TaskAnoMap.prototype.currentVersion = function()  {
+TaskExportMaps.prototype.currentVersion = function()  {
   let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskAnoMap.prototype.checkKeywords = function ( keywords )  {
+TaskExportMaps.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['omit','map'] );
+  return this.__check_keywords ( keywords,['export','map'] );
 }
 
-// TaskAnoMap.prototype.cleanJobDir = function ( keywords )  {}
+// TaskExportMaps.prototype.cleanJobDir = function ( keywords )  {}
 
 if (!__template)  {
   // client side
 
-  TaskAnoMap.prototype.desc_title = function()  {
+  TaskExportMaps.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'calculates anomalous maps given partial structure model';
-  }
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskAnoMap.prototype.hotButtons = function() {
-    return [CootMBHotButton()];
+    return 'exports electron density maps in map format (for PyMOL etc)';
   }
 
 } else  {
@@ -95,27 +90,26 @@ if (!__template)  {
 
   const conf = require('../../js-server/server.configuration');
 
-  TaskAnoMap.prototype.makeInputData = function ( loginData,jobDir )  {
+  TaskExportMaps.prototype.makeInputData = function ( loginData,jobDir )  {
 
     if ('revision' in this.input_data.data)  {
       let revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl'] = [revision.HKL];
       if (revision.Structure)
         this.input_data.data['istruct'] = [revision.Structure];
-      // if (revision.Substructure)
-      //   this.input_data.data['isubstruct'] = [revision.Substructure];
+      if (revision.Substructure)
+        this.input_data.data['isubstruct'] = [revision.Substructure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
 
-  TaskAnoMap.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.anomap', jobManager, jobDir, this.id];
+  TaskExportMaps.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.exportmaps', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------
 
-  module.exports.TaskAnoMap = TaskAnoMap;
+  module.exports.TaskExportMaps = TaskExportMaps;
 
 }
