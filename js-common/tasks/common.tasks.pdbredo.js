@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.24   <--  Date of Last Modification.
+ *    17.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -195,7 +195,7 @@ function TaskPDBREDO()  {   // must start with Task...
 
               }},
       sec3 : {  type     : 'section',
-                title    : 'Restraint settings',
+                title    : 'Rebuilding settings',
                 open     : false,  // true for the section to be initially open
                 position : [3,0,1,5],
                 contains : {
