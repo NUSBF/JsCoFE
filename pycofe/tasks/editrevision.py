@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    19.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -218,7 +218,7 @@ class EditRevision(asudef.ASUDef):
             if "xyz" in edit_list or "phases" in edit_list or "lig" in edit_list:
                 # redefine structure
 
-                if not xyz_fpath and not mtz_fpath:
+                if not xyz_fpath and not mtz_fpath and len(lig_codes)<=0:
 
                     self.putMessage  ( "<h3>Structure was removed</h3>" )
                     revision.removeStructure()
