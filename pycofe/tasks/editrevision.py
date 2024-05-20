@@ -283,9 +283,16 @@ class EditRevision(asudef.ASUDef):
                         #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
                         #    structure.adjust_dname()
 
+                        wtitle = "Structure and electron density"
+                        if not xyz_fpath and not mtz_fpath:
+                            wtitle = "Structure (ligand(s) only)"
+                        elif not xyz_fpath:
+                            wtitle = "Structure (electron density)"
+                        else:
+                            wtitle = "Structure (coordinates)"
+
                         self.putStructureWidget ( self.getWidgetId("structure_btn_"),
-                                                  "Structure and electron density",
-                                                  structure )
+                                                  wtitle,structure )
                         revision.setStructureData ( structure )
                     else:
                         self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )
