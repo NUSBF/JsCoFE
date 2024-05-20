@@ -48,7 +48,7 @@ after :doc:`doc.task.ASUDef` task).
         this one.
 
 .. note::
-        `CCP4 Cloud does NOT allow users to upload diffraction images <../src-userguide/jscofe_tips.Work_with_diffraction_images.html>`_ 
+        `CCP4 Cloud does NOT allow users to upload diffraction images <../html-userguide/jscofe_tips.Work_with_diffraction_images.html>`_ 
 
 
 **Useful links**
