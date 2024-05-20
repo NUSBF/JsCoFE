@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.04.24   <--  Date of Last Modification.
+ *    19.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -875,7 +875,7 @@ TaskPhaserMR.prototype.desc_title     = function()  {
 // TaskPhaserMR.prototype.cleanJobDir = function ( jobDir ) {}
 
 TaskPhaserMR.prototype.currentVersion = function()  {
-  var version = 2;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -907,9 +907,9 @@ if (!__template)  {
       this.name += ' (density fit)';
     }
 
-    var inputPanel = inpParamRef.grid.parent.parent;
+    let inputPanel = inpParamRef.grid.parent.parent;
     inputPanel.header.title.setText('<b>' + this.title + '</b>');
-    var new_title = this.name.replace(/<(?:.|\n)*?>/gm,'');
+    let new_title = this.name.replace(/<(?:.|\n)*?>/gm,'');
     inputPanel.header.uname_inp.setStyle('text','',new_title);
     inputPanel.job_dialog.changeTitle(new_title);
     inputPanel.emitSignal(cofe_signals.jobDlgSignal,
@@ -921,13 +921,13 @@ if (!__template)  {
   TaskPhaserMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if (emitterId == 'phases') {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var item = this.getInputItem ( inpDataRef,'revision' );
-      var dropdown = item.dropdown[0];
-      var dt = item.dt[dropdown.getValue()];
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let item = this.getInputItem ( inpDataRef,'revision' );
+      let dropdown = item.dropdown[0];
+      let dt = item.dt[dropdown.getValue()];
       if ( dt.subtype.indexOf(structure_subtype.XYZ)<0 ) {
-        var dataState = this.getDataState ( inpDataRef );
-        var customGrid = dropdown.customGrid;
+        let dataState = this.getDataState ( inpDataRef );
+        let customGrid = dropdown.customGrid;
         customGrid.clear();
         if ( dataState['phases']>0 ) {
           dropdown.layCustom = 'phaser-mr-ptf';
@@ -963,25 +963,27 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
 
       if (('phaser_meta' in revision) &&
           (["edfit","ignore"].indexOf(revision.Options.structure_sel)<0))  {
         // prepare all ensemble data
-        var ensembles = revision.phaser_meta.ensembles;
-        for (var ensname in ensembles)
+        let ensembles = revision.phaser_meta.ensembles;
+        for (let ensname in ensembles)
           this.input_data.data[ensname] = [ensembles[ensname]['data']];
         this.input_data.data['sol'] = [revision.phaser_meta.sol];
       }// else if (revision.subtype.indexOf('xyz')>=0)
        // this.input_data.data['xmodel'] = [revision.Structure];
 
       if (revision.Structure)  {
+        if (revision.hasLigands())
+          this.input_data.data['ligands'] = [revision.Structure];
         if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
-        // if (revision.Structure.hasXYZ())
-        if (revision.Structure.subtype.indexOf(dstruct.structure_subtype.XYZ)>=0)
+        // if (revision.Structure.subtype.indexOf(dstruct.structure_subtype.XYZ)>=0)
+        if (revision.Structure.hasXYZ())
           this.input_data.data['xmodel'] = [revision.Structure];
       }
       if (revision.Substructure && 
