@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -293,8 +292,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-demo-003ep--page-root">GerE: Auto-EP with Crank-2<a class="headerlink" href="#doc-demo-003ep--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="gere-auto-ep-with-crank-2">
+<h1 id="doc-demo-003ep--page-root">GerE: Auto-EP with Crank-2<a class="headerlink" href="#doc-demo-003ep--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The data are from the crystal structure of GerE, a transcription activator from Bacillus subtilis, which was solved by MAD phasing using the Se signal (V.M.A. Ducros, R.J. Lewis, C.S. Verma, E.J. Dodson, G. Leonard, J.P. Turkenburg, G.N. Murshudov, A.J. Wilkinson and J.A. Brannigan, J. Mol. Biol. (2001) 306 759-771).</p>
 <p>The protein contains 70 amino acids including two (Se-)Met. Crystal structure has 3 dimers in the asymmetric unit. With modern software, the structure can also be easily solved by SAD phasing from just the Se peak or inflection data.</p>
 <p>The paths to files used in this tutorial:</p>
@@ -303,8 +302,8 @@
 <p>The above paths are relative to the cloud storage root.</p>
 <p>Objectives</p>
 <ol class="arabic simple">
-<li>To learn how to operate with CCP4 Cloud web-interface.</li>
-<li>To get familiar with Crank-2, an automated pipeline for experimental phasing.</li>
+<li><p>To learn how to operate with CCP4 Cloud web-interface.</p></li>
+<li><p>To get familiar with Crank-2, an automated pipeline for experimental phasing.</p></li>
 </ol>
 <p>Workflow is fully defined by numbered paragraphs. Open cycles mark additional information.</p>
 <p>Workflow</p>
@@ -319,11 +318,11 @@ The new revision includes two initial hypotheses, the symmetry of the crystal an
 The former hypothesis can be revised later using “Change Space Group” task, as long as the old and new space groups belong to the same point group. Otherwise you will have to start with unmerged data and run Aimless
 The later hypothesis can be revised later using “Asymmetric Unit Correction”.</p>
 <ol class="arabic simple" start="4">
-<li>Try to open Crank-2 task.</li>
+<li><p>Try to open Crank-2 task.</p></li>
 </ol>
 <p>What is missing at this point?</p>
 <ol class="arabic simple" start="5">
-<li>Create initial revision that will suit “Crank-2”: select peak dataset and define Se as anomalous scatterer.</li>
+<li><p>Create initial revision that will suit “Crank-2”: select peak dataset and define Se as anomalous scatterer.</p></li>
 </ol>
 <p>6. Start Crank-2 job using default selections and parameters. This will be SAD phasing. Go to (10) while the job is running.
 Substructure determination section: how many Se sites with reasonable occupancy were found?
@@ -332,22 +331,22 @@ Model building section: was model building successful? Are there any model error
 <p>7. Run “Refinement with Refmac” starting from finished Crank-2 SAD phasing job. Use defaults.
 The jobs that generate revision(s) have “Inspect” button in the “Structure Revision” section of the “Report” tab. Check which dataset is in the output Refmac revision.</p>
 <ol class="arabic simple" start="8">
-<li>Use “asymmetric unit correction” task to edit the revision generated with Refmac job: replace peak dataset with the native dataset.</li>
-<li>Run Refmac job with the new revision.</li>
+<li><p>Use “asymmetric unit correction” task to edit the revision generated with Refmac job: replace peak dataset with the native dataset.</p></li>
+<li><p>Run Refmac job with the new revision.</p></li>
 </ol>
 <p>Check which dataset is in this Refmac output revision.</p>
 <p>10. Clone previous Crank-2 job, or open a new one branching it from asymmetric unit content job. Set it for MAD phasing with all available datasets including native. (Note there is a separate menu for Native.)
 In case of SAD, there are two ways of using native dataset: use it for phasing (SIRAS) or use it for model building only. In case of MAD, such a choice is not available and native data are only used for model building.</p>
 <ol class="arabic simple" start="11">
-<li>Run “Refinement with Refmac” after MAD Crank-2 job selecting revision corresponding to native dataset.</li>
+<li><p>Run “Refinement with Refmac” after MAD Crank-2 job selecting revision corresponding to native dataset.</p></li>
 </ol>
 <p>Which Refmac run gave better refinement statistics and why?</p>
 <ol class="arabic simple" start="12">
-<li>Continue the best Refmac job with the “Prepare data for deposition” job.</li>
+<li><p>Continue the best Refmac job with the “Prepare data for deposition” job.</p></li>
 </ol>
 <p>Is the structure good enough for deposition?</p>
 <p>In a real project you would continue the best Refmac job with “Model Building with Coot” and then continue iterating Refmac and Coot (see Refinement tutorial part 3).</p>
-
+</section>
 
 
           </article>
@@ -368,7 +367,7 @@ In case of SAD, there are two ways of using native dataset: use it for phasing (
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
