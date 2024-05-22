@@ -113,7 +113,7 @@ let msg = '';
     else  msg = '<li>confirm your account details</li>';
   }
 
-  if (!uData.hasOwnProperty('globudId'))
+  if (!uData.hasOwnProperty('globusId'))
     uData.globusId = '';
 
   if (!uData.hasOwnProperty('authorisation'))

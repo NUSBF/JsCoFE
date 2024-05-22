@@ -142,6 +142,10 @@ function AccountPage ( sceneId )  {
                             'from command prompt. It should be changed periodically ' +
                             'for security reasons. Press button on the left to ' +
                             'generate new CloudRun Id.' );
+  globus_inp.setTooltip   ( 'Globus Id is used for transferring data via Globus ' +
+                            'service. It does not need to be specified if Globus ' +
+                            'End Point is not installed on your instance of ' +
+                            appName() + '.' );
 
   if (full_list)  {
     user_lbl    .setFontSize( '112%' ).setWidth('auto');
