@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    22.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -23,37 +23,37 @@
 
 // ===========================================================================
 
-var licence_code = {
+const licence_code = {
   academic   : 'academic',
   commercial : 'commercial'
 };
 
-var feedback_code = {
+const feedback_code = {
   agree1  : 'accepted (1)',
   agree2  : 'accepted (2)',
   decline : 'declined'
 };
 
-var userdata_action = {
+const userdata_action = {
   none    : 'none',
   chpwd   : 'chpwd',
   revise  : 'revise'
 };
 
-var role_code = {
+const role_code = {
   user      : 'user',
   admin     : 'admin',
   developer : 'developer'
 };
 
-var on_login = {
+const on_login = {
   all_projects : 'all_projects',
   my_projects  : 'my_projects',
   last_folder  : 'last_folder',
   last_project : 'last_project'
 };
 
-var __local_user_id = 'localuser';  // local user name
+const __local_user_id = 'localuser';  // local user name
 
 // ---------------------------------------------------------------------------
 
@@ -98,7 +98,7 @@ function getRandomToken()  {
 }
 
 function checkUserData ( uData )  {
-var msg = '';
+let msg = '';
 
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
   if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
