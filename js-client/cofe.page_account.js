@@ -144,7 +144,7 @@ function AccountPage ( sceneId )  {
                             'generate new CloudRun Id.' );
   globus_inp.setTooltip   ( 'Globus Id is used for transferring data via Globus ' +
                             'service. It does not need to be specified if Globus ' +
-                            'End Point is not installed on your instance of ' +
+                            'End Point is not installed at your instance of ' +
                             appName() + '.' );
 
   if (full_list)  {
