@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    22.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,7 +98,7 @@ function AccountPage ( sceneId )  {
     pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
     licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
     feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
-    globus_lbl   = new Label     ( 'Globus:'   ).setNoWrap();
+    globus_lbl   = new Label     ( 'Globus Id:'  ).setNoWrap();
     user_inp     = new InputText ( '' );
     email_inp    = new InputText ( '' );
     login_inp    = new InputText ( '' );
@@ -106,7 +106,7 @@ function AccountPage ( sceneId )  {
     pwd1_inp     = new InputText ( '' );
     globus_inp   = new InputText ( '' );
   }
-  let cloudrun_lbl = new Label     ( 'CloudRun Id:'       ).setNoWrap();
+  let cloudrun_lbl = new Label ( 'CloudRun Id:' ).setNoWrap();
   let authoris_lbl = null;
   // let authorisation_dic = {};
   if (__auth_software)  {
@@ -121,22 +121,22 @@ function AccountPage ( sceneId )  {
   //                          'letters, numbers,\n dots, dashes and spaces' );
 
   if (full_list)  {
-    user_inp    .setStyle   ( 'text',__regexp_uname, // "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$",
-                              'John Smith',
-                              'This name will be used for addressing to you in\n' +
-                              'web-pages and e-mails' );
-    email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
-                              'Should be a valid e-mail address, at which ' +
-                              'your\n new password will be sent' );
-    login_inp   .setStyle   ( 'text',__regexp_login,  //"^[A-Za-z0-9\\-\\._]+$",
-                              'john.smith',
-                              'Login name cannot be changed' );
-    pwd_inp     .setStyle   ( 'password','','password (old or new)',
-                              'Choose new password' );
-    pwd1_inp    .setStyle   ( 'password','','confirm password',
-                              'Type password again here' );
-    globus_inp  .setStyle   ( 'email','','username@globusid.org',
-                              'Should be a valid Globus Username (eg. username@globusid.org)');
+    user_inp  .setStyle   ( 'text',__regexp_uname, // "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$",
+                            'John Smith',
+                            'This name will be used for addressing to you in\n' +
+                            'web-pages and e-mails' );
+    email_inp .setStyle   ( 'email','','john.smith@university.ac.uk',
+                            'Should be a valid e-mail address, at which ' +
+                            'your\n new password will be sent' );
+    login_inp .setStyle   ( 'text',__regexp_login,  //"^[A-Za-z0-9\\-\\._]+$",
+                            'john.smith',
+                            'Login name cannot be changed' );
+    pwd_inp   .setStyle   ( 'password','','password (old or new)',
+                            'Choose new password' );
+    pwd1_inp  .setStyle   ( 'password','','confirm password',
+                            'Type password again here' );
+    globus_inp.setStyle   ( 'email','','username@globusid.org',
+                            'Should be a valid Globus Username (eg. username@globusid.org)');
   }
   cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
                             'from command prompt. It should be changed periodically ' +
@@ -482,13 +482,13 @@ function AccountPage ( sceneId )  {
     } else  {
 
       if (full_list)  {
-        userData.name        = user_inp    .getValue();
-        userData.email       = email_inp   .getValue();
-        userData.login       = login_inp   .getValue();
-        userData.pwd         = pwd_inp     .getValue();
-        userData.licence     = licence_btn .getText ();
-        userData.feedback    = feedback_btn.getText ();
-        userData.globus      = globus_inp  .getValue();
+        userData.name      = user_inp    .getValue();
+        userData.email     = email_inp   .getValue();
+        userData.login     = login_inp   .getValue();
+        userData.pwd       = pwd_inp     .getValue();
+        userData.licence   = licence_btn .getText ();
+        userData.feedback  = feedback_btn.getText ();
+        userData.globusId  = globus_inp  .getValue();
       }  
       userData.cloudrun_id = cloudrun_inp.getValue();
       userData.action      = userdata_action.none;
@@ -614,10 +614,10 @@ function AccountPage ( sceneId )  {
     
     cloudrun_inp.setValue  ( userData.cloudrun_id );
     if (full_list)  {
-      user_inp    .setValue  ( userData.name  );
-      email_inp   .setValue  ( userData.email );
-      login_inp   .setValue  ( userData.login );
-      globus_inp  .setValue  ( userData.globus);
+      user_inp    .setValue  ( userData.name     );
+      email_inp   .setValue  ( userData.email    );
+      login_inp   .setValue  ( userData.login    );
+      globus_inp  .setValue  ( userData.globusId );
       licence_btn .setButton ( userData.licence,image_path('licence') )
       if ((userData.feedback.length>0) &&
           ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
