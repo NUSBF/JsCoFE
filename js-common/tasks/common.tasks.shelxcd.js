@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    23.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -302,8 +302,10 @@ TaskShelxCD.prototype.requiredEnvironment = function() {
   return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];
 }
 
+TaskShelxCD.prototype.cleanJobDir = function ( jobDir ) {}
+
 TaskShelxCD.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -333,18 +335,18 @@ if (!__template)  {
     }
 
     if ((emitterId=='hkl') || (emitterId=='native')) {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var dataState  = this.getDataState ( inpDataRef );
-      var nHKL       = dataState['hkl'];
-      var nNative    = dataState['native'];
-      var IR         = false;
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let dataState  = this.getDataState ( inpDataRef );
+      let nHKL       = dataState['hkl'];
+      let nNative    = dataState['native'];
+      let IR         = false;
 
       if (nNative>0)  {
-        var native = this.getInputItem ( inpDataRef,'native' );
+        let native = this.getInputItem ( inpDataRef,'native' );
         if (native)  {
           if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-            var customGrid    = native.dropdown[0].customGrid;
-            var showUFP_cbx   = (nNative>0) && (nHKL<=0);
+            let customGrid    = native.dropdown[0].customGrid;
+            let showUFP_cbx   = (nNative>0) && (nHKL<=0);
             useForPhasing_cbx = customGrid.useForPhasing;
             IR                = useForPhasing_cbx.getValue();
             useForPhasing_cbx.setVisible ( showUFP_cbx );
@@ -355,10 +357,10 @@ if (!__template)  {
 
       if (this.state==job_code.new)  {
 
-        var revision = this.getInputItem ( inpDataRef,'revision' );
+        let revision = this.getInputItem ( inpDataRef,'revision' );
         if (revision)  {
           if (revision.dropdown[0].hasOwnProperty('customGrid'))  {
-            var customGrid = revision.dropdown[0].customGrid;
+            let customGrid = revision.dropdown[0].customGrid;
             if (customGrid.hasOwnProperty('wtype'))  {
               customGrid.wtype_lbl.setVisible ( (nHKL>0) );
               customGrid.wtype    .setVisible ( (nHKL>0) );
@@ -366,7 +368,7 @@ if (!__template)  {
           }
         }
 
-        var name = this.name;
+        let name = this.name;
         if (nHKL<=0)  {
           if (nNative<=0)  {
             this.title = makeSuffix ( this.title,'SAD' );
@@ -389,7 +391,7 @@ if (!__template)  {
         }
 
         if (this.name!=name)  {
-          var inputPanel = inpParamRef.grid.parent.parent;
+          let inputPanel = inpParamRef.grid.parent.parent;
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
           inputPanel.header.uname_inp.setStyle ( 'text','',
                                 this.name.replace(/<(?:.|\n)*?>/gm, '') );
@@ -409,7 +411,7 @@ if (!__template)  {
 
   TaskShelxCD.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+      let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
       });
       inputPanel.element.dispatchEvent(event);
@@ -418,17 +420,17 @@ if (!__template)  {
 
   TaskShelxCD.prototype.collectInput = function ( inputPanel )  {
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     function addMessage ( label,message )  {
       input_msg += '|<b>' + label + ':</b> ' + message;
     }
 
-    var hkl    = this.input_data.getData ( 'hkl'    );
-    var native = this.input_data.getData ( 'native' );
+    let hkl    = this.input_data.getData ( 'hkl'    );
+    let native = this.input_data.getData ( 'native' );
 
-    for (var i=0;i<hkl.length;i++)  {
-      for (var j=i+1;j<hkl.length;j++)
+    for (let i=0;i<hkl.length;i++)  {
+      for (let j=i+1;j<hkl.length;j++)
         if (hkl[i].dataId==hkl[j].dataId)
           addMessage ( 'Reflection data','dataset ' + hkl[i].dname +
                        ' is used in more than one input positions, which is not ' +
@@ -449,7 +451,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  let conf = require('../../js-server/server.configuration');
 
   TaskShelxCD.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -457,7 +459,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hklrev'] = [revision.HKL];
       //if (revision.HKL.nativeKey!='unused')
       //  this.input_data.data['native'] = [revision.HKL];
