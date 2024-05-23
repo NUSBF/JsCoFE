@@ -166,7 +166,7 @@ TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {  //  will run only on server side
 
   // acquire configuration module
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   // form command line for server's node js to start task's python driver;
   // note that last 3 parameters are optional and task driver will not use
