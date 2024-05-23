@@ -160,7 +160,7 @@ TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
                   'openfold'] );
 }
 
-TaskStructurePrediction.prototype.cleanJobDir ( self ) = function ( jobDir )  {}
+TaskStructurePrediction.prototype.cleanJobDir = function ( jobDir )  {}
 
 // ===========================================================================
 
