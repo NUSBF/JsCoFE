@@ -21,7 +21,7 @@
 
 'use strict';
 
-var __template = null;
+var __template = null;  // always null when running in browser
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.dtypes.template' );
@@ -44,6 +44,7 @@ function DataSequence()  {
   this.ncopies = 1;     // expected number of copies in ASU
   this.nfind   = 1;     // copies to find
   this.ncopies_auto = true;  // flag to find ncopies automatically
+  this.npred   = 1;     // number of copies in complex for structure prediction
 
   //this.ensembles = [];    // list of chosen ensemble models for MR
 
@@ -63,7 +64,7 @@ DataSequence.prototype.icon  = function()  { return 'data';                    }
 // when data class version is changed here, change it also in python
 // constructors
 DataSequence.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -92,14 +93,14 @@ if (!__template)  {
 */
 
   DataSequence.prototype.extend = function() {
-    var seqext     = $.extend ( true,{},this );
+    let seqext     = $.extend ( true,{},this );
     seqext.xyzmeta = $.extend ( true,{},this.xyzmeta );
     return seqext;
   }
 
 
   DataSequence.prototype.makeDataSummaryPage = function ( task ) {
-    var dsp = new DataSummaryPage ( this );
+    let dsp = new DataSummaryPage ( this );
 
     if (this.files[file_key.seq]=='(unknown)')
 
@@ -112,7 +113,7 @@ if (!__template)  {
 
       dsp.makeRow ( 'Contents','','Macromolecular sequence' );
 
-      var req_data  = {};
+      let req_data  = {};
       req_data.meta = {};
       req_data.meta.project = task.project;
       req_data.meta.id      = this.jobId;
@@ -175,6 +176,23 @@ if (!__template)  {
       if (row>0)
         customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
 
+    } else if (startsWith(dropdown.layCustom,'ncopies-spred'))  {
+
+      grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
+      grid.setLabel ( 'Number of copies in complex:',0,0,1,1 )
+          .setFontItalic ( true ).setNoWrap ( true );
+      if (!('npred' in this))
+        this.npred = 1;
+      let ncsp_value = Math.max ( 1,this.npred );
+      customGrid.ncopies_inp = grid.setInputText ( ncsp_value,0,1,1,1 )
+                    .setStyle ( 'text','integer','',
+                      'Specify number of sequence copies in complex' )
+                    .setWidth_px ( 50 );
+      grid.setVerticalAlignment ( 0,0,'middle' );
+
+      if (row>0)
+        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
+
     } else if (dropdown.layCustom=='chain-input-list')  {
 
       if (!('chain_list' in this))
@@ -204,8 +222,9 @@ if (!__template)  {
     let msg = '';   // Ok by default
     let customGrid = dropdown.customGrid;
 
-    if (startsWith(dropdown.layCustom,'asu-content') ||
-        startsWith(dropdown.layCustom,'stoichiometry'))  {
+    if (startsWith(dropdown.layCustom,'asu-content')   ||
+        startsWith(dropdown.layCustom,'stoichiometry') ||
+        startsWith(dropdown.layCustom,'ncopies-spred'))  {
       /*
       let nc_value = customGrid.ncopies_inp.getValue();
       this.ncopies_auto = (nc_value.length<=0);
@@ -215,8 +234,12 @@ if (!__template)  {
       let nc_value = customGrid.ncopies_inp.getValue().trim();
       if ((!nc_value) || customGrid.ncopies_inp.element.validity.patternMismatch)
         msg = 'Number of copies must be positive integer';
-      else
-        this.ncopies = parseInt ( nc_value );
+      else  {
+        nc_value = parseInt ( nc_value );
+        if (startsWith(dropdown.layCustom,'ncopies-spred'))
+              this.npred   = nc_value;
+        else  this.ncopies = nc_value;
+      }
     } else if (dropdown.layCustom=='chain-input-list')  {
       this.chain_list = customGrid.chain_list_inp.getValue();
     }
