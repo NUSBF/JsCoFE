@@ -47,9 +47,10 @@ function TaskStructurePrediction()  {   // must start with Task...
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
+      customInput : 'ncopies-spred',
       inputId     : 'seq',      // input Id for referencing input fields
       min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      max         : 24          // maximum acceptable number of data instances
     }
   ];
 
@@ -145,7 +146,7 @@ TaskStructurePrediction.prototype.requiredEnvironment = function() {
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskStructurePrediction.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
