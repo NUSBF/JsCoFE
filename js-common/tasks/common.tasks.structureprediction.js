@@ -160,6 +160,8 @@ TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
                   'openfold'] );
 }
 
+TaskStructurePrediction.prototype.cleanJobDir ( self ) = function ( jobDir )  {}
+
 // ===========================================================================
 
 //  4. Add server-side code
