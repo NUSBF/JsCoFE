@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    23.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -234,6 +234,7 @@ class ShelxCD(basic.TaskDriver):
 
         # check results
         have_results = False
+        summary_line = "failed"
         if os.path.isfile(pdbfile):
             st = gemmi.read_structure(pdbfile)
             st.setup_entities()
@@ -266,6 +267,82 @@ class ShelxCD(basic.TaskDriver):
             if anom_structure:
                 anom_structure.setAnomSubstrSubtype() # substructure
                 #anom_structure.setHLLabels()
+
+                hkl_all_0  = []
+                hkl_all_0 += hkl
+                sort_order = ["choose-one","peak","inflection","native","low-remote","high-remote"]
+                if native:
+                    native.wtype = "native"
+                    hkl_all_0.append ( native )
+                    if native.useForPhasing:
+                        sort_order = ["native","choose-one","peak","inflection","low-remote","high-remote"]
+                hkl_all = []
+                for wtype in sort_order:
+                    for i in range(len(hkl_all_0)):
+                        if hkl_all_0[i].wtype==wtype:
+                            hkl_all.append ( hkl_all_0[i] )
+                            break
+
+                if len(hkl_all)==1:
+                    self.putTitle ( "Structure Revision" )
+                else:
+                    self.putTitle ( "Structure Revisions" )
+
+                self.putMessage ( "&nbsp;" )
+                if len(hkl_all)>1:
+                    self.putMessage (
+                        "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
+
+                gridId = self.getWidgetId ( "revision" )
+                pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
+                                        self.rvrow,0,1,1 )
+                self.rvrow += 1
+
+                xyz_file = anom_structure.getSubFileName()
+                anom_structure.removeFiles()
+                anom_structure.setSubFile ( xyz_file )
+                anom_structure.removeSubtype ( dtype_template.subtypePhases() )
+
+                revout = []
+                for i in range(len(hkl_all)):
+
+                    # make structure revision
+                    ri = dtype_revision.DType ( -1 )
+                    ri.copy ( revision )
+                    ri.setStructureData  ( anom_structure  )
+                    ri.setReflectionData ( hkl_all[i]      )
+
+                    if len(hkl_all)==1:
+                        ri.makeRevDName  ( self.job_id,i+1,self.outputFName )
+                        self.putRevisionWidget ( gridId,i,
+                            "New structure revision name:",ri )
+                    else:
+                        ri.makeRevDName ( self.job_id,i+1,
+                            self.outputFName + " (" + hkl_all[i].wtype + ")" )
+                        self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
+                            " dataset:",ri )
+
+                    ri.register ( self.outputDataBox )
+                    revout.append ( ri )
+                    have_results = True
+
+                    if self.task.autoRunName.startswith("@"):
+                        # scripted workflow framework
+                        auto_workflow.nextTask ( self,{
+                                "data" : {
+                                    "revision" : revout
+                                },
+                                "scores" :  {
+                                    "Nsubs" : anom_structure.getNofAtoms()
+                                }
+                        })
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                if have_results:
+                    summary_line = revision.ASU.ha_type + "<sub>" +\
+                                   str(anom_structure.getNofAtoms()) +\
+                                   "</sub> substructure found"
+
             else:
                 self.putMessage ( "Anomalous substructure calculations failed." )
 
@@ -285,82 +362,6 @@ class ShelxCD(basic.TaskDriver):
             #  for making an individual revision; sort the list such that
             #  the most probable revision for taking downstream is on
             #  top of the list
-            hkl_all_0  = []
-            hkl_all_0 += hkl
-            sort_order = ["choose-one","peak","inflection","native","low-remote","high-remote"]
-            if native:
-                native.wtype = "native"
-                hkl_all_0.append ( native )
-                if native.useForPhasing:
-                    sort_order = ["native","choose-one","peak","inflection","low-remote","high-remote"]
-            hkl_all = []
-            for wtype in sort_order:
-                for i in range(len(hkl_all_0)):
-                    if hkl_all_0[i].wtype==wtype:
-                        hkl_all.append ( hkl_all_0[i] )
-                        break
-
-            if len(hkl_all)==1:
-                self.putTitle ( "Structure Revision" )
-            else:
-                self.putTitle ( "Structure Revisions" )
-
-            self.putMessage ( "&nbsp;" )
-            if len(hkl_all)>1:
-                self.putMessage (
-                    "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
-
-            gridId = self.getWidgetId ( "revision" )
-            pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
-                                    self.rvrow,0,1,1 )
-            self.rvrow += 1
-
-            xyz_file = anom_structure.getSubFileName()
-            anom_structure.removeFiles()
-            anom_structure.setSubFile ( xyz_file )
-            anom_structure.removeSubtype ( dtype_template.subtypePhases() )
-
-            revout = []
-            for i in range(len(hkl_all)):
-
-                # make structure revision
-                ri = dtype_revision.DType ( -1 )
-                ri.copy ( revision )
-                ri.setStructureData  ( anom_structure  )
-                ri.setReflectionData ( hkl_all[i]      )
-
-                if len(hkl_all)==1:
-                    ri.makeRevDName  ( self.job_id,i+1,self.outputFName )
-                    self.putRevisionWidget ( gridId,i,
-                        "New structure revision name:",ri )
-                else:
-                    ri.makeRevDName ( self.job_id,i+1,
-                        self.outputFName + " (" + hkl_all[i].wtype + ")" )
-                    self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
-                        " dataset:",ri )
-
-                ri.register ( self.outputDataBox )
-                revout.append ( ri )
-                have_results = True
-
-                if self.task.autoRunName.startswith("@"):
-                    # scripted workflow framework
-                    auto_workflow.nextTask ( self,{
-                            "data" : {
-                                "revision" : revout
-                            },
-                            "scores" :  {
-                                "Nsubs" : anom_structure.getNofAtoms()
-                            }
-                    })
-                    # self.putMessage ( "<h3>Workflow started</hr>" )
-
-            if have_results:
-                self.generic_parser_summary["shelxcd"] = {
-                    "summary_line" : revision.ASU.ha_type + "<sub>" +\
-                                    str(anom_structure.getNofAtoms()) +\
-                                    "</sub> substructure found"
-                }
 
             # else:
             #     self.rvrow = rvrow0
@@ -368,6 +369,12 @@ class ShelxCD(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Substructure Found" )
+            summary_line = "no substructure found"
+
+
+        self.generic_parser_summary["shelxcd"] = {
+            "summary_line" : summary_line
+        }
 
         self.generic_parser_summary.pop ( "refmac",None )
         self.flush()
