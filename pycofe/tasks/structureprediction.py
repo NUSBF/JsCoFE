@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    23.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,7 @@ import shutil
 # import uuid
 
 from pycofe.tasks  import basic
+from pycofe.dtypes import dtype_sequence
 from pycofe.auto   import auto
 
 # ============================================================================
@@ -62,6 +63,8 @@ class StructurePrediction(basic.TaskDriver):
     #         model.meta["seqId"] = seqid_lst[0]
     #     return
 
+    def file_seq_path (self):  return "structure_prediction.seq"
+
     def run(self):
 
         scriptf = "process.sh"
@@ -70,10 +73,21 @@ class StructurePrediction(basic.TaskDriver):
 
         # close execution logs and quit
 
-        seq  = self.makeClass ( self.input_data.data.seq[0] )
+        seq  = self.input_data.data.seq
         sec1 = self.task.parameters.sec1.contains
 
-        seqfilepath = seq.getSeqFilePath ( self.inputDir() )
+        seqname  = []
+        sequence = []
+        ncopies  = []
+        for i in range(len(seq)):
+            seqname.append ( 'seq' + str(i+1) )
+            s = self.makeClass ( seq[i] )
+            sequence.append ( s.getSequence(self.inputDir()) )
+            ncopies .append ( s.npred )
+        dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
+                                           seqname,sequence,ncopies )
+
+        # seqfilepath = seq.getSeqFilePath ( self.inputDir() )
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
@@ -113,7 +127,7 @@ class StructurePrediction(basic.TaskDriver):
             self.putWaitMessageLF ( "Prediction in progress ..." )
 
             rc = self.runApp ( configuration["script_path"],
-                               [seqfilepath,nmodels_str,dirName],
+                               [self.file_seq_path(),nmodels_str,dirName],
                                logType="Main",quitOnError=False )
 
             self.removeCitation ( configuration["script_path"] )
@@ -122,7 +136,7 @@ class StructurePrediction(basic.TaskDriver):
 
             script = "#!/bin/bash\n" +\
                     "af2start"  +\
-                    " --seqin " + seqfilepath
+                    " --seqin " + self.file_seq_path()
 
             if hasattr(sec1,"MINSCORE"):
                 script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
