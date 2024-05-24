@@ -82,7 +82,7 @@ class StructurePrediction(basic.TaskDriver):
         for i in range(len(seq)):
             seqname.append ( 'seq' + str(i+1) )
             seq[i] = self.makeClass ( seq[i] )
-            sequence.append ( seq[i].getSequence(self.inputDir()) )
+            sequence.append ( seq[i].getSequence(self.inputDir()).replace("-","").replace("X","") )
             if not hasattr(seq[i],"npred"):
                 seq[i].npred = 1  # backward compatibility in existing setups
             ncopies.append ( seq[i].npred )
@@ -336,20 +336,20 @@ class StructurePrediction(basic.TaskDriver):
 
                 if nmodels_str=="1":
                   self.putTitle ( "Generated model" )
-                  msg = "<i><b>Prepared model is associated with "
                 else:
                   self.putTitle ( "Generated models" )
-                  msg = "<i><b>Prepared models are associated with "
 
                 if len(seq)<=1:
-                    msg += " sequence:&nbsp;" + seq[0].dname
+                    msg = "<b>Associated sequence:</b>"
                 else:
-                    msg += "with the following sequences:<ul><li>"
-                    for s in seq: 
-                        msg += "</li><li>" + s.dname
-                    msg += "</li></ul>"
+                    msg = "<b>Associated sequences:</b>"
+                    
+                msg += "<ul>"
+                for s in seq: 
+                    msg += "<li>" + str(s.npred) + "&nbsp;x&nbsp;" + s.dname + "</li>"
+                msg += "</ul>"
 
-                self.putMessage ( msg + "</b></i>&nbsp;<br>&nbsp;" )
+                self.putMessage ( msg )
 
                 for i in range(len(fpaths)):
 
