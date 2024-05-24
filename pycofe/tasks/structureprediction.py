@@ -79,6 +79,7 @@ class StructurePrediction(basic.TaskDriver):
         seqname  = []
         sequence = []
         ncopies  = []
+        npmax    = 0
         for i in range(len(seq)):
             seqname.append ( 'seq' + str(i+1) )
             seq[i] = self.makeClass ( seq[i] )
@@ -86,6 +87,7 @@ class StructurePrediction(basic.TaskDriver):
             if not hasattr(seq[i],"npred"):
                 seq[i].npred = 1  # backward compatibility in existing setups
             ncopies.append ( seq[i].npred )
+            npmax = max ( npmax,seq[i].npred )
         dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
                                            seqname,sequence,ncopies )
 
@@ -345,11 +347,11 @@ class StructurePrediction(basic.TaskDriver):
                     msg = "<b>Associated sequences:</b>"
                     
                 msg += "<ul>"
-                if len(seq)==1 and seq[0].npred==1:
-                    msg += "<li>" + seq[0].dname + "</li>"
-                else:
-                  for s in seq:
-                      msg += "<li>" + str(s.npred) + "&nbsp;x&nbsp;" + s.dname + "</li>"
+                # if len(seq)==1 and seq[0].npred==1:
+                #     msg += "<li>" + seq[0].dname + "</li>"
+                # else:
+                for s in seq:
+                    msg += "<li>" + str(s.npred) + "&nbsp;x&nbsp;" + s.dname + "</li>"
                 msg += "</ul>"
 
                 self.putMessage ( msg )
