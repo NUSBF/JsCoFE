@@ -174,7 +174,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     #     calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
     #                    job_dir,file_stdout,file_stderr,"refmac",log_parser )
 
-    return
+    return rc
 
 
 # ============================================================================
