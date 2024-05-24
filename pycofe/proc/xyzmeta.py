@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    18.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,10 +15,9 @@
 #
 
 #  python native imports
-#import os
-import sys
 
 #  ccp4-python imports
+import os
 import gemmi
 #import pyrvapi
 
@@ -44,34 +43,34 @@ def XYZMeta ( json_str ):
 """
 
 def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
-# returns chain information as the following disctionary:
-
-    """
-    {
-      'cryst' : {
-          'spaceGroup': 'P 21 21 21',
-          'a'     : 64.897,
-          'b'     : 78.323,
-          'c'     : 38.792,
-          'alpha' : 90.00,
-          'beta'  : 90.00,
-          'gamma' : 90.00
-        },
-      'xyz' : [
-      { 'model':1,
-        'chains': [
-          { 'id':'A', 'file':'rnase_model_1_A.pdb', 'type':'AA',
-            'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
-            'size':96, 'ligands':[] },
-          { 'id':'B', 'file':'rnase_model_1_B.pdb', 'type':'AA',
-            'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
-            'size':96, 'ligands':['35S'] }
-                  ]
-      }
-    ],
-      'ligands': ['35S']
-    }
-    """
+# Note: fpath may be gemmi.Structure
+# Returns chain information as the following disctionary:
+#
+# {
+#   'cryst' : {
+#       'spaceGroup': 'P 21 21 21',
+#       'a'     : 64.897,
+#       'b'     : 78.323,
+#       'c'     : 38.792,
+#       'alpha' : 90.00,
+#       'beta'  : 90.00,
+#       'gamma' : 90.00
+#     },
+#   'xyz' : [
+#   { 'model':1,
+#     'chains': [
+#       { 'id':'A', 'file':'rnase_model_1_A.pdb', 'type':'AA',
+#         'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
+#         'size':96, 'ligands':[] },
+#       { 'id':'B', 'file':'rnase_model_1_B.pdb', 'type':'AA',
+#         'seq':'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGEATQEDYYTGDHYATFSLIDQTC',
+#         'size':96, 'ligands':['35S'] }
+#               ]
+#   }
+# ],
+#   'ligands': ['35S']
+# }
+#
 
     """
     scr_file = open ( "pdbcur.script","w" )
@@ -96,7 +95,11 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
     return XYZMeta ( json_str )
     """
 
-    st = gemmi.read_structure ( fpath )
+    if isinstance(fpath,str):
+        st = gemmi.read_structure ( fpath )
+    else:
+        st = fpath
+
     st.setup_entities()
     st.assign_subchains()  # internally marks polymer, ligand and waters
 
@@ -142,3 +145,49 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
         xyz.append(dict(model=int(model.name), chains=chains))
 
     return dict ( cryst=cryst, xyz=xyz, ligands=[], natoms=natoms )
+
+
+class RAMLogger:
+    def __init__ ( self ):
+        self.buffer = []    
+    def write ( self,string ):
+        self.buffer.append ( string.strip() )
+    def flush ( self ):
+        return
+
+def check_topology ( fpath ):
+# returns a list of topology warnings
+# Note: fpath may be gemmi.Structure
+
+    warnings = RAMLogger()
+    mon_dir  = os.environ["CCP4"] + "/lib/data/monomers"
+
+    if isinstance(fpath,str):
+        st = gemmi.read_structure ( fpath )
+    else:
+        st = fpath
+
+    res_list = st[0].get_all_residue_names()
+
+    for res in res_list:
+        if not os.path.exists(os.path.join(mon_dir,res[:1].lower(),res+".cif")):
+            warnings.write ( "Warning: description not found for " + res )
+
+    try:
+
+        monlib = gemmi.read_monomer_lib ( mon_dir,res_list,ignore_missing=True )
+
+        gemmi.prepare_topology ( 
+            st,monlib, 
+            model_index = 0,
+            h_change    = gemmi.HydrogenChange.NoChange,
+            reorder     = False,
+            warnings    = warnings,
+            ignore_unknown_links=False 
+        )
+    
+    except:
+        warnings.write ( 'General problem (wrong file?)' )
+
+    return warnings.buffer
+

@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -293,8 +292,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-demo-004ep--page-root">GerE: SAD and MR-SAD Phasing<a class="headerlink" href="#doc-demo-004ep--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="gere-sad-and-mr-sad-phasing">
+<h1 id="doc-demo-004ep--page-root">GerE: SAD and MR-SAD Phasing<a class="headerlink" href="#doc-demo-004ep--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The data are from the crystal structure of GerE, a transcription activator from Bacillus subtilis, which was solved by MAD phasing using the Se signal (V.M.A. Ducros, R.J. Lewis, C.S. Verma, E.J. Dodson, G. Leonard, J.P. Turkenburg, G.N. Murshudov, A.J. Wilkinson and J.A. Brannigan, J. Mol. Biol. (2001) 306 759-771).</p>
 <p>The protein contains 70 amino acids including two (Se-)Met. Crystal structure has 3 dimers in the asymmetric unit. With modern software, the structure can also be easily solved by SAD phasing from just the Se peak or inflection data.</p>
 <p>The paths to files used in this tutorial:</p>
@@ -305,14 +304,14 @@
 <p>The above paths are relative to the cloud storage root.</p>
 <p>Objectives</p>
 <ol class="arabic simple">
-<li>To learn how to operate with CCP4 Cloud web-interface.</li>
-<li>To get familiar with individual steps of experimental phasing.</li>
+<li><p>To learn how to operate with CCP4 Cloud web-interface.</p></li>
+<li><p>To get familiar with individual steps of experimental phasing.</p></li>
 </ol>
 <p>This tutorial continues “GerE: Auto-EP with Crank-2” and does not repeat explanations of structure revision etc. contained there.</p>
 <p>Workflow is fully defined by numbered paragraphs. Open cycles mark additional information.</p>
 <p>Workflow</p>
 <ol class="arabic simple">
-<li>At this point you have already created a tutorial project and imported native and Se-peak diffraction data, and sequence.</li>
+<li><p>At this point you have already created a tutorial project and imported native and Se-peak diffraction data, and sequence.</p></li>
 </ol>
 <p>2. Create an initial revision suitable for experimental phasing. Define Se as anomalous scatterer.
 Labels of data objects, which appear in menus, look similar to this one: “[0001-02] gere_nat [MADval/Gere/nat] /hkl/anom/”. The first item, “0001-002”, is the data object identifier formed by job number and the index of the data object within the job that created it. The second item, “gere_nat [MADval/Gere/nat]”, is the data-object descriptive name, which, for reflection data objects, consists of  mtz filename without extension and mtz-dataset name. The last item, “/hkl/anom/”, show type and subtype(s) of the data object. It may happen that an mtz-dataset does not actually have anomalous signal but contains mtz-columns I+ and I- (or F+ and F-) and, therefore, is assigned the subtype “anom”. Be careful, the reflection data object “gere_nat [MADval/Gere/nat]”  is such an example. It has subtype “anom” but does not actually have any anomalous signal.</p>
@@ -323,7 +322,7 @@ There is similar task “Substructure Search with SHELX-C/D (SAD)”, which does
 “Se” under the “Structure revision” means that the input substructure contains Se (as should have been defined in the input of “Asymmetric Unit Contents” task). To extend the substructure with Se, you will have to define “Se” once again,  in the LLG map completion menu.
 How many Se sites are there after substructure completion?</p>
 <ol class="arabic simple" start="5">
-<li>The Phaser-SAD job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using “Density Modification with Parrot”. Use corresponding substructure as “Model for NCS detection”.</li>
+<li><p>The Phaser-SAD job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using “Density Modification with Parrot”. Use corresponding substructure as “Model for NCS detection”.</p></li>
 </ol>
 <p>Parrot uses substructure to define initial values of NCS operations. However, each monomers contain only two Se atoms. This is insufficient for determination of NCS operations relating monomers. How Parrot managed to figure out the NCS operations?</p>
 <p>Pay attention to “Reflection statistics” and “NCS statistics” plots, specifically to changes of FOM and NCS mask volume with cycle. Which hand is correct? Could more cycles of density modification be useful? You may run another Parrot job if you think they could.</p>
@@ -331,34 +330,34 @@ How many Se sites are there after substructure completion?</p>
 <p>6. Inspect electron density generated by the two Parrot runs (UglyMol viewer can be opened from Report tab of finished Parrot job window).
 Does comparison of the two maps confirms the correct hand identified from stats?</p>
 <ol class="arabic simple" start="7">
-<li>Continue each of the Parrot jobs with “Automatic Model Building with Buccaneer”.</li>
+<li><p>Continue each of the Parrot jobs with “Automatic Model Building with Buccaneer”.</p></li>
 </ol>
 <p>The correct hand should now be identified with certainty.</p>
 <p>In a real project you would continue the best Buccaneer job by iterating “Model Building with Coot” and “Refmac5” (see Refinement tutorial part 3).</p>
 <p>The rest of this tutorial demonstrates MR-SAD.</p>
 <ol class="arabic simple" start="8">
-<li>We have already imported gere_molA.pdb as coordinate object. Use “Ensemble Preparation for MR from Coordinates” to convert this into ensemble object. Associate the ensemble with the imported gere sequence, but do not do any modification - this is already a perfect model of a single monomer.</li>
+<li><p>We have already imported gere_molA.pdb as coordinate object. Use “Ensemble Preparation for MR from Coordinates” to convert this into ensemble object. Associate the ensemble with the imported gere sequence, but do not do any modification - this is already a perfect model of a single monomer.</p></li>
 </ol>
 <p>The ensemble search model is the model composed of several superposed homologues molecules. A single-chain model can be considered as a single-chain ensemble model. Such a terminology, where ensemble = search model was initially adopted in Phaser and then in other programs including ccp4cloud.</p>
 <ol class="arabic simple" start="9">
-<li>Run “Molecular Replacement with Molrep”. Ask for 3 copies - we want to emulate partial MR solution that requires additional phase information for model completion.</li>
+<li><p>Run “Molecular Replacement with Molrep”. Ask for 3 copies - we want to emulate partial MR solution that requires additional phase information for model completion.</p></li>
 </ol>
 <p>Use UglyMol to inspect electron density map. Can you locate position of missing molecules? Is the density good enough for manual model building?</p>
 <ol class="arabic simple" start="10">
-<li>Use “Experimental Phasing with Phaser (SAD)” for Se-substructure determination and initial phasing.</li>
+<li><p>Use “Experimental Phasing with Phaser (SAD)” for Se-substructure determination and initial phasing.</p></li>
 </ol>
 <p>Compare this Phaser job with (4): FOM, number of sites. Is the substructure likely to be correct?</p>
 <p>How many revision were generated by this Phaser-EP job in (4) and here? Why?</p>
 <ol class="arabic simple" start="11">
-<li>Continue as in (5-7).</li>
-<li>Compare structures obtained on SAD and MR-SAD routes.</li>
+<li><p>Continue as in (5-7).</p></li>
+<li><p>Compare structures obtained on SAD and MR-SAD routes.</p></li>
 </ol>
 <p>12.1. Select the job that produced a structure that you want use as reference (Job A).</p>
 <p>12.2. Press and keep Apple key (Mac) or Ctrl key (Linux) and select the job that produced the structure you want to match to the reference (Job B).</p>
 <p>12.3 Open task “Symmetry Match to Reference Structure with CSymMatch”. Check that selected revision is the one produced by (Job B). In the reference structure drop-down menu, select the structure produced by (Job A).</p>
 <p>Note that the CSymMatch job node shows its own job number and the number of the job where additional data came from.</p>
 <p>12.4 Continue CSymMatch job with Coot. In Coot task interface, select the structure from (Job A) in the  “Additional structure” menu. Run Coot. The models from SAD and MR-SAD branches should be superposed and you will be able to see differences.</p>
-
+</section>
 
 
           </article>
@@ -379,7 +378,7 @@ Does comparison of the two maps confirms the correct hand identified from stats?
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
