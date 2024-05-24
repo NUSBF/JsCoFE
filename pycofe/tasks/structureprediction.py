@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.05.24   <--  Date of Last Modification.
+#    24.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,15 +81,13 @@ class StructurePrediction(basic.TaskDriver):
         ncopies  = []
         for i in range(len(seq)):
             seqname.append ( 'seq' + str(i+1) )
-            s = self.makeClass ( seq[i] )
-            sequence.append ( s.getSequence(self.inputDir()) )
-            ncopies .append ( s.npred )
+            seq[i] = self.makeClass ( seq[i] )
+            sequence.append ( seq[i].getSequence(self.inputDir()) )
+            if not hasattr(seq[i],"npred"):
+                seq[i].npred = 1  # backward compatibility in existing setups
+            ncopies.append ( seq[i].npred )
         dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
                                            seqname,sequence,ncopies )
-
-        # seqfilepath = seq.getSeqFilePath ( self.inputDir() )
-
-        # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
         simulation = False
 
@@ -180,7 +178,7 @@ class StructurePrediction(basic.TaskDriver):
 
             if simulation:
                 # import shutil
-                shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
+                shutil.copytree ( "C:/Users/user_name/Projects/CCP4Cloud/AF2/af2_output",dirName )
 
             else:
                 rc = self.runApp ( "env",[
@@ -336,11 +334,22 @@ class StructurePrediction(basic.TaskDriver):
                 #                 self.rvrow,col=0,rowSpan=1 )
                 #     self.rvrow += 1
 
-                self.putTitle ( "Generated models" )
+                if nmodels_str=="1":
+                  self.putTitle ( "Generated model" )
+                  msg = "<i><b>Prepared model is associated with "
+                else:
+                  self.putTitle ( "Generated models" )
+                  msg = "<i><b>Prepared models are associated with "
 
-                self.putMessage ( "<i><b>Prepared models are associated " +\
-                                  "with sequence:&nbsp;" + seq.dname +\
-                                  "</b></i>&nbsp;<br>&nbsp;" )
+                if len(seq)<=1:
+                    msg += " sequence:&nbsp;" + seq[0].dname
+                else:
+                    msg += "with the following sequences:<ul><li>"
+                    for s in seq: 
+                        msg += "</li><li>" + s.dname
+                    msg += "</li></ul>"
+
+                self.putMessage ( msg + "</b></i>&nbsp;<br>&nbsp;" )
 
                 for i in range(len(fpaths)):
 
@@ -359,11 +368,11 @@ class StructurePrediction(basic.TaskDriver):
 
                     if xyz:
 
-                        nModels = nModels + 1
+                        nModels += 1
 
                         xyz.fixBFactors ( self.outputDir(),"alphafold",body=self )
-                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                        xyz.addDataAssociation ( seq.dataId )
+                        for s in seq:
+                            xyz.addDataAssociation ( s.dataId )
 
                         if len(fpaths)>1:
                             if i>0:

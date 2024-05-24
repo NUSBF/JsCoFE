@@ -146,7 +146,7 @@ TaskStructurePrediction.prototype.requiredEnvironment = function() {
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskStructurePrediction.prototype.currentVersion = function()  {
-  let version = 1;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -184,9 +184,6 @@ if (__template)  {  //  will run only on server side
               this.id                   // task id (assigned by the framework)
             ];
   }
-
-
-
 
   // -------------------------------------------------------------------------
   // export such that it could be used in server's node js
