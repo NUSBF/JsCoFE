@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    24.05.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -162,8 +162,6 @@ const fe_reqtype = {
   manageDormancy      : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
-  updateFacility      : '-updateFacility',    // request to update facility metadata
-  checkFclUpdate      : '-checkFclUpdate',    // request to check facility update
   saveMyWorkflows     : '-saveMyWorkflows'    // request to save custom workflow descriptions
 };
 

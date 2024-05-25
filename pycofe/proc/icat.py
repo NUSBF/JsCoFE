@@ -1,6 +1,10 @@
 ##!/usr/bin/python
 
 #
+#   RETIRED, TO BE DELETED.  25.05.2024
+#
+
+#
 # ============================================================================
 #
 #    10.04.18   <--  Date of Last Modification.
@@ -331,7 +335,7 @@ def main():
         result = getVisits ( fdata,wdsl )
     elif fdata["item"]["_type"]=="FacilityVisit":
         result = getDatasets ( fdata,wdsl )
-    elif fdata["item"]["_type"]=="FacilityFile":
+    elif fdata["item"]["_type"]=="StorageFile":
         outDir = os.path.join ( jobDir,uploadDir )
         if not os.path.exists(outDir):
             os.makedirs ( outDir )
