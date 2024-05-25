@@ -6,7 +6,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -116,7 +116,7 @@ if (!__template)  {
 
     (function(task){
       div.select_btn.addOnClickListener ( function(){
-        new FacilityBrowser ( div,task );
+        // new FacilityBrowser ( div,task );
       });
 
       if (task.inprogress)

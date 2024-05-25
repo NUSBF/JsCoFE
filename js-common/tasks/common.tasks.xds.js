@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -167,60 +167,7 @@ if (!__template)  {
 } else  {
   // for server side
 
-  const path  = require('path');
-
   const conf  = require('../../js-server/server.configuration');
-  const fcl   = require('../../js-server/server.fe.facilities');
-  const prj   = require('../../js-server/server.fe.projects');
-  const utils = require('../../js-server/server.utils');
-
-  // TaskXDS.prototype.getNCores = function ( ncores_available )  {
-  // // This function should return the number of cores, up to ncores_available,
-  // // that should be reported to a queuing system like SGE or SLURM, in
-  // // case the task spawns threds or processes bypassing the queuing system.
-  // // It is expected that the task will not utilise more cores than what is
-  // // given on input to this function.
-  //   return ncores_available;
-  // }
-
-  // TaskXDS.prototype.makeInputData = function ( loginData,jobDir )  {
-
-  //   var imageDirMeta = [];
-  //   if (this.file_system=='local')  {
-
-  //     imageDirMeta = this.imageDirMeta;
-  //     this.nc_type = 'client';  // job may be run only on client NC
-
-  //   } else  {
-
-  //     var cloudMounts = fcl.getUserCloudMounts ( loginData );
-  //     for (var i=0;i<this.imageDirMeta.length;i++)  {
-  //       imageDirMeta.push ( this.imageDirMeta[i] );
-  //       var lst = imageDirMeta[i].path.split('/');
-  //       if (lst.length>2)  {
-  //         if (lst[0]=='cloudstorage::')  {
-  //           var cm = null;
-  //           for (var j=0;(j<cloudMounts.length) && (!cm);j++)
-  //             if (cloudMounts[j][0]==lst[1])
-  //               cm = cloudMounts[j];
-  //           if (cm)
-  //             imageDirMeta[i].path = path.join ( cm[1],lst.slice(2).join('/') );
-  //         }
-  //       }
-  //     }
-  //     this.nc_type = 'ordinary';  // job may be run on any NC
-
-  //   }
-
-  //   utils.writeObject ( prj.getJobDataPath(loginData,this.project,this.id),this );
-
-  //   utils.writeObject ( path.join(prj.getInputDirPath(jobDir),'__imageDirMeta.json'),
-  //                       {'imageDirMeta':imageDirMeta} );
-
-  //   __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
-
-  // }
-
 
   TaskXDS.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.xds', jobManager, jobDir, this.id];

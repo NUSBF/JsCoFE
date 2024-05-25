@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.05.23   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,253 +10,18 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  FacilityTree
- *       ~~~~~~~~~  StorageTree
+ *  **** Content :  StorageTree
+ *       ~~~~~~~~~  
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
  *    requires:  js-common/dtypes/common.dtypes.box.js
  *
- *   class FacilityTree : Tree {
- *
- *      constructor FacilityTree();
- *
- *   }
- *
  */
 
 'use strict';
-
-// =========================================================================
-// FacilityTree class
-
-function FacilityTree ( treeType,rootPath )  {
-
-  Tree.call ( this,'_____' );
-
-  this.tree_type = treeType;
-  this.tree_root = rootPath;
-
-  this.item_map  = {};
-
-}
-
-FacilityTree.prototype = Object.create ( Tree.prototype  );
-FacilityTree.prototype.constructor = FacilityTree;
-
-
-// -------------------------------------------------------------------------
-
-FacilityTree.prototype.customIcon = function() {
-  var ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
-  return ci;
-}
-
-FacilityTree.prototype.readFacilitiesData = function ( page_title,
-                                                       onLoaded_func,
-                                                       onRightClick_func,
-                                                       onDblClick_func,
-                                                       onSelect_func )  {
-
-  this.item_map = {};  // map[nodeId]==item of all items in the tree
-
-  var meta = {
-    'type' : this.tree_type,
-    'path' : this.tree_root
-  };
-
-  (function(tree){
-    serverRequest ( fe_reqtype.getCloudFileTree,meta,page_title,function(data){
-
-      if (data.message && (data.code=='unconfigured'))
-        MessageDataReadError ( page_title,data['message'] );
- 
-      tree.facilityList = jQuery.extend ( true, new FacilityList(),data );
-
-      function addDir ( tree,dnode,dir )  {
-        var dnode1 = tree.addNode ( dnode,dir.name,image_path('folder'),
-                                    tree.customIcon() );
-        tree.item_map[dnode1.id] = dir;
-        for (var i=0;i<dir.dirs.length;i++)
-          addDir ( tree,dnode1,dir.dirs[i] );
-        for (var i=0;i<dir.files.length;i++)  {
-          var fitem = dir.files[i];
-          var fnode = tree.addNode ( dnode1,fitem.name,image_path('box'),
-                                     tree.customIcon() );
-          tree.item_map[fnode.id] = fitem;
-        }
-      }
-
-      for (var i=0;i<tree.facilityList.facilities.length;i++)  {
-        var fclitem = tree.facilityList.facilities[i];
-        var fclnode = tree.addRootNode ( '<b><i>' + fclitem.title + '</i></b>',
-                                         fclitem.icon,tree.customIcon() );
-        tree.item_map[fclnode.id] = fclitem;
-        for (var j=0;j<fclitem.users.length;j++)  {
-          var uitem = fclitem.users[j];
-          var unode = tree.addNode ( fclnode,uitem.id,image_path('user'),
-                                     tree.customIcon() );
-          tree.item_map[unode.id] = uitem;
-          for (var k=0;k<uitem.visits.length;k++)  {
-            var vitem = uitem.visits[k];
-            var vnode = tree.addNode ( unode,vitem.id + '  <i>[' +
-                                vitem.date.substring(0,10) + ']</i>',
-                                image_path('visit'),tree.customIcon() );
-            tree.item_map[vnode.id] = vitem;
-            for (var m=0;m<vitem.datasets.length;m++)  {
-              var ditem = vitem.datasets[m];
-              var dnode = tree.addNode ( vnode,ditem.path,image_path('folder'),
-                                         tree.customIcon() );
-              tree.item_map[dnode.id] = ditem;
-              for (var n=0;n<ditem.dirs.length;n++)
-                addDir ( tree,dnode,ditem.dirs[n] );
-              for (var n=0;n<ditem.files.length;n++)  {
-                var fitem = ditem.files[n];
-                var fnode = tree.addNode ( dnode,fitem.name,image_path('box'),
-                                           tree.customIcon() );
-                tree.item_map[fnode.id] = fitem;
-              }
-            }
-          }
-        }
-      }
-
-      tree.createTree ( true,onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
-
-    },function(){
-      //tree.startTaskLoop();
-    },'persist');
-
-  }(this));
-
-}
-
-
-FacilityTree.prototype.getSelectedItem = function()  {
-  if (this.selected_node_id in this.item_map)  {
-    return this.item_map[this.selected_node_id];
-  } else  {
-    return null;
-  }
-}
-
-
-
-FacilityTree.prototype.getItem = function ( type,nodeId )  {
-// returns first item of given type found from one corresponding to given tree
-// node and higher along the tree branch
-var item = null;
-var nid  = this.selected_node_id;
-  while ((!item) && nid)  {
-    var itm = this.item_map[nid];
-    if (itm._type==type)
-      item = itm;
-    else
-      nid = this.node_map[nid].parentId;
-  }
-  return item;
-}
-
-
-FacilityTree.prototype.getFacility = function()  {
-// returns facility item corresponding to currently selected item
-  return shallowCopy ( this.getItem ( 'Facility',this.selected_node_id ) );
-}
-
-
-FacilityTree.prototype.getUser = function()  {
-// returns user item corresponding to currently selected item
-  return shallowCopy ( this.getItem ( 'FacilityUser',this.selected_node_id ) );
-}
-
-
-FacilityTree.prototype.getVisit = function()  {
-// returns visit item corresponding to currently selected item
-  return shallowCopy ( this.getItem ( 'FacilityVisit',this.selected_node_id ) );
-}
-
-FacilityTree.prototype.getFile = function()  {
-// returns visit item corresponding to currently selected item
-  return shallowCopy ( this.getItem ( 'FacilityFile',this.selected_node_id ) );
-}
-
-FacilityTree.prototype.getDirPath = function ( nodeid )  {
-var path = '';
-var nid  = nodeid;
-  while (nid)  {
-    var item = this.item_map[nid];
-    if ((item._type=='Facility') || (item._type=='FacilityDir'))
-      path = item.name + '/' + path;
-    else if ((item._type=='FacilityUser') || (item._type=='FacilityVisit'))
-      path = item.id + '/' + path;
-    else if (item._type=='FacilityDataset')
-      path = item.path + '/' + path;
-    nid = this.node_map[nid].parentId;
-  }
-  return path;
-}
-
-
-FacilityTree.prototype.getFacilityName1 = function ( nodeId )  {
-// returns facility name corresponding to given tree node
-var item = this.getItem ( 'Facility',nodeId );
-  if (item)  return item.name;
-  return '';
-}
-
-FacilityTree.prototype.getFacilityName = function()  {
-// returns facility name corresponding to currently selected tree node
-var item = this.getItem ( 'Facility',this.selected_node_id );
-  if (item)  return item.name;
-  return '';
-}
-
-FacilityTree.prototype.getUserID1 = function ( nodeId )  {
-// returns user Id corresponding to given tree node
-var item = this.getItem ( 'FacilityUser',nodeId );
-  if (item)  return item.id;
-  return '';
-}
-
-FacilityTree.prototype.getUserID = function()  {
-// returns user Id corresponding to currently selected tree node
-var item = this.getItem ( 'FacilityUser',this.selected_node_id );
-  if (item)  return item.id;
-  return '';
-}
-
-FacilityTree.prototype.getVisitID1 = function ( nodeId )  {
-// returns visit Id corresponding to given tree node
-var item = this.getItem ( 'FacilityVisit',nodeId );
-  if (item)  return item.id;
-  return '';
-}
-
-FacilityTree.prototype.getVisitID = function()  {
-// returns visit Id corresponding to currently selected tree node
-// returns user Id corresponding to currently selected tree node
-var item = this.getItem ( 'FacilityVisit',this.selected_node_id );
-  if (item)  return item.id;
-  return '';
-}
-
-FacilityTree.prototype.getDatasetID1 = function ( nodeId )  {
-// returns dataset Id corresponding to given tree node
-var item = this.getItem ( 'FacilityDataset',nodeId );
-  if (item)  return item.id;
-  return '';
-}
-
-FacilityTree.prototype.getDatasetID = function()  {
-// returns visit Id corresponding to currently selected tree node
-var item = this.getItem ( 'FacilityDataset',this.selected_node_id );
-  if (item)  return item.id;
-  return '';
-}
-
-
 
 // =========================================================================
 // StorageTree class
@@ -288,7 +53,7 @@ StorageTree.prototype.constructor = StorageTree;
 // -------------------------------------------------------------------------
 
 StorageTree.prototype.customIcon = function() {
-  var ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
+  let ci = new TreeNodeCustomIcon ( activityIcon(),'22px','22px','hidden' );
   return ci;
 }
 
@@ -301,7 +66,7 @@ StorageTree.prototype.customIcon = function() {
   "Demo projects"  : "./demo-projects"
 */
 
-var icon_ext = {
+let icon_ext = {
   'mtz'       : 'file_mtz',
   'sca'       : 'file_mtz',
   'h5'        : 'file_hdf',
@@ -325,7 +90,7 @@ var icon_ext = {
   'wscript'   : 'file_wscript'
 };
 
-var importable_ext = [
+let importable_ext = [
   'mtz', 'pdb', 'ent', 'mmcif', 'jpg', 'jpeg', 'png', 'gif', 'html',
   'txt', 'pdf', 'seq', 'fasta', 'pir', 'hhr' , 'sca', 'cif', 'lib',
   'borges'
@@ -343,15 +108,15 @@ StorageTree.prototype.readStorageData = function ( page_title,
   this.item_map = {};  // map[nodeId]==item of all items in the tree
   if (extFilter && (extFilter.length>0))  {
     this.ext_filter = [];
-    for (var i=0;i<extFilter.length;i++)  {
-      var ext = extFilter[i].toLowerCase().replace(/^./,'');
+    for (let i=0;i<extFilter.length;i++)  {
+      let ext = extFilter[i].toLowerCase().replace(/^./,'');
       if (importable_ext.indexOf(ext)>=0)
         this.ext_filter.push(ext);
     }
   } else
     this.ext_filter = importable_ext;
 
-  var meta = {
+  let meta = {
     'type' : this.tree_type,
     'path' : this.tree_root,
     'root' : this.tree_top
@@ -379,7 +144,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
         } else  {
 
-          var rootLabel  = 'Cloud File Storage';
+          let rootLabel  = 'Cloud File Storage';
           tree.tree_root = tree.storageList.path;
           if (tree.tree_root)
             rootLabel = tree.tree_root;
@@ -387,9 +152,9 @@ StorageTree.prototype.readStorageData = function ( page_title,
           tree.root.element.style.paddingTop  = '4px';
           tree.root.element.style.paddingLeft = '40px';
 
-          for (var i=0;i<tree.storageList.dirs.length;i++)  {
-            var sdir = tree.storageList.dirs[i];
-            var name = sdir.name;
+          for (let i=0;i<tree.storageList.dirs.length;i++)  {
+            let sdir = tree.storageList.dirs[i];
+            let name = sdir.name;
             if (name=='**top**')  {
               if (sdir.hasOwnProperty('fullDesc'))
                 tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
@@ -399,8 +164,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
                 if (sdir.hasOwnProperty('fullDesc'))
                   tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
               }
-              var icon   = 'folder';
-              var nlower = name.toLowerCase();
+              let icon   = 'folder';
+              let nlower = name.toLowerCase();
               if (nlower.indexOf('my computer'  )>=0) icon = 'folder_mycomputer';
               else if (nlower.indexOf('home'    )>=0) icon = 'folder_home';
               else if (nlower.indexOf('ccp4'    )>=0) icon = 'folder_ccp4';
@@ -409,22 +174,22 @@ StorageTree.prototype.readStorageData = function ( page_title,
               else if (nlower.indexOf('workshop')>=0) icon = 'folder_workshops';
               if ((nlower.indexOf('howto')>=0) || (nlower.indexOf('how ')>=0) ||
                   (nlower.indexOf('?')>=0))  icon = 'folder_howto';
-              var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+              let dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
               if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
                 dnode.setTooltip ( sdir.shortDesc );
               tree.item_map[dnode.id] = sdir;
             }
           }
 
-          for (var i=0;i<tree.storageList.files.length;i++)  {
+          for (let i=0;i<tree.storageList.files.length;i++)  {
 
-            var sfile = tree.storageList.files[i];
-            var name  = sfile.name;
+            let sfile = tree.storageList.files[i];
+            let name  = sfile.name;
 
             if ((name!='..') && (!startsWith(name,'.')))  {  // remove hiden files
 
-              var base  = sfile.name.split('.');
-              var ext   = base.pop().toLowerCase();
+              let base  = sfile.name.split('.');
+              let ext   = base.pop().toLowerCase();
               if (ext=='gz')  {
                 ext = base.pop().toLowerCase();
                 if (importable_ext.indexOf(ext)<0)
@@ -432,7 +197,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
               }
 
               base = base.join('.').toLowerCase();
-              var show = (tree.file_key!=2);
+              let show = (tree.file_key!=2);
               if (tree.file_key==4)
                 show = (tree.ext_filter.indexOf(ext)>=0);
                 //show = (importable_ext.indexOf(ext)>=0);
@@ -442,7 +207,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
                   name = name.substring ( 0, name.lastIndexOf('.') );
               }
 
-              var icon  = 'file_dummy';
+              let icon  = 'file_dummy';
               if (ext in icon_ext)  {
                 icon = icon_ext[ext];
               } else if ('h5' in sfile)   {
@@ -458,10 +223,10 @@ StorageTree.prototype.readStorageData = function ( page_title,
                 show = (tree.file_key==1) || (tree.file_key==2);
               }
               if (show)  {
-                var fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+                let fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
                 tree.item_map[fnode.id] = sfile;
               } else  {
-                var fnode = tree.addRootNode ( '<span style="color:gray">' + name + '</span>',image_path(icon),tree.customIcon() );
+                let fnode = tree.addRootNode ( '<span style="color:gray">' + name + '</span>',image_path(icon),tree.customIcon() );
                 //tree.item_map[fnode.id] = sfile;
               }
 
@@ -485,9 +250,9 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
 
 StorageTree.prototype.getSelectedItems = function()  {
-  var selNodeId = this.calcSelectedNodeIds();
-  var items = [];
-  for (var i=0;i<selNodeId.length;i++)
+  let selNodeId = this.calcSelectedNodeIds();
+  let items = [];
+  for (let i=0;i<selNodeId.length;i++)
     if (selNodeId[i] in this.item_map)  {
       items.push ( this.item_map[selNodeId[i]] );
   }

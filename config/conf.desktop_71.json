@@ -31,7 +31,6 @@
         "diskReserve": 10000
       }
     },
-    "facilitiesPath": "./cofe-facilities",
     "bootstrapHTML": "./bootstrap/jscofe.html",
     "fileCapSize": 500000,
     "regMode": "admin",
