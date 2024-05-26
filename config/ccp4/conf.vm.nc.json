@@ -19,7 +19,6 @@
     "fsmount"          : "",
     "userDataPath"     : "./vm-cofe-users",
     "projectsPath"     : "./vm-cofe-projects",
-    "facilitiesPath"   : "./vm-cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,

@@ -54,9 +54,6 @@
         "path"     : "./cofe-nc-storage/jobs_safe",
         "capacity" : 10
     },
-    "facilitiesPath"   : "./cofe-facilities",
-    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
-    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {
       "arpwarp" : {
         "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
