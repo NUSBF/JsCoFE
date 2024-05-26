@@ -2483,7 +2483,7 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
             replay_task.state = job_code.running;
             let data  = {};
             data.meta = replay_task;
-            data.ancestors = [];  // used only for knowledge facility, ignored here
+            data.ancestors = [];  // used only for knowledge framework, ignored here
             serverRequest ( fe_reqtype.replayJob,data,replay_task.title,
               function(rdata){},  //callback_ok
               null,null

@@ -2,15 +2,15 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.phasermr.js
+ *  **** Module  :  js-common/cofe.tasks.cloudimport.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Facility Import Task Class
+ *  **** Content :  Cloud Import Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
@@ -149,11 +149,11 @@ if (!__template)  {
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       // div.header.setLabel ( ' ',2,0,1,1 );
       // div.header.setLabel ( ' ',2,1,1,1 );
-      div.header.setLabel ( '<hr/>Use the file selection button below to select and ' +
-                          'transfer facility data to the Project (use multiple ' +
-                          'file selections and repeat uploads if necessary). ' +
-                          'When done, hit <b><i>Import</i></b> button to process ' +
-                          'files transferred.<hr/>',
+      div.header.setLabel ( '<hr/>Use the file selection button below to select ' +
+                          'data to be imported (use multiple file selections ' +
+                          'and repeat uploads if necessary). ' +
+                          'When done, hit <b><i>Import</i></b> button to start ' +
+                          'the import.<hr/>',
                           3,0, 1,4 ).setFontSize('80%');
 
     } else
