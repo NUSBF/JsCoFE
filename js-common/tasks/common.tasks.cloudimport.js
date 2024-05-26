@@ -149,11 +149,9 @@ if (!__template)  {
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       // div.header.setLabel ( ' ',2,0,1,1 );
       // div.header.setLabel ( ' ',2,1,1,1 );
-      div.header.setLabel ( '<hr/>Use the file selection button below to select ' +
-                          'data to be imported (use multiple file selections ' +
-                          'and repeat uploads if necessary). ' +
-                          'When done, hit <b><i>Import</i></b> button to start ' +
-                          'the import.<hr/>',
+      div.header.setLabel ( '<hr/>Use the file selection button below to choose ' +
+                          'files for import. When done, hit <b><i>Import</i></b> ' +
+                          'button to start importing.<hr/>',
                           3,0, 1,4 ).setFontSize('80%');
 
     } else
