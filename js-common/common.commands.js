@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    24.05.24   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.019 [16.02.2024]';   // for the main server
-const jsCoFE_version = '1.7.020 [24.05.2024]';   // for update
+const jsCoFE_version = '1.7.020 [26.05.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -88,7 +88,7 @@ const fe_command = {
   upload            : '=upload',         // upload request, hard-coded in gui.upload.js
   jobFinished       : '=job_finished',   // request to accept data from finished job
   cloudRun          : '=cloud_run',      // run job from command prompt on client
-  checkSession      : '=check_session',  // request to check facility update
+  checkSession      : '=check_session',  // request to check session status
   authResponse      : '=auth_response',  // process from software authorisation server
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
   checkAnnouncement : '=checkannouncement', // get service announcements
@@ -162,8 +162,6 @@ const fe_reqtype = {
   manageDormancy      : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
-  updateFacility      : '-updateFacility',    // request to update facility metadata
-  checkFclUpdate      : '-checkFclUpdate',    // request to check facility update
   saveMyWorkflows     : '-saveMyWorkflows'    // request to save custom workflow descriptions
 };
 

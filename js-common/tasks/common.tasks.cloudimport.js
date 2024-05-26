@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.phasermr.js
+ *  **** Module  :  js-common/cofe.tasks.cloudimport.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Facility Import Task Class
+ *  **** Content :  Cloud Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
  *
  *  =================================================================
  *
@@ -70,7 +70,7 @@ TaskCloudImport.prototype.constructor = TaskCloudImport;
 TaskCloudImport.prototype.clipboard_name = function()  { return '"Cloud Import"'; }
 
 TaskCloudImport.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -143,23 +143,21 @@ if (!__template)  {
   // makes input panel for ICAT task; dataBox is not used as icat task
   // does not have any input data from the project
 
-    var div = this.makeInputLayout();
+    let div = this.makeInputLayout();
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
       // div.header.setLabel ( ' ',2,0,1,1 );
       // div.header.setLabel ( ' ',2,1,1,1 );
-      div.header.setLabel ( '<hr/>Use the file selection button below to select and ' +
-                          'transfer facility data to the Project (use multiple ' +
-                          'file selections and repeat uploads if necessary). ' +
-                          'When done, hit <b><i>Import</i></b> button to process ' +
-                          'files transferred.<hr/>',
+      div.header.setLabel ( '<hr/>Use the file selection button below to choose ' +
+                          'files for import. When done, hit <b><i>Import</i></b> ' +
+                          'button to start importing.<hr/>',
                           3,0, 1,4 ).setFontSize('80%');
 
     } else
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
-    var grid_row = div.grid.getNRows();
+    let grid_row = div.grid.getNRows();
     div.grid.setWidth ( '100%' );
     div.select_btn = div.grid.setButton ( 'Select file(s)',
                                           image_path('open_file'),grid_row,0,1,1 )
@@ -173,7 +171,7 @@ if (!__template)  {
     if (this.selected_items.length>0)
       div.select_btn.setText ( 'Select more files' );
 
-    var task = this;
+    let task = this;
     //(function(task){
       div.select_btn.addOnClickListener ( function(){
         new CloudFileBrowser ( div,task,4,[],function(items){
@@ -208,8 +206,8 @@ if (!__template)  {
     if ('fileListPanel' in inputPanel)  {
       inputPanel.fileListTitle.setVisible ( this.selected_items.length>0 );
       if (this.selected_items.length>0)  {
-        var txt = '';
-        for (var i=0;i<this.selected_items.length;i++)  {
+        let txt = '';
+        for (let i=0;i<this.selected_items.length;i++)  {
           if (i>0)  txt += '<br>';
           txt += this.selected_items[i].name;
         }
@@ -227,11 +225,11 @@ if (!__template)  {
       return;
     }
 
-    var fitems = [];
-    var ignore = '';
-    for (var i=0;i<file_items.length;i++)
-      if (file_items[i]._type!='FacilityDir')  {
-        var lcname = file_items[i].name.toLowerCase();
+    let fitems = [];
+    let ignore = '';
+    for (let i=0;i<file_items.length;i++)
+      if (file_items[i]._type!='StorageDir')  {
+        let lcname = file_items[i].name.toLowerCase();
         if (endsWith(lcname,'.ccp4_demo') ||
             endsWith(lcname,'.ccp4cloud') ||
             endsWith(lcname,'.zip'))
@@ -250,18 +248,18 @@ if (!__template)  {
 
       if (fitems.length>0)  {
 
-        var sfnames = [];
-        for (var i=0;i<task.selected_items.length;i++)
+        let sfnames = [];
+        for (let i=0;i<task.selected_items.length;i++)
           sfnames.push ( task.selected_items[i].name );
 
         _import_checkFiles ( fitems,task.file_mod,sfnames,function(){
 
-          var new_items = [];
-          for (var i=0;i<fitems.length;i++)  {
+          let new_items = [];
+          for (let i=0;i<fitems.length;i++)  {
             if (!startsWith(fitems[i].name,'cloudstorage::/'))
               fitems[i].name = 'cloudstorage::/' + task.currentCloudPath + '/' + fitems[i].name;
-            var found = false;
-            for (var j=0;(j<task.selected_items.length) && (!found);j++)
+            let found = false;
+            for (let j=0;(j<task.selected_items.length) && (!found);j++)
               found = (task.selected_items[j].name==fitems[i].name);
             if (!found)  {
               task.selected_items.push ( fitems[i] );
@@ -304,13 +302,13 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var fs    = require('fs-extra');
-  var path  = require('path');
+  const fs      = require('fs-extra');
+  const path    = require('path');
 
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
-  var uh    = require('../../js-server/server.fe.upload_handler');
-  var fcl   = require('../../js-server/server.fe.facilities');
+  const conf    = require('../../js-server/server.configuration');
+  const utils   = require('../../js-server/server.utils');
+  const uh      = require('../../js-server/server.fe.upload_handler');
+  const storage = require('../../js-server/server.fe.storage');
 
 
   TaskCloudImport.prototype.icon = function()  {
@@ -320,7 +318,7 @@ if (!__template)  {
   }
 
   TaskCloudImport.prototype.makeInputData = function ( loginData,jobDir )  {
-    var uploads_dir = path.join ( jobDir,uh.uploadDir() );
+    let uploads_dir = path.join ( jobDir,uh.uploadDir() );
 
     if (!utils.writeObject(path.join(jobDir,'annotation.json'),this.file_mod))
       console.log ( ' ***** cannot write "annotation.json" in ' + uploads_dir );
@@ -330,17 +328,17 @@ if (!__template)  {
         console.log ( ' ***** cannot create directory ' + uploads_dir );
     }
 
-    var cloudMounts = fcl.getUserCloudMounts ( loginData );
-    for (var i=0;i<this.selected_items.length;i++)  {
-      var lst = this.selected_items[i].name.split('/');
+    let cloudMounts = storage.getUserCloudMounts ( loginData );
+    for (let i=0;i<this.selected_items.length;i++)  {
+      let lst = this.selected_items[i].name.split('/');
       if (lst.length>2)  {
         if (lst[0]=='cloudstorage::')  {
-          var cfpath = null;
-          for (var j=0;(j<cloudMounts.length) && (!cfpath);j++)
+          let cfpath = null;
+          for (let j=0;(j<cloudMounts.length) && (!cfpath);j++)
             if (cloudMounts[j][0]==lst[1])
               cfpath = path.join ( cloudMounts[j][1],lst.slice(2).join('/') );
           if (cfpath)  {
-            var dest_file = path.join ( uploads_dir,lst[lst.length-1] );
+            let dest_file = path.join ( uploads_dir,lst[lst.length-1] );
             try {
               fs.copySync ( cfpath,dest_file );
             } catch (err) {
@@ -355,11 +353,11 @@ if (!__template)  {
       }
     }
 
-    for (var i=0;i<this.file_mod.annotation.length;i++)  {
+    for (let i=0;i<this.file_mod.annotation.length;i++)  {
       utils.removeFile ( path.join(uploads_dir,this.file_mod.annotation[i].file) );
       //redundant_files.push ( file_mod.annotation[i].file );
-      for (var j=0;j<this.file_mod.annotation[i].items.length;j++)  {
-        var fname = this.file_mod.annotation[i].items[j].rename;
+      for (let j=0;j<this.file_mod.annotation[i].items.length;j++)  {
+        let fname = this.file_mod.annotation[i].items[j].rename;
         utils.writeString ( path.join(uploads_dir,fname),
                             this.file_mod.annotation[i].items[j].contents );
         //fdata.files.push ( fname );

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -3004,14 +3004,14 @@ if (!dbx)  {
 } else  {
   //  for server side
 
-  const fs    = require('fs-extra');
-  const path  = require('path');
+  const fs      = require('fs-extra');
+  const path    = require('path');
 
-  const utils = require('../../js-server/server.utils');
-  const prj   = require('../../js-server/server.fe.projects');
-  const conf  = require('../../js-server/server.configuration');
-  const uh    = require('../../js-server/server.fe.upload_handler');
-  const fcl   = require('../../js-server/server.fe.facilities');
+  const utils   = require('../../js-server/server.utils');
+  const prj     = require('../../js-server/server.fe.projects');
+  const conf    = require('../../js-server/server.configuration');
+  const uh      = require('../../js-server/server.fe.upload_handler');
+  const storage = require('../../js-server/server.fe.storage');
 
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
@@ -3089,7 +3089,7 @@ if (!dbx)  {
           console.log ( ' ***** cannot create directory ' + uploads_dir );
       }
 
-      let cloudMounts = fcl.getUserCloudMounts ( loginData );
+      let cloudMounts = storage.getUserCloudMounts ( loginData );
 
       for (let i=0;i<this.file_select.length;i++)
           this.__prepare_file ( this.file_select[i].path,cloudMounts,uploads_dir );
