@@ -2,13 +2,13 @@
 /*
  *  ==========================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
  *  **** Module  :  js-common/tasks/common.data_storage.js
  *       ~~~~~~~~~
- *  **** Facility :  jsCoFE - javascript-based Cloud Front End
+ *  **** Storage :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  Cloud Storage Data Classes
  *       ~~~~~~~~~

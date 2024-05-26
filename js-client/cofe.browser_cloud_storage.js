@@ -2,11 +2,11 @@
 /*
  *  ===========================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
- *  **** Module  :  js-client/cofe.dialog_facility.js
+ *  **** Module  :  js-client/cofe.browser_cloud_storage.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
@@ -29,11 +29,11 @@
 
 function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onClose_func )  {
 
-  this.inputPanel = inputPanel;  // input panel from facility import dialog
+  this.inputPanel = inputPanel;  // input panel from data import dialog
   this.tree_type  = 'files';     // cloud file tree type specificator
   if (task.hasOwnProperty('tree_type'))
     this.tree_type = task.tree_type;
-  this.task       = task;        // facility import task
+  this.task       = task;        // data import task
   this.file_key   = fileKey;     // 0: do not show images
                                  // 1: show images
                                  // 2: show only images
