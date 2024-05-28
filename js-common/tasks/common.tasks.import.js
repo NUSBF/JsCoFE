@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    28.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -118,12 +118,13 @@ function _import_renameFile1 ( fname,uploaded_files )  {
   if (lst.length>1)
     ext = '.' + lst.pop();
 
+  let m = false;
   do {
     name_counter++;
     new_fname = lst.join('.');
     if (name_counter>0)
       new_fname += '.n' + padDigits ( name_counter,3 );
-    let m = false;
+    m = false;
     for (let i=0;(i<uploaded_files.length) && (!m);i++)
       m = startsWith ( uploaded_files[i],new_fname );
   } while (m);
