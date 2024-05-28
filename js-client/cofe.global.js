@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.04.24   <--  Date of Last Modification.
+ *    28.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -99,6 +99,9 @@ var __any_mobile_device = __mobile_device || __iOS_device;
 const __regexp_login  = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
 const __regexp_uname  = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
 
+// variable gets raised in jscofe-browser after loading the page
+// alert ( ' isQt=' + isQtWebEngine() );
+
 /*  ==================== unfinished userAgentData version -- for future
 
 var __mobile_device     = false;  // not iOS
@@ -130,6 +133,12 @@ function isSafari()  {
           navigator.userAgent &&
           navigator.userAgent.indexOf('CriOS') == -1 &&
           navigator.userAgent.indexOf('FxiOS') == -1;
+}
+
+function isQtWebEngine() {
+  return /QtWebEngine/i.test(navigator.userAgent) ||
+          typeof navigator.qt !== "undefined";
+          // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
 }
 
 function checkBrowser()  {

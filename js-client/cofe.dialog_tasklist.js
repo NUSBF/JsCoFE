@@ -24,10 +24,8 @@
 
 'use strict';
 
-
 // -------------------------------------------------------------------------
 // TaskListDialog class
-
 
 var __task_dialog_state = {
   sections : {},

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.02.24   <--  Date of Last Modification.
+#    28.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -103,9 +103,12 @@ class MainWindow(QMainWindow):
         page = CustomWebEnginePage(self)
         self.browser.setPage(page)
 
+        # Enable developer tools
+        self.browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
+
         self.settings = QSettings ("CCP4","CCP4 Browser")
 
-        geometry = self.settings.value('geometry','')
+        geometry = self.settings.value ( 'geometry','' )
         if geometry:
             self.restoreGeometry ( geometry )
         else:
@@ -115,13 +118,21 @@ class MainWindow(QMainWindow):
         self.browser.setUrl ( QUrl(self.args.url) )
 
         # adding action when url get changed
-        self.browser.urlChanged.connect(self.update_urlbar)
+        self.browser.urlChanged.connect ( self.update_title )
 
         # adding action when loading is finished
-        self.browser.loadFinished.connect(self.update_title)
+        self.browser.loadFinished.connect ( self.on_load_finished )
 
         # set this browser as central widget or main window
         self.setCentralWidget ( self.browser )
+
+        # layout = QVBoxLayout()
+        # layout.addWidget(self.browser)
+
+        # container = QWidget()
+        # container.setLayout(layout)
+        # self.setCentralWidget(container)
+
 
         # '''
               # # creating a status bar object
@@ -196,12 +207,43 @@ class MainWindow(QMainWindow):
         # navtb.addAction(stop_btn)
         # '''
 
+        # # Add toolbar with dev tools button
+        # toolbar = QToolBar("Main Toolbar")
+        # self.addToolBar(toolbar)
+
+        # dev_tools_action = QAction("Developer Tools", self)
+        # dev_tools_action.triggered.connect(self.showDevTools)
+        # toolbar.addAction(dev_tools_action)
+
+        # # Add button to show dev tools (alternative to toolbar action)
+        # dev_tools_button = QPushButton("Open DevTools")
+        # dev_tools_button.clicked.connect(self.showDevTools)
+        # layout.addWidget(dev_tools_button)
+
+        # # Connect createWindow signal to handle new window requests
+        # self.browser.page().createWindow = self.createWindow
+
         # Connect the download requested signal to a slot
         profile = QWebEngineProfile.defaultProfile()
         profile.downloadRequested.connect ( self.on_download_requested )
+        profile.setHttpCacheType ( QWebEngineProfile.NoCache )
+        profile.setPersistentCookiesPolicy  ( QWebEngineProfile.NoPersistentCookies )
+        self.browser.page().setDevToolsPage ( QWebEnginePage(profile) )
 
         # showing all the components
         self.show()
+
+        return
+
+    # def createWindow(self, windowType):
+    #     new_view = QWebEngineView()
+    #     new_view.page().setDevToolsPage(self.browser.page().devToolsPage())
+    #     new_view.show()
+    #     return new_view.page()
+
+    # def showDevTools(self):
+    #     # self.browser.page().setDevToolsPage(self.browser.page().devToolsPage())
+    #     self.browser.page().triggerAction(QWebEnginePage.InspectElement)
 
 
     # method for updating the title of the window
@@ -216,7 +258,7 @@ class MainWindow(QMainWindow):
         return
 
     # method called by the line edit when return key is pressed
-    def navigate_to_url(self):
+    def navigate_to_url ( self ):
         if self.urlbar:
             # getting url and converting it to QUrl object
             q = QUrl ( self.urlbar.text() )
@@ -230,17 +272,38 @@ class MainWindow(QMainWindow):
 
     # method for updating url
     # this method is called by the QWebEngineView object
-    def update_urlbar ( self,q ):
+    # def update_urlbar ( self,q ):
+    #     if self.urlbar:
+    #       # setting text to the url bar
+    #       self.urlbar.setText(q.toString())
+    #       # setting cursor position of the url bar
+    #       self.urlbar.setCursorPosition(0)
+    #     return
+
+    def on_load_finished ( self,ok ):
         if self.urlbar:
-          # setting text to the url bar
-          self.urlbar.setText(q.toString())
-          # setting cursor position of the url bar
-          self.urlbar.setCursorPosition(0)
+            # setting text to the url bar
+            self.urlbar.setText(q.toString())
+            # setting cursor position of the url bar
+            self.urlbar.setCursorPosition(0)
+        # if ok:
+        #     self.browser.page().runJavaScript ( """
+        #         window.onerror = function(message, source, lineno, colno, error) {
+        #             alert ( "About to crash:\\n" +
+        #                     "Error: " + message + " at " + source + ":" + lineno + ":" + colno + "\\n" +
+        #                     "Stack trace: " + error.stack
+        #             );
+        #             console.error("Error: " + message + " at " + source + ":" + lineno + ":" + colno);
+        #             console.error("Stack trace: " + error.stack);
+        #             return true;
+        #         };
+        #     """ )
+
         return
 
     def on_download_requested ( self,download: QWebEngineDownloadItem ):
         # Open a file dialog to ask the user where to save the file
-        options = QFileDialog.Options()
+        options  = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         save_path, _ = QFileDialog.getSaveFileName ( self, "Save File", 
                            download.path(), "All Files (*)", options=options)
@@ -259,6 +322,20 @@ class MainWindow(QMainWindow):
         elif download.state() == QWebEngineDownloadItem.DownloadInterrupted:
             QMessageBox.critical(self, "Download Interrupted", "The download was interrupted.")
         return
+
+    # @Slot()
+    # def showDevTools(self):
+    #     dev_tools = QWebEngineView()
+    #     dev_tools_page = QWebEnginePage(self.browser.profile(), dev_tools)
+    #     dev_tools.setPage(dev_tools_page)
+    #     dev_tools_page.setDevToolsPage(dev_tools_page)
+    #     dev_tools.show()
+    #     return
+
+    #     dev_tools = QWebEngineView()
+    #     dev_tools_page = self.browser.page().devToolsPage()
+    #     dev_tools.setPage(dev_tools_page)
+    #     dev_tools.show()
 
 
     def closeEvent ( self,event ):
