@@ -196,6 +196,10 @@ class MainWindow(QMainWindow):
         # navtb.addAction(stop_btn)
         # '''
 
+        # Connect the download requested signal to a slot
+        profile = QWebEngineProfile.defaultProfile()
+        profile.downloadRequested.connect ( self.on_download_requested )
+
         # showing all the components
         self.show()
 
@@ -233,6 +237,29 @@ class MainWindow(QMainWindow):
           # setting cursor position of the url bar
           self.urlbar.setCursorPosition(0)
         return
+
+    def on_download_requested ( self,download: QWebEngineDownloadItem ):
+        # Open a file dialog to ask the user where to save the file
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        save_path, _ = QFileDialog.getSaveFileName ( self, "Save File", 
+                           download.path(), "All Files (*)", options=options)
+        
+        if save_path:
+            download.setPath ( save_path )
+            download.accept()
+            download.finished.connect ( lambda: self.on_download_finished(download) )
+        return
+
+    def on_download_finished ( self, download: QWebEngineDownloadItem ):
+        if download.state() == QWebEngineDownloadItem.DownloadCompleted:
+            QMessageBox.information(self, "Download Completed", f"The file has been downloaded to: {download.path()}")
+        elif download.state() == QWebEngineDownloadItem.DownloadCancelled:
+            QMessageBox.warning(self, "Download Cancelled", "The download has been cancelled.")
+        elif download.state() == QWebEngineDownloadItem.DownloadInterrupted:
+            QMessageBox.critical(self, "Download Interrupted", "The download was interrupted.")
+        return
+
 
     def closeEvent ( self,event ):
         geometry = self.saveGeometry()
@@ -282,6 +309,7 @@ app.setApplicationName ( "CCP4 Browser" )
 
 # creating a main window object
 window = MainWindow ( args )
+window.show()
 
 # loop
-app.exec_()
+sys.exit ( app.exec_() )
