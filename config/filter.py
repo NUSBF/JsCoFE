@@ -18,7 +18,7 @@ def write_json(json_obj, json_path, indent=4):
 def main():
   os.chdir(os.path.abspath(os.path.join(__file__, '..', '..')))
   confin = os.path.join('config', 'conf.')
-  confout = os.path.join('conf', 'conf.')
+  confout = os.path.join('conf', 'dist.')
 
   dirout = os.path.dirname(confout)
   if not os.path.isdir(dirout):
