@@ -204,8 +204,9 @@ function printInstructions()  {
   console.log ( 
     'Usage:\n' +
     '~~~~~~\n\n' +
-    'npm start ' + ' dirpath -u url\n\n' +
-    'where "url" is the the CCP4 Cloud Front End URL.\n'    
+    'npm start ' + ' path -u url\n\n' +
+    'where:\n' +
+    '  url: the CCP4 Cloud Front End URL.\n'    
   );
 }
 
