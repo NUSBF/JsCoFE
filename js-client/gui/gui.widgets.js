@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    06.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -34,15 +34,15 @@ var __id_cnt = 0;  // counter used to autogenerate html ids
   @constructor
   @param {string} type - the widget type
 */
-function Widget ( type ) {
+function Widget(type) {
   /** @lends Widget.prototype */
-  this.id      = type + '_' + __id_cnt++;
-  this.type    = type;
-  this.child   = [];
-  this.parent  = null;
-  this.element = document.createElement ( type );
-  this.element.setAttribute ( 'id', this.id );
-  this.element.setAttribute ( 'name', 'name-' + this.id );
+  this.id = type + '_' + __id_cnt++;
+  this.type = type;
+  this.child = [];
+  this.parent = null;
+  this.element = document.createElement(type);
+  this.element.setAttribute('id', this.id);
+  this.element.setAttribute('name', 'name-' + this.id);
   this.element.style.fontSize = '16px';
 }
 
@@ -50,19 +50,9 @@ function Widget ( type ) {
   @param {string}  id - the widget id
   @return {Widget} reference to Widget
 */
-Widget.prototype.setId = function ( id ) {
+Widget.prototype.setId = function (id) {
   this.id = id;
   this.element.setAttribute('id', this.id);
-  return this;
-}
-
-Widget.prototype.changeType = function ( type ) {
-// only for use in constructors
-  this.type    = type;
-  this.element = document.createElement ( type );
-  this.element.setAttribute ( 'id', this.id );
-  this.element.setAttribute ( 'name', 'name-' + this.id );
-  this.element.style.fontSize = '16px';
   return this;
 }
 
@@ -111,17 +101,17 @@ Widget.prototype.setShade = function ( light_shadow,dark_shadow,color_mode )  {
 }
 
 Widget.prototype.addClass = function ( class_name ) {
-  this.element.classList.add ( class_name );
+  this.element.classList.add(class_name);
   return this;
 }
 
 Widget.prototype.removeClass = function ( class_name ) {
-  this.element.classList.remove ( class_name );
+  this.element.classList.remove(class_name);
   return this;
 }
 
 Widget.prototype.toggleClass = function ( class_name ) {
-  this.element.classList.toggle ( class_name );
+  this.element.classList.toggle(class_name);
   return this;
 }
 
@@ -134,8 +124,8 @@ Widget.prototype.setCursor = function ( cursor ) {
 function __set_tooltip(element, text) {
   if (text) {
     element.setAttribute('title', text);
-    let delay = 1500;
-    let duration = Math.sqrt(text.split(' ').length) * 1500; // dynamic duration
+    var delay = 1500;
+    var duration = Math.sqrt(text.split(' ').length) * 1500; // dynamic duration
     if (duration > 0) {
       $(element).tooltip({
         show: { effect: 'slideDown', delay: delay },
@@ -157,8 +147,8 @@ Widget.prototype.setTooltip = function (text) {
   __set_tooltip(this.element, text);
   // if (text)  {
   //   this.element.setAttribute ( 'title',text );
-  //   let delay    = 1500;
-  //   let duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+  //   var delay    = 1500;
+  //   var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
   //   if (duration>0)  {
   //     $(this.element).tooltip({
   //         show  : { effect : 'slideDown', delay: delay },
@@ -212,7 +202,7 @@ Widget.prototype.setTooltip1 = function (text, showType, track_bool, delay_ms) {
 }
 
 Widget.prototype.redraw = function (width) {
-  let disp = this.element.display;
+  var disp = this.element.display;
   this.element.display = 'none';
   this.element.offsetHeight; // no need to store this anywhere, the reference is enough
   this.element.display = disp;
@@ -291,27 +281,27 @@ Widget.prototype.setFontItalic = function ( italic ) {
   return this;
 }
 
-Widget.prototype.setBackgroundColor = function ( color ) {
+Widget.prototype.setBackgroundColor = function (color) {
   this.element.style.backgroundColor = color;
   return this;
 }
 
-Widget.prototype.setFontColor = function ( color ) {
+Widget.prototype.setFontColor = function (color) {
   this.element.style.color = color;
   return this;
 }
 
-Widget.prototype.setFontFamily = function ( family ) {
+Widget.prototype.setFontFamily = function (family) {
   this.element.style.fontFamily = family;
   return this;
 }
 
-Widget.prototype.setFontLineHeight = function ( lineHeight ) {
+Widget.prototype.setFontLineHeight = function (lineHeight) {
   this.element.style.lineHeight = lineHeight;
   return this;
 }
 
-Widget.prototype.setFont = function ( family,size,bold,italic ) {
+Widget.prototype.setFont = function (family, size, bold, italic) {
   this.element.style.fontFamily = family;
   this.element.style.fontSize = size;
   if (bold) this.element.style.fontWeight = 'bold';
@@ -321,18 +311,18 @@ Widget.prototype.setFont = function ( family,size,bold,italic ) {
   return this;
 }
 
-Widget.prototype.setPaddings = function ( left,top,right,bottom ) {
-  let css = {};
-  if (left)   css['padding-left'  ] = left;
-  if (top)    css['padding-top'   ] = top;
-  if (right)  css['padding-right' ] = right;
+Widget.prototype.setPaddings = function (left, top, right, bottom) {
+  var css = {};
+  if (left) css['padding-left'] = left;
+  if (top) css['padding-top'] = top;
+  if (right) css['padding-right'] = right;
   if (bottom) css['padding-bottom'] = bottom;
   $(this.element).css(css);
   return this;
 }
 
 Widget.prototype.setMargins = function (left, top, right, bottom) {
-  let css = {};
+  var css = {};
   if (left) css['margin-left'] = left;
   if (top) css['margin-top'] = top;
   if (right) css['margin-right'] = right;
@@ -396,8 +386,8 @@ Widget.prototype.insertWidget = function (widget, pos) {
 }
 
 Widget.prototype.removeChild = function (widget) {
-  let child = [];
-  for (let i = 0; i < this.child.length; i++)
+  var child = [];
+  for (var i = 0; i < this.child.length; i++)
     if (this.child[i].id == widget.id) {
       this.element.removeChild(widget.element);
     } else {
@@ -538,7 +528,7 @@ Widget.prototype.addOnInputListener = function (listener_func) {
 }
 
 Widget.prototype.emitSignal = function (signal, data) {
-  let event = new CustomEvent(signal, {
+  var event = new CustomEvent(signal, {
     'detail': data
   });
   this.element.dispatchEvent(event);
@@ -627,13 +617,13 @@ Grid.prototype.setRowVisible = function (row, visible_bool) {
 }
 
 Grid.prototype.getCell = function (row, col) {
-  let r = this.element.rows.length;
+  var r = this.element.rows.length;
   while (this.element.rows.length <= row) {
     this.element.insertRow(-1); // this adds a row
     this.element.rows[r].setAttribute('id', this.id + '__' + r);
     r++;
   }
-  let gridRow = this.element.rows[row];
+  var gridRow = this.element.rows[row];
   if (col >= 0) {
     while (gridRow.cells.length <= col)
       gridRow.insertCell(-1); // this adds a cell
@@ -646,7 +636,7 @@ Grid.prototype.getCell = function (row, col) {
 Grid.prototype.insertCell = function (row, col) {
   // make sure that cell [row,col] is there
   this.getCell(row, col);
-  let gridRow = this.element.rows[row];
+  var gridRow = this.element.rows[row];
   gridRow.insertCell(col);  // this inserts a cell
   return gridRow.cells[col];   // return inserted cell
 }
@@ -667,14 +657,14 @@ Grid.prototype.deleteRow = function (row) {
 }
 
 Grid.prototype.getNCols = function () {
-  let ncols = 0;
-  for (let i = 0; i < this.element.rows.length; i++)
+  var ncols = 0;
+  for (var i = 0; i < this.element.rows.length; i++)
     ncols = Math.max(ncols, this.element.rows[i].cells.length);
   return ncols;
 }
 
 Grid.prototype.setWidget = function (widget, row, col, rowSpan, colSpan) {
-  let cell = this.getCell(row, col);
+  var cell = this.getCell(row, col);
   $(cell).empty();
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
@@ -686,7 +676,7 @@ Grid.prototype.setWidget = function (widget, row, col, rowSpan, colSpan) {
 }
 
 Grid.prototype.addWidget = function (widget, row, col, rowSpan, colSpan) {
-  let cell = this.getCell(row, col);
+  var cell = this.getCell(row, col);
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
   if (widget) {
@@ -715,89 +705,77 @@ Grid.prototype.setSpan = function (row, col, rowSpan, colSpan) {
 }
 
 
-Grid.prototype.setPanel = function ( row, col, rowSpan, colSpan ) {
+Grid.prototype.setPanel = function (row, col, rowSpan, colSpan) {
   let panel = new Widget('div');
   this.setWidget ( panel, row, col, rowSpan, colSpan );
   return panel;
 }
 
 
-Grid.prototype.setFieldset = function ( title, row, col, rowSpan, colSpan ) {
+Grid.prototype.setFieldset = function (title, row, col, rowSpan, colSpan) {
   let fieldset = new Fieldset(title);
   this.setWidget ( fieldset, row, col, rowSpan, colSpan );
   return fieldset;
 }
 
 
-Grid.prototype.setGrid = function ( style, row, col, rowSpan, colSpan ) {
-  let grid = new Grid(style);
-  this.setWidget ( grid, row, col, rowSpan, colSpan );
+Grid.prototype.setGrid = function (style, row, col, rowSpan, colSpan) {
+  var grid = new Grid(style);
+  this.setWidget(grid, row, col, rowSpan, colSpan);
   return grid;
 }
 
-Grid.prototype.setTable = function ( row, col, rowSpan, colSpan ) {
-  let table = new Table();
-  this.setWidget ( table, row, col, rowSpan, colSpan );
+Grid.prototype.setTable = function (row, col, rowSpan, colSpan) {
+  var table = new Table();
+  this.setWidget(table, row, col, rowSpan, colSpan);
   return table;
 }
 
-Grid.prototype.setButton = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
-  let button = new Button ( text, icon_uri );
-  this.setWidget ( button, row, col, rowSpan, colSpan );
+Grid.prototype.setButton = function (text, icon_uri, row, col, rowSpan, colSpan) {
+  var button = new Button(text, icon_uri);
+  this.setWidget(button, row, col, rowSpan, colSpan);
   return button;
 }
 
-Grid.prototype.addButton = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
-  let button = new Button ( text, icon_uri );
-  this.addWidget ( button, row, col, rowSpan, colSpan );
-  return button;
-}
-
-Grid.prototype.setPopupButton = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
-  let button = new PopupButton ( text, icon_uri );
-  this.setWidget ( button, row, col, rowSpan, colSpan );
-  return button;
-}
-
-Grid.prototype.addPopupButton = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
-  let button = new PopupButton ( text, icon_uri );
-  this.addWidget ( button, row, col, rowSpan, colSpan );
+Grid.prototype.addButton = function (text, icon_uri, row, col, rowSpan, colSpan) {
+  var button = new Button(text, icon_uri);
+  this.addWidget(button, row, col, rowSpan, colSpan);
   return button;
 }
 
 Grid.prototype.setRadioSet = function (row, col, rowSpan, colSpan) {
-  let radio = new RadioSet();
+  var radio = new RadioSet();
   this.setWidget(radio, row, col, rowSpan, colSpan);
   this.setNoWrap(row, col);
   return radio;
 }
 
 Grid.prototype.setLabel = function (text, row, col, rowSpan, colSpan) {
-  let label = new Label(text);
+  var label = new Label(text);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
 Grid.prototype.addLabel = function (text, row, col, rowSpan, colSpan) {
-  let label = new Label(text);
+  var label = new Label(text);
   this.addWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
 Grid.prototype.setIconLabel = function (text, icon_uri, row, col, rowSpan, colSpan) {
-  let label = new IconLabel(text, icon_uri);
+  var label = new IconLabel(text, icon_uri);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
 Grid.prototype.setInputText = function (text, row, col, rowSpan, colSpan) {
-  let input = new InputText(text);
+  var input = new InputText(text);
   this.setWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
 
 Grid.prototype.addInputText = function (text, row, col, rowSpan, colSpan) {
-  let input = new InputText(text);
+  var input = new InputText(text);
   this.addWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
@@ -937,13 +915,13 @@ Grid.prototype.setHorizontalAlignment = function ( row,col,alignment)  {
 }
 
 Grid.prototype.setVerticalAlignment = function ( row,col,alignment )  {
-  let cell = this.getCell(row, col);
+  var cell = this.getCell(row, col);
   $(cell).css({ "vertical-align": alignment });
   return this;
 }
 
 Grid.prototype.setAlignment = function ( row,col,valign,halign )  {
-  let cell = this.getCell(row, col);
+  var cell = this.getCell(row, col);
   $(cell).css({ "text-align": halign, "vertical-align": valign });
   return this;
 }
@@ -1042,7 +1020,7 @@ function InputText(text) {
 InputText.prototype = Object.create(Widget.prototype);
 InputText.prototype.constructor = InputText;
 
-InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip ) {
+InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
   if (placeholder) this.element.setAttribute('placeholder', placeholder);
   if (tooltip) this.setTooltip(tooltip);
   if (type) this.element.setAttribute('type', type);
@@ -1054,7 +1032,7 @@ InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip ) {
       this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$' );
     else
       //this.element.pattern = pattern;
-      this.element.setAttribute ( 'pattern',pattern );
+      this.element.setAttribute('pattern', pattern);
   }
   return this;
 }
@@ -1173,7 +1151,7 @@ ACEditor.prototype.init = function (text, placeholder) {
     this.editor = ace.edit(this.panel.element.id);
     // this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
     // this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
-    let options = {
+    var options = {
       mode: 'ace/mode/' + this.editor_mode,
       theme: 'ace/theme/' + this.editor_theme
     };
@@ -1275,16 +1253,15 @@ Image.prototype.setImage = function (image_source) {
 
 
 // -------------------------------------------------------------------------
-// Button classe
+// Button class
 
-function Button ( text, icon_uri, type='button' )  {
-  Widget.call ( this,type );
-  if (type=='button')
-    this.element.setAttribute ( 'type','button' );
-  this.div = document.createElement ( 'div' );
-  this.element.appendChild ( this.div );
+function Button(text, icon_uri) {
+  Widget.call(this, 'button');
+  this.element.setAttribute('type', 'button');
+  this.div = document.createElement('div');
+  this.element.appendChild(this.div);
   this.click_count = 1;
-  this._set_button ( text, icon_uri );
+  this._set_button(text, icon_uri);
 }
 
 Button.prototype = Object.create(Widget.prototype);
@@ -1292,7 +1269,6 @@ Button.prototype.constructor = Button;
 
 Button.prototype._set_button = function (text, icon_uri) {
   this.div.innerHTML = text.toString();
-  $(this.div).css({ 'white-space': 'nowrap' });
   // if (text)  this.div.innerHTML = text;
   //      else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length > 0) {
@@ -1330,14 +1306,14 @@ Button.prototype.setIndicator = function (indicon_uri, location) {
   //     1 : top-right
   //     2 : bottom-right
   //     3 : bottom-left
-  let indicator = new Image ( indicon_uri, '16px', '16px' );
-  let css = { 'position': 'absolute' };
+  var indicator = new Image(indicon_uri, '16px', '16px');
+  var css = { 'position': 'absolute' };
   switch (location) {
-    case 0: css.top    = '-4px'; css.left   = '-8px';  break;
+    case 0: css.top = '-4px'; css.left = '-8px'; break;
     default:
-    case 1: css.top    = '-4px'; css.right  = '-8px';  break;
-    case 2: css.bottom = '-12px'; css.right = '-8px';  break;
-    case 3: css.bottom = '-12px'; css.left  = '-8px';
+    case 1: css.top = '-4px'; css.right = '-8px'; break;
+    case 2: css.bottom = '-12px'; css.right = '-8px'; break;
+    case 3: css.bottom = '-12px'; css.left = '-8px';
   }
   $(indicator.element).css(css);
   //   {'position' : 'absolute',
@@ -1378,13 +1354,13 @@ Button.prototype.isDisabled = function () {
   } catch (e) { }
 }
 
-Button.prototype.setSize = function ( width, height ) {
-  let w = parseInt(width);
-  let h = parseInt(height);
-  let icon_size = Math.min(w, h);
-  let margin = Math.max(1, Math.floor(icon_size / 8));
+Button.prototype.setSize = function (width, height) {
+  var w = parseInt(width);
+  var h = parseInt(height);
+  var icon_size = Math.min(w, h);
+  var margin = Math.max(1, Math.floor(icon_size / 8));
   icon_size -= 2 * margin;
-  let lm = (w - icon_size) / 2.25;
+  var lm = (w - icon_size) / 2.25;
   if (this.div.innerHTML.length > 0)
     lm = Math.min((h - icon_size) / 2, lm);
   $(this.element).css({
@@ -1395,9 +1371,9 @@ Button.prototype.setSize = function ( width, height ) {
 }
 
 
-Button.prototype.setSize_px = function ( width, height ) {
+Button.prototype.setSize_px = function (width, height) {
   $(this.element).css({ 'background-size': (height - 4) + 'px' });
-  this.element.style.width  = width + 'px';
+  this.element.style.width = width + 'px';
   this.element.style.height = height + 'px';
   return this;
 }
@@ -1422,12 +1398,12 @@ Button.prototype.addOnClickListener = function (listener_func) {
 // -------------------------------------------------------------------------
 // Image Button class
 
-function ImageButton ( icon_uri, width, height )  {
+function ImageButton(icon_uri, width, height) {
   Label.call ( this,' ' );
-  this.image = new Image ( icon_uri, width, height );
-  this.addWidget ( this.image );
-  this.setWidth  ( width  );
-  this.setHeight ( height );
+  this.image = new Image(icon_uri, width, height);
+  this.addWidget(this.image);
+  this.setWidth(width);
+  this.setHeight(height);
 }
 
 ImageButton.prototype = Object.create(Label.prototype);
@@ -1457,18 +1433,6 @@ function setDefaultButton ( button, context_widget )  {
 
 
 // -------------------------------------------------------------------------
-// Popup Button class
-
-function PopupButton ( text, icon_uri )  {
-  Button.call ( this,text,icon_uri,'div' );
-  this.addClass ( 'popup-button' );
-}
-
-PopupButton.prototype = Object.create(Button.prototype);
-PopupButton.prototype.constructor = PopupButton;
-
-
-// -------------------------------------------------------------------------
 // RadioSet class
 
 
@@ -1485,9 +1449,9 @@ RadioSet.prototype.constructor = RadioSet;
 
 RadioSet.prototype.addButton = function (text, btnId, tooltip, checked_bool) {
 
-  let _id = this.element.id + '_' + btnId;
+  var _id = this.element.id + '_' + btnId;
 
-  let label = new Widget('label');
+  var label = new Widget('label');
   label.element.setAttribute('for', _id);
   label.element.innerHTML = text.toString();
   // if (text)  label.element.innerHTML = text;
@@ -1496,7 +1460,7 @@ RadioSet.prototype.addButton = function (text, btnId, tooltip, checked_bool) {
   if (tooltip)
     label.setTooltip(tooltip);
 
-  let button = new Widget('input');
+  var button = new Widget('input');
   button.element.setAttribute('type', 'radio');
   button.setId(_id);
   button.radioID = btnId;
@@ -1515,7 +1479,7 @@ RadioSet.prototype.make = function (onClick_func) {
 
   (function (rs) {
     function onClick() {
-      for (let i = 0; i < rs.child.length; i++)
+      for (var i = 0; i < rs.child.length; i++)
         if (rs.child[i].type == 'input') {
           if (rs.child[i].element.checked) {
             rs.selected = rs.child[i].element.id.substr(rs.element.id.length + 1);
@@ -1524,7 +1488,7 @@ RadioSet.prototype.make = function (onClick_func) {
           }
         }
     }
-    for (let i = 0; i < rs.child.length; i++)
+    for (var i = 0; i < rs.child.length; i++)
       if (rs.child[i].type == 'input')
         rs.child[i].element.addEventListener('click', function (e) {
           onClick();
@@ -1541,7 +1505,7 @@ RadioSet.prototype.make = function (onClick_func) {
   //  } );
 
   /*
-    for (let i=0;i<this.child.length;i++)
+    for (var i=0;i<this.child.length;i++)
       if (this.child[i].type=='input')  {
         (function(btn){
           btn.addOnClickListener ( function(){
@@ -1557,8 +1521,8 @@ RadioSet.prototype.make = function (onClick_func) {
 }
 
 RadioSet.prototype.selectButton = function (btnId) {
-  let _id = this.element.id + '_' + btnId;
-  for (let i = 0; i < this.child.length; i++)
+  var _id = this.element.id + '_' + btnId;
+  for (var i = 0; i < this.child.length; i++)
     if (this.child[i].element.id == _id)
       $(this.child[i].element).click();
   return this;
@@ -1676,12 +1640,12 @@ function IFrame(uri) {
     this.element.setAttribute('src', uri);
   //this.element.setAttribute ( 'sandbox','allow-same-origin' );
   $(this.element).css({ 'border': 'none' });
-  //let body = this.element.contentWindow.document.querySelector('body');
+  //var body = this.element.contentWindow.document.querySelector('body');
   //body.style.fontSize = '16px';
   /*
   (function(iframe){
     iframe.element.onload = function(){
-      let body = iframe.element.contentWindow.document.querySelector('body');
+      var body = iframe.element.contentWindow.document.querySelector('body');
       body.style.fontSize = '16px';
       window.setTimeout ( function(){
         iframe.setVisible ( true );
@@ -1710,7 +1674,7 @@ IFrame.prototype.setOnLoadListener = function ( onload_func ) {
   /*
   (function(iframe){
     iframe.element.onload = function(){
-      let body = iframe.element.contentWindow.document.querySelector('body');
+      var body = iframe.element.contentWindow.document.querySelector('body');
       body.style.fontSize = '16px';
       window.setTimeout ( function(){
         iframe.setVisible ( true );
@@ -1900,7 +1864,8 @@ Combobox.prototype.make = function () {
 
   $(this.element).selectmenu({
     width: this.width
-  }).addClass("combobox-overflow");
+  })
+    .addClass("combobox-overflow");
   (function (combobox) {
     $(combobox.element).on('selectmenuchange', function () {
       combobox.selected_value = combobox.element.value;
@@ -1989,7 +1954,7 @@ Checkbox.prototype.setDisabled = function (disabled_bool) {
 function RadioButton(label_txt, checked_bool) {
 
   Widget.call(this, 'label');
-  let _id = 'cbx-' + this.id;
+  var _id = 'cbx-' + this.id;
 
   this.element.htmlFor = _id;
   this.element.innerHTML = label_txt.toString();
@@ -2097,7 +2062,7 @@ Spinner.prototype.setCustomSteps = function (step_list, stepNo) {
   this.setMinValue(step_list[0]);
   this.setMaxValue(step_list[step_list.length - 1]);
   this.steps = [];
-  for (let i = 0; i < step_list.length; i++)
+  for (var i = 0; i < step_list.length; i++)
     this.steps.push(step_list[i]);
   this.setValue(this.steps[stepNo]);
 }
@@ -2108,15 +2073,15 @@ Spinner.prototype.setListener = function (socket_function) {
   (function (self) {
 
     $(self.spinner.element).on("spin", function (event, ui) {
-      let v = ui.value;
+      var v = ui.value;
       if (self.steps.length > 0) {
         if (v > self._lastV) {
-          let i = 0;
+          var i = 0;
           while ((v > self.steps[i]) && (i < self.steps.length - 1))
             i++;
           v = self.steps[i];
         } else {
-          let i = self.steps.length - 1;
+          var i = self.steps.length - 1;
           while ((v < self.steps[i]) && (i > 0))
             i--;
           v = self.steps[i];
@@ -2131,8 +2096,8 @@ Spinner.prototype.setListener = function (socket_function) {
     });
 
     function call_socket() {
-      let v = self.getValue();
-      let v1 = Math.max(self.minV, Math.min(self.maxV, v));
+      var v = self.getValue();
+      var v1 = Math.max(self.minV, Math.min(self.maxV, v));
       if (v != v1)
         self.setValue(v1);
       self._lastV = v;
@@ -2157,8 +2122,8 @@ Spinner.prototype.setChangeListener = function ( socket_function )  {
   (function(self){
 
     function call_socket()  {
-      let v  = self.getValue();
-      let v1 = Math.max(self.minV,Math.min(self.maxV,v));
+      var v  = self.getValue();
+      var v1 = Math.max(self.minV,Math.min(self.maxV,v));
       if (v!=v1)
         self.setValue ( v1 );
       socket_function ( v1 );

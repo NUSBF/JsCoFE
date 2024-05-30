@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -416,33 +417,35 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="pdb-redo-optimise-rebuild-refine-and-validate">
-<h1 id="doc-task-pdbredo--page-root">PDB-REDO: optimise, rebuild, refine and validate<a class="headerlink" href="#doc-task-pdbredo--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-pdbredo--page-root">PDB-REDO: optimise, rebuild, refine and validate<a class="headerlink" href="#doc-task-pdbredo--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Authorisation with PDB-REDO is required</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Authorisation with PDB-REDO is required</p>
 </div>
 <p><a class="reference external" href="../html-userguide/authorize_pdbredo.html" rel="noopener noreferrer" target="_blank">read here how to authorize</a></p>
 <p>PDB-REDO can automatically optimise most of the existing structures to derive improved, up-to-date structure models based on the original experimental data that were deposited with the atomic coordinates in the PDB. PDB-REDO performs “constructive validation” by ensuring that the refinement parameters are consistent and optimal, and by proactively rebuilding the model. This process goes beyond just correcting errors in the structure, but also aims to achieve the best possible interpretation of the electron density data. PDB_REDO checks every amino-acid side chain to determine whether an alternative rotameric conformation can be found with an equal or better fit to the electron density.</p>
 <p>The PDB-REDO procedure consists of:</p>
 <ol class="arabic">
-<li><p>model refinement in <a class="reference external" href="./doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a></p></li>
-<li><p>rebuilding by <strong>Centrifuge</strong></p>
+<li><p class="first">model refinement in <a class="reference external" href="./doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a></p>
+</li>
+<li><p class="first">rebuilding by <strong>Centrifuge</strong></p>
 <blockquote>
 <div><p>removes all waters with low weighted mean density fit to the 2mFo − DFc map [fit(ρ) &lt; 0.37]. This resolution-independent cutoff value used within PDB-REDO was optimized to minimize the false-positive rate, i.e. to ensure that waters were not deleted where they should be kept</p>
 </div></blockquote>
 </li>
-<li><p><a class="reference external" href="https://doi.org/10.1093%2Fbioinformatics%2Fbtr590" rel="noopener noreferrer" target="_blank">SideAide</a></p>
+<li><p class="first"><a class="reference external" href="https://doi.org/10.1093%2Fbioinformatics%2Fbtr590" rel="noopener noreferrer" target="_blank">SideAide</a></p>
 <blockquote>
 <div><p>(re)builds side chains in rotameric conformations.</p>
 </div></blockquote>
 </li>
-<li><p><a class="reference external" href="https://doi.org/10.1093%2Fbioinformatics%2Fbtr590" rel="noopener noreferrer" target="_blank">pepflip</a></p>
+<li><p class="first"><a class="reference external" href="https://doi.org/10.1093%2Fbioinformatics%2Fbtr590" rel="noopener noreferrer" target="_blank">pepflip</a></p>
 <blockquote>
 <div><p>flips the orientation of peptide planes in the model if this improves the fit of the peptide with, in order of importance, the mFo − DFc map at the position of the oxygen, the 2mFo − DFc map of the whole peptide and a combination of the two fits and the geometry, while maintaining or improving the backbone torsion angles with respect to the <a class="reference external" href="https://doi.org/10.1016/s0022-2836(63)80023-6" rel="noopener noreferrer" target="_blank">Ramachandran plot</a> of the two residues involved.</p>
 </div></blockquote>
 </li>
-<li><p>validation in <a class="reference external" href="https://www.nature.com/articles/381272a0" rel="noopener noreferrer" target="_blank">WHAT_CHECK</a></p></li>
+<li><p class="first">validation in <a class="reference external" href="https://www.nature.com/articles/381272a0" rel="noopener noreferrer" target="_blank">WHAT_CHECK</a></p>
+</li>
 </ol>
 <p>Additional validation is performed by <a class="reference external" href="https://doi.org/10.1186/1471-2105-5-69" rel="noopener noreferrer" target="_blank">pdb-care</a> for carbohydrates and <a class="reference external" href="https://doi.org/10.1016/s0022-2836(02)00442-4" rel="noopener noreferrer" target="_blank">FoldX</a> for calculation of the Gibbs folding energy.</p>
 <p>read more <a class="reference external" href="https://pdb-redo.eu/about" rel="noopener noreferrer" target="_blank">here</a></p>
@@ -451,7 +454,7 @@
 <p><a class="reference external" href="https://doi.org/10.1107/S2052252514009324" rel="noopener noreferrer" target="_blank">Joosten, R. P., Long, F., Murshudov, G. N. &amp; Perrakis, A. (2014). The PDB_REDO server for macromolecular structure model optimization. IUCrJ, 1, 213–220.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911054515" rel="noopener noreferrer" target="_blank">Joosten, R. P., Joosten, K., Murshudov, G. N. &amp; Perrakis, A. (2012). Acta Cryst. D68, 484-496.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1093/bioinformatics/btr590" rel="noopener noreferrer" target="_blank">Robbie P. Joosten, Krista Joosten, Serge X. Cohen, Gert Vriend, Anastassis Perrakis, Automatic rebuilding and optimization of crystallographic structures in the Protein Data Bank, Bioinformatics, Volume 27, Issue 24, December 2011, Pages 3392–3398,</a></p>
-</section>
+
 
 
           </article>
@@ -496,7 +499,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
