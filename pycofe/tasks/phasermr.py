@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -70,10 +70,6 @@ class PhaserMR(basic.TaskDriver):
         if revision.Structure:
             revision.Structure = self.makeClass ( revision.Structure )
             nfitted0 = revision.getNofPolymers()
-
-        ligands  = None
-        if hasattr(self.input_data.data,"ligands"):
-            ligands = self.makeClass ( self.input_data.data.ligands[0] )
 
         phaser_meta = None
         ens0        = []
@@ -469,13 +465,8 @@ class PhaserMR(basic.TaskDriver):
                 revision.setReflectionData ( sol_hkl )
 
             row0 = self.rvrow + 1
-
-            libPath = None
-            if ligands:
-                libPath = ligands.getLibFilePath ( self.inputDir() )
-
             structure = self.finaliseStructure ( pdbfile,
-                                        self.outputFName,sol_hkl,libPath,seq,0,
+                                        self.outputFName,sol_hkl,None,seq,0,
                                         leadKey=1, # openState="closed",
                                         reserveRows=3 )
             if structure:

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    11.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1033,7 +1033,7 @@ let response = null;
 
     } else
       response = new cmd.Response ( cmd.fe_retcode.ok,
-                                    '[00011] Number cruncher not found',task );
+                                    '[00011] Number cruncher not found',jobData );
 
   } else  {  // repair job metadata
 

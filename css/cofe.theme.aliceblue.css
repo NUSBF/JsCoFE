@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    25.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,21 +35,6 @@
   /* background-position : center center; */
 }
 
-.login-scene  {
-  margin              : 0;
-  padding             : 0;
-  background-image    : url("../images_png/background_login.png");
-  /* background-color: rgba(243,250,255,0.0);
-  background-blend-mode: lighten; */
-  /* background-size: auto 120vh; */
-  background-size     : 30vw auto;
-  /* background-size     : 480px auto; */
-  background-repeat   : no-repeat;
-  background-position : left center;
-  /* height: 100vh; */
-}
-
-
 .logo-panel  {
   position         : absolute;
   left             : 0px;
@@ -67,27 +52,6 @@
   /* height           : 16px; */
   background-color : rgb(240, 250, 255);
   border-top       : 1px solid lightgray;
-/*  box-shadow: 10px 10px lightblue; */
-/*  background-color : rgba(240,250,255,0.67); */
-}
-
-.upper-panel  {
-  /* position         : absolute; */
-  /* left             : 0px; */
-  /* bottom           : -1px;  this does not work in some cases, therefore ugly 'top' */
-  /* top              : 0px; */
-  width            : 100%;
-  margin-top       : 0px;
-  margin-left      : 0px;
-  margin-right     : 0px;
-  margin-bottom    : 0px;
-  padding-top      : 0px;
-  padding-left     : 0px;
-  padding-bottom   : 0px;
-  padding-right    : 0px;
-  /* height           : 16px; */
-  background-color : rgb(240, 250, 255);
-  border-bottom    : 1px solid lightgray;
 /*  box-shadow: 10px 10px lightblue; */
 /*  background-color : rgba(240,250,255,0.67); */
 }

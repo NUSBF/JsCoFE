@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.05.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ import sys
 import shutil
 import json
 import time
-import requests
+# import requests
 import subprocess
 from   zipfile import ZipFile
 
@@ -204,15 +204,6 @@ class Pdbredo(basic.TaskDriver):
 
         result = self.run_pdbredo ( "submit",cmd )
 
-             
-
-        # # Create a new job/run
-        # r = requests.post(self.url + "/api/run".format(
-        #     token_id=token_id), auth=auth, files=files, data={'parameters': json.dumps(params)})
-        # r.raise_for_status()
-
-        
-
         if result.startswith("Job submitted with id"):
             self.pdbredoJobId = result.split()[-1]
 
@@ -344,8 +335,6 @@ class Pdbredo(basic.TaskDriver):
         hklin = hkl.getHKLFilePath(self.inputDir())
         libin = istruct.getLibFilePath(self.inputDir())
 
-        
-
         pdbredo_seq = None
         if len(seq)>0:
             pdbredo_seq = "__pdbredo.seq"
@@ -421,87 +410,16 @@ class Pdbredo(basic.TaskDriver):
                         " and secret " + str(self.token_secret) )
 
         self.row0 = self.rvrow
-        
 
         # submit job to PDB-REDO
 
-      
         cmd = [ "--xyzin",xyzin, "--hklin",hklin ]
         if libin:
             cmd += [ "--restraints",libin ]
         if pdbredo_seq:
             cmd += [ "--sequence",pdbredo_seq ]
 
-
         #  add other keyword-parameter pairs here from task's Input tab
-        sec1 = self.task.parameters.sec1.contains
-        sec2 = self.task.parameters.sec2.contains
-        sec3 = self.task.parameters.sec3.contains
-
-        if self.task.parameters.PAIRED.value == True:
-            cmd += ['--paired']
-
-        if sec1.REF_RES.value == 'tighter2':
-            cmd+= ['--tighter', '2']
-        if sec1.REF_RES.value == 'tighter':
-            cmd+= ['--tighter', '1']
-        if sec1.REF_RES.value == 'looser':
-            cmd+= ['--looser', '1']
-        if sec1.REF_RES.value == 'looser2':
-            cmd+= ['--looser', '2']
-
-        # if int(sec1.TIGHTER.value) > 0:
-        #     cmd+= ['--tighter', str(sec1.TIGHTER.value)]
-        # if int(sec1.LOOSER.value) > 0:
-        #     cmd+= ['--looser', str(sec1.LOOSER.value)]
-
-        if sec1.ISOTROPIC.value == True:
-            cmd += [str(sec1.ISOTROPIC.keyword)]
-        if sec1.NOTLS.value == False:
-            cmd += [str(sec1.NOTLS.keyword)]
-
-        if sec1.LEGACY.value == True:
-            cmd += [str(sec1.LEGACY.keyword)]
-        
-        if sec1.NEWMODEL.value == True:
-            cmd += [str(sec1.NEWMODEL.keyword)]
-
-        if sec2.NOMETAL.value == False:
-            cmd += [str(sec2.NOMETAL.keyword)]
-
-        if sec2.NONUCREST.value == False:
-            cmd += [str(sec2.NONUCREST.keyword)]
-        
-        if sec2.NOHOMOLOGY.value == False:
-            cmd += [str(sec2.NOHOMOLOGY.keyword)]
-
-        if sec2.HOMOLOGY.value == True:
-            cmd += [str(sec2.HOMOLOGY.keyword)]
-        
-        if sec2.HBONDREST.value == True:
-            cmd += [str(sec2.HBONDREST.keyword)]
-        
-        if sec3.NOFIXDMC.value == False:
-            cmd += [str(sec3.NOFIXDMC.keyword)]
-        
-        if sec3.NOLOOPS.value == False:
-            cmd += [str(sec3.NOLOOPS.keyword)]
-        
-        if sec3.NOPEPFLIP.value == False:
-            cmd += [str(sec3.NOPEPFLIP.keyword)]
-
-        if sec3.NOSCBUILD.value == False:
-            cmd += [str(sec3.NOSCBUILD.keyword)]
-
-        if sec3.NOCENTRIFUGE.value == False:
-            cmd += [str(sec3.NOCENTRIFUGE.keyword)]
-        
-        if sec3.NOSUGARS.value == False:
-            cmd += [str(sec3.NOSUGARS.keyword)]
-
-        if sec3.NOREBUILD.value == False:
-            cmd += [str(sec3.NOREBUILD.keyword)]
-
 
         if not self.do_submit(cmd):
             self.success ( False )
@@ -556,7 +474,7 @@ class Pdbredo(basic.TaskDriver):
                     final_mtz = os.path.join(self.resultDir,fname)
                 elif fname.endswith("_final.log"):
                     refmac_log = os.path.join(self.resultDir,fname)
-                elif fname.endswith(".refmac") or fname.endswith(".rest"):
+                elif fname.endswith(".refmac"):
                     refmac_kwd = os.path.join(self.resultDir,fname)
 
         xyzout = self.getXYZOFName()
