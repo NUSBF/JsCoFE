@@ -19,25 +19,25 @@ function createWindow ( url ) {
   const windowState = store.get('windowState') || { width: 1200, height: 800 };
 
   mainWindow = new BrowserWindow({
-    width: windowState.width,
-    height: windowState.height,
-    x: windowState.x,
-    y: windowState.y,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: true,
-      webSecurity: true
+    width  : windowState.width,
+    height : windowState.height,
+    x      : windowState.x,
+    y      : windowState.y,
+    webPreferences : {
+      nodeIntegration  : true,
+      contextIsolation : true,
+      webSecurity      : true
       // preload: path.join(__dirname, 'preload.js') // Optional: if you have a preload script
     }
   });
 
   // Load your web application
   mainWindow.loadURL(url).catch ( err => {
-    console.error('Failed to load URL:', err);
+    console.error ( 'Failed to load URL:', err );
   });
 
   mainWindow.webContents.on ( 'did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-    console.error(`Failed to load ${validatedURL}: ${errorDescription} (${errorCode})`);
+    console.error ( `Failed to load ${validatedURL}: ${errorDescription} (${errorCode})` );
   });
 
   mainWindow.webContents.on ( 'did-navigate', () => {
@@ -62,9 +62,10 @@ function createWindow ( url ) {
       label: 'Application',
       submenu: [
         {
-          label       : 'Exit',
+          label       : 'Exit CCP4 Cloud Local',
           accelerator : 'CmdOrCtrl+Q',
           click() {
+            sendStopSignal ( url );
             app.quit();
           }
         }
@@ -78,6 +79,14 @@ function createWindow ( url ) {
           accelerator : 'CmdOrCtrl+C',
           click() {
             copyURL();
+          }
+        }, {
+          label       : 'Reload',
+          accelerator : 'CmdOrCtrl+R',
+          click() {
+            mainWindow.loadURL(url).catch ( err => {
+              console.error ( 'Failed to load URL:', err );
+            });
           }
         }
       ]
@@ -170,11 +179,10 @@ function createSecondaryWindow ( url,features ) {
   secondaryWindows.push(secondaryWindow);
 
   // Listen for window closed event to remove from the secondaryWindows array
-  secondaryWindow.on('closed', () => {
+  secondaryWindow.on ( 'closed', () => {
     const index = secondaryWindows.indexOf(secondaryWindow);
-    if (index !== -1) {
+    if (index !== -1)
       secondaryWindows.splice(index, 1);
-    }
     updateMenu();
   });
 
@@ -182,11 +190,11 @@ function createSecondaryWindow ( url,features ) {
   
   // Return the window options for override
   return {
-    width: 600,
-    height: 400,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+    width          : 600,
+    height         : 400,
+    webPreferences : {
+      nodeIntegration  : true,
+      contextIsolation : true,
     }
   };
 
@@ -200,13 +208,29 @@ function copyURL() {
   }
 }
 
+function sendStopSignal ( url )  {
+  fetch ( url + '/stop' )
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    return response.json(); // or response.text() for plain text
+  })
+  .then(data => {
+    console.log(data); // Handle the data from the response
+  })
+  .catch(error => {
+    console.error('There was a problem with the fetch operation:', error);
+  });
+}
+
 function printInstructions()  {
   console.log ( 
-    'Usage:\n' +
+    'Usage:\n'   +
     '~~~~~~\n\n' +
-    'npm start ' + ' path -u url\n\n' +
-    'where:\n' +
-    '  url: the CCP4 Cloud Front End URL.\n'    
+    'npm start url=URL\n\n' +
+    'where "URL" is the CCP4 Cloud Front End URL. The command should be\n' +
+    'invoked from directory containing this file.\n'    
   );
 }
 
@@ -215,23 +239,35 @@ function printInstructions()  {
 
 // Get command-prompt parameters
 
-printInstructions();
-process.exit(1);
+if (process.argv.length<=2)  {
+  printInstructions();
+  process.exit ( 1 );
+}
 
-let fe_url = 'http://localhost:58085';
+let fe_url = null;
 
-for (let i=2;i<process.argv.length;i++)
+for (let i=2;(i<process.argv.length) && (!fe_url);i++)
+  if (process.argv[i].startsWith('url=')) 
+    fe_url = process.argv[i].slice(4);
+
+if (!fe_url)  {
+  console.log ( '***** ERROR: Front End URL not given\n' );
+  printInstructions();
+  process.exit ( 2 );
+}
+
 
 // This method will be called when Electron has finished initialization.
 app.on ( 'ready',function(){ 
-  createWindow(fe_url); 
+  createWindow ( fe_url ); 
 });
 
 // Quit when all windows are closed.
 app.on ( 'window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  // if (process.platform !== 'darwin') {
+  sendStopSignal ( fe_url );
+  app.quit();
+  // }
 });
 
 app.on ( 'activate', () => {
