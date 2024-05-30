@@ -11,10 +11,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "electron": "^30.0.8"
-  },
   "dependencies": {
+    "electron"      : "^30.0.8",
     "electron-store": "^9.0.0"
   }
 }
