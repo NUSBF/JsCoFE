@@ -1,19 +1,19 @@
-// const { app, BrowserWindow, Menu } = require('electron');
-// const Store = require('electron-store');
-// const path  = require('path');
 
 import { app, BrowserWindow, Menu, clipboard, MenuItem } from 'electron';
-// import path from 'path';
 import Store from 'electron-store';
 
-// console.log ( process.argv );
 
+// ===========================================================================
+
+// persistent settings
 const store = new Store();
 
 let mainWindow;
 let secondaryWindows = [];
 
-function createWindow() {
+// ===========================================================================
+
+function createWindow ( url ) {
   // Create the browser window.
 
   const windowState = store.get('windowState') || { width: 1200, height: 800 };
@@ -32,20 +32,20 @@ function createWindow() {
   });
 
   // Load your web application
-  mainWindow.loadURL('http://localhost:58085').catch(err => {
-      console.error('Failed to load URL:', err);
-    });
+  mainWindow.loadURL(url).catch ( err => {
+    console.error('Failed to load URL:', err);
+  });
 
-  mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+  mainWindow.webContents.on ( 'did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error(`Failed to load ${validatedURL}: ${errorDescription} (${errorCode})`);
   });
 
-  mainWindow.webContents.on('did-navigate', () => {
+  mainWindow.webContents.on ( 'did-navigate', () => {
     // When the window navigates to a new page, update the menu item
     updateMenu();
   });
 
-  mainWindow.webContents.setWindowOpenHandler(({ url, features, disposition }) => {
+  mainWindow.webContents.setWindowOpenHandler ( ({ url, features, disposition }) => {
     const secondaryWindow = createSecondaryWindow(url, features);
     return {
       action: 'deny',
@@ -62,8 +62,8 @@ function createWindow() {
       label: 'Application',
       submenu: [
         {
-          label: 'Exit',
-          accelerator: 'CmdOrCtrl+Q',
+          label       : 'Exit',
+          accelerator : 'CmdOrCtrl+Q',
           click() {
             app.quit();
           }
@@ -73,9 +73,9 @@ function createWindow() {
       label: 'Edit ',
       submenu: [
         {
-          id: 'copyURL',
-          label: 'Copy URL',
-          accelerator: 'CmdOrCtrl+C',
+          id          : 'copyURL',
+          label       : 'Copy URL',
+          accelerator : 'CmdOrCtrl+C',
           click() {
             copyURL();
           }
@@ -85,9 +85,9 @@ function createWindow() {
       label: 'Development',
       submenu: [
         {
-          label: 'Toggle Developer Tools',
-          accelerator: 'Alt+CmdOrCtrl+I',
-          click(item, focusedWindow) {
+          label       : 'Toggle Developer Tools',
+          accelerator : 'Alt+CmdOrCtrl+I',
+          click ( item, focusedWindow) {
             if (focusedWindow) {
               focusedWindow.webContents.toggleDevTools();
             }
@@ -103,19 +103,12 @@ function createWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
 
-// Remove other items from the "Edit" menu
-  // const editMenuItem = menu.getMenuItemById('Edit');
-  // if (editMenuItem) {
-  //   const editSubMenu = editMenuItem.submenu;
-  //   editSubMenu.items = editSubMenu.items.filter(item => item.id === 'copyURL');
-  // }
-
   Menu.setApplicationMenu(menu);
 
   // Save the window state on close
-  mainWindow.on('close', () => {
+  mainWindow.on ( 'close', () => {
     const bounds = mainWindow.getBounds();
-    store.set('windowState', bounds);
+    store.set ( 'windowState',bounds );
   });
 
 }
@@ -129,8 +122,15 @@ function updateMenu() {
     const windowsMenu = menu.getMenuItemById('windows');
     if (windowsMenu) {
       windowsMenu.submenu.clear(); // Clear previous window items
-      secondaryWindows.forEach((win, index) => {
-        windowsMenu.submenu.append(new MenuItem({
+      windowsMenu.submenu.append ( new MenuItem({
+        label: 'Main Window',
+        click() {
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      }));
+      secondaryWindows.forEach ( (win, index) => {
+        windowsMenu.submenu.append ( new MenuItem({
           label: `Window ${index + 2}`, // Start from index 2 for secondary windows
           click() {
             win.show();
@@ -192,7 +192,6 @@ function createSecondaryWindow ( url,features ) {
 
 }
 
-
 function copyURL() {
   const focusedWindow = BrowserWindow.getFocusedWindow();
   if (focusedWindow) {
@@ -201,17 +200,40 @@ function copyURL() {
   }
 }
 
+function printInstructions()  {
+  console.log ( 
+    'Usage:\n' +
+    '~~~~~~\n\n' +
+    'npm start ' + ' dirpath -u url\n\n' +
+    'where "url" is the the CCP4 Cloud Front End URL.\n'    
+  );
+}
+
+// ===========================================================================
+// Main body
+
+// Get command-prompt parameters
+
+printInstructions();
+process.exit(1);
+
+let fe_url = 'http://localhost:58085';
+
+for (let i=2;i<process.argv.length;i++)
+
 // This method will be called when Electron has finished initialization.
-app.on('ready', createWindow);
+app.on ( 'ready',function(){ 
+  createWindow(fe_url); 
+});
 
 // Quit when all windows are closed.
-app.on('window-all-closed', () => {
+app.on ( 'window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on('activate', () => {
+app.on ( 'activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
