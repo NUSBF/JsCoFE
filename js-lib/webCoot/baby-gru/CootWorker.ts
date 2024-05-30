@@ -3,9 +3,9 @@ import { emscriptem } from "../../src/types/emscriptem"
 import { privateer } from "../../src/types/privateer";
 
 // @ts-ignore
-importScripts('./moorhen.js')
+importScripts('./wasm/moorhen.js')
 // @ts-ignore
-importScripts('./web_example.js')
+importScripts('./wasm/web_example.js')
 
 let cootModule: libcootApi.CootModule;
 let molecules_container: libcootApi.MoleculesContainerJS;
@@ -379,27 +379,6 @@ const mapMoleculeCentreInfoToJSObject = (mapMoleculeCentreInfo: libcootApi.MapMo
     return returnResult;
 }
 
-const textureAsFloatsToJSTextureAsFloats = (data:libcootApi.textureAsFloats): libcootApi.textureAsFloatsJS => {
-
-    const imageDataVecSize = data.width * data.height
-
-    let image_data = new Float32Array(imageDataVecSize)
-
-    const t1 = performance.now()
-    cootModule.getTextureArray(data,image_data)
-    const t2 = performance.now()
-    console.log("Time to convert texture array to JS",t2-t1)
-
-    return {
-        width:data.width,
-        height:data.height,
-        x_size:data.x_size,
-        y_size:data.y_size,
-        z_position:data.z_position,
-        image_data:image_data,
-    };
-}
-
 const fitLigandInfoArrayToJSArray = (fitLigandInfoVec: emscriptem.vector<libcootApi.fitLigandInfo>): libcootApi.fitLigandInfo[] => {
     const result: libcootApi.fitLigandInfo[] = []
 
@@ -438,14 +417,6 @@ const stringArrayToJSArray = (stringArray: emscriptem.vector<string>) => {
 const export_map_as_gltf = (imol: number, x: number, y: number, z: number, radius: number, contourLevel: number) => {
     const fileName = `${guid()}.glb`
     molecules_container.export_map_molecule_as_gltf(imol, x, y, z, radius, contourLevel, fileName)
-    const fileContents = cootModule.FS.readFile(fileName, { encoding: 'binary' }) as Uint8Array
-    cootModule.FS_unlink(fileName)
-    return fileContents.buffer
-}
-
-const export_molecular_represenation_as_gltf = (imol: number, cid: string, colourScheme: string, style: string) => {
-    const fileName = `${guid()}.glb`
-    molecules_container.export_molecular_represenation_as_gltf(imol, cid, colourScheme, style, fileName)
     const fileContents = cootModule.FS.readFile(fileName, { encoding: 'binary' }) as Uint8Array
     cootModule.FS_unlink(fileName)
     return fileContents.buffer
@@ -797,7 +768,7 @@ const ramachandranDataToJSArray = (ramachandraData: emscriptem.vector<libcootApi
 const vectorPairStringIntToJSArray = (vectorData: emscriptem.vector<{first: string; second: number}>) => {
     let result: {residue: string; slice: number; }[] = []
     const vectorSize = vectorData.size()
-    for (let i = 0; i < vectorSize; i++) {
+    for(let i = 0; i < vectorSize; i++) {
         const pair = vectorData.get(i)
         const residue = pair.first
         const slice = pair.second
@@ -869,7 +840,7 @@ const simpleMeshToLineMeshData = (simpleMesh: libcootApi.SimpleMeshT, normalLigh
 
 }
 
-const auto_read_mtz = (mtzData: ArrayBufferLike) => {
+const auto_open_mtz = (mtzData: ArrayBufferLike) => {
     const theGuid = guid()
     const asUint8Array = new Uint8Array(mtzData)
     cootModule.FS_createDataFile(".", `${theGuid}.mtz`, asUint8Array, true, true);
@@ -1041,8 +1012,8 @@ const doCootCommand = (messageData: {
             case 'shim_read_mtz':
                 cootResult = read_mtz(...commandArgs as [ArrayBufferLike, string, { F: string; PHI: string; isDifference: boolean; }])
                 break
-            case 'shim_auto_read_mtz':
-                cootResult = auto_read_mtz(...commandArgs as [ArrayBuffer])
+            case 'shim_auto_open_mtz':
+                cootResult = auto_open_mtz(...commandArgs as [ArrayBuffer])
                 break
             case 'shim_read_ccp4_map':
                 cootResult = read_ccp4_map(...commandArgs as [ArrayBuffer, string, boolean])
@@ -1062,9 +1033,6 @@ const doCootCommand = (messageData: {
             case 'shim_export_molecule_as_gltf':
                 cootResult = export_molecule_as_gltf(...commandArgs as [number, string, string, boolean, number, number, number, boolean, boolean])
                 break
-            case 'shim_export_molecular_represenation_as_gltf':
-                cootResult = export_molecular_represenation_as_gltf(...commandArgs as [number, string, string, string])
-                break
             default:
                 cootResult = molecules_container[command](...commandArgs)
                 break
@@ -1072,9 +1040,6 @@ const doCootCommand = (messageData: {
 
         let returnResult;
         switch (returnType) {
-            case 'texture_as_floats_t':
-                returnResult = textureAsFloatsToJSTextureAsFloats(cootResult)
-                break;
             case 'fit_ligand_info_array':
                 returnResult = fitLigandInfoArrayToJSArray(cootResult)
                 break;
@@ -1203,6 +1168,7 @@ const doCootCommand = (messageData: {
 onmessage = function (e) {
     if (e.data.message === 'CootInitialize') {
         createRSRModule({
+            locateFile: (file) => `./wasm/${file}`,
             onRuntimeInitialized: () => { },
             mainScriptUrlOrBlob: "moorhen.js",
             print: print,
@@ -1227,6 +1193,7 @@ onmessage = function (e) {
             });
         
         createCCP4Module({
+            locateFile: (file) => `./wasm/${file}`,
             onRuntimeInitialized: () => { },
             mainScriptUrlOrBlob: "web_example.js",
             print: print,

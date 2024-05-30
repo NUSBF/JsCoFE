@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    31.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -67,10 +67,6 @@ class Molrep(basic.TaskDriver):
         istruct  = revision.Structure
         if istruct:
             istruct = self.makeClass ( istruct )
-
-        ligands  = None
-        if hasattr(self.input_data.data,"ligands"):
-            ligands = self.makeClass ( self.input_data.data.ligands[0] )
 
         #seq      = None
         #if model.sequence:
@@ -168,14 +164,9 @@ class Molrep(basic.TaskDriver):
 
         have_results = False
 
-        self.putMessage ( '&nbsp;' )
-
-        libPath = None
-        if ligands:
-            libPath = ligands.getLibFilePath ( self.inputDir() )
-
+        self.putMessage ( '&nbsp;' );
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-                                hkl,libPath,[],0,leadKey=1, # openState="hidden",
+                                hkl,None,[],0,leadKey=1, # openState="hidden",
                                 title="Positioned Structure" )
 
         if structure:

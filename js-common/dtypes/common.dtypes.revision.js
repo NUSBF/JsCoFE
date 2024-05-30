@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.05.24   <--  Date of Last Modification.
+ *    31.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -117,11 +117,6 @@ DataRevision.prototype.makeSample = function()  {
   this.addSubtype ( 'ligands'      );
   this.addSubtype ( 'waters'       );
   return this;
-}
-
-
-DataRevision.prototype.hasLigands = function()  {
-  return (this.subtype.indexOf('ligands')>=0);
 }
 
 

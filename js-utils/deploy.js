@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.05.24   <--  Date of Last Modification.
+ *    17.06.26   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Code minimiser
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2024
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -92,16 +92,16 @@
  */
 
 //  load system modules
-const path     = require('path');
-const csso     = require('csso');
-const UglifyJS = require("uglify-js");
+var path     = require('path');
+var csso     = require('csso');
+var UglifyJS = require("uglify-js");
 
 //  load application modules
-const conf     = require('../js-server/server.configuration');
-const utils    = require('../js-server/server.utils');
+var conf     = require('../js-server/server.configuration');
+var utils    = require('../js-server/server.utils');
 
 //  prepare log
-const log = require('../js-server/server.log').newLog(25);
+var log = require('../js-server/server.log').newLog(25);
 
 
 // ==========================================================================
@@ -116,7 +116,7 @@ if (
     ((process.argv.length==4) && (process.argv[3]!='--no-strict')
                               && (process.argv[3]!='--strict'))
    )  {
-  let usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1] +
+  var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1] +
                           ' config.json [--no-strict|--strict]';
   log.error ( 1,'Incorrect command line. Stop.' );
   log.error ( 1,usage );
@@ -129,20 +129,20 @@ if (
 
 conf.setPythonVersion ( 'x.x.x' );  // do not check python
 
-let cfgfpath  = process.argv[2];
-let feConfig  = null;
-let inpfpath  = '';
-let inpfdata  = '';
-let no_strict = (process.argv.length<4) || (process.argv[3]=='--no-strict');
+var cfgfpath  = process.argv[2];
+var feConfig  = null;
+var inpfpath  = '';
+var inpfdata  = '';
+var no_strict = (process.argv.length<4) || (process.argv[3]=='--no-strict');
                                                      // syntax is checked above
 
 if (cfgfpath.endsWith('.json'))  {
 
-  let msg = conf.readConfiguration ( cfgfpath,'FE' );
+  var msg = conf.readConfiguration ( cfgfpath,'FE' );
   if (msg)  {
     log.error ( 2,'desktop configuration failed. Stop.' );
     log.error ( 2,msg );
-    process.exit(2);
+    process.exit();
   }
 
   feConfig = conf.getFEConfig();
@@ -154,40 +154,40 @@ if (cfgfpath.endsWith('.json'))  {
 
   inpfdata = utils.readString ( inpfpath );
   if (!inpfdata)  {
-    log.error ( 3,'bootrtrap html file not found at ' + inpfpath );
-    process.exit(3);
+    log.error ( 2,'bootrtrap html file not found at ' + inpfpath );
+    process.exit();
   }
 
 } else  {
 
-  let inpfpath = cfgfpath;
+  var inpfpath = cfgfpath;
   log.standard ( 3,'template file path: ' + inpfpath );
 
   inpfdata = utils.readString ( inpfpath );
   if (!inpfdata)  {
     log.error ( 4,'template file not found at ' + inpfpath );
-    process.exit(4);
+    process.exit();
   }
 
 }
 
-let inpfdir  = path.dirname ( inpfpath );
-let basename = path.parse(inpfpath).name;
+var inpfdir  = path.dirname ( inpfpath );
+var basename = path.parse(inpfpath).name;
 
 // ---------------------------------------------------------------------------
 //  Fetch lists of CSS and JS files
 
-let filelist = inpfdata.split('"');
-let csslist  = [];
-let jslist   = [];
+var filelist = inpfdata.split('"');
+var csslist  = [];
+var jslist   = [];
 
-for (let i=0;i<filelist.length;i++)
+for (var i=0;i<filelist.length;i++)
   if (filelist[i].endsWith('.css'))
     csslist.push ( filelist[i] );
   else if (filelist[i].endsWith('.js'))
     jslist.push ( filelist[i] );
 
-let indent = '\n                                      ';
+var indent = '\n                                      ';
 log.standard ( 2,'css list (' + csslist.length + '):' + indent + csslist.join(indent) );
 log.standard ( 3,'js list ('  + jslist.length + '):'  + indent + jslist.join(indent) );
 
@@ -195,21 +195,19 @@ log.standard ( 3,'js list ('  + jslist.length + '):'  + indent + jslist.join(ind
 // ---------------------------------------------------------------------------
 //  Minify CSS
 
-let data_css = '';
-for (let i=0;i<csslist.length;i++)  {
-  let css = utils.readString ( csslist[i] );
+var data_css = '';
+for (var i=0;i<csslist.length;i++)  {
+  var css = utils.readString ( csslist[i] );
   if (css)
     data_css += css + '\n\n';
-  else  {
-    log.error ( 5,'css file not found at ' + csslist[i] );
-    process.exit(5);
-  }
+  else
+    log.error ( 10,'css file not found at ' + csslist[i] );
 }
 
-let csspath = '';
+var csspath = '';
 if (data_css)  {
 
-  let result_css = csso.minify ( data_css, {
+  var result_css = csso.minify ( data_css, {
     restructure : false,  // don't change CSS structure, i.e. don't merge declarations, rulesets etc
     debug       : true    // show additional debug information:
                           // true or number from 1 to 3 (greater number - more details)
@@ -220,12 +218,9 @@ if (data_css)  {
   if (result_css.css)  {
 
     csspath = path.join ( inpfdir,basename + '.min.css' );
-    if (utils.writeString(csspath,result_css.css))  {
-      log.standard ( 12,'merged css written to '  + csspath );
-    } else {
-      log.error    ( 12,'cannot write ' + csspath );
-      process.exit ( 12 );
-    }
+    if (utils.writeString(csspath,result_css.css))
+         log.standard ( 12,'merged css written to '  + csspath );
+    else log.error    ( 12,'cannot write ' + csspath );
 
   } else
     log.standard ( 11,'failed to minigify css' );
@@ -240,23 +235,21 @@ if (no_strict)
       log.standard ( 13,'remove strict checks runtime' );
 else  log.standard ( 13,'keep strict checks runtime' );
 
-let jscode = {};
-for (let i=0;i<jslist.length;i++)  {
-  let jsdata = utils.readString ( jslist[i] );
+var jscode = {};
+for (var i=0;i<jslist.length;i++)  {
+  var jsdata = utils.readString ( jslist[i] );
   if (jsdata)  {
-    let len0 = jsdata.length;
+    var len0 = jsdata.length;
     if (no_strict)  // remove all occurencies
           jscode[jslist[i]] = jsdata.split('\'use strict\';').join('');
     else  jscode[jslist[i]] = jsdata;
     if (jscode[jslist[i]].length!=len0)
       log.standard ( 14,'destricted: ' + jslist[i] );
-  } else  {
+  } else
     log.error ( 20,'js file not found at ' + jslist[i] );
-    process.exit(20);
-  }
 }
 
-let result = UglifyJS.minify ( jscode,{
+var result = UglifyJS.minify ( jscode,{
   warnings  : false,
   sourceMap : {
     filename : basename + '.min.js',
@@ -272,33 +265,26 @@ if (result.warnings)  {
   log.standard ( 21,'no warnings generated' );
 
 
-let jspath = '';
+var jspath = '';
 
 if (result.error)  {
 
   log.error ( 22,'js errors:' );
   console.log(result.error); // runtime error, or `undefined` if no error
-  process.exit(22);
 
 } else if (result.code)  {
 
   jspath = path.join ( inpfdir,basename + '.min.js' );
 
-  if (utils.writeString(jspath,result.code))  {
-    log.standard ( 23,'minimsed/merged js written to '  + jspath );
-  } else  {
-    log.error    ( 23,'cannot write ' + jspath );
-    process.exit ( 23 );
-  }
+  if (utils.writeString(jspath,result.code))
+        log.standard ( 23,'minimsed/merged js written to '  + jspath );
+  else  log.error    ( 23,'cannot write ' + jspath );
 
   if (result.map)  {
-    let mappath = path.join ( inpfdir,basename + '.min.js.map' );
+    var mappath = path.join ( inpfdir,basename + '.min.js.map' );
     if (utils.writeString(mappath,result.map))
-      log.standard ( 24,'merged js map written to '  + mappath );
-    else  {
-      log.error    ( 24,'cannot write ' + mappath );
-      process.exit ( 24 );
-    }
+          log.standard ( 24,'merged js map written to '  + mappath );
+    else  log.error    ( 24,'cannot write ' + mappath );
   }
 
 } else
@@ -306,18 +292,18 @@ if (result.error)  {
 
 if (result.code && feConfig)  {
 
-  let inpfmin = [];
+  var inpfmin = [];
   filelist    = inpfdata.split(/\r?\n/);
 
-  let css_key = -1;
+  var css_key = -1;
   if (csspath)
     css_key = 0;
 
-  let js_key = -1;
+  var js_key = -1;
   if (jspath)
     js_key = 0
 
-  for (let i=0;i<filelist.length;i++)  {
+  for (var i=0;i<filelist.length;i++)  {
     if ((css_key>=0) && (filelist[i].indexOf('.css"')>=0))  {
       if (!css_key)  {
         css_key = 1;
@@ -332,14 +318,9 @@ if (result.code && feConfig)  {
       inpfmin.push ( filelist[i] );
   }
 
-  let inpfpath_min = change_extention ( inpfpath,'.min.html' );
+  var inpfpath_min = change_extention ( inpfpath,'.min.html' );
   if (utils.writeString(inpfpath_min,inpfmin.join('\n')))
-    log.standard ( 26,'modified html bootstrap written in ' + inpfpath_min );
-  else  {
-    log.error    ( 26,'cannot write modified html bootstrap at ' + inpfpath_min );
-    process.exit ( 26 );
-  }
-
-  process.exit(0);
+        log.standard ( 26,'modified html bootstrap written in ' + inpfpath_min );
+  else  log.error ( 26,'cannot write modified html bootstrap at ' + inpfpath_min );
 
 }
