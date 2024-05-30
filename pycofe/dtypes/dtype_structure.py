@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    21.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -663,13 +663,12 @@ class DType(dtype_xyz.DType):
 # ============================================================================
 
 def getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
-                       mapFilePath,dmapFilePath,libFilePath ):
+                       mapFilePath,dmapFilePath ):
     if (mmcifFilePath):  return mmcifFilePath
     if (pdbFilePath):    return pdbFilePath
     if (subFilePath):    return subFilePath
     if (mtzFilePath):    return mtzFilePath
     if (mapFilePath):    return mapFilePath
-    if (libFilePath):    return libFilePath
     return dmapFilePath
 
 
@@ -679,7 +678,7 @@ def register ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
                dmapFilePath,libFilePath,dataSerialNo,job_id,leadKey,outDataBox,
                outputDir,copy_files=False,map_labels=None,refiner="" ):
     fname0 = getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
-                                mapFilePath,dmapFilePath,libFilePath )
+                                mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType ( job_id )
         structure.leadKey = leadKey
@@ -726,7 +725,7 @@ def register1 ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
                 outDataBox,map_labels=None,refiner="" ):
 
     fname0 = getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
-                                mapFilePath,dmapFilePath,libFilePath )
+                                mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
         structure.leadKey = leadKey

@@ -6,7 +6,7 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.anomap.js
+ *  **** Module  :  js-common/cofe.tasks.omitmap.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~

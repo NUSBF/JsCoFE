@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    21.05.24   <--  Date of Last Modification.
+ *    17.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -471,7 +471,7 @@ let meta = {
   project      : '',
   load_project : 'no',
   title        : '*',
-  folder       : '/',
+  folder       : '',
   task         : 'import',
   task_name    : '*'
 };
@@ -603,8 +603,6 @@ for (let i=0;i<commands.length;i++)  {
     }
   }
 }
-
-
 console.log ( ' ============================================================' );
 
 if (!ok)  {
@@ -629,13 +627,6 @@ for (let key in meta)
 if (!Object.values(cloudrun_code).includes(meta.task)<0)  {
   ok = false;
   console.log ( ' *** task key ' + meta.task + ' is not valid' );
-}
-
-if ((!meta.project) || (!/^[A-Za-z][A-Za-z0-9-._]+$/.test(meta.project)))  {
-  ok = false;
-  console.log ( ' *** PROJECT name should contain only latin letters, '  +
-                'numbers, underscores,\n     dashes and dots, and must ' +
-                'start with a letter (\"' + meta.project + '\" given).' );
 }
 
 if (fnames.length<=0)

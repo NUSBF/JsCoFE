@@ -16,12 +16,6 @@ CCP4 Cloud Version Log
 
     #. moved to dui2
 
-    #. fixed reciprocal space viewer
-
-    #. added Calculate anomalous map with Phaser task
-
-    #.  Copy-paste jobs only if successful
-
 
 **Version 1.7.019** 
 

@@ -71,7 +71,7 @@ TaskDUI.prototype.clipboard_name      = function()  { return '"DUI"';    }
 TaskDUI.prototype.lowestClientVersion = function()  { return '1.6.001 [01.01.2019]'; }
 
 TaskDUI.prototype.currentVersion      = function()  {
-  let version = 0;
+  var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -97,7 +97,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  let conf = require('../../js-server/server.configuration');
+  var conf = require('../../js-server/server.configuration');
 
   TaskDUI.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.dui', jobManager, jobDir, this.id];
