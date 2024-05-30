@@ -16,17 +16,16 @@ def write_json(json_obj, json_path, indent=4):
     ostream.write('\n')
 
 def main():
-  os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
+  os.chdir(os.path.abspath(os.path.join(__file__, '..', '..')))
   confin = os.path.join('config', 'conf.')
-# confout = os.path.join('config2', 'conf.')
-  confout = 'w_conf.'
+  confout = os.path.join('conf', 'dist.')
 
-# dirout = os.path.dirname(confout)
-# if not os.path.isdir(dirout):
-#   os.makedirs(dirout)
+  dirout = os.path.dirname(confout)
+  if not os.path.isdir(dirout):
+    os.makedirs(dirout)
 
-  for key in 'desktop', 'remote':
-    json_obj = read_json(confin + key + '.json')
+  for k0, k1 in ('desktop', 'local'), ('remote', 'remote'):
+    json_obj = read_json(confin + k0 + '.json')
     json_obj['Emailer'] = dict(type = 'desktop')
 
     json_fe = json_obj['FrontEnd']
@@ -60,7 +59,7 @@ def main():
       if json_nc['name'] == 'client':
         json_nc['useRootCA'] = False
 
-    write_json(json_obj, confout + key + '.json', 2)
+    write_json(json_obj, confout + k1 + '.json', 2)
 
 if __name__ =='__main__':
   main()

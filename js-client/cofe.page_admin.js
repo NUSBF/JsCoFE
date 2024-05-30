@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    27.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -242,42 +242,45 @@ AdminPage.prototype.refresh = function()  {
 
       } else  {
 
-        self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-        let lines = data.jobsStat.split(/\r\n|\r|\n/);
-        if ((lines.length>0) && startsWith(lines[0],'--------'))  {
-          lines[0] = lines[0].replace ( /-/g,'=' );
-          lines[2] = lines[2].replace ( /-/g,'=' );
-          if (!lines[lines.length-1])
-            lines.pop();
-          lines.push ( lines.shift() );
-          lines.push ( lines.shift() );
-          lines.push ( lines.shift() );
-        }
-        let nJobsToday = 0;
-        let usersToday = [];
-        let today_template = new Date(Date.now()).toUTCString().split(' ');
-        today_template = '[' + today_template[0] + ' ' + today_template[1] +
-                         ' ' + today_template[2] + ' ' + today_template[3];
-        for (let i=lines.length-1;i>=0;i--)
-          if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
-            if (lines[i].indexOf(today_template)>=0) {
-              nJobsToday++;
-              let user = lines[i].split(' (')[0].split(' ').pop();
-              if (usersToday.indexOf(user)<0)
-                usersToday.push ( user );
-            } else
-              break;
+        window.setTimeout ( function(){
+          self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
+          let lines = data.jobsStat.split(/\r\n|\r|\n/);
+          if ((lines.length>0) && startsWith(lines[0],'--------'))  {
+            lines[0] = lines[0].replace ( /-/g,'=' );
+            lines[2] = lines[2].replace ( /-/g,'=' );
+            if (!lines[lines.length-1])
+              lines.pop();
+            lines.push ( lines.shift() );
+            lines.push ( lines.shift() );
+            lines.push ( lines.shift() );
           }
-        self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
-                                usersToday.length + ' users\n' +
-                                lines.reverse().join('\n') + '</pre>' );
-
-        self.usageStats._url    = data.usageReportURL;
-        self.usageStats._loaded = false;
-        self.loadUsageStats();
-
-        self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
-
+          let nJobsToday = 0;
+          let usersToday = [];
+          let today_template = new Date(Date.now()).toUTCString().split(' ');
+          today_template = '[' + today_template[0] + ' ' + today_template[1] +
+                          ' ' + today_template[2] + ' ' + today_template[3];
+          for (let i=lines.length-1;i>=0;i--)
+            if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
+              if (lines[i].indexOf(today_template)>=0) {
+                nJobsToday++;
+                let user = lines[i].split(' (')[0].split(' ').pop();
+                if (usersToday.indexOf(user)<0)
+                  usersToday.push ( user );
+              } else
+                break;
+            }
+          self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
+                                  usersToday.length + ' users\n' +
+                                  lines.reverse().join('\n') + '</pre>' );
+        },0);
+        window.setTimeout ( function(){
+          self.usageStats._url    = data.usageReportURL;
+          self.usageStats._loaded = false;
+          self.loadUsageStats();
+        },0);
+        window.setTimeout ( function(){
+          self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+        },0);
         serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
           function(rsp){
             if (rsp)  {
@@ -289,8 +292,10 @@ AdminPage.prototype.refresh = function()  {
                   'when trying to fetch FE Proxy data.', 'msg_error' );
             }
             if (!__local_service)  {
-              self.makeNodesInfoTab ( data.nodesInfo );
-              self.onResize ( window.innerWidth,window.innerHeight );
+              window.setTimeout ( function(){
+                self.makeNodesInfoTab ( data.nodesInfo );
+                self.onResize ( window.innerWidth,window.innerHeight );
+              },0);
             } else  {
               localCommand ( nc_command.getNCInfo,{},'NC Info Request',
                 function(response){
@@ -302,8 +307,10 @@ AdminPage.prototype.refresh = function()  {
                         'Unknown error: <b>' + response.status + '</b><p>' +
                         'when trying to fetch Client NC data.', 'msg_error' );
                   }
-                  self.makeNodesInfoTab ( data.nodesInfo );
-                  self.onResize ( window.innerWidth,window.innerHeight );
+                  window.setTimeout ( function(){
+                    self.makeNodesInfoTab ( data.nodesInfo );
+                    self.onResize ( window.innerWidth,window.innerHeight );
+                  },0);
                   return (response!=null);
                 });
             }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    28.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -147,6 +147,19 @@ TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
 
 if (!__template)  {
   //  for client side
+
+  TaskWebCoot.prototype.isTaskAvailable = function()  {
+
+    if (isQtWebEngine())
+      return ['incompatible-browser',
+              'task is not compatible with the browser used',
+              '<h3>Task is not compatible with the browser used</h3>' +
+              'Consider using alternative task (Coot) or choose a different<br>' +
+              'browser through ' + appName() + ' configuration utility.' ];
+    else
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskWebCoot.prototype.hotButtons = function()  {

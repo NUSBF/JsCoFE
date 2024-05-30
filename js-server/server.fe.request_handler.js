@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.12.23   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -21,13 +21,13 @@
 
 'use strict';
 
-const user = require('./server.fe.user');
-const prj  = require('./server.fe.projects');
-const fcl  = require('./server.fe.facilities');
-const rj   = require('./server.fe.run_job');
-const adm  = require('./server.fe.admin');
-const arch = require('./server.fe.archive');
-const cmd  = require('../js-common/common.commands');
+const user    = require('./server.fe.user');
+const prj     = require('./server.fe.projects');
+const storage = require('./server.fe.storage');
+const rj      = require('./server.fe.run_job');
+const adm     = require('./server.fe.admin');
+const arch    = require('./server.fe.archive');
+const cmd     = require('../js-common/common.commands');
 
 //  prepare log
 //const log = require('./server.log').newLog(7);
@@ -36,7 +36,7 @@ const cmd  = require('../js-common/common.commands');
 // ==========================================================================
 
 function requestHandler ( loginData,request_cmd,data,callback_func )  {
-var response = null;
+let response = null;
 
   switch (request_cmd)  {
 
@@ -154,7 +154,7 @@ var response = null;
 
    case cmd.fe_reqtype.shareProject :
           response = prj.shareProject ( loginData,data );
-      break;
+       break;
 
     case cmd.fe_reqtype.preparePrjExport :
           response = prj.prepareProjectExport ( loginData,data );
@@ -261,16 +261,7 @@ var response = null;
       break;
 
     case cmd.fe_reqtype.getCloudFileTree :
-          // response = fcl.getCloudFileTree ( loginData,data,callback_func );
-          fcl.getCloudFileTree ( loginData,data,callback_func );
-       break;
-
-    case cmd.fe_reqtype.updateFacility :
-          response = fcl.updateFacility ( loginData,data );
-       break;
-
-    case cmd.fe_reqtype.checkFclUpdate :
-          response = fcl.checkFacilityUpdate ( loginData,data );
+          storage.getCloudFileTree ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.getAdminData :
