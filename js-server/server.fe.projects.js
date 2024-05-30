@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,7 +106,7 @@ const conf      = require('./server.configuration');
 const utils     = require('./server.utils');
 const send_dir  = require('./server.send_dir');
 const ration    = require('./server.fe.ration');
-const fcl       = require('./server.fe.facilities');
+const storage   = require('./server.fe.storage');
 const user      = require('./server.fe.user');
 const class_map = require('./server.class_map');
 const rj        = require('./server.fe.run_job');
@@ -2526,7 +2526,7 @@ let duplicate = 0;
 
   if (tempdir)  {
 
-    let cloudMounts = fcl.getUserCloudMounts ( loginData );
+    let cloudMounts = storage.getUserCloudMounts ( loginData );
     let demoProjectPath = null;
 
     if ('cloudpath' in meta)  {

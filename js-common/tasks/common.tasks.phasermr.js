@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.04.24   <--  Date of Last Modification.
+ *    30.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -978,6 +978,8 @@ if (!__template)  {
        // this.input_data.data['xmodel'] = [revision.Structure];
 
       if (revision.Structure)  {
+        if (revision.subtype.indexOf('ligands')>=0)
+          this.input_data.data['ligands'] = [revision.Structure];
         if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
         // if (revision.Structure.hasXYZ())

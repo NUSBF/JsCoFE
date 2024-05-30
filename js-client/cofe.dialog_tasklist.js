@@ -24,10 +24,8 @@
 
 'use strict';
 
-
 // -------------------------------------------------------------------------
 // TaskListDialog class
-
 
 var __task_dialog_state = {
   sections : {},
@@ -1054,7 +1052,6 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImportPDB     (),
     new TaskImportReplace (),
     new TaskMigrate       ()
-    //new TaskFacilityImport()
   ];
 
   if (__cloud_storage)
