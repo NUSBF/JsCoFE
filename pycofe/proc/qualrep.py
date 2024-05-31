@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.04.24   <--  Date of Last Modification.
+#    31.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -146,19 +146,24 @@ def put_edstats_section ( body,revision ):
         reportPanelId = body.getWidgetId ( "edstats_report" )
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
         body.setEdstatsLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
-        body.runApp ( "edstats",[
+        rc = body.runApp ( "edstats",[
                 "XYZIN" ,struct.getPDBFilePath ( body.outputDir() ),
                 "MAPIN1",fo_map,
                 "MAPIN2",df_map,
                 "XYZOUT",xyzout
                 # "OUT"   ,edstats_out
-            ],logType="Service" )
+            ],logType="Service",quitOnError=False )
 
         body.unsetLogParser()
 
         body.flush()
         body.file_stdout1.close()
-        edmeta = getEDStatsMetrics ( body.file_stdout1_path() )
+        if not rc.msg:
+            edmeta = getEDStatsMetrics ( body.file_stdout1_path() )
+        else:
+            body.rvrow -= 1
+            body.putMessage1 ( body.report_page_id(),"",body.rvrow )
+
         body.file_stdout1 = open ( body.file_stdout1_path(),'a' )
 
         os.remove ( fo_map )   #  save space
@@ -196,6 +201,7 @@ def put_ramaplot_section ( body,structure ):
                 0,col=0,rowSpan=2 )
 
     reslist = jsonut.readjObject ( rama_outpath + "_reslist.json" )
+
     if reslist and len(reslist.outliers)>0:
         tableId = body.getWidgetId ( "outliers" )
         body.putMessage1 ( grid_id,"&nbsp;",0,col=1 )
@@ -622,7 +628,8 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
 def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
 
-    meta = None
+    meta   = None
+    edmeta = None
     refmacResults = None
 
     if revision.Structure and revision.Structure.hasXYZSubtype():
@@ -630,7 +637,10 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
             body.putTitle ( title )
 
         put_bfactors_section ( body,revision.Structure )
-        edmeta = put_edstats_section    ( body,revision )
+        try:
+            edmeta = put_edstats_section ( body,revision )
+        except:
+            edmeta = None
         meta   = put_molprobity_section ( body,revision )
         put_ramaplot_section ( body,revision.Structure )
 
