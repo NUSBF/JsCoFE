@@ -1,9 +1,14 @@
 
+// import path  from 'path';
 import { app, BrowserWindow, Menu, clipboard, MenuItem } from 'electron';
 import Store from 'electron-store';
+// import { fileURLToPath } from 'url';
 
 
 // ===========================================================================
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 // persistent settings
 const store = new Store();
@@ -23,6 +28,8 @@ function createWindow ( url ) {
     height : windowState.height,
     x      : windowState.x,
     y      : windowState.y,
+    // icon   : path.join(__dirname,'ccp4cloud_local.png'),
+    icon   : 'icons/ccp4cloud_local.icns',
     webPreferences : {
       nodeIntegration  : true,
       contextIsolation : true,
@@ -31,6 +38,10 @@ function createWindow ( url ) {
     }
   });
 
+  // setTimeout ( function(){
+  //   console.error ( ' *** ' + path.join(__dirname,'ccp4cloud_local.png') );
+  // },500);
+  
   // Load your web application
   mainWindow.loadURL(url).catch ( err => {
     console.error ( 'Failed to load URL:', err );
