@@ -1,0 +1,18 @@
+{
+  "name": "cofe-browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cofe-browser.mjs",
+  "type": "module",
+  "productName": "CCP4 Cloud Local",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron"      : "^30.0.8",
+    "electron-store": "^9.0.0"
+  }
+}
