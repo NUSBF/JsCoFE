@@ -219,12 +219,9 @@ function TaskShelxEMR()  {
 
 }
 
-
 if (__template)
-      TaskShelxEMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskShelxEMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskShelxEMR.prototype.constructor = TaskShelxEMR;
-
+  __cmd.registerClass ( 'TaskShelxEMR',TaskShelxEMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskShelxEMR',TaskShelxEMR,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

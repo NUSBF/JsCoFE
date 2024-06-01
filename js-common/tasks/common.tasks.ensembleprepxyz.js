@@ -358,10 +358,8 @@ function TaskEnsemblePrepXYZ()  {
 }
 
 if (__template)
-      TaskEnsemblePrepXYZ.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsemblePrepXYZ.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsemblePrepXYZ.prototype.constructor = TaskEnsemblePrepXYZ;
-
+  __cmd.registerClass ( 'TaskEnsemblePrepXYZ',TaskEnsemblePrepXYZ,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsemblePrepXYZ',TaskEnsemblePrepXYZ,TaskTemplate.prototype );
 
 // ===========================================================================
 

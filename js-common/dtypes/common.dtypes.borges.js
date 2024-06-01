@@ -50,8 +50,8 @@ function DataBorges()  {
 // DataBorges.prototype.constructor = DataBorges;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataBorges',DataBorges,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataBorges',DataBorges,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataBorges',DataBorges,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataBorges',DataBorges,DataTemplate.prototype );
 
 // ===========================================================================
 

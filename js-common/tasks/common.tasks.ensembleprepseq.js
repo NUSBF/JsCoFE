@@ -104,10 +104,8 @@ function TaskEnsemblePrepSeq()  {
 }
 
 if (__template)
-      TaskEnsemblePrepSeq.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsemblePrepSeq.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
-
+  __cmd.registerClass ( 'TaskEnsemblePrepSeq',TaskEnsemblePrepSeq,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsemblePrepSeq',TaskEnsemblePrepSeq,TaskTemplate.prototype );
 
 // ===========================================================================
 

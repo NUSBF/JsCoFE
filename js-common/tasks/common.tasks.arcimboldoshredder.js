@@ -258,14 +258,9 @@ function TaskArcimboldoShredder()  {
 
 }
 
-
-
-
 if (__template)
-      TaskArcimboldoShredder.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskArcimboldoShredder.prototype = Object.create ( TaskTemplate.prototype );
-TaskArcimboldoShredder.prototype.constructor = TaskArcimboldoShredder;
-
+  __cmd.registerClass ( 'TaskArcimboldoShredder',TaskArcimboldoShredder,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskArcimboldoShredder',TaskArcimboldoShredder,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

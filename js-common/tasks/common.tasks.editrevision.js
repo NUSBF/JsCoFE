@@ -120,12 +120,9 @@ function TaskEditRevision()  {
 
 }
 
-
 if (__template)
-      TaskEditRevision.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEditRevision.prototype = Object.create ( TaskTemplate.prototype );
-TaskEditRevision.prototype.constructor = TaskEditRevision;
-
+  __cmd.registerClass ( 'TaskEditRevision',TaskEditRevision,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEditRevision',TaskEditRevision,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

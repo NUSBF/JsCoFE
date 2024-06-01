@@ -101,12 +101,9 @@ function TaskFreeRFlag()  {
 
 }
 
-
 if (__template)
-      TaskFreeRFlag.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFreeRFlag.prototype = Object.create ( TaskTemplate.prototype );
-TaskFreeRFlag.prototype.constructor = TaskFreeRFlag;
-
+  __cmd.registerClass ( 'TaskFreeRFlag',TaskFreeRFlag,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFreeRFlag',TaskFreeRFlag,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

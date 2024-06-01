@@ -176,10 +176,8 @@ function TaskImportPDB()  {
 }
 
 if (__template)
-      TaskImportPDB.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImportPDB.prototype = Object.create ( TaskTemplate.prototype );
-TaskImportPDB.prototype.constructor = TaskImportPDB;
-
+  __cmd.registerClass ( 'TaskImportPDB',TaskImportPDB,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImportPDB',TaskImportPDB,TaskTemplate.prototype );
 
 // ===========================================================================
 

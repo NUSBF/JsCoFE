@@ -273,12 +273,9 @@ function TaskXyzUtils()  {
 
 }
 
-
 if (__template)
-      TaskXyzUtils.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXyzUtils.prototype = Object.create ( TaskTemplate.prototype );
-TaskXyzUtils.prototype.constructor = TaskXyzUtils;
-
+  __cmd.registerClass ( 'TaskXyzUtils',TaskXyzUtils,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXyzUtils',TaskXyzUtils,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -54,8 +54,8 @@ function DataUnmerged()  {
 // DataUnmerged.prototype.constructor = DataUnmerged;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataUnmerged',DataUnmerged,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataUnmerged',DataUnmerged,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataUnmerged',DataUnmerged,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataUnmerged',DataUnmerged,DataTemplate.prototype );
 
 // ===========================================================================
 

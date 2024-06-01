@@ -192,12 +192,9 @@ function TaskSRF()  {
 
 }
 
-
 if (__template)
-      TaskSRF.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSRF.prototype = Object.create ( TaskTemplate.prototype );
-TaskSRF.prototype.constructor = TaskSRF;
-
+  __cmd.registerClass ( 'TaskSRF',TaskSRF,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSRF',TaskSRF,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

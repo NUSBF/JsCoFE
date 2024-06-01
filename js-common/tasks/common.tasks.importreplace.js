@@ -60,10 +60,8 @@ function TaskImportReplace()  {
 }
 
 if (__migrate)
-      TaskImportReplace.prototype = Object.create ( __migrate.TaskMigrate.prototype );
-else  TaskImportReplace.prototype = Object.create ( TaskMigrate.prototype );
-TaskImportReplace.prototype.constructor = TaskImportReplace;
-
+  __cmd.registerClass ( 'TaskImportReplace',TaskImportReplace,__migrate.TaskMigrate.prototype );
+else    registerClass ( 'TaskImportReplace',TaskImportReplace,TaskMigrate.prototype );
 
 // ===========================================================================
 
@@ -117,7 +115,7 @@ if (!__template)  {
 
     TaskMigrate.prototype.collectInput.call ( this,inputPanel );
 
-    var msg = '';  // Ok if stays empty
+    let msg = '';  // Ok if stays empty
 
     if (this.file_hkl.length + this.file_mtz.length +
         this.file_xyz.length + this.file_lib.length <= 0)
@@ -130,7 +128,7 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskImportReplace.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -138,7 +136,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['ihkl'] = [revision.HKL];
       if (revision.Structure)
         this.input_data.data['istruct'] = [revision.Structure];

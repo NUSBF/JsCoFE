@@ -272,12 +272,9 @@ function TaskSimbad()  {
 
 }
 
-
 if (__template)
-      TaskSimbad.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSimbad.prototype = Object.create ( TaskTemplate.prototype );
-TaskSimbad.prototype.constructor = TaskSimbad;
-
+  __cmd.registerClass ( 'TaskSimbad',TaskSimbad,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSimbad',TaskSimbad,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

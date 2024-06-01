@@ -197,12 +197,9 @@ function TaskMakeLigand()  {
 
 }
 
-
 if (__template)
-      TaskMakeLigand.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMakeLigand.prototype = Object.create ( TaskTemplate.prototype );
-TaskMakeLigand.prototype.constructor = TaskMakeLigand;
-
+  __cmd.registerClass ( 'TaskMakeLigand',TaskMakeLigand,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMakeLigand',TaskMakeLigand,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

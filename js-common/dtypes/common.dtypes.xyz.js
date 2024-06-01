@@ -61,8 +61,8 @@ function DataXYZ()  {
 // DataXYZ.prototype.constructor = DataXYZ;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataXYZ',DataXYZ,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataXYZ',DataXYZ,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataXYZ',DataXYZ,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataXYZ',DataXYZ,DataTemplate.prototype );
 
 // ===========================================================================
 

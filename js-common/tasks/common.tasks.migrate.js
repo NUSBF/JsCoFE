@@ -67,10 +67,8 @@ function TaskMigrate()  {
 }
 
 if (__template)
-      TaskMigrate.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMigrate.prototype = Object.create ( TaskTemplate.prototype );
-TaskMigrate.prototype.constructor = TaskMigrate;
-
+  __cmd.registerClass ( 'TaskMigrate',TaskMigrate,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMigrate',TaskMigrate,TaskTemplate.prototype );
 
 // ===========================================================================
 

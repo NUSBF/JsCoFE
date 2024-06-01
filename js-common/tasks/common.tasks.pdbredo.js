@@ -35,7 +35,7 @@ function TaskPDBREDO()  {   // must start with Task...
 
   // invoke the template class constructor:
   if (__template)  __template.TaskTemplate.call ( this );
-  else  TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
 
   // define fields important for jsCoFE framework
 
@@ -60,9 +60,8 @@ function TaskPDBREDO()  {   // must start with Task...
 // finish constructor definition
 
 if (__template)
-      TaskPDBREDO.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBREDO.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBREDO.prototype.constructor = TaskPDBREDO;
+  __cmd.registerClass ( 'TaskPDBREDO',TaskPDBREDO,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPDBREDO',TaskPDBREDO,TaskTemplate.prototype );
 
 // ===========================================================================
 

@@ -229,12 +229,9 @@ function TaskModelCraft()  {
 
 }
 
-
 if (__template)
-      TaskModelCraft.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskModelCraft.prototype = Object.create ( TaskTemplate.prototype );
-TaskModelCraft.prototype.constructor = TaskModelCraft;
-
+  __cmd.registerClass ( 'TaskModelCraft',TaskModelCraft,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskModelCraft',TaskModelCraft,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -49,8 +49,8 @@ function DataBox()  {
 }
 
 if (__cmd)
-  __cmd.registerClass1 ( 'DataBox',DataBox,null );
-else    registerClass1 ( 'DataBox',DataBox,null );
+  __cmd.registerClass ( 'DataBox',DataBox,null );
+else    registerClass ( 'DataBox',DataBox,null );
 
 
 DataBox.prototype.markNotEmpty = function()  {

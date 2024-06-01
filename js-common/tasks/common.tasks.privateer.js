@@ -56,12 +56,9 @@ function TaskPrivateer()  {
 
 }
 
-
 if (__template)
-      TaskPrivateer.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPrivateer.prototype = Object.create ( TaskTemplate.prototype );
-TaskPrivateer.prototype.constructor = TaskPrivateer;
-
+  __cmd.registerClass ( 'TaskPrivateer',TaskPrivateer,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPrivateer',TaskPrivateer,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

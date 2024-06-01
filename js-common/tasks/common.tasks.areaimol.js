@@ -84,12 +84,9 @@ function TaskAreaimol()  {
 
 }
 
-
 if (__template)
-      TaskAreaimol.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAreaimol.prototype = Object.create ( TaskTemplate.prototype );
-TaskAreaimol.prototype.constructor = TaskAreaimol;
-
+  __cmd.registerClass ( 'TaskAreaimol',TaskAreaimol,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAreaimol',TaskAreaimol,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

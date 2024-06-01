@@ -945,12 +945,9 @@ function TaskCrank2()  {
 
 }
 
-
 if (__template)
-      TaskCrank2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCrank2.prototype = Object.create ( TaskTemplate.prototype );
-TaskCrank2.prototype.constructor = TaskCrank2;
-
+  __cmd.registerClass ( 'TaskCrank2',TaskCrank2,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCrank2',TaskCrank2,TaskTemplate.prototype );
 
 // ===========================================================================
 

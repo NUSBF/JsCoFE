@@ -60,10 +60,8 @@ function TaskImport()  {
 }
 
 if (__template)
-      TaskImport.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImport.prototype = Object.create ( TaskTemplate.prototype );
-TaskImport.prototype.constructor = TaskImport;
-
+  __cmd.registerClass ( 'TaskImport',TaskImport,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImport',TaskImport,TaskTemplate.prototype );
 
 // ===========================================================================
 

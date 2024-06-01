@@ -146,10 +146,8 @@ function TaskWFlowAEP()  {
 }
 
 if (__template)
-      TaskWFlowAEP.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowAEP.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowAEP.prototype.constructor = TaskWFlowAEP;
-
+  __cmd.registerClass ( 'TaskWFlowAEP',TaskWFlowAEP,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowAEP',TaskWFlowAEP,TaskTemplate.prototype );
 
 // ===========================================================================
 

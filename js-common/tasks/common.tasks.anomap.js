@@ -55,10 +55,8 @@ function TaskAnoMap()  {
 }
 
 if (__template)
-      TaskAnoMap.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAnoMap.prototype = Object.create ( TaskTemplate.prototype );
-TaskAnoMap.prototype.constructor = TaskAnoMap;
-
+  __cmd.registerClass ( 'TaskAnoMap',TaskAnoMap,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAnoMap',TaskAnoMap,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

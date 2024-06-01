@@ -97,12 +97,9 @@ function TaskZanuda()  {
 
 }
 
-
 if (__template)
-      TaskZanuda.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskZanuda.prototype = Object.create ( TaskTemplate.prototype );
-TaskZanuda.prototype.constructor = TaskZanuda;
-
+  __cmd.registerClass ( 'TaskZanuda',TaskZanuda,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskZanuda',TaskZanuda,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

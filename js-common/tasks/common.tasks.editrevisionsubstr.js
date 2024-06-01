@@ -26,7 +26,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.editrevisionasu' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -89,12 +89,9 @@ function TaskEditRevisionSubstr()  {
 
 }
 
-
 if (__template)
-      TaskEditRevisionSubstr.prototype = Object.create ( __template.TaskEditRevisionASU.prototype );
-else  TaskEditRevisionSubstr.prototype = Object.create ( TaskEditRevisionASU.prototype );
-TaskEditRevisionSubstr.prototype.constructor = TaskEditRevisionSubstr;
-
+  __cmd.registerClass ( 'TaskEditRevisionSubstr',TaskEditRevisionStruct,__template.TaskEditRevisionASU.prototype );
+else    registerClass ( 'TaskEditRevisionSubstr',TaskEditRevisionStruct,TaskEditRevisionASU.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

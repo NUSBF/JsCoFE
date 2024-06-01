@@ -1193,12 +1193,9 @@ function TaskAimless()  {
 
 }
 
-
 if (__template)
-      TaskAimless.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAimless.prototype = Object.create ( TaskTemplate.prototype );
-TaskAimless.prototype.constructor = TaskAimless;
-
+  __cmd.registerClass ( 'TaskAimless',TaskAimless,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAimless',TaskAimless,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -88,12 +88,9 @@ function TaskEditRevisionASU()  {
 
 }
 
-
 if (__template)
-      TaskEditRevisionASU.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEditRevisionASU.prototype = Object.create ( TaskTemplate.prototype );
-TaskEditRevisionASU.prototype.constructor = TaskEditRevisionASU;
-
+  __cmd.registerClass ( 'TaskEditRevisionASU',TaskEditRevisionASU,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEditRevisionASU',TaskEditRevisionASU,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

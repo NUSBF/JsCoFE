@@ -340,12 +340,9 @@ function TaskBuccaneer()  {
 
 }
 
-
 if (__template)
-      TaskBuccaneer.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskBuccaneer.prototype = Object.create ( TaskTemplate.prototype );
-TaskBuccaneer.prototype.constructor = TaskBuccaneer;
-
+  __cmd.registerClass ( 'TaskBuccaneer',TaskBuccaneer,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskBuccaneer',TaskBuccaneer,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

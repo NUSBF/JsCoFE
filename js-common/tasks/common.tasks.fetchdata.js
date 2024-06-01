@@ -72,12 +72,9 @@ function TaskFetchData()  {
 
 }
 
-
 if (__template)
-      TaskFetchData.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFetchData.prototype = Object.create ( TaskTemplate.prototype );
-TaskFetchData.prototype.constructor = TaskFetchData;
-
+  __cmd.registerClass ( 'TaskFetchData',TaskFetchData,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFetchData',TaskFetchData,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

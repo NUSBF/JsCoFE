@@ -147,12 +147,9 @@ function TaskArcimboldoBorges()  {
 
 }
 
-
 if (__template)
-      TaskArcimboldoBorges.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskArcimboldoBorges.prototype = Object.create ( TaskTemplate.prototype );
-TaskArcimboldoBorges.prototype.constructor = TaskArcimboldoBorges;
-
+  __cmd.registerClass ( 'TaskArcimboldoBorges',TaskArcimboldoBorges,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskArcimboldoBorges',TaskArcimboldoBorges,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -114,10 +114,8 @@ function TaskLorestr()  {
 }
 
 if (__template)
-      TaskLorestr.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskLorestr.prototype = Object.create ( TaskTemplate.prototype );
-TaskLorestr.prototype.constructor = TaskLorestr;
-
+  __cmd.registerClass ( 'TaskLorestr',TaskLorestr,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskLorestr',TaskLorestr,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

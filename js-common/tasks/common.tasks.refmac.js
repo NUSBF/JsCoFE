@@ -650,19 +650,9 @@ function TaskRefmac()  {
 
 }
 
-
-// if (__template)  {
-//   TaskRefmac.prototype = Object.create ( __template.TaskTemplate.prototype );
-//   __cmd.registerClass ( 'TaskRefmac',TaskRefmac );
-// } else  {
-//   TaskRefmac.prototype = Object.create ( TaskTemplate.prototype );
-//   registerClass ( 'TaskRefmac',TaskRefmac );
-// }
-// TaskRefmac.prototype.constructor = TaskRefmac;
-
 if (__template)
-  __cmd.registerClass1 ( 'TaskRefmac',TaskRefmac,__template.TaskTemplate.prototype );
-else    registerClass1 ( 'TaskRefmac',TaskRefmac,TaskTemplate.prototype );
+  __cmd.registerClass ( 'TaskRefmac',TaskRefmac,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRefmac',TaskRefmac,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

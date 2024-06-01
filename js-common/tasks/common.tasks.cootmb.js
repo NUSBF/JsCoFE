@@ -79,12 +79,9 @@ function TaskCootMB()  {
 
 }
 
-
 if (__template)
-      TaskCootMB.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCootMB.prototype = Object.create ( TaskTemplate.prototype );
-TaskCootMB.prototype.constructor = TaskCootMB;
-
+  __cmd.registerClass ( 'TaskCootMB',TaskCootMB,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCootMB',TaskCootMB,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

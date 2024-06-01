@@ -134,10 +134,8 @@ function TaskWFlowAFMR()  {
 }
 
 if (__template)
-      TaskWFlowAFMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowAFMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowAFMR.prototype.constructor = TaskWFlowAFMR;
-
+  __cmd.registerClass ( 'TaskWFlowAFMR',TaskWFlowAFMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowAFMR',TaskWFlowAFMR,TaskTemplate.prototype );
 
 // ===========================================================================
 

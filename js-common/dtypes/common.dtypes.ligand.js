@@ -52,8 +52,8 @@ function DataLigand()  {
 // DataLigand.prototype.constructor = DataLigand;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataLigand',DataLigand,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataLigand',DataLigand,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataLigand',DataLigand,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataLigand',DataLigand,DataTemplate.prototype );
 
 // ===========================================================================
 

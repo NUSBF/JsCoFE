@@ -281,12 +281,9 @@ function TaskShelxCD()  {
 
 }
 
-
 if (__template)
-      TaskShelxCD.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskShelxCD.prototype = Object.create ( TaskTemplate.prototype );
-TaskShelxCD.prototype.constructor = TaskShelxCD;
-
+  __cmd.registerClass ( 'TaskShelxCD',TaskShelxCD,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskShelxCD',TaskShelxCD,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

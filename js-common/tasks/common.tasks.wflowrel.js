@@ -151,10 +151,8 @@ function TaskWFlowREL()  {
 }
 
 if (__template)
-      TaskWFlowREL.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowREL.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowREL.prototype.constructor = TaskWFlowREL;
-
+  __cmd.registerClass ( 'TaskWFlowREL',TaskWFlowREL,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowREL',TaskWFlowREL,TaskTemplate.prototype );
 
 // ===========================================================================
 

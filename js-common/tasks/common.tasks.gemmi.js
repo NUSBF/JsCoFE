@@ -100,12 +100,9 @@ function TaskGemmi()  {
 
 }
 
-
 if (__template)
-      TaskGemmi.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskGemmi.prototype = Object.create ( TaskTemplate.prototype );
-TaskGemmi.prototype.constructor = TaskGemmi;
-
+  __cmd.registerClass ( 'TaskGemmi',TaskGemmi,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskGemmi',TaskGemmi,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

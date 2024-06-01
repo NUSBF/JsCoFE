@@ -215,10 +215,8 @@ function TaskCCP4go2()  {
 }
 
 if (__template)
-      TaskCCP4go2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4go2.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4go2.prototype.constructor = TaskCCP4go2;
-
+  __cmd.registerClass ( 'TaskCCP4go2',TaskCCP4go2,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCCP4go2',TaskCCP4go2,TaskTemplate.prototype );
 
 // ===========================================================================
 

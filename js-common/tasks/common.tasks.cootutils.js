@@ -54,12 +54,9 @@ function TaskCootUtils()  {
 
 }
 
-
 if (__template)
-      TaskCootUtils.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCootUtils.prototype = Object.create ( TaskTemplate.prototype );
-TaskCootUtils.prototype.constructor = TaskCootUtils;
-
+  __cmd.registerClass ( 'TaskCootUtils',TaskCootUtils,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCootUtils',TaskCootUtils,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

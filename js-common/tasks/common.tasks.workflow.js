@@ -55,10 +55,8 @@ function TaskWorkflow()  {
 }
 
 if (__template)
-      TaskWorkflow.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWorkflow.prototype = Object.create ( TaskTemplate.prototype );
-TaskWorkflow.prototype.constructor = TaskWorkflow;
-
+  __cmd.registerClass ( 'TaskWorkflow',TaskWorkflow,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWorkflow',TaskWorkflow,TaskTemplate.prototype );
 
 // ===========================================================================
 

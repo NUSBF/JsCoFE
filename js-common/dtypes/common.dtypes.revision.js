@@ -91,8 +91,8 @@ function DataRevision()  {
 // DataRevision.prototype.constructor = DataRevision;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataRevision',DataRevision,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataRevision',DataRevision,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataRevision',DataRevision,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataRevision',DataRevision,DataTemplate.prototype );
 
 // ===========================================================================
 

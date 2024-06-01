@@ -314,11 +314,11 @@ function Request ( request,token,data )  {
 
 const __class_register = {};
 
-function registerClass ( name,obj_function )  {
-  __class_register[name] = obj_function;
-}
+// function registerClass ( name,obj_function )  {
+//   __class_register[name] = obj_function;
+// }
 
-function registerClass1 ( name,obj_function,parent_prototype )  {
+function registerClass ( name,obj_function,parent_prototype )  {
   if (parent_prototype)  {
     obj_function.prototype = Object.create ( parent_prototype );
     obj_function.prototype.constructor = obj_function;
@@ -357,6 +357,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.sendResponseMessage  = sendResponseMessage;
   module.exports.Request              = Request;
   module.exports.registerClass        = registerClass;
-  module.exports.registerClass1       = registerClass1;
+  module.exports.registerClass       = registerClass;
   module.exports.makeNewInstance      = makeNewInstance;
 }

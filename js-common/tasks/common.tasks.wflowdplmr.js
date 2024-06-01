@@ -136,10 +136,8 @@ function TaskWFlowDPLMR()  {
 }
 
 if (__template)
-      TaskWFlowDPLMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowDPLMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowDPLMR.prototype.constructor = TaskWFlowDPLMR;
-
+  __cmd.registerClass ( 'TaskWFlowDPLMR',TaskWFlowDPLMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowDPLMR',TaskWFlowDPLMR,TaskTemplate.prototype );
 
 // ===========================================================================
 

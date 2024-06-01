@@ -53,12 +53,9 @@ function TaskAWNuce()  {
 
 }
 
-
 if (__template)
-      TaskAWNuce.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAWNuce.prototype = Object.create ( TaskTemplate.prototype );
-TaskAWNuce.prototype.constructor = TaskAWNuce;
-
+  __cmd.registerClass ( 'TaskAWNuce',TaskAWNuce,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAWNuce',TaskAWNuce,TaskTemplate.prototype );
 
 // ===========================================================================
 

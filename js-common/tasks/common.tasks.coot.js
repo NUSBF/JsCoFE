@@ -28,7 +28,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.cootmb' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -42,9 +42,9 @@ function TaskCoot()  {
 
 
 if (__template)
-      TaskCoot.prototype = Object.create ( __template.TaskCootMB.prototype );
-else  TaskCoot.prototype = Object.create ( TaskCootMB.prototype );
-TaskCoot.prototype.constructor = TaskCoot;
+  __cmd.registerClass ( 'TaskCoot',TaskCoot,__template.TaskCootMB.prototype );
+else    registerClass ( 'TaskCoot',TaskCoot,TaskCootMB.prototype );
+
 
 TaskCoot.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

@@ -56,10 +56,8 @@ function TaskXDS3()  {
 }
 
 if (__template)
-      TaskXDS3.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXDS3.prototype = Object.create ( TaskTemplate.prototype );
-TaskXDS3.prototype.constructor = TaskXDS3;
-
+  __cmd.registerClass ( 'TaskXDS3',TaskXDS3,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXDS3',TaskXDS3,TaskTemplate.prototype );
 
 // ===========================================================================
 

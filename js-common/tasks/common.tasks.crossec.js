@@ -330,12 +330,9 @@ function TaskCrosSec()  {
 
 }
 
-
 if (__template)
-      TaskCrosSec.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCrosSec.prototype = Object.create ( TaskTemplate.prototype );
-TaskCrosSec.prototype.constructor = TaskCrosSec;
-
+  __cmd.registerClass ( 'TaskCrosSec',TaskCrosSec,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCrosSec',TaskCrosSec,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

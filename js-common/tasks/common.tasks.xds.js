@@ -25,7 +25,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.xia2' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -90,10 +90,8 @@ function TaskXDS()  {
 }
 
 if (__template)
-      TaskXDS.prototype = Object.create ( __template.TaskXia2.prototype );
-else  TaskXDS.prototype = Object.create ( TaskXia2.prototype );
-TaskXDS.prototype.constructor = TaskXDS;
-
+  __cmd.registerClass ( 'TaskXDS',TaskXDS,__template.TaskXia2.prototype );
+else    registerClass ( 'TaskXDS',TaskXDS,TaskXia2.prototype );
 
 // ===========================================================================
 

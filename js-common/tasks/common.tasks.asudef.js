@@ -241,12 +241,9 @@ function TaskASUDef()  {
 
 }
 
-
 if (__template)
-      TaskASUDef.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskASUDef.prototype = Object.create ( TaskTemplate.prototype );
-TaskASUDef.prototype.constructor = TaskASUDef;
-
+  __cmd.registerClass ( 'TaskASUDef',TaskASUDef,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskASUDef',TaskASUDef,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

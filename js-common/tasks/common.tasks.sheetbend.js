@@ -76,12 +76,9 @@ function TaskSheetbend()  {
 
 }
 
-
 if (__template)
-      TaskSheetbend.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSheetbend.prototype = Object.create ( TaskTemplate.prototype );
-TaskSheetbend.prototype.constructor = TaskSheetbend;
-
+  __cmd.registerClass ( 'TaskSheetbend',TaskSheetbend,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSheetbend',TaskSheetbend,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

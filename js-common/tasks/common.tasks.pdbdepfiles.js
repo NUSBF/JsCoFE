@@ -56,12 +56,9 @@ function TaskPDBDepFiles()  {
 
 }
 
-
 if (__template)
-      TaskPDBDepFiles.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBDepFiles.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBDepFiles.prototype.constructor = TaskPDBDepFiles;
-
+  __cmd.registerClass ( 'TaskPDBDepFiles',TaskPDBDepFiles,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPDBDepFiles',TaskPDBDepFiles,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

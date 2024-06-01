@@ -100,12 +100,9 @@ function TaskWebCoot()  {
 
 }
 
-
 if (__template)
-      TaskWebCoot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWebCoot.prototype = Object.create ( TaskTemplate.prototype );
-TaskWebCoot.prototype.constructor = TaskWebCoot;
-
+  __cmd.registerClass ( 'TaskWebCoot',TaskWebCoot,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWebCoot',TaskWebCoot,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

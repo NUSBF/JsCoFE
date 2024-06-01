@@ -221,12 +221,9 @@ function TaskBuster()  {
 
 }
 
-
 if (__template)
-      TaskBuster.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskBuster.prototype = Object.create ( TaskTemplate.prototype );
-TaskBuster.prototype.constructor = TaskBuster;
-
+  __cmd.registerClass ( 'TaskBuster',TaskBuster,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskBuster',TaskBuster,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
