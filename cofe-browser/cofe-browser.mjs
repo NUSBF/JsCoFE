@@ -1,47 +1,44 @@
 
-// import path  from 'path';
-import { app, BrowserWindow, Menu, clipboard, MenuItem } from 'electron';
+import path  from 'path';
+import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog } from 'electron';
 import Store from 'electron-store';
-// import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 
 
 // ===========================================================================
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // persistent settings
 const store = new Store();
 
 let mainWindow;
 let secondaryWindows = [];
+let ccp4cloud_version = 'xxx.xxx.xxx';
 
 // ===========================================================================
 
 function createWindow ( url ) {
   // Create the browser window.
 
-  const windowState = store.get('windowState') || { width: 1200, height: 800 };
+  const windowState = store.get('cofe-browser.state') ||
+                      { width: 1200, height: 800, x: 100, y: 75 };
 
-  mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow ({
     width  : windowState.width,
     height : windowState.height,
     x      : windowState.x,
     y      : windowState.y,
-    // icon   : path.join(__dirname,'ccp4cloud_local.png'),
-    icon   : 'icons/ccp4cloud_local.icns',
+    icon   : path.join(__dirname,'icons','ccp4cloud_local.png'),
     webPreferences : {
       nodeIntegration  : true,
       contextIsolation : true,
-      webSecurity      : true
-      // preload: path.join(__dirname, 'preload.js') // Optional: if you have a preload script
+      webSecurity      : true,
+      preload          : path.join(__dirname,'preload.mjs')
     }
   });
 
-  // setTimeout ( function(){
-  //   console.error ( ' *** ' + path.join(__dirname,'ccp4cloud_local.png') );
-  // },500);
-  
   // Load your web application
   mainWindow.loadURL(url).catch ( err => {
     console.error ( 'Failed to load URL:', err );
@@ -70,10 +67,23 @@ function createWindow ( url ) {
     // Create the custom menu
   const menuTemplate = [
     {
-      label: 'Application',
+      label: app.name,
       submenu: [
         {
-          label       : 'Exit CCP4 Cloud Local',
+          label: 'About',
+          click: () => {
+            showCustomAboutDialog();
+          }
+        },
+        { type: 'separator'  },
+        { role: 'services'   },
+        { type: 'separator'  },
+        { role: 'hide'       },
+        { role: 'hideothers' },
+        { role: 'unhide'     },
+        { type: 'separator'  },
+        {
+          label       : 'Quit CCP4 Cloud Local',
           accelerator : 'CmdOrCtrl+Q',
           click() {
             sendStopSignal ( url );
@@ -119,16 +129,16 @@ function createWindow ( url ) {
       label: 'Windows',
       submenu: []
     }
-   ];
+  ];
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
+  const menu = Menu.buildFromTemplate ( menuTemplate );
 
-  Menu.setApplicationMenu(menu);
+  Menu.setApplicationMenu ( menu );
 
   // Save the window state on close
   mainWindow.on ( 'close', () => {
     const bounds = mainWindow.getBounds();
-    store.set ( 'windowState',bounds );
+    store.set ( 'cofe-browser.state',bounds );
   });
 
 }
@@ -211,6 +221,18 @@ function createSecondaryWindow ( url,features ) {
 
 }
 
+function showCustomAboutDialog() {
+  // Using Electron's dialog module for a simple custom About dialog
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'About CCP4 Cloud Local',
+    message: 'CCP4 Cloud Local\n\nv. ' + ccp4cloud_version +
+             '\n\nElectron-based application for running\n' + 
+             'CCP4 Cloud locally on your machine.',
+    buttons: ['OK']
+  });
+}
+
 function copyURL() {
   const focusedWindow = BrowserWindow.getFocusedWindow();
   if (focusedWindow) {
@@ -275,14 +297,21 @@ app.on ( 'ready',function(){
 
 // Quit when all windows are closed.
 app.on ( 'window-all-closed', () => {
-  // if (process.platform !== 'darwin') {
   sendStopSignal ( fe_url );
   app.quit();
-  // }
 });
 
 app.on ( 'activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+// IPC listener
+ipcMain.on('message-from-app', (event, arg) => {
+  if (arg=='stop')  {
+    sendStopSignal ( fe_url );
+    app.quit();
+  } else if (arg.startsWith('version:'))
+    ccp4cloud_version = arg.slice('version:'.length);
 });
