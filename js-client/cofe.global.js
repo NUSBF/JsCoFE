@@ -146,7 +146,7 @@ function isElectronAPI()  {
 }
 
 function sendMessageToElectron ( message )  {
-  if ('electronAPI' in window);
+  if ('electronAPI' in window)
     window.electronAPI.sendMessage ( 'message-from-app',message );
 }
 
