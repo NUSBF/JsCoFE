@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.xyz' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.xyz' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,8 +41,8 @@ const model_subtype = {
 
 function DataModel()  {
 
-  if (__template)  __template.DataXYZ.call ( this );
-             else  DataXYZ.call ( this );
+  if (__template_d)  __template_d.DataXYZ.call ( this );
+               else  DataXYZ.call ( this );
 
   this._type    = 'DataModel';
 
@@ -58,11 +61,14 @@ function DataModel()  {
 }
 
 
-if (__template)
-      DataModel.prototype = Object.create ( __template.DataXYZ.prototype );
-else  DataModel.prototype = Object.create ( DataXYZ.prototype );
-DataModel.prototype.constructor = DataModel;
+// if (__template_d)
+//       DataModel.prototype = Object.create ( __template_d.DataXYZ.prototype );
+// else  DataModel.prototype = Object.create ( DataXYZ.prototype );
+// DataModel.prototype.constructor = DataModel;
 
+if (__template_d)
+  __cmd.registerClass1 ( 'DataModel',DataModel,__template_d.DataXYZ.prototype );
+else    registerClass1 ( 'DataModel',DataModel,DataXYZ.prototype );
 
 // ===========================================================================
 
@@ -72,8 +78,8 @@ DataModel.prototype.title = function()  { return 'MR model'; }
 // constructors
 DataModel.prototype.currentVersion = function()  {
   let version = 1;
-  if (__template)
-        return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
 }
 
@@ -81,7 +87,7 @@ DataModel.prototype.icon = function()  { return 'data'; }
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataModel.prototype.extend = function() {

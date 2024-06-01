@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- X-ray Images Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -34,18 +37,21 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataXRayImages()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type = 'DataXRayImages';
 
 }
 
-if (__template)
-      DataXRayImages.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataXRayImages.prototype = Object.create ( DataTemplate.prototype );
-DataXRayImages.prototype.constructor = DataXRayImages;
+// if (__template_d)
+//       DataXRayImages.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataXRayImages.prototype = Object.create ( DataTemplate.prototype );
+// DataXRayImages.prototype.constructor = DataXRayImages;
 
+if (__template_d)
+  __cmd.registerClass1 ( 'DataXRayImages',DataXRayImages,__template_d.DataTemplate.prototype );
+else    registerClass1 ( 'DataXRayImages',DataXRayImages,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -55,16 +61,16 @@ DataXRayImages.prototype.icon  = function()  { return 'data_xrayimages';        
 // when data class version is changed here, change it also in python
 // constructors
 DataXRayImages.prototype.currentVersion = function()  {
-  var version = 0;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  let version = 0;
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
 
 // export such that it could be used in both node and a browser
 
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataXRayImages.prototype.inspectData = function ( task ) {
