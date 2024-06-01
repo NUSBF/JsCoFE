@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.05.24   <--  Date of Last Modification.
+ *    31.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -141,6 +141,15 @@ function isQtWebEngine() {
           // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
 }
 
+function isElectronAPI()  {
+  return ('electronAPI' in window);
+}
+
+function sendMessageToElectron ( message )  {
+  if ('electronAPI' in window);
+    window.electronAPI.sendMessage ( 'message-from-app',message );
+}
+
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   //     (navigator.userAgent.indexOf('Safari')>=0) && (!__iOS_device))
@@ -161,6 +170,8 @@ function isProtectedConnection()  {
 }
 
 // ===========================================================================
+
+sendMessageToElectron ( 'version:' + appVersion() );
 
 $(window).resize ( function(){
   if (__current_page)

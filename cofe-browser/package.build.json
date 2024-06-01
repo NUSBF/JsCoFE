@@ -19,13 +19,16 @@
     }
   },
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-builder"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "*"
+    "electron": "*",
+    "electron-builder": "*",
+    "electron-packager": "*"
   },
   "dependencies": {
     "electron-store": "*"
