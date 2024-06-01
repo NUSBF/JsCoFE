@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  iMosflm Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskIMosflm()  {
   this.name    = 'iMosflm (image processing)';
   this.setOName ( 'imosflm' );  // default output file name template
   this.title   = 'Interactive Image Processing with iMosflm';
-  //this.helpURL = './html/jscofe_task_imosflm.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task

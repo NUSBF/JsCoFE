@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -43,7 +45,6 @@ function TaskNautilus()  {
   this.name    = 'nautilus';
   this.setOName ( 'nautilus' );  // default output file name template
   this.title   = 'Automatic Model Building of RNA/DNA with Nautilus';
-  // this.helpURL = './html/jscofe_task_nautilus.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':[['rna','dna'],'!asu','!phases','~mmcif_only']}, // data type(s) and subtype(s)

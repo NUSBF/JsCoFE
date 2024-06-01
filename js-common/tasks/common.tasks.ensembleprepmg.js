@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskEnsemblePrepMG()  {
   this.name    = 'ensemble preparation (ccp4mg)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble with CCP4mg';
-  //this.helpURL = './html/jscofe_task_ensembleprepmg.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [{  // input data types

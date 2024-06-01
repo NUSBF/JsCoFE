@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Structure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2023
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -23,10 +23,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.tasks.editrevisionasu' );
-
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -44,7 +46,6 @@ function TaskEditRevisionStruct()  {
   this.name      = 'edit revision structure';
   this.setOName ( 'edit_revision_struct' );  // default output file name template
   this.title     = 'Edit Revision: Structure';
-  //this.helpURL   = './html/jscofe_task_editrevision_struct.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types
