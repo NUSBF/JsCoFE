@@ -100,12 +100,9 @@ function TaskMorda()  {
 
 }
 
-
 if (__template)
-      TaskMorda.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMorda.prototype = Object.create ( TaskTemplate.prototype );
-TaskMorda.prototype.constructor = TaskMorda;
-
+  __cmd.registerClass ( 'TaskMorda',TaskMorda,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMorda',TaskMorda,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

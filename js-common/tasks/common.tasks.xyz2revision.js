@@ -28,7 +28,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.dimple' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -88,12 +88,9 @@ function TaskXyz2Revision()  {
 
 }
 
-
 if (__template)
-      TaskXyz2Revision.prototype = Object.create ( __template.TaskDimple.prototype );
-else  TaskXyz2Revision.prototype = Object.create ( TaskDimple.prototype );
-TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
-
+  __cmd.registerClass ( 'TaskXyz2Revision',TaskXyz2Revision,__template.TaskDimple.prototype );
+else    registerClass ( 'TaskXyz2Revision',TaskXyz2Revision,TaskDimple.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

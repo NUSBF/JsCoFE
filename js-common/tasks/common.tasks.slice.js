@@ -92,10 +92,8 @@ function TaskSlice()  {
 }
 
 if (__template)
-      TaskSlice.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSlice.prototype = Object.create ( TaskTemplate.prototype );
-TaskSlice.prototype.constructor = TaskSlice;
-
+  __cmd.registerClass ( 'TaskSlice',TaskSlice,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSlice',TaskSlice,TaskTemplate.prototype );
 
 // ===========================================================================
 

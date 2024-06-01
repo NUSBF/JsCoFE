@@ -50,8 +50,8 @@ function DataXRayImages()  {
 // DataXRayImages.prototype.constructor = DataXRayImages;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataXRayImages',DataXRayImages,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataXRayImages',DataXRayImages,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataXRayImages',DataXRayImages,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataXRayImages',DataXRayImages,DataTemplate.prototype );
 
 // ===========================================================================
 

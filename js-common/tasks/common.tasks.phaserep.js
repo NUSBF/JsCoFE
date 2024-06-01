@@ -281,12 +281,9 @@ function TaskPhaserEP()  {
 
 }
 
-
 if (__template)
-      TaskPhaserEP.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPhaserEP.prototype = Object.create ( TaskTemplate.prototype );
-TaskPhaserEP.prototype.constructor = TaskPhaserEP;
-
+  __cmd.registerClass ( 'TaskPhaserEP',TaskPhaserEP,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPhaserEP',TaskPhaserEP,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

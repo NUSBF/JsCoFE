@@ -108,10 +108,8 @@ function TaskMrParse()  {
 }
 
 if (__template)
-      TaskMrParse.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMrParse.prototype = Object.create ( TaskTemplate.prototype );
-TaskMrParse.prototype.constructor = TaskMrParse;
-
+  __cmd.registerClass ( 'TaskMrParse',TaskMrParse,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMrParse',TaskMrParse,TaskTemplate.prototype );
 
 // ===========================================================================
 

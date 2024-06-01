@@ -59,12 +59,9 @@ function TaskChangeSpGASU()  {
 
 }
 
-
 if (__template)
-      TaskChangeSpGASU.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskChangeSpGASU.prototype = Object.create ( TaskTemplate.prototype );
-TaskChangeSpGASU.prototype.constructor = TaskChangeSpGASU;
-
+  __cmd.registerClass ( 'TaskChangeSpGASU',TaskChangeSpGASU,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskChangeSpGASU',TaskChangeSpGASU,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

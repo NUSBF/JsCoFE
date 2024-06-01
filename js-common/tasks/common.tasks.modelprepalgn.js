@@ -25,7 +25,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.modelprepxyz' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -59,10 +59,8 @@ function TaskModelPrepAlgn()  {
 }
 
 if (__template)
-      TaskModelPrepAlgn.prototype = Object.create ( __template.TaskModelPrepXYZ.prototype );
-else  TaskModelPrepAlgn.prototype = Object.create ( TaskModelPrepXYZ.prototype );
-TaskModelPrepAlgn.prototype.constructor = TaskModelPrepAlgn;
-
+  __cmd.registerClass ( 'TaskModelPrepAlgn',TaskModelPrepAlgn,__template.TaskModelPrepXYZ.prototype );
+else    registerClass ( 'TaskModelPrepAlgn',TaskModelPrepAlgn,TaskModelPrepXYZ.prototype );
 
 // ===========================================================================
 

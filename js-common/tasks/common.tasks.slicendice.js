@@ -132,10 +132,8 @@ function TaskSliceNDice()  {
 }
 
 if (__template)
-      TaskSliceNDice.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSliceNDice.prototype = Object.create ( TaskTemplate.prototype );
-TaskSliceNDice.prototype.constructor = TaskSliceNDice;
-
+  __cmd.registerClass ( 'TaskSliceNDice',TaskSliceNDice,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSliceNDice',TaskSliceNDice,TaskTemplate.prototype );
 
 // ===========================================================================
 

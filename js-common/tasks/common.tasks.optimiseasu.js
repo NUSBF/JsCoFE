@@ -61,10 +61,8 @@ function TaskOptimiseASU()  {
 }
 
 if (__template)
-      TaskOptimiseASU.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskOptimiseASU.prototype = Object.create ( TaskTemplate.prototype );
-TaskOptimiseASU.prototype.constructor = TaskOptimiseASU;
-
+  __cmd.registerClass ( 'TaskOptimiseASU',TaskOptimiseASU,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskOptimiseASU',TaskOptimiseASU,TaskTemplate.prototype );
 
 // ===========================================================================
 

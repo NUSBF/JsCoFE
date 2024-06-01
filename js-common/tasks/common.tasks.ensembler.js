@@ -91,10 +91,8 @@ function TaskEnsembler()  {
 }
 
 if (__template)
-      TaskEnsembler.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsembler.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsembler.prototype.constructor = TaskEnsembler;
-
+  __cmd.registerClass ( 'TaskEnsembler',TaskEnsembler,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsembler',TaskEnsembler,TaskTemplate.prototype );
 
 // ===========================================================================
 

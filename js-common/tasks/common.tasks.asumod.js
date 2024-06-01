@@ -26,7 +26,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.asudef' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -83,11 +83,9 @@ function TaskASUMod()  {
 
 }
 
-
 if (__template)
-      TaskASUMod.prototype = Object.create ( __template.TaskASUDef.prototype );
-else  TaskASUMod.prototype = Object.create ( TaskASUDef.prototype );
-TaskASUMod.prototype.constructor = TaskASUMod;
+  __cmd.registerClass ( 'TaskASUMod',TaskASUMod,__template.TaskASUDef.prototype );
+else    registerClass ( 'TaskASUMod',TaskASUMod,TaskASUDef.prototype );
 
 
 // ===========================================================================

@@ -102,12 +102,9 @@ function TaskImportSeqCP()  {
 
 }
 
-
 if (__template)
-      TaskImportSeqCP.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImportSeqCP.prototype = Object.create ( TaskTemplate.prototype );
-TaskImportSeqCP.prototype.constructor = TaskImportSeqCP;
-
+  __cmd.registerClass ( 'TaskImportSeqCP',TaskImportSeqCP,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImportSeqCP',TaskImportSeqCP,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -409,12 +409,9 @@ function TaskArpWarp()  {
 
 }
 
-
 if (__template)
-      TaskArpWarp.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskArpWarp.prototype = Object.create ( TaskTemplate.prototype );
-TaskArpWarp.prototype.constructor = TaskArpWarp;
-
+  __cmd.registerClass ( 'TaskArpWarp',TaskArpWarp,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskArpWarp',TaskArpWarp,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -284,12 +284,9 @@ function TaskFragon()  {
 
 }
 
-
 if (__template)
-      TaskFragon.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFragon.prototype = Object.create ( TaskTemplate.prototype );
-TaskFragon.prototype.constructor = TaskFragon;
-
+  __cmd.registerClass ( 'TaskFragon',TaskFragon,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFragon',TaskFragon,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

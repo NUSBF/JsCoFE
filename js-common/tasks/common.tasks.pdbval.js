@@ -133,12 +133,9 @@ function TaskPDBVal()  {
 
 }
 
-
 if (__template)
-      TaskPDBVal.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBVal.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBVal.prototype.constructor = TaskPDBVal;
-
+  __cmd.registerClass ( 'TaskPDBVal',TaskPDBVal,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPDBVal',TaskPDBVal,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

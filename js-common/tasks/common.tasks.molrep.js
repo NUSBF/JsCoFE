@@ -420,12 +420,9 @@ function TaskMolrep()  {
 
 }
 
-
 if (__template)
-      TaskMolrep.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMolrep.prototype = Object.create ( TaskTemplate.prototype );
-TaskMolrep.prototype.constructor = TaskMolrep;
-
+  __cmd.registerClass ( 'TaskMolrep',TaskMolrep,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMolrep',TaskMolrep,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

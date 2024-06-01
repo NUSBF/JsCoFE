@@ -21,6 +21,10 @@
 
 'use strict'; // *client*
 
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
+
 // ===========================================================================
 // Task classes MUST BE named as 'TaskSomething' AND put in file named
 // ./js-common/tasks/common.tasks.something.js . This convention is used
@@ -148,6 +152,9 @@ function TaskTemplate()  {
 
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'TaskTemplate',TaskTemplate,null );
+else    registerClass ( 'TaskTemplate',TaskTemplate,null );
 
 // ===========================================================================
 

@@ -55,10 +55,8 @@ function TaskRampage()  {
 }
 
 if (__template)
-      TaskRampage.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRampage.prototype = Object.create ( TaskTemplate.prototype );
-TaskRampage.prototype.constructor = TaskRampage;
-
+  __cmd.registerClass ( 'TaskRampage',TaskRampage,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRampage',TaskRampage,TaskTemplate.prototype );
 
 // ===========================================================================
 

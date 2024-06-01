@@ -216,13 +216,9 @@ function TaskModelPrepXYZ()  {
 
 }
 
-
-
 if (__template)
-      TaskModelPrepXYZ.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskModelPrepXYZ.prototype = Object.create ( TaskTemplate.prototype );
-TaskModelPrepXYZ.prototype.constructor = TaskModelPrepXYZ;
-
+  __cmd.registerClass ( 'TaskModelPrepXYZ',TaskModelPrepXYZ,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskModelPrepXYZ',TaskModelPrepXYZ,TaskTemplate.prototype );
 
 // ===========================================================================
 

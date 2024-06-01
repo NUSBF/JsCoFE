@@ -67,8 +67,8 @@ function DataModel()  {
 // DataModel.prototype.constructor = DataModel;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataModel',DataModel,__template_d.DataXYZ.prototype );
-else    registerClass1 ( 'DataModel',DataModel,DataXYZ.prototype );
+  __cmd.registerClass ( 'DataModel',DataModel,__template_d.DataXYZ.prototype );
+else    registerClass ( 'DataModel',DataModel,DataXYZ.prototype );
 
 // ===========================================================================
 

@@ -69,8 +69,8 @@ function DataTemplate()  {
 }
 
 if (__cmd)
-  __cmd.registerClass1 ( 'DataTemplate',DataTemplate,null );
-else    registerClass1 ( 'DataTemplate',DataTemplate,null );
+  __cmd.registerClass ( 'DataTemplate',DataTemplate,null );
+else    registerClass ( 'DataTemplate',DataTemplate,null );
 
 // ===========================================================================
 

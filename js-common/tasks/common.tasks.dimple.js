@@ -202,12 +202,9 @@ function TaskDimple()  {
 
 }
 
-
 if (__template)
-      TaskDimple.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDimple.prototype = Object.create ( TaskTemplate.prototype );
-TaskDimple.prototype.constructor = TaskDimple;
-
+  __cmd.registerClass ( 'TaskDimple',TaskDimple,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDimple',TaskDimple,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

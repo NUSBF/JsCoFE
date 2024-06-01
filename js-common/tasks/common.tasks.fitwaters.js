@@ -149,10 +149,8 @@ function TaskFitWaters()  {
 }
 
 if (__template)
-      TaskFitWaters.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFitWaters.prototype = Object.create ( TaskTemplate.prototype );
-TaskFitWaters.prototype.constructor = TaskFitWaters;
-
+  __cmd.registerClass ( 'TaskFitWaters',TaskFitWaters,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFitWaters',TaskFitWaters,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

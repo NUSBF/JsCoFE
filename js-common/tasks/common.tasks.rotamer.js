@@ -81,10 +81,8 @@ function TaskRotamer()  {
 }
 
 if (__template)
-      TaskRotamer.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRotamer.prototype = Object.create ( TaskTemplate.prototype );
-TaskRotamer.prototype.constructor = TaskRotamer;
-
+  __cmd.registerClass ( 'TaskRotamer',TaskRotamer,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRotamer',TaskRotamer,TaskTemplate.prototype );
 
 // ===========================================================================
 

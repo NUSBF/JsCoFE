@@ -56,12 +56,9 @@ function TaskPhaserRB()  {
 
 }
 
-
 if (__template)
-      TaskPhaserRB.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPhaserRB.prototype = Object.create ( TaskTemplate.prototype );
-TaskPhaserRB.prototype.constructor = TaskPhaserRB;
-
+  __cmd.registerClass ( 'TaskPhaserRB',TaskPhaserRB,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPhaserRB',TaskPhaserRB,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -185,12 +185,9 @@ function TaskLsqKab()  {
 
 }
 
-
 if (__template)
-      TaskLsqKab.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskLsqKab.prototype = Object.create ( TaskTemplate.prototype );
-TaskLsqKab.prototype.constructor = TaskLsqKab;
-
+  __cmd.registerClass ( 'TaskLsqKab',TaskLsqKab,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskLsqKab',TaskLsqKab,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

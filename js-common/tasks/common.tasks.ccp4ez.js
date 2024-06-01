@@ -28,7 +28,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.ccp4go' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -47,10 +47,8 @@ function TaskCCP4ez()  {
 }
 
 if (__template)
-      TaskCCP4ez.prototype = Object.create ( __template.TaskCCP4go.prototype );
-else  TaskCCP4ez.prototype = Object.create ( TaskCCP4go.prototype );
-TaskCCP4ez.prototype.constructor = TaskCCP4ez;
-
+  __cmd.registerClass ( 'TaskCCP4ez',TaskCCP4ez,__template.TaskCCP4go.prototype );
+else    registerClass ( 'TaskCCP4ez',TaskCCP4ez,TaskCCP4go.prototype );
 
 // ===========================================================================
 

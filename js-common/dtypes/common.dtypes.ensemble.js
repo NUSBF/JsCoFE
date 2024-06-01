@@ -51,8 +51,8 @@ function DataEnsemble()  {
 // DataEnsemble.prototype.constructor = DataEnsemble;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataEnsemble',DataEnsemble,__template_d.DataModel.prototype );
-else    registerClass1 ( 'DataEnsemble',DataEnsemble,DataModel.prototype );
+  __cmd.registerClass ( 'DataEnsemble',DataEnsemble,__template_d.DataModel.prototype );
+else    registerClass ( 'DataEnsemble',DataEnsemble,DataModel.prototype );
 
 // ===========================================================================
 

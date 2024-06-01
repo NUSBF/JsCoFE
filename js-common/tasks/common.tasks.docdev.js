@@ -97,12 +97,9 @@ function TaskDocDev()  {
 
 }
 
-
 if (__template)
-      TaskDocDev.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDocDev.prototype = Object.create ( TaskTemplate.prototype );
-TaskDocDev.prototype.constructor = TaskDocDev;
-
+  __cmd.registerClass ( 'TaskDocDev',TaskDocDev,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDocDev',TaskDocDev,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

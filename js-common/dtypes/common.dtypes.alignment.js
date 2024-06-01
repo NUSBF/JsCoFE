@@ -52,19 +52,9 @@ function DataAlignment()  {
 
 }
 
-// if (__template_d)  {
-//   DataAlignment.prototype = Object.create ( __template_d.DataTemplate.prototype );
-//   // __cmd.registerClass ( 'DataAlignment',DataAlignment );
-// } else  {
-//   DataAlignment.prototype = Object.create ( DataTemplate.prototype );
-//   // registerClass ( 'DataAlignment',DataAlignment );
-// }
-// DataAlignment.prototype.constructor = DataAlignment;
-
-
 if (__template_d)
-  __cmd.registerClass1 ( 'DataAlignment',DataAlignment,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataAlignment',DataAlignment,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataAlignment',DataAlignment,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataAlignment',DataAlignment,DataTemplate.prototype );
 
 
 // ===========================================================================

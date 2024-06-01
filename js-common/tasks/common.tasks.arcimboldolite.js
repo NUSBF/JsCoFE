@@ -230,12 +230,9 @@ function TaskArcimboldoLite()  {
 
 }
 
-
 if (__template)
-      TaskArcimboldoLite.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskArcimboldoLite.prototype = Object.create ( TaskTemplate.prototype );
-TaskArcimboldoLite.prototype.constructor = TaskArcimboldoLite;
-
+  __cmd.registerClass ( 'TaskArcimboldoLite',TaskArcimboldoLite,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskArcimboldoLite',TaskArcimboldoLite,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -51,8 +51,8 @@ function DataLibrary()  {
 // DataLibrary.prototype.constructor = DataLibrary;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataLibrary',DataLibrary,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataLibrary',DataLibrary,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataLibrary',DataLibrary,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataLibrary',DataLibrary,DataTemplate.prototype );
 
 
 // ===========================================================================

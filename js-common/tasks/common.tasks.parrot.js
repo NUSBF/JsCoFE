@@ -211,12 +211,9 @@ function TaskParrot()  {
 
 }
 
-
 if (__template)
-      TaskParrot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskParrot.prototype = Object.create ( TaskTemplate.prototype );
-TaskParrot.prototype.constructor = TaskParrot;
-
+  __cmd.registerClass ( 'TaskParrot',TaskParrot,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskParrot',TaskParrot,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

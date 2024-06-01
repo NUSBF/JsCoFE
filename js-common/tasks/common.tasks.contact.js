@@ -86,12 +86,9 @@ function TaskContact()  {
 
 }
 
-
 if (__template)
-      TaskContact.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskContact.prototype = Object.create ( TaskTemplate.prototype );
-TaskContact.prototype.constructor = TaskContact;
-
+  __cmd.registerClass ( 'TaskContact',TaskContact,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskContact',TaskContact,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

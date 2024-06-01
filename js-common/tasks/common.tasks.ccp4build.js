@@ -388,12 +388,9 @@ function TaskCCP4Build()  {
 
 }
 
-
 if (__template)
-      TaskCCP4Build.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4Build.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4Build.prototype.constructor = TaskCCP4Build;
-
+  __cmd.registerClass ( 'TaskCCP4Build',TaskCCP4Build,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCCP4Build',TaskCCP4Build,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

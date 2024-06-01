@@ -222,12 +222,9 @@ function TaskDimpleMR()  {
 
 }
 
-
 if (__template)
-      TaskDimpleMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDimpleMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskDimpleMR.prototype.constructor = TaskDimpleMR;
-
+  __cmd.registerClass ( 'TaskDimpleMR',TaskDimpleMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDimpleMR',TaskDimpleMR,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

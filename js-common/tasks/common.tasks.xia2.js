@@ -241,10 +241,8 @@ function TaskXia2()  {
 }
 
 if (__template)
-      TaskXia2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXia2.prototype = Object.create ( TaskTemplate.prototype );
-TaskXia2.prototype.constructor = TaskXia2;
-
+  __cmd.registerClass ( 'TaskXia2',TaskXia2,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXia2',TaskXia2,TaskTemplate.prototype );
 
 // ===========================================================================
 

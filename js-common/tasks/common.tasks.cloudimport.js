@@ -62,10 +62,8 @@ function TaskCloudImport()  {
 }
 
 if (__template)
-      TaskCloudImport.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCloudImport.prototype = Object.create ( TaskTemplate.prototype );
-TaskCloudImport.prototype.constructor = TaskCloudImport;
-
+  __cmd.registerClass ( 'TaskCloudImport',TaskCloudImport,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCloudImport',TaskCloudImport,TaskTemplate.prototype );
 
 // ===========================================================================
 

@@ -79,10 +79,8 @@ function TaskRabdam()  {
 }
 
 if (__template)
-      TaskRabdam.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRabdam.prototype = Object.create ( TaskTemplate.prototype );
-TaskRabdam.prototype.constructor = TaskRabdam;
-
+  __cmd.registerClass ( 'TaskRabdam',TaskRabdam,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRabdam',TaskRabdam,TaskTemplate.prototype );
 
 // ===========================================================================
 

@@ -52,8 +52,8 @@ function DataRemove()  {
 // DataRemove.prototype.constructor = DataRemove;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataRemove',DataRemove,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataRemove',DataRemove,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataRemove',DataRemove,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataRemove',DataRemove,DataTemplate.prototype );
 
 // ===========================================================================
 

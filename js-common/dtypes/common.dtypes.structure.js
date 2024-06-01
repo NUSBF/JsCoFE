@@ -103,8 +103,8 @@ function DataStructure()  {
 // DataStructure.prototype.constructor = DataStructure;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataStructure',DataStructure,__template_d.DataXYZ.prototype );
-else    registerClass1 ( 'DataStructure',DataStructure,DataXYZ.prototype );
+  __cmd.registerClass ( 'DataStructure',DataStructure,__template_d.DataXYZ.prototype );
+else    registerClass ( 'DataStructure',DataStructure,DataXYZ.prototype );
 
 // ===========================================================================
 

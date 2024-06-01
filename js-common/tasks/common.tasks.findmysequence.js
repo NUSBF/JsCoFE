@@ -98,12 +98,9 @@ function TaskFindMySequence()  {
 
 }
 
-
 if (__template)
-      TaskFindMySequence.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFindMySequence.prototype = Object.create ( TaskTemplate.prototype );
-TaskFindMySequence.prototype.constructor = TaskFindMySequence;
-
+  __cmd.registerClass ( 'TaskFindMySequence',TaskFindMySequence,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFindMySequence',TaskFindMySequence,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

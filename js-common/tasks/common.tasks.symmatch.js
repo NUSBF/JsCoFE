@@ -100,12 +100,9 @@ function TaskSymMatch()  {
 
 }
 
-
 if (__template)
-      TaskSymMatch.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSymMatch.prototype = Object.create ( TaskTemplate.prototype );
-TaskSymMatch.prototype.constructor = TaskSymMatch;
-
+  __cmd.registerClass ( 'TaskSymMatch',TaskSymMatch,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSymMatch',TaskSymMatch,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -64,12 +64,9 @@ function TaskAmple()  {
 
 }
 
-
 if (__template)
-      TaskAmple.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAmple.prototype = Object.create ( TaskTemplate.prototype );
-TaskAmple.prototype.constructor = TaskAmple;
-
+  __cmd.registerClass ( 'TaskAmple',TaskAmple,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAmple',TaskAmple,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

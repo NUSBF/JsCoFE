@@ -74,12 +74,9 @@ function TaskBalbes()  {
 
 }
 
-
 if (__template)
-      TaskBalbes.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskBalbes.prototype = Object.create ( TaskTemplate.prototype );
-TaskBalbes.prototype.constructor = TaskBalbes;
-
+  __cmd.registerClass ( 'TaskBalbes',TaskBalbes,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskBalbes',TaskBalbes,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

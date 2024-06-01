@@ -158,12 +158,9 @@ function TaskNautilus()  {
 
 }
 
-
 if (__template)
-      TaskNautilus.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskNautilus.prototype = Object.create ( TaskTemplate.prototype );
-TaskNautilus.prototype.constructor = TaskNautilus;
-
+  __cmd.registerClass ( 'TaskNautilus',TaskNautilus,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskNautilus',TaskNautilus,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

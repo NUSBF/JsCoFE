@@ -58,12 +58,9 @@ function TaskDUI()  {
 
 }
 
-
 if (__template)
-      TaskDUI.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDUI.prototype = Object.create ( TaskTemplate.prototype );
-TaskDUI.prototype.constructor = TaskDUI;
-
+  __cmd.registerClass ( 'TaskDUI',TaskDUI,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDUI',TaskDUI,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

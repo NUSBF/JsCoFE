@@ -66,12 +66,9 @@ function TaskChangeSpGHKL()  {
 
 }
 
-
 if (__template)
-      TaskChangeSpGHKL.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskChangeSpGHKL.prototype = Object.create ( TaskTemplate.prototype );
-TaskChangeSpGHKL.prototype.constructor = TaskChangeSpGHKL;
-
+  __cmd.registerClass ( 'TaskChangeSpGHKL',TaskChangeSpGHKL,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskChangeSpGHKL',TaskChangeSpGHKL,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

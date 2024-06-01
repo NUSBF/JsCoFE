@@ -64,12 +64,9 @@ function TaskIMosflm()  {
 
 }
 
-
 if (__template)
-      TaskIMosflm.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskIMosflm.prototype = Object.create ( TaskTemplate.prototype );
-TaskIMosflm.prototype.constructor = TaskIMosflm;
-
+  __cmd.registerClass ( 'TaskIMosflm',TaskIMosflm,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskIMosflm',TaskIMosflm,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

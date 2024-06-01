@@ -115,12 +115,9 @@ function TaskAuspex()  {
 
 }
 
-
 if (__template)
-      TaskAuspex.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAuspex.prototype = Object.create ( TaskTemplate.prototype );
-TaskAuspex.prototype.constructor = TaskAuspex;
-
+  __cmd.registerClass ( 'TaskAuspex',TaskAuspex,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAuspex',TaskAuspex,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

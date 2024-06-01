@@ -93,12 +93,9 @@ function TaskReindexHKL()  {
 
 }
 
-
 if (__template)
-      TaskReindexHKL.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskReindexHKL.prototype = Object.create ( TaskTemplate.prototype );
-TaskReindexHKL.prototype.constructor = TaskReindexHKL;
-
+  __cmd.registerClass ( 'TaskReindexHKL',TaskReindexHKL,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskReindexHKL',TaskReindexHKL,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

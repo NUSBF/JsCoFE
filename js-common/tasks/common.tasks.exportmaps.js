@@ -54,10 +54,8 @@ function TaskExportMaps()  {
 }
 
 if (__template)
-      TaskExportMaps.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskExportMaps.prototype = Object.create ( TaskTemplate.prototype );
-TaskExportMaps.prototype.constructor = TaskExportMaps;
-
+  __cmd.registerClass ( 'TaskExportMaps',TaskExportMaps,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskExportMaps',TaskExportMaps,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -26,7 +26,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.editrevisionasu' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -101,12 +101,9 @@ function TaskEditRevisionStruct()  {
 
 }
 
-
 if (__template)
-      TaskEditRevisionStruct.prototype = Object.create ( __template.TaskEditRevisionASU.prototype );
-else  TaskEditRevisionStruct.prototype = Object.create ( TaskEditRevisionASU.prototype );
-TaskEditRevisionStruct.prototype.constructor = TaskEditRevisionStruct;
-
+  __cmd.registerClass ( 'TaskEditRevisionStruct',TaskEditRevisionStruct,__template.TaskEditRevisionASU.prototype );
+else    registerClass ( 'TaskEditRevisionStruct',TaskEditRevisionStruct,TaskEditRevisionASU.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -115,7 +112,7 @@ TaskEditRevisionStruct.prototype.icon           = function()  { return 'task_edi
 TaskEditRevisionStruct.prototype.clipboard_name = function()  { return '"Edit Revision"';          }
 
 TaskEditRevisionStruct.prototype.currentVersion = function()  {
-  var version = 2;
+  let version = 2;
   if (__template)
         return  version + __template.TaskEditRevisionASU.prototype.currentVersion.call ( this );
   else  return  version + TaskEditRevisionASU.prototype.currentVersion.call ( this );
@@ -127,7 +124,7 @@ if (!__template)  {
 
   TaskEditRevisionStruct.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
     TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-    var signal = '';
+    let signal = '';
     if (!this.checkObjects(inpParamRef,emitterId,['revision','xyz','phases','ligand'],['xyz','phases']))
       signal = 'hide_run_button';
     this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,signal );
@@ -136,8 +133,8 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf        = require('../../js-server/server.configuration');
-  var __template0 = require ( './common.tasks.template' );
+  const conf        = require('../../js-server/server.configuration');
+  const __template0 = require ( './common.tasks.template' );
 
   TaskEditRevisionStruct.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -145,7 +142,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl0'] = [revision.HKL];
       if (revision.Structure)
         this.input_data.data['struct0'] = [revision.Structure];

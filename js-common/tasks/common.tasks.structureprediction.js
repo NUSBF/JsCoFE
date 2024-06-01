@@ -106,13 +106,11 @@ function TaskStructurePrediction()  {   // must start with Task...
 
 }
 
-
 // finish constructor definition
 
 if (__template)
-      TaskStructurePrediction.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskStructurePrediction.prototype = Object.create ( TaskTemplate.prototype );
-TaskStructurePrediction.prototype.constructor = TaskStructurePrediction;
+  __cmd.registerClass ( 'TaskStructurePrediction',TaskStructurePrediction,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskStructurePrediction',TaskStructurePrediction,TaskTemplate.prototype );
 
 // ===========================================================================
 

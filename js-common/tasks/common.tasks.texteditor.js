@@ -66,12 +66,9 @@ function TaskTextEditor()  {
   
 }
 
-
 if (__template)
-      TaskTextEditor.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskTextEditor.prototype = Object.create ( TaskTemplate.prototype );
-TaskTextEditor.prototype.constructor = TaskTextEditor;
-
+  __cmd.registerClass ( 'TaskTextEditor',TaskTextEditor,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskTextEditor',TaskTextEditor,TaskTemplate.prototype );
 
 // ===========================================================================
 

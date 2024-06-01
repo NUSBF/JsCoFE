@@ -177,12 +177,9 @@ function TaskGesamt()  {
 
 }
 
-
 if (__template)
-      TaskGesamt.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskGesamt.prototype = Object.create ( TaskTemplate.prototype );
-TaskGesamt.prototype.constructor = TaskGesamt;
-
+  __cmd.registerClass ( 'TaskGesamt',TaskGesamt,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskGesamt',TaskGesamt,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

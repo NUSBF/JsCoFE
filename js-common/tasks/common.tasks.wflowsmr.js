@@ -149,10 +149,8 @@ function TaskWFlowSMR()  {
 }
 
 if (__template)
-      TaskWFlowSMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowSMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowSMR.prototype.constructor = TaskWFlowSMR;
-
+  __cmd.registerClass ( 'TaskWFlowSMR',TaskWFlowSMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowSMR',TaskWFlowSMR,TaskTemplate.prototype );
 
 // ===========================================================================
 

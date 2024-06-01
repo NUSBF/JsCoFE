@@ -25,7 +25,7 @@ var __template = null;
 var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  __template = require ( './common.tasks.template' );
+  __template = require ( './common.tasks.crank2' );
   __cmd      = require ( '../common.commands' );
 }
 
@@ -53,10 +53,8 @@ function TaskShelxSubstr()  {
 }
 
 if (__template)
-      TaskShelxSubstr.prototype = Object.create ( __template.TaskCrank2.prototype );
-else  TaskShelxSubstr.prototype = Object.create ( TaskCrank2.prototype );
-TaskShelxSubstr.prototype.constructor = TaskShelxSubstr;
-
+  __cmd.registerClass ( 'TaskShelxSubstr',TaskShelxSubstr,__template.TaskCrank2.prototype );
+else    registerClass ( 'TaskShelxSubstr',TaskShelxSubstr,TaskCrank2.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

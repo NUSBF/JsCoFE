@@ -191,12 +191,9 @@ function TaskOmitMap()  {
 
 }
 
-
 if (__template)
-      TaskOmitMap.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskOmitMap.prototype = Object.create ( TaskTemplate.prototype );
-TaskOmitMap.prototype.constructor = TaskOmitMap;
-
+  __cmd.registerClass ( 'TaskOmitMap',TaskOmitMap,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskOmitMap',TaskOmitMap,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

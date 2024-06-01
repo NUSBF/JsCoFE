@@ -71,12 +71,9 @@ function TaskChangeSpG()  {
 
 }
 
-
 if (__template)
-      TaskChangeSpG.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskChangeSpG.prototype = Object.create ( TaskTemplate.prototype );
-TaskChangeSpG.prototype.constructor = TaskChangeSpG;
-
+  __cmd.registerClass ( 'TaskChangeSpG',TaskChangeSpG,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskChangeSpG',TaskChangeSpG,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

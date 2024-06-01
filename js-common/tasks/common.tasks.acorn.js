@@ -889,8 +889,8 @@ function TaskAcorn()  {
 }
 
 if (__template)
-  __cmd.registerClass1 ( 'TaskAcorn',TaskAcorn,__template.TaskTemplate.prototype );
-else    registerClass1 ( 'TaskAcorn',TaskAcorn,TaskTemplate.prototype );
+  __cmd.registerClass ( 'TaskAcorn',TaskAcorn,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAcorn',TaskAcorn,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

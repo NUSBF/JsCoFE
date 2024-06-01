@@ -49,10 +49,8 @@ function TaskRVAPIApp()  {
 }
 
 if (__template)
-      TaskRVAPIApp.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRVAPIApp.prototype = Object.create ( TaskTemplate.prototype );
-TaskRVAPIApp.prototype.constructor = TaskRVAPIApp;
-
+  __cmd.registerClass ( 'TaskRVAPIApp',TaskRVAPIApp,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRVAPIApp',TaskRVAPIApp,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

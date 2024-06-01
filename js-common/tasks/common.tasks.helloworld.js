@@ -111,9 +111,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // finish constructor definition
 
   if (__template)
-        TaskHelloWorld.prototype = Object.create ( __template.TaskTemplate.prototype );
-  else  TaskHelloWorld.prototype = Object.create ( TaskTemplate.prototype );
-  TaskHelloWorld.prototype.constructor = TaskHelloWorld;
+    __cmd.registerClass ( 'TaskHelloWorld',TaskHelloWorld,__template.TaskTemplate.prototype );
+  else    registerClass ( 'TaskHelloWorld',TaskHelloWorld,TaskTemplate.prototype );
 
   // ===========================================================================
 

@@ -74,12 +74,9 @@ function TaskCootCE()  {
 
 }
 
-
 if (__template)
-      TaskCootCE.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCootCE.prototype = Object.create ( TaskTemplate.prototype );
-TaskCootCE.prototype.constructor = TaskCootCE;
-
+  __cmd.registerClass ( 'TaskCootCE',TaskCootCE,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCootCE',TaskCootCE,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

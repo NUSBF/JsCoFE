@@ -59,8 +59,8 @@ function DataSequence()  {
 // DataSequence.prototype.constructor = DataSequence;
 
 if (__template_d)
-  __cmd.registerClass1 ( 'DataSequence',DataSequence,__template_d.DataTemplate.prototype );
-else    registerClass1 ( 'DataSequence',DataSequence,DataTemplate.prototype );
+  __cmd.registerClass ( 'DataSequence',DataSequence,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataSequence',DataSequence,DataTemplate.prototype );
 
 
 // ===========================================================================

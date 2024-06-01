@@ -138,12 +138,9 @@ function TaskDeposition()  {
 
 }
 
-
 if (__template)
-      TaskDeposition.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDeposition.prototype = Object.create ( TaskTemplate.prototype );
-TaskDeposition.prototype.constructor = TaskDeposition;
-
+  __cmd.registerClass ( 'TaskDeposition',TaskDeposition,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDeposition',TaskDeposition,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

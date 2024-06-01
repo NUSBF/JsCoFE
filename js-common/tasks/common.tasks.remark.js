@@ -75,12 +75,9 @@ function TaskRemark()  {
 
 }
 
-
 if (__template)
-      TaskRemark.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRemark.prototype = Object.create ( TaskTemplate.prototype );
-TaskRemark.prototype.constructor = TaskRemark;
-
+  __cmd.registerClass ( 'TaskRemark',TaskRemark,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRemark',TaskRemark,TaskTemplate.prototype );
 
 // ===========================================================================
 

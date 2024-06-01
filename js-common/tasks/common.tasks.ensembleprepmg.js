@@ -114,10 +114,8 @@ function TaskEnsemblePrepMG()  {
 }
 
 if (__template)
-      TaskEnsemblePrepMG.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsemblePrepMG.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsemblePrepMG.prototype.constructor = TaskEnsemblePrepMG;
-
+  __cmd.registerClass ( 'TaskEnsemblePrepMG',TaskEnsemblePrepMG,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsemblePrepMG',TaskEnsemblePrepMG,TaskTemplate.prototype );
 
 // ===========================================================================
 

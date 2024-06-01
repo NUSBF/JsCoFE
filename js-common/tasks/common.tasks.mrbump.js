@@ -153,10 +153,8 @@ function TaskMrBump()  {
 }
 
 if (__template)
-      TaskMrBump.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMrBump.prototype = Object.create ( TaskTemplate.prototype );
-TaskMrBump.prototype.constructor = TaskMrBump;
-
+  __cmd.registerClass ( 'TaskMrBump',TaskMrBump,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMrBump',TaskMrBump,TaskTemplate.prototype );
 
 // ===========================================================================
 

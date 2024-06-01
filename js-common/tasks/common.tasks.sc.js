@@ -91,10 +91,8 @@ function TaskSC() { // must start with Task...
 // finish constructor definition
 
 if (__template)
-      TaskSC.prototype = Object.create(__template.TaskTemplate.prototype);
-else  TaskSC.prototype = Object.create(TaskTemplate.prototype);
-TaskSC.prototype.constructor = TaskSC;
-
+  __cmd.registerClass ( 'TaskSC',TaskSC,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSC',TaskSC,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

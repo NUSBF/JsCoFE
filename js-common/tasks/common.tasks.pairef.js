@@ -276,9 +276,8 @@ function TaskPaiRef()  {   // must start with Task...
 // finish constructor definition
 
 if (__template)
-      TaskPaiRef.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPaiRef.prototype = Object.create ( TaskTemplate.prototype );
-TaskPaiRef.prototype.constructor = TaskPaiRef;
+  __cmd.registerClass ( 'TaskPaiRef',TaskPaiRef,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPaiRef',TaskPaiRef,TaskTemplate.prototype );
 
 // ===========================================================================
 

@@ -46,12 +46,9 @@ function TaskMergeData()  {
 
 }
 
-
 if (__template)
-      TaskMergeData.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMergeData.prototype = Object.create ( TaskTemplate.prototype );
-TaskMergeData.prototype.constructor = TaskMergeData;
-
+  __cmd.registerClass ( 'TaskMergeData',TaskMergeData,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMergeData',TaskMergeData,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

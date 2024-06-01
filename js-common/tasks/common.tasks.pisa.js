@@ -109,12 +109,9 @@ function TaskPISA()  {
 
 }
 
-
 if (__template)
-      TaskPISA.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPISA.prototype = Object.create ( TaskTemplate.prototype );
-TaskPISA.prototype.constructor = TaskPISA;
-
+  __cmd.registerClass ( 'TaskPISA',TaskPISA,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPISA',TaskPISA,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -282,10 +282,8 @@ function TaskCombStructure()  {
 }
 
 if (__template)
-      TaskCombStructure.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCombStructure.prototype = Object.create ( TaskTemplate.prototype );
-TaskCombStructure.prototype.constructor = TaskCombStructure;
-
+  __cmd.registerClass ( 'TaskCombStructure',TaskCombStructure,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCombStructure',TaskCombStructure,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
