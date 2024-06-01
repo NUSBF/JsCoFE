@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,14 +21,13 @@
 
 'use strict';
 
-var __template = null;   // null __template indicates that the code runs in
-// client browser
+var __template = null;
+var __cmd      = null;
 
-// otherwise, the code runs on a server, in which case __template references
-// a module with Task Template Class:
-
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -46,7 +45,6 @@ function TaskPaiRef()  {   // must start with Task...
   this.name    = 'pairef';      // default name to be shown in Job Tree
   this.setOName ( 'pairef' );   // default output file name template
   this.title   = 'Paired refinement with PAIREF'; // title for job dialog
-
 
   this.input_dtypes = [{  // input data types
     data_type : {'DataRevision':['!xyz','~mmcif_only']}, // data type(s) and subtype(s)

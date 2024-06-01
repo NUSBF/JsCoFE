@@ -5,14 +5,13 @@
 
 'use strict';
 
-  var __template = null;   // null __template indicates that the code runs in
-                           // client browser
+var __template = null;
+var __cmd      = null;
 
-  // otherwise, the code runs on a server, in which case __template references
-  // a module with Task Template Class:
-
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-    __template = require ( './common.tasks.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
   // ===========================================================================
 
@@ -31,8 +30,6 @@
     this.oname   = '*';               // default output file name template;
                                       // asterisk means do not use
     this.title   = 'Hello World! First Example';         // title for job dialog
-    //this.helpURL = './html/jscofe_task_helloworld.html'; // documentation link,
-                                          // please follow file name convention
 
     this.input_dtypes = [{      // input data types
        data_type : {'DataXYZ':[]},    // data type(s) and subtype(s)

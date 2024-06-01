@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskEditRevision()  {
   this.name      = 'edit structure revision';
   this.setOName ( 'editrevision' );  // default output file name template
   this.title     = 'Edit Structure Revision';
-  //this.helpURL   = './html/jscofe_task_editrevision.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

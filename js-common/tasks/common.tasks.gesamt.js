@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -39,7 +41,6 @@ function TaskGesamt()  {
   this.oname   = 'gesamt';      // default output file name template
   this.setOName ( 'gesamt' );  // default output file name template
   this.title   = 'Structure Alignment and Superposition with Gesamt';
-  //this.helpURL = './html/jscofe_task_gesamt.html';
 
   this.input_dtypes = [{      // input data types
      data_type   : {'DataStructure':['protein','~mmcif_only'],
