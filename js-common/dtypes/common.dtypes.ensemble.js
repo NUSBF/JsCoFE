@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.model' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.model' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -34,19 +37,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataEnsemble()  {
 
-  if (__template)  __template.DataModel.call ( this );
-             else  DataModel.call ( this );
+  if (__template_d)  __template_d.DataModel.call ( this );
+               else  DataModel.call ( this );
 
   this._type = 'DataEnsemble';
 
 }
 
 
-if (__template)
-      DataEnsemble.prototype = Object.create ( __template.DataModel.prototype );
-else  DataEnsemble.prototype = Object.create ( DataModel.prototype );
-DataEnsemble.prototype.constructor = DataEnsemble;
+// if (__template_d)
+//       DataEnsemble.prototype = Object.create ( __template_d.DataModel.prototype );
+// else  DataEnsemble.prototype = Object.create ( DataModel.prototype );
+// DataEnsemble.prototype.constructor = DataEnsemble;
 
+if (__template_d)
+  __cmd.registerClass1 ( 'DataEnsemble',DataEnsemble,__template_d.DataModel.prototype );
+else    registerClass1 ( 'DataEnsemble',DataEnsemble,DataModel.prototype );
 
 // ===========================================================================
 
@@ -56,8 +62,8 @@ DataEnsemble.prototype.title = function()  { return 'MR ensemble'; }
 // constructors
 DataEnsemble.prototype.currentVersion = function()  {
   let version = 0;
-  if (__template)
-        return  version + __template.DataModel.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataModel.prototype.currentVersion.call ( this );
   else  return  version + DataModel.prototype.currentVersion.call ( this );
 }
 
@@ -65,7 +71,7 @@ DataEnsemble.prototype.icon = function()  { return 'data'; }
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataEnsemble.prototype.extend = function() {

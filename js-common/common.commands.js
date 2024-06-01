@@ -309,6 +309,29 @@ function Request ( request,token,data )  {
 }
 
 
+// ============================================================================
+// Class register and maker
+
+const __class_register = {};
+
+function registerClass ( name,obj_function )  {
+  __class_register[name] = obj_function;
+}
+
+function registerClass1 ( name,obj_function,parent_prototype )  {
+  if (parent_prototype)  {
+    obj_function.prototype = Object.create ( parent_prototype );
+    obj_function.prototype.constructor = obj_function;
+  }
+  __class_register[name] = obj_function;
+}
+
+function makeNewInstance ( name )  {
+  if (name in __class_register)
+    return new class_register[name]();
+  return null;
+}
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
@@ -333,4 +356,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.sendResponse         = sendResponse;
   module.exports.sendResponseMessage  = sendResponseMessage;
   module.exports.Request              = Request;
+  module.exports.registerClass        = registerClass;
+  module.exports.registerClass1       = registerClass1;
+  module.exports.makeNewInstance      = makeNewInstance;
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,15 +21,17 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
-
-var xyz_subtype = {
+const xyz_subtype = {
   MMCIF_ONLY  : 'mmcif_only'
 }
 
@@ -39,8 +41,8 @@ var xyz_subtype = {
 
 function DataXYZ()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type         = 'DataXYZ';
   this.xyzmeta       = {};
@@ -53,11 +55,14 @@ function DataXYZ()  {
 
 }
 
-if (__template)
-      DataXYZ.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataXYZ.prototype = Object.create ( DataTemplate.prototype );
-DataXYZ.prototype.constructor = DataXYZ;
+// if (__template_d)
+//       DataXYZ.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataXYZ.prototype = Object.create ( DataTemplate.prototype );
+// DataXYZ.prototype.constructor = DataXYZ;
 
+if (__template_d)
+  __cmd.registerClass1 ( 'DataXYZ',DataXYZ,__template_d.DataTemplate.prototype );
+else    registerClass1 ( 'DataXYZ',DataXYZ,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -68,8 +73,8 @@ DataXYZ.prototype.icon  = function()  { return 'data';            }
 // constructors
 DataXYZ.prototype.currentVersion = function()  {
 let version = 0;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -92,7 +97,7 @@ DataXYZ.prototype.makeSample = function()  {
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataXYZ.prototype.addToInspectData = function ( dsp )  {
@@ -194,7 +199,7 @@ if (!__template)  {
     $(table.element).css({'box-shadow':'none','width':'10%'});
     dsp.trow++;
 
-    var trow = 0;
+    let trow = 0;
     table.setHeaderText ( 'Model'   ,trow,0, 1,1 );
     table.setHeaderText ( 'Chain'   ,trow,1, 1,1 );
     table.setHeaderText ( 'Type'    ,trow,2, 1,1 );
@@ -205,9 +210,9 @@ if (!__template)  {
 
     if (xyz)
       for (let i=0;i<xyz.length;i++)  {
-        var xyzi = xyz[i];
+        let xyzi = xyz[i];
         table.setLabel ( xyzi.model,trow,0,xyzi.chains.length,1 );
-        var col  = 0;
+        let col  = 0;
         for (let j=0;j<xyzi.chains.length;j++)  {
           if (j>0)
             table.setLabel ( '',trow,col, 1,1 );
@@ -371,7 +376,7 @@ if (!__template)  {
 
         if (this.exclLigs.indexOf('(agents)')>=0)  {
           this.exclLigs = [];
-          for (var i=0;i<this.xyzmeta.ligands.length;i++)
+          for (let i=0;i<this.xyzmeta.ligands.length;i++)
             if (_agents.indexOf(this.xyzmeta.ligands[i])>=0)
               this.exclLigs.push ( this.xyzmeta.ligands[i] );
         }

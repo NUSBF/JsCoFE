@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,6 +20,10 @@
  */
 
 'use strict';
+
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
 
 // ===========================================================================
 
@@ -64,6 +68,9 @@ function DataTemplate()  {
                                               // in python and js layers, respectively.
 }
 
+if (__cmd)
+  __cmd.registerClass1 ( 'DataTemplate',DataTemplate,null );
+else    registerClass1 ( 'DataTemplate',DataTemplate,null );
 
 // ===========================================================================
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.06.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,13 +13,18 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
  */
 
 'use strict';
+
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
+
 
 // -------------------------------------------------------------------------
 // Data container class:
@@ -42,6 +47,11 @@ function DataBox()  {
   this.jobs  = [];
 
 }
+
+if (__cmd)
+  __cmd.registerClass1 ( 'DataBox',DataBox,null );
+else    registerClass1 ( 'DataBox',DataBox,null );
+
 
 DataBox.prototype.markNotEmpty = function()  {
   if (this.isEmpty())
@@ -134,7 +144,7 @@ DataBox.prototype._add_assoc_data = function ( task )  {
 DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
   let output_data_data = task.output_data.data;
-  //var input_data_data  = task.input_data.data;
+  //let input_data_data  = task.input_data.data;
   if (this.jobs.indexOf(task.id)<0)
     this.jobs.push ( task.id );
 
@@ -204,7 +214,7 @@ DataBox.prototype.addData = function ( data )  {
 
 /*
 DataBox.prototype.addDefaultData = function()  {
-  var unknownSequence = new DataSequence();
+  let unknownSequence = new DataSequence();
   unknownSequence.setUnknown();
   this.addData ( unknownSequence );
 }
@@ -318,17 +328,17 @@ let nt = task_subtypes.length;
 // 'MR' and 'Protein', are found in subtypes. If subtypes are not enforced, e.g.,
 // ['MR','Protein'] then comparison will return true if any of them are found
 // in data_subtypes.
-var rc = false;
-var nt = task_subtypes.length;
+let rc = false;
+let nt = task_subtypes.length;
 
   if (nt<=0)  {
     rc = true;
   } else  { //if (data_subtypes.length>0)  {
-    for (var i=0;i<nt;i++)
+    for (let i=0;i<nt;i++)
 //      if (task_subtypes[i].startsWith('!'))  {
       if (task_subtypes[i].constructor===Array)  {
         rc = false;
-        for (var j=0;(j<task_subtypes[i].length) && (!rc);j++)
+        for (let j=0;(j<task_subtypes[i].length) && (!rc);j++)
           rc = (data_subtypes.indexOf(task_subtypes[i][j])>=0);
         if (!rc)
           break;
@@ -381,8 +391,8 @@ DataBox.prototype.getDataSummary = function ( task )  {
     if (inp_item.hasOwnProperty('desc'))
       desc = inp_item.desc;
     let hints    = [];
-    //var mustHaveTypes    = [];
-    //var mustNotHaveTypes = [];
+    //let mustHaveTypes    = [];
+    //let mustNotHaveTypes = [];
     let data_types = {};  // will contain n_required data types with subtypes
 
     for (let dtype in inp_data)  {
@@ -395,7 +405,7 @@ DataBox.prototype.getDataSummary = function ( task )  {
         if (idata.length<=0)  {  // all subtypes are good
           nDTypes += tdata.length;
         } else  {  // count datasets with suitable subtypes
-          for (var j=0;j<tdata.length;j++)  {
+          for (let j=0;j<tdata.length;j++)  {
             // if (this.compareSubtypes(idata,tdata[j].subtype))
             if (this.compareSubtypes(idata,tdata[j]))
               nDTypes++;
