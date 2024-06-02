@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -625,7 +625,8 @@ JobDialog.prototype.makeToolBar = function()  {
     let dBox     = null;
 //    let branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
     for (let i=0;i<hot_list.length;i++)  {
-      let task_obj  = eval ( 'new ' + hot_list[i].task_name + '()' );
+      // let task_obj  = eval ( 'new ' + hot_list[i].task_name + '()' );
+      let task_obj  = makeNewInstance ( hot_list[i].task_name );
       let avail_key = task_obj.isTaskAvailable();
       if (avail_key[0]=='ok')  {
         if (!dBox)

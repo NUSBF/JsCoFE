@@ -141,5 +141,7 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
 
 }
 
-AuthEndPage.prototype = Object.create ( BasePage.prototype );
-AuthEndPage.prototype.constructor = AuthEndPage;
+// AuthEndPage.prototype = Object.create ( BasePage.prototype );
+// AuthEndPage.prototype.constructor = AuthEndPage;
+
+registerClass ( 'AuthEndPage',AuthEndPage,BasePage.prototype );

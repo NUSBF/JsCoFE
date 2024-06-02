@@ -59,8 +59,8 @@ function TaskXDSGUI()  {
 }
 
 if (__template)
-  __cmd.registerClass ( 'TaskXDSGUI',TaskXDS3,__template.TaskTemplate.prototype );
-else    registerClass ( 'TaskXDSGUI',TaskXDS3,TaskTemplate.prototype );
+  __cmd.registerClass ( 'TaskXDSGUI',TaskXDSGUI,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXDSGUI',TaskXDSGUI,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

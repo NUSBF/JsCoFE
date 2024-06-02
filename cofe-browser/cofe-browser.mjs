@@ -32,7 +32,8 @@ function createWindow ( url ) {
     y      : windowState.y,
     icon   : path.join(__dirname,'icons','ccp4cloud_local.png'),
     webPreferences : {
-      nodeIntegration  : true,
+      nodeIntegration  : false,
+      sandbox          : false,
       contextIsolation : true,
       webSecurity      : true,
       preload          : path.join(__dirname,'preload.mjs')
@@ -43,6 +44,15 @@ function createWindow ( url ) {
   mainWindow.loadURL(url).catch ( err => {
     console.error ( 'Failed to load URL:', err );
   });
+
+  // // Set the CSP through HTTP headers (if using a server to serve your files)
+  // mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  //     callback({
+  //         responseHeaders: Object.assign({
+  //             'Content-Security-Policy': ["default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none';"]
+  //         }, details.responseHeaders)
+  //     });
+  // });
 
   mainWindow.webContents.on ( 'did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error ( `Failed to load ${validatedURL}: ${errorDescription} (${errorCode})` );
@@ -108,6 +118,24 @@ function createWindow ( url ) {
             mainWindow.loadURL(url).catch ( err => {
               console.error ( 'Failed to load URL:', err );
             });
+          }
+        }
+      ]
+    }, {
+      label: 'Navigation',
+      submenu: [
+        {
+          label: 'Back',
+          accelerator: 'CmdOrCtrl+<',
+          click: () => {
+            mainWindow.webContents.send('navigate-back');
+          }
+        },
+        {
+          label: 'Forward',
+          accelerator: 'CmdOrCtrl+>',
+          click: () => {
+            mainWindow.webContents.send('navigate-forward');
           }
         }
       ]

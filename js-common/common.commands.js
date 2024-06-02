@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    31.05.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -326,9 +326,12 @@ function registerClass ( name,obj_function,parent_prototype )  {
   __class_register[name] = obj_function;
 }
 
-function makeNewInstance ( name )  {
-  if (name in __class_register)
-    return new class_register[name]();
+function makeNewInstance ( name,parameter=null )  {
+  if (name in __class_register)  {
+    if (parameter)
+          return new __class_register[name](parameter);
+    else  return new __class_register[name]();
+  }
   return null;
 }
 

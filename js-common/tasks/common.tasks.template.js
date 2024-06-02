@@ -2075,8 +2075,6 @@ if (!dbx)  {
   let grid      = inpDataRef.grid;
   let dataState = {};
 
-// console.log ( ' data state eval ');
-
     for (let i=0;i<this.input_dtypes.length;i++)  {
       let inputId = this.input_dtypes[i].inputId;
       let item    = this.getInputItem ( inpDataRef,inputId );
