@@ -16,6 +16,12 @@ add_custom_target(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
+add_custom_target(
+  COFE_BROWSER
+  ALL ${NPM} install
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/cofe-browser
+)
+
 find_program(
   PYTHON
   NAMES ccp4-python
@@ -31,6 +37,7 @@ add_custom_target(
 
 install(DIRECTORY
     bootstrap
+    cofe-browser
     css
     html
     images_com
