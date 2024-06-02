@@ -153,9 +153,10 @@ function ForgottenLoginPage ( sceneId )  {
 
 }
 
-ForgottenLoginPage.prototype = Object.create ( BasePage.prototype );
-ForgottenLoginPage.prototype.constructor = ForgottenLoginPage;
+// ForgottenLoginPage.prototype = Object.create ( BasePage.prototype );
+// ForgottenLoginPage.prototype.constructor = ForgottenLoginPage;
 
+registerClass ( 'ForgottenLoginPage',ForgottenLoginPage,BasePage.prototype );
 
 function makeForgottenLoginPage ( sceneId )  {
   makePage ( function(){ new ForgottenLoginPage(sceneId); } );

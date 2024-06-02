@@ -102,8 +102,10 @@ function LogoutPage ( sceneId,reason_key )  {
 
 }
 
-LogoutPage.prototype = Object.create ( BasePage.prototype );
-LogoutPage.prototype.constructor = LogoutPage;
+// LogoutPage.prototype = Object.create ( BasePage.prototype );
+// LogoutPage.prototype.constructor = LogoutPage;
+
+registerClass ( 'LogoutPage',LogoutPage,BasePage.prototype );
 
 
 function logout ( sceneId,reason_key,onLogout_func=null )  {

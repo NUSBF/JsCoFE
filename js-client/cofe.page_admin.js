@@ -772,6 +772,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 
 }
 
+registerClass ( 'AdminPage',AdminPage,BasePage.prototype );
 
 // -------------------------------------------------------------------------
 

@@ -627,8 +627,10 @@ function AccountPage ( sceneId )  {
 
 }
 
-AccountPage.prototype = Object.create ( BasePage.prototype );
-AccountPage.prototype.constructor = AccountPage;
+// AccountPage.prototype = Object.create ( BasePage.prototype );
+// AccountPage.prototype.constructor = AccountPage;
+
+registerClass ( 'AccountPage',AccountPage,BasePage.prototype );
 
 
 function makeAccountPage ( sceneId )  {

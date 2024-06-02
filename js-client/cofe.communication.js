@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.01.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -335,9 +335,10 @@ function processServerQueue()  {
                           __server_queue = [];
                           __process_network_indicators();
                           makePage ( function(){
-                            eval (
-                              'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                            );
+                            // eval (
+                            //   'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
+                            // );
+                            makeNewInstance ( __current_page._type,__current_page.sceneId );
                           });
                           makeSessionCheck ( __current_page.sceneId );
                         } else  {  // should never come to here

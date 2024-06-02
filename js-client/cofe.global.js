@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.05.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -436,10 +436,11 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  var obj= eval('new '+value._type+'()');
+  // var obj= eval('new '+value._type+'()');
+  let obj= makeNewInstance ( value._type );
   //alert ( value._type );
 
-  for (var property in value)
+  for (let property in value)
     obj[property]=value[property];
 
   return obj;

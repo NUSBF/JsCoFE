@@ -7,5 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
-  }
+  },
+  onNavigateBack    : (callback) => ipcRenderer.on('navigate-back', callback),
+  onNavigateForward : (callback) => ipcRenderer.on('navigate-forward', callback)
 });

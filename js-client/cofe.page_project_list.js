@@ -1444,8 +1444,11 @@ function ProjectListPage ( sceneId )  {
 
 }
 
-ProjectListPage.prototype = Object.create ( BasePage.prototype );
-ProjectListPage.prototype.constructor = ProjectListPage;
+// ProjectListPage.prototype = Object.create ( BasePage.prototype );
+// ProjectListPage.prototype.constructor = ProjectListPage;
+
+registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
+
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
 //  let h = (height - 164) + 'px';
