@@ -82,6 +82,8 @@ if ((nc_number<0) || (nc_number>=conf.getNumberOfNCs()))
 
 // --------------------------------------------------------------------------
 
+log.standard ( 0,'CCP4 path: ' + process.env['CCP4'] );
+
 conf.setServerConfig ( conf.getNCConfig(nc_number) );
 conf.cleanNCTmpDir();
 
