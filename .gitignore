@@ -10,6 +10,7 @@ images_png_0/
 images_png_new/
 package-lock.json
 node_modules/
+cofe-browser/node_modules/
 settings.json
 .bzr
 .bzrignore

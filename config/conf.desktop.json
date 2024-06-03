@@ -10,6 +10,7 @@
   "Desktop"  : {
     "clientApp"  : "/bin/bash",
     "args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+    "_args"       : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
     "__args"       : ["-c","open -a Firefox $feURL$clientURL"]
   },
 
@@ -19,7 +20,7 @@
     "port"             : 8081,
     "externalURL"      : "http://localhost:8081",
     "localSetup"       : true,
-    "stoppable"        : false,
+    "stoppable"        : true,
     "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "/",
     "update_rcode"     : 212,
@@ -80,7 +81,7 @@
     "port"             : 8085,
     "externalURL"      : "",
     "exclusive"        : true,
-    "stoppable"        : false,
+    "stoppable"        : true,
     "localisation"     : 0
   },
 
@@ -94,7 +95,7 @@
       "port"             : 8083,
       "externalURL"      : "http://localhost:8083",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "max_nproc"        : 3,
@@ -123,7 +124,7 @@
       "port"             : 8084,
       "externalURL"      : "http://localhost:8084",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
