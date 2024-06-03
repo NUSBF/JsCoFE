@@ -16,6 +16,12 @@ add_custom_target(
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
+add_custom_target(
+  COFE_BROWSER
+  ALL ${NPM} install
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/cofe-browser
+)
+
 find_program(
   PYTHON
   NAMES ccp4-python
@@ -31,6 +37,7 @@ add_custom_target(
 
 install(DIRECTORY
     bootstrap
+    cofe-browser
     css
     html
     images_com
@@ -57,4 +64,31 @@ install(
   DESTINATION
     share/jscofe
 )
+
+if(APPLE)
+  set(
+    FWDIR ${CMAKE_SOURCE_DIR}/cofe-browser/node_modules/
+  )
+  string(
+    APPEND
+    FWDIR electron/dist/Electron.app/Contents/Frameworks
+  )
+  foreach(
+    FWNAME
+      "Electron Framework"
+      Mantle
+      ReactiveObjC
+      Squirrel
+  )
+    add_custom_target(
+      ${FWNAME} ALL
+        ln -sf Versions/A/* .
+      DEPENDS
+        COFE_BROWSER
+        NODE_MODULES
+      WORKING_DIRECTORY
+        ${FWDIR}/${FWNAME}.framework
+    )
+  endforeach()
+endif()
 

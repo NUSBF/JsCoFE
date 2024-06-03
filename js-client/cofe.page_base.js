@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    31.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -443,9 +443,12 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
   this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
   this.headerPanel.setCellSize ( '32px','32px',0,22 );
-  if (__local_user)
-        this.logout_btn .setTooltip  ( 'End session' );
-  else  this.logout_btn .setTooltip  ( 'Logout'      );
+  let end_tooltip = 'Logout';
+  if (__local_user)  {
+    if (isElectronAPI())  end_tooltip = 'Quit';
+                    else  end_tooltip = 'End session';
+  }
+  this.logout_btn.setTooltip ( end_tooltip );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -499,8 +502,10 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
   let menuLabel = 'Log out';
-  if (__local_user)
-    menuLabel = 'End session';
+  if (__local_user)  {
+    if (isElectronAPI())  menuLabel = 'Quit';
+                    else  menuLabel = 'End session';
+  }
   this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
                        .addOnClickListener ( logout_func );
   return this;

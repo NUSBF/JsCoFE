@@ -7,8 +7,9 @@
   ],
 
   "Desktop"  : {
-    "clientApp"  : "cmd",
-    "args"       : ["/s","/c","start","$feURL$clientURL"]
+    "clientApp" : "cmd",
+    "args"      : ["/s","/c","start","$feURL$clientURL"],
+    "_args"     : ["/s","/c","cd cofe-browser & npm start url=$feURL$clientURL"]
   },
 
   "FrontEnd" : {
@@ -17,7 +18,7 @@
     "port"             : 0,
     "externalURL"      : "",
     "exclusive"        : true,
-    "stoppable"        : false,
+    "stoppable"        : true,
     "exclude_tasks"    : ["unix-only"],
     "fsmount"          : "/",
     "userDataPath"     : "./win-cofe-users",
@@ -42,7 +43,7 @@
       "port"             : 0,
       "externalURL"      : "",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
@@ -66,7 +67,7 @@
       "port"             : 0,
       "externalURL"      : "",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
