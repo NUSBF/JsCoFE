@@ -65,3 +65,30 @@ install(
     share/jscofe
 )
 
+if(APPLE)
+  set(
+    FWDIR ${CMAKE_SOURCE_DIR}/cofe-browser/node_modules/
+  )
+  string(
+    APPEND
+    FWDIR electron/dist/Electron.app/Contents/Frameworks
+  )
+  foreach(
+    FWNAME
+      "Electron Framework"
+      Mantle
+      ReactiveObjC
+      Squirrel
+  )
+    add_custom_target(
+      ${FWNAME} ALL
+        ln -sf Versions/A/* .
+      DEPENDS
+        COFE_BROWSER
+        NODE_MODULES
+      WORKING_DIRECTORY
+        ${FWDIR}/${FWNAME}.framework
+    )
+  endforeach()
+endif()
+
