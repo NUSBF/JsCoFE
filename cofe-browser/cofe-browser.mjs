@@ -1,6 +1,6 @@
 
 import path  from 'path';
-import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog, session } from 'electron';
 import Store from 'electron-store';
 import { fileURLToPath } from 'url';
 
@@ -32,11 +32,12 @@ function createWindow ( url ) {
     y      : windowState.y,
     icon   : path.join(__dirname,'icons','ccp4cloud_local.png'),
     webPreferences : {
-      nodeIntegration  : false,
-      sandbox          : false,
-      contextIsolation : true,
-      webSecurity      : true,
-      preload          : path.join(__dirname,'preload.mjs')
+      nodeIntegration    : false,
+      sandbox            : false,
+      contextIsolation   : true,
+      webSecurity        : true,
+      enableRemoteModule : false,
+      preload            : path.join(__dirname,'preload.mjs')
     }
   });
 
@@ -69,6 +70,105 @@ function createWindow ( url ) {
       action: 'deny',
       overrideBrowserWindowOptions: secondaryWindow
     };
+  });
+
+
+  const ses = session.defaultSession;
+
+/*
+  ses.on('will-download', async (event, item, webContents) => {
+    event.preventDefault();
+    const filename = item.getFilename();
+    const defaultPath = path.join(app.getPath('downloads'), filename);
+
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Save File',
+      defaultPath: defaultPath,
+      buttonLabel: 'Save'
+    });
+
+    const { canceled, filePath } = result;
+
+    if (!canceled && filePath) {
+      item.setSavePath(filePath);
+
+      item.on('updated', (event, state) => {
+        if (state === 'progressing') {
+          if (item.isPaused()) {
+            console.log('Download is paused');
+          } else {
+            const progress = item.getReceivedBytes() / item.getTotalBytes();
+            console.log(`Download progress: ${Math.round(progress * 100)}%`);
+            webContents.send('download-progress', progress);
+          }
+        }
+      });
+
+      item.on('done', (event, state) => {
+        if (state === 'completed') {
+          console.log('Download successfully completed');
+          webContents.send('download-complete', filePath);
+        } else {
+          console.log(`Download failed: ${state}`);
+          webContents.send('download-failed');
+        }
+      });
+
+      item.resume();
+
+    } else {
+      console.log('Download canceled by user');
+      webContents.send('download-cancelled');
+    }
+
+  });
+*/
+
+  ses.on('will-download', async (event, item) => {
+    const defaultPath = path.join(app.getPath('downloads'), item.getFilename());
+
+    console.log ( 'p1');
+
+    // const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+    //   title      : 'Save File',
+    //   defaultPath: defaultPath,
+    //   buttonLabel: 'Save'
+    // });
+
+    let canceled = false;
+    let filePath = defaultPath;
+// console.log ( filePath );
+
+    if ((!canceled) && filePath) {
+// console.log ( filePath );
+
+      item.setSavePath(filePath);
+
+      item.on('updated', (event, state) => {
+        if (state === 'progressing') {
+          if (item.isPaused()) {
+            console.log('Download is paused');
+          } else {
+            const progress = item.getReceivedBytes() / item.getTotalBytes();
+            mainWindow.webContents.send('download-progress', progress);
+          }
+        }
+      });
+
+      item.on('done', (event, state) => {
+        if (state === 'completed') {
+          console.log('Download successfully');
+          mainWindow.webContents.send('download-complete', filePath);
+        } else {
+          console.log(`Download failed: ${state}`);
+          mainWindow.webContents.send('download-failed');
+        }
+      });
+    } else {
+      item.cancel();
+      mainWindow.webContents.send('download-cancelled');
+    }
+
   });
 
   // Open the DevTools (optional)
@@ -330,9 +430,8 @@ app.on ( 'window-all-closed', () => {
 });
 
 app.on ( 'activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
+  if (BrowserWindow.getAllWindows().length === 0)
     createWindow();
-  }
 });
 
 // IPC listener
@@ -343,3 +442,8 @@ ipcMain.on('message-from-app', (event, arg) => {
   } else if (arg.startsWith('version:'))
     ccp4cloud_version = arg.slice('version:'.length);
 });
+
+ipcMain.on ( 'start-download', (event, url) => {
+  mainWindow.webContents.downloadURL(url);
+});
+

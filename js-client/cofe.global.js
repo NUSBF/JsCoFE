@@ -173,6 +173,32 @@ function isProtectedConnection()  {
 
 sendMessageToElectron ( 'version:' + appVersion() );
 
+if (isElectronAPI())  {
+
+  // document.getElementById('download-button').addEventListener('click', () => {
+  //   const downloadUrl = 'https://example.com/file-to-download.zip';
+  //   window.electronAPI.startDownload(downloadUrl);
+  // });
+
+  // window.electronAPI.onDownloadProgress((event, progress) => {
+  //   const progressBar = document.getElementById('download-progress');
+  //   progressBar.value = progress;
+  // });
+
+  window.electronAPI.onDownloadComplete((event, savePath) => {
+    alert(`Download Complete: ${savePath}`);
+  });
+
+  window.electronAPI.onDownloadFailed(() => {
+    alert('Download Failed');
+  });
+
+  window.electronAPI.onDownloadCancelled(() => {
+    alert('Download Cancelled');
+  });
+
+}
+
 $(window).resize ( function(){
   if (__current_page)
     __current_page.onResize ( window.innerWidth,window.innerHeight );
