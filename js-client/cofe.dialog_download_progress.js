@@ -65,6 +65,7 @@ DownloadProgressDialog.prototype = Object.create ( InputBox.prototype );
 DownloadProgressDialog.prototype.constructor = DownloadProgressDialog;
 
 DownloadProgressDialog.prototype.setProgress = function ( value )  {
+  console.log ( ' >>>>> value=' + value );
   this.progressBar.setValue ( value );
 }
 
