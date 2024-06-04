@@ -175,31 +175,39 @@ sendMessageToElectron ( 'version:' + appVersion() );
 
 if (isElectronAPI())  {
 
-alert ( ' >>>>> electron found');
+  var downloadProgress = null;
+
   // document.getElementById('download-button').addEventListener('click', () => {
   //   const downloadUrl = 'https://example.com/file-to-download.zip';
   //   window.electronAPI.startDownload(downloadUrl);
   // });
 
-  // window.electronAPI.onDownloadProgress((event, progress) => {
-  //   const progressBar = document.getElementById('download-progress');
-  //   progressBar.value = progress;
-  // });
+  window.electronAPI.onDownloadProgress ( (event,progress) => {
+    if (!downloadProgress)
+      downloadProgress = new DownloadProgressDialog();
+    if (isFloat(progress))
+      downloadProgress.setProgress ( 100*progress );
+  });
 
-  window.electronAPI.onDownloadComplete((event, savePath) => {
-    alert(`Download Complete: ${savePath}`);
+  window.electronAPI.onDownloadComplete ( (event,savePath) => {
+    downloadProgress.setComplete ( savePath );
+    // alert(`Download Complete: ${savePath}`);
+    // downloadProgress.close();
+    downloadProgress = null;
   });
 
   window.electronAPI.onDownloadFailed(() => {
-    alert('Download Failed');
+    downloadProgress.setFailed();
+    downloadProgress = null;
+    // alert('Download Failed');
   });
 
   window.electronAPI.onDownloadCancelled(() => {
+    downloadProgress = null;
     alert('Download Cancelled');
   });
 
-} else
-alert ( ' >>>>> electron not found');
+}
 
 $(window).resize ( function(){
   if (__current_page)
