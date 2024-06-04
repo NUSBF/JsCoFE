@@ -1,0 +1,36 @@
+[2024-06-04T18:11:19.875Z] 03-041 ... CCP4 Cloud Archive configured
+[2024-06-04T18:11:19.876Z] 03-004 ... cannot read e-mail account data file auth_pass.txt
+[2024-06-04T18:11:19.877Z] 03-004 *** cannot read e-mail account data file auth_pass.txt
+[2024-06-04T18:11:19.877Z] 03-004 ... e-mailer will not work
+[2024-06-04T18:11:19.877Z] 03-004 *** e-mailer will not work
+[2024-06-04T18:11:19.886Z] 14-001 +++ cannot kill process pid=59907
+[2024-06-04T18:11:19.894Z] 14-001 +++ cannot kill process pid=59913
+[2024-06-04T18:11:19.905Z] 14-001 +++ cannot kill process pid=59914
+[2024-06-04T18:11:19.915Z] 14-001 +++ cannot kill process pid=59907
+[2024-06-04T18:11:19.922Z] 03-005 ... python version: 3.9.18
+[2024-06-04T18:11:19.969Z] 03-001 ... FE: url=http://localhost:58081
+[2024-06-04T18:11:19.969Z] 03-001 ... FE-Proxy: url=http://localhost:58085
+[2024-06-04T18:11:19.969Z] 03-002 ... NC[0]: name=local-nc type=SHELL url=http://localhost:58083
+[2024-06-04T18:11:19.969Z] 03-002 ... NC[1]: name=client type=CLIENT url=http://localhost:58084
+[2024-06-04T18:11:19.972Z] 03-003 ... configuration written to /var/folders/6b/v7mhnnbs503_ttr1nnmtfns40000gq/T/tmp-59956-wv1FoddwzcsX
+[2024-06-04T18:11:19.977Z] 23-003 ... server local-nc started, pid=59962
+[2024-06-04T18:11:19.980Z] 23-003 ... server client started, pid=59963
+[2024-06-04T18:11:20.082Z] 00-001 ... FE: url=http://localhost:58081
+[2024-06-04T18:11:20.082Z] 00-002 ... NC[0]: type=SHELL url=http://localhost:58083
+[2024-06-04T18:11:20.082Z] 00-002 ... NC[1]: type=CLIENT url=http://localhost:58084
+[2024-06-04T18:11:20.082Z] 00-003 ... Emailer: nodemailer
+[2024-06-04T18:11:20.084Z] 00-005 ... front-end started, listening to http://localhost:58081 (non-exclusive)
+[2024-06-04T18:11:20.084Z] 22-001 ... setting up proxy for http://localhost:58081 localhost
+[2024-06-04T18:11:20.085Z] 22-002 ... setting up proxy for http://localhost:58084 localhost
+[2024-06-04T18:11:20.086Z] 22-003 ... front-end proxy started, listening to http://localhost:58085 (exclusive)
+[2024-06-04T18:11:21.092Z] 23-005 ... client application "/bin/bash -c 'cd cofe-browser; npm start url=http://localhost:58085'" started, pid=59966
+[2024-06-04T18:11:22.521Z] 10-005 ... user login localuser
+[2024-06-04T18:11:30.088Z] 08-051 ... 3 dead entries in FE job registry found
+[2024-06-04T18:11:40.091Z] 08-051 ... 3 dead entries in FE job registry found
+[2024-06-04T18:11:50.093Z] 08-051 ... 3 dead entries in FE job registry found
+[2024-06-04T18:12:00.097Z] 08-051 ... 3 dead entries in FE job registry found
+[2024-06-04T18:12:10.102Z] 08-051 ... 3 dead entries in FE job registry found
+[2024-06-04T18:12:17.046Z] 00-006 ... stopping
+[2024-06-04T18:12:17.054Z] 23-004 ... server local-nc quit with code 0
+[2024-06-04T18:12:17.057Z] 23-004 ... server client quit with code 0
+[2024-06-04T18:12:17.089Z] 23-006 ... client application "/bin/bash -c 'cd cofe-browser; npm start url=http://localhost:58085'" quit with code 0

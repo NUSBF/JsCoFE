@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1798,6 +1798,10 @@ function getInfo ( inData,callback_func )  {
       rData.cloud_storage = (storage.getUserCloudMounts(loginData).length>0);
     }
     rData.localSetup = conf.isLocalSetup();
+    rData.titlePage  = true;
+    let desktop      = conf.getDesktopConfig()
+    if (desktop && ('titlePage' in desktop))
+      rData.titlePage = desktop.titlePage;
     rData.isArchive  = conf.isArchive   ();
     rData.regMode    = conf.getRegMode  ();
     if (fe_server.hasOwnProperty('description'))

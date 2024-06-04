@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,9 +67,9 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         // __offline_message = 'on';  // show prompt "working offline"
 
-        // login ( '**' + __local_user_id + '**','',sceneId,0 );
-
-        makeLocalLoginPage ( sceneId );
+        if (__title_page)
+              makeLocalLoginPage ( sceneId );
+        else  login ( '**' + __local_user_id + '**','',sceneId,0 );
 
         //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
