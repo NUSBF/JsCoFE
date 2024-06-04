@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.23   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -47,7 +47,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
       InputBox.call ( dlg,'Export Project' );
 
       dlg.setText ( '','export' );
-      var grid = dlg.grid;
+      let grid = dlg.grid;
       grid.setLabel ( '<h2>Export Project "' + projectList.current + '"</h2>',0,2,2,3 );
 
       let msg = 'Project <b>"' + projectList.current + 
@@ -62,10 +62,10 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
                '"abandoned" when project is re-imported.</i></p>';
       else
         msg += ' ....';
-      var msgLabel = new Label ( msg );
+      let msgLabel = new Label ( msg );
       grid.setWidget ( msgLabel, 2,2,1,3 );
 
-      var progressBar = new ProgressBar ( 0 );
+      let progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 3,2,1,3 );
 
       grid.setLabel ( '<i style="font-size:90%;">' +
@@ -91,8 +91,8 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
             id    : "download_btn",
             text  : "Download",
             click : function() {
-              var token;
-              var url;
+              let token;
+              let url;
               //                if (__login_token)  token = __login_token.getValue();
                 if (__login_token)
                       token = __login_token;
@@ -101,6 +101,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
                                         '/' + projectList.current + projectFileExt;
 //                                        '/' + projectList.current + '.tar.gz';
                 downloadFile ( url );
+                $('#download_btn').prop   ("disabled",true );
                 $( "#cancel_btn" ).button ( "option","label","Close" );
                 //$(dlg).dialog("close");
             }
