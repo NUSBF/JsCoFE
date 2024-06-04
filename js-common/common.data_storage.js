@@ -131,8 +131,19 @@ else    registerClass ( 'StorageList',StorageList,null );
 // ===========================================================================
 //  Legacy code for old projects compatibility 
 var FacilityFile = StorageFile;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityFile',FacilityFile,null );
+else    registerClass ( 'FacilityFile',FacilityFile,null );
+
 var FacilityDir  = StorageDir;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityDir',FacilityDir,null );
+else    registerClass ( 'FacilityDir',FacilityDir,null );
+
 var FacilityList = StorageList;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityList',FacilityList,null );
+else    registerClass ( 'FacilityList',FacilityList,null );
 
 // ===========================================================================
 
