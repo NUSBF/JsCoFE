@@ -151,9 +151,10 @@ function LocalLoginPage ( sceneId )  {
 
 }
 
-LocalLoginPage.prototype = Object.create ( BasePage.prototype );
-LocalLoginPage.prototype.constructor = LocalLoginPage;
+// LocalLoginPage.prototype = Object.create ( BasePage.prototype );
+// LocalLoginPage.prototype.constructor = LocalLoginPage;
 
+registerClass ( 'LocalLoginPage',LocalLoginPage,BasePage.prototype );
 
 function makeLocalLoginPage ( sceneId )  {
   makePage ( function() { new LocalLoginPage(sceneId); } );

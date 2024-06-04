@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -465,9 +465,21 @@ function CCP4DirName()  {
 
 
 // ===========================================================================
-// Config read function
+// Config read function (leading underscores are equivalent to comments)
 
 /*  --------------------------------------------------------------------------
+
+
+"Desktop"  : {
+  "clientApp"  : "/bin/bash",
+  "titlePage"  : true,  // optional, only in local/desktop mode
+  "args"       : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
+  "_args"       : ["-c","ccp4-python pycofe/apps/browser/browser.py -u $feURL$clientURL"],
+  "__args"       : ["-c","open -a Opera $feURL$clientURL"],
+  "___args"       : ["-c","open $feURL$clientURL"],
+  "____args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+  "_____args"       : ["-c","open -a Firefox $feURL$clientURL"]
+},
 
 {
   "FrontEnd" : {

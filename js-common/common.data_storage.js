@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -21,6 +21,10 @@
 
 'use strict';
 
+var __cmd = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd = require ( './common.commands' );
+
 // ===========================================================================
 
 function StorageFile()  {
@@ -33,12 +37,16 @@ function StorageFile()  {
   this.code    = 'ok';
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'StorageFile',StorageFile,null );
+else    registerClass ( 'StorageFile',StorageFile,null );
+
+
 StorageFile.prototype.from_Object = function ( object )  {
   for (var property in object)
     if (object.hasOwnProperty(property))
       this[property] = object[property];
 }
-
 
 // ===========================================================================
 
@@ -49,6 +57,10 @@ function StorageDir()  {
   this.dirs  = [];  // sub-directories
   this.files = [];  // dataset files
 }
+
+if (__cmd)
+  __cmd.registerClass ( 'StorageDir',StorageDir,null );
+else    registerClass ( 'StorageDir',StorageDir,null );
 
 StorageDir.prototype.addFile = function ( depth,nlist,file )  {
   // note that directory and file lists are not emptied here
@@ -112,11 +124,26 @@ function StorageList()  {
                       //              }]
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'StorageList',StorageList,null );
+else    registerClass ( 'StorageList',StorageList,null );
+
 // ===========================================================================
 //  Legacy code for old projects compatibility 
 var FacilityFile = StorageFile;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityFile',FacilityFile,null );
+else    registerClass ( 'FacilityFile',FacilityFile,null );
+
 var FacilityDir  = StorageDir;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityDir',FacilityDir,null );
+else    registerClass ( 'FacilityDir',FacilityDir,null );
+
 var FacilityList = StorageList;
+if (__cmd)
+  __cmd.registerClass ( 'FacilityList',FacilityList,null );
+else    registerClass ( 'FacilityList',FacilityList,null );
 
 // ===========================================================================
 

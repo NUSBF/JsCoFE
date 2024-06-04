@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -99,12 +102,9 @@ function TaskImportSeqCP()  {
 
 }
 
-
 if (__template)
-      TaskImportSeqCP.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImportSeqCP.prototype = Object.create ( TaskTemplate.prototype );
-TaskImportSeqCP.prototype.constructor = TaskImportSeqCP;
-
+  __cmd.registerClass ( 'TaskImportSeqCP',TaskImportSeqCP,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImportSeqCP',TaskImportSeqCP,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

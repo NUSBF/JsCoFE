@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.crank2' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskShelxAuto()  {
   this.name    = 'SHELX Auto-EP';
   this.setOName ( 'shelx' );  // default output file name template
   this.title   = 'SHELX Automated Experimental Phasing via Crank-2';
-  //this.helpURL = './html/jscofe_task_shelxauto.html';
 
   this.input_dtypes[0].data_type   = {'DataRevision':['!anomalous','~xyz','~substructure']}, // data type(s) and subtype(s)
   this.input_dtypes[0].customInput = 'shelx-auto';     // lay custom fields next to the selection
@@ -52,10 +53,8 @@ function TaskShelxAuto()  {
 }
 
 if (__template)
-      TaskShelxAuto.prototype = Object.create ( __template.TaskCrank2.prototype );
-else  TaskShelxAuto.prototype = Object.create ( TaskCrank2.prototype );
-TaskShelxAuto.prototype.constructor = TaskShelxAuto;
-
+  __cmd.registerClass ( 'TaskShelxAuto',TaskShelxAuto,__template.TaskCrank2.prototype );
+else    registerClass ( 'TaskShelxAuto',TaskShelxAuto,TaskCrank2.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

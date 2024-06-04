@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskShelxEMR()  {
   this.name    = 'shelxe';
   this.setOName ( 'shelxe' );  // default output file name template
   this.title   = 'Density Modification and C&alpha;-tracing with ShelxE';
-  //this.helpURL = './html/jscofe_task_shelxemr.html';
 
   this.input_dtypes = [{  // input data types
       //data_type   : {'DataRevision':['!protein','!asu',['xyz','substructure']]}, // data type(s) and subtype(s)
@@ -217,12 +219,9 @@ function TaskShelxEMR()  {
 
 }
 
-
 if (__template)
-      TaskShelxEMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskShelxEMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskShelxEMR.prototype.constructor = TaskShelxEMR;
-
+  __cmd.registerClass ( 'TaskShelxEMR',TaskShelxEMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskShelxEMR',TaskShelxEMR,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
