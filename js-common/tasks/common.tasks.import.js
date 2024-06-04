@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -58,10 +60,8 @@ function TaskImport()  {
 }
 
 if (__template)
-      TaskImport.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImport.prototype = Object.create ( TaskTemplate.prototype );
-TaskImport.prototype.constructor = TaskImport;
-
+  __cmd.registerClass ( 'TaskImport',TaskImport,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImport',TaskImport,TaskTemplate.prototype );
 
 // ===========================================================================
 

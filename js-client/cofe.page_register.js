@@ -290,9 +290,10 @@ function RegisterPage ( sceneId )  {
 
 }
 
-RegisterPage.prototype = Object.create ( BasePage.prototype );
-RegisterPage.prototype.constructor = RegisterPage;
+// RegisterPage.prototype = Object.create ( BasePage.prototype );
+// RegisterPage.prototype.constructor = RegisterPage;
 
+registerClass ( 'RegisterPage',RegisterPage,BasePage.prototype );
 
 function makeRegisterPage ( sceneId )  {
   makePage ( function(){ new RegisterPage(sceneId); } );

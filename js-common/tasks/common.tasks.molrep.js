@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -417,12 +420,9 @@ function TaskMolrep()  {
 
 }
 
-
 if (__template)
-      TaskMolrep.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMolrep.prototype = Object.create ( TaskTemplate.prototype );
-TaskMolrep.prototype.constructor = TaskMolrep;
-
+  __cmd.registerClass ( 'TaskMolrep',TaskMolrep,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMolrep',TaskMolrep,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

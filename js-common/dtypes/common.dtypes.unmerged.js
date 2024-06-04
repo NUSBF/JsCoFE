@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -34,8 +37,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataUnmerged()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type       = 'DataUnmerged';
   this.ha_type     = '';     // heavy atom type
@@ -45,12 +48,14 @@ function DataUnmerged()  {
 
 }
 
+// if (__template_d)
+//       DataUnmerged.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataUnmerged.prototype = Object.create ( DataTemplate.prototype );
+// DataUnmerged.prototype.constructor = DataUnmerged;
 
-if (__template)
-      DataUnmerged.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataUnmerged.prototype = Object.create ( DataTemplate.prototype );
-DataUnmerged.prototype.constructor = DataUnmerged;
-
+if (__template_d)
+  __cmd.registerClass ( 'DataUnmerged',DataUnmerged,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataUnmerged',DataUnmerged,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -60,9 +65,9 @@ DataUnmerged.prototype.icon  = function()  { return 'data';          }
 // when data class version is changed here, change it also in python
 // constructors
 DataUnmerged.prototype.currentVersion = function()  {
-  var version = 0;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  let version = 0;
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -76,11 +81,11 @@ DataUnmerged.prototype.currentVersion = function()  {
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   //  for client side
 
   DataUnmerged.prototype.makeDataSummaryPage = function ( task )  {
-    var dsp = new DataSummaryPage ( this );
+    let dsp = new DataSummaryPage ( this );
 
     dsp.makeRow ( 'File name'            ,this.files[file_key.mtz],'Imported file name' );
     dsp.makeRow ( 'Original dataset name',this.dataset.name,'Original dataset name' );
@@ -90,7 +95,7 @@ if (!__template)  {
           dsp.makeRow ( 'Space group',this.HM      ,'Space symmetry group' );
     else  dsp.makeRow ( 'Space group','Unspecified','Space symmetry group' );
 
-    var cell_spec = 'Not specified';
+    let cell_spec = 'Not specified';
     if ('cell' in this.dataset)
       cell_spec = this.dataset.cell[0] + "&nbsp;" +
                   this.dataset.cell[1] + "&nbsp;" +
@@ -101,8 +106,8 @@ if (!__template)  {
 
     dsp.makeRow ( 'Cell',cell_spec,'Unit cell parameters' );
 
-    var ranges = '';
-    for (var i=0;i<this.dataset.runs.length;i++)
+    let ranges = '';
+    for (let i=0;i<this.dataset.runs.length;i++)
       ranges += '[' + this.dataset.runs[i][1] + ',' + this.dataset.runs[i][2] + ']&nbsp;';
     dsp.makeRow ( 'Batches',ranges,'Batch ranges' );
 
@@ -149,10 +154,10 @@ if (!__template)  {
     if (!this.dataset)
       return '';
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
-    var regex_runs = /^\s*(\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*)?$/;
-    //var regex_runs2 = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
+    let regex_runs = /^\s*(\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*)?$/;
+    //let regex_runs2 = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
 
 //    if (dropdown.layCustom.startsWith('unmerged'))  {
     if (startsWith(dropdown.layCustom,'unmerged'))  {
@@ -161,21 +166,21 @@ if (!__template)  {
         this.symm_select  = customGrid.combosel.getValues();
       } else  {
         this.runs = customGrid.runs.getValue().trim();
-        var ok    = (this.runs.length==0);
+        let ok    = (this.runs.length==0);
         if (!ok)
         {
           ok = regex_runs.test(this.runs);
           if (ok)
           {
-            var orig_list = this.runs.replace(/[, \-]+/g, ',').split(',');
-            var sorted_list = orig_list.slice(0);
+            let orig_list = this.runs.replace(/[, \-]+/g, ',').split(',');
+            let sorted_list = orig_list.slice(0);
             sorted_list.sort(function(a, b){return a - b});
             ok = orig_list.toString() == sorted_list.toString();
             if (ok)
             {
-              var x0 = '';
-              var x1 = orig_list[0];
-              for (var i = 1; i < orig_list.length; i++)
+              let x0 = '';
+              let x1 = orig_list[0];
+              for (let i = 1; i < orig_list.length; i++)
               {
                 x0 = x1;
                 x1 = orig_list[i];

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.22   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  DUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskDUI()  {
   this.name    = 'dui (image processing)';
   this.setOName ( 'dials' );  // default output file name template
   this.title   = 'Interactive Image Processing with DUI';
-  //this.helpURL = './html/jscofe_task_dui.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task
@@ -56,12 +58,9 @@ function TaskDUI()  {
 
 }
 
-
 if (__template)
-      TaskDUI.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDUI.prototype = Object.create ( TaskTemplate.prototype );
-TaskDUI.prototype.constructor = TaskDUI;
-
+  __cmd.registerClass ( 'TaskDUI',TaskDUI,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDUI',TaskDUI,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

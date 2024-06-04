@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.05.24   <--  Date of Last Modification.
+ *    03.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -209,8 +209,10 @@ function AdminPage ( sceneId )  {
 
 }
 
-AdminPage.prototype = Object.create ( BasePage.prototype );
-AdminPage.prototype.constructor = AdminPage;
+// AdminPage.prototype = Object.create ( BasePage.prototype );
+// AdminPage.prototype.constructor = AdminPage;
+
+registerClass ( 'AdminPage',AdminPage,BasePage.prototype );
 
 /*
 AdminPage.prototype.destructor = function ( function_ready )  {
@@ -771,7 +773,6 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
 }
-
 
 // -------------------------------------------------------------------------
 

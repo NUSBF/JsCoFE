@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.04.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskCCP4Build()  {
   this.name    = 'ccp4build';
   this.setOName ( 'ccp4build' );  // default output file name template
   this.title   = 'Automatic Model Building with CCP4Build';
-  //this.helpURL = './html/jscofe_task_ccp4build.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!seq','!phases','~mmcif_only']}, // data type(s) and subtype(s)
@@ -387,12 +388,9 @@ function TaskCCP4Build()  {
 
 }
 
-
 if (__template)
-      TaskCCP4Build.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4Build.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4Build.prototype.constructor = TaskCCP4Build;
-
+  __cmd.registerClass ( 'TaskCCP4Build',TaskCCP4Build,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCCP4Build',TaskCCP4Build,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

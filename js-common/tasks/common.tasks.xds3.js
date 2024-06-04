@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -53,10 +56,8 @@ function TaskXDS3()  {
 }
 
 if (__template)
-      TaskXDS3.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXDS3.prototype = Object.create ( TaskTemplate.prototype );
-TaskXDS3.prototype.constructor = TaskXDS3;
-
+  __cmd.registerClass ( 'TaskXDS3',TaskXDS3,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXDS3',TaskXDS3,TaskTemplate.prototype );
 
 // ===========================================================================
 

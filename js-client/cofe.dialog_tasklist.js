@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.04.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -853,7 +853,8 @@ let r         = 0;  // grid row
   for (let i=0;i<tasks.length;i++)
     if ((i<__suggested_task_nmin) || (ctotal>=cthresh))  {
       //console.log ( 'task=' + tasks[i] + ',  ctotal=' + ctotal );
-      let task = eval ( 'new ' + tasks[i] + '()' );
+      // let task = eval ( 'new ' + tasks[i] + '()' );
+      let task = makeNewInstance ( tasks[i] );
       if (this.setTask(task,grid,r,false,0))
         r++;
       ctotal -= counts[i];

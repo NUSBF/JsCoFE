@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskDocDev()  {
   this.name    = 'documentation development';
   this.setOName ( '*' );  // default output file name template
   this.title   = 'Documentation Development with Sphinx';
-  //this.helpURL = './html/jscofe_task_docdev.html';
   //this.nc_number = 0;  // forces to use specific number cruncher
 
   this.input_dtypes = [];   // no input data for this task
@@ -95,12 +97,9 @@ function TaskDocDev()  {
 
 }
 
-
 if (__template)
-      TaskDocDev.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDocDev.prototype = Object.create ( TaskTemplate.prototype );
-TaskDocDev.prototype.constructor = TaskDocDev;
-
+  __cmd.registerClass ( 'TaskDocDev',TaskDocDev,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDocDev',TaskDocDev,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
