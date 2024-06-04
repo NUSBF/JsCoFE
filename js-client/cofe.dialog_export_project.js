@@ -69,7 +69,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
       grid.setWidget ( progressBar, 3,2,1,3 );
 
       grid.setLabel ( '<i style="font-size:90%;">' +
-                      '(!) closing this dialog will terminate export, ' +
+                      '(!) closing this dialog will terminate the export, ' +
                       'please wait ....</i>',4,2,1,3 );
       grid.setHorizontalAlignment ( 4,2,"right" );
 
