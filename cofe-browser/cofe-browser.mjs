@@ -75,72 +75,16 @@ function createWindow ( url ) {
 
   const ses = session.defaultSession;
 
-/*
-  ses.on('will-download', async (event, item, webContents) => {
-    event.preventDefault();
-    const filename = item.getFilename();
-    const defaultPath = path.join(app.getPath('downloads'), filename);
+  ses.on('will-download', async (event, item) => {
+    const defaultPath = path.join(app.getPath('downloads'), item.getFilename());
 
-    const result = await dialog.showSaveDialog(mainWindow, {
-      title: 'Save File',
+    const filePath = dialog.showSaveDialogSync ( mainWindow, {
+      title      : 'Save File',
       defaultPath: defaultPath,
       buttonLabel: 'Save'
     });
 
-    const { canceled, filePath } = result;
-
-    if (!canceled && filePath) {
-      item.setSavePath(filePath);
-
-      item.on('updated', (event, state) => {
-        if (state === 'progressing') {
-          if (item.isPaused()) {
-            console.log('Download is paused');
-          } else {
-            const progress = item.getReceivedBytes() / item.getTotalBytes();
-            console.log(`Download progress: ${Math.round(progress * 100)}%`);
-            webContents.send('download-progress', progress);
-          }
-        }
-      });
-
-      item.on('done', (event, state) => {
-        if (state === 'completed') {
-          console.log('Download successfully completed');
-          webContents.send('download-complete', filePath);
-        } else {
-          console.log(`Download failed: ${state}`);
-          webContents.send('download-failed');
-        }
-      });
-
-      item.resume();
-
-    } else {
-      console.log('Download canceled by user');
-      webContents.send('download-cancelled');
-    }
-
-  });
-*/
-
-  ses.on('will-download', async (event, item) => {
-    const defaultPath = path.join(app.getPath('downloads'), item.getFilename());
-
-    console.log ( 'p1');
-
-    // const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-    //   title      : 'Save File',
-    //   defaultPath: defaultPath,
-    //   buttonLabel: 'Save'
-    // });
-
-    let canceled = false;
-    let filePath = defaultPath;
-// console.log ( filePath );
-
-    if ((!canceled) && filePath) {
-// console.log ( filePath );
+    if (filePath) {
 
       item.setSavePath(filePath);
 
@@ -164,6 +108,9 @@ function createWindow ( url ) {
           mainWindow.webContents.send('download-failed');
         }
       });
+      
+      // item.resume();
+      
     } else {
       item.cancel();
       mainWindow.webContents.send('download-cancelled');
@@ -444,6 +391,6 @@ ipcMain.on('message-from-app', (event, arg) => {
 });
 
 ipcMain.on ( 'start-download', (event, url) => {
-  mainWindow.webContents.downloadURL(url);
+  mainWindow.webContents.downloadURL ( url );
 });
 

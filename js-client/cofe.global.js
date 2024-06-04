@@ -175,6 +175,7 @@ sendMessageToElectron ( 'version:' + appVersion() );
 
 if (isElectronAPI())  {
 
+alert ( ' >>>>> electron found');
   // document.getElementById('download-button').addEventListener('click', () => {
   //   const downloadUrl = 'https://example.com/file-to-download.zip';
   //   window.electronAPI.startDownload(downloadUrl);
@@ -197,7 +198,8 @@ if (isElectronAPI())  {
     alert('Download Cancelled');
   });
 
-}
+} else
+alert ( ' >>>>> electron not found');
 
 $(window).resize ( function(){
   if (__current_page)
