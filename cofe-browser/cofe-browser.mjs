@@ -101,7 +101,7 @@ function createWindow ( url ) {
 
       item.on('done', (event, state) => {
         if (state === 'completed') {
-          console.log('Download successfully');
+          // console.log('Download successfully');
           mainWindow.webContents.send('download-complete', filePath);
         } else {
           console.log(`Download failed: ${state}`);
@@ -299,8 +299,8 @@ function createSecondaryWindow ( url,features ) {
 function showCustomAboutDialog() {
   // Using Electron's dialog module for a simple custom About dialog
   dialog.showMessageBox({
-    type: 'info',
-    title: 'About CCP4 Cloud Local',
+    type   : 'info',
+    title  : 'About CCP4 Cloud Local',
     message: 'CCP4 Cloud Local\n\nv. ' + ccp4cloud_version +
              '\n\nElectron-based application for running\n' + 
              'CCP4 Cloud locally on your machine.',
@@ -328,7 +328,7 @@ function sendStopSignal ( url )  {
     console.log(data); // Handle the data from the response
   })
   .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
+    console.error ( 'There was a problem with the stop operation:', error );
   });
 }
 
