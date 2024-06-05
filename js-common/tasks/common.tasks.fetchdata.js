@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.04.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -69,12 +72,9 @@ function TaskFetchData()  {
 
 }
 
-
 if (__template)
-      TaskFetchData.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFetchData.prototype = Object.create ( TaskTemplate.prototype );
-TaskFetchData.prototype.constructor = TaskFetchData;
-
+  __cmd.registerClass ( 'TaskFetchData',TaskFetchData,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFetchData',TaskFetchData,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

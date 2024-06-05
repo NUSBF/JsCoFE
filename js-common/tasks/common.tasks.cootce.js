@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -71,12 +74,9 @@ function TaskCootCE()  {
 
 }
 
-
 if (__template)
-      TaskCootCE.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCootCE.prototype = Object.create ( TaskTemplate.prototype );
-TaskCootCE.prototype.constructor = TaskCootCE;
-
+  __cmd.registerClass ( 'TaskCootCE',TaskCootCE,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCootCE',TaskCootCE,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

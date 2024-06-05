@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Models Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -31,10 +31,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -47,7 +49,6 @@ function TaskEnsembler()  {
   this.name    = 'ensemble preparation (models)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble from Models';
-  //this.helpURL = './html/jscofe_task_ensembler.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataModel':[]}, // data type(s) and subtype(s)
@@ -90,10 +91,8 @@ function TaskEnsembler()  {
 }
 
 if (__template)
-      TaskEnsembler.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsembler.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsembler.prototype.constructor = TaskEnsembler;
-
+  __cmd.registerClass ( 'TaskEnsembler',TaskEnsembler,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsembler',TaskEnsembler,TaskTemplate.prototype );
 
 // ===========================================================================
 

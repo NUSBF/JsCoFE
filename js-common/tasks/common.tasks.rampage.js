@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -53,10 +55,8 @@ function TaskRampage()  {
 }
 
 if (__template)
-      TaskRampage.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRampage.prototype = Object.create ( TaskTemplate.prototype );
-TaskRampage.prototype.constructor = TaskRampage;
-
+  __cmd.registerClass ( 'TaskRampage',TaskRampage,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRampage',TaskRampage,TaskTemplate.prototype );
 
 // ===========================================================================
 

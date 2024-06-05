@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Class extension functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -24,19 +24,23 @@
 //  prepare log
 //var log = require('./server.log').newLog(2);
 
-var classMap = {};
+const __modules = {};
 
-function getClassName ( name,offset,pattern )  {
-  var n = name.substr(offset).toLowerCase();
-  if (!(n in classMap))
-    classMap[n] = require ( pattern + n );
-  return 'classMap.' + n + '.' + name;
+function getModuleRef ( name,offset,pattern )  {
+  let modref = name.substr(offset).toLowerCase();
+  if (!(modref in __modules))
+    __modules[modref] = require ( pattern + modref );
+    // __modules[modref] = require ( pattern + modref ).name;
+  return modref;
+  // return '__modules.' + modref + '.' + name;
 }
 
-function getClassName1 ( name,modref,module )  {
-  if (!(modref in classMap))
-    classMap[modref] = require ( module );
-  return 'classMap.' + modref + '.' + name;
+function getModuleRef1 ( name,modref,module )  {
+  if (!(modref in __modules))
+    __modules[modref] = require ( module );
+    // __modules[modref] = require ( module ).name;
+  return modref;
+  // return '__modules.' + modref + '.' + name;
 }
 
 // auxiliary function for getObjectInstance(), not to be used by itself
@@ -48,29 +52,30 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  var className = '';
+  let moduleRef = '';
   if (value._type.startsWith('Task'))  {
-    className = getClassName ( value._type,4,'../js-common/tasks/common.tasks.' );
+    moduleRef = getModuleRef ( value._type,4,'../js-common/tasks/common.tasks.' );
   } else if (value._type.startsWith('Data'))  {
-    className = getClassName ( value._type,4,'../js-common/dtypes/common.dtypes.' );
+    moduleRef = getModuleRef ( value._type,4,'../js-common/dtypes/common.dtypes.' );
   } else if (value._type=='UserRation')  {
-    className = getClassName ( value._type,0,'../js-common/common.' );
+    moduleRef = getModuleRef ( value._type,0,'../js-common/common.' );
   // } else if (value._type=='ProjectShare')  {
-  //   className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
+  //   moduleRef = getModuleRef1 ( value._type,'pd','../js-common/common.data_project' );
   // } else if (value._type=='ProjectList')  {
-  //   className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
+  //   moduleRef = getModuleRef1 ( value._type,'pd','../js-common/common.data_project' );
   } else if (value._type.startsWith('Project'))  {
-    className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
+    moduleRef = getModuleRef1 ( value._type,'pd','../js-common/common.data_project' );
   } else if (value._type=='UsageStats')  {
-    className = getClassName ( value._type,0,'../js-server/server.fe.' );
+    moduleRef = getModuleRef ( value._type,0,'../js-server/server.fe.' );
   }
 
-  var obj = null;
-  if (className.length>0)
-       obj = eval ( 'new ' + className + '()' );
+  let obj = null;
+  if (moduleRef.length>0)
+    obj = new __modules[moduleRef][value._type]();
+      //  obj = eval ( 'new ' + moduleRef + '()' );
   else obj = {};  // no class mapping
 
-  for (var property in value)
+  for (let property in value)
     obj[property] = value[property];
 
   return obj;
@@ -93,9 +98,10 @@ function makeClass ( classObject )  {
 
 function makeTaskClass ( classType )  {
   if (classType)  {
-    var className = getClassName ( classType,4,'../js-common/tasks/common.tasks.' );
-    if (className.length>0)
-      return eval ( 'new ' + className + '()' );
+    let moduleRef = getModuleRef ( classType,4,'../js-common/tasks/common.tasks.' );
+    if (moduleRef.length>0)
+      return new __modules[moduleRef][classType]();
+      // return eval ( 'new ' + moduleRef + '()' );
   }
   return null;
 }

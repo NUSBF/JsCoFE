@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.25   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Local (on-desktop) jsCoFE launcher
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -216,24 +216,28 @@ function start_client_application()  {
 
   }
 
-  for (let i=0;i<desktopConfig.args.length;i++)  {
-    let arg = desktopConfig.args[i].replace('$feURL',feURL)
-                                   .replace('$clientURL',clientURL);
-    command.push ( arg );
-    if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
-                        else  msg += ' '  + arg;
+  if ('args' in desktopConfig)  {
+
+    for (let i=0;i<desktopConfig.args.length;i++)  {
+      let arg = desktopConfig.args[i].replace('$feURL',feURL)
+                                    .replace('$clientURL',clientURL);
+      command.push ( arg );
+      if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
+                          else  msg += ' '  + arg;
+    }
+
+    let job = child_process.spawn ( desktopConfig.clientApp,command );
+
+  //if ( confout ) fse.mkdirsSync(confout + '.READY');
+    if (confout)
+      fse.mkdirsSync ( path.join(path.dirname(confout),'LOCK') );
+    log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
+
+    job.on ( 'close',function(code){
+      log.standard ( 6,'client application "' + msg + '" quit with code ' + code );
+    });
+
   }
-
-  let job = child_process.spawn ( desktopConfig.clientApp,command );
-
-//if ( confout ) fse.mkdirsSync(confout + '.READY');
-  if (confout)
-    fse.mkdirsSync ( path.join(path.dirname(confout),'LOCK') );
-  log.standard ( 5,'client application "' + msg + '" started, pid=' + job.pid );
-
-  job.on ( 'close',function(code){
-    log.standard ( 6,'client application "' + msg + '" quit with code ' + code );
-  });
 
 }
 

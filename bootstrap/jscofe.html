@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    26.05.24   <..  Date of Last Modification.
+ *    04.06.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -72,10 +72,10 @@
   <script type="text/javascript" src="js-lib/jstree/jstree.min.js"></script>
   <script type="text/javascript" src="js-lib/ui-ext/jquery.dialogextend.min.js"></script>
 
+  <script type="text/javascript" src="js-common/common.commands.js"></script>
   <script type="text/javascript" src="js-common/common.data_user.js"></script>
   <script type="text/javascript" src="js-common/common.data_project.js"></script>
   <script type="text/javascript" src="js-common/common.data_storage.js"></script>
-  <script type="text/javascript" src="js-common/common.commands.js"></script>
   <script type="text/javascript" src="js-common/common.knowledge.js"></script>
   <script type="text/javascript" src="js-common/common.utils.js"></script>
   <script type="text/javascript" src="js-common/common.xutils.js"></script>
@@ -101,6 +101,7 @@
   <script type="text/javascript" src="js-client/cofe.dialog_archive_project.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_authorisation.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_darkmode.js"></script>
+  <script type="text/javascript" src="js-client/cofe.dialog_download_progress.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_edit_workflow.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_export_job.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_export_from_safe.js"></script>
@@ -295,35 +296,8 @@
 </head>
 
 <body class="main-page">
-
   <noscript>You need to enable JavaScript to run this app.</noscript>
-
-  <!-- <div id='scene' style="width:100%;font-size:16px;"></div>  -->
-  <!-- <div id='scene' class="main-page"></div> -->
-  <!-- <div id='scene'></div> now in BasePage class -->
-
-  <script>
-    // now in main-page css
-    // document.body.style.fontSize = '16px';   // this is necessary for jquery
-    //                                          // dialogs to have correct layout
-    //                                          // despite explicit sizing set in
-    //                                          // main-page CSS class; it is
-    //                                          // unclear why
-    // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
-    //$(window).on ( 'load', function(){
-    $(document).ready ( function(){
-      // setDarkMode ( isDarkMode() );
-      bindToBrowserColorMode();
-      //console.log ( '   ready=' + document.readyState );
-      /*
-      alert ( window.location.search );
-      window.history.replaceState({}, document.title, "/" );
-      */
-      let dev_switch = 0; //3;
-      startSession ( 'scene',dev_switch );
-    });
-  </script>
-
+  <script type="text/javascript" src="js-client/cofe.load_page.js"></script>
 </body>
 
 </html>

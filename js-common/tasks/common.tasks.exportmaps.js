@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,11 +19,13 @@
  *
  */
 
-
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 function TaskExportMaps()  {
@@ -52,10 +54,8 @@ function TaskExportMaps()  {
 }
 
 if (__template)
-      TaskExportMaps.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskExportMaps.prototype = Object.create ( TaskTemplate.prototype );
-TaskExportMaps.prototype.constructor = TaskExportMaps;
-
+  __cmd.registerClass ( 'TaskExportMaps',TaskExportMaps,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskExportMaps',TaskExportMaps,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

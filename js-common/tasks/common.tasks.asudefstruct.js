@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition (from Structure) Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -23,9 +23,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.asudef' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -76,12 +79,9 @@ function TaskASUDefStruct()  {
 
 }
 
-
 if (__template)
-      TaskASUDefStruct.prototype = Object.create ( __template.TaskASUDef.prototype );
-else  TaskASUDefStruct.prototype = Object.create ( TaskASUDef.prototype );
-TaskASUDefStruct.prototype.constructor = TaskASUDefStruct;
-
+  __cmd.registerClass ( 'TaskASUDefStruct',TaskASUDefStruct,__template.TaskASUDef.prototype );
+else    registerClass ( 'TaskASUDefStruct',TaskASUDefStruct,TaskASUDef.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

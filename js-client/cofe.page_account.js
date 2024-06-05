@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    03.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -627,8 +627,10 @@ function AccountPage ( sceneId )  {
 
 }
 
-AccountPage.prototype = Object.create ( BasePage.prototype );
-AccountPage.prototype.constructor = AccountPage;
+// AccountPage.prototype = Object.create ( BasePage.prototype );
+// AccountPage.prototype.constructor = AccountPage;
+
+registerClass ( 'AccountPage',AccountPage,BasePage.prototype );
 
 
 function makeAccountPage ( sceneId )  {

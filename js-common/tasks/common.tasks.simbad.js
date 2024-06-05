@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -269,12 +272,9 @@ function TaskSimbad()  {
 
 }
 
-
 if (__template)
-      TaskSimbad.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSimbad.prototype = Object.create ( TaskTemplate.prototype );
-TaskSimbad.prototype.constructor = TaskSimbad;
-
+  __cmd.registerClass ( 'TaskSimbad',TaskSimbad,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSimbad',TaskSimbad,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
