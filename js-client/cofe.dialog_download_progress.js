@@ -33,8 +33,10 @@ function DownloadProgressDialog()  {
 
   this.setText ( '','export' );
 
-  this.title_lbl = this.grid.setLabel ( '<h2>Downloading ...</h2>',0,2,2,3 );
-
+  this.title_lbl   = this.grid.setLabel ( '<h2>Downloading ...</h2>',0,2,2,3 );
+  this.message_lbl = this.grid.setLabel ( 
+                        '<i style="font-size:90%">in progress, please wait ...</i>',
+                        2,2,1,3 );
   this.progressBar = new ProgressBar ( 0 );
   this.grid.setWidget ( this.progressBar, 3,2,1,3 );
   this.progressBar.setWidth_px  ( 400 );
@@ -72,14 +74,16 @@ DownloadProgressDialog.prototype.setProgress = function ( value )  {
 }
 
 DownloadProgressDialog.prototype.setComplete = function ( savePath )  {
-  this.title_lbl.setText ( '<h2>Download complete</h2>Find it at <pre>' + 
-                           savePath + '</pre>' );
+  this.title_lbl  .setText ( '<h2>Download complete</h2>Find it at <pre>' + 
+                             savePath + '</pre>' );
+  this.message_lbl.hide();
   this.progressBar.hide();
-  $('#close_btn').show();
+  $('#close_btn') .show();
 }
 
 DownloadProgressDialog.prototype.setFailed = function ( savePath )  {
-  this.title_lbl.setText ( '<h2>Download failed.</h2>Try it again.' );
+  this.title_lbl  .setText ( '<h2>Download failed.</h2>Try it again.' );
+  this.message_lbl.hide();
   this.progressBar.hide();
-  $('#close_btn').show();
+  $('#close_btn') .show();
 }

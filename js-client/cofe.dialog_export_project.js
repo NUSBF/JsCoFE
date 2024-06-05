@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    05.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -93,17 +93,14 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
             click : function() {
               let token;
               let url;
-              //                if (__login_token)  token = __login_token.getValue();
-                if (__login_token)
-                      token = __login_token;
-                else  token = '404';
-                url = __special_url_tag + '/' + token + '/' + projectList.current +
+              if (__login_token)
+                    token = __login_token;
+              else  token = '404';
+              url = __special_url_tag + '/' + token + '/' + projectList.current +
                                         '/' + projectList.current + projectFileExt;
-//                                        '/' + projectList.current + '.tar.gz';
-                downloadFile ( url );
-                $('#download_btn').prop   ("disabled",true );
-                $( "#cancel_btn" ).button ( "option","label","Close" );
-                //$(dlg).dialog("close");
+              $('#download_btn').hide();
+              $('#cancel_btn'  ).button ( "option","label","Close" );
+              downloadFile ( url );
             }
           },
           {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24  <--  Date of Last Modification.
+ *    05.06.24  <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,14 +68,15 @@ function ExportJobDialog ( task )  {
             click : function() {
               let token;
               let url;
-                if (__login_token)
-                      token = __login_token;
-                else  token = '404';
-                url = __special_url_tag + '/' + token   + '/' + task.project +
-                                        '/' + task.id + '/' + exportName   +
-                                        '.zip';
-                downloadFile ( url );
-                $( "#cancel_btn" ).button ( "option","label","Close" );
+              if (__login_token)
+                    token = __login_token;
+              else  token = '404';
+              url = __special_url_tag + '/' + token   + '/' + task.project +
+                                      '/' + task.id + '/' + exportName   +
+                                      '.zip';
+              $('#download_btn').hide();
+              $('#cancel_btn'  ).button ( "option","label","Close" );
+              downloadFile ( url );
             }
           },
           {
