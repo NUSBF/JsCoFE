@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.modelprepxyz' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -57,10 +59,8 @@ function TaskModelPrepAlgn()  {
 }
 
 if (__template)
-      TaskModelPrepAlgn.prototype = Object.create ( __template.TaskModelPrepXYZ.prototype );
-else  TaskModelPrepAlgn.prototype = Object.create ( TaskModelPrepXYZ.prototype );
-TaskModelPrepAlgn.prototype.constructor = TaskModelPrepAlgn;
-
+  __cmd.registerClass ( 'TaskModelPrepAlgn',TaskModelPrepAlgn,__template.TaskModelPrepXYZ.prototype );
+else    registerClass ( 'TaskModelPrepAlgn',TaskModelPrepAlgn,TaskModelPrepXYZ.prototype );
 
 // ===========================================================================
 

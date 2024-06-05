@@ -1,6 +1,6 @@
 
 import path  from 'path';
-import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog, session } from 'electron';
 import Store from 'electron-store';
 import { fileURLToPath } from 'url';
 
@@ -32,10 +32,12 @@ function createWindow ( url ) {
     y      : windowState.y,
     icon   : path.join(__dirname,'icons','ccp4cloud_local.png'),
     webPreferences : {
-      nodeIntegration  : true,
-      contextIsolation : true,
-      webSecurity      : true,
-      preload          : path.join(__dirname,'preload.mjs')
+      nodeIntegration    : false,
+      sandbox            : false,
+      contextIsolation   : true,
+      webSecurity        : true,
+      enableRemoteModule : false,
+      preload            : path.join(__dirname,'preload.mjs')
     }
   });
 
@@ -43,6 +45,15 @@ function createWindow ( url ) {
   mainWindow.loadURL(url).catch ( err => {
     console.error ( 'Failed to load URL:', err );
   });
+
+  // // Set the CSP through HTTP headers (if using a server to serve your files)
+  // mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+  //     callback({
+  //         responseHeaders: Object.assign({
+  //             'Content-Security-Policy': ["default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none';"]
+  //         }, details.responseHeaders)
+  //     });
+  // });
 
   mainWindow.webContents.on ( 'did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     console.error ( `Failed to load ${validatedURL}: ${errorDescription} (${errorCode})` );
@@ -59,6 +70,52 @@ function createWindow ( url ) {
       action: 'deny',
       overrideBrowserWindowOptions: secondaryWindow
     };
+  });
+
+
+  const ses = session.defaultSession;
+
+  ses.on('will-download', async (event, item) => {
+    const defaultPath = path.join(app.getPath('downloads'), item.getFilename());
+
+    const filePath = dialog.showSaveDialogSync ( mainWindow, {
+      title      : 'Save File',
+      defaultPath: defaultPath,
+      buttonLabel: 'Save'
+    });
+
+    if (filePath) {
+
+      item.setSavePath(filePath);
+
+      item.on('updated', (event, state) => {
+        if (state === 'progressing') {
+          if (item.isPaused()) {
+            console.log('Download is paused');
+          } else {
+            const progress = item.getReceivedBytes() / item.getTotalBytes();
+            mainWindow.webContents.send('download-progress', progress);
+          }
+        }
+      });
+
+      item.on('done', (event, state) => {
+        if (state === 'completed') {
+          // console.log('Download successfully');
+          mainWindow.webContents.send('download-complete', filePath);
+        } else {
+          console.log(`Download failed: ${state}`);
+          mainWindow.webContents.send('download-failed');
+        }
+      });
+      
+      // item.resume();
+      
+    } else {
+      item.cancel();
+      mainWindow.webContents.send('download-cancelled');
+    }
+
   });
 
   // Open the DevTools (optional)
@@ -108,6 +165,24 @@ function createWindow ( url ) {
             mainWindow.loadURL(url).catch ( err => {
               console.error ( 'Failed to load URL:', err );
             });
+          }
+        }
+      ]
+    }, {
+      label: 'Navigation',
+      submenu: [
+        {
+          label: 'Back',
+          accelerator: 'CmdOrCtrl+<',
+          click: () => {
+            mainWindow.webContents.send('navigate-back');
+          }
+        },
+        {
+          label: 'Forward',
+          accelerator: 'CmdOrCtrl+>',
+          click: () => {
+            mainWindow.webContents.send('navigate-forward');
           }
         }
       ]
@@ -224,8 +299,8 @@ function createSecondaryWindow ( url,features ) {
 function showCustomAboutDialog() {
   // Using Electron's dialog module for a simple custom About dialog
   dialog.showMessageBox({
-    type: 'info',
-    title: 'About CCP4 Cloud Local',
+    type   : 'info',
+    title  : 'About CCP4 Cloud Local',
     message: 'CCP4 Cloud Local\n\nv. ' + ccp4cloud_version +
              '\n\nElectron-based application for running\n' + 
              'CCP4 Cloud locally on your machine.',
@@ -253,7 +328,7 @@ function sendStopSignal ( url )  {
     console.log(data); // Handle the data from the response
   })
   .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
+    console.error ( 'There was a problem with the stop operation:', error );
   });
 }
 
@@ -302,9 +377,8 @@ app.on ( 'window-all-closed', () => {
 });
 
 app.on ( 'activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
+  if (BrowserWindow.getAllWindows().length === 0)
     createWindow();
-  }
 });
 
 // IPC listener
@@ -315,3 +389,8 @@ ipcMain.on('message-from-app', (event, arg) => {
   } else if (arg.startsWith('version:'))
     ccp4cloud_version = arg.slice('version:'.length);
 });
+
+ipcMain.on ( 'start-download', (event, url) => {
+  mainWindow.webContents.downloadURL ( url );
+});
+

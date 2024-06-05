@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -60,10 +62,8 @@ function TaskCloudImport()  {
 }
 
 if (__template)
-      TaskCloudImport.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCloudImport.prototype = Object.create ( TaskTemplate.prototype );
-TaskCloudImport.prototype.constructor = TaskCloudImport;
-
+  __cmd.registerClass ( 'TaskCloudImport',TaskCloudImport,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCloudImport',TaskCloudImport,TaskTemplate.prototype );
 
 // ===========================================================================
 

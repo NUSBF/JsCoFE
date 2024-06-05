@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -1190,12 +1193,9 @@ function TaskAimless()  {
 
 }
 
-
 if (__template)
-      TaskAimless.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAimless.prototype = Object.create ( TaskTemplate.prototype );
-TaskAimless.prototype.constructor = TaskAimless;
-
+  __cmd.registerClass ( 'TaskAimless',TaskAimless,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAimless',TaskAimless,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

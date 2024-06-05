@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -391,9 +391,10 @@ function ProjectPage ( sceneId )  {
 
 }
 
-ProjectPage.prototype = Object.create ( BasePage.prototype );
-ProjectPage.prototype.constructor = ProjectPage;
+// ProjectPage.prototype = Object.create ( BasePage.prototype );
+// ProjectPage.prototype.constructor = ProjectPage;
 
+registerClass ( 'ProjectPage',ProjectPage,BasePage.prototype );
 
 // --------------------------------------------------------------------------
 
@@ -1483,7 +1484,8 @@ ProjectPage.prototype.makeDock = function()  {
 
     function(taskType,title,icon_uri){  // left click: add task to tree
       if (!$(self.add_btn.element).button('option','disabled'))  {
-        let task = eval ( 'new ' + taskType + '()' );
+        // let task = eval ( 'new ' + taskType + '()' );
+        let task = makeNewInstance ( taskType );
         self.addTaskToSelected ( task,icon_uri,title );
       }
     },

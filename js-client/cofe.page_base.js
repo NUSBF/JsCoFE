@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.05.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -651,6 +651,8 @@ BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();
 }
 
+registerClass ( 'BasePage',BasePage,null );
+
 
 var __history_count = 0;
 
@@ -710,6 +712,7 @@ function makePage ( new_page_func,onCreate_func=null )  {
 
 
 function setHistoryListener ( sceneId )  {
+
   $(window).on('popstate', function(event) {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
@@ -735,4 +738,14 @@ function setHistoryListener ( sceneId )  {
     } else
       window.history.back();
   });
+
+  if (isElectronAPI())  {
+    window.electronAPI.onNavigateBack(() => {
+      window.history.back();
+    });
+    window.electronAPI.onNavigateForward(() => {
+      window.history.forward();
+    });
+  }
+
 }

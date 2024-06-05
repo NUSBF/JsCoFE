@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *  **** Content :  Convert XYZ-to-Revision Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -25,9 +25,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.dimple' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -85,12 +88,9 @@ function TaskXyz2Revision()  {
 
 }
 
-
 if (__template)
-      TaskXyz2Revision.prototype = Object.create ( __template.TaskDimple.prototype );
-else  TaskXyz2Revision.prototype = Object.create ( TaskDimple.prototype );
-TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
-
+  __cmd.registerClass ( 'TaskXyz2Revision',TaskXyz2Revision,__template.TaskDimple.prototype );
+else    registerClass ( 'TaskXyz2Revision',TaskXyz2Revision,TaskDimple.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.22   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;  // always null when running in browser
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -34,8 +37,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataSequence()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type   = 'DataSequence';
 
@@ -50,10 +53,14 @@ function DataSequence()  {
 
 }
 
-if (__template)
-      DataSequence.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataSequence.prototype = Object.create ( DataTemplate.prototype );
-DataSequence.prototype.constructor = DataSequence;
+// if (__template_d)
+//       DataSequence.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataSequence.prototype = Object.create ( DataTemplate.prototype );
+// DataSequence.prototype.constructor = DataSequence;
+
+if (__template_d)
+  __cmd.registerClass ( 'DataSequence',DataSequence,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataSequence',DataSequence,DataTemplate.prototype );
 
 
 // ===========================================================================
@@ -65,8 +72,8 @@ DataSequence.prototype.icon  = function()  { return 'data';                    }
 // constructors
 DataSequence.prototype.currentVersion = function()  {
   let version = 1;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -79,7 +86,7 @@ DataSequence.prototype.makeSample = function()  {
 
 // export such that it could be used in both node and a browser
 
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
 /*

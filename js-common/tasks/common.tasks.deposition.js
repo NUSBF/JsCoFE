@@ -4,7 +4,7 @@
  *
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -24,9 +24,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -44,7 +47,6 @@ function TaskDeposition()  {
   this.name    = 'prepare data for PDB deposition';
   this.setOName ( 'deposition' );  // default output file name template
   this.title   = 'Prepare data for PDB deposition';
-  //this.helpURL = './html/jscofe_task_deposition.html';
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
@@ -136,12 +138,9 @@ function TaskDeposition()  {
 
 }
 
-
 if (__template)
-      TaskDeposition.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDeposition.prototype = Object.create ( TaskTemplate.prototype );
-TaskDeposition.prototype.constructor = TaskDeposition;
-
+  __cmd.registerClass ( 'TaskDeposition',TaskDeposition,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDeposition',TaskDeposition,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

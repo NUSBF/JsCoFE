@@ -278,8 +278,10 @@ function LoginPage ( sceneId )  {
 
 }
 
-LoginPage.prototype = Object.create ( BasePage.prototype );
-LoginPage.prototype.constructor = LoginPage;
+// LoginPage.prototype = Object.create ( BasePage.prototype );
+// LoginPage.prototype.constructor = LoginPage;
+
+registerClass ( 'LoginPage',LoginPage,BasePage.prototype );
 
 function makeLoginPage ( sceneId )  {
   makePage ( function(){ 

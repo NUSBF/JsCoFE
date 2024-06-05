@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -543,7 +543,8 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
       $('#' + add_btn_id ).button('disable');
       inputPanel = null;
     } else  {
-      stask = eval ( 'new ' + value + '()' );
+      // stask = eval ( 'new ' + value + '()' );
+      stask = makeNewInstance ( value );
       stask.makeSample();
       dlg_icon.setImage  ( image_path(stask.icon()) );
       panel_head.setText ( 'Choose task parameters and click "Add to workflow" ' +
