@@ -34,12 +34,14 @@ function DownloadProgressDialog()  {
   this.setText ( '','export' );
 
   this.title_lbl   = this.grid.setLabel ( '<h2>Downloading ...</h2>',0,2,2,3 );
-  this.message_lbl = this.grid.setLabel ( 
-                        '<i style="font-size:90%">in progress, please wait ...</i>',
-                        2,2,1,3 );
   this.progressBar = new ProgressBar ( 0 );
-  this.grid.setWidget ( this.progressBar, 3,2,1,3 );
+  this.grid.setWidget ( this.progressBar, 2,2,1,3 );
   this.progressBar.setWidth_px  ( 400 );
+  this.message_lbl = this.grid.setLabel ( 
+      '<i style="font-size:90%;width:400px;">in progress, please wait ...</i>',
+      3,2,1,3 );
+  this.grid.setHorizontalAlignment ( 3,2,"right" );
+
   // this.progressBar.setHeight_px ( 16  );
   $(this.element).dialog({
     resizable : false,
