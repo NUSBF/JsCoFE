@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.24   <--  Date of Last Modification.
+ *    07.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -310,9 +310,10 @@ let iwidth    = '26px';
 
   if (__local_setup)  {
     icon_path = image_path ( 'ccp4cloud_desktop'  );
-    if (__local_user)
-          tooltip += ' is in <b>desktop</b> mode:</i>';
-    else  tooltip += ' is in <b>local</b> mode:</i>';
+    // if (__local_user)
+    //       tooltip += ' is in <b>desktop</b> mode:</i>';
+    // else  tooltip += ' is in <b>local</b> mode:</i>';
+    tooltip += ' is in <b>local</b> mode:</i>';
     tooltip += ul_style + '<li>projects and data are stored on your system</li>';
     if (__local_service)
           tooltip += '<li>computation done on your computer</li>';
