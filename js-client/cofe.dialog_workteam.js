@@ -142,7 +142,7 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
         if (self.archived)
           info += '&nbsp;<span style="font-size:80%">(cannot be managed for archived projects)</span>';
         else if (__local_user)
-          info += '&nbsp;<span style="font-size:80%">(cannot be managed in Desktop Mode)</span>';
+          info += '&nbsp;<span style="font-size:80%">(cannot be managed in Local Mode)</span>';
         else if (self.joined)
           info += '&nbsp;<span style="font-size:80%">(can be managed only by Owner)</span>';
         info += '</td></tr>';
