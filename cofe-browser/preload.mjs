@@ -1,4 +1,24 @@
 
+/*
+ *  ===========================================================================
+ *
+ *    08.06.24   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  ---------------------------------------------------------------------------
+ *
+ *  **** Module  :  cofe-browser/preload.mjs
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Preload module for Electron-based browser
+ *       ~~~~~~~~~  
+ *
+ *  (C) E. Krissinel, A. Lebedev 2024
+ *
+ *  ===========================================================================
+ *
+ */
+
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
