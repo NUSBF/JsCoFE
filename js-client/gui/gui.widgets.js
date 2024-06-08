@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    06.04.24   <--  Date of Last Modification.
+ *    08.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1020,7 +1020,8 @@ function InputText(text) {
 InputText.prototype = Object.create(Widget.prototype);
 InputText.prototype.constructor = InputText;
 
-InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
+InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip,
+                                          autocomplete=null ) {
   if (placeholder) this.element.setAttribute('placeholder', placeholder);
   if (tooltip) this.setTooltip(tooltip);
   if (type) this.element.setAttribute('type', type);
@@ -1034,6 +1035,7 @@ InputText.prototype.setStyle = function (type, pattern, placeholder, tooltip) {
       //this.element.pattern = pattern;
       this.element.setAttribute('pattern', pattern);
   }
+  if (autocomplete) this.element.setAttribute ( 'autocomplete',autocomplete );
   return this;
 }
 
