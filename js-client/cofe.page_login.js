@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.03.24   <--  Date of Last Modification.
+ *    08.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,7 +109,7 @@ function LoginPage ( sceneId )  {
   */
   login_inp.setFontItalic       ( true   );
   pwd_inp  .setFontSize         ( '112%' );
-  pwd_inp  .setStyle            ( 'password','','Your CCP4 password','' );
+  pwd_inp  .setStyle            ( 'password','','Your ' + appName + ' password','' );
   pwd_inp  .setFontItalic       ( true   );
   login_inp.setWidth            ( '95%'  );
   pwd_inp  .setWidth            ( '95%'  );
