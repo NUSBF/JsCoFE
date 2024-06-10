@@ -107,6 +107,9 @@ while read CONF; do
     source $CONF
 done < <(find "$WORK_DIR/start.d" -type f -name "*.sh")
 
+# if $CCP4_DIR is a symlink, resolve it
+CCP4_DIR="$(readlink -f "$CCP4_DIR")"
+
 # check CCP4_DIR is set and source the ccp4.setup-sh
 if [[ -n "$CCP4_DIR" && -f "$CCP4_DIR/bin/ccp4.setup-sh" ]]; then
     source "$CCP4_DIR/bin/ccp4.setup-sh"
