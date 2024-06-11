@@ -76,7 +76,7 @@ function TaskStructurePrediction()  {   // must start with Task...
             //       }
             NSTRUCTS : { type     : 'integer',
                          keyword  : 'NSTRUCTS',
-                         label    : 'Number of structures',
+                         label    : 'Number of predictions',
                          tooltip  : 'Maximum number of structures to produce. Single ' +
                                     'structure is sufficient in most cases. Producing ' +
                                     'additional structures will increase wait times. ' +

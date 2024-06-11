@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.24   <--  Date of Last Modification.
+#    11.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,8 +67,8 @@ class Slice(basic.TaskDriver):
             cmd += ['--bfactor_column', 'plddt']
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['--bfactor_column', 'rms']
-        # else:
-        #     cmd += ['-xyz_source', 'alphafold_bfactor']
+        elif xyz.BF_correction=="alphafold":
+           cmd += ['--bfactor_column', 'predicted_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["--plddt_threshold",plddt_threshold]
