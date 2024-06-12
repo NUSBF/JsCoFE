@@ -326,7 +326,7 @@ function showCustomAboutDialog() {
   // Using Electron's dialog module for a simple custom About dialog
   dialog.showMessageBox({
     type   : 'info',
-    title  : 'About CCP4 Cloud Local',
+    title  : 'About CoFE-Browser',
     message: 'CoFE Browser\n\nv. ' + ccp4cloud_version +
              '\n\nElectron-based application for running\n' + 
              'CCP4 Cloud locally on your machine.',
