@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.12.22   <--  Date of Last Modification.
+ *    06.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -31,10 +31,10 @@ function ImportProjectDialog ( onSuccess_func )  {
 
   InputBox.call ( this,'Import Project' );
   this.setText ( '','import' );
-  var grid = this.grid;
+  let grid = this.grid;
   grid.setLabel ( '<h2>Import Project</h2>',0,2,2,3 );
 
-  var msgLabel = new Label ( '<div style="width:420px">Use "<i>Select ...</i>" ' +
+  let msgLabel = new Label ( '<div style="width:420px">Use "<i>Select ...</i>" ' +
                              'button to select file <i>(*' + projectFileExt +
                              ')</i> with previously exported ' + appName() + 
                              ' project. ' +
@@ -44,11 +44,11 @@ function ImportProjectDialog ( onSuccess_func )  {
                              '</i></b>.</p></div>' );
   grid.setWidget ( msgLabel, 2,2,1,3 );
 
-  var customData = {};
+  let customData = {};
   //  customData.login_token = __login_token.getValue();
   customData.login_token = __login_token;
 
-  var upload = new Upload ( customData,{
+  let upload = new Upload ( customData,{
       'type'   : 'project',
       'accept' : projectFileExt,
       'gzip'   : false
@@ -58,7 +58,7 @@ function ImportProjectDialog ( onSuccess_func )  {
 
       upload.hide();
       msgLabel.setText ( 'The project is being imported, please wait ... ' );
-      var progressBar = new ProgressBar ( 0 );
+      let progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 4,2,1,3 );
 
       upload.__keep_polling = true;
@@ -73,40 +73,50 @@ function ImportProjectDialog ( onSuccess_func )  {
             progressBar.hide();
             $( "#cancel_btn" ).button ( "option","label","Close" );
             if (data.signal=='Success')  {
-              let pnames = data.name.split(' ');
+              let pnames    = data.name.split(' ');
+              let vers_text = '';
+              if ('ccp4cloud_version' in data)  {
+                let v0 = appVersion().split(' ')[0];
+                let v1 = data.ccp4cloud_version.split(' ')[0];
+                if (v0<v1)
+                  vers_text = '<p><b>Note:</b> The project was made with a newer '   +
+                              'version (1.7.020) of ' + appName() + ' than what '    +
+                              'you have (1.7.019). If you cannot access it, update ' +
+                              'your CCP4 to the latest version.';
+              }
+              let msg_text = '<div style="width:450px;">Project "<i>';
+              if (pnames.length<2)  msg_text += pnames[0];
+                              else  msg_text += pnames[1];
+              msg_text += '</i>" is imported';
               if (__current_folder.type==folder_type.all_projects)  {
                 if (pnames.length<2)  {
-                  msgLabel.setText (
-                    'Project "<i>' + data.name + '</i>" is imported,<br>' +
-                    'you may close this dialog now.' );
+                  msg_text += '. ' + vers_text + 'You may close this dialog now.';
                 } else  {
-                  msgLabel.setText (
-                    '<div style="width:450px;">Project "<i>'        + pnames[1] + 
-                    '</i>" is imported, but it was renamed to "<i>' + pnames[0] + 
+                  msg_text += ', but it was renamed to "<i>' + pnames[0] + 
                     '</i>" because another project with same name exists in ' +
                     'your account. You can rename either project to your liking.' +
-                    '<p>You may close this dialog now.</p></div>' );
+                    vers_text + 
+                    '<p>You may close this dialog now.</p>';
                 }
               } else  {
                 if (pnames.length<2)  {
-                  msgLabel.setText (
-                    'Project "<i>' + data.name + '</i>" is imported.' +
-                    '<p><b>Note that you are now in the original project\'s '+
-                    'folder.<br>To navigate back to your folder(s), click on the ' +
-                    '<br>page title or use Main Menu.</b>' +
-                    '<p>You may close this dialog now.' );
+                  msg_text += '.' + vers_text + 
+                    '<p><b>Note that you are now in the original ' +
+                    'project\'s folder. To navigate back to your folder(s), ' +
+                    'click on the page title or use Main Menu.</b>' +
+                    '<p>You may close this dialog now.';
                 } else  {
-                  msgLabel.setText (
-                    '<div style="width:450px;">Project "<i>'        + pnames[1] + 
-                    '</i>" is imported, but it was renamed to "<i>' + pnames[0] + 
+                  msg_text += ', but it was renamed to "<i>' + pnames[0] + 
                     '</i>" because another project with same name exists in ' +
                     'your account. You can rename either project to your liking.' +
+                    vers_text +
                     '<p><b>Note that you are now in the original project\'s '+
                     'folder.<br>To navigate back to your folder(s), click on the ' +
                     '<br>page title or use Main Menu.</b>' +
-                    '<p>You may close this dialog now.</div>' );
+                    '<p>You may close this dialog now.';
                 }
               }
+              msgLabel.setText ( msg_text + '</div>' );
               if (onSuccess_func)
                 onSuccess_func();
             } else

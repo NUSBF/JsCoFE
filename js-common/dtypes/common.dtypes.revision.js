@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -21,14 +21,17 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
-// var revision_subtype = {
+// const revision_subtype = {
 //   asu          : 'asu',
 //   hkl          : 'hkl',
 //   seq          : 'seq',
@@ -46,8 +49,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataRevision()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type          = 'DataRevision';
   this.leadKey        = 0;      // data lead key: 0: undefined, 1: coordinates, 2: phases
@@ -82,11 +85,14 @@ function DataRevision()  {
 
 }
 
-if (__template)
-      DataRevision.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataRevision.prototype = Object.create ( DataTemplate.prototype );
-DataRevision.prototype.constructor = DataRevision;
+// if (__template_d)
+//       DataRevision.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataRevision.prototype = Object.create ( DataTemplate.prototype );
+// DataRevision.prototype.constructor = DataRevision;
 
+if (__template_d)
+  __cmd.registerClass ( 'DataRevision',DataRevision,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataRevision',DataRevision,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -96,9 +102,9 @@ DataRevision.prototype.icon  = function()  { return 'data_xrayimages';    }
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 5;  // advanced on Substructure inclusion
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  let version = 5;  // advanced on Substructure inclusion
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -122,13 +128,13 @@ DataRevision.prototype.makeSample = function()  {
 
 // export such that it could be used in both node and a browser
 
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
 
   DataRevision.prototype.extend = function() {
 
-    var revext = $.extend ( true,{},this );
+    let revext = $.extend ( true,{},this );
 
     if (this.HKL)
       revext.HKL = this.HKL.extend();
@@ -152,7 +158,7 @@ if (!__template)  {
 
   DataRevision.prototype.makeASUSummaryPage = function ( task )  {
 
-    var dsp = new DataSummaryPage ( this );
+    let dsp = new DataSummaryPage ( this );
 
     if (('jobNo' in this.ASU) && (this.ASU.jobNo>0))  {
       dsp.trow = 0;
@@ -165,7 +171,7 @@ if (!__template)  {
     dsp.makeRow ( 'Matthews coefficient',round(this.ASU.matthews,2).toString(),'Matthews coefficient' );
     dsp.makeRow ( 'P<sub>matthews</sub>',round(this.ASU.prob_matth,2).toString(),'Matthews probability' );
 
-    var n = this.ASU.seq.length + 1;
+    let n = this.ASU.seq.length + 1;
     dsp.table.setHeaderText ( 'Contents',dsp.trow,0, n,1 );
     dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
     dsp.table.setHeaderText ( '##'                ,dsp.trow,1, 1,1 );
@@ -177,8 +183,8 @@ if (!__template)  {
     dsp.table.setCellSize   ( '90%',''            ,dsp.trow,6 );
     dsp.trow++;
 
-    for (var i=0;i<this.ASU.seq.length;i++)  {
-      var seqi = this.ASU.seq[i];
+    for (let i=0;i<this.ASU.seq.length;i++)  {
+      let seqi = this.ASU.seq[i];
       dsp.table.setLabel ( (i+1).toString()       ,dsp.trow,0, 1,1 ).setNoWrap();
       dsp.table.setLabel ( seqi.dname             ,dsp.trow,1, 1,1 ).setNoWrap();
       dsp.table.setLabel ( seqi.ncopies.toString(),dsp.trow,2, 1,1 );
@@ -1159,7 +1165,7 @@ if (!__template)  {
         hints += ' Make sure to use revision with reflection dataset having ' +
                  'anomalous signal.';
       hints += ' See full description <a href="javascript:' +
-                      'launchHelpBox(\'Structure Revision\',' +
+                      'launchHelpBox1(\'Structure Revision\',' +
                                     '\'' + __user_guide_base_url +
                                       '/jscofe_qna.structure_revision.html\',' +
                                     'null,10)"><i>' +

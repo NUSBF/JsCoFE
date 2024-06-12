@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    13.02.24   <--  Date of Last Modification.
+//    11.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -17,8 +17,11 @@
 //  ==========================================================================
 //
 
+'use strict';
+
+
 var _jsrview_uri = "";
-//var __base_url = 'xxJsCoFExx/' + __login_token + '/rnase/1/';
+//let __base_url = 'xxJsCoFExx/' + __login_token + '/rnase/1/';
 
 var __rvapi_local_service = is_rvapi_local_service();
 
@@ -27,7 +30,7 @@ function is_rvapi_local_service()  {
       (window.location.search=='?local_service'))  return 1;
   return 0;
   /*
-  var found = 0;
+  let found = 0;
   try {
     if ('__rvapi_local_service' in window.parent)
       found = 1;
@@ -48,7 +51,7 @@ function is_rvapi_local_service()  {
 
 /*
 function makeUglyMolHtml ( xyz_uri,mtz_uri,map_uri,diffmap_uri )  {
-var html =
+let html =
     '<!doctype html>\n' +
     '<html lang="en">\n' +
     '<base target="_parent">\n' +
@@ -80,7 +83,7 @@ var html =
 
 //alert ( "xyz_uri='" + xyz_uri + "'\n map_uri='"+ map_uri + "'\n diffmap_uri='" + diffmap_uri + "'" );
 
-  var wasm = '';
+  let wasm = '';
   if ((map_uri.length>0) && (diffmap_uri.length>0))
     html += '    V.load_ccp4_maps("' + map_uri + '","' + diffmap_uri + '");\n';
   else if (map_uri.length>0)
@@ -88,7 +91,7 @@ var html =
   else if (diffmap_uri.length>0)
     html += '    V.load_map("' + diffmap_uri + '",{diff_map: true, format: "ccp4"});\n';
   else if (mtz_uri.length>0)  {
-    html += '    var Module = {\n' +
+    html += '    let Module = {\n' +
             '      onRuntimeInitialized: function() {\n' +
             '        UM.load_maps_from_mtz(V, "' + mtz_uri + '");\n' +
             '      }\n' +
@@ -220,14 +223,14 @@ let html =
 
 
 function calcViewerSize ( widthF,heightF )  {
-  //var jq = window.parent.$;
-  //var w  = jq(window.parent).width () - 40;
-  //var h  = jq(window.parent).height() - 64;
+  //let jq = window.parent.$;
+  //let w  = jq(window.parent).width () - 40;
+  //let h  = jq(window.parent).height() - 64;
 
-  var w0 = window.parent.innerWidth;
-  var h0 = window.parent.innerHeight;
-  var w  = w0 - 40;
-  var h  = h0 - 56;
+  let w0 = window.parent.innerWidth;
+  let h0 = window.parent.innerHeight;
+  let w  = w0 - 40;
+  let h  = h0 - 56;
 
   if (!window.parent.__any_mobile_device)  {
     h -= 8;
@@ -256,28 +259,53 @@ function _start_viewer ( title,html_str )  {
     return;
   }
 
-  var doc = window.parent.document;
-  var jq  = window.parent.$;
+  let doc = window.parent.document;
+  let jq  = window.parent.$;
 
   if (!jq)  {
     doc = window.document;
     jq  = window.$;
   }
 
-  var dialog = doc.createElement ( 'div' );
-  jq(dialog).css({
-    'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
-    'overflow'   : 'hidden'
-  });
+  let dark_mode = 
+    (
+     ('__active_color_mode' in window) && 
+     (window.__active_color_mode=='dark')
+    ) || (
+     ('__active_color_mode' in window.parent) && 
+     (window.parent.__active_color_mode=='dark')
+    );
+
+  let light_shadow = '8px 8px 16px 16px rgba(0,0,0,0.2)';
+  let dark_shadow  = 'none';
+
+  let dialog = doc.createElement ( 'div' );
+  jq(dialog).css({ 'overflow' : 'hidden' });
+  // if (!dark_mode)
+  //   jq(dialog).css({ 'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)' });
+
+  dialog.setAttribute ( 'light_shadow',light_shadow );
+  dialog.setAttribute ( 'dark_shadow' ,dark_shadow  );
+  if (dark_mode)
+    $(dialog).css ({ 'box-shadow':dark_shadow  });
+  else
+    $(dialog).css ({ 'box-shadow':light_shadow });
+  
+
+
+  // jq(dialog).css({
+  //   'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
+  //   'overflow'   : 'hidden'
+  // });
   doc.body.appendChild ( dialog );
 
-  var iframe = doc.createElement ( 'iframe' );
+  let iframe = doc.createElement ( 'iframe' );
   jq(iframe).css({
     'border'   : 'none',
     'overflow' : 'hidden'
   });
 
-  var size;
+  let size;
   if (window.parent.__any_mobile_device)
         size = calcViewerSize ( 1.0,1.0    );
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
@@ -290,7 +318,7 @@ function _start_viewer ( title,html_str )  {
   dialog.appendChild ( iframe );
   //dialog.style.fontSize = '16px';
 
-  var dialog_options = {
+  let dialog_options = {
     resizable  : true,
     height     : 'auto',
     width      : 'auto',
@@ -315,14 +343,14 @@ function _start_viewer ( title,html_str )  {
     dialog_options.modal     = true;
   }
 
-  var resize_func = function()  {
-    var w = jq(dialog).width ();
-    var h = jq(dialog).height();
+  let resize_func = function()  {
+    let w = jq(dialog).width ();
+    let h = jq(dialog).height();
     jq(iframe).width  ( w );
     jq(iframe).height ( h );
   }
 
-  var dlg = jq(dialog).dialog ( dialog_options );
+  let dlg = jq(dialog).dialog ( dialog_options );
 
   if ('extendToolbar_rvapi' in window)  {
     extendToolbar_rvapi ( dlg,{
@@ -341,7 +369,7 @@ function _start_viewer ( title,html_str )  {
   //if (window.parent.__mobile_device)
   //  dlg.siblings('.ui-dialog-titlebar').remove();
 
-  // var html = makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
+  // let html = makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
   //                              encode_uri(map_uri),encode_uri(diffmap_uri),
   //                              mapLabels );
   // let iframeDocument = iframe.contentWindow.document || iframe.contentDocument;
@@ -352,8 +380,8 @@ function _start_viewer ( title,html_str )  {
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
     resize_func();
-    // var w = jq(dialog).width ();
-    // var h = jq(dialog).height();
+    // let w = jq(dialog).width ();
+    // let h = jq(dialog).height();
     // jq(iframe).width  ( w );
     // jq(iframe).height ( h );
   });
@@ -389,7 +417,7 @@ function _startUglyMol ( data,mapLabels )  {
 //  data is a string made of title and 3 file uri:
 //  title>>>xyz_uri*map_uri*diffmap_uri
 
-  var base_url = window.location.pathname.substring ( 0,
+  let base_url = window.location.pathname.substring ( 0,
                                   window.location.pathname.lastIndexOf('/')+1 );
 
   function _make_path ( path )  {
@@ -401,14 +429,14 @@ function _startUglyMol ( data,mapLabels )  {
     return normalize_path ( base_url+path );
   }
 
-  var title     = '';
-  var xyz_path  = '';
-  var mtz_path  = '';
-  var map_path  = '';
-  var dmap_path = '';
+  let title     = '';
+  let xyz_path  = '';
+  let mtz_path  = '';
+  let map_path  = '';
+  let dmap_path = '';
 
-  var tlist = data.split('>>>');
-  var dlist = [];
+  let tlist = data.split('>>>');
+  let dlist = [];
   if (tlist.length<=1)  {
     dlist = data.split('*');
     if (dlist.length>0)  {
@@ -468,7 +496,7 @@ function _startUglyMol ( data,mapLabels )  {
 
 
 function makeViewHKLHtml ( title,mtz_uri )  {
-var html   =
+let html   =
     '<!DOCTYPE html>\n' +
     '<html>\n' +
     '  <head>\n' +
@@ -504,7 +532,7 @@ var html   =
     '          $(function() {\n' +
     '            $( document ).tooltip();\n' +
     '          });\n' +
-    '          var viewhkl = new ViewHKL ( "scene",true );\n' +
+    '          let viewhkl = new ViewHKL ( "scene",true );\n' +
     '          viewhkl.Load ( "' + mtz_uri + '" );\n' +
     '        });\n' +
     '      </script>\n' +
@@ -520,24 +548,24 @@ var html   =
 function startViewHKL ( title,mtz_uri,window_instance )  {
 
   // take structure file basename as title
-  var dlg_title = title;
+  let dlg_title = title;
   if (!dlg_title)
     dlg_title = mtz_uri.split(/[\\/]/).pop();
 
-  //var doc = window.parent.document;
-  //var jq  = window.parent.$;
-  //var doc = window_instance.document;
-  //var jq  = window_instance.$;
+  //let doc = window.parent.document;
+  //let jq  = window.parent.$;
+  //let doc = window_instance.document;
+  //let jq  = window_instance.$;
 
-  var doc = window.parent.document;
-  var jq  = window.parent.$;
+  let doc = window.parent.document;
+  let jq  = window.parent.$;
 
   if (!jq)  {
     doc = window.document;
     jq  = window.$;
   }
 
-  var dialog = doc.createElement ( 'div' );
+  let dialog = doc.createElement ( 'div' );
   $(dialog).css({
     'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
     'overflow'   : 'hidden'
@@ -545,13 +573,13 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
   doc.body.appendChild ( dialog );
   //doc.body.style.fontSize = '16px';
 
-  var iframe = doc.createElement ( 'iframe' );
+  let iframe = doc.createElement ( 'iframe' );
   jq(iframe).css ({
     'border'   : 'none',
     'overflow' : 'hidden'
   });
 
-  var size;
+  let size;
   if (window.parent.__any_mobile_device)
         size = calcViewerSize ( 1.0,1.0    );
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
@@ -579,13 +607,13 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
       buttons: {}
   });
 
-  var html = makeViewHKLHtml ( dlg_title,mtz_uri );
+  let html = makeViewHKLHtml ( dlg_title,mtz_uri );
   iframe.contentWindow.document.write(html);
   iframe.contentWindow.document.close();
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
-    var w = jq(dialog).width ();
-    var h = jq(dialog).height();
+    let w = jq(dialog).width ();
+    let h = jq(dialog).height();
     jq(iframe).width  ( w );
     jq(iframe).height ( h );
   });
@@ -607,7 +635,7 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
 
 function startViewHKL ( title,mtz_uri,window_instance )  {
   // take structure file basename as title
-  var dlg_title = title;
+  let dlg_title = title;
   if (!dlg_title)
     dlg_title = mtz_uri.split(/[\\/]/).pop();
   _start_viewer ( title,makeViewHKLHtml(dlg_title,mtz_uri) );
@@ -620,7 +648,7 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
 
 
 function makeRSViewerHtml ( json_uri,map_uri )  {
-var html   =
+let html   =
   '<!doctype html>\n' +
   '<html lang="en">\n' +
   '<head>\n' +
@@ -643,7 +671,7 @@ var html   =
   '    V = new UM.ReciprocalViewer({viewer: "viewer", hud: "hud", help: "help"});\n' +
   '    V.load_data ( "' + json_uri + '",{\n' +
   '      callback : function(){\n' +
-  '        var oReq = new XMLHttpRequest();\n' +
+  '        let oReq = new XMLHttpRequest();\n' +
   '        oReq.open ( "POST", "' + map_uri + '", true );\n' +
   '        oReq.responseType = "arraybuffer";\n' +
   '        oReq.timeout      = 9999999;\n' +
@@ -654,7 +682,7 @@ var html   =
   '                                        oReq.response !== null &&\n' +
   '                                        oReq.response !== "")) {\n' +
   '              try {\n' +
-  '                var arrayBuffer = oReq.response;\n' +
+  '                let arrayBuffer = oReq.response;\n' +
   '                if (arrayBuffer) {\n' +
   '                  V.load_map_from_ab ( arrayBuffer )\n' +
   '                } else {\n' +
@@ -691,22 +719,22 @@ function startRSViewer ( title,json_uri,map_uri )  {
     return;
   }
 
-  var doc = window.parent.document;
-  var jq  = window.parent.$;
+  let doc = window.parent.document;
+  let jq  = window.parent.$;
 
-  var dialog = doc.createElement ( 'div' );
+  let dialog = doc.createElement ( 'div' );
   jq(dialog).css({'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
                   'overflow'   : 'hidden'
   });
   doc.body.appendChild ( dialog );
   //doc.body.style.fontSize = '16px';
 
-  var iframe = doc.createElement ( 'iframe' );
+  let iframe = doc.createElement ( 'iframe' );
   jq(iframe).css ( {'border'   : 'none',
                     'overflow' : 'hidden'
   });
 
-  var size;
+  let size;
   if (window.parent.__any_mobile_device)
         size = calcViewerSize ( 1.0,1.0    );
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
@@ -719,14 +747,14 @@ function startRSViewer ( title,json_uri,map_uri )  {
   dialog.appendChild ( iframe );
   //dialog.style.fontSize = '16px';
 
-  var resize_func = function()  {
-    var w = jq(dialog).width ();
-    var h = jq(dialog).height();
+  let resize_func = function()  {
+    let w = jq(dialog).width ();
+    let h = jq(dialog).height();
     jq(iframe).width  ( w );
     jq(iframe).height ( h );
   }
 
-  var dlg = jq(dialog).dialog({
+  let dlg = jq(dialog).dialog({
       resizable  : true,
       height     : 'auto',
       width      : 'auto',
@@ -747,14 +775,14 @@ function startRSViewer ( title,json_uri,map_uri )  {
     "restore"  : function(evt,d){ resize_func(); }
   });
 
-  var html = makeRSViewerHtml ( json_uri,map_uri );
+  let html = makeRSViewerHtml ( json_uri,map_uri );
   iframe.contentWindow.document.write(html);
   iframe.contentWindow.document.close();
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
     resize_func();
-    // var w = jq(dialog).width ();
-    // var h = jq(dialog).height();
+    // let w = jq(dialog).width ();
+    // let h = jq(dialog).height();
     // jq(iframe).width  ( w );
     // jq(iframe).height ( h );
   });

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -70,6 +70,7 @@ var __current_folder  = {
   folders   : []
 };
 var __local_setup     = false;
+var __title_page      = true;   // whether to show title page in local/desktop mode
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
 var __cloud_storage   = false;  // true if user has cloud storage allocated
@@ -98,6 +99,9 @@ var __any_mobile_device = __mobile_device || __iOS_device;
 
 const __regexp_login  = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
 const __regexp_uname  = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+
+// variable gets raised in jscofe-browser after loading the page
+// alert ( ' isQt=' + isQtWebEngine() );
 
 /*  ==================== unfinished userAgentData version -- for future
 
@@ -132,6 +136,21 @@ function isSafari()  {
           navigator.userAgent.indexOf('FxiOS') == -1;
 }
 
+function isQtWebEngine() {
+  return /QtWebEngine/i.test(navigator.userAgent) ||
+          typeof navigator.qt !== "undefined";
+          // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
+}
+
+function isElectronAPI()  {
+  return ('electronAPI' in window);
+}
+
+function sendMessageToElectron ( message )  {
+  if ('electronAPI' in window)
+    window.electronAPI.sendMessage ( 'message-from-app',message );
+}
+
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   //     (navigator.userAgent.indexOf('Safari')>=0) && (!__iOS_device))
@@ -145,13 +164,51 @@ function checkBrowser()  {
 }
 
 function isProtectedConnection()  {
-let fe_url = __fe_url.toLowerCase();
+  let fe_url = __fe_url.toLowerCase();
   return fe_url.startsWith('https://') ||
          fe_url.startsWith('http://localhost') ||
          (fe_url.indexOf('127.0.0.1') >= 0);
 }
 
 // ===========================================================================
+
+sendMessageToElectron ( 'version:' + appVersion() );
+
+if (isElectronAPI())  {
+
+  var downloadProgress = null;
+
+  // document.getElementById('download-button').addEventListener('click', () => {
+  //   const downloadUrl = 'https://example.com/file-to-download.zip';
+  //   window.electronAPI.startDownload(downloadUrl);
+  // });
+
+  window.electronAPI.onDownloadProgress ( (event,progress) => {
+    if (!downloadProgress)
+      downloadProgress = new DownloadProgressDialog();
+    if (isFloat(progress))
+      downloadProgress.setProgress ( 100*progress );
+  });
+
+  window.electronAPI.onDownloadComplete ( (event,savePath) => {
+    downloadProgress.setComplete ( savePath );
+    // alert(`Download Complete: ${savePath}`);
+    // downloadProgress.close();
+    downloadProgress = null;
+  });
+
+  window.electronAPI.onDownloadFailed(() => {
+    downloadProgress.setFailed();
+    downloadProgress = null;
+    // alert('Download Failed');
+  });
+
+  window.electronAPI.onDownloadCancelled(() => {
+    downloadProgress = null;
+    alert('Download Cancelled');
+  });
+
+}
 
 $(window).resize ( function(){
   if (__current_page)
@@ -161,7 +218,7 @@ $(window).resize ( function(){
 
 function report_problem ( subject,message,label )  {
 
-  var body = encodeURIComponent (
+  let body = encodeURIComponent (
     'CCP4 Cloud Report\n' +
     'Login ID   : ' + __login_id    + '\n' +
     'Login Name : ' + __login_user  + '\n' +
@@ -171,7 +228,7 @@ function report_problem ( subject,message,label )  {
     message
   );
 
-  var text = label;
+  let text = label;
   if (!text)
     text = appName() + ' maintainer';
 
@@ -197,7 +254,7 @@ function isFullScreen() {
 
 function setFullScreen() {
   if (!isFullScreen())  {
-    var docElm = document.documentElement;
+    let docElm = document.documentElement;
     if (docElm.requestFullscreen) {
       docElm.requestFullscreen();
     }
@@ -215,7 +272,7 @@ function setFullScreen() {
 
 
 function quitFullScreen() {
-  var ifs = isFullScreen();
+  let ifs = isFullScreen();
   if ((ifs!=-1) && ifs)  {
     if (document.exitFullscreen) {
       document.exitFullscreen();
@@ -280,6 +337,46 @@ function setDarkMode ( darkMode )  {
                ') brightness('  + color_mode.brightness + 
                ') grayscale('   + color_mode.grayscale  + ')'
   });
+
+  if (darkMode)  {
+    $( "[dark_shadow]" ).each ( function(){
+      this.style.boxShadow = this.getAttribute ( 'dark_shadow' );
+    });
+  } else  {
+    $( "[light_shadow]" ).each ( function(){
+      this.style.boxShadow = this.getAttribute ( 'light_shadow' );
+    });
+  }
+  $('iframe').each ( function(){
+    if (this.src)  {
+      let win = this.contentWindow || this.contentDocument;
+      win.postMessage ({
+        action : 'theme',
+        data   : __active_color_mode
+      },window.location.href );
+      // },this.src );
+    }
+  });
+
+  // let elementsWithBoxShadow = $('*:has([style*="box-shadow"])');
+  // if (darkMode)  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let dark_shadow = 'none';
+  //     if (this.hasAttribute('dark_shadow'))
+  //           dark_shadow = this.getAttribute ( 'dark_shadow' );
+  //     else  this.setAttribute ( 'dark_shadow',dark_shadow );
+  //     this.style.boxShadow = dark_shadow;
+  //   });
+  // } else  {
+  //   elementsWithBoxShadow.each(function(){
+  //     let light_shadow = this.style.boxShadow;
+  //     if (this.hasAttribute('light_shadow'))
+  //           light_shadow = this.getAttribute ( 'light_shadow' );
+  //     else  this.setAttribute ( 'light_shadow',light_shadow );
+  //     this.style.boxShadow = light_shadow;
+  //   });
+  // }
+
 
 }
 
@@ -357,10 +454,10 @@ var __suggested_task_prob  = 0.03;  // do not list tasks with combined probabili
                                     // less than 3%
 var __suggested_task_nmin  = 3;     // minimum 3 tasks to suggest
 
-var __task_reference_base_url = './manuals/html-taskref/';
-var __user_guide_base_url     = './manuals/html-userguide/';
-var __dev_reference_base_url  = './manuals/html-dev/';
-var __tutorials_base_url      = './manuals/html-tutorials/';
+const __task_reference_base_url = './manuals/html-taskref/';
+const __user_guide_base_url     = './manuals/html-userguide/';
+const __dev_reference_base_url  = './manuals/html-dev/';
+const __tutorials_base_url      = './manuals/html-tutorials/';
 
 //var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 
@@ -376,10 +473,12 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  var obj= eval('new '+value._type+'()');
-  //alert ( value._type );
+  // var obj= eval('new '+value._type+'()');
+  let obj= makeNewInstance ( value._type );
+  if (!obj)
+    alert ( ' unknown class? ' + value._type );
 
-  for (var property in value)
+  for (let property in value)
     obj[property]=value[property];
 
   return obj;

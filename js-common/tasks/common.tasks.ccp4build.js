@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskCCP4Build()  {
   this.name    = 'ccp4build';
   this.setOName ( 'ccp4build' );  // default output file name template
   this.title   = 'Automatic Model Building with CCP4Build';
-  //this.helpURL = './html/jscofe_task_ccp4build.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!seq','!phases','~mmcif_only']}, // data type(s) and subtype(s)
@@ -387,12 +388,9 @@ function TaskCCP4Build()  {
 
 }
 
-
 if (__template)
-      TaskCCP4Build.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCCP4Build.prototype = Object.create ( TaskTemplate.prototype );
-TaskCCP4Build.prototype.constructor = TaskCCP4Build;
-
+  __cmd.registerClass ( 'TaskCCP4Build',TaskCCP4Build,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCCP4Build',TaskCCP4Build,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -406,13 +404,13 @@ TaskCCP4Build.prototype.clipboard_name = function()  { return '"CCP4Build"';    
 
 TaskCCP4Build.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'automatic model building after MR or EP with a combination of several CCP4 programs';
+    return 'automatic model building of polypeptides with a combination of several CCP4 programs';
   };
 
 TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {
-  var version = 6;
+  let version = 6;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -453,7 +451,7 @@ if (!__template)  {
       input_msg += '|<b>' + label + ':</b> ' + message;
     }
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     if (this.parameters.sec1.contains.NCYCLES_MAX.value <
         this.parameters.sec1.contains.NCYCLES_MIN.value)
@@ -478,7 +476,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskCCP4Build.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -486,7 +484,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.Options.leading_structure=='substructure')

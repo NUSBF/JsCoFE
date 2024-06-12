@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    10.09.17   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,11 +12,12 @@
 //  **** Content :  RVAPI javascript layer's combobox module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2017
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function addComboboxGrid ( cbxId,name,options,onChange,size,
                            holderId,row,col,rowSpan,colSpan )  {
@@ -25,14 +26,14 @@ function addComboboxGrid ( cbxId,name,options,onChange,size,
   if (document.getElementById(cbxId))
     return;
 
-  var cell = getGridCell ( holderId,row,col );
+  let cell = getGridCell ( holderId,row,col );
 
   if (cell)  {
 
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
 
-    var select = document.getElementById(cbxId);
+    let select = document.getElementById(cbxId);
     if (select!=null)  {
       while(select.options.length>0)  {
         select.remove(0);
@@ -47,13 +48,13 @@ function addComboboxGrid ( cbxId,name,options,onChange,size,
     if (size>0)
       select.setAttribute ( "size",size );
 
-    var opts = options.split("====");
-    for (var i=0;i<opts.length;i++)  {
+    let opts = options.split("====");
+    for (let i=0;i<opts.length;i++)  {
       opts[i] = $.trim(opts[i]);
-      var opti = opts[i].split("+++");
-      for (var j=0;j<opti.length;j++)
+      let opti = opts[i].split("+++");
+      for (let j=0;j<opti.length;j++)
         opti[j] = $.trim(opti[j]);
-      var option = new Option ( opti[0],opti[1] );
+      let option = new Option ( opti[0],opti[1] );
       select.options.add ( option );
       if (opti[2]=="yes")
         select.selectedIndex = i;

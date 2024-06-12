@@ -242,8 +242,7 @@ def test_1RefmacBasic(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.08.22   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Model Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev 2020-2024
  *
  *  =================================================================
  *
@@ -21,14 +21,17 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.xyz' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.xyz' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
-var model_subtype = {
+const model_subtype = {
   sequnk : 'sequnk'
 }
 
@@ -38,8 +41,8 @@ var model_subtype = {
 
 function DataModel()  {
 
-  if (__template)  __template.DataXYZ.call ( this );
-             else  DataXYZ.call ( this );
+  if (__template_d)  __template_d.DataXYZ.call ( this );
+               else  DataXYZ.call ( this );
 
   this._type    = 'DataModel';
 
@@ -58,11 +61,14 @@ function DataModel()  {
 }
 
 
-if (__template)
-      DataModel.prototype = Object.create ( __template.DataXYZ.prototype );
-else  DataModel.prototype = Object.create ( DataXYZ.prototype );
-DataModel.prototype.constructor = DataModel;
+// if (__template_d)
+//       DataModel.prototype = Object.create ( __template_d.DataXYZ.prototype );
+// else  DataModel.prototype = Object.create ( DataXYZ.prototype );
+// DataModel.prototype.constructor = DataModel;
 
+if (__template_d)
+  __cmd.registerClass ( 'DataModel',DataModel,__template_d.DataXYZ.prototype );
+else    registerClass ( 'DataModel',DataModel,DataXYZ.prototype );
 
 // ===========================================================================
 
@@ -71,9 +77,9 @@ DataModel.prototype.title = function()  { return 'MR model'; }
 // when data class version is changed here, change it also in python
 // constructors
 DataModel.prototype.currentVersion = function()  {
-  var version = 1;
-  if (__template)
-        return  version + __template.DataXYZ.prototype.currentVersion.call ( this );
+  let version = 1;
+  if (__template_d)
+        return  version + __template_d.DataXYZ.prototype.currentVersion.call ( this );
   else  return  version + DataXYZ.prototype.currentVersion.call ( this );
 }
 
@@ -81,11 +87,11 @@ DataModel.prototype.icon = function()  { return 'data'; }
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataModel.prototype.extend = function() {
-    var ensext = $.extend ( true,{},this );
+    let ensext = $.extend ( true,{},this );
     if (this.sequence)
       ensext.sequence = this.sequence.extend();
     return ensext;
@@ -120,7 +126,7 @@ if (!__template)  {
       } else if (this.meta.seqId)  {
         dsp.table.setHeaderText ( 'Scores',dsp.trow,0,2,1 );
         dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
-        var col = 1;
+        let col = 1;
         if (this.meta.eLLG)  {
           dsp.table.setHeaderText ( 'eLLG',dsp.trow,col, 1,1 );
           dsp.table.setLabel ( this.meta.eLLG,dsp.trow+1,col-1, 1,1 );
@@ -143,8 +149,8 @@ if (!__template)  {
 
   DataModel.prototype.layCustomDropdownInput = function ( dropdown ) {
 
-    var customGrid = dropdown.customGrid;
-    var row = 0;
+    let customGrid = dropdown.customGrid;
+    let row = 0;
 
     function displaySequence ( seq_dname )  {
       customGrid.setLabel ( 'Sequence:',row,0,1,1 ).setFontItalic(true)
@@ -165,7 +171,7 @@ if (!__template)  {
         // customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
       }
       else  {
-        var nChains = this.getChainList().length;
+        let nChains = this.getChainList().length;
         if (nChains<2)  displaySequence ( 'not associated' );
                   else  displaySequence ( 'complex of ' + nChains + ' chains' );
       }
@@ -176,7 +182,7 @@ if (!__template)  {
       if (this.sequence)
         displaySequence ( this.sequence.dname );
       else  {
-        var nChains = this.getChainList().length;
+        let nChains = this.getChainList().length;
         if (nChains<2)  displaySequence ( 'not associated' );
                   else  displaySequence ( 'complex of ' + nChains + ' chains' );
       }
@@ -239,20 +245,20 @@ if (!__template)  {
 
   DataModel.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
 
 //    if (dropdown.layCustom.startsWith('phaser-mr'))  {
     if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       this.ncopies = parseInt ( customGrid.ncopies.getValue() );
       this.simtype = customGrid.simtype.getValue();
       if (this.simtype=='seqid')  {
-        var v = customGrid.seqid.getValue();
+        let v = customGrid.seqid.getValue();
         if (v && (!isNaN(v)))
               this.seqId = parseFloat ( v );
         else  msg += '|<b><i>Sequence Identity not given or poorly formatted</i></b>';
       } else if (this.simtype=='rmsd')  {
-        var v = customGrid.rmsd.getValue();
+        let v = customGrid.rmsd.getValue();
         if (v && (!isNaN(v)))
               this.rmsd = parseFloat ( v );
         else  msg += '|<b><i>RMS difference not given or poorly formatted</i></b>';
@@ -268,12 +274,12 @@ if (!__template)  {
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
   DataModel.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
-  var hints = [ 'MR model is missing. Use a suitable <i>"Model ' +
+  let hints = [ 'MR model is missing. Use a suitable <i>"Model ' +
                 'preparation"</i> task to create one.',
                 'Have you imported a PDB or mmCIF file with coordinates and ' +
                 'wonder why, instead, a <i>"Model"</i> data type is ' +
                 'required for a Molecular Replacement task? <a href="javascript:' +
-                    'launchHelpBox(\'XYZs, Models and Ensembles\',' +
+                    'launchHelpBox1(\'XYZs, Models and Ensembles\',' +
                                   '\'' + __user_guide_base_url +
                                     '/jscofe_qna.xyz_model_ensemble.html\',' +
                                   'null,10)"><i>' +

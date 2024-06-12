@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -278,12 +281,9 @@ function TaskPhaserEP()  {
 
 }
 
-
 if (__template)
-      TaskPhaserEP.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPhaserEP.prototype = Object.create ( TaskTemplate.prototype );
-TaskPhaserEP.prototype.constructor = TaskPhaserEP;
-
+  __cmd.registerClass ( 'TaskPhaserEP',TaskPhaserEP,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPhaserEP',TaskPhaserEP,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

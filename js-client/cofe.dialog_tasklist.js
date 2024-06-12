@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,10 +24,8 @@
 
 'use strict';
 
-
 // -------------------------------------------------------------------------
 // TaskListDialog class
-
 
 var __task_dialog_state = {
   sections : {},
@@ -527,7 +525,6 @@ let r = 0;  // grid row
   //grid.setLabel ( 'Switch to full set for more tasks',r++,0,1,3 )
   //    .setFontItalic(true).setFontSize('85%');
 
-
   grid.setLabel ( 'Essential Tasks',r++,0,1,4 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
@@ -544,48 +541,39 @@ let r = 0;  // grid row
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('20%');
 
   let task_list = [
-    "Refinement",
-    new TaskRefmac       (),
-    new TaskBuster       (),
-    new TaskLorestr      (),
-    new TaskDimple       (),
-    new TaskCombStructure(),
-    new TaskSheetbend    (),  
-    new TaskPhaserRB     (),
-    new TaskPDBREDO      (),
-    new TaskPaiRef       ()
-  ]
-
-  // if (!isSafari())
-  task_list.push ( new TaskWebCoot()   );
-  task_list.push ( new TaskWebCootCE() );
-
-  task_list = task_list.concat ([
-    new TaskLorestr(),
+    
+    "Refinement and Interactive Model Building",
+    new TaskRefmac        (),
+    new TaskCootMB        (),
+    new TaskWebCoot       (),
+    new TaskBuster        (),
+    new TaskLorestr       (),
+    new TaskDimple        (),
+    new TaskPhaserRB      (),
+    new TaskPDBREDO       (),
 
     "Ligands",
-    new TaskMakeLigand(),
-    new TaskFitLigand (),
-    new TaskFitWaters (),
+    new TaskMakeLigand    (),
+    new TaskFitLigand     (),
+    new TaskFitWaters     (),
 
     "Import Additional Data",
     new TaskImport        (),
     new TaskImportReplace (),
-  ]);
+    new TaskImportSeqCP   (),
+  
+  ];
 
   if (key==30)
     task_list.push ( new TaskMigrate() );
 
   task_list = task_list.concat ([
-    //new TaskImport     (),
-    //new TaskImportSeqCP(),
 
-    "Model Building",
-    new TaskCootMB (),
-    new TaskParrot    (),
-    new TaskModelCraft (),
+    "Automatic Model Building and Density Modification",
+    new TaskModelCraft(),
     new TaskCCP4Build (),
     new TaskArpWarp   (),
+    new TaskParrot    (),
 
     "Validation and Deposition",
     new TaskPDBVal    (),
@@ -593,7 +581,16 @@ let r = 0;  // grid row
     new TaskPrivateer (),
 
     // new TaskDeposition()
-    "Toolbox",
+    "Toolbox"
+
+  ]);
+
+  // if (!isSafari())
+  task_list.push ( new TaskWebCoot()   );
+  task_list.push ( new TaskWebCootCE() );
+
+  task_list = task_list.concat ([
+
     new TaskXyzUtils  (),
     new TaskGesamt    (),
     new TaskLsqKab    (),
@@ -601,6 +598,7 @@ let r = 0;  // grid row
     new TaskSymMatch  ()
 
   ]);
+
 
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
@@ -855,7 +853,8 @@ let r         = 0;  // grid row
   for (let i=0;i<tasks.length;i++)
     if ((i<__suggested_task_nmin) || (ctotal>=cthresh))  {
       //console.log ( 'task=' + tasks[i] + ',  ctotal=' + ctotal );
-      let task = eval ( 'new ' + tasks[i] + '()' );
+      // let task = eval ( 'new ' + tasks[i] + '()' );
+      let task = makeNewInstance ( tasks[i] );
       if (this.setTask(task,grid,r,false,0))
         r++;
       ctotal -= counts[i];
@@ -1054,7 +1053,6 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImportPDB     (),
     new TaskImportReplace (),
     new TaskMigrate       ()
-    //new TaskFacilityImport()
   ];
 
   if (__cloud_storage)
@@ -1167,27 +1165,24 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   this.makeSection ( grid,'Experimental Phasing',[
     'Automated EP',
-    new TaskCrank2     (),
-    new TaskShelxAuto  (),
+    new TaskCrank2      (),
+    new TaskShelxAuto   (),
     'Fundamental EP',
-    new TaskShelxSubstr(),
-    new TaskShelxCD    (),
-    new TaskPhaserEP   ()
+    new TaskShelxSubstr (),
+    new TaskShelxCD     (),
+    new TaskPhaserEP    ()
   ],true);
 
   this.makeSection ( grid,'Density Modification',[
-    new TaskParrot  (),
-    new TaskAcorn   (),
-    new TaskShelxEMR()
+    new TaskParrot       (),
+    new TaskAcorn        (),
+    new TaskShelxEMR     ()
   ],true);
 
-  this.makeSection ( grid,'Model Building',[
-    'Model building -- polypeptides and polynucleotides',
+  this.makeSection ( grid,'Automatic Model Building',[
     new TaskModelCraft   (),
-    'Model building -- polypeptides',
     new TaskCCP4Build    (),
     new TaskArpWarp      (),
-    'Model building -- polynucleotides',
     new TaskAWNuce       (),
   ],true);
 
@@ -1203,7 +1198,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskPaiRef       (),
   ],true);
 
-  this.makeSection ( grid,'Coot',[
+  this.makeSection ( grid,'Coot (Interactive Model Building)',[
     new TaskCootMB   (),
     new TaskCootCE   (),
     new TaskWebCoot  (),
@@ -1242,6 +1237,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskReindexHKL(),
     'Map tools',
     new TaskOmitMap   (),
+    new TaskAnoMap    (),
     'Coordinate data tools',
     new TaskXyzUtils  (),
     gemmi_task,

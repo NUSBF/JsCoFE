@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Substructure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2023
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -23,10 +23,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.editrevisionasu' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -43,8 +45,7 @@ function TaskEditRevisionSubstr()  {
   this._type     = 'TaskEditRevisionSubstr';
   this.name      = 'edit revision substructure';
   this.setOName ( 'edit_revision_substr' );  // default output file name template
-  this.title     = 'Edit Revision: Substructure';
-  //this.helpURL   = './html/jscofe_task_editrevision_substr.html';
+  this.title     = 'Edit Revision: Substructure';  //this.helpURL   = './html/jscofe_task_editrevision_substr.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types
@@ -88,12 +89,9 @@ function TaskEditRevisionSubstr()  {
 
 }
 
-
 if (__template)
-      TaskEditRevisionSubstr.prototype = Object.create ( __template.TaskEditRevisionASU.prototype );
-else  TaskEditRevisionSubstr.prototype = Object.create ( TaskEditRevisionASU.prototype );
-TaskEditRevisionSubstr.prototype.constructor = TaskEditRevisionSubstr;
-
+  __cmd.registerClass ( 'TaskEditRevisionSubstr',TaskEditRevisionStruct,__template.TaskEditRevisionASU.prototype );
+else    registerClass ( 'TaskEditRevisionSubstr',TaskEditRevisionStruct,TaskEditRevisionASU.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

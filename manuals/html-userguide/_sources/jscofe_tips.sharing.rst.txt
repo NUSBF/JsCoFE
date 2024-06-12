@@ -2,34 +2,37 @@
 Project Sharing
 ===============
 
-Structure solution projects may be shared between several users, which can work on it simultaneously. In shared Projects, all modifications of the Project Tree, such as creating, starting, finishing and deleting jobs, are being made visible to all participating users in real time.
+Structure solution projects may be shared between several users, which can work on it simultaneously. In shared Projects, all modifications of the Project Tree, such as creating, starting, finishing jobs are being made visible to all participating users in real time.
 
 **Project may be shared only by its owner (user who created the Project)**, in two ways:
 
-1. From the List of Projects ("My Projects"):
+1. From the List of Projects:
     - right-click on Project line
-    - choose "Share" from the drop-down menu
-    - type comma-separated list of login names of users, with whom the Project should be shared, where prompted.
+    - choose **Work Team** from the drop-down menu
+    - **Add team member** 
+
+.. note:: Note that there are various access modes available. You can limit access to view-only, allow users to run and delete their own jobs, or grant full access, which includes the ability to delete jobs created by you.
 
 2. From the Project Page: 
-    - click on "Main Menu" icon
-    - choose "Share Project" from the drop-down menu
-    - type comma-separated list of login names of users, with whom the Project should be shared, where prompted.
+    - click on Main Menu icon |menu|
+    - choose **Work Team** from the drop-down menu
+    - **Add team member** 
 
-.. Note::
-    Login names of all users with access to the Project must be listed each time (e.g., when new user is added to the list of collaborators).
-
-.. Note::
-    In order to unshare Project with a particular user, perform the sharing procedure without that user's login name in the list. In order to stop sharing completely, leave the login names prompt empty when sharing. Unshared users lose access to the Project immediately.
 
 **Users, with whom the Project is shared, must "join" the Project in order to get access to it**:
 
-- in the List of Projects ("My Projects"), click "Join" button just above the list 
-- in the pop-up "Join Shared Project" dialog, unfold the combobox with list of Project shared with you, and select the needed Project
-- click button "Join" in the "Join Shared Project" dialog -- the Project will appear in the List of Projects
+- in the List of Projects, click **Join button** just above the list 
+- in the pop-up *(Join Shared Project** dialog, unfold the combobox with list of Project shared with you, and select the needed Project
+
+Once you have joined the Shared Project, it will appear in the list of projects.
 
 .. Note::
     Use "Delete" button on top of the List of Projects to unjoin Project if necessary. This won't delete the Project unless you are the Project's owner.
 
 
 :doc:`All CCP4 Cloud tips <jscofe_tips>` 
+
+
+.. |menu| image:: images/menu.png
+        :width: 16
+        :height: 16

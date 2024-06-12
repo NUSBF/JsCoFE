@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -20,6 +20,10 @@
  */
 
 'use strict'; // *client*
+
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
 
 // ===========================================================================
 // Task classes MUST BE named as 'TaskSomething' AND put in file named
@@ -148,6 +152,9 @@ function TaskTemplate()  {
 
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'TaskTemplate',TaskTemplate,null );
+else    registerClass ( 'TaskTemplate',TaskTemplate,null );
 
 // ===========================================================================
 
@@ -2068,8 +2075,6 @@ if (!dbx)  {
   let grid      = inpDataRef.grid;
   let dataState = {};
 
-// console.log ( ' data state eval ');
-
     for (let i=0;i<this.input_dtypes.length;i++)  {
       let inputId = this.input_dtypes[i].inputId;
       let item    = this.getInputItem ( inpDataRef,inputId );
@@ -2451,10 +2456,12 @@ if (!dbx)  {
                                         placeholder, nrows,ncols, r,c, rs,cs );
                               textarea.setTooltip ( item.tooltip );
                               $(textarea.element).css ({
-                                'box-shadow'  : '6px 6px lightgray',
+                                // 'box-shadow'  : '6px 6px lightgray',
                                 'resize'      : 'none',
                                 'font-family' : 'monospace'
                               });
+                              textarea.setShade ( '6px 6px lightgray','none',
+                                                  __active_color_mode );
                               if (item.hasOwnProperty('iwidth'))  {
 //                                if (item.iwidth.toString().endsWith('%'))
                                 if (endsWith(item.iwidth.toString(),'%'))
@@ -3002,14 +3009,14 @@ if (!dbx)  {
 } else  {
   //  for server side
 
-  const fs    = require('fs-extra');
-  const path  = require('path');
+  const fs      = require('fs-extra');
+  const path    = require('path');
 
-  const utils = require('../../js-server/server.utils');
-  const prj   = require('../../js-server/server.fe.projects');
-  const conf  = require('../../js-server/server.configuration');
-  const uh    = require('../../js-server/server.fe.upload_handler');
-  const fcl   = require('../../js-server/server.fe.facilities');
+  const utils   = require('../../js-server/server.utils');
+  const prj     = require('../../js-server/server.fe.projects');
+  const conf    = require('../../js-server/server.configuration');
+  const uh      = require('../../js-server/server.fe.upload_handler');
+  const storage = require('../../js-server/server.fe.storage');
 
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
@@ -3087,7 +3094,7 @@ if (!dbx)  {
           console.log ( ' ***** cannot create directory ' + uploads_dir );
       }
 
-      let cloudMounts = fcl.getUserCloudMounts ( loginData );
+      let cloudMounts = storage.getUserCloudMounts ( loginData );
 
       for (let i=0;i<this.file_select.length;i++)
           this.__prepare_file ( this.file_select[i].path,cloudMounts,uploads_dir );

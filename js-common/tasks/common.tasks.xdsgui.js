@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XDSGUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -55,12 +58,9 @@ function TaskXDSGUI()  {
 
 }
 
-
 if (__template)
-      TaskXDSGUI.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXDSGUI.prototype = Object.create ( TaskTemplate.prototype );
-TaskXDSGUI.prototype.constructor = TaskXDSGUI;
-
+  __cmd.registerClass ( 'TaskXDSGUI',TaskXDSGUI,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXDSGUI',TaskXDSGUI,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

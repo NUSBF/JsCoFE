@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.03.24   <--  Date of Last Modification.
+#    12.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,8 @@ import sys
 import shutil
 import gzip
 import time
+
+import gemmi
 
 #  application imports
 from . import basic
@@ -127,10 +129,9 @@ class CootCE(basic.TaskDriver):
         ixyz = self.input_data.data.ixyz
         for i in range(len(ixyz)):
             ixyz[i] = self.makeClass ( ixyz[i] )
-            if ixyz[i].getPDBFileName():
-                pdbpath = ixyz[i].getPDBFilePath(self.inputDir())
-                if pdbpath not in args:
-                    args += ["--pdb",pdbpath]
+            xyzpath = ixyz[i].getXYZFilePath(self.inputDir())
+            if xyzpath and (xyzpath not in args):
+                args += ["--pdb",xyzpath]
 
         coot_scr = "coot_jscofe.py"
         coot_scr = os.path.join ( os.path.dirname ( os.path.abspath(__file__)),"..","proc",coot_scr )
@@ -161,18 +162,20 @@ class CootCE(basic.TaskDriver):
         fdic  = {}
         mlist = []
         for f in files:
-            if f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
+            if f.lower().endswith(".pdb") or f.lower().endswith(".cif") or\
+               f.lower().endswith(".mmcif"):
                 mt = os.path.getmtime(f)
                 fdic[mt] = f
                 mlist.append ( mt )
 
         have_results = False
+        summary      = ""
 
-        # restored = False
+        restored = False
         if len(mlist)<=0:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             if fname:
-                # restored = True
+                restored = True
                 mt       = os.path.getmtime(fname)
                 fdic[mt] = fname
                 mlist.append ( mt )
@@ -181,32 +184,64 @@ class CootCE(basic.TaskDriver):
 
             self.putTitle ( "Output coordinate data" )
 
-            f = ixyz[0].getPDBFileName()
-            if not f and (ixyz[0]._type=="DataStructure"):
-                f = ixyz[0].getSubFileName()
+            # f = ixyz[0].getPDBFileName()
+            # if not f and (ixyz[0]._type=="DataStructure"):
+            #     f = ixyz[0].getSubFileName()
             # fnprefix = f[:f.find("_")]
 
             mlist = sorted(mlist)
             for i in range(len(mlist)):
 
-                fname = fdic[mlist[i]]
+                fname     = fdic[mlist[i]]
+                xyz_pdb   = None
+                xyz_mmcif = None
+                st        = None
+                try:
+                    st = gemmi.read_pdb(fname)
+                    xyz_pdb = self.getXYZOFName() #  .pdb
+                    shutil.copy2 ( fname,xyz_pdb )
+                except:
+                    pass
+                if not st:
+                  try:
+                      st = gemmi.read_structure(fname,True,gemmi.CoorFormat.Detect)
+                      xyz_mmcif = self.getMMCIFOFName()
+                      shutil.copy2 ( fname,xyz_mmcif )
+                  except:
+                      pass
 
-                # register output data from temporary location (files will be moved
-                # to output directory by the registration procedure)
+                if st:
 
-                xyz = self.registerXYZ ( None,fname )
-                if xyz:
-                    # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                    self.putMessage (
-                        "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                        xyz.dname )
-                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",xyz )
-                    if i<len(mlist)-1:
-                        self.putMessage ( "&nbsp;" )
-                    have_results = True
+                    # register output data from temporary location (files will be moved
+                    # to output directory by the registration procedure)
+
+                    xyz = self.registerXYZ ( xyz_mmcif,xyz_pdb )
+                    if xyz:
+                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        self.putMessage (
+                            "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                            xyz.dname )
+                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",xyz )
+                        if i<len(mlist)-1:
+                            self.putMessage ( "&nbsp;" )
+                        have_results = True
+
+                else:
+                    self.stderrln ( " +++++ cannot identify format for " + str(fname) )
+
+            summary = "model saved"
+            if restored:
+                summary += " from backup copy"
 
         else:
             self.putTitle ( "No output data produced" )
+            summary = "no results"
+
+
+        # this will go in the project tree line
+        self.generic_parser_summary["anomap"] = {
+            "summary_line" : summary
+        }
 
         # ============================================================================
         # close execution logs and quit

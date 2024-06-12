@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -239,10 +241,8 @@ function TaskXia2()  {
 }
 
 if (__template)
-      TaskXia2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXia2.prototype = Object.create ( TaskTemplate.prototype );
-TaskXia2.prototype.constructor = TaskXia2;
-
+  __cmd.registerClass ( 'TaskXia2',TaskXia2,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXia2',TaskXia2,TaskTemplate.prototype );
 
 // ===========================================================================
 
@@ -891,12 +891,12 @@ if (!__template)  {
 } else  {
   // for server side
 
-  let path  = require('path');
+  let path    = require('path');
 
-  let conf  = require('../../js-server/server.configuration');
-  let fcl   = require('../../js-server/server.fe.facilities');
-  let prj   = require('../../js-server/server.fe.projects');
-  let utils = require('../../js-server/server.utils');
+  let conf    = require('../../js-server/server.configuration');
+  let storage = require('../../js-server/server.fe.storage');
+  let prj     = require('../../js-server/server.fe.projects');
+  let utils   = require('../../js-server/server.utils');
 
   TaskXia2.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,
@@ -917,7 +917,7 @@ if (!__template)  {
 
     } else  {
 
-      let cloudMounts = fcl.getUserCloudMounts ( loginData );
+      let cloudMounts = storage.getUserCloudMounts ( loginData );
       for (let i=0;i<this.imageDirMeta.length;i++)  {
         imageDirMeta.push ( this.imageDirMeta[i] );
         let lst = imageDirMeta[i].path.split('/');

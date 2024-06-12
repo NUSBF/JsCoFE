@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -40,7 +43,7 @@ function TaskFitLigand()  {
   //this.helpURL = './html/jscofe_task_fitligand.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['phases','~mmcif_only']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label     : 'Structure revision',        // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       customInput : 'map-sel', // lay custom fields below the dropdown
@@ -149,12 +152,9 @@ function TaskFitLigand()  {
 
 }
 
-
 if (__template)
-      TaskFitLigand.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFitLigand.prototype = Object.create ( TaskTemplate.prototype );
-TaskFitLigand.prototype.constructor = TaskFitLigand;
-
+  __cmd.registerClass ( 'TaskFitLigand',TaskFitLigand,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFitLigand',TaskFitLigand,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

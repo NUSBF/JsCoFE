@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -23,9 +23,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -647,12 +650,9 @@ function TaskRefmac()  {
 
 }
 
-
 if (__template)
-      TaskRefmac.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRefmac.prototype = Object.create ( TaskTemplate.prototype );
-TaskRefmac.prototype.constructor = TaskRefmac;
-
+  __cmd.registerClass ( 'TaskRefmac',TaskRefmac,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRefmac',TaskRefmac,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -676,7 +676,7 @@ TaskRefmac.prototype.canShare = function()  {
   return ['xyz','mtz','lib'];
 }
 
-//TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
+TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function RefmacHotButton()  {

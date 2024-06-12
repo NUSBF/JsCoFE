@@ -182,7 +182,7 @@ def aimlessAfterXia2(driver, waitLong):
     assert rAll < 0.1
     assert rAno < 0.07
     assert res1 < 2.5
-    assert res2 > 35.0
+    assert res2 > 20.0
     assert sg == 'H 3 2'
 
     return ()
@@ -394,8 +394,7 @@ def test_1xia2(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)

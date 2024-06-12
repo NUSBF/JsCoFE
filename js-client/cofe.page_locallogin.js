@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    27.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,12 +30,12 @@ function LocalLoginPage ( sceneId )  {
   BasePage.call ( this,sceneId,'-full','LocalLoginPage' );
 
   // adjust scene grid attributes such that login panel is centered
-  this.grid.setCellSize          ( '45%','',0,0,1,1 );
-  this.grid.setCellSize          ( '10%','',0,1,1,1 );
-  this.grid.setVerticalAlignment ( 0,1,'middle'     );
-  this.grid.setHorizontalAlignment ( 0,1,'center'   );
-  this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  this.grid.setCellSize            ( '45%','',0,0,1,1 );
+  this.grid.setCellSize            ( '10%','',0,1,1,1 );
+  this.grid.setVerticalAlignment   ( 0,1,'middle'     );
+  this.grid.setHorizontalAlignment ( 0,1,'center'     );
+  this.grid.setCellSize            ( '45%','',0,2,1,1 );
+  this.makeLogoPanel               ( 1,0,3 );
 
   let panel = new Grid('');
   panel.setWidth      ( '300pt' );
@@ -46,7 +46,8 @@ function LocalLoginPage ( sceneId )  {
              'Science and Technology Facilities Council UK<br>' +
              'Rutherford Appleton Laboratory<br>' +
              'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
-             'https://www.ccp4.ac.uk</div>' +
+             '<a href="https://www.ccp4.ac.uk" target="_blank">' +
+             'https://www.ccp4.ac.uk</a></div>' +
              '<b style="font-size:250%">' + appName() + '</b><br>' +
              '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
              '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
@@ -70,7 +71,9 @@ function LocalLoginPage ( sceneId )  {
       let speed = 0;
       for (let i=0;i<rData.cpus.length;i++)
         speed = Math.max(speed,rData.cpus[i].speed);
-      speed = Math.round(speed/100)/10.0;
+      if (speed<100)  // due to a bug in some versions of nodejs
+            speed /= 10;
+      else  speed  = Math.round(speed/100)/10.0;
 
       let row = 0;
 
@@ -122,10 +125,10 @@ function LocalLoginPage ( sceneId )  {
                               else  tipNo = round(Date.now()/5000,0);
             tipNo = tipNo % __tips.tips.length;
             let tipLink = '<a href="javascript:' +
-                              'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
+                              'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
                                             '\'' + __tips.tips[tipNo].doc   + '/'   +
-                                                  __tips.tips[tipNo].link  + '\',' +
-                                            'null,10)">';
+                                                   __tips.tips[tipNo].link  + '\',' +
+                                            'null,10);">';
             tip_lbl.setText (
               '<img src="' + image_path('tip') +
               '" style="width:20px;height:20px;vertical-align:bottom;"/>' +
@@ -148,9 +151,10 @@ function LocalLoginPage ( sceneId )  {
 
 }
 
-LocalLoginPage.prototype = Object.create ( BasePage.prototype );
-LocalLoginPage.prototype.constructor = LocalLoginPage;
+// LocalLoginPage.prototype = Object.create ( BasePage.prototype );
+// LocalLoginPage.prototype.constructor = LocalLoginPage;
 
+registerClass ( 'LocalLoginPage',LocalLoginPage,BasePage.prototype );
 
 function makeLocalLoginPage ( sceneId )  {
   makePage ( function() { new LocalLoginPage(sceneId); } );

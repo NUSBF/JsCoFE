@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24    <--  Date of Last Modification.
+ *    01.06.24    <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -78,7 +80,7 @@ function TaskSliceNDice()  {
                                 value    : 1,
                                 iwidth   : 40,
                                 label2   : '',
-                                position : [0,0,1,1]
+                                position : [1,0,1,1]
                               },
                 MAX_NSPLITS : { type     : 'integer',
                                 keyword  : 'MAX_NSPLITS',
@@ -88,7 +90,7 @@ function TaskSliceNDice()  {
                                 value    : 3,
                                 iwidth   : 40,
                                 label2   : 'splits',
-                                position : [0,5,1,1]
+                                position : [1,5,1,1]
                               },
                 PLDDT_THRESHOLD : {
                             type     : 'combobox',
@@ -100,6 +102,16 @@ function TaskSliceNDice()  {
                             iwidth   : 100,
                             position : [3,0,1,1]
                               },
+                MR_PROG : {
+                            type     : 'combobox',
+                            keyword  : 'mr_program',
+                            label    : 'MR program to use',
+                            tooltip  : 'Select which MR program to use. The hybrid option'+ 'will use a combination of Phaser and Molrep (default: phaser)',
+                            range    : ['phaser|Phaser','molrep|Molrep','hybrid|Hybrid'],
+                            value    : 'phaser',
+                            iwidth   : 120,
+                            position : [4,0,1,1]
+                              },
                 NO_MOLS : { 
                             type     : 'real_',
                             keyword  : 'NO_MOLS',
@@ -108,7 +120,7 @@ function TaskSliceNDice()  {
                             range    : [1,'*'],
                             value    : "",
                             iwidth   : 40,
-                            position : [4,0,1,1]
+                            position : [5,0,1,1]
                               },
                 
               }
@@ -120,10 +132,8 @@ function TaskSliceNDice()  {
 }
 
 if (__template)
-      TaskSliceNDice.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskSliceNDice.prototype = Object.create ( TaskTemplate.prototype );
-TaskSliceNDice.prototype.constructor = TaskSliceNDice;
-
+  __cmd.registerClass ( 'TaskSliceNDice',TaskSliceNDice,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskSliceNDice',TaskSliceNDice,TaskTemplate.prototype );
 
 // ===========================================================================
 

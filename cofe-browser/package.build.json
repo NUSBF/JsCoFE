@@ -1,0 +1,36 @@
+{
+  "name": "cofe-browser",
+  "productName": "CCP4 Cloud Local",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cofe-browser.mjs",
+  "type": "module",
+  "build": {
+    "appId": "cloud.ccp4.ac.uk",
+    "productName": "CCP4 Cloud Local",
+    "mac": {
+      "icon": "icons/ccp4cloud_local.icns"
+    },
+    "win": {
+      "icon": "icons/ccp4cloud_local.ico"
+    },
+    "linux": {
+      "icon": "icons/ccp4cloud_local.png"
+    }
+  },
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "*",
+    "electron-builder": "*",
+    "electron-packager": "*"
+  },
+  "dependencies": {
+    "electron-store": "*"
+  }
+}

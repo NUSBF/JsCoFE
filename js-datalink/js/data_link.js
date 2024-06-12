@@ -511,13 +511,15 @@ class dataLink {
       valid[key] = value;
     }
 
-    let result = this.catalog.updateEntry(user, source, id, valid)
-    if (result !== true) {
-      return result;
+    if (Object.keys(valid).length === 0) {
+      return tools.errorMsg(`No valid fields found to update`, 400);
     }
 
-    const fields = Object.keys(valid).join(',');
-    return tools.successMsg(`Updated fields ${fields}`);
+    if (! this.catalog.updateEntry(entry, valid)) {
+      return tools.errorMsg(`Unable to update entry ${user}/${source}/${id}`, 500);
+    }
+
+    return tools.successMsg(`Updated fields ${Object.keys(valid).join(',')}`);
   }
 
   getDataStats() {

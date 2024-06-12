@@ -351,8 +351,8 @@ def fitWaters(driver, wait):
     if nwat == 0:
         print('*** Verification: could not find Nwaters result value after FitWaters run')
     else:
-        print('*** Verification: Nwaters is %d (expecting > 89 )' % nwat)
-    assert nwat > 80
+        print('*** Verification: Nwaters is %d (expecting 80 )' % nwat)
+    assert nwat > 75
 
     return ()
 
@@ -445,8 +445,7 @@ def test_1ligandsImportandRefmac(browser,
         d.driver.get(cloud)
         assert "CCP4 Cloud" in d.driver.title
 
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+        sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)

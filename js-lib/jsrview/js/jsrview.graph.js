@@ -1,21 +1,23 @@
 //
 //  =================================================================
 //
-//    03.06.21   <--  Date of Last Modification.
+//    26.05.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
-//  **** Module  :  jsrview.graph.js  <interface>
+//  **** Module  :  cofe.tree_job.js  <interface>
 //       ~~~~~~~~~
 //  **** Project :  HTML5-based presentation system
 //       ~~~~~~~~~
 //  **** Content :  RVAPI javascript layer's graph module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2021
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
+
+'use strict';
 
 var gwHeight       = 400;
 var gwTreeWidth    = 300;
@@ -38,9 +40,9 @@ function addRadarWidget ( data,options,holderId )  {
 
 function drawHiddenGraphs ( panel )  {
   if (panel.length>0)  {
-    var panelObj = $("#"+panel[0].id);
+    let panelObj = $("#"+panel[0].id);
     if (panelObj)  {
-      for (var key in graphWidgetList)  {
+      for (let key in graphWidgetList)  {
         if (panelObj.find("#"+key+"-plot")[0]!=null)  {
           if (graphWidgetList[key]=='loggraph')
                 drawLogGraph ( key,null,null );
@@ -60,14 +62,14 @@ $.jqplot.rvapiBarRenderer.prototype = new $.jqplot.BarRenderer;
 
 $.jqplot.rvapiBarRenderer.prototype.setBarWidth = function() {
 // need to know how many data values we have on the approprate axis and figure it out.
-var i,bw;
-var nvals   = 0;
-var nseries = 0;
-var paxis   = this[this._primaryAxis];
-var s, series, pos;
-var temp = this._plotSeriesInfo = this.renderer.calcSeriesNumbers.call(this);
-var nticks = paxis.numberTicks;
-var nbins = (nticks-1)/2;
+let i,bw;
+let nvals   = 0;
+let nseries = 0;
+let paxis   = this[this._primaryAxis];
+let s, series, pos;
+let temp = this._plotSeriesInfo = this.renderer.calcSeriesNumbers.call(this);
+let nticks = paxis.numberTicks;
+let nbins = (nticks-1)/2;
 
   nvals   = temp[0];
   nseries = temp[1];
@@ -109,8 +111,8 @@ var nbins = (nticks-1)/2;
 
 
 function drawLogGraph ( gwdId,data,options )  {
-var graphId = gwdId + "-plot";
-var div     = document.getElementById ( graphId );
+let graphId = gwdId + "-plot";
+let div     = document.getElementById ( graphId );
 
   if (!div)  {
     div = element    ( "div","id",graphId,"" );
@@ -121,9 +123,9 @@ var div     = document.getElementById ( graphId );
   }
 
   if (data==null)  {
-    var node = $("#"+gwdId+"-tree").tree('getSelectedNode');
+    let node = $("#"+gwdId+"-tree").tree('getSelectedNode');
     if (node)  {
-      r = _draw_graph ( graphId,node.plotOptions,node.plotData );
+      let r = _draw_graph ( graphId,node.plotOptions,node.plotData );
       node.plotOptions = r['options'];
     }
   } else  {
@@ -133,17 +135,17 @@ var div     = document.getElementById ( graphId );
 }
 
 function zoomAxis ( curax )  {
-var newmin,newmax,tickV,R;
+let newmin,newmax,tickV,R;
 
   if (curax.renderer.constructor === $.jqplot.LogAxisRenderer)  {
 
-    var min0 = Math.log(curax._min)/Math.LN10;
-    var max0 = Math.log(curax._max)/Math.LN10;
+    let min0 = Math.log(curax._min)/Math.LN10;
+    let max0 = Math.log(curax._max)/Math.LN10;
 
     newmin = min0 + curax.smin*(max0-min0);
     newmax = min0 + curax.smax*(max0-min0);
 
-    var tickN,tickL;
+    let tickN,tickL;
     R = newmax - newmin;
     newmin -= R/40.0;
     newmax += R/40.0;
@@ -154,7 +156,7 @@ var newmin,newmax,tickV,R;
 
     if (R<=3.0)  {
 
-      var dtick,k,tv,k0,tv0;
+      let dtick,k,tv,k0,tv0;
 
       if (R<=1.0)      dtick = [2,4,6,8,10];
       else if (R<=2.0) dtick = [2,5,8,10];
@@ -202,7 +204,7 @@ var newmin,newmax,tickV,R;
 
     } else  {
 
-      var step;
+      let step;
       if (R<8.0)         step = 1.0;
       else if (R<16.0)   step = 2.0;
       else if (R<51.0)   step = 5.0;
@@ -249,8 +251,8 @@ var newmin,newmax,tickV,R;
     newmin -= R/40.0;
     newmax += R/40.0;
 
-    var _numberTicks = null;
-    var ret = $.jqplot.LinearTickGenerator ( newmin,newmax,
+    let _numberTicks = null;
+    let ret = $.jqplot.LinearTickGenerator ( newmin,newmax,
                                        curax._scalefact,_numberTicks );
 
     if (curax.renderer.constructor === $.jqplot.LinearAxisRenderer)  {
@@ -317,13 +319,13 @@ var newmin,newmax,tickV,R;
 
 
 function drawGraph ( gwdId )  {
-var graphOptions = graphDataHash[gwdId]['options'];
-var graphData    = graphDataHash[gwdId]['data'];
-var plotId       = graphOptions.curplot;
-var graphId      = gwdId+"-plot";
-var k            = -1;
+let graphOptions = graphDataHash[gwdId]['options'];
+let graphData    = graphDataHash[gwdId]['data'];
+let plotId       = graphOptions.curplot;
+let graphId      = gwdId+"-plot";
+let k            = -1;
 
-  for (var i=0;(i<graphData.length) && (k<0);i++)
+  for (let i=0;(i<graphData.length) && (k<0);i++)
     if (graphData[i].id==plotId)
       k = i;
 
@@ -333,14 +335,14 @@ var k            = -1;
     graphOptions.curplot = plotId;
   }
 
-  var plotData    = graphData[k].plotData;
-  var plotOptions = graphData[k].plotOptions;
+  let plotData    = graphData[k].plotData;
+  let plotOptions = graphData[k].plotOptions;
   plotOptions.graphId = gwdId;
 
-  var div = document.getElementById ( graphId );
+  let div = document.getElementById ( graphId );
 
   if (!div)  {
-    var div = element ( "div","id",graphId,"" );
+    let div = element ( "div","id",graphId,"" );
     div.setAttribute ( "style",
               "height: "    + graphOptions.height +
               "px; width: " + graphOptions.width  +
@@ -348,7 +350,7 @@ var k            = -1;
     setGridItem ( gwdId,div,0,1,6,6 );
   }
 
-  r = _draw_graph ( graphId,plotOptions,plotData );
+  let r = _draw_graph ( graphId,plotOptions,plotData );
 
   graphDataHash[gwdId]['plot']        = r['plot'];
   graphDataHash[gwdId]['plotOptions'] = r['options'];
@@ -367,63 +369,11 @@ var k            = -1;
   }
 
 }
-
-
-/*
-function drawGraph ( gwdId )  {
-var graphOptions = graphDataHash[gwdId]['options'];
-var graphData    = graphDataHash[gwdId]['data'];
-var plotId       = graphOptions.curplot;
-var graphId      = gwdId+"-plot";
-var k            = -1;
-
-  for (var i=0;(i<graphData.length) && (k<0);i++)
-    if (graphData[i].id==plotId)
-      k = i;
-
-  if (k<0)  {
-    k = 0;
-    plotId = graphData[0].id;
-    graphOptions.curplot = plotId;
-  }
-
-  var plotData    = graphData[k].plotData;
-  var plotOptions = graphData[k].plotOptions;
-  plotOptions.graphId = gwdId;
-
-  removeElement ( graphId );
-  var div = element ( "div","id",graphId,"" );
-  div.setAttribute ( "style",
-            "height: "    + graphOptions.height +
-            "px; width: " + graphOptions.width  +
-            "px; margin-left: 6px;" );
-  setGridItem ( gwdId,div,0,1,6,6 );
-
-  r = _draw_graph ( graphId,plotOptions,plotData );
-
-  graphDataHash[gwdId]['plot']        = r['plot'];
-  graphDataHash[gwdId]['plotOptions'] = r['options'];
-
-  if (graphOptions.hslider>0)  {
-    $( "#" + gwdId + "-hslider" ).slider({
-       values: [ _nGSliderSteps*plotOptions.axes.xaxis.smin,
-                 _nGSliderSteps*plotOptions.axes.xaxis.smax ],
-    });
-  }
-  if (graphOptions.vslider>0)  {
-    $( "#" + gwdId + "-vslider" ).slider({
-       values: [ _nGSliderSteps*plotOptions.axes.yaxis.smin,
-                 _nGSliderSteps*plotOptions.axes.yaxis.smax ],
-    });
-  }
-
-}
-*/
 
 
 function cloneArray2 ( a )  {
-var b = [];
-  for (i=0;i<a.length;i++)  {
+let b = [];
+  for (let i=0;i<a.length;i++)  {
     b.push ( [a[i][0],a[i][1]] );
   }
   return b;
@@ -431,13 +381,13 @@ var b = [];
 
 
 function _draw_graph ( graphId,plotOptions,plotData )  {
-var xmin   = null;
-var xmax   = null;
-var ymin   = null;
-var ymax   = null;
-var ticksx = null;
-var ticksy = null;
-var umin0,umax0,vmin0,vmax0;
+let xmin   = null;
+let xmax   = null;
+let ymin   = null;
+let ymax   = null;
+let ticksx = null;
+let ticksy = null;
+let umin0,umax0,vmin0,vmax0;
 
   if (plotOptions.axes.xaxis.min != undefined)
     xmin = plotOptions.axes.xaxis.min;
@@ -461,12 +411,12 @@ var umin0,umax0,vmin0,vmax0;
   if (plotOptions.axes.yaxis.log == true)
     plotOptions.axes.yaxis.tickOptions.formatString = '%.1g';
 
-  var fakeData = [];
-  for (var i=0;i<plotOptions.series.length;i++)  {
-    var umin = plotOptions.series[i].xmin;
-    var umax = plotOptions.series[i].xmax;
-    var vmin = plotOptions.series[i].ymin;
-    var vmax = plotOptions.series[i].ymax;
+  let fakeData = [];
+  for (let i=0;i<plotOptions.series.length;i++)  {
+    let umin = plotOptions.series[i].xmin;
+    let umax = plotOptions.series[i].xmax;
+    let vmin = plotOptions.series[i].ymin;
+    let vmax = plotOptions.series[i].ymax;
     if (xmin!=null)  umin = Math.min(xmin,umin);
     if (xmax!=null)  umax = Math.max(xmax,umax);
     if (ymin!=null)  vmin = Math.min(ymin,vmin);
@@ -503,15 +453,15 @@ var umin0,umax0,vmin0,vmax0;
   }
 
   // destroy the existing plot
-  var inti = new Array();
+  let inti = new Array();
   inti.push([0, 0, 0]);
-  var plot = $.jqplot( graphId, inti, null);
+  let plot = $.jqplot( graphId, inti, null);
   if (plot)
     plot.destroy();
 
   plot = $.jqplot ( graphId,fakeData,plotOptions );
 
-  for (var i=0;i<plotOptions.series.length;i++)  {
+  for (let i=0;i<plotOptions.series.length;i++)  {
     if (plot.series[i].show)
       plot.series[i].data = plotData[i];
     if (plot.series[i].barWidth != undefined)
@@ -568,7 +518,7 @@ console.log ( "plot.axes.yaxis.smax  " + plot.axes.yaxis.smax );
 */
   plot.replot();
 
-  var returnValue = new Object();
+  let returnValue = new Object();
   returnValue['plot']    = plot;
   returnValue['options'] = plotOptions;
 
@@ -577,36 +527,36 @@ console.log ( "plot.axes.yaxis.smax  " + plot.axes.yaxis.smax );
 }
 
 function switchGraph ( gwdId,plotId )  {
-var graphOptions = graphDataHash[gwdId]['options'];
+let graphOptions = graphDataHash[gwdId]['options'];
   graphOptions.curplot = plotId;
   drawGraph ( gwdId );
 }
 
 function showGraphLine ( gwdId,dataId,plotId,lineId,show )  {
-var ok = 0;
+let ok = 0;
 
   if (gwdId in graphDataHash)  {
-    var graphOptions = graphDataHash[gwdId]['options'];
-    var graphData    = graphDataHash[gwdId]['data'];
-    var k            = -1;
+    let graphOptions = graphDataHash[gwdId]['options'];
+    let graphData    = graphDataHash[gwdId]['data'];
+    let k            = -1;
 
-    for (var i=0;(i<graphData.length) && (k<0);i++)
+    for (let i=0;(i<graphData.length) && (k<0);i++)
       if (graphData[i].id==plotId)
         k = i;
 
     if (k>=0)  {
-      var plotData   = graphData[k].plotData;
-      var plotSeries = graphData[k].plotOptions.series;
-      var lid        = dataId + ":" + lineId;
-      var n          = 0;
-      var nl         = 0;
-      var plot;
+      let plotData   = graphData[k].plotData;
+      let plotSeries = graphData[k].plotOptions.series;
+      let lid        = dataId + ":" + lineId;
+      let n          = 0;
+      let nl         = 0;
+      let plot;
 
       if (plotId==graphOptions.curplot)
             plot = graphDataHash[gwdId]['plot'];
       else  plot = null;
 
-      for (var i=0;i<plotSeries.length;i++)  {
+      for (let i=0;i<plotSeries.length;i++)  {
         if (plotSeries[i].lineId==lid)  {
           plotSeries[i].show = show;
           if (plot)  {
@@ -641,23 +591,23 @@ var ok = 0;
 
 
 function setZoomHandler() {
-   $.jqplot.preDrawHooks.push(zoomHandler);
+  $.jqplot.preDrawHooks.push(zoomHandler);
 }
 
 function setSlider ( gwdId,plot,axis,sliderSuffix )  {
-var slider = document.getElementById ( gwdId+sliderSuffix );
+let slider = document.getElementById ( gwdId+sliderSuffix );
   if (slider)  {
-    var min0 = axis._min;
-    var max0 = axis._max;
-    var amin = axis.min;
-    var amax = axis.max;
+    let min0 = axis._min;
+    let max0 = axis._max;
+    let amin = axis.min;
+    let amax = axis.max;
     if (axis.renderer.constructor === $.jqplot.LogAxisRenderer)  {
       min0 = Math.log(min0);
       max0 = Math.log(max0);
       amin = Math.log(amin);
       amax = Math.log(amax);
     }
-    var arange = max0 - min0;
+    let arange = max0 - min0;
     axis.smin = (amin-min0)/arange;
     axis.smax = (amax-min0)/arange;
     zoomAxis ( axis );
@@ -678,9 +628,9 @@ var slider = document.getElementById ( gwdId+sliderSuffix );
 
 function zoomHandler() {
   if (this.plugins.cursor._zoom.zooming)  {
-    var gwdId       = this.options.graphId;
+    let gwdId       = this.options.graphId;
     if (gwdId in graphDataHash)  {
-      var plotOptions = graphDataHash[gwdId]['plotOptions'];
+      let plotOptions = graphDataHash[gwdId]['plotOptions'];
       plotOptions.axes.xaxis.smin = this.axes.xaxis.smin;
       plotOptions.axes.xaxis.smax = this.axes.xaxis.smax;
       plotOptions.axes.yaxis.smin = this.axes.yaxis.smin;
@@ -692,13 +642,13 @@ function zoomHandler() {
 }
 
 function printPlot ( gwdId )  {
-var plotData,plotOptions,h,w;
+let plotData,plotOptions,h,w;
 
   h = 0;
 
   if (graphWidgetList[gwdId]=='loggraph')  {
 
-    var node = $("#"+gwdId+"-tree").tree('getSelectedNode');
+    let node = $("#"+gwdId+"-tree").tree('getSelectedNode');
 
     if (node)  {
       plotData    = node.plotData;
@@ -709,12 +659,12 @@ var plotData,plotOptions,h,w;
 
   } else  {
 
-    var graphOptions = graphDataHash[gwdId]['options'];
-    var graphData    = graphDataHash[gwdId]['data'];
-    var plotId       = graphOptions.curplot;
-    var k            = -1;
+    let graphOptions = graphDataHash[gwdId]['options'];
+    let graphData    = graphDataHash[gwdId]['data'];
+    let plotId       = graphOptions.curplot;
+    let k            = -1;
 
-    for (var i=0;(i<graphData.length) && (k<0);i++)
+    for (let i=0;(i<graphData.length) && (k<0);i++)
       if (graphData[i].id==plotId)
         k = i;
 
@@ -731,12 +681,12 @@ var plotData,plotOptions,h,w;
 
     document.body.innerHTML = "";
 
-    var div = element ( "div"  ,"id","div-plot","" );
+    let div = element ( "div"  ,"id","div-plot","" );
     div.setAttribute  ( "style","height: "+h+
                                 "px; width: "+w+"px;" +
                                 "margin-left: 6px;" );
     document.body.appendChild ( div );
-    var plot = $.jqplot ( "div-plot",plotData,plotOptions );
+    let plot = $.jqplot ( "div-plot",plotData,plotOptions );
 //    if (graphWidgetList[gwdId]=='graph')  {
       zoomAxis ( plot.axes.xaxis );
       zoomAxis ( plot.axes.yaxis );
@@ -755,7 +705,7 @@ var plotData,plotOptions,h,w;
 function getOpenNodeIds ( node,openNodesIds )  {
   if (node.is_open)
     openNodesIds.push ( node.id );
-  for (var i=0;i<node.children.length;i++)
+  for (let i=0;i<node.children.length;i++)
     getOpenNodeIds ( node.children[i],openNodesIds );
 }
 
@@ -769,7 +719,7 @@ function addLogGraph ( gwdId,holderId, treeData,
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var dataArray;
+  let dataArray;
 
   if (treeData[0]!='[')  {
     $("body").css("cursor","progress");
@@ -777,20 +727,21 @@ function addLogGraph ( gwdId,holderId, treeData,
     processFile ( treeData,"post",true,
       function(data)  {
         // console.log ( "treeData=\""+ treeData+"\"" );
-        // var pp = data.indexOf("<");
+        let pp = data.indexOf("<");
         // console.log ( " pp=" + pp);
-        // if (pp>0)
-        //   console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"");
-        // dataArray = eval (
-        //   "(" +
-        //   data.replace(new RegExp('<>','g'),"") +
-        //   ")"
-        // );
+        if (pp>=0)
+          console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"" );
         dataArray = eval (
-          "("  +
-          data +
+          "(" +
+          data.replace(new RegExp('<>','g'),"") +
           ")"
         );
+        // console.log ( ' >>>> data ');
+        // dataArray = eval (
+        //   "("  +
+        //   data +
+        //   ")"
+        // );
         _add_log_graph ( gwdId,holderId, dataArray,
                          row,col,rowSpan,colSpan );
       },
@@ -816,11 +767,11 @@ function addLogGraph ( gwdId,holderId, treeData,
 function _add_log_graph ( gwdId,holderId, dataArray,
                           row,col,rowSpan,colSpan )  {
 
-var cell         = getGridCell ( holderId,row,col );
-var selNodeId    = "";
-var openNodesIds = new Array();
-var graphTree;
-var node,created;
+let cell         = getGridCell ( holderId,row,col );
+let selNodeId    = "";
+let openNodesIds = new Array();
+let graphTree;
+let node,created;
 
   if (cell)  {
 
@@ -847,7 +798,7 @@ var node,created;
          "</table>" )
        .appendTo ( cell );
 
-      var table = element ( "table","class","graphwidget-table","" );
+      let table = element ( "table","class","graphwidget-table","" );
       table.setAttribute ( "id",gwdId+"_panel-grid" );
       $( "<thead><tr><th>Graph Data</th></tr></thead>" ).appendTo ( table );
       $( "<tbody style='height:" + (gwHeight-80) +
@@ -881,7 +832,7 @@ var node,created;
 
     }
 
-    var div = document.getElementById ( gwdId+"-tree" );
+    let div = document.getElementById ( gwdId+"-tree" );
     div.setAttribute ( "class","graphwidget-box" );
 
     graphTree = $("#"+gwdId+"-tree");
@@ -894,8 +845,8 @@ var node,created;
     graphTree.bind (
       'tree.click',
       function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
+        let node = event.node; // the clicked node
+        let oni  = new Array();
         getOpenNodeIds ( graphTree.tree('getTree'),oni );
         logGraphHash[gwdId]['nodes'] = oni;
         if ($(this).tree('isNodeSelected',node))  {
@@ -906,24 +857,24 @@ var node,created;
     graphTree.bind (
       'tree.open',
       function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
+        let node = event.node; // the clicked node
+        let oni  = new Array();
         getOpenNodeIds ( graphTree.tree('getTree'),oni );
         logGraphHash[gwdId]['nodes'] = oni;
     });
     graphTree.bind (
       'tree.close',
       function(event) {
-        var node = event.node; // the clicked node
-        var oni  = new Array();
+        let node = event.node; // the clicked node
+        let oni  = new Array();
         getOpenNodeIds ( graphTree.tree('getTree'),oni );
         logGraphHash[gwdId]['nodes'] = oni;
     });
     graphTree.bind(
       'tree.select',
       function(event) {
-        var node = event.node; // the selected node
-        var oni  = new Array();
+        let node = event.node; // the selected node
+        let oni  = new Array();
         getOpenNodeIds ( graphTree.tree('getTree'),oni );
         logGraphHash[gwdId]['nodes'] = oni;
         if (node)  {
@@ -959,7 +910,7 @@ var node,created;
 
 //      setTimeout(function(){
 
-        for (var i=0;i<openNodesIds.length;i++)  {
+        for (let i=0;i<openNodesIds.length;i++)  {
           node = graphTree.tree ( 'getNodeById',openNodesIds[i] );
           if (node!=null)
             graphTree.tree ( 'openNode',node,false );
@@ -978,11 +929,11 @@ var node,created;
 
 
 function resetGraph ( gwdId )  {
-var slider;
+let slider;
 
-  var plot = graphDataHash[gwdId]['plot'];
+  let plot = graphDataHash[gwdId]['plot'];
   if (plot)  {
-    var plotOptions = graphDataHash[gwdId]['plotOptions'];
+    let plotOptions = graphDataHash[gwdId]['plotOptions'];
     plot.axes.xaxis.smin = plotOptions.axes.xaxis.smin0;
     plot.axes.xaxis.smax = plotOptions.axes.xaxis.smax0;
     plot.axes.yaxis.smin = plotOptions.axes.yaxis.smin0;
@@ -1011,10 +962,10 @@ var slider;
 }
 
 function moveGraphSlider ( sliderId,handle,direction )  {
-var slider = document.getElementById ( sliderId );
+let slider = document.getElementById ( sliderId );
   if (slider)  {
-    var smin = $(slider).slider("values",0);
-    var smax = $(slider).slider("values",1);
+    let smin = $(slider).slider("values",0);
+    let smax = $(slider).slider("values",1);
     if (handle>0)  smax += direction*_GSliderPage;
              else  smin += direction*_GSliderPage;
     $(slider).slider({values:[smin,smax]});
@@ -1022,9 +973,9 @@ var slider = document.getElementById ( sliderId );
 }
 
 function responseToSlider ( gwdId,sliderSuffix,smin,smax ) {
-var plot        = graphDataHash[gwdId]['plot'];
-var plotOptions = graphDataHash[gwdId]['plotOptions'];
-var pAxis,poAxis;
+let plot        = graphDataHash[gwdId]['plot'];
+let plotOptions = graphDataHash[gwdId]['plotOptions'];
+let pAxis,poAxis;
   if (sliderSuffix=="-vslider")  {
     pAxis  = plot.axes.yaxis;
     poAxis = plotOptions.axes.yaxis;
@@ -1048,7 +999,7 @@ function addGraph ( gwdId,holderId, graphData, row,col,rowSpan,colSpan )  {
   if (!document.getElementById(holderId+"-grid"))
     return;
 
-  var dataArray;
+  let dataArray;
 
   if (graphData[0]!='[')  {
     $("body").css("cursor","progress");
@@ -1076,7 +1027,7 @@ function addGraph ( gwdId,holderId, graphData, row,col,rowSpan,colSpan )  {
 }
 
 function _add_graph ( gwdId,holderId, dataArray, row,col,rowSpan,colSpan )  {
-var cell = getGridCell ( holderId,row,col );
+let cell = getGridCell ( holderId,row,col );
 
   if (cell)  {
 
@@ -1095,8 +1046,8 @@ var cell = getGridCell ( holderId,row,col );
       if (cell.style.display!="block")
         graphWidgetList[gwdId] = 'graph';
 
-      var graphOptions = dataArray['graphOptions'];
-      var plotData     = dataArray['graphData'];
+      let graphOptions = dataArray['graphOptions'];
+      let plotData     = dataArray['graphData'];
       graphDataHash[gwdId] = new Object();
       graphDataHash[gwdId]['options'] = graphOptions;
       graphDataHash[gwdId]['data']    = plotData;
@@ -1106,15 +1057,15 @@ var cell = getGridCell ( holderId,row,col );
             .setAttribute ( "style","vertical-align: middle;" +
                                     "text-align: center;" );
 
-      var div;
+      let div;
       if ((graphOptions.hslider>0) || (plotData.length>1))  {
-        var w = graphOptions.width;
+        let w = graphOptions.width;
         if (plotData.length>1)  {
-          var sel = element ( "select","id",gwdId+"-select","" );
+          let sel = element ( "select","id",gwdId+"-select","" );
           sel.setAttribute ( "onchange",
             "switchGraph('"+gwdId+"',this.options[this.selectedIndex].value);" );
-          for (var i=0;i<plotData.length;i++)  {
-            var opt = new Option ( plotData[i].title,plotData[i].id );
+          for (let i=0;i<plotData.length;i++)  {
+            let opt = new Option ( plotData[i].title,plotData[i].id );
             sel.options.add ( opt );
             if (plotData[i].id==graphOptions.curplot)
               sel.selectedIndex = i;
@@ -1205,7 +1156,7 @@ var cell = getGridCell ( holderId,row,col );
                                            "text-align    : left;" +
                                            "padding-right : 8px;");
 
-        var h = graphOptions.height/2;
+        let h = graphOptions.height/2;
         div = element ( "div","id",gwdId+"-vslider","" );
         div.setAttribute ( "style","vertical-align: top;" +
                                    "height: " + h + "px;" );

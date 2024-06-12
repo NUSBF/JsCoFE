@@ -191,8 +191,6 @@ class PDBVal(basic.TaskDriver):
             xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
             self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
             xyzout_cif = xyzout_cif_1
-            self.success ( True, hidden_results=True )
-            return
 
         # 2. Prepare CIF with structure factors
 

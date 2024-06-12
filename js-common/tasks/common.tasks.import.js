@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.12.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,19 +13,21 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  ==========================================================================
  *
  */
-
+  
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -58,10 +60,8 @@ function TaskImport()  {
 }
 
 if (__template)
-      TaskImport.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskImport.prototype = Object.create ( TaskTemplate.prototype );
-TaskImport.prototype.constructor = TaskImport;
-
+  __cmd.registerClass ( 'TaskImport',TaskImport,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskImport',TaskImport,TaskTemplate.prototype );
 
 // ===========================================================================
 
@@ -83,7 +83,7 @@ TaskImport.prototype.taskDescription = function()  {
 }
 
 TaskImport.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -91,12 +91,12 @@ TaskImport.prototype.currentVersion = function()  {
 
 
 function _import_renameFile ( fname,uploaded_files )  {
-  var new_fname    = fname;
-  var name_counter = 0;
+  let new_fname    = fname;
+  let name_counter = 0;
 
   while (uploaded_files.indexOf(new_fname)>=0)  {
     name_counter++;
-    var lst = fname.split('.');
+    let lst = fname.split('.');
     if (lst.length>1)  {
       lst.push ( lst[lst.length-1] );
       lst[lst.length-2] = 'n' + padDigits ( name_counter,3 );
@@ -111,20 +111,21 @@ function _import_renameFile ( fname,uploaded_files )  {
 
 
 function _import_renameFile1 ( fname,uploaded_files )  {
-  var new_fname    = fname;
-  var name_counter = -1;
-  var lst = fname.split('.');
-  var ext = '';
+  let new_fname    = fname;
+  let name_counter = -1;
+  let lst = fname.split('.');
+  let ext = '';
   if (lst.length>1)
     ext = '.' + lst.pop();
 
+  let m = false;
   do {
     name_counter++;
     new_fname = lst.join('.');
     if (name_counter>0)
       new_fname += '.n' + padDigits ( name_counter,3 );
-    var m = false;
-    for (var i=0;(i<uploaded_files.length) && (!m);i++)
+    m = false;
+    for (let i=0;(i<uploaded_files.length) && (!m);i++)
       m = startsWith ( uploaded_files[i],new_fname );
   } while (m);
 
@@ -137,29 +138,29 @@ function _import_renameFile1 ( fname,uploaded_files )  {
 
 
 function _check_sequence ( files,uploaded_files,contents,file_mod,p,onDone_func )  {
-  var fname       = files[p].name;
-  var new_name    = _import_renameFile1 ( fname,uploaded_files );
-  var seq_counter = 1;
-  var annotation  = {
+  let fname       = files[p].name;
+  let new_name    = _import_renameFile1 ( fname,uploaded_files );
+  let seq_counter = 1;
+  let annotation  = {
     'file'   : fname,
     'rename' : new_name,
     'items'  : []
   }
 
   // the following makes files without sequence names acceptable
-  var lines = contents.split(/\r\n|\r|\n/);
-  for (var i=0;i<lines.length;i++)  {
+  let lines = contents.split(/\r\n|\r|\n/);
+  for (let i=0;i<lines.length;i++)  {
     lines[i] = lines[i].trim();
     if (lines[i]=='>')
       lines[i] = '>no name';
   }
-  var contents_list = lines.join('\n').split('>');
+  let contents_list = lines.join('\n').split('>');
 
-  for (var i=0;i<contents_list.length;i++)
+  for (let i=0;i<contents_list.length;i++)
     if (contents_list[i].replace(/\s/g,''))  {
-      var fname1 = new_name;
+      let fname1 = new_name;
       if (contents_list.length>2)  {
-        var lst = fname1.split('.');
+        let lst = fname1.split('.');
         lst.push ( lst[lst.length-1] );
         lst[lst.length-2] = 's' + padDigits ( seq_counter++,3 );
         fname1 = lst.join('.');
@@ -187,16 +188,16 @@ function _import_scanFiles ( files,pos,file_mod,uploaded_files,onDone_func ) {
 
     // look for sequence files
 
-    var p         = pos;
-    var isSeqFile = false;
-    var new_name  = '';
+    let p         = pos;
+    let isSeqFile = false;
+    let new_name  = '';
 
     // this loop always goes to files.length, check recursion in _check_sequence
     while ((!isSeqFile) && (p<files.length))  {
-      var ns = files[p].name.split('.');
+      let ns = files[p].name.split('.');
       if (ns[ns.length-1].toLowerCase()=='txt')
         ns.pop();
-      var ext = ns.pop().toLowerCase();
+      let ext = ns.pop().toLowerCase();
       isSeqFile = (ns.length>0) && (['seq','fasta','pir'].indexOf(ext)>=0);
       if (!isSeqFile)  {
         new_name = _import_renameFile ( files[p].name,uploaded_files );
@@ -214,7 +215,7 @@ function _import_scanFiles ( files,pos,file_mod,uploaded_files,onDone_func ) {
 
     /*
     while ((!isSeqFile) && (p<files.length))  {
-      var ns = files[p].name.split('.');
+      let ns = files[p].name.split('.');
       if (ns[ns.length-1].toLowerCase()=='txt')
         ns.pop();
       isSeqFile = (ns.length>1) &&
@@ -234,7 +235,7 @@ function _import_scanFiles ( files,pos,file_mod,uploaded_files,onDone_func ) {
         _check_sequence ( files,uploaded_files,files[p].contents,
                           file_mod,p,onDone_func );
       } else  {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function(e) {
           _check_sequence ( files,uploaded_files,e.target.result,
                             file_mod,p,onDone_func );
@@ -253,10 +254,10 @@ function _import_scanFiles ( files,pos,file_mod,uploaded_files,onDone_func ) {
 
 function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
 
-  var sel_files = [];
-  var ignore    = '';
-  for (var i=0;i<files.length;i++)  {
-    var lcname = files[i].name.toLowerCase();
+  let sel_files = [];
+  let ignore    = '';
+  for (let i=0;i<files.length;i++)  {
+    let lcname = files[i].name.toLowerCase();
     if (endsWith(lcname,'.ccp4_demo') ||
         endsWith(lcname,'.ccp4cloud') ||
         endsWith(lcname,'.zip'))
@@ -275,13 +276,13 @@ function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
 
     file_mod.rename = {};  // clean up every upload
 
-    var upl_files = [];
-    for (var i=0;i<uploaded_files.length;i++)
+    let upl_files = [];
+    for (let i=0;i<uploaded_files.length;i++)
       upl_files.push ( getBasename(uploaded_files[i]) );
 
     _import_scanFiles ( sel_files,0,file_mod,upl_files,function(file_mod){
       //alert ( ' annot=' + JSON.stringify(file_mod) );
-      var nannot = file_mod.annotation.length;
+      let nannot = file_mod.annotation.length;
       if ((('scalepack' in file_mod) && (!jQuery.isEmptyObject(file_mod.scalepack))) ||
           ((nannot>0) && (file_mod.annotation[nannot-1].items[0].type=='none')))
         new ImportAnnotationDialog ( file_mod,onReady_func );
@@ -357,7 +358,7 @@ if (!__template)  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
 
-    var div = this.makeInputLayout();
+    let div = this.makeInputLayout();
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
     // if ((!__user_settings.guided_import) &&
@@ -367,12 +368,12 @@ if (!__template)  {
     // } else
     //   div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
-    // var msg = '';
+    // let msg = '';
     // if (__local_service)
     //       msg = 'Use file selection buttons ';
     // else  msg = 'Use the file selection button ';
 
-    var msg = '';
+    let msg = '';
     if (('void1' in this.input_data.data) && (this.input_data.data['void1'].length>0))
       msg = '<span style="font-size:16px;">' +
             '<b>Are you trying to <u>replace</u> data in current structure?</b> ' +
@@ -380,11 +381,10 @@ if (!__template)  {
             '<b><i>Edit Structure Revision</i></b> task after import. This task only ' +
             'adds data to the Project.</span><br>&nbsp;<br>';
 
-    var grid_row = div.grid.getNRows();
-    div.grid.setLabel ( msg + 'Use the file selection button below to select and upload data ' +
-                        'files to the Project (use multiple file selections and repeat ' +
-                        'uploads if necessary). When done, hit <b><i>Import</i></b> ' +
-                        'button to process files uploaded.<br>&nbsp;',
+    let grid_row = div.grid.getNRows();
+    div.grid.setLabel ( msg + 'Use the file selection button below to choose files ' +
+                        'for upload. When done, hit <b><i>Import</i></b> button to ' +
+                        'start importing.<br>&nbsp;',
                         grid_row,0, 1,1 ).setFontSize('80%');
     div.grid.setWidth ( '100%' );
 
@@ -411,7 +411,7 @@ if (!__template)  {
         function(){
           new ImportPDBDialog ( function(pdb_list){
             pdb_spec_list = [];
-            for (var i=0;i<pdb_list.length;i++)
+            for (let i=0;i<pdb_list.length;i++)
               pdb_spec_list.push ( 'PDB::' + pdb_list[i] );
             panel.upload.setUploadedFiles ( pdb_spec_list );
           });
@@ -423,7 +423,7 @@ if (!__template)  {
           if ((panel.upload.new_files.length>0) &&
               (__user_settings.guided_import))  {
             panel.upload.button.setText ( 'Upload more files' );
-            var files_ignored = '';
+            let files_ignored = '';
             if (panel.upload.ignored_list.length>0)
               files_ignored = '<h3>Files ignored:</h3><ul><li>' +
                               panel.upload.ignored_list.join('</li><li>') +
@@ -504,7 +504,7 @@ if (!__template)  {
     else  return 'task_import';
   }
 
-  var conf = require('../../js-server/server.configuration');
+  let conf = require('../../js-server/server.configuration');
 
   TaskImport.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.import_task', jobManager, jobDir, this.id];

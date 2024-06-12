@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    02.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -443,9 +443,12 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
   this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
   this.headerPanel.setCellSize ( '32px','32px',0,22 );
-  if (__local_user)
-        this.logout_btn .setTooltip  ( 'End session' );
-  else  this.logout_btn .setTooltip  ( 'Logout'      );
+  let end_tooltip = 'Logout';
+  if (__local_user)  {
+    if (isElectronAPI())  end_tooltip = 'Quit';
+                    else  end_tooltip = 'End session';
+  }
+  this.logout_btn.setTooltip ( end_tooltip );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -486,12 +489,12 @@ BasePage.prototype.addFullscreenToMenu = function()  {
     this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
-  if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
+  // if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
     this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
                         .addOnClickListener ( toggleDarkMode );
     this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
                         .addOnClickListener ( function(){ new DarkModeDialog(); } );
-  }
+  // }
   return this;
 }
 
@@ -499,8 +502,10 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
   let menuLabel = 'Log out';
-  if (__local_user)
-    menuLabel = 'End session';
+  if (__local_user)  {
+    if (isElectronAPI())  menuLabel = 'Quit';
+                    else  menuLabel = 'End session';
+  }
   this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
                        .addOnClickListener ( logout_func );
   return this;
@@ -646,6 +651,8 @@ BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();
 }
 
+registerClass ( 'BasePage',BasePage,null );
+
 
 var __history_count = 0;
 
@@ -705,6 +712,7 @@ function makePage ( new_page_func,onCreate_func=null )  {
 
 
 function setHistoryListener ( sceneId )  {
+
   $(window).on('popstate', function(event) {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
@@ -730,4 +738,14 @@ function setHistoryListener ( sceneId )  {
     } else
       window.history.back();
   });
+
+  if (isElectronAPI())  {
+    window.electronAPI.onNavigateBack(() => {
+      window.history.back();
+    });
+    window.electronAPI.onNavigateForward(() => {
+      window.history.forward();
+    });
+  }
+
 }

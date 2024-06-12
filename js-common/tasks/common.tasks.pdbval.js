@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.09.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PDB Valiation Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskPDBVal()  {
   this.name    = 'PDB validation report';
   this.setOName ( 'deposition' );  // default output file name template
   this.title   = 'PDB Validation Report';
-  //this.helpURL = './html/jscofe_task_deposition.html';
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
@@ -106,7 +108,7 @@ function TaskPDBVal()  {
           type     : 'checkbox',
           label    : 'Remove hydrogens with zero occupancy',
           tooltip  : 'Check to remove hydrogens with zero occupancy',
-          value    : false,
+          value    : true,
           iwidth   : 340,
           position : [2,0,1,4]
         }
@@ -131,12 +133,9 @@ function TaskPDBVal()  {
 
 }
 
-
 if (__template)
-      TaskPDBVal.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBVal.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBVal.prototype.constructor = TaskPDBVal;
-
+  __cmd.registerClass ( 'TaskPDBVal',TaskPDBVal,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPDBVal',TaskPDBVal,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

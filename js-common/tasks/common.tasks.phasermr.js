@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -387,14 +390,14 @@ function TaskPhaserMR()  {
                     label    : 'Cutoff (%)',
                     //lwidth   : 60,
                     iwidth   : 50,
-                    default  : '10',    // to be displayed in grey
+                    default  : '7',    // to be displayed in grey
                     tooltip  : 'Default value is 7%; increase for low-homology searches',
                     range    : [1,99],    // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '10',      // value to be paired with the keyword
+                    value    : '7',      // value to be paired with the keyword
                     position : [1,3,1,1], // [row,col,rowSpan,colSpan]
                     showon   : {PACK_SEL:['PERCENT']}
                   },
@@ -854,12 +857,9 @@ function TaskPhaserMR()  {
 
 }
 
-
 if (__template)
-      TaskPhaserMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPhaserMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskPhaserMR.prototype.constructor = TaskPhaserMR;
-
+  __cmd.registerClass ( 'TaskPhaserMR',TaskPhaserMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPhaserMR',TaskPhaserMR,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -978,6 +978,8 @@ if (!__template)  {
        // this.input_data.data['xmodel'] = [revision.Structure];
 
       if (revision.Structure)  {
+        if (revision.subtype.indexOf('ligands')>=0)
+          this.input_data.data['ligands'] = [revision.Structure];
         if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
         // if (revision.Structure.hasXYZ())

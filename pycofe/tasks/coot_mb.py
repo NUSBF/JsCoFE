@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    12.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -154,35 +154,35 @@ class Coot(coot_ce.CootCE):
 
         # make command line arguments
         args = []
-        pdbpath = istruct.getMMCIFFilePath ( self.inputDir() )
-        if not pdbpath:
-            pdbpath = istruct.getPDBFilePath ( self.inputDir() )    
-        if not pdbpath:
-            pdbpath = istruct.getSubFilePath ( self.inputDir() )
-        if pdbpath:
-            args += ["--pdb",pdbpath]
+        xyzpath = istruct.getXYZFilePath ( self.inputDir() )
+        # if not xyzpath:
+        #     xyzpath = istruct.getPDBFilePath ( self.inputDir() )    
+        if not xyzpath:
+            xyzpath = istruct.getSubFilePath ( self.inputDir() )
+        if xyzpath:
+            args += ["--pdb",xyzpath]
         mtzpath = istruct.getMTZFilePath ( self.inputDir() )
         if mtzpath:
             args += ["--auto",mtzpath]
 
         if istruct2:
-            pdbpath = istruct2.getPDBFilePath ( self.inputDir() )
-            if not pdbpath:
-                pdbpath = istruct2.getSubFilePath ( self.inputDir() )
-            if pdbpath and pdbpath not in args:
-                args += ["--pdb",pdbpath]
+            xyzpath = istruct2.getXYZFilePath ( self.inputDir() )
+            if not xyzpath:
+                xyzpath = istruct2.getSubFilePath ( self.inputDir() )
+            if xyzpath and xyzpath not in args:
+                args += ["--pdb",xyzpath]
             mtzpath = istruct2.getMTZFilePath ( self.inputDir() )
             if mtzpath and mtzpath not in args:
                 args += ["--auto",mtzpath]
 
         for s in data_list:
-            pdbpath = s.getPDBFilePath ( self.inputDir() )
-            if pdbpath and pdbpath not in args:
-                args += ["--pdb",pdbpath]
+            xyzpath = s.getXYZFilePath ( self.inputDir() )
+            if xyzpath and xyzpath not in args:
+                args += ["--pdb",xyzpath]
             if s._type=="DataStructure":
-                pdbpath = s.getSubFilePath ( self.inputDir() )
-                if pdbpath and pdbpath not in args:
-                    args += ["--pdb",pdbpath]
+                xyzpath = s.getSubFilePath ( self.inputDir() )
+                if xyzpath and xyzpath not in args:
+                    args += ["--pdb",xyzpath]
                 mtzpath = s.getMTZFilePath ( self.inputDir() )
                 if mtzpath and mtzpath not in args:
                     args += ["--auto",mtzpath]
@@ -190,14 +190,14 @@ class Coot(coot_ce.CootCE):
         """
         for s in data_list:
             if s.getPDBFileName():
-                pdbpath = s.getPDBFilePath(self.inputDir())
-                if pdbpath not in args:
-                    args += ["--pdb",pdbpath]
+                xyzpath = s.getPDBFilePath(self.inputDir())
+                if xyzpath not in args:
+                    args += ["--pdb",xyzpath]
             if s._type=="DataStructure":
                 if s.getSubFileName():
-                    pdbpath = s.getSubFilePath(self.inputDir())
-                    if pdbpath not in args:
-                        args += ["--pdb",pdbpath]
+                    xyzpath = s.getSubFilePath(self.inputDir())
+                    if xyzpath not in args:
+                        args += ["--pdb",xyzpath]
                 mtzpath = s.getMTZFilePath(self.inputDir())
                 if mtzpath not in args:
                     args += ["--auto",mtzpath]
@@ -381,24 +381,19 @@ class Coot(coot_ce.CootCE):
                 fn,fext = os.path.splitext ( f )
 
             # coot_xyz = self.getOFName ( fext )
-            coot_xyz = self.getOFName ( ".pdb" )
+            coot_xyz   = None
+            coot_pdb   = None
             coot_mmcif = None
             if fext.upper()!=".PDB":
-                coot_mmcif = self.getOFName ( ".mmcif" )
+                coot_mmcif = self.getMMCIFOFName()
                 shutil.copy2 ( fname,coot_mmcif )
-                st = gemmi.read_structure ( fname )
-                # cif_block  = gemmi.cif.read(fname)[0]
-                # st         = gemmi.make_structure_from_block(cif_block)
-                st.write_pdb ( coot_xyz )
-                # shutil.copy2 ( fname,os.path.join(self.outputDir(),coot_mmcif) )
-            else:        
-                shutil.copy2 ( fname,coot_xyz )
+                coot_xyz   = coot_mmcif
+            else:
+                coot_pdb = self.getXYZOFName() #  .pdb
+                shutil.copy2 ( fname,coot_pdb )
+                coot_xyz = coot_pdb
             coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( mtzfile,coot_mtz )
-            # shutil.copy2 ( "mol0.mmcif",os.path.join(self.outputDir(),"mol0.mmcif") )
-
-            # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( coot_mtz,fn )
 
             try:
                 cvl = covlinks.CovLinks(libPath, coot_xyz)
@@ -423,15 +418,17 @@ class Coot(coot_ce.CootCE):
                 library = self.registerLibrary ( libPath,copy_files=False )
             if library:
                 libPath = library.getLibFilePath(self.outputDir())
+
             struct = self.registerStructure ( 
-                            None,
-                            coot_xyz,
+                            coot_mmcif,
+                            coot_pdb,
                             None,
                             coot_mtz,
                             libPath = libPath,
                             leadKey = lead_key,
                             refiner = istruct.refiner 
                         )
+
             if struct and library:
                 assert libPath == struct.getLibFilePath(self.outputDir())
 

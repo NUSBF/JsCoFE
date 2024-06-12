@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    04.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -40,6 +40,7 @@ from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
 from   pycofe.auto      import auto,auto_workflow
 from   pycofe.proc      import covlinks
+from   pycofe.varut     import mmcif_utils
 
 # ============================================================================
 # Make Refmac driver
@@ -103,9 +104,10 @@ class Refmac(basic.TaskDriver):
                             atom.name    = ha_type
                             atom.element = gemmi.Element ( ha_type )
                     st_xyz[0].add_chain ( chain )
-        if pdbpath:
-            st_xyz.write_pdb ( outpath + ".pdb" )
         st_xyz.make_mmcif_document().write_file ( outpath + ".mmcif" )
+        if pdbpath:
+            # st_xyz.write_pdb ( outpath + ".pdb" )
+            mmcif_utils.translate_to_pdb ( st_xyz,pdb_outfile_path=outpath+".pdb" )
         return is_substr
 
     # ------------------------------------------------------------------------
@@ -454,6 +456,11 @@ class Refmac(basic.TaskDriver):
                 # make anomolous ED map widget
                 if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
 
+                    self.putMessage ( "&nbsp;" )
+                    anomsec_id = self.getWidgetId ( "anomsec" )
+                    self.putSection ( anomsec_id,"Anomalous maps and scatterers",openState_bool=False )
+                    self.setReportWidget ( anomsec_id )
+
                     mapfname = self.calcCCP4Maps ( self.getMTZOFName(),
                                         "refmac_ano",source_key="refmac_anom" )
                     hatype   = revision.ASU.ha_type.upper()
@@ -486,7 +493,10 @@ class Refmac(basic.TaskDriver):
                                             hatype,out_merged 
                                         )
 
-                        self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
+                        # self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
+                        self.putMessage ( "<h3>Output structure added with heavy-atom substructure, " +\
+                                          "and anomolous maps</h3>" )
+                        
                         struct_ano = self.formStructure ( 
                                             out_merged + ".mmcif",
                                             out_merged + ".pdb",
@@ -519,6 +529,8 @@ class Refmac(basic.TaskDriver):
                         self.putMessage ( "<i>Structure with anomalous maps " +\
                                           "could not be formed due to exception " +\
                                           " (possible bug)</i>" )
+                        
+                    self.resetReportPage()
 
                 # self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
                 # self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
@@ -610,6 +622,9 @@ class Refmac(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Output Generated" )
+            self.generic_parser_summary["refmac"] = {
+              "summary_line" : "refinment failed"
+            }
 
         # close execution logs and quit
         self.success ( have_results )

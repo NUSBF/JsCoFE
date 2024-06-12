@@ -28,7 +28,6 @@
     "fsmount"          : null,
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : "./cofe-projects",
-    "facilitiesPath"   : "./cofe-facilities",
     "bootstrapHTML"    : "jscofe.html",
     "fileCapSize"      : 500000,
     "regMode"          : "admin",

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.webcoot' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -57,10 +60,8 @@ function TaskWebCootCE()  {
 }
 
 if (__template)
-      TaskWebCootCE.prototype = Object.create ( __template.TaskWebCoot.prototype );
-else  TaskWebCootCE.prototype = Object.create ( TaskWebCoot.prototype );
-TaskWebCootCE.prototype.constructor = TaskWebCootCE;
-
+  __cmd.registerClass ( 'TaskWebCootCE',TaskWebCootCE,__template.TaskWebCoot.prototype );
+else    registerClass ( 'TaskWebCootCE',TaskWebCootCE,TaskWebCoot.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

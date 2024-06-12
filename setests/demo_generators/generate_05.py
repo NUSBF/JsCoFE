@@ -893,7 +893,7 @@ def generate_05(browser,
         assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+            sf.loginToCloud(d.driver, login, password, nologin)
 
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, 'Staged solution of Insulin structure with EP on sulphur atoms')

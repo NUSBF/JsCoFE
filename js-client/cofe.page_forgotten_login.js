@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    28.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,7 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  let title_lbl  = new Label     ( 'CCP4 Login Recovery'  );
+  let title_lbl  = new Label     ( 'Login Recovery'  );
   let email_lbl  = new Label     ( 'E-mail:' );
   let email_inp  = new InputText ( '' );
   let prompt_lbl = new Label     ( 'Please specify e-mail address, which was '  +
@@ -153,9 +153,10 @@ function ForgottenLoginPage ( sceneId )  {
 
 }
 
-ForgottenLoginPage.prototype = Object.create ( BasePage.prototype );
-ForgottenLoginPage.prototype.constructor = ForgottenLoginPage;
+// ForgottenLoginPage.prototype = Object.create ( BasePage.prototype );
+// ForgottenLoginPage.prototype.constructor = ForgottenLoginPage;
 
+registerClass ( 'ForgottenLoginPage',ForgottenLoginPage,BasePage.prototype );
 
 function makeForgottenLoginPage ( sceneId )  {
   makePage ( function(){ new ForgottenLoginPage(sceneId); } );

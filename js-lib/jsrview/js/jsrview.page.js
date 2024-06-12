@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    03.04.20   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,14 +12,15 @@
 //  **** Content :  RVAPI javascript layer's main page module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2020
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function makeHeader()  {
-var table,div,cell;
+let table,div,cell;
 
   table = element ( "table","id",pageTopId+"-grid","" );
   table.setAttribute ( "class","grid-layout" );
@@ -40,7 +41,7 @@ var table,div,cell;
 
 
 function makeSlimHeader()  {
-var table,div,cell;
+let table,div,cell;
 
   table = element ( "table","id",pageTopId+"-grid","" );
   table.setAttribute ( "class","grid-layout" );
@@ -58,11 +59,11 @@ var table,div,cell;
 
 
 function setPageHeader ( htmlString )  {
-var header = document.getElementById ( pageHeaderId );
+let header = document.getElementById ( pageHeaderId );
   if (header)  {
     while (header.firstChild)
       header.removeChild(header.firstChild);
-    var hdrString = $.trim(htmlString);
+    let hdrString = $.trim(htmlString);
     if (hdrString[0]!='<')
        hdrString = "<div>" + hdrString +
                    "</div>";
@@ -94,9 +95,9 @@ function initPage ( layHeaderKey,layToolbar,layTabs,sceneId )  {
   _taskData  = "{*}";
   _taskTimer = 0;
 
-  var compStyle = window.getComputedStyle(_document_body,null);
+  let compStyle = window.getComputedStyle(_document_body,null);
   if (compStyle)  {
-    var font_size = parseInt(compStyle.getPropertyValue('font-size'));
+    let font_size = parseInt(compStyle.getPropertyValue('font-size'));
 //  alert ( " font_size=" + font_size );
 // ##### i2
     if (font_size<12)

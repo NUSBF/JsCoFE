@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    31.03.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,8 @@ function _ccp4_download()  {
 }
 
 function LoginPage ( sceneId )  {
+
+  stopSessionChecks();
 
   __login_token = '';
   __login_user  = '';
@@ -72,7 +74,7 @@ function LoginPage ( sceneId )  {
                           else  tipNo = round(Date.now()/5000,0);
         tipNo = tipNo % __tips.tips.length;
         let tipLink = '<a href="javascript:' +
-                          'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
+                          'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
                                         '\'' + __tips.tips[tipNo].doc   + '/'   +
                                                __tips.tips[tipNo].link  + '\',' +
                                         'null,10)">';
@@ -276,8 +278,10 @@ function LoginPage ( sceneId )  {
 
 }
 
-LoginPage.prototype = Object.create ( BasePage.prototype );
-LoginPage.prototype.constructor = LoginPage;
+// LoginPage.prototype = Object.create ( BasePage.prototype );
+// LoginPage.prototype.constructor = LoginPage;
+
+registerClass ( 'LoginPage',LoginPage,BasePage.prototype );
 
 function makeLoginPage ( sceneId )  {
   makePage ( function(){ 

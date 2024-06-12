@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,6 +20,10 @@
  */
 
 'use strict';
+
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
 
 // ===========================================================================
 
@@ -64,6 +68,9 @@ function DataTemplate()  {
                                               // in python and js layers, respectively.
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'DataTemplate',DataTemplate,null );
+else    registerClass ( 'DataTemplate',DataTemplate,null );
 
 // ===========================================================================
 
@@ -109,11 +116,12 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // cast() should extend (deep-copy) all data classes referenced in
   // given data type body and cast the whole type to the new one given
   DataTemplate.prototype.cast = function ( newTypeName ) {
-    var ext_class = this.extend();
+    let ext_class = this.extend();
 //    if (newTypeName.startsWith('Data') && (newTypeName!=this._type))  {
     if (startsWith(newTypeName,'Data') && (newTypeName!=this._type))  {
-      var new_class   = eval ( 'new '+newTypeName+'()' );      // new default class
-      var cst_class   = $.extend ( true,new_class,ext_class ); // extend with this
+      // let new_class   = eval ( 'new '+newTypeName+'()' );      // new default class
+      let new_class   = makeNewInstance ( newTypeName );      // new default class
+      let cst_class   = $.extend ( true,new_class,ext_class ); // extend with this
       cst_class._type = new_class._type;   // cast to new class name
       return cst_class;
     } else
@@ -155,7 +163,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   }
 
   DataTemplate.prototype.inspectData = function ( task ) {
-    var dlg = new DataInspectDialog ( this.makeDataSummaryPage(task),
+    let dlg = new DataInspectDialog ( this.makeDataSummaryPage(task),
                                       this.dname,'800px','700px' );
     dlg.launch();
     //new MessageBox ( "Not implemented","Data Viewer not Implemented.");
@@ -210,39 +218,39 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // TaskDataDialog. Empty return will suppress description output in
   // task data dialog.
   DataTemplate.prototype.getSubtypeDescription = function ( stype )  {
-  var with_items    = [];
-  var without_items = [];
+  let with_items    = [];
+  let without_items = [];
 
     this.get_item = function ( subtype )  {
       if (['!','~'].indexOf(subtype[0])>=0)  {
-        var s = this.subtypeDescription ( subtype.substring(1) );
+        let s = this.subtypeDescription ( subtype.substring(1) );
         if (s)  {
           if (subtype[0]=='!')  with_items   .push ( s );
                           else  without_items.push ( s );
         }
       } else  {
-        var s = this.subtypeDescription ( subtype );
+        let s = this.subtypeDescription ( subtype );
         if (s)
           with_items.push ( ' ' + s );
       }
     }
 
     if (stype.constructor==Array)  {
-      for (var j=0;j<stype.length;j++)
+      for (let j=0;j<stype.length;j++)
         this.get_item ( stype[j] );
     } else
       this.get_item ( stype );
 
-    var sdesc = '';
-    var n     = with_items.length + without_items.length;
+    let sdesc = '';
+    let n     = with_items.length + without_items.length;
     if (n==1)  {
       if (with_items.length==1)  sdesc = with_items[0];
                            else  sdesc = 'no ' + without_items[0];
     } else if (n>1)  {
       sdesc = 'at least one of<ul style="margin:0;">';
-      for (var i=0;i<with_items.length;i++)
+      for (let i=0;i<with_items.length;i++)
         sdesc += '<li>' + with_items[i].trim() + '</li>';
-      for (var i=0;i<without_items.length;i++)
+      for (let i=0;i<without_items.length;i++)
         sdesc += '<li>no ' + without_items[i] + '</li>';
       sdesc += '</ul>';
     }
@@ -250,8 +258,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
     return sdesc;
 
     /*
-    var subtype = stype;
-    var mod     = '';
+    let subtype = stype;
+    let mod     = '';
     if (stype[0]=='!')  {
       mod     = '!';
       subtype = stype.substring(1);

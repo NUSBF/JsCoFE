@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -97,12 +100,9 @@ function TaskWebCoot()  {
 
 }
 
-
 if (__template)
-      TaskWebCoot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWebCoot.prototype = Object.create ( TaskTemplate.prototype );
-TaskWebCoot.prototype.constructor = TaskWebCoot;
-
+  __cmd.registerClass ( 'TaskWebCoot',TaskWebCoot,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWebCoot',TaskWebCoot,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -147,6 +147,19 @@ TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
 
 if (!__template)  {
   //  for client side
+
+  TaskWebCoot.prototype.isTaskAvailable = function()  {
+
+    if (isQtWebEngine())
+      return ['incompatible-browser',
+              'task is not compatible with the browser used',
+              '<h3>Task is not compatible with the browser used</h3>' +
+              'Consider using alternative task (Coot) or choose a different<br>' +
+              'browser through ' + appName() + ' configuration utility.' ];
+    else
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskWebCoot.prototype.hotButtons = function()  {

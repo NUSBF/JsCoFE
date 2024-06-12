@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Structure Prediction Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev 2022-2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2022-2024
  *
  *  ====================================================================
  *
@@ -20,14 +20,13 @@
 
 'use strict';
 
-var __template = null;   // null __template indicates that the code runs in
-                         // client browser
+var __template = null;
+var __cmd      = null;
 
-// otherwise, the code runs on a server, in which case __template references
-// a module with Task Template Class:
-
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -47,9 +46,10 @@ function TaskStructurePrediction()  {   // must start with Task...
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
+      customInput : 'ncopies-spred',
       inputId     : 'seq',      // input Id for referencing input fields
       min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      max         : 24          // maximum acceptable number of data instances
     }
   ];
 
@@ -106,13 +106,11 @@ function TaskStructurePrediction()  {   // must start with Task...
 
 }
 
-
 // finish constructor definition
 
 if (__template)
-      TaskStructurePrediction.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskStructurePrediction.prototype = Object.create ( TaskTemplate.prototype );
-TaskStructurePrediction.prototype.constructor = TaskStructurePrediction;
+  __cmd.registerClass ( 'TaskStructurePrediction',TaskStructurePrediction,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskStructurePrediction',TaskStructurePrediction,TaskTemplate.prototype );
 
 // ===========================================================================
 
@@ -145,7 +143,7 @@ TaskStructurePrediction.prototype.requiredEnvironment = function() {
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskStructurePrediction.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -159,6 +157,8 @@ TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
                   'openfold'] );
 }
 
+TaskStructurePrediction.prototype.cleanJobDir = function ( jobDir )  {}
+
 // ===========================================================================
 
 //  4. Add server-side code
@@ -166,7 +166,7 @@ TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {  //  will run only on server side
 
   // acquire configuration module
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   // form command line for server's node js to start task's python driver;
   // note that last 3 parameters are optional and task driver will not use
@@ -181,9 +181,6 @@ if (__template)  {  //  will run only on server side
               this.id                   // task id (assigned by the framework)
             ];
   }
-
-
-
 
   // -------------------------------------------------------------------------
   // export such that it could be used in server's node js

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.11.22   <--  Date of Last Modification.
+ *    03.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -183,7 +183,7 @@ TreeNode.prototype.setCustomIconVisible = function ( visible_bool )  {
   if (this.data)  {
     if (visible_bool)  this.data.ci_state = 'visible';
                    else  this.data.ci_state = 'hidden';
-    var ci_element = document.getElementById ( this.id + '_pbar' );
+    let ci_element = document.getElementById ( this.id + '_pbar' );
     if (ci_element)  {
       (function(elem,state){
         window.setTimeout ( function(){ elem.style.visibility = state; },0 );
@@ -208,7 +208,7 @@ TreeNode.prototype.setTooltip = function ( text )  {
 
 /*
 TreeNode.prototype.setCustomIconState = function ( state )  {
-var ci_element = document.getElementById(this.id + '_pbar');
+let ci_element = document.getElementById(this.id + '_pbar');
   if (ci_element)
     ci_element.style.visibility = state;
 }
@@ -234,8 +234,8 @@ function Tree ( rootName )  {
 
   this.deleteChildren = function ( node )  {  // private
 
-    for (var i=0;i<node.children.length;i++)  {
-      for (var j=0;j<node.children[i].fchildren.length;j++)
+    for (let i=0;i<node.children.length;i++)  {
+      for (let j=0;j<node.children[i].fchildren.length;j++)
         this.node_map[node.children[i].fchildren[j].id] = null;
       node.children[i].fchildren = [];
       this.deleteChildren ( node.children[i] );
@@ -249,14 +249,14 @@ function Tree ( rootName )  {
   /*
   this.mapNodes = function ( node )  {  // private
     this.node_map[node.id] = node;
-    for (var i=0;i<node.children.length;i++)
+    for (let i=0;i<node.children.length;i++)
       this.mapNodes ( node.children[i] );
   }
   */
 
   this.__set_fchildren = function ( node,fchildren )  {
-    for (var i=0;i<fchildren.length;i++)  {
-      var fnode = new TreeNode ( '','',null );
+    for (let i=0;i<fchildren.length;i++)  {
+      let fnode = new TreeNode ( '','',null );
       if (fchildren[i].fchildren.length>0)
         this.__set_fchildren ( fnode,fchildren[i].fchildren );
       else  {
@@ -268,7 +268,7 @@ function Tree ( rootName )  {
   }
 
   this.setNode = function ( parent_node, node_obj, allow_selection )  {
-    var node = new TreeNode ( '','',null );
+    let node = new TreeNode ( '','',null );
     node.copy ( node_obj );
     if (!allow_selection)
       node.state.selected = false;
@@ -276,15 +276,15 @@ function Tree ( rootName )  {
     parent_node.children.push ( node );
     this.node_map[node.id] = node;
     if ('fchildren' in node_obj)  {
-      for (var i=0;i<node_obj.fchildren.length;i++)  {
-        var fnode = new TreeNode ( '','',null );
+      for (let i=0;i<node_obj.fchildren.length;i++)  {
+        let fnode = new TreeNode ( '','',null );
         fnode.copy ( node_obj.fchildren[i] );
         node.fchildren.push ( fnode );
         this.node_map[fnode.id] = fnode;
       }
     }
     //  this.setNode ( node,node_obj.fchildren[i],allow_selection );
-    for (var i=0;i<node_obj.children.length;i++)
+    for (let i=0;i<node_obj.children.length;i++)
       this.setNode ( node,node_obj.children[i],allow_selection );
     if (node.state.selected)
       this.selected_node_id = node.id;
@@ -307,11 +307,11 @@ Tree.prototype.delete = function()  {
 }
 
 Tree.prototype.addRootNode = function ( text,icon_uri,treeNodeCustomIcon )  {
-var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+let node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   this.root_nodes.push ( node );
   this.node_map[node.id] = node;
   if (this.created)  {
-    var snode = $.extend ( {},node );
+    let snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#',node,'last',false,false);
     // jstree modifies node stricture, therefore extend it with custom fields
     node = $.extend ( node,snode );
@@ -323,12 +323,12 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
 
 
 Tree.prototype.addNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
-var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+let node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   node.parentId  = parent_node.id;
   parent_node.children.push ( node );
   this.node_map[node.id] = node;
   if (this.created)  {
-    var snode = $.extend ( {},node );
+    let snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
     // jstree modifies node structure, therefore extend it with custom fields
     node = $.extend ( node,snode );
@@ -341,16 +341,16 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
 }
 
 Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
-  // var children = [];
-  // for (var i=0;i<parent_node.children.length;i++)
+  // let children = [];
+  // for (let i=0;i<parent_node.children.length;i++)
   //   children.push ( parent_node.children[i] );
 
-  var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+  let node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   node.parentId  = parent_node.id;
   // parent_node.children = [node];
   this.node_map[node.id] = node;
   if (this.created)  {
-    var snode = $.extend ( {},node );
+    let snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'first',false,false);
     // jstree modifies node structure, therefore extend it with custom fields
     node = $.extend ( node,snode );
@@ -360,7 +360,7 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
       $(this.root.element).jstree(true).move_node(parent_node.children,node,0,false,false);
       // $(this.root.element).jstree(true).show_node(parent_node.children);
       node.children = parent_node.children;
-      for (var i=0;i<node.children;i++)  {
+      for (let i=0;i<node.children;i++)  {
         node.children[i].parentId = node.id;
         this.node_map[node.children[i].id].parentId = node.id;
       }
@@ -370,7 +370,7 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
     this.confirmCustomIconsVisibility();
   } else  {
     node.children = parent_node.children;
-    for (var i=0;i<node.children;i++)
+    for (let i=0;i<node.children;i++)
       node.children[i].parentId = node.id;
     parent_node.children = [node];
   }
@@ -382,15 +382,15 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
 /*
 Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
 
-  var children = parent_node.children;
+  let children = parent_node.children;
   if (children.length<=0)
     return this.addNode ( parent_node,text,icon_uri,treeNodeCustomIcon );
 
-  var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+  let node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   node.parentId  = parent_node.id;
   // this.node_map[node.id] = node;
   if (this.created)  {
-    var snode = $.extend ( {},node );
+    let snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'first',false,false);
     $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
     this.refresh();
@@ -401,9 +401,9 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
     this.node_map[node.id] = node;
     //node.data     = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
     node.children = children;              // this gets lost, duplicate, jstree bug
-    for (var i=0;i<node.children.length;i++)
+    for (let i=0;i<node.children.length;i++)
       node.children[i].parentId = node.id;
-    // for (var i=0;i<node.children.length;i++)  {
+    // for (let i=0;i<node.children.length;i++)  {
     //   node.children[i].parentId = node.id;
     //   // snode = $.extend ( {},node.children[i] );
     //   // snode.children = [];
@@ -415,7 +415,7 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
   } else  {
     this.node_map[node.id] = node;
     node.children = children;
-    for (var i=0;i<node.children.length;i++)
+    for (let i=0;i<node.children.length;i++)
       node.children[i].parentId = node.id;
   }
   parent_node.children = [node];
@@ -432,10 +432,10 @@ Tree.prototype.getChildNodes = function ( node )  {
 
 
 Tree.prototype.getNodePosition = function ( node )  {
-var parent_node = null;
-var parentId    = null;
-var clen        = 0;
-var pos         = -2;
+let parent_node = null;
+let parentId    = null;
+let clen        = 0;
+let pos         = -2;
 
   if (node.parentId && (node.parentId in this.node_map))  {
     parent_node = this.node_map[node.parentId];
@@ -443,12 +443,12 @@ var pos         = -2;
 
       parentId = parent_node.parentId;
 
-      var parent_children = parent_node.children;
+      let parent_children = parent_node.children;
       clen = parent_children.length;
 
       // find sibling position of given node
       pos = -1;
-      for (var i=0;(i<clen) && (pos<0);i++)
+      for (let i=0;(i<clen) && (pos<0);i++)
         if (parent_children[i].id==node.id)
           pos = i;
 
@@ -464,12 +464,12 @@ Tree.prototype.moveNodeUp = function ( node )  {
 
   if (node.parentId && (node.parentId in this.node_map))  {
 
-    var parent_node     = this.node_map[node.parentId];
-    var parent_children = parent_node.children;
+    let parent_node     = this.node_map[node.parentId];
+    let parent_children = parent_node.children;
 
     // find sibling position of given node
-    var pos = -1;
-    for (var i=0;(i<parent_children.length) && (pos<0);i++)
+    let pos = -1;
+    for (let i=0;(i<parent_children.length) && (pos<0);i++)
       if (parent_children[i].id==node.id)
         pos = i;
 
@@ -480,15 +480,15 @@ Tree.prototype.moveNodeUp = function ( node )  {
         $(this.root.element).jstree(true).move_node(node,parent_node,pos-1,false,false);
 
       // reflect changes in internal list of children
-      var snode = parent_children[pos-1];   // selected node
+      let snode = parent_children[pos-1];   // selected node
       parent_children[pos-1] = parent_children[pos];
       parent_children[pos]   = snode;
 
     } else if (parent_children.length>1) {
       // given node is the leading sibling; convert other siblings to its children
 
-      var siblings = [];  // will be all siblings of given node
-      for (var i=0;i<parent_children.length;i++)
+      let siblings = [];  // will be all siblings of given node
+      for (let i=0;i<parent_children.length;i++)
         if (parent_children[i].id!=node.id)
           siblings.push ( parent_children[i] );
 
@@ -496,7 +496,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
         $(this.root.element).jstree(true).move_node(siblings,node,'last',false,false);
 
       // reflect changes in internal list of children
-      for (var i=0;i<siblings.length;i++)
+      for (let i=0;i<siblings.length;i++)
         siblings[i].parentId = node.id;
       node.children = node.children.concat ( siblings );
       parent_node.children = [node];
@@ -504,13 +504,13 @@ Tree.prototype.moveNodeUp = function ( node )  {
     } else if (parent_node.parentId)  {  // do not move above the root
       // given node is the only child of its parent; make it parent's parent
 
-      var grandpa_node      = this.node_map[parent_node.parentId];
-      var node_children     = node.children;
-      var grandpa_children  = grandpa_node.children;
+      let grandpa_node      = this.node_map[parent_node.parentId];
+      let node_children     = node.children;
+      let grandpa_children  = grandpa_node.children;
 
       // find sibling position of parent node
-      var parent_pos = -1;
-      for (var i=0;(i<grandpa_children.length) && (parent_pos<0);i++)
+      let parent_pos = -1;
+      for (let i=0;(i<grandpa_children.length) && (parent_pos<0);i++)
         if (grandpa_children[i].id==parent_node.id)
           parent_pos = i;
 
@@ -526,18 +526,18 @@ Tree.prototype.moveNodeUp = function ( node )  {
         $(this.root.element).jstree(true).move_node(node_children,parent_node,'last',false,false);
       }
 
-      for (var i=0;i<parent_children.length;i++)
+      for (let i=0;i<parent_children.length;i++)
         if (parent_children[i].id!=node.id)
           parent_node.children.push ( parent_children[i] );
       parent_node.children = parent_node.children.concat ( node_children );
-      for (var i=0;i<parent_node.children.length;i++)
+      for (let i=0;i<parent_node.children.length;i++)
         parent_node.children[i].parentId = parent_node.id;
 
       node.children = [parent_node];
       parent_node.parentId = node.id;
 
       // grand parent node loses parent_node as a child but gets node instead
-      for (var i=0;i<grandpa_children.length;i++)
+      for (let i=0;i<grandpa_children.length;i++)
         if (grandpa_children[i].id!=parent_node.id)
               grandpa_node.children.push ( grandpa_children[i] );
         else  grandpa_node.children.push ( node );
@@ -565,12 +565,12 @@ Tree.prototype.setNodes = function ( nodes,allow_selection )  {
   this.root_nodes = [];       //
   this.node_map   = {};       // node_map[nodeId] == TreeNode
 
-  for (var i=0;i<nodes.length;i++)  {
-    var node = new TreeNode ( '','',null );
+  for (let i=0;i<nodes.length;i++)  {
+    let node = new TreeNode ( '','',null );
     node.copy ( nodes[i] );
     this.root_nodes.push ( node );
     this.node_map[node.id] = node;
-    for (var j=0;j<nodes[i].children.length;j++)
+    for (let j=0;j<nodes[i].children.length;j++)
       this.setNode ( node,nodes[i].children[j],allow_selection );
   }
 
@@ -578,8 +578,8 @@ Tree.prototype.setNodes = function ( nodes,allow_selection )  {
 
 
 Tree.prototype.getNumberOfNodes = function()  {
-var count = 0;
-  for (var key in this.node_map)
+let count = 0;
+  for (let key in this.node_map)
     if (this.node_map.hasOwnProperty(key))
       count++;
   return count;
@@ -719,7 +719,7 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
     if (propagate_int<0)
       this.setStyle ( this.node_map[treeNode.parentId],style_str,propagate_int );
     else if (propagate_int>0)  {
-      for (var i=0;i<treeNode.children.length;i++)
+      for (let i=0;i<treeNode.children.length;i++)
         this.setStyle ( treeNode.children[i],style_str,propagate_int );
     }
 
@@ -729,8 +729,8 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
 
 
 Tree.prototype.confirmCustomIconsVisibility = function()  {
-  for (var key in this.node_map)  {
-    var node = this.node_map[key];
+  for (let key in this.node_map)  {
+    let node = this.node_map[key];
     if (node && node.data)
       node.setCustomIconVisible ( node.data.ci_state=='visible' );
   }
@@ -740,7 +740,7 @@ Tree.prototype.confirmCustomIconsVisibility = function()  {
 Tree.prototype.clear = function()  {
   // clears all the tree including root nodes; works only on created trees
 
-  for (var i=0;i<this.root_nodes.length;i++)  {
+  for (let i=0;i<this.root_nodes.length;i++)  {
     this.deleteChildren ( this.root_nodes[i] );
 //    $(this.root.element).jstree(true).delete_node('#'+this.root_nodes[i].id);
     $(this.root.element).jstree(true).delete_node([this.root_nodes[i]]);
@@ -765,14 +765,14 @@ Tree.prototype.deleteNode = function ( node )  {
     return;
 
   //  remove node from children list of its parent
-  var pnode     = this.node_map[node.parentId];  // parent node
-  var pchildren = [];  // new parent children
-  var selNo     = -1;
-  for (var i=0;i<pnode.children.length;i++)  {
+  let pnode     = this.node_map[node.parentId];  // parent node
+  let pchildren = [];  // new parent children
+  let selNo     = -1;
+  for (let i=0;i<pnode.children.length;i++)  {
     if (pnode.children[i].id==node.id) {
       selNo = i;
       // copy node's children to parent children list
-      for (var j=0;j<node.children.length;j++)  {
+      for (let j=0;j<node.children.length;j++)  {
         pchildren.push ( node.children[j] );
         node.children[j].parentId = pnode.id;
       }
@@ -784,8 +784,8 @@ Tree.prototype.deleteNode = function ( node )  {
 
   // remove node from general tree index
   this.node_map[node.id] = null;
-  var node_map = {};  // new node map
-  for (var key in this.node_map)
+  let node_map = {};  // new node map
+  for (let key in this.node_map)
     if (this.node_map[key])
       node_map[key] = this.node_map[key];
   this.node_map = node_map;
@@ -816,8 +816,8 @@ Tree.prototype.deleteRootNode = function ( node )  {
 
   // remove node from general tree index
   this.node_map[node.id] = null;
-  var node_map = {};  // new node map
-  for (var key in this.node_map)
+  let node_map = {};  // new node map
+  for (let key in this.node_map)
     if (this.node_map[key])
       node_map[key] = this.node_map[key];
   this.node_map = node_map;
@@ -844,10 +844,10 @@ Tree.prototype.deleteBranch = function ( node )  {
 
   this.deleteChildren ( node );
 
-  var pnode    = this.node_map[node.parentId];
-  var children = [];
-  var selNo    = -1;
-  for (var i=0;i<pnode.children.length;i++)  {
+  let pnode    = this.node_map[node.parentId];
+  let children = [];
+  let selNo    = -1;
+  for (let i=0;i<pnode.children.length;i++)  {
     if (pnode.children[i].id==node.id) {
       selNo = i;
     } else  {
@@ -857,8 +857,8 @@ Tree.prototype.deleteBranch = function ( node )  {
   this.node_map[node.id] = null;
 
   pnode.children = children;
-  var node_map = {};
-  for (var key in this.node_map)
+  let node_map = {};
+  for (let key in this.node_map)
     if (this.node_map[key])
       node_map[key] = this.node_map[key];
   this.node_map = node_map;
@@ -886,9 +886,9 @@ $.jstree.plugins.addHTML = function ( options,parent ) {
   this.redraw_node = function ( obj, deep, callback, force_draw ) {
     obj = parent.redraw_node.call ( this, obj, deep, callback, force_draw );
     if (obj) {
-      var node = this.get_node(jQuery(obj).attr('id'));
+      let node = this.get_node(jQuery(obj).attr('id'));
       if (node && node.data && node.data.customIcon.length>0)  {
-        var ci_element = document.createElement ( 'img' );
+        let ci_element = document.createElement ( 'img' );
         ci_element.setAttribute ( 'src',node.data.customIcon );
         ci_element.setAttribute ( 'id',node.id + '_pbar' );
         if (node.data.ci_width.length>0)
@@ -924,7 +924,7 @@ Tree.prototype.createTree = function ( make_initial_selection,
       tree.created = true;
 
       if (make_initial_selection)  {
-        var selId = tree.calcSelectedNodeIds();
+        let selId = tree.calcSelectedNodeIds();
         if ((selId.length<=0) && (tree.root_nodes.length>0))  {
           // situation abnormal, force initial selection
           tree.selectSingle ( tree.root_nodes[0] );
@@ -943,14 +943,14 @@ Tree.prototype.createTree = function ( make_initial_selection,
 
     $(tree.root.element).on('contextmenu', '.jstree-anchor', function (e) {
       // note selected node at right mouse clicks
-      var node = $(tree.root.element).jstree(true).get_node(e.target);
+      let node = $(tree.root.element).jstree(true).get_node(e.target);
       if (node)
         tree.selected_node_id = node.id;
     });
 
     tree.created = false;
 
-    var options = {
+    let options = {
       plugins : ['addHTML'],
       core    : {
           check_callback : true,
@@ -1007,7 +1007,7 @@ Tree.prototype.createTree = function ( make_initial_selection,
 
     $(tree.root.element).on("deselect_node.jstree",
       function(evt,data) {
-        var snode = tree.calcSelectedNode();
+        let snode = tree.calcSelectedNode();
         if (snode)  {
           if (tree.selected_node_id in tree.node_map)
             tree.node_map[tree.selected_node_id].state.selected = false;
@@ -1072,9 +1072,9 @@ console.log ( '  multi');
 
 Tree.prototype.calcSelectedNodeIds = function()  {
 // returns empty list if no node is selected
-  var node_lst = $(this.root.element).jstree('get_selected');
-  var sel_lst  = [];  // sort reversely so that last selected is first
-  for (var i=node_lst.length-1;i>=0;i--)
+  let node_lst = $(this.root.element).jstree('get_selected');
+  let sel_lst  = [];  // sort reversely so that last selected is first
+  for (let i=node_lst.length-1;i>=0;i--)
     sel_lst.push ( node_lst[i] );
   return sel_lst;
 }
@@ -1086,7 +1086,7 @@ Tree.prototype.getSelectedNodeId = function()  {
 
 
 Tree.prototype.calcSelectedNode = function()  {
-var selId = this.calcSelectedNodeIds();
+let selId = this.calcSelectedNodeIds();
   if (selId.length>0)  {
     return this.node_map[selId[0]];
   } else  {
@@ -1105,7 +1105,7 @@ Tree.prototype.getSelectedNode = function()  {
 
 
 Tree.prototype.addNodeToSelected = function ( text,icon_uri,treeNodeCustomIcon )  {
-var snode = this.getSelectedNode();
+let snode = this.getSelectedNode();
   if (snode)  {
     return this.addNode ( snode,text,icon_uri,treeNodeCustomIcon );
   } else  {
@@ -1115,7 +1115,7 @@ var snode = this.getSelectedNode();
 
 
 Tree.prototype.insertNodeAfterSelected = function ( text,icon_uri,treeNodeCustomIcon )  {
-var snode = this.getSelectedNode();
+let snode = this.getSelectedNode();
   if (snode)  {
     return this.insertNode ( snode,text,icon_uri,treeNodeCustomIcon );
   } else  {
@@ -1145,7 +1145,7 @@ let snode = this.getSelectedNode();
 
 
 Tree.prototype.moveSelectedNodeUp = function()  {
-var snode = this.getSelectedNode();
+let snode = this.getSelectedNode();
   if (snode)
     this.moveNodeUp ( snode );
   return snode;
@@ -1153,9 +1153,9 @@ var snode = this.getSelectedNode();
 
 
 Tree.prototype.deleteSelectedNodes = function()  {
-var selId = this.calcSelectedNodeIds();
-  for (var i=0;i<selId.length;i++)  {
-    var snode = this.node_map[selId[i]];
+let selId = this.calcSelectedNodeIds();
+  for (let i=0;i<selId.length;i++)  {
+    let snode = this.node_map[selId[i]];
     if (snode)
       this.deleteBranch ( snode );
   }
@@ -1168,20 +1168,20 @@ Tree.prototype.canMakeFolder = function()  {
 
 
 Tree.prototype.__connectivity_sort = function ( sel_list )  {
-  var parentId = [];
-  for (var i=0;i<sel_list.length;i++)
+  let parentId = [];
+  for (let i=0;i<sel_list.length;i++)
     parentId.push ( this.node_map[sel_list[i]].parentId );
   // find head node, whose parent is not in the list
-  var index = [];
-  for (var i=0;i<sel_list.length;i++)
+  let index = [];
+  for (let i=0;i<sel_list.length;i++)
     if (sel_list.indexOf(parentId[i])<0)  {
       index       = [i];
       parentId[i] = '-'+i;  // knock out for further searches
       break;
     }
   // find all the chain by parentIds
-  for (var i=1;i<sel_list.length;i++)  {
-    var j = parentId.indexOf ( sel_list[index[i-1]] );
+  for (let i=1;i<sel_list.length;i++)  {
+    let j = parentId.indexOf ( sel_list[index[i-1]] );
     if (j>=0)  {
       index.push ( j );
       parentId[j] = '-'+j;  // knock out for further searches
@@ -1190,8 +1190,8 @@ Tree.prototype.__connectivity_sort = function ( sel_list )  {
       break;
     }
   }
-  var sel_lst = [];
-  for (var i=0;i<index.length;i++)
+  let sel_lst = [];
+  for (let i=0;i<index.length;i++)
     sel_lst.push ( sel_list[index[i]] );
   return sel_lst;
 }
@@ -1199,19 +1199,19 @@ Tree.prototype.__connectivity_sort = function ( sel_list )  {
 
 Tree.prototype.canMakeFolder1 = function ( sel_list )  {
 // returns true if more than one job is selected on a linear branch
-  var sel_lst = this.__connectivity_sort ( sel_list );
+  let sel_lst = this.__connectivity_sort ( sel_list );
   if (sel_lst.length>1)  {
     //sel_lst.sort();
     if (this.node_map[sel_lst[0]].parentId)  {
       sel_lst.reverse();
-      var can_make = true;
-      for (var i=0;(i<sel_lst.length) && can_make;i++)
+      let can_make = true;
+      for (let i=0;(i<sel_lst.length) && can_make;i++)
         can_make = (this.node_map[sel_lst[i]].children.length==1);
       if (!can_make)
         sel_lst = [];
       /*
-      for (var i=1;(i<sel_lst.length) && can_make;i++)  {
-        var node = this.node_map[sel_lst[i-1]];
+      for (let i=1;(i<sel_lst.length) && can_make;i++)  {
+        let node = this.node_map[sel_lst[i-1]];
         can_make = (node.children.length==1) && (node.parentId==sel_lst[i]);
       }
       return can_make && (this.node_map[sel_lst[sel_lst.length-1]].children.length==1);
@@ -1230,35 +1230,35 @@ Tree.prototype.makeStack = function ( text,icon_uri )  {
 Tree.prototype.makeStack1 = function ( sel_node_list,text,icon_uri )  {
 // make a folder node and places currently selected nodes in it; current selction
 // must be validated with canMakeFolder() before using this function
-  var sel_list = this.__connectivity_sort ( sel_node_list );
+  let sel_list = this.__connectivity_sort ( sel_node_list );
   if (sel_list.length>1)  {
     //$(this.root.element).jstree('deselect_all');
     //sel_list.sort();
     // make sure that there are no repeat ids!
-    var sel_lst = [sel_list[0]];
-    var njobs   = Math.max ( 1,this.node_map[sel_lst[0]].fchildren.length );
-    for (var i=1;i<sel_list.length;i++)
+    let sel_lst = [sel_list[0]];
+    let njobs   = Math.max ( 1,this.node_map[sel_lst[0]].fchildren.length );
+    for (let i=1;i<sel_list.length;i++)
       if (sel_list[i]!=sel_list[i-1])  {
         sel_lst.push ( sel_list[i] );
         njobs += Math.max ( 1,this.node_map[sel_lst[i]].fchildren.length );
       }
-    var node = this.node_map[sel_lst[0]];
-    var name = text;
+    let node = this.node_map[sel_lst[0]];
+    let name = text;
     if (name)
       name += ' ';
     name += njobs + ' jobs stacked';
-    var folder_node = new TreeNode ( name,icon_uri,null );
-    var pnode = this.node_map[node.parentId];
-    for (var i=0;i<pnode.children.length;i++)
+    let folder_node = new TreeNode ( name,icon_uri,null );
+    let pnode = this.node_map[node.parentId];
+    for (let i=0;i<pnode.children.length;i++)
       if (pnode.children[i].id==node.id)  {
         pnode.children[i] = folder_node;
         break;
       }
     folder_node.parentId = pnode.id;
-    for (var i=0;i<sel_lst.length;i++)  {
+    for (let i=0;i<sel_lst.length;i++)  {
       node = this.node_map[sel_lst[i]];
       if (node.fchildren.length>0)  {  // NO ENCLOSED FOLDERS ASSUMED HERE!!!
-        for (var j=0;j<node.fchildren.length;j++)  {
+        for (let j=0;j<node.fchildren.length;j++)  {
           node.fchildren[j].folderId = folder_node.id;
           node.fchildren[j].state.selected = false;
           folder_node.fchildren.push ( node.fchildren[j] );
@@ -1278,11 +1278,11 @@ Tree.prototype.makeStack1 = function ( sel_node_list,text,icon_uri )  {
     node.parentId = folder_node.id;
     */
     folder_node.children = this.node_map[sel_lst[sel_lst.length-1]].children;
-    for (var i=0;i<folder_node.children.length;i++)
+    for (let i=0;i<folder_node.children.length;i++)
       folder_node.children[i].parentId = folder_node.id;
     // this.confirmCustomIconsVisibility();
     // this.refresh();
-    for (var key in this.node_map)
+    for (let key in this.node_map)
       this.node_map[key].state.selected = false;
     // this.selectSingle ( folder_node );
     // folder_node.state.selected = true;
@@ -1310,13 +1310,13 @@ Tree.prototype.makeStack1 = function ( sel_node_list,text,icon_uri )  {
 
 
 Tree.prototype.unfoldFolder = function()  {
-var snode = this.getSelectedNode();
-  var fchildren = snode.fchildren;
+  let snode = this.getSelectedNode();
+  let fchildren = snode.fchildren;
   if (fchildren.length>0)  {
-    var pnode = this.node_map[snode.parentId];
-//    var cnode = snode.children;
-    for (var i=0;i<fchildren.length;i++)  {
-      var node = new TreeNode ( '','',null );
+    let pnode = this.node_map[snode.parentId];
+//    let cnode = snode.children;
+    for (let i=0;i<fchildren.length;i++)  {
+      let node = new TreeNode ( '','',null );
       node.copy ( fchildren[i] );
       // node.id = fchildren[i].id;
       node.parentId = pnode.id;
@@ -1326,7 +1326,7 @@ var snode = this.getSelectedNode();
       if (i>0)
         pnode.children = [node];
       else  {
-        for (var j=0;j<pnode.children.length;j++)
+        for (let j=0;j<pnode.children.length;j++)
           if (pnode.children[j].id==snode.id)  {
             pnode.children[j] = node;
             break;
@@ -1335,7 +1335,7 @@ var snode = this.getSelectedNode();
       pnode = node;
     }
     pnode.children = snode.children;
-    for (var i=0;i<pnode.children.length;i++)
+    for (let i=0;i<pnode.children.length;i++)
       pnode.children[i].parentId = pnode.id;
     delete this.node_map[snode.id];
     this.selectNode ( this.node_map[snode.parentId],true );
@@ -1343,10 +1343,10 @@ var snode = this.getSelectedNode();
     $(this.root.element).jstree(true).delete_node([snode]);
     // this.confirmCustomIconsVisibility();
     // this.refresh();
-    // for (var nid in this.node_map)
+    // for (let nid in this.node_map)
     //   this.node_map[nid].state.selected = false;
     // this.selected_node_id = fchildren[0].id;
-    // for (var i=0;i<fchildren.length;i++)
+    // for (let i=0;i<fchildren.length;i++)
     //   this.selectNode ( this.node_map[fchildren[i].id],(i<=0) );
     // this.refresh();
   }

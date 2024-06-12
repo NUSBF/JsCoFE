@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    03.02.21   <--  Date of Last Modification.
+//    06.04.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,11 +12,12 @@
 //  **** Content :  RVAPI javascript layer's button module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2021
+//  (C) E. Krissinel 2013-2024
 //
 //  =================================================================
 //
 
+'use strict';
 
 function addSubmitButton ( inpId,title,formAction,formId,
                            row,col,rowSpan,colSpan )  {
@@ -28,7 +29,7 @@ function addSubmitButton ( inpId,title,formAction,formId,
   if (!document.getElementById(formId+"-grid"))
     return;
 
-  var input = element ( "input","id",inpId,"" );
+  let input = element ( "input","id",inpId,"" );
   input.setAttribute ( "type" ,"submit" );
   input.setAttribute ( "value",title    );
 
@@ -42,7 +43,7 @@ function addSubmitButton ( inpId,title,formAction,formId,
 function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
                          row,col,rowSpan,colSpan )  {
 
-//  var __rvapi_local_service = is_rvapi_local_service();
+//  let __rvapi_local_service = is_rvapi_local_service();
   //if (__rvapi_local_service==2)
   //  return;
 
@@ -60,18 +61,18 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
   if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
-    var cell = getGridCell ( holderId,row,col );
+    let cell = getGridCell ( holderId,row,col );
     if (cell)  {
       cell.rowSpan = rowSpan;
       cell.colSpan = colSpan;
-      var btn = document.getElementById ( btnId );
+      let btn = document.getElementById ( btnId );
       if (!btn)  {
         if (command=="{function}")  {
           $("<input id=\""+btnId+"\" type=\"button\" onclick=\"" + data +
             "\" class=\"button-common\" value=\"" + title + "\"/>")
            .appendTo(cell);
         } else  {
-          var rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
+          let rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
           $("<input id=\"" + btnId + "\" type=\"button\"  onclick=\"buttonClicked('"
             + command + "'," + rdata + ");\" class=\"button-common\" value=\""
             + title + "\"/>")
@@ -100,7 +101,7 @@ function addButtonGrid ( btnId,title,command,data,rvOnly,holderId,
 
 function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 
-//  var __rvapi_local_service = is_rvapi_local_service();
+//  let __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 
@@ -123,13 +124,13 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
         "\" class='button-common'>" + title + "</button>")
        .appendTo ( $("#"+holderId) );
     } else  {
-      var rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
+      let rdata = "'" + data.split('"').join("' + String.fromCharCode(34) + '") + "'";
       $("<button id=\""+btnId+"\" onclick=\"buttonClicked('" + command +
         "'," + rdata + ")\" class='button-common'>" + title + "</button>")
        .appendTo ( $("#"+holderId) );
     }
     if (__rvapi_local_service==2)  {
-      var btn = document.getElementById ( btnId );
+      let btn = document.getElementById ( btnId );
       if (btn)  {
         btn.disabled = true;
         btn.style.opacity = 0.6;
@@ -143,7 +144,7 @@ function addButton ( btnId,title,command,data,rvOnly,holderId )  {
 function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
                              rvOnly,holderId,row,col,rowSpan,colSpan )  {
 
-//  var __rvapi_local_service = is_rvapi_local_service();
+//  let __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 
@@ -161,7 +162,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 
   if ((window.rvGate || __rvapi_local_service || (!rvOnly)) &&
       document.getElementById(holderId+"-grid"))  {
-    var cell = getGridCell ( holderId,row,col );
+    let cell = getGridCell ( holderId,row,col );
     if (cell)  {
       cell.rowSpan = rowSpan;
       cell.colSpan = colSpan;
@@ -178,7 +179,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
          .appendTo(cell);
       }
       if (__rvapi_local_service==2)  {
-        var btn = document.getElementById ( btnId );
+        let btn = document.getElementById ( btnId );
         if (btn)  {
           btn.disabled = true;
           btn.style.opacity = 0.6;
@@ -194,7 +195,7 @@ function addIconButtonGrid ( btnId,button_class,tooltip,command,data,
 function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
                          holderId )  {
 
-//  var __rvapi_local_service = is_rvapi_local_service();
+//  let __rvapi_local_service = is_rvapi_local_service();
 //  if (__rvapi_local_service==2)
 //    return;
 
@@ -225,7 +226,7 @@ function addIconButton ( btnId,button_class,tooltip,command,data,rvOnly,
        .appendTo ( $("#"+holderId) );
     }
     if (__rvapi_local_service==2)  {
-      var btn = document.getElementById ( btnId );
+      let btn = document.getElementById ( btnId );
       if (btn)  {
         btn.disabled = true;
         btn.style.opacity = 0.6;
@@ -242,12 +243,12 @@ function addRadioButtonGrid ( rbtnId,title,name,value,checked,onChange,
   if (document.getElementById(rbtnId))
     return;
 
-  var cell = getGridCell ( holderId,row,col );
+  let cell = getGridCell ( holderId,row,col );
 
   if (cell)  {
     cell.rowSpan = rowSpan;
     cell.colSpan = colSpan;
-    var check,change;
+    let check,change;
     if (checked)  check = " checked";
             else  check = " ";
     if (onChange.length>0)  change = " onChange=\""+onChange+"\" ";
@@ -265,8 +266,8 @@ function addRadioButtonGrid ( rbtnId,title,name,value,checked,onChange,
 }
 
 function makeRadioButtonsAction ( rbName,actionId,actionName )  {
-var test = document.getElementsByName(rbName);
-  for (var i=0;i<test.length;i++)
+let test = document.getElementsByName(rbName);
+  for (let i=0;i<test.length;i++)
     if (test[i].checked)
       setValue ( actionId,actionName,test[i].value );
 }
@@ -275,11 +276,11 @@ var test = document.getElementsByName(rbName);
 function buttonClicked ( command,data )  {
 // General button click dispatcher
 
-  var l1 = data.split ( '{{meta ' );
-  var data_item = data;
-  var meta_item = null;
+  let l1 = data.split ( '{{meta ' );
+  let data_item = data;
+  let meta_item = null;
   if (l1.length>1)  {
-    var l2 = l1[1].split('}}');
+    let l2 = l1[1].split('}}');
     meta_item = l2[0];
     data_item = l1[0] + l2[1];
   }
@@ -300,7 +301,7 @@ function buttonClicked ( command,data )  {
     if (window.rvGate)
       window.rvGate.buttonClicked ( command,data_item );
     else if (is_rvapi_local_service()==1)  {
-      var base_url = window.location.href;
+      let base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
                   base_url.substring(0,base_url.lastIndexOf('/')),command,
                   data_item );
