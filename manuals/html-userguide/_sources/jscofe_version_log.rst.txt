@@ -20,6 +20,7 @@ CCP4 Cloud Version Log
 
     #. added Calculate anomalous map with Phaser task
 
+<<<<<<< HEAD
     #. Copy-paste jobs only if successful
 
     #. Login page updated
@@ -34,6 +35,9 @@ CCP4 Cloud Version Log
 
 
 
+=======
+    #.  Copy-paste jobs only if successful
+>>>>>>> parent of 547715d3 (Revert "Merge branch 'changes_from_Andrey' into 'release'")
 
 
 **Version 1.7.019** 

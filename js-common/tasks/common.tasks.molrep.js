@@ -494,21 +494,14 @@ if (!__template)  {
         if (revision.subtype.indexOf('ligands')>=0)
           this.input_data.data['ligands'] = [revision.Structure];
         if (revision.Options.mr_type=='sph')
-          this.input_data.data['phases'] = [revision.Structure];
-        // if (revision.Structure.subtype.indexOf(sdtype.structure_subtype.XYZ)>=0)
+          this.input_data.data['phases']  = [revision.Structure];
         if (revision.Structure.hasXYZ())
-          this.input_data.data['xmodel'] = [revision.Structure];
+          this.input_data.data['xmodel']  = [revision.Structure];
       }
       if (revision.Substructure && 
           ((revision.Options.leading_structure=='substructure') ||
            (revision.Options.mr_type=='subph')))
         this.input_data.data['phases'] = [revision.Substructure];
-      // if (revision.Structure)  {
-      //   if (revision.Options.structure_sel.indexOf('fixed-model')>=0)
-      //     this.input_data.data['xmodel'] = [revision.Structure];
-      //   if (revision.Options.structure_sel.indexOf('edfit')>=0)
-      //     this.input_data.data['phases'] = [revision.Structure];
-      // }
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

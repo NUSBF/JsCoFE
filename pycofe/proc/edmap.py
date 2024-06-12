@@ -3,20 +3,18 @@
 #
 # ============================================================================
 #
-#    28.11.22   <--  Date of Last Modification.
+#    19.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 #  python native imports
-import os
-import sys
 import shutil
 
 #  application imports
@@ -32,6 +30,7 @@ from  pycofe.varut   import command
 # ============================================================================
 
 def file_pdb       ():  return ".pdb"
+def file_mmcif     ():  return ".mmcif"
 def file_mtz       ():  return ".mtz"
 def file_cif       ():  return ".cif"
 def file_lib       ():  return ".lib"
@@ -69,10 +68,13 @@ def calcCCP4Maps ( mtzin,output_file_prefix,job_dir,file_stdout,file_stderr,
     elif source_key.startswith("acorn:"):
         LAB_F1  = source_key[6:]
         LAB_PHI = _columns["acorn-map"][1]
+    elif source_key.startswith("labels:"):
+        labels  = source_key.split(":")[1].split(",")
+        LAB_F1  = labels[0]
+        LAB_PHI = labels[1]
     else:
         LAB_F1  = _columns[source_key][0]
         LAB_PHI = _columns[source_key][1]
-
 
     # Start cfft
     rc = command.call ( "cfft",
@@ -139,7 +141,11 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     scr_file.close()
 
     # prepare refmac command line
-    xyzout = output_file_prefix + file_pdb()
+    xyzout = output_file_prefix
+    if xyzin.lower().endswith('.pdb'):
+        xyzout += file_pdb()
+    else:
+        xyzout += file_mmcif()
     mtzout = output_file_prefix + file_mtz()
     cmd = [ "XYZIN" ,xyzin,
             "XYZOUT",xyzout,
@@ -162,7 +168,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         file_stdout.write ( "Error calling refmac5: " + rc.msg )
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
         
-    return
+    return rc
 
 
 # ============================================================================
@@ -204,7 +210,7 @@ def calcAnomEDMap ( xyzin,hklin,hkl_dataset,anom_form,output_file_prefix,job_dir
           ]
 
     # Start refmac
-    rc = command.call ( "refmac5",cmd,
+    rc = command.call ( "refmacat",cmd,
                 job_dir,refmac_script(),file_stdout,file_stderr,log_parser )
 
     if rc.msg:

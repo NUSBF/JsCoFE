@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.24   <--  Date of Last Modification.
+ *    02.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,4 +123,40 @@ body {
 
 .ui-dialog .ui-dialog-titlebar {
   height: 16px; /* height of title bar */
+}
+
+
+.popup-button {
+  display          : inline-block;
+  background-color : transparent;
+  border           : 1px solid transparent;
+  /* opacity          : 0.6; */
+  color            : #6A6A6A;
+  cursor           : pointer;
+}
+
+.popup-button::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0; /* Initially set to 0 */
+    background-color: #21618C; /* Change this to your desired underline color */
+    transition: height 0.3s ease; /* Add a transition effect */
+}
+
+.popup-button:hover {
+  /* background-color : #EEEEEE; */
+  /* border           : 1px solid darkgrey; */
+  background-color : transparent;
+  color            : #000000;
+  border           : 1px solid transparent;
+  /* opacity          : 1.0; */
+}
+
+
+/* Define the style for the underline when hovered */
+.popup-button:hover::after {
+    height: 2px; /* Adjust this value for thickness */
 }
