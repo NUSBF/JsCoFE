@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.24   <--  Date of Last Modification.
+#    11.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -114,6 +114,8 @@ class SliceNDice(basic.TaskDriver):
             cmd += ['--bfactor_column', 'plddt']
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['--bfactor_column', 'rms']
+        elif xyz.BF_correction=="alphafold":
+           cmd += ['--bfactor_column', 'predicted_bfactor']
         # else:
         #     cmd += ['-xyz_source', 'alphafold_bfactor']
 
