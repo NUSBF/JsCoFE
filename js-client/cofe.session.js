@@ -67,6 +67,8 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         // __offline_message = 'on';  // show prompt "working offline"
 
+        document.title = appName() + ' Local';
+
         if (__title_page)
               makeLocalLoginPage ( sceneId );
         else  login ( '**' + __local_user_id + '**','',sceneId,0 );
@@ -75,6 +77,13 @@ function startSession ( sceneId,dev_switch )  {
         //makeProjectListPage(sceneId);
 
       } else  {
+
+        if (isElectronAPI())  {
+          if (__setup_desc && __setup_desc.name)
+                document.title = appName() + ' @ ' + __setup_desc.name;
+          else  document.title = appName() + ' @ ' + window.location.href;
+        } else
+          document.title = appName();
 
         if (dev_switch==0)  {
 
