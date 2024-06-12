@@ -1042,8 +1042,7 @@ function InputText(text) {
 InputText.prototype = Object.create(Widget.prototype);
 InputText.prototype.constructor = InputText;
 
-InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip,
-                                          autocomplete=null ) {
+InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, autocomplete=null ) {
   if (placeholder) this.element.setAttribute('placeholder', placeholder);
   if (tooltip) this.setTooltip(tooltip);
   if (type) this.element.setAttribute('type', type);

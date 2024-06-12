@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.24   <--  Date of Last Modification.
+ *    03.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,66 +109,103 @@ function LoginPage ( sceneId )  {
     },1000);
   }
 
-  let login_lbl   = new Label     ( 'Login name:' );
-  let pwd_lbl     = new Label     ( 'Password:'   );
-  let login_inp   = new InputText ( '' );
-  let pwd_inp     = new InputText ( '' );
-  let vis_btn     = new ImageButton ( image_path('pwd_hidden'),'32px','14px' );
-  login_lbl.setNoWrap();
-  login_lbl.setFontSize         ( '125%' );
-  pwd_lbl  .setFontSize         ( '125%' );
-  login_inp.setFontSize         ( '112%' );
-  login_inp.setStyle            ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
-                                  'Your CCP4 login','' );
-  vis_btn  .setTooltip          ( 'Toggle password visibility' );
-  vis_btn  .icon_hidden = true;
+  // put logo
+  // cpanel.setCellSize ( '','64px',0,0 );
+
+  //*** */ cpanel.setImage ( image_path('ccp4cloud_remote'), '400px','', 0,0,1,1 );
+  cpanel.setCellSize ( '0px','',0,0 );
+  cpanel.setCellSize ( '0px','' ,0,1 );
+  cpanel.setVerticalAlignment ( 0,0,'middle' );
+
+  let panel       = cpanel.setGrid ( '',0,2,1,1 );
+  let label_color = '#6A6A6A';
+  let row         = 0;
+
+  panel.setLabel ( '&nbsp;<p>' +
+                   '<b style="font-size:220%">' + appName() + '</b><br>' +
+                   '<b style="font-size:100%">' + '@ ' + __setup_desc.name + 
+                   '</b>',
+                   row++,0,1,2 )
+       .setNoWrap()
+       .setMargins ( '','','','32px' );
+
+  panel.setLabel ( 'LOGIN',row++,0,1,1 )
+       //  .setFont ( 'Lucida Console','90%',false,false )
+       .setFontSize ( '90%' )
+       .setFontColor ( label_color );
+
+  let login_inp = panel.setInputText ( '',row++,0,1,2 )
+                       .setStyle     ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+                                       '','' )
+                       .setWidth     ( '200px' )
+                       .setHeight    ( '32px'  )
+                       .setVerticalAlignment ( 'middle' )
+                       .setPaddings  ( '8px','','8px','2px' )
+                       .setMargins   ( '','','','20px' )
+                       .setFontSize  ( '100%' );
+
+  panel.setLabel ( 'PASSWORD&nbsp;&nbsp;',row,0,1,1 )
+       .setFontSize  ( '90%'     )
+       .setFontColor ( label_color );
+
+  let vis_btn   = panel.setImageButton ( image_path('pwd_hidden'),'32px','14px',
+                                         row,1,1,1 )
+                       .setTooltip     ( 'Toggle password visibility' );
+  vis_btn.icon_hidden = true;
+  panel.setCellSize ( '90%','',row++,1 );
+
+  let pwd_inp   = panel.setInputText ( '',row++,0,1,2 )
+                       .setStyle     ( 'password','',
+                                       '','' )
+                       .setWidth     ( '200px' )
+                       .setHeight    ( '32px'  )
+                       .setVerticalAlignment ( 'middle' )
+                       .setPaddings  ( '8px','','8px','2px' )
+                       .setMargins   ( '','','','24px' )
+                       .setFontSize  ( '100%' );
+
+  let login_btn = panel.setButton ( 'Login',image_path('login'),row++,0,1,2 )
+                       .setHeight ( '36px' );
+                      //  .setFontSize ( '125%' );
+
+  // make upper manu
+
+  let col = 0;
+  function _add_popup_button ( text,icon_name,listener_func,spacer='20px' )  {
+    menu_panel.setCellSize ( spacer,'',0,col++,1,1 );
+    // menu_panel.setPopupButton ( text,image_path(icon_name),0,col++,1,1 )
+    menu_panel.setPopupButton ( text.toUpperCase(),'',0,col++,1,1 )
+              .setFontSize ( '85%' )
+              .addOnClickListener ( listener_func );
+  }
+
+  _add_popup_button ( 'About','about',function()  {
+    new HelpBox ( '',__user_guide_base_url + 'jscofe_about.html',null );
+  },'95%' );
+  _add_popup_button ( 'CCP4','ccp4_diamond',function()  {
+    window.open ( 'https://www.ccp4.ac.uk','_blank' );
+  });
+  _add_popup_button ( 'Privacy','privacy',function()  {
+    new HelpBox ( 'Privacy Statement','./html/privacy_statement.html',null );
+  });
+  _add_popup_button ( 'Forgotten password','reminder',function()  {
+    if (__regMode=='email')
+      makeForgottenLoginPage(sceneId);
+    else
+      new MessageBox ( 'Password recovery',
+        '<p>In order to reset your password, please contact ' + appName() +
+        '<br>admin or maintainer in your organisation.', 'msg_information' );
+  });
+  _add_popup_button ( 'Register','user',function()  {
+    if (__regMode=='email')
+      makeRegisterPage(sceneId);
+    else
+      new MessageBox ( 'New user registration',
+        '<p>In order to register as a new user, please contact ' + appName() +
+        '<br>admin or maintainer in your organisation.', 'msg_information' );
+  });
+
   /*
-                                  'Login name should contain only latin ' +
-                                  'letters, numbers,\n underscores, dashes ' +
-                                  'and dots, and must start with a letter' );
-  */
-  login_inp.setFontItalic       ( true   );
-  pwd_inp  .setFontSize         ( '112%' );
-  pwd_inp  .setStyle            ( 'password','','Your ' + appName + ' password','' );
-  pwd_inp  .setFontItalic       ( true   );
-  login_inp.setWidth            ( '95%'  );
-  pwd_inp  .setWidth            ( '95%'  );
-
-  let row = 1;
-  panel.setLabel ( appName() + ' Login', row,0,1,3 )
-       .setFont  ( 'times','40px',true,true )
-       .setNoWrap();
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
-  panel.setWidget               ( this.makeSetupNamePanel(), row++,0,1,3 );
-  panel.setCellSize             ( '','10px',row++,0 );
-
-  panel.setWidget               ( login_lbl,row  ,0,1,1 );
-  panel.setWidget               ( pwd_lbl  ,row+1,0,1,1 );
-  panel.setVerticalAlignment    ( row  ,0,'middle' );
-  panel.setVerticalAlignment    ( row+1,0,'middle' );
-  panel.setWidget               ( login_inp,row++,1,1,1 );
-  panel.setWidget               ( pwd_inp  ,row  ,1,1,1 );
-  panel.setWidget               ( vis_btn  ,row  ,2,1,1 );
-  panel.setVerticalAlignment    ( row++,2,'middle' );
-
-  panel.setCellSize             ( '','4px',row++,0 );
-  panel.setWidget               ( new HLine('3px'), row++,0,1,3 );
-  //panel.setCellSize             ( '','1px',row++,0 );
-
-  let login_btn = new Button    ( 'Login',image_path('login') );
-  let pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
-  let reg_btn   = new Button    ( 'Registration',image_path('new_file') );
-
-  login_btn.setWidth            ( '100%' );
-  pwd_btn  .setWidth            ( '100%' );
-  reg_btn  .setWidth            ( '100%' );
-  panel.setWidget               ( login_btn,row++,0,1,3 );
-  panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
-  panel.setWidget               ( reg_btn  ,row++,0,1,3 );
-
-  //panel.setLabel                ( '&nbsp;',row++,0,1,3 )
-  panel.setCellSize             ( '','6px',row++,0 );
-
   if (__any_mobile_device)  {
     panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
                                   'cannot be used when<br>working ' +
