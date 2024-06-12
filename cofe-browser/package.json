@@ -1,13 +1,13 @@
 {
   "name": "cofe-browser",
-  "productName": "CCP4 Cloud Local",
-  "version": "1.0.0",
+  "productName": "CoFE-Browser",
+  "version": "1.0.1",
   "description": "",
   "main": "cofe-browser.mjs",
   "type": "module",
   "build": {
     "appId": "cloud.ccp4.ac.uk",
-    "productName": "CCP4 Cloud Local",
+    "productName": "CoFE-Browser",
     "mac": {
       "icon": "icons/ccp4cloud_local.icns"
     },

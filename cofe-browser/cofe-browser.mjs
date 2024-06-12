@@ -1,4 +1,24 @@
 
+/*
+ *  ===========================================================================
+ *
+ *    08.06.24   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  ---------------------------------------------------------------------------
+ *
+ *  **** Module  :  cofe-browser/cofe-browser.mjs
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Electron-based browser
+ *       ~~~~~~~~~  
+ *
+ *  (C) E. Krissinel, A. Lebedev 2024
+ *
+ *  ===========================================================================
+ *
+ */
+
 import path  from 'path';
 import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog, session } from 'electron';
 import Store from 'electron-store';
@@ -7,8 +27,10 @@ import { fileURLToPath } from 'url';
 
 // ===========================================================================
 
+const isMac      = process.platform === 'darwin';
+
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname  = path.dirname(__filename);
 
 // persistent settings
 const store = new Store();
@@ -121,7 +143,7 @@ function createWindow ( url ) {
   // Open the DevTools (optional)
   // mainWindow.webContents.openDevTools();
 
-    // Create the custom menu
+  // Create the custom menu
   const menuTemplate = [
     {
       label: app.name,
@@ -132,12 +154,16 @@ function createWindow ( url ) {
             showCustomAboutDialog();
           }
         },
-        { type: 'separator'  },
-        { role: 'services'   },
-        { type: 'separator'  },
-        { role: 'hide'       },
-        { role: 'hideothers' },
-        { role: 'unhide'     },
+        ...(isMac ? [
+            { type: 'separator'  },
+            { role: 'services'   },
+            { type: 'separator'  },
+            { role: 'hide'       },
+            { role: 'hideothers' },
+            { role: 'unhide'     }
+          ] : 
+          []
+        ),
         { type: 'separator'  },
         {
           label       : 'Quit CCP4 Cloud Local',
@@ -300,8 +326,8 @@ function showCustomAboutDialog() {
   // Using Electron's dialog module for a simple custom About dialog
   dialog.showMessageBox({
     type   : 'info',
-    title  : 'About CCP4 Cloud Local',
-    message: 'CCP4 Cloud Local\n\nv. ' + ccp4cloud_version +
+    title  : 'About CoFE-Browser',
+    message: 'CoFE Browser\n\nv. ' + ccp4cloud_version +
              '\n\nElectron-based application for running\n' + 
              'CCP4 Cloud locally on your machine.',
     buttons: ['OK']
