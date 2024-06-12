@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    19.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1269,25 +1269,26 @@ class TaskDriver(object):
 
 
     def calcEDMap ( self,xyzPath,hklData,libPath,filePrefix,inpDir=None ):
+        
         idir = inpDir
         if not idir:
             idir = self.inputDir()
-        edmap.calcEDMap ( xyzPath,hklData.getHKLFilePath(idir),
+        rc = edmap.calcEDMap ( xyzPath,hklData.getHKLFilePath(idir),
                           libPath,hklData.dataset,filePrefix,self.job_dir,
                           self.file_stdout1,self.file_stderr,self.log_parser )
         xyzout = filePrefix
         if xyzPath.lower().endswith('.pdb'):
             xyzout += edmap.file_pdb()
         else:
-            xyzout += edmap.file_cif()
+            xyzout += edmap.file_mmcif()
 
         if not self.log_parser:
             self.file_stdout1.close()
             self.parseRefmacLog ( self.file_stdout1_path() )
             self.file_stdout1 = open ( self.file_stdout1_path(),"a" )
 
-        return [ xyzout,filePrefix + edmap.file_mtz(),None,None ]
-
+        return [ xyzout,filePrefix + edmap.file_mtz(),None,None,rc ]
+ 
 
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
 
@@ -1545,7 +1546,10 @@ class TaskDriver(object):
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
 
-            if structureType==1:
+            if fnames[4].msg:
+                structure = None
+
+            elif structureType==1:
                 structure = self.registerStructure (
                                 None,
                                 None,
@@ -1584,6 +1588,14 @@ class TaskDriver(object):
                 self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                           "Structure and electron density",
                                           structure )
+            else:
+                self.putTitle   ( "Solution unavailable" )
+                self.putMessage ( "It was not possible to finish formation of "   +\
+                    "output structure. Check that your structure model does not " +\
+                    "contain residues absent in the Monomer Library and wrongly " +\
+                    "named residues or atoms. Check output logs for other possible " +\
+                    "reasons." )
+
         else:
             self.putTitle ( "No Solution Found" )
 

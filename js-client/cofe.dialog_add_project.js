@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    21.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Add Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2023
+ *  (C) E. Krissinel, A. Lebedev 2020-2024
  *
  *  =================================================================
  *
@@ -33,32 +33,32 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   this.element.setAttribute ( 'title','Add New Project' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  let grid = new Grid('');
   this.addWidget ( grid );
-  var row = 0;
+  let row = 0;
   //grid.setLabel ( '<h3>Project data</h3>',row++,0,1,2 );
 
   grid.setLabel ( 'ID'  ,row  ,0,1,1 ).setWidth('120px').setFontBold(true);
   grid.setLabel ( 'Name',row++,1,1,1 ).setWidth('550px').setFontBold(true);
 
-  var name_inp = grid.setInputText ( '',row,0,1,1 )
+  let name_inp = grid.setInputText ( '',row,0,1,1 )
         .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
         .setFontItalic ( true  )
         .setWidth      ( '120px' );
-  var title_inp = grid.setInputText ( '',row++,1,1,1 )
+  let title_inp = grid.setInputText ( '',row++,1,1,1 )
         .setStyle      ( 'text','','Put a descriptive title here','' )
         .setFontItalic ( true  )
         .setWidth      ( '520px' );
 
   grid.setLabel ( '<h3>Initialisation mode</h3>',row++,0,1,2 );
 
-  var autosolve_rbt = new RadioButton ( 'Autostart',
+  let autosolve_rbt = new RadioButton ( 'Autostart',
                                         projectList.startmode==start_mode.auto     );
-  var expert_rbt    = new RadioButton ( 'Standard',
+  let expert_rbt    = new RadioButton ( 'Standard',
                                         (projectList.startmode==start_mode.standard) ||
                                         (projectList.startmode==start_mode.expert) // legacy
                                       );
-  var migrate_rbt   = new RadioButton ( 'Hop on',
+  let migrate_rbt   = new RadioButton ( 'Hop on',
                                         projectList.startmode==start_mode.migrate  );
 
   autosolve_rbt.setSize ( '100px','40px' );
@@ -100,7 +100,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
         text : "Add Project",
         click: function() {
 
-          var msg = [];
+          let msg = [];
 
           if (name_inp.getValue().length<=0)
             msg.push ( '<b>Project ID</b> must be provided.' );
@@ -122,7 +122,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
                       'and try again.', 'msg_warning');
           } else  {
 
-            var pspecs = {
+            let pspecs = {
               id    : name_inp.getValue(),
               title : title_inp.getValue()
             };

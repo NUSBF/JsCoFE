@@ -1238,6 +1238,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     'Map tools',
     new TaskOmitMap   (),
     new TaskAnoMap    (),
+    new TaskExportMaps(),
     'Coordinate data tools',
     new TaskXyzUtils  (),
     gemmi_task,

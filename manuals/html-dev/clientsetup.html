@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -347,24 +346,24 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="clientsetup--page-root"><span class="section-number">12. </span>CCP4 Cloud Client Setup<a class="headerlink" href="#clientsetup--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="ccp4-cloud-client-setup">
+<h1 id="clientsetup--page-root"><span class="section-number">12. </span>CCP4 Cloud Client Setup<a class="headerlink" href="#clientsetup--page-root" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This article applies only to CCP4 Setups series 7.0; in later series,
+<p class="admonition-title">Note</p>
+<p>This article applies only to CCP4 Setups series 7.0; in later series,
 Client setup is automatic and does not require any manual intervention.</p>
 </div>
-
-<h2 id="ms-windows"><span class="section-number">12.1. </span>MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this headline">¶</a></h2>
+<section id="ms-windows">
+<h2 id="ms-windows"><span class="section-number">12.1. </span>MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this heading">¶</a></h2>
 <p><strong>Installation</strong></p>
 <p>Installation should be performed in account with administrative privileges.</p>
 <ol class="arabic simple">
-<li>If you do not have CCP4 Software Series 7.0 installed on your machine,
+<li><p>If you do not have CCP4 Software Series 7.0 installed on your machine,
 download CCP4 Windows installer from <a class="reference external" href="http://www.ccp4.ac.uk/download" rel="noopener noreferrer" target="_blank">http://www.ccp4.ac.uk/download</a> and
-run it. Make sure to agree to all applicable licenses.</li>
-<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe" rel="noopener noreferrer" target="_blank">ccp4cloud_win64.exe</a>
+run it. Make sure to agree to all applicable licenses.</p></li>
+<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4cloud_win64.exe" rel="noopener noreferrer" target="_blank">ccp4cloud_win64.exe</a>
 and run it. The installer has sensible defaults for the setup directory and
-various settings, you should not need to change them.</li>
+various settings, you should not need to change them.</p></li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>After successful installation, <em>local</em> (marked with an airplane sign),
@@ -374,29 +373,29 @@ CCP4 Cloud – simply double-click on the <em>remote</em> or <em>local</em> icon
 <p>The <em>configuration</em> icon starts a configuration editor that allows you
 to change web-browser, switch to different CCP4 Cloud server (e.g. the one that
 might have been installed in your lab) and apply updates.</p>
-
-
-<h2 id="linux"><span class="section-number">12.2. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="linux">
+<h2 id="linux"><span class="section-number">12.2. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">¶</a></h2>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
-<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup-linux.tar.gz</a>.</li>
-<li>Unpack the archive and launch ccp4-7.0-setup-linux.</li>
-<li>When CCP4 Setup Manager starts, click the “Next” button at the bottom
-of the window.</li>
-<li>In the next page, choose whether to install CCP4 Software anew or just to modify
+<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup-linux.tar.gz</a>.</p></li>
+<li><p>Unpack the archive and launch ccp4-7.0-setup-linux.</p></li>
+<li><p>When CCP4 Setup Manager starts, click the “Next” button at the bottom
+of the window.</p></li>
+<li><p>In the next page, choose whether to install CCP4 Software anew or just to modify
 the existing installation. In the latter case, navigate to the directory
 <code class="docutils literal notranslate"><span class="pre">ccp4-7.0</span></code> of the existing installation using the “Browse” button.
-Press the “Next” button.</li>
-<li>In the next page, choose CCP4 components to install. For new installation,
+Press the “Next” button.</p></li>
+<li><p>In the next page, choose CCP4 components to install. For new installation,
 the required minimum is all apart from the “Balbes database” and
 “Local fold libraries”. If you are modifying an existing installation, the
 already installed components will be shown as selected and you will have to
 select only those you want to add, including “CCP4 Cloud”. Press the “Next”
-button to continue.</li>
-<li>Next several pages present licences for CCP4 components. Read and agree to
+button to continue.</p></li>
+<li><p>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the “Next” button until you arrive at the
-directory selection page.</li>
-<li>There are three ways how the directory page may be presented.
+directory selection page.</p></li>
+<li><p>There are three ways how the directory page may be presented.
 This depends on previous choices. In case of new CCP4 setup,
 the directory page will contain an input field for installation directory.
 In case of installation of additional components, the installation directory
@@ -404,12 +403,12 @@ is shown but is not editable. If CCP4 Cloud is the only component to be added,
 it can be installed in a different location than all other CCP4 components.
 In this case an additional input field is presented for that location.
 In all three modes the input filed is presented for temporary directory,
-which is used for downloads. The temporary directory must be writable.</li>
-<li>After setting all required paths in the directory selection page, press the
+which is used for downloads. The temporary directory must be writable.</p></li>
+<li><p>After setting all required paths in the directory selection page, press the
 “Next” button and wait until all downloads finish, then press the “Next”
-button again.</li>
-<li>When you see a window with black field in it, press “Install” button.</li>
-<li>When installation finishes, press “Finish” button.</li>
+button again.</p></li>
+<li><p>When you see a window with black field in it, press “Install” button.</p></li>
+<li><p>When installation finishes, press “Finish” button.</p></li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>On successful installation, the installer should expose <em>local</em> (marked with
@@ -431,32 +430,32 @@ CCP4 Cloud can be launched from terminal with one of the following commands:</p>
 $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 </pre></div>
 </div>
-
-
-<h2 id="mac-osx"><span class="section-number">12.3. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mac-osx">
+<h2 id="mac-osx"><span class="section-number">12.3. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this heading">¶</a></h2>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
-<li>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup.dmg</a>.</li>
-<li>Double-click on the file downloaded – this will open a Finder window with
-CCP4 Setup icon.</li>
-<li>Hold Ctrl and click on CCP4 Setup Manager icon. Ignore security warnings and
-proceed by clicking the “Open” button.</li>
-<li>When CCP4 Setup Manager starts, click the “Next” button at the bottom
-of the window.</li>
-<li>In the next page, choose whether to install CCP4 Software anew or just to modify
+<li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup.dmg</a>.</p></li>
+<li><p>Double-click on the file downloaded – this will open a Finder window with
+CCP4 Setup icon.</p></li>
+<li><p>Hold Ctrl and click on CCP4 Setup Manager icon. Ignore security warnings and
+proceed by clicking the “Open” button.</p></li>
+<li><p>When CCP4 Setup Manager starts, click the “Next” button at the bottom
+of the window.</p></li>
+<li><p>In the next page, choose whether to install CCP4 Software anew or just to modify
 the existing installation. In the latter case, navigate to the directory
 <code class="docutils literal notranslate"><span class="pre">ccp4-7.0</span></code> of the existing installation using the “Browse” button.
-Press the “Next” button.</li>
-<li>In the next page, choose CCP4 components to install. For new installation,
+Press the “Next” button.</p></li>
+<li><p>In the next page, choose CCP4 components to install. For new installation,
 the required minimum is all apart from the “Balbes database” and
 “Local fold libraries”. If you are modifying an existing installation, the
 already installed components will be shown as selected and you will have to
 select only those you want to add, including “CCP4 Cloud”. Press the “Next”
-button to continue.</li>
-<li>Next several pages present licences for CCP4 components. Read and agree to
+button to continue.</p></li>
+<li><p>Next several pages present licences for CCP4 components. Read and agree to
 the licences. Keep pressing the “Next” button until you arrive at the
-directory selection page.</li>
-<li>There are three ways how the directory page may be presented.
+directory selection page.</p></li>
+<li><p>There are three ways how the directory page may be presented.
 This depends on previous choices. In case of new CCP4 setup,
 the directory page will contain an input field for installation directory.
 In case of installation of additional components, the installation directory
@@ -464,12 +463,12 @@ is shown but is not editable. If CCP4 Cloud is the only component to be added,
 it can be installed in a different location than all other CCP4 components.
 In this case an additional input field is presented for that location.
 In all three modes the input filed is presented for temporary directory,
-which is used for downloads. The temporary directory must be writable.</li>
-<li>After setting all required paths in the directory selection page, press the
+which is used for downloads. The temporary directory must be writable.</p></li>
+<li><p>After setting all required paths in the directory selection page, press the
 “Next” button and wait until all downloads finish, then press the “Next”
-button again.</li>
-<li>When you see a window with black field in it, press “Install” button.</li>
-<li>When installation finishes, press “Finish” button.</li>
+button again.</p></li>
+<li><p>When you see a window with black field in it, press “Install” button.</p></li>
+<li><p>When installation finishes, press “Finish” button.</p></li>
 </ol>
 <p><strong>Desktop shortcuts</strong></p>
 <p>On successful installation, the installer will place <em>local</em> (marked with
@@ -482,25 +481,25 @@ switch to a different CCP4 Cloud server (e.g. the one that might have been
 installed in your lab) and apply updates. Depending on the security settings
 in your machine, a few more steps may be required before you can use the icons.</p>
 <ol class="arabic simple">
-<li>Open Finder and navigate to <code class="docutils literal notranslate"><span class="pre">ccp4cloud</span></code> directory, found in CCP4 Cloud
+<li><p>Open Finder and navigate to <code class="docutils literal notranslate"><span class="pre">ccp4cloud</span></code> directory, found in CCP4 Cloud
 destination directory. The directory should contain application launchers
 <code class="docutils literal notranslate"><span class="pre">ccp4cloud-remote.app</span></code>, <code class="docutils literal notranslate"><span class="pre">ccp4cloud-desktop.app</span></code> and <code class="docutils literal notranslate"><span class="pre">ccp4cloud-config.app</span></code>.
-You can drag them to the location of your choice, for example, Desktop or Dock.</li>
-<li>Double-click on any of the icon. If the corresponding CCP4 Cloud component does
+You can drag them to the location of your choice, for example, Desktop or Dock.</p></li>
+<li><p>Double-click on any of the icon. If the corresponding CCP4 Cloud component does
 not start, it may be that the launchers are disabled by OSX security.
 In order to enable them, go to System Preferences, then to Security and Privacy,
 and then select “Anywhere” checkbox found in in section “Allow apps downloaded from”.
 After that, right-click on each CCP4 Cloud icon and choose “Open” from the context
 menu. This will start CCP4 Cloud components for first time, after which deselect
 checkbox “Anywhere” in the “Allow apps downloaded from” section of System
-Preferences.</li>
-<li>If “Allow apps downloaded from” does not have option “Anywhere”, open Terminal
+Preferences.</p></li>
+<li><p>If “Allow apps downloaded from” does not have option “Anywhere”, open Terminal
 and execute command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">spctl</span> <span class="pre">--master-disable</span></code>, then perform actions
 from p.2, and execute command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">spctl</span> <span class="pre">--master-enable</span></code> (details may read
-<a class="reference external" href="http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" rel="noopener noreferrer" target="_blank">here</a>).</li>
+<a class="reference external" href="http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" rel="noopener noreferrer" target="_blank">here</a>).</p></li>
 </ol>
-
-
+</section>
+</section>
 
 
           </article>
@@ -545,7 +544,7 @@ from p.2, and execute command <code class="docutils literal notranslate"><span c
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
