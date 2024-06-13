@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    19.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -18,6 +18,7 @@
 import os
 
 #  ccp4-python imports
+import gemmi
 import pyrvapi
 
 #  application imports
@@ -78,8 +79,11 @@ def run ( body ):  # body is reference to the main Import class
         fpath = os.path.join ( body.importDir(),f )
         #coor.stripLigWat ( fpath,fpath )  #  strip ligands and waters
 
-        xyzMeta = xyzmeta.getXYZMeta ( fpath,body.file_stdout,body.file_stderr )
+        st = gemmi.read_structure ( fpath )
+        xyzMeta = xyzmeta.getXYZMeta ( st,body.file_stdout,body.file_stderr )
         # body.stderrln ( " >>>>> " + str(xyzMeta) )
+        
+        warnings = xyzmeta.check_topology ( st )
 
         if len(xyzMeta["xyz"])<=0:
 
@@ -92,7 +96,7 @@ def run ( body ):  # body is reference to the main Import class
             if len(files_xyz)>1:
                 subSecId = body.getWidgetId ( "xyz_file_" )
                 pyrvapi.rvapi_add_section ( subSecId,"Import "+f,xyzSecId,
-                                            k,0,1,1,False )
+                                            k,0,1,1,(len(warnings)>0) )
 
             xyz = dtype_xyz.DType ( body.job_id )
             xyz.setXYZFile       ( f )
@@ -152,6 +156,7 @@ def run ( body ):  # body is reference to the main Import class
                     contents += "&nbsp;&nbsp;" + name
 
             body.putTableLine ( xyzTableId,"Contents","File contents",contents,jrow+3 )
+            jrow = jrow + 4
 
             if xyz.getPDBFileName():
                 pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
@@ -169,7 +174,8 @@ def run ( body ):  # body is reference to the main Import class
                        )
                 body.putTableLine ( xyzTableId,"B-factor correction",
                                                "Model for B-factors re-calculation",
-                                               note,jrow+4 )
+                                               note,jrow )
+                jrow = jrow + 1
             elif xyz.BF_correction=="rosetta":
                 note = "Can be a Rosetta model, consider recalculation of B-factors where needed" +\
                        body.hotHelpLink (
@@ -178,17 +184,29 @@ def run ( body ):  # body is reference to the main Import class
                        )
                 body.putTableLine ( xyzTableId,"B-factor correction",
                                                "Model for B-factors re-calculation",
-                                               note,jrow+4 )
+                                               note,jrow )
+                jrow = jrow + 1
 
             body.addCitations ( ['uglymol','ccp4mg'] )
+
+            warn_line = ""
+            if len(warnings)>0:
+                pyrvapi.rvapi_set_section_state ( xyzSecId,True )
+                body.putTableLine ( xyzTableId,"Warnings","Warnings",
+                    "The following warnings have been issued:" +\
+                    "<font style=\"color:#FA8072\"><p>" + "<br>".join(warnings) +\
+                    "</font><p>You may need to import additional monomer descriptions.",
+                jrow )
+                warn_line = "<br><font size=\"-1\" style=\"color:#FA8072\">" +\
+                            "there are warnings, see below in \"XYZ Coordinates\"</br>"
 
             if note:
                 body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",
                                      xyz.dname + "<br><font size=\"-1\" style=\"color:maroon\">" +\
                                      note.replace("Assuming","B-factors corrected assuming") +\
-                                     "</font>" )
+                                     "</font>" + warn_line )
             else:
-                body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname )
+                body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname + warn_line )
 
         body.file_stdout.write ( "... processed: " + body.get_cloud_import_path(f) + "\n" )
         k += 1
