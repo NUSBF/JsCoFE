@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -432,17 +431,17 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-tips-hot-task-launchers--page-root"><span class="section-number">2.5.7. </span>Hot Task Launchers<a class="headerlink" href="#jscofe-tips-hot-task-launchers--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="hot-task-launchers">
+<h1 id="jscofe-tips-hot-task-launchers--page-root"><span class="section-number">2.5.7. </span>Hot Task Launchers<a class="headerlink" href="#jscofe-tips-hot-task-launchers--page-root" title="Permalink to this heading">¶</a></h1>
 <p>In many <em>Job Dialogs</em>, the Output panel’s toolbar (found on the top of the Dialog) contains buttons for launching selected tasks, frequently used after the task presented in the dialog (the “hot launchers”). The main purpose of hot launchers is to start the follow-up tasks quicker by not spending time on opening and browsing the <em>Task List</em> and running them automatically right after creation.</p>
 <p>A few points to keep in mind when using hot launchers:</p>
 <ul class="simple">
-<li>if data ambiguity must be resolved before starting the task (<em>e.g.,</em> to choose between original and inverted hands after <code class="docutils literal notranslate"><span class="pre">phaser-ep</span></code> or between revisions with different wavelengths after <code class="docutils literal notranslate"><span class="pre">crank2-MAD</span></code>), the <em>Job Dialog</em> is opened and the task is started as usual.</li>
-<li>if task starts automatically, it will use parameters from the last task of same type in the current branch of the <em>Job Tree</em>. This may be used during structure completion stage: once chosen, refinement parameters will be used in every Refmac task.</li>
-<li>if Coot was started with the hot launcher and produced no data, the corresponding Coot task will be silently deleted from the <em>Job Tree</em>. This way, you may use Coot as a viewer, but switch to editing, if necessary, without restarting.</li>
+<li><p>if data ambiguity must be resolved before starting the task (<em>e.g.,</em> to choose between original and inverted hands after <code class="docutils literal notranslate"><span class="pre">phaser-ep</span></code> or between revisions with different wavelengths after <code class="docutils literal notranslate"><span class="pre">crank2-MAD</span></code>), the <em>Job Dialog</em> is opened and the task is started as usual.</p></li>
+<li><p>if task starts automatically, it will use parameters from the last task of same type in the current branch of the <em>Job Tree</em>. This may be used during structure completion stage: once chosen, refinement parameters will be used in every Refmac task.</p></li>
+<li><p>if Coot was started with the hot launcher and produced no data, the corresponding Coot task will be silently deleted from the <em>Job Tree</em>. This way, you may use Coot as a viewer, but switch to editing, if necessary, without restarting.</p></li>
 </ul>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-
+</section>
 
 
           </article>
@@ -487,7 +486,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

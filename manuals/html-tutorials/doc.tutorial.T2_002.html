@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -304,15 +303,15 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-002--page-root"><span class="section-number">4. </span>The multi-domain Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-002--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="the-multi-domain-molecular-replacement">
+<h1 id="doc-tutorial-t2-002--page-root"><span class="section-number">4. </span>The multi-domain Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-002--page-root" title="Permalink to this heading">¶</a></h1>
 <p>This tutorial explains how to use separate domains as a search model for Molecular Replacement (MR). For this tutorial, we’ll use Sucrose-Phosphatase (SPP) from Synechocystis sp. PCC6803 in a closed conformation (PDB Entry - 1TJ3).</p>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look at the import’s task output.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task or type <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>.</p>
 <p>After the task is finished, please, investigate the output it created. Every task in CCP4 Cloud produces a report. Here we can see that Matthew’s coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.</p>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">Please read the verdicts carefully, it helps assess the obtained results.</p>
+<p class="admonition-title">Tip</p>
+<p>Please read the verdicts carefully, it helps assess the obtained results.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare Single-Chain MR Model(s) from Coordinate data</strong> task: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Prepare Single-Chain MR Model(s) from Coordinate data</strong></p>
 <p>Choose <code class="docutils literal notranslate"><span class="pre">[0001-02]</span> <span class="pre">1s2oA_dom1</span></code> as <strong>Coordinates (1)</strong> and <code class="docutils literal notranslate"><span class="pre">[0001-03]</span> <span class="pre">1s2oA_dom2</span></code> as <strong>Coordinates (2)</strong> and run the task. And two Single-Chain MR models will be prepared.</p>
@@ -334,7 +333,7 @@
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1105/tpc.105.031229" rel="noopener noreferrer" target="_blank">Sonia Fieulaine, John E. Lunn, Franck Borel, Jean-Luc Ferrer, The Structure of a Cyanobacterial Sucrose-Phosphatase Reveals the Sugar Tongs That Release Free Sucrose in the Cell, The Plant Cell, Volume 17, Issue 7, July 2005, Pages 2049–2058,</a></p>
-
+</section>
 
 
           </article>
@@ -379,7 +378,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
