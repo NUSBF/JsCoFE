@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.06.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -565,13 +565,16 @@ BasePage.prototype.makeUserRationIndicator = function()  {
 
 BasePage.prototype.displayUserRation = function ( pdesc )  {
 
-  function getPercentLine ( used,ration )  {
+  function getPercentLine ( used,ration,ration_max=null )  {
     if (ration<=0.0)
       return '';
-    let pp = round ( (100.0*used)/ration,0 );
-    if (pp<90)       pp += '%';
-    else if (pp<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
-               else  pp  = '<font class="ration-critical">' + pp + '%</font>';
+    let pp     = round ( (100.0*used)/ration,0 );
+    let pp_max = pp;
+    if (ration_max)
+      pp_max   = round ( (100.0*used)/ration_max,0 );
+    if (pp_max<90)       pp += '%';
+    else if (pp_max<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
+                   else  pp  = '<font class="ration-critical">' + pp + '%</font>';
     return pp;
   }
 
@@ -584,10 +587,10 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 
     this.ration.pdesc = pdesc;
 
-    // if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
     if (this.rationPanel.disk_usage)  {
 
-      let storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
+      let storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage,
+                                          this.ration.storage_max );
       let cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
       let cpu_month_pp = getPercentLine ( this.ration.cpu_month_used,this.ration.cpu_month );
       let stats = '<table class="table-rations">' +
@@ -623,6 +626,17 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 
       stats += '<tr><td colspan="4"><hr/></td></tr>';
 
+      if (this.ration.storage>0)  { 
+        if (!this.ration.storage_max)
+          stats += '<tr><td colspan="4">Storage auto-topup: unlimited</td></tr>';
+        else if (this.ration.storage<this.ration.storage_max)
+          stats += '<tr><td colspan="4">Storage auto-topup limit:&nbsp;' + 
+                  this.ration.storage_max + '&nbsp;MBytes</td></tr>';
+        else
+          stats += '<tr><td colspan="4"><b>Storage auto-topup limit achieved</b></td></tr>';
+        stats += '<tr><td colspan="4"><hr/></td></tr>';
+      }
+
       if (pdesc)  {
         if ('disk_space' in pdesc)
           stats +=
@@ -646,6 +660,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 round(this.ration.cpu_total_used,4) +
                 '&nbsp;</i></td><td></td></tr>' +
         '</table>';
+
       this.rationPanel.setTooltip1 ( stats,'show',false,20000 );  // 20 secs
       if (this.ration.storage>0.0)
             this.rationPanel.disk_usage.setText ( storage_pp );
