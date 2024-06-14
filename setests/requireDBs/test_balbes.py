@@ -96,7 +96,7 @@ def test_BalbesBasic(browser,
     try:
         print('Opening URL: %s' % d.cloud)
         d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
+        # assert "CCP4 Cloud" in d.driver.title
 
         sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
 

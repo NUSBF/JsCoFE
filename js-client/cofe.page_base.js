@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.24   <--  Date of Last Modification.
+ *    07.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,6 +49,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
     $('#'+sceneId).addClass('main-scene');
 
+    /*
     if (pageType=='LoginPage')  {
       let css = {
         "background-image"    : "url('" + image_path('background_remote') + "')",
@@ -60,6 +61,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
         css['background-image'] = "url('" + image_path('background_local') + "')"
       $('#'+sceneId).css ( css );
     }
+    */
 
   } else
     $('#'+sceneId).css({
@@ -138,7 +140,7 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 }
 
-
+/*
 BasePage.prototype.makeSetupNamePanel = function()  {
 // This panel appears on login, account, authorisation reply, forgotten password
 // and new registration pages
@@ -175,6 +177,28 @@ BasePage.prototype.makeSetupNamePanel = function()  {
   }
 
   return setupPanel;
+
+}
+*/
+
+BasePage.prototype.makeSetupNamePanel = function()  {
+// This panel appears on login, account, authorisation reply, forgotten password
+// and new registration pages
+
+  let text = '<center>' + appName() + ' @ ';
+
+  if (__setup_desc)        text += __setup_desc.name;
+  else if (__local_setup)  text += 'Home';
+                     else  text += 'Unnamed setup';
+
+  // let setupPanel = new Grid ( '' );
+  // setupPanel.setLabel ( text, 0,1,1,1 )
+  //           .setFont  ( 'times','150%',true,true ).setNoWrap();
+  // setupPanel.setCellSize ( '40%','',0,0 );
+  // setupPanel.setCellSize ( '10%','',0,1 );
+  // setupPanel.setCellSize ( '40%','',0,3 );
+
+  return new Label(text+'</center>').setFont('times','125%',true,true ).setNoWrap();
 
 }
 
@@ -231,7 +255,8 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   this.grid.setVerticalAlignment  ( row,col,'middle'   );
   this.grid.setCellSize           ( '','30px', row,col );
   // logoGrid.setHeight_px ( 16 );
-  $(logoPanel.element).addClass   ( 'logo-panel'  );
+  // $(logoPanel.element).addClass   ( 'logo-panel'  );
+  logoPanel.addClass   ( 'logo-panel'  );
   // $(logoPanel.element).css ({
   //   // 'position'         : 'absolute',
   //   // 'left'             : '0px',
@@ -310,9 +335,10 @@ let iwidth    = '26px';
 
   if (__local_setup)  {
     icon_path = image_path ( 'ccp4cloud_desktop'  );
-    if (__local_user)
-          tooltip += ' is in <b>desktop</b> mode:</i>';
-    else  tooltip += ' is in <b>local</b> mode:</i>';
+    // if (__local_user)
+    //       tooltip += ' is in <b>desktop</b> mode:</i>';
+    // else  tooltip += ' is in <b>local</b> mode:</i>';
+    tooltip += ' is in <b>local</b> mode:</i>';
     tooltip += ul_style + '<li>projects and data are stored on your system</li>';
     if (__local_service)
           tooltip += '<li>computation done on your computer</li>';
@@ -650,9 +676,7 @@ BasePage.prototype.updateUserRationDisplay = function ( rdata )  {
 BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();
 }
-
 registerClass ( 'BasePage',BasePage,null );
-
 
 var __history_count = 0;
 
@@ -712,7 +736,6 @@ function makePage ( new_page_func,onCreate_func=null )  {
 
 
 function setHistoryListener ( sceneId )  {
-
   $(window).on('popstate', function(event) {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
@@ -746,6 +769,6 @@ function setHistoryListener ( sceneId )  {
     window.electronAPI.onNavigateForward(() => {
       window.history.forward();
     });
+    
   }
-
 }

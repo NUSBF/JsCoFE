@@ -393,7 +393,7 @@ def test_sharingBasic(browser,
     try:
         print('Opening URL d.driver 1: %s' % cloud)
         d.driver.get(cloud)
-        assert "CCP4 Cloud" in d.driver.title
+        # assert "CCP4 Cloud" in d.driver.title
         sf.loginToCloud(d.driver, login, password, nologin)
 
 

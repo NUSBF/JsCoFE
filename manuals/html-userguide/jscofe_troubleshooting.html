@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -326,90 +325,103 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-troubleshooting--page-root"><a class="toc-backref" href="#jscofe-troubleshooting--page-root"><span class="section-number">10. </span>Troubleshooting</a><a class="headerlink" href="#jscofe-troubleshooting--page-root" title="Permalink to this headline">¶</a></h1>
-<div class="contents topic" id="contents">
+  <section id="troubleshooting">
+<h1 id="jscofe-troubleshooting--page-root"><a class="toc-backref" href="#jscofe-troubleshooting--page-root" role="doc-backlink"><span class="section-number">10. </span>Troubleshooting</a><a class="headerlink" href="#jscofe-troubleshooting--page-root" title="Permalink to this heading">¶</a></h1>
+<nav class="contents" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><a class="reference internal" href="#troubleshooting" id="id1">Troubleshooting</a><ul>
-<li><a class="reference internal" href="#some-tasks-cannot-be-created-or-added-to-the-job-tree" id="id2">Some tasks cannot be created or added to the job tree</a></li>
-<li><a class="reference internal" href="#job-seems-to-never-finish" id="id3">Job seems to never finish</a></li>
-<li><a class="reference internal" href="#ccp4-cloud-says-that-the-task-cannot-be-cloned" id="id4">CCP4 Cloud says that the task cannot be cloned</a></li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id1">Troubleshooting</a></p>
+<ul>
+<li><p><a class="reference internal" href="#some-tasks-cannot-be-created-or-added-to-the-job-tree" id="id2">Some tasks cannot be created or added to the job tree</a></p></li>
+<li><p><a class="reference internal" href="#job-seems-to-never-finish" id="id3">Job seems to never finish</a></p></li>
+<li><p><a class="reference internal" href="#ccp4-cloud-says-that-the-task-cannot-be-cloned" id="id4">CCP4 Cloud says that the task cannot be cloned</a></p></li>
 </ul>
 </li>
 </ul>
-</div>
-
-<h2 id="some-tasks-cannot-be-created-or-added-to-the-job-tree"><a class="toc-backref" href="#id2"><span class="section-number">10.1. </span>Some tasks cannot be created or added to the job tree</a><a class="headerlink" href="#some-tasks-cannot-be-created-or-added-to-the-job-tree" title="Permalink to this headline">¶</a></h2>
+</nav>
+<section id="some-tasks-cannot-be-created-or-added-to-the-job-tree">
+<h2 id="some-tasks-cannot-be-created-or-added-to-the-job-tree"><a class="toc-backref" href="#id2" role="doc-backlink"><span class="section-number">10.1. </span>Some tasks cannot be created or added to the job tree</a><a class="headerlink" href="#some-tasks-cannot-be-created-or-added-to-the-job-tree" title="Permalink to this heading">¶</a></h2>
 <p>If a task cannot be created and added to the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, its icon in the <a class="reference internal" href="jscofe_tasklist.html#task-list"><span class="std std-ref">Task List</span></a> is shown in a red frame and the corresponding list entry is grayed. Clicking on the red-framed icon does not start <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a> for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><strong>not all input data, needed for the task, is available</strong></dt><dd>Tasks see data produced by its ancestors in the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>. Quite possibly, you need to import missing data or run another task to create the data needed. For example, <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selections in <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a> (hold “<em>Ctrl</em>” (Windows, Linux) or “<em>Apple</em>” (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for making the new task.</dd>
+<li><dl class="simple">
+<dt><strong>not all input data, needed for the task, is available</strong></dt><dd><p>Tasks see data produced by its ancestors in the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>. Quite possibly, you need to import missing data or run another task to create the data needed. For example, <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selections in <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a> (hold “<em>Ctrl</em>” (Windows, Linux) or “<em>Apple</em>” (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for making the new task.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>one or more data objects, needed for the task, are outdated</strong></dt><dd>This is due to the same reason as <a class="reference internal" href="#cant-clone-1"><span class="std std-ref">impossibility to clone due to incompatibility</span></a>, please read there.</dd>
+<li><dl class="simple">
+<dt><strong>one or more data objects, needed for the task, are outdated</strong></dt><dd><p>This is due to the same reason as <a class="reference internal" href="#cant-clone-1"><span class="std std-ref">impossibility to clone due to incompatibility</span></a>, please read there.</p>
+</dd>
 </dl>
 </li>
 </ul>
 <ul class="simple" id="task-availability">
-<li><dl class="first docutils">
-<dt><strong>the task requires CCP4 Cloud Client</strong></dt><dd>This happens when you connect to CCP4 Cloud via a direct web-link, such as <a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>. Some tasks may run only on your own computer, which is possible only if you connect to CCP4 Cloud by clicking on CCP4 Cloud icon in your local CCP4 Setup. This icon starts CCP4 Cloud Client, which will run interactive tasks, such as <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, on your computer.</dd>
+<li><dl class="simple">
+<dt><strong>the task requires CCP4 Cloud Client</strong></dt><dd><p>This happens when you connect to CCP4 Cloud via a direct web-link, such as <a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>. Some tasks may run only on your own computer, which is possible only if you connect to CCP4 Cloud by clicking on CCP4 Cloud icon in your local CCP4 Setup. This icon starts CCP4 Cloud Client, which will run interactive tasks, such as <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, on your computer.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>the task is not available for the operating system used (typically MS Windows)</strong></dt><dd>Use Operating System (Linux or Mac OSX) in which the task is available.</dd>
+<li><dl class="simple">
+<dt><strong>the task is not available for the operating system used (typically MS Windows)</strong></dt><dd><p>Use Operating System (Linux or Mac OSX) in which the task is available.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>software component, needed for the task, is missing</strong></dt><dd>Ask CCP4 Cloud maintainer to install the software needed.</dd>
+<li><dl class="simple">
+<dt><strong>software component, needed for the task, is missing</strong></dt><dd><p>Ask CCP4 Cloud maintainer to install the software needed.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>the task requires</strong> <a class="reference internal" href="jscofe_myprojects.html#software-authorisation"><span class="std std-ref">Software Authorisation</span></a> <strong>from software provider</strong></dt><dd>Some software components are provided on 3-rd party licenses, which require a user to register with the software provider. Proceed to your account settings by choosing “<strong>My Account</strong>” item of the menu in the top-left corner of CCP4 Cloud page and click on the button with the fingerprint icon, then follow the instructions on the screen (cf. <a class="reference internal" href="jscofe_myprojects.html#software-authorisation"><span class="std std-ref">Software Authorisation</span></a>).</dd>
+<li><dl class="simple">
+<dt><strong>the task requires</strong> <a class="reference internal" href="jscofe_myprojects.html#software-authorisation"><span class="std std-ref">Software Authorisation</span></a> <strong>from software provider</strong></dt><dd><p>Some software components are provided on 3-rd party licenses, which require a user to register with the software provider. Proceed to your account settings by choosing “<strong>My Account</strong>” item of the menu in the top-left corner of CCP4 Cloud page and click on the button with the fingerprint icon, then follow the instructions on the screen (cf. <a class="reference internal" href="jscofe_myprojects.html#software-authorisation"><span class="std std-ref">Software Authorisation</span></a>).</p>
+</dd>
 </dl>
 </li>
 </ul>
-
-
-<h2 id="job-seems-to-never-finish"><a class="toc-backref" href="#id3"><span class="section-number">10.2. </span>Job seems to never finish</a><a class="headerlink" href="#job-seems-to-never-finish" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="job-seems-to-never-finish">
+<h2 id="job-seems-to-never-finish"><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">10.2. </span>Job seems to never finish</a><a class="headerlink" href="#job-seems-to-never-finish" title="Permalink to this heading">¶</a></h2>
 <p>Occasionally, this may happen due to 4 reasons:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt><strong>job takes considerable time and only seems to be stalled</strong></dt><dd>Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the “<strong>Main Log</strong>” tab of the <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a>. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may <a class="reference internal" href="#stop-job"><span class="std std-ref">stop it</span></a>.</dd>
+<li><dl class="simple">
+<dt><strong>job takes considerable time and only seems to be stalled</strong></dt><dd><p>Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the “<strong>Main Log</strong>” tab of the <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a>. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may <a class="reference internal" href="#stop-job"><span class="std std-ref">stop it</span></a>.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>job has run away</strong></dt><dd>The computational process has entered an infinite loop, either because of a program bugs or because of algorithmic features. If you suspect that this is the situation, <a class="reference internal" href="#stop-job"><span class="std std-ref">stop job</span></a>.</dd>
+<li><dl class="simple">
+<dt><strong>job has run away</strong></dt><dd><p>The computational process has entered an infinite loop, either because of a program bugs or because of algorithmic features. If you suspect that this is the situation, <a class="reference internal" href="#stop-job"><span class="std std-ref">stop job</span></a>.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>communication errors</strong></dt><dd>After job is finished, the results are sent back to your project. Occasionally, this process may fail because of connection issues despite many attempts performed. In this situation, job results are retained for many days (1 month unless configured otherwise), and may be retrieved by pushing the <a class="reference internal" href="jscofe_project.html#refresh-project"><span class="std std-ref">Refresh</span></a> button in the <strong>Project Page</strong>. If connection issues were resolved, this action should bring job results to your project and finish the job properly.</dd>
+<li><dl class="simple">
+<dt><strong>communication errors</strong></dt><dd><p>After job is finished, the results are sent back to your project. Occasionally, this process may fail because of connection issues despite many attempts performed. In this situation, job results are retained for many days (1 month unless configured otherwise), and may be retrieved by pushing the <a class="reference internal" href="jscofe_project.html#refresh-project"><span class="std std-ref">Refresh</span></a> button in the <strong>Project Page</strong>. If connection issues were resolved, this action should bring job results to your project and finish the job properly.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>technical fault</strong></dt><dd>If a runaway job cannot be stopped or apparently finished job cannot be retrieved by repeat pushing the <a class="reference internal" href="jscofe_project.html#refresh-project"><span class="std std-ref">Refresh</span></a> button several time (allow generous periods before refreshes), the situation should be identified as <em>technical fault</em> and reported to CCP4 Cloud maintainer. Usually, the job will be lost, and this may be purely random act of system malfunction. However, if technical faults are frequent, this may indicative of a bug, poor connection or other problems, which should be addressed by the maintainer.</dd>
+<li><dl class="simple">
+<dt><strong>technical fault</strong></dt><dd><p>If a runaway job cannot be stopped or apparently finished job cannot be retrieved by repeat pushing the <a class="reference internal" href="jscofe_project.html#refresh-project"><span class="std std-ref">Refresh</span></a> button several time (allow generous periods before refreshes), the situation should be identified as <em>technical fault</em> and reported to CCP4 Cloud maintainer. Usually, the job will be lost, and this may be purely random act of system malfunction. However, if technical faults are frequent, this may indicative of a bug, poor connection or other problems, which should be addressed by the maintainer.</p>
+</dd>
 </dl>
 </li>
 </ul>
 <p id="stop-job"><strong>Stopping a job</strong></p>
 <p>If you wish to stop a job, just press the “<strong>Stop</strong>” button in its <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a>. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes a job from the project but <em>does not actually delete or stop it</em>.</p>
-
-
-<span id="cant-clone"></span><h2 id="ccp4-cloud-says-that-the-task-cannot-be-cloned"><a class="toc-backref" href="#id4"><span class="section-number">10.3. </span>CCP4 Cloud says that the task cannot be cloned</a><a class="headerlink" href="#ccp4-cloud-says-that-the-task-cannot-be-cloned" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ccp4-cloud-says-that-the-task-cannot-be-cloned">
+<span id="cant-clone"></span><h2 id="ccp4-cloud-says-that-the-task-cannot-be-cloned"><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">10.3. </span>CCP4 Cloud says that the task cannot be cloned</a><a class="headerlink" href="#ccp4-cloud-says-that-the-task-cannot-be-cloned" title="Permalink to this heading">¶</a></h2>
 <p>This happens when:</p>
 <ul class="simple" id="cant-clone-1">
-<li><dl class="first docutils">
-<dt><strong>new developments in the task module make it not backward-compatible</strong></dt><dd>The only way around it is to create the task anew from the parent mode, rather than to clone. When doing this, you may discover that this does not work as well because of incompatibility in data objects produced by the parent or one of higher ancestors. If this happens, you may need to repeat parents and even grand-parent tasks in the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, depending on the situation.</dd>
+<li><dl class="simple">
+<dt><strong>new developments in the task module make it not backward-compatible</strong></dt><dd><p>The only way around it is to create the task anew from the parent mode, rather than to clone. When doing this, you may discover that this does not work as well because of incompatibility in data objects produced by the parent or one of higher ancestors. If this happens, you may need to repeat parents and even grand-parent tasks in the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, depending on the situation.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><strong>the cloning attempt is done in a different setup where the cloned task is not available</strong></dt><dd>This is due to the same as <a class="reference internal" href="#task-availability"><span class="std std-ref">impossibility to create a new task because it is not available</span></a>, please read there.</dd>
+<li><dl class="simple">
+<dt><strong>the cloning attempt is done in a different setup where the cloned task is not available</strong></dt><dd><p>This is due to the same as <a class="reference internal" href="#task-availability"><span class="std std-ref">impossibility to create a new task because it is not available</span></a>, please read there.</p>
+</dd>
 </dl>
 </li>
 </ul>
-
-
+</section>
+</section>
 
 
           </article>
@@ -454,7 +466,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
