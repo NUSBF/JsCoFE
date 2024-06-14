@@ -126,6 +126,11 @@ DataRevision.prototype.makeSample = function()  {
 }
 
 
+DataRevision.prototype.hasLigands = function()  {
+  return (this.subtype.indexOf('ligands')>=0);
+}
+
+
 // export such that it could be used in both node and a browser
 
 if (!__template_d)  {

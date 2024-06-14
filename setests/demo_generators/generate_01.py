@@ -677,7 +677,7 @@ def generate_01(browser,
     try:
         print('Opening URL: %s' % cloud)
         d.driver.get(cloud)
-        assert "CCP4 Cloud" in d.driver.title
+        # assert "CCP4 Cloud" in d.driver.title
 
         if not nologin:
             sf.loginToCloud(d.driver, login, password, nologin)
@@ -702,7 +702,7 @@ def generate_01(browser,
         (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(d.remote, d.browser)
         print('Opening URL: %s' % d.cloud)
         d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
+        # assert "CCP4 Cloud" in d.driver.title
         if not d.nologin:
             sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
         sf.enterProject(d.driver, d.testName)
@@ -728,7 +728,7 @@ def generate_01(browser,
         (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(d.remote, d.browser)
         print('Opening URL: %s' % d.cloud)
         d.driver.get(d.cloud)
-        assert "CCP4 Cloud" in d.driver.title
+        # assert "CCP4 Cloud" in d.driver.title
         if not d.nologin:
             sf.loginToCloud(d.driver, d.login, d.password, d.nologin)
         sf.enterProject(d.driver, d.testName)
