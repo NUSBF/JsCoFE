@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  WebCoot JS support
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, F. Rodriguez 2023
+ *  (C) E. Krissinel, F. Rodriguez 2023-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,6 @@ let bcopy = [];
       obj.data = null;
     bcopy.push ( obj );
   }
-
   // post received in cofe.communication.js:onWindowMessage(...)
   window.parent.postMessage ({
     'command' : 'saveFiles',

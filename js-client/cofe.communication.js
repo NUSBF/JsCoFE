@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1016,7 +1016,7 @@ function onWindowMessage ( event ) {
         meta  : edata.meta,
         files : []
       }
-      for (let i=0;i<edata.files.length;i++)
+      for (let i=0;i<edata.files.length;i++)  {
         if ('fpath' in edata.files[i])  {
           edata1.files.push ( edata.files[i] );
         } else  {
@@ -1029,6 +1029,10 @@ function onWindowMessage ( event ) {
             data  : edata.files[i].mmcifData
           });
         }
+        edata1.files[edata1.files.length-1].isMRSearchModel =
+                            ('isMRSearchModel' in edata.files[i]) && 
+                            edata.files[i].isMRSearchModel;
+      }
       serverRequest ( fe_reqtype.saveJobFiles,edata1,'Save job file',
         function(rdata){
           if (rdata.project_missing)  {
@@ -1083,12 +1087,12 @@ function onWindowMessage ( event ) {
           } else if (edata.confirm=='manual')  {
             // making a backup does not count as making an output
             // setCommunicationFrameData ( edata.meta.fid,'was_output',true );
-            new MessageBox (  'Backup file written',
-                              '<div style="width:350px"><h3>Backup file written</h3>' +
-                              'Backip file saved in ' + appName() + 
-                              ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
-                              'msg_ok'
-                            );
+            new MessageBox ( 'Backup file written',
+                             '<div style="width:350px"><h3>Backup file written</h3>' +
+                             'Backip file saved in ' + appName() + 
+                             ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
+                             'msg_ok'
+                           );
           }
         },null,'persist' );
     }
