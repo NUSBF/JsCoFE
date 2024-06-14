@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,7 +71,7 @@ TaskWebCootCE.prototype.clipboard_name = function()  { return '"WebCootCE"';    
 
 TaskWebCootCE.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return '<b>!!EXPERIMENTAL!!</b> based on fast-developing version of Coot for browsers';
+  return 'use for editing structure models without electron density with WebCoot/Moorhen';
 }
 
 TaskWebCootCE.prototype.taskDescription = function()  {

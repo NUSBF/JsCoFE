@@ -24,7 +24,24 @@ const guid = () => {
 // @ts-ignore
 let print = (stuff) => {
     console.log(stuff)
-    postMessage({ consoleMessage: JSON.stringify(stuff) })
+}
+
+const parseMonLibListCif = (fileContents: string): libcootApi.compoundInfo[] => {
+    const table = cootModule.parse_mon_lib_list_cif(fileContents)
+    const tableSize = table.size()
+
+    let result: libcootApi.compoundInfo[] = []
+    for (let i = 0; i < tableSize; i++) {
+        const compound = table.get(i)
+        result.push({
+            three_letter_code: compound.three_letter_code,
+            // @ts-ignore
+            name: compound.name.replaceAll("'", "").toLowerCase()
+        })
+    }
+
+    table.delete()
+    return result
 }
 
 const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: boolean, toSpheres: boolean = false, maxZSize: number = 10000.): libcootApi.InstancedMeshJS => {
@@ -226,7 +243,7 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
     }
 }
 
-const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false): libcootApi.SimpleMeshJS => {
+const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false, keepNorm: boolean = false): libcootApi.SimpleMeshJS => {
 
     const print_timing = false
     const ts = performance.now()
@@ -246,7 +263,11 @@ const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean 
     cootModule.getColoursFromSimpleMesh2(simpleMesh,totCol_C)
 
     if (perm){
-        cootModule.getReversedNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        if(keepNorm){
+            cootModule.getReversedNormalsFromSimpleMesh3(simpleMesh,totNorm_C)
+        } else {
+            cootModule.getReversedNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        }
         cootModule.getPermutedTriangleIndicesFromSimpleMesh2(simpleMesh,totIdxs_C)
     } else {
         cootModule.getNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
@@ -956,12 +977,12 @@ const read_ccp4_map = (mapData: ArrayBufferLike, name: string, isDiffMap: boolea
     return molNo
 }
 
-const setUserDefinedBondColours = (imol: number, colours: { cid: string; rgb: [number, number, number] }[], applyColourToNonCarbonAtoms: boolean = false) => {
-    let colourMap = new cootModule.MapIntFloat3()
+const setUserDefinedBondColours = (imol: number, colours: { cid: string; rgba: [number, number, number, number] }[], applyColourToNonCarbonAtoms: boolean = false) => {
+    let colourMap = new cootModule.MapIntFloat4()
     let indexedResiduesVec = new cootModule.VectorStringUInt_pair()
     
     colours.forEach((colour, index) => {
-        colourMap.set(index + 51, colour.rgb)
+        colourMap.set(index + 51, colour.rgba)
         const i = { first: colour.cid, second: index + 51 }
         indexedResiduesVec.push_back(i)
     })
@@ -1016,7 +1037,25 @@ const privateerValidationToJSArray = (results: emscriptem.vector<privateer.Resul
 
     results.delete();
     return data;
+}
 
+const headerInfoAsJSObject = (result: libcootApi.headerInfo): libcootApi.headerInfoJS => {
+
+    const authorLines = result.author_lines
+    const author_lines: string[] = stringArrayToJSArray(authorLines)
+
+    const compoundLines = result.compound_lines
+    const compound_lines: string[] = stringArrayToJSArray(compoundLines)
+
+    const journalLines = result.journal_lines
+    const journal_lines: string[] = stringArrayToJSArray(journalLines)
+
+    return {
+        title: result.title,
+        author_lines,
+        compound_lines,
+        journal_lines
+    }
 }
 
 const doCootCommand = (messageData: { 
@@ -1054,7 +1093,7 @@ const doCootCommand = (messageData: {
                 cootResult = replace_map_by_mtz_from_file(...commandArgs as [number, ArrayBufferLike, { F: string; PHI: string; }])
                 break
             case 'shim_set_bond_colours':
-                cootResult = setUserDefinedBondColours(...commandArgs as [number, { cid: string; rgb: [number, number, number] }[], boolean])
+                cootResult = setUserDefinedBondColours(...commandArgs as [number, { cid: string; rgba: [number, number, number, number] }[], boolean])
                 break
             case 'shim_export_map_as_gltf':
                 cootResult = export_map_as_gltf(...commandArgs as [number, number, number, number, number, number])
@@ -1065,6 +1104,9 @@ const doCootCommand = (messageData: {
             case 'shim_export_molecular_represenation_as_gltf':
                 cootResult = export_molecular_represenation_as_gltf(...commandArgs as [number, string, string, string])
                 break
+            case "parse_mon_lib_list_cif":
+                cootResult =  parseMonLibListCif(...commandArgs as [string])
+                break
             default:
                 cootResult = molecules_container[command](...commandArgs)
                 break
@@ -1072,6 +1114,9 @@ const doCootCommand = (messageData: {
 
         let returnResult;
         switch (returnType) {
+            case 'header_info_t':
+                returnResult = headerInfoAsJSObject(cootResult)
+                break
             case 'texture_as_floats_t':
                 returnResult = textureAsFloatsToJSTextureAsFloats(cootResult)
                 break;
@@ -1101,6 +1146,9 @@ const doCootCommand = (messageData: {
                 break;
             case 'instanced_mesh':
                 returnResult = instancedMeshToMeshData(cootResult, false, false, 5)
+                break;
+            case 'mesh_perm3':
+                returnResult = simpleMeshToMeshData(cootResult, true, true)
                 break;
             case 'mesh_perm':
                 returnResult = simpleMeshToMeshData(cootResult, true)
