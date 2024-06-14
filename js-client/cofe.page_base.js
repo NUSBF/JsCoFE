@@ -571,7 +571,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
     let pp     = round ( (100.0*used)/ration,0 );
     let pp_max = pp;
     if (ration_max)
-      pp_max   = round ( (100.0*used)/ration_max,0 );
+      pp_max   = round ( (100.0*used)/Math.max(ration,ration_max),0 );
     if (pp_max<90)       pp += '%';
     else if (pp_max<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
                    else  pp  = '<font class="ration-critical">' + pp + '%</font>';
