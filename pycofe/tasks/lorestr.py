@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.01.24   <--  Date of Last Modification.
+#    15.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -205,13 +205,12 @@ class Lorestr(basic.TaskDriver):
             self.putTitle ( "No Output Generated" )
 
 
-        # try:
-        #     shutil.rmtree ( "lorestr_Output" )
-        # except:
-        #     # self.stderrln ( "\n ***** could not delete residual directory at " +\
-        #     #                 search_dir + "\n" )
-        #     pass
-
+        try:
+            shutil.rmtree ( "lorestr_Output" )
+        except:
+            self.stderrln ( "\n ***** could not delete residual directory " +\
+                            os.path.join(self.job_dir,"lorestr_Output") + "\n" )
+            pass
 
         # close execution logs and quit
         self.success ( have_results )
