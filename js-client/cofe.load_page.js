@@ -32,6 +32,7 @@
 //                                          // unclear why
 // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
 //$(window).on ( 'load', function(){
+
 $(document).ready ( function(){
   // setDarkMode ( isDarkMode() );
   bindToBrowserColorMode();

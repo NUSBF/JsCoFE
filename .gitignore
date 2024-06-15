@@ -15,3 +15,7 @@ settings.json
 .bzr
 .bzrignore
 /conf
+jscofe.min.css
+jscofe.min.html
+jscofe.min.js
+jscofe.min.js.map
