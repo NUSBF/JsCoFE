@@ -33,8 +33,10 @@
 // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
 //$(window).on ( 'load', function(){
 
+
 $(document).ready ( function(){
   // setDarkMode ( isDarkMode() );
+  document.body.style.cursor = "default"; 
   bindToBrowserColorMode();
   //console.log ( '   ready=' + document.readyState );
   /*
@@ -44,3 +46,5 @@ $(document).ready ( function(){
   let dev_switch = 0; //3;
   startSession ( 'scene',dev_switch );
 });
+
+
