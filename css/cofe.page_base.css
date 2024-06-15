@@ -102,3 +102,7 @@ pre {
   font-size   : 14px!important;
   font-weight : bold;
 }
+
+.spinning-cursor {
+  cursor: wait; /* or 'progress' for a different type of spinning cursor */
+}
