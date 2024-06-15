@@ -36,7 +36,7 @@
 
 $(document).ready ( function(){
   // setDarkMode ( isDarkMode() );
-  document.body.style.cursor = "default"; 
+  // document.body.style.cursor = "default"; 
   bindToBrowserColorMode();
   //console.log ( '   ready=' + document.readyState );
   /*
