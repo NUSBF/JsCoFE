@@ -1,10 +1,29 @@
 ======================
 CCP4 Cloud Version Log
 ======================
-**Version 1.7.020** 
-    *Released with CCP4 v.9.0.010*
 
-    #. added new keywords for slice and slice'n'dice + added new parameter for Slice'N'Dice task: chose the MR program
+**Version 1.7.021** 
+
+    *Released with CCP4 v.9.0.001*
+
+    #. Task list update
+
+    #. Added new keywords for slice and slice'n'dice + added new parameter for Slice'N'Dice task: chose the MR program
+
+    #. Login page updated
+
+    #. Electron-based browser for CCP4 Cloud local mode
+
+    #. Edstat crash recovery in task interfaces
+
+    #. Sliced MR models saved after Moorhen
+
+    #. Auto-topup state introduced in resource panel
+
+
+**Version 1.7.020** 
+
+    *Released with CCP4 v.8.0.019*
     
     #. Task list update
     
@@ -14,30 +33,13 @@ CCP4 Cloud Version Log
 
     #. Simbad database handling fixed
 
-    #. moved to dui2
+    #. Moved to dui2
 
-    #. fixed reciprocal space viewer
+    #. Fixed reciprocal space viewer
 
-    #. added Calculate anomalous map with Phaser task
+    #. Added Calculate anomalous map with Phaser task
 
-<<<<<<< HEAD
     #. Copy-paste jobs only if successful
-
-    #. Login page updated
-
-    #. electron-based brouser for CCP4 Cloud local mode
-
-    #. edstat crash recovery in task interfaces
-
-
-
-
-
-
-
-=======
-    #.  Copy-paste jobs only if successful
->>>>>>> parent of 547715d3 (Revert "Merge branch 'changes_from_Andrey' into 'release'")
 
 
 **Version 1.7.019** 

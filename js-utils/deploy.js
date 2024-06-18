@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.05.24   <--  Date of Last Modification.
+ *    16.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -99,12 +99,21 @@ const UglifyJS = require("uglify-js");
 //  load application modules
 const conf     = require('../js-server/server.configuration');
 const utils    = require('../js-server/server.utils');
+const cmd      = require('../js-common/common.commands');
 
 //  prepare log
 const log = require('../js-server/server.log').newLog(25);
 
 
 // ==========================================================================
+
+const now   = new Date();
+const day   = String(now.getDate()).padStart(2, '0');
+const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() returns 0-11, so add 1
+const year  = now.getFullYear();
+const stamp = cmd.appName() + ' v.' + cmd.appVersion() +
+              ' generated ' + `${day}-${month}-${year}`;
+
 
 function change_extention ( fpath,new_ext )  {
   return path.join ( path.dirname(fpath),
@@ -171,6 +180,9 @@ if (cfgfpath.endsWith('.json'))  {
 
 }
 
+// remove comments
+inpfdata = inpfdata.replace ( /<!--[\s\S]*?-->/g,'' );
+
 let inpfdir  = path.dirname ( inpfpath );
 let basename = path.parse(inpfpath).name;
 
@@ -198,9 +210,11 @@ log.standard ( 3,'js list ('  + jslist.length + '):'  + indent + jslist.join(ind
 let data_css = '';
 for (let i=0;i<csslist.length;i++)  {
   let css = utils.readString ( csslist[i] );
-  if (css)
+  if (css)  {
+    // remove comments
+    css = css.replace ( /\/\*[\s\S]*?\*\//g, '' );
     data_css += css + '\n\n';
-  else  {
+  } else  {
     log.error ( 5,'css file not found at ' + csslist[i] );
     process.exit(5);
   }
@@ -218,6 +232,8 @@ if (data_css)  {
   });
 
   if (result_css.css)  {
+
+    result_css.css = '/* ' + stamp + ' */\n' + result_css.css;
 
     csspath = path.join ( inpfdir,basename + '.min.css' );
     if (utils.writeString(csspath,result_css.css))  {
@@ -284,6 +300,8 @@ if (result.error)  {
 
   jspath = path.join ( inpfdir,basename + '.min.js' );
 
+  result.code = '/* ' + stamp + ' */\n' + result.code;
+
   if (utils.writeString(jspath,result.code))  {
     log.standard ( 23,'minimsed/merged js written to '  + jspath );
   } else  {
@@ -306,8 +324,8 @@ if (result.error)  {
 
 if (result.code && feConfig)  {
 
-  let inpfmin = [];
-  filelist    = inpfdata.split(/\r?\n/);
+  let inpfmin   = [];
+  let inpflines = inpfdata.split(/\r?\n/);
 
   let css_key = -1;
   if (csspath)
@@ -317,19 +335,21 @@ if (result.code && feConfig)  {
   if (jspath)
     js_key = 0
 
-  for (let i=0;i<filelist.length;i++)  {
-    if ((css_key>=0) && (filelist[i].indexOf('.css"')>=0))  {
+  for (let i=0;i<inpflines.length;i++)  {
+    if (i==1)
+      inpfmin.push ( '<!-- ' + stamp + ' -->' );
+    if ((css_key>=0) && (inpflines[i].indexOf('.css"')>=0))  {
       if (!css_key)  {
         css_key = 1;
         inpfmin.push ( '  <link rel="stylesheet" type="text/css" href="' + csspath + '"/>' );
       }
-    } else if ((js_key>=0) && (filelist[i].indexOf('.js"')>=0))  {
+    } else if ((js_key>=0) && (inpflines[i].indexOf('.js"')>=0))  {
       if (!js_key)  {
         js_key = 1;
         inpfmin.push ( '  <script type="text/javascript" src="' + jspath + '"></script>' );
       }
-    } else
-      inpfmin.push ( filelist[i] );
+    } else if (inpflines[i].trim())
+      inpfmin.push ( inpflines[i] );
   }
 
   let inpfpath_min = change_extention ( inpfpath,'.min.html' );
