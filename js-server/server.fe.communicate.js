@@ -93,6 +93,10 @@ function Communicate ( server_request )  {
     return;
   }
 
+  const server_url = server_request.connection.encrypted ? 'https' : 'http' + '//' +
+                     server_request.headers.host;
+  console.log ( ' Server: ' + server_url + ' ' + this.fe_server.externalURL );
+
 /*
   var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
   if (__malicious_ext.indexOf(ext)>=0)  {
