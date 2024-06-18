@@ -24,8 +24,8 @@ def main():
   if not os.path.isdir(dirout):
     os.makedirs(dirout)
 
-  for key in 'desktop', 'remote':
-    json_obj = read_json(confin + key + '.json')
+  for k0, k1 in ('desktop', 'local'), ('remote', 'remote'):
+    json_obj = read_json(confin + k0 + '.json')
     json_obj['Emailer'] = dict(type = 'desktop')
 
     json_fe = json_obj['FrontEnd']
