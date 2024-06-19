@@ -53,6 +53,13 @@ class dataCatalog {
     return path.join(this.data_dir, this.getRelDataDest(user, source, id));
   }
 
+  // get the current date minus num_days
+  getPruneDate(num_days) {
+    let check_date = new Date();
+    check_date.setDate(check_date.getDate() - num_days);
+    return check_date;
+  }
+
   getUserCatalogFile(user) {
     let dir;
     if (this.keep_with_data) {
@@ -202,7 +209,7 @@ class dataCatalog {
     }
 
     // prune old data if required
-    this.pruneData(this.data_free_gb);
+    this.pruneData(this.data_free_gb, this.data_max_days);
 
     return catalog[user][source][id];
   }
@@ -266,19 +273,8 @@ class dataCatalog {
     }
   }
 
-  async pruneData(min_free_gb) {
+  async pruneData(min_free_gb, data_max_days) {
     const min_free = min_free_gb * GB;
-    const free = tools.getFreeSpace(tools.getDataDir(), '1');
-
-    if (free === false) {
-      return;
-    }
-
-    if (free >= min_free) {
-      return;
-    }
-
-    const size_to_free = min_free - free;
 
     let entries = [];
     const catalog = this.getCatalog();
@@ -286,11 +282,32 @@ class dataCatalog {
     for (const user of Object.values(catalog)) {
       for (const source of Object.values(user)) {
         for (const entry of Object.values(source)) {
-          if (! entry.in_use && entry.status === status.completed) {
+          if (! entry.in_use && entry.status !== status.inProgress) {
+            // prune data older than data_max_days
+            if (data_max_days > 0) {
+              let check_date = this.getPruneDate(data_max_days);
+              if (new Date(entry.updated) < check_date) {
+                if (this.removeEntry(entry.user, entry.source, entry.id)) {
+                  log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
+                }
+                continue;
+              }
+            }
             entries.push(entry);
           }
         }
       }
+    }
+
+    const free = tools.getFreeSpace(tools.getDataDir(), '1');
+    const size_to_free = min_free - free;
+
+    if (free === false) {
+      return;
+    }
+
+    if (free >= min_free) {
+      return;
     }
 
     entries.sort(function(a,b) {
@@ -329,8 +346,7 @@ class dataCatalog {
     }
 
     // get the current date minus max_age_days
-    let check_date = new Date();
-    check_date.setDate(check_date.getDate() - max_age_days);
+    let check_date = this.getPruneDate(max_age_days);
 
     const catalog = this.getCatalog();
     for (const user of users) {
