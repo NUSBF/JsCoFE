@@ -25,11 +25,18 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false, data_free_gb) {
+  constructor(data_dir, keep_with_data = false, data_free_gb, data_max_days, data_prune_mins) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
     this.data_free_gb = data_free_gb;
+    this.data_max_days = data_max_days;
+    this.data_prune_mins = data_prune_mins;
     this.catalog = {};
+
+    // prune any external data not managed directly by datalink
+    if (this.data_max_days > 0) {
+      setInterval(this.pruneExternalData.bind(this), this.data_prune_mins * 1000 * 60, this.data_max_days);
+    }
   }
 
   getCatalog() {
@@ -44,6 +51,13 @@ class dataCatalog {
   // get the absolute data directory for an entry
   getDataDest(user = '', source = '', id = '') {
     return path.join(this.data_dir, this.getRelDataDest(user, source, id));
+  }
+
+  // get the current date minus num_days
+  getPruneDate(num_days) {
+    let check_date = new Date();
+    check_date.setDate(check_date.getDate() - num_days);
+    return check_date;
   }
 
   getUserCatalogFile(user) {
@@ -63,8 +77,12 @@ class dataCatalog {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
     } catch (err) {
-      log.error(`loadUserCatalog (${user}) - ${err.message}`);
-      return false
+      if (err.code == 'ENOENT') {
+        log.info(`loadUserCatalog (${user}) - skipping no datalink catalog`);
+      } else {
+        log.error(`loadUserCatalog (${user}) - ${err.message}`);
+      }
+      return false;
     }
     return true;
   }
@@ -191,7 +209,7 @@ class dataCatalog {
     }
 
     // prune old data if required
-    this.pruneData(this.data_free_gb);
+    this.pruneData(this.data_free_gb, this.data_max_days);
 
     return catalog[user][source][id];
   }
@@ -255,19 +273,8 @@ class dataCatalog {
     }
   }
 
-  async pruneData(min_free_gb) {
+  async pruneData(min_free_gb, data_max_days) {
     const min_free = min_free_gb * GB;
-    const free = tools.getFreeSpace(tools.getDataDir(), '1');
-
-    if (free === false) {
-      return;
-    }
-
-    if (free >= min_free) {
-      return;
-    }
-
-    const size_to_free = min_free - free;
 
     let entries = [];
     const catalog = this.getCatalog();
@@ -275,11 +282,32 @@ class dataCatalog {
     for (const user of Object.values(catalog)) {
       for (const source of Object.values(user)) {
         for (const entry of Object.values(source)) {
-          if (! entry.in_use && entry.status === status.completed) {
+          if (! entry.in_use && entry.status !== status.inProgress) {
+            // prune data older than data_max_days
+            if (data_max_days > 0) {
+              let check_date = this.getPruneDate(data_max_days);
+              if (new Date(entry.updated) < check_date) {
+                if (this.removeEntry(entry.user, entry.source, entry.id)) {
+                  log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
+                }
+                continue;
+              }
+            }
             entries.push(entry);
           }
         }
       }
+    }
+
+    const free = tools.getFreeSpace(tools.getDataDir(), '1');
+    const size_to_free = min_free - free;
+
+    if (free === false) {
+      return;
+    }
+
+    if (free >= min_free) {
+      return;
     }
 
     entries.sort(function(a,b) {
@@ -300,6 +328,48 @@ class dataCatalog {
     const size_to_free_mb = Math.ceil(size_to_free / MB);
     if (size > 0) {
       log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
+    }
+  }
+
+  async pruneExternalData(max_age_days) {
+    log.info(`pruneExternalData - pruning external data older than ${max_age_days} day(s)`);
+    let users;
+    try {
+      users = tools.getSubDirs(tools.getDataDir());
+    } catch (err) {
+      log.error(`pruneExternalData - Unable to read user directories - ${err}`)
+      return;
+    }
+
+    if (! users) {
+      return;
+    }
+
+    // get the current date minus max_age_days
+    let check_date = this.getPruneDate(max_age_days);
+
+    const catalog = this.getCatalog();
+    for (const user of users) {
+      let sources = tools.getSubDirs(this.getDataDest(user));
+      for (const source of sources) {
+        // if we have a data entry for user + source then skip
+        if (catalog[user] && catalog[user][source]) {
+          continue;
+        }
+
+        await tools.fileCallback(this.getDataDest(user, source), true, async (file) => {
+          try {
+            let file_date = fs.statSync(file).mtime;
+            // if the file or directory is older than check_date then remove
+            if (file_date < check_date) {
+              fs.rmSync(file, { recursive: true });
+            }
+          } catch (err) {
+            log.error(`pruneExternalData - ${err}`);
+          }
+          return true;
+        });
+      }
     }
   }
 
