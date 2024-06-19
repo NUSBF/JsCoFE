@@ -70,8 +70,12 @@ class dataCatalog {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
     } catch (err) {
-      log.error(`loadUserCatalog (${user}) - ${err.message}`);
-      return false
+      if (err.code == 'ENOENT') {
+        log.info(`loadUserCatalog (${user}) - skipping no datalink catalog`);
+      } else {
+        log.error(`loadUserCatalog (${user}) - ${err.message}`);
+      }
+      return false;
     }
     return true;
   }
