@@ -55,11 +55,28 @@ class tools {
     return size;
 }
 
-  static async fileCallback(dir, callback) {
-    const files = fs.readdirSync(dir, { withFileTypes: true });
+  // callback should return 0 on failure (to abort) and 1 on success or for a directory it can return 2 to skip to next entry.
+  static async fileCallback(dir, include_dirs = false, callback) {
+    let files;
+    try {
+      files = fs.readdirSync(dir, { withFileTypes: true });
+    } catch (err) {
+      log.error(`fileCallback - ${err}`);
+      return true;
+    }
     for (const file of files) {
-      if (file.isDirectory()) {
-        if (! await this.fileCallback(`${dir}/${file.name}`, callback)) {
+      if (file.isDirectory() && ! file.isSymbolicLink() ) {
+        // if we want to call our callback on directories
+        if (include_dirs) {
+          let ret = await callback(`${dir}/${file.name}`);
+          if (ret == 0) {
+            return false;
+          }
+          if (ret == 2) {
+            continue;
+          }
+        }
+        if (! await this.fileCallback(`${dir}/${file.name}`, include_dirs, callback)) {
           return false;
         }
       } else {
