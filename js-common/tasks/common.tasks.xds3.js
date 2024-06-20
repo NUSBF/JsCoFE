@@ -61,12 +61,13 @@ else    registerClass ( 'TaskXDS3',TaskXDS3,TaskTemplate.prototype );
 
 // ===========================================================================
 
-TaskXDS3.prototype.cleanJobDir    = function ( jobDir )  {}
+// TaskXDS3.prototype.cleanJobDir         = function ( jobDir )  {}
 
-TaskXDS3.prototype.icon           = function()  { return 'task_xds3'; }
-TaskXDS3.prototype.clipboard_name = function()  { return ''; }  // no copy-paste
+TaskXDS3.prototype.icon                = function()  { return 'task_xds3'; }
+TaskXDS3.prototype.clipboard_name      = function()  { return ''; }  // no copy-paste
+TaskXDS3.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home']; }
 
-TaskXDS3.prototype.desc_title     = function()  {
+TaskXDS3.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'image processing with XDS';
 }
