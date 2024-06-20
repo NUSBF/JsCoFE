@@ -136,6 +136,12 @@ def verifyLORESTR(driver):
     driver.switch_to.default_content()
     time.sleep (3)
 
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+
     return ()
 
 
