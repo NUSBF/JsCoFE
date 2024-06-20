@@ -185,6 +185,28 @@ def addSliceNDice(driver):
 
     return ()
 
+def validate_PDB_REDO(driver):
+    print('pdb-redo validation')
+    sf.enterProject(d.driver, 'pdbredoTest')
+    rWork = 1.0
+    rFree = 1.0
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+        match = re.search('\[0003\] PDB-REDO -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        if match:
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
+            break
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after PDB-REDO run')
+    else:
+        print('*** Verification: PDB-REDO Rwork is %0.4f (expecting <0.2301), Rfree is %0.4f (expecing <0.2840)' % (rWork, rFree))
+    assert rWork < 0.25
+    assert rFree < 0.30
+
+    sf.renameProject(d.driver, 'pdbredoTest')
+    return()
+
 
 def test_slicenDiceBasic(browser,
                      cloud,
@@ -211,7 +233,7 @@ def test_slicenDiceBasic(browser,
 
         sf.loginToCloud(d.driver, login, password, nologin)
 
-        
+        validate_PDB_REDO(d.driver)
         sf.enterProject(d.driver, 'structurePrediction')
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         validateStructurePrediction(d.driver, 1000)
@@ -221,6 +243,8 @@ def test_slicenDiceBasic(browser,
         # sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         slicendiceVerification(d.driver, 1300)
         sf.renameProject(d.driver, d.testName)
+        
+
 
         d.driver.quit()
 
