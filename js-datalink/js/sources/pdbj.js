@@ -41,7 +41,15 @@ class pdbj extends dataSource {
 
   async fetchCatalog() {
     let catalog = {};
-    let json = await tools.httpRequest(URL_JSON);
+
+    let json;
+    try {
+      json = await tools.httpRequest(URL_JSON);
+    } catch (err) {
+      console.error(`${this.name}/fetchCatalog - ${err}`)
+      return false;
+    }
+
     let obj = JSON.parse(json);
     for (const r of obj.results) {
       let id = r[res.pdb];
