@@ -1172,6 +1172,8 @@ function ncRunJob ( job_token,meta )  {
                         '-c',ncores
                       ]);
                       let sbatch_cmd = sbatch_params.concat(command);
+                      console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
+                      console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
                       let slurm_job  = utils.spawn ( 'sbatch',sbatch_cmd );
 
                       /*
