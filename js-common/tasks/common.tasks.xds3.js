@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ function TaskXDS3()  {
   this.xds_inp = '';
 
   this.input_dtypes = [];
-  this.parameters   = {}
+  this.parameters   = {};
     // XDS_INP : {
     //     type     : 'label',
     //     label    : '',
