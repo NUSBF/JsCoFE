@@ -54,7 +54,11 @@ class dataSource {
     if (! fs.existsSync(catalog_file)) {
       log.info(`${this.name} - Fetching Catalog`);
       const catalog = await this.fetchCatalog();
-      this.saveCatalog(catalog_file, catalog);
+      if (catalog) {
+        this.saveCatalog(catalog_file, catalog);
+      } else {
+        log.error(`loadCatalog - Unable to load catalog for ${this.name}`);
+      }
       return;
     }
 
