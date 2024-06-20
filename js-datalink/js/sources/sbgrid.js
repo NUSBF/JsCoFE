@@ -33,7 +33,14 @@ class sbgrid extends dataSource {
       let pdbid = [];
       let data = [];
 
-      let html = await tools.httpRequest(url);
+      let html;
+      try {
+        html = await tools.httpRequest(url);
+      } catch (err) {
+        console.error(`${this.name}/fetchCatalog - ${err}`)
+        return false;
+      }
+
       let dom = cheerio.load(html);
 
       // get number of pages
