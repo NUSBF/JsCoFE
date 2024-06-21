@@ -1160,20 +1160,20 @@ function ncRunJob ( job_token,meta )  {
                   break;
 
 
-      case 'SLURM' :  command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SLURM' :  //command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      command.push ( 'nproc=' + nproc.toString() );
-
+                      //command.push ( 'nproc=' + nproc.toString() );
                       let sbatch_params = ncConfig.exeData.concat ([
                         '--export=ALL',
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-J',jobName,
-                        '-c',ncores
+                        '--cpus-per-task=' + ncores,
+                        '--ntasks='        + nproc.toString() 
                       ]);
                       let sbatch_cmd = sbatch_params.concat(command);
-                      // console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
-                      // console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
+                      console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
+                      console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
                       let slurm_job  = utils.spawn ( 'sbatch',sbatch_cmd );
 
                       /*
