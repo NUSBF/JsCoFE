@@ -1162,12 +1162,12 @@ function ncRunJob ( job_token,meta )  {
 
       case 'SLURM' :  //command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      //command.push ( 'nproc=' + nproc.toString() );
+                      command.push ( 'nproc=' + nproc.toString() );
                       let sbatch_params = ncConfig.exeData.concat ([
                         '--export=ALL',
-                        '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
-                        '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
-                        '-J',jobName,
+                        '--output='        + path.join(jobDir,'_job.stdo'),  // slurm stdout
+                        '--error='         + path.join(jobDir,'_job.stde'),  // slurm stderr
+                        '--job-name='      + jobName,
                         '--cpus-per-task=' + ncores,
                         '--ntasks='        + nproc.toString() 
                       ]);
