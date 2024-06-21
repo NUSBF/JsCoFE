@@ -1169,11 +1169,12 @@ function ncRunJob ( job_token,meta )  {
                         '--error='         + path.join(jobDir,'_job.stde'),  // slurm stderr
                         '--job-name='      + jobName,
                         '--cpus-per-task=' + ncores,
-                        '--ntasks='        + nproc.toString() 
+                        '--ntasks=1' 
+                        // '--ntasks='        + nproc.toString() 
                       ]);
                       let sbatch_cmd = sbatch_params.concat(command);
-                      console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
-                      console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
+                      // console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
+                      // console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
                       let slurm_job  = utils.spawn ( 'sbatch',sbatch_cmd );
 
                       /*
