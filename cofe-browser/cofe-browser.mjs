@@ -420,3 +420,119 @@ ipcMain.on ( 'start-download', (event, url) => {
   mainWindow.webContents.downloadURL ( url );
 });
 
+
+
+
+
+
+
+
+/*
+
+------------------------------------------------------
+
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+
+let mainWindow;
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
+
+  mainWindow.loadFile('index.html');
+
+  // Open the DevTools (optional)
+  // mainWindow.webContents.openDevTools();
+}
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+ipcMain.on('search-text', (event, searchText) => {
+  mainWindow.webContents.findInPage(searchText, { findNext: true });
+});
+
+ipcMain.on('find-next', () => {
+  mainWindow.webContents.findInPage('', { findNext: true });
+});
+
+ipcMain.on('find-previous', () => {
+  mainWindow.webContents.findInPage('', { findNext: false, forward: false });
+});
+
+ipcMain.on('stop-search', () => {
+  mainWindow.webContents.stopFindInPage('clearSelection');
+});
+
+
+------------------------------------------------------
+preload.js
+
+const { contextBridge, ipcRenderer } = require('electron');
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  searchText: (text) => ipcRenderer.send('search-text', text),
+  findNext: () => ipcRenderer.send('find-next'),
+  findPrevious: () => ipcRenderer.send('find-previous'),
+  stopSearch: () => ipcRenderer.send('stop-search')
+});
+
+------------------------------------------------------
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search in Electron</title>
+</head>
+<body>
+  <h1>Search Example</h1>
+  <input type="text" id="searchInput" placeholder="Enter text to search" />
+  <button id="searchButton">Search</button>
+  <button id="nextButton">Next</button>
+  <button id="previousButton">Previous</button>
+  <button id="clearButton">Clear Search</button>
+  <p>Some content to search through...</p>
+  <script src="renderer.js"></script>
+</body>
+</html>
+
+------------------------------------------------------
+
+document.getElementById('searchButton').addEventListener('click', () => {
+  const searchText = document.getElementById('searchInput').value;
+  if (searchText) {
+    window.electronAPI.searchText(searchText);
+  }
+});
+
+document.getElementById('nextButton').addEventListener('click', () => {
+  window.electronAPI.findNext();
+});
+
+document.getElementById('previousButton').addEventListener('click', () => {
+  window.electronAPI.findPrevious();
+});
+
+document.getElementById('clearButton').addEventListener('click', () => {
+  window.electronAPI.stopSearch();
+});
+
+
+*/
