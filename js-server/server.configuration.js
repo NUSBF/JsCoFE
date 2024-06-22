@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    22.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,18 +153,37 @@ let pid     = utils.readString ( pidfile );
 */
 }
 
-ServerConfig.prototype.getMaxNProc = function()  {
-// returns maximal number of process a task is allowed to spawn
-let nproc = 1;
-  if ('exeType' in this)  {
-    if ('capacity' in this)
-      nproc = this.capacity;
-    if (this.exeType!='CLIENT')
-      nproc = Math.floor ( nproc/4 );
-    if ('max_nproc' in this)
-      nproc = Math.min(nproc,this.max_nproc);
-  }
-  return Math.max(1,nproc);
+ServerConfig.prototype.calcCPUCapacity = function()  {
+
+  this.maxNCores = 16;
+  if ('cpu_cores' in this)
+    this.maxNCores = this.cpu_cores;
+  if ('max_ncores' in this)
+    this.maxNCores = Math.min(this.maxNCores,this.max_nproc);
+  else if (this.exeType!='CLIENT')
+    this.maxNCores = Math.floor ( this.maxNCores/4 );
+  this.maxNCores = Math.max(1,this.maxNCores);
+  
+  this.maxNProcesses = this.maxNCores;
+  if ('capacity' in this)
+    this.maxNProcesses = this.capacity;
+  if ('max_nproc' in this)
+    this.maxNProcesses = Math.min(this.maxNProcesses,this.max_nproc);
+  else if (this.exeType!='CLIENT')
+    this.maxNProcesses = Math.floor ( this.maxNProcesses/4 );
+  this.maxNProcesses = Math.max(1,this.maxNProcesses);
+
+}
+
+
+ServerConfig.prototype.getMaxNProcesses = function()  {
+// returns the maximal number of process a task is allowed to spawn
+  return this.maxNProcesses;
+}
+
+ServerConfig.prototype.getMaxNCores = function()  {
+// returns the maximal number of cpu cores (on a single node) a task is allowed to use
+  return this.maxNCores;
 }
 
 
@@ -641,11 +660,13 @@ function CCP4DirName()  {
       "externalURL"      : "http://localhost:8082",
       "exclusive"        : true,
       "stoppable"        : false,
-      "rejectUnauthorized" : true, // optional; use only for debugging, see docs
+      "rejectUnauthorized" : true, // [optional] use only for debugging, see docs
       "fsmount"          : "/",
-      "localSetup"       : true,  // optional, overrides automatic definition
-      "capacity"         : 4,
-      "max_nproc"        : 3,
+      "localSetup"       : true,  // [optional] overrides automatic definition
+      "capacity"         : 4,     // number of tasks/jobs a queue can run a time
+      "max_nproc"        : 3,     // [optional] maximal number of jobs a task can spawn simultaneously
+      "cpu_cores"        : 16,    // [optional] number of cores per compute node
+      "max_ncores"       : 4,     // [optional] maximal number of cores a task can use
       "exclude_tasks"    : [],
       "only_tasks"       : [],
       "fasttrack"        : 1,
@@ -940,10 +961,14 @@ function readConfiguration ( confFilePath,serverType )  {
     return 'front-end proxy configuration is missing in file ' + confFilePath;
 
   if (confObj.hasOwnProperty('NumberCrunchers')) {
+    
     client_server = null;
     nc_servers    = [];
+    
     for (let i=0;i<confObj.NumberCrunchers.length;i++)  {
+    
       let nc_server = new ServerConfig('NC'+i);
+    
       for (let key in confObj.NumberCrunchers[i])
         nc_server[key] = confObj.NumberCrunchers[i][key];
       nc_server.current_capacity = nc_server.capacity;  // initially, assume full capacity
@@ -951,7 +976,6 @@ function readConfiguration ( confFilePath,serverType )  {
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );
       nc_server._checkLocalStatus();
-      nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
         client_server.state = 'active';  // server state: 'active', 'inactive'
@@ -987,7 +1011,12 @@ function readConfiguration ( confFilePath,serverType )  {
         nc_server.jobTimeout = 30;  // days
       if (!nc_server.hasOwnProperty('jobFalseStart'))
         nc_server.jobFalseStart = 1;  // days
+
+      nc_server.calcCPUCapacity();
+      nc_servers.push ( nc_server );
+
     }
+
   } else
     return 'number cruncher(s) configuration is missing in file ' + confFilePath;
 
