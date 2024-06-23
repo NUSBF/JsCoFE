@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.06.24   <--  Date of Last Modification.
+ *    22.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1046,8 +1046,8 @@ function ncRunJob ( job_token,meta )  {
 
   if (task)  { // the task is instantiated, start the job
 
-    let nproc  = ncConfig.getMaxNProc();
-    let ncores = task.getNCores ( nproc );
+    let nproc  = task.getNProcesses ( ncConfig.getMaxNProcesses() );
+    let ncores = task.getNCores     ( ncConfig.getMaxNCores()     );
     utils.writeObject ( path.join(jobEntry.jobDir,'__despatch.meta'),{
       'sender'   : meta.sender,
       'setup_id' : meta.setup_id,
