@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    08.06.24   <--  Date of Last Modification.
+ *    23.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -178,6 +178,15 @@ function createWindow ( url ) {
       label: 'Edit ',
       submenu: [
         {
+          id          : 'findText',
+          label       : 'Find',
+          accelerator : 'CmdOrCtrl+F',
+          click() {
+            mainWindow.webContents.send('start-search');
+          }
+        },
+        { type: 'separator' },
+        {
           id          : 'copyURL',
           label       : 'Copy URL',
           accelerator : 'CmdOrCtrl+C',
@@ -328,8 +337,8 @@ function showCustomAboutDialog() {
     type   : 'info',
     title  : 'About CoFE-Browser',
     message: 'CoFE Browser\n\nv. ' + ccp4cloud_version +
-             '\n\nElectron-based application for running\n' + 
-             'CCP4 Cloud locally on your machine.',
+             '\n\nElectron-based browser for\n' + 
+             'CCP4 Cloud.',
     buttons: ['OK']
   });
 }
@@ -420,10 +429,21 @@ ipcMain.on ( 'start-download', (event, url) => {
   mainWindow.webContents.downloadURL ( url );
 });
 
+ipcMain.on('search-text', (event, searchText) => {
+  mainWindow.webContents.findInPage(searchText, { findNext: true });
+});
 
+ipcMain.on('find-next', () => {
+  mainWindow.webContents.findInPage('', { findNext: true });
+});
 
+ipcMain.on('find-previous', () => {
+  mainWindow.webContents.findInPage('', { findNext: false, forward: false });
+});
 
-
+ipcMain.on('stop-search', () => {
+  mainWindow.webContents.stopFindInPage('clearSelection');
+});
 
 
 

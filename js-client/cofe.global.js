@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    23.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -142,15 +142,6 @@ function isQtWebEngine() {
           // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
 }
 
-function isElectronAPI()  {
-  return ('electronAPI' in window);
-}
-
-function sendMessageToElectron ( message )  {
-  if ('electronAPI' in window)
-    window.electronAPI.sendMessage ( 'message-from-app',message );
-}
-
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   //     (navigator.userAgent.indexOf('Safari')>=0) && (!__iOS_device))
@@ -171,44 +162,6 @@ function isProtectedConnection()  {
 }
 
 // ===========================================================================
-
-sendMessageToElectron ( 'version:' + appVersion() );
-
-if (isElectronAPI())  {
-
-  var downloadProgress = null;
-
-  // document.getElementById('download-button').addEventListener('click', () => {
-  //   const downloadUrl = 'https://example.com/file-to-download.zip';
-  //   window.electronAPI.startDownload(downloadUrl);
-  // });
-
-  window.electronAPI.onDownloadProgress ( (event,progress) => {
-    if (!downloadProgress)
-      downloadProgress = new DownloadProgressDialog();
-    if (isFloat(progress))
-      downloadProgress.setProgress ( 100*progress );
-  });
-
-  window.electronAPI.onDownloadComplete ( (event,savePath) => {
-    downloadProgress.setComplete ( savePath );
-    // alert(`Download Complete: ${savePath}`);
-    // downloadProgress.close();
-    downloadProgress = null;
-  });
-
-  window.electronAPI.onDownloadFailed(() => {
-    downloadProgress.setFailed();
-    downloadProgress = null;
-    // alert('Download Failed');
-  });
-
-  window.electronAPI.onDownloadCancelled(() => {
-    downloadProgress = null;
-    alert('Download Cancelled');
-  });
-
-}
 
 $(window).resize ( function(){
   if (__current_page)
