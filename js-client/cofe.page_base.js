@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    23.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -777,13 +777,4 @@ function setHistoryListener ( sceneId )  {
       window.history.back();
   });
 
-  if (isElectronAPI())  {
-    window.electronAPI.onNavigateBack(() => {
-      window.history.back();
-    });
-    window.electronAPI.onNavigateForward(() => {
-      window.history.forward();
-    });
-    
-  }
 }
