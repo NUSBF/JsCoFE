@@ -104,6 +104,8 @@ DownloadProgressDialog.prototype.setFailed = function ( savePath )  {
 
 // ---------------------------------------------------------------------------
 
+let __electron_search_text = '';
+
 function FindTextDialog()  {
 
   InputBox.call ( this,'Find text' );
@@ -112,7 +114,7 @@ function FindTextDialog()  {
 
   this.grid.setLabel ( '<h2>Find text</h2>',0,2,2,2 );
   this.grid.setLabel ( 'Find:&nbsp;',2,2,1,1 );
-  let findtext_inp = this.grid.setInputText ( '',2,3,1,1 )
+  let findtext_inp = this.grid.setInputText ( __electron_search_text,2,3,1,1 )
       .setStyle      ( 'text','','Put a search string here','' )
       .setFontItalic ( true )
       .setWidth      ( '220px' );
@@ -120,29 +122,54 @@ function FindTextDialog()  {
   this.setNoWrap     ( 2,2 );
   this.setVerticalAlignment ( 2,2,'middle' );
 
+  let find_btn_id = 'find_btn_' + __id_cnt++;
+
   this.options = {
     resizable : false,
     height    : 'auto',
     width     : 'auto',
     modal     : false,
-    buttons   : {
-      'Find' : function() {
-        window.electronAPI.searchText ( findtext_inp.getValue() );
-      },
-      'Next' : function() {
-        window.electronAPI.findNext();
-      },
-      'Previous' : function() {
-        window.electronAPI.findPrevious();
-      },
-      'Close' : function() {
-        window.electronAPI.stopSearch();
-        $(this).dialog ( 'close' );
+    buttons   : [
+      {
+        id    : find_btn_id,
+        text  : "Find",
+        click : function() {
+          __electron_search_text = findtext_inp.getValue();
+          window.electronAPI.searchText ( __electron_search_text );
+        }
+      }, {
+        text  : "Next",
+        click : function() {
+          window.electronAPI.findNext();
+        }
+      }, {
+        text  : "Previous",
+        click : function() {
+          window.electronAPI.findPrevious();
+        }
+      }, {
+        text  : "Close",
+        click : function() {
+          window.electronAPI.stopSearch();
+          __electron_find_text_dialog = null;
+          $(this).dialog ( 'close' );
+        }
       }
-    }
+    ]
   };
 
   $(this.element).dialog ( this.options );
+
+  $(this.element).keydown(function (e) {
+    if (e.key == "Enter") {
+      // unsetDefaultButton ( button,context_widget );
+      // handle click logic here
+      __electron_search_text = findtext_inp.getValue();
+      window.electronAPI.searchText ( __electron_search_text );
+      e.preventDefault();
+      return true;
+    }
+  });
 
 }
 

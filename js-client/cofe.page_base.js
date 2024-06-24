@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    24.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,6 +25,9 @@
 // Base page class
 
 function BasePage ( sceneId,gridStyle,pageType )  {
+
+  __electron_download_progress = null;
+  __electron_find_text_dialog  = null;
 
   // clear the page first
   $(document.body).empty().addClass('main-page');
