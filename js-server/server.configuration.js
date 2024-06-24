@@ -421,6 +421,12 @@ ServerConfig.prototype.getDataLinkMountName = function()  {
 }
 
 
+ServerConfig.prototype.getDataLinkVerifyCert = function()  {
+  if (this.hasDataLink() && this.datalink.hasOwnProperty('verify_cert'))
+    return this.datalink.verify_cert;
+  return true;
+}
+
 // ===========================================================================
 // Config service functions
 
