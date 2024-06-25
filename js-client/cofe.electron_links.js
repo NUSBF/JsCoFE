@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -122,7 +122,12 @@ function FindTextDialog()  {
   this.setNoWrap     ( 2,2 );
   this.setVerticalAlignment ( 2,2,'middle' );
 
+  this.def_button = __default_button;
+  unsetDefaultButton();
+
   let find_btn_id = 'find_btn_' + __id_cnt++;
+
+  let self = this;
 
   this.options = {
     resizable : false,
@@ -135,24 +140,25 @@ function FindTextDialog()  {
         text  : "Find",
         click : function() {
           __electron_search_text = findtext_inp.getValue();
-          window.electronAPI.searchText ( __electron_search_text );
+          if (__electron_search_text)
+            window.electronAPI.searchText ( __electron_search_text );
         }
-      }, {
-        text  : "Next",
-        click : function() {
-          window.electronAPI.findNext();
-        }
+      // }, {  // looks like "Next" is no different fron "Find"  25.06.2024
+      //   text  : "Next",
+      //   click : function() {
+      //     if (__electron_search_text)
+      //       window.electronAPI.findNext();
+      //   }
       }, {
         text  : "Previous",
         click : function() {
-          window.electronAPI.findPrevious();
+          if (__electron_search_text)
+            window.electronAPI.findPrevious();
         }
       }, {
         text  : "Close",
         click : function() {
-          window.electronAPI.stopSearch();
-          __electron_find_text_dialog = null;
-          $(this).dialog ( 'close' );
+          self.close();
         }
       }
     ]
@@ -160,23 +166,17 @@ function FindTextDialog()  {
 
   $(this.element).dialog ( this.options );
 
-  $(this.element).keydown(function (e) {
-    if (e.key == "Enter") {
-      // unsetDefaultButton ( button,context_widget );
-      // handle click logic here
-      __electron_search_text = findtext_inp.getValue();
-      window.electronAPI.searchText ( __electron_search_text );
-      e.preventDefault();
-      return true;
-    }
-  });
-
 }
 
 FindTextDialog.prototype = Object.create ( InputBox.prototype );
 FindTextDialog.prototype.constructor = FindTextDialog;
 
 FindTextDialog.prototype.close = function()  {
+  if (__electron_search_text)
+    window.electronAPI.stopSearch();
+  __electron_find_text_dialog = null;
+  if (this.def_button)
+    setDefaultButton ( this.def_button.button, this.def_button.context_widget );
   $(this.element).dialog ( 'close' );
 }
 
