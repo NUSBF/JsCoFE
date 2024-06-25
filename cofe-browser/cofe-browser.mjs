@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -440,7 +440,7 @@ ipcMain.on('search-text', (event, search_text) => {
 });
 
 ipcMain.on('find-next', () => {
-  mainWindow.webContents.findInPage ( searchText, { findNext: true } );
+  mainWindow.webContents.findInPage ( searchText, { findNext: false } );
 });
 
 ipcMain.on('find-previous', () => {
