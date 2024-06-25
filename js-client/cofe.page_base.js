@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,6 +26,11 @@
 
 function BasePage ( sceneId,gridStyle,pageType )  {
 
+  unsetDefaultButton();
+
+  __electron_download_progress = null;
+  __electron_find_text_dialog  = null;
+
   // clear the page first
   $(document.body).empty().addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
@@ -34,10 +39,6 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   checkAnnouncement();
 
   __current_page = this;  // do not move this line up!
-
-  // clear the page first
-  // $('#'+sceneId).empty();
-  //  unsetDefaultButton ( null );
 
   clearNetworkIndicators();
 
@@ -246,8 +247,8 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       logoGrid.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
   }
   logoGrid.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
-           .setFontSize ( '75%' ).setNoWrap()
-           .setVerticalAlignment('middle');
+          .setFontSize ( '75%' ).setNoWrap()
+          .setVerticalAlignment('middle');
   logoGrid.setVerticalAlignment   ( 0,0,'middle'  );
   logoGrid.setCellSize            ( '50%','', 0,c );
   logoGrid.setHorizontalAlignment ( 0,c,'right'   );
@@ -777,13 +778,4 @@ function setHistoryListener ( sceneId )  {
       window.history.back();
   });
 
-  if (isElectronAPI())  {
-    window.electronAPI.onNavigateBack(() => {
-      window.history.back();
-    });
-    window.electronAPI.onNavigateForward(() => {
-      window.history.forward();
-    });
-    
-  }
 }
