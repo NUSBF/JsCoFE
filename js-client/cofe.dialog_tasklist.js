@@ -255,6 +255,7 @@ TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
 let dockMenu;
+
   if (in_dock)  {
     dockMenu = new Menu('',image_path('dock_ind_sel'));
     dockMenu.addItem('Remove task from dock',image_path('remove'))
@@ -274,9 +275,17 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   }
+
+  // dockMenu.addItem('Task reference',image_path('reference'))
+  //         .addOnClickListener(function(){
+  // });
+
   grid.setWidget ( dockMenu,row,0,1,1 )
 }
 
+function __show_task_help ( help_url )  {
+  new HelpBox ( '',help_url,null );
+}
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  {
 
@@ -329,6 +338,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     */
   }
 
+  title += '&nbsp;<img src="' + image_path('reference') + 
+           '" onclick="javascript:__show_task_help(\'' +
+           task_obj.getHelpURL() + '\');" height="18px" ' +
+           'style="position:relative;top:2px;cursor:pointer;"/>';
+
   if (avail_key[0]!='ok')  {
     title = '<span style="line-height:16px;">' + title  +
             '<br>' + desc_indent + '<span style="font-size:13px;"><i>** ' + 
@@ -348,7 +362,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   grid.setCellSize          ( 'auto','',row,1 );
   grid.setCellSize          ( 'auto','',row,2 );
   grid.setCellSize          ( '99%' ,'',row,3 );
-  grid.setCursor            ( 'pointer' );
+  // grid.setCursor            ( 'pointer' );
 
   btn.dataSummary = dataSummary;
 
@@ -362,47 +376,41 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     case 2  : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
-  (function(dlg,ibtn){
+  // (function(dlg,ibtn){
+  let dlg = this;
 
-    function taskClicked() {
-      if (ibtn.dataSummary.status>0)  {
-        dlg.selected_task = task_obj;
-        // if (dlg.combobox)
-        //       dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
-        // else  dlg.onSelect_func ( task_obj,null );
-        // if (dlg.checkbox)
-        //       dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
-        // else  dlg.onSelect_func ( task_obj,null );
-        // dlg.saveDialogState();
-        $(dlg.element).dialog ( 'close' );
-      // } else if (avail_key[0]=='private')  {
-      //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
-      } else if (avail_key[0]!='ok')  {
-        new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
-      } else  {
-        // insufficient data
-        new TaskDataDialog ( ibtn.dataSummary,task_obj,avail_key );
-      }
+  function taskClicked() {
+    if (btn.dataSummary.status>0)  {
+      dlg.selected_task = task_obj;
+      $(dlg.element).dialog ( 'close' );
+    // } else if (avail_key[0]=='private')  {
+    //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
+    } else if (avail_key[0]!='ok')  {
+      new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
+    } else  {
+      // insufficient data
+      new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );
     }
+  }
 
-    ibtn.addOnClickListener ( taskClicked );
+  btn.addOnClickListener ( taskClicked );
 
-    // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
+  // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
 
-    lbl.addOnClickListener ( taskClicked );
+  // lbl.addOnClickListener ( taskClicked );
 
-    // var contextMenu = new Menu('',image_path('dock'),true);
-    // grid.setWidget   ( contextMenu,row,1,1,1 )
+  // var contextMenu = new Menu('',image_path('dock'),true);
+  // grid.setWidget   ( contextMenu,row,1,1,1 )
 
-    // var contextMenu = new ContextMenu ( ibtn,null );
-    // contextMenu.setZIndex ( 600 );
-    // contextMenu.addItem('Add task to dock',image_path('add'))
-    //            .addOnClickListener(function(){
-    //             console.log ( 'add' );
-    //   // alert('add')
-    // });
+  // var contextMenu = new ContextMenu ( ibtn,null );
+  // contextMenu.setZIndex ( 600 );
+  // contextMenu.addItem('Add task to dock',image_path('add'))
+  //            .addOnClickListener(function(){
+  //             console.log ( 'add' );
+  //   // alert('add')
+  // });
 
-  }(this,btn));
+  // }(this,btn));
 
   return btn;
 
