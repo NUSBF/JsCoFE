@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.24   <--  Date of Last Modification.
+ *    26.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,11 +116,13 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   let self = this;
 
   $(self.element).dialog({
+
     resizable : true,
     height    : self.dlg_height,
     width     : self.dlg_width,
     maxHeight : $(window).height()-20,
     modal     : true,
+
     create    : function (e, ui) {
                   // if (self.combobox)  {
                   //   var pane = $(this).dialog("widget")
@@ -155,6 +157,14 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
                     });            
                   }
                 },
+
+    beforeClose : function(event, ui) {
+                  self.saveDialogState();
+                  if (self.checkbox)
+                        self.onSelect_func ( self.selected_task,self.getListSwitchValue() );
+                  else  self.onSelect_func ( self.selected_task,null );
+                },
+
     buttons   : [
       { text  : 'Help',
         click : function() {
@@ -163,10 +173,6 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       },
       { text  : 'Close',
         click : function() {
-          self.saveDialogState();
-          if (self.checkbox)
-                self.onSelect_func ( null,self.getListSwitchValue() );
-          else  self.onSelect_func ( null,null );
           $( this ).dialog( "close" );
         }
       }
@@ -187,7 +193,8 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   });
 
   // $(self.element).on( "dialogclose",function(event,ui){
-  //   self.saveDialogState();
+  //   alert ( 'exit');
+  //   // self.saveDialogState();
   // });
 
   // if (self.combobox)  {
@@ -363,10 +370,10 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
         // if (dlg.combobox)
         //       dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
         // else  dlg.onSelect_func ( task_obj,null );
-        if (dlg.checkbox)
-              dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
-        else  dlg.onSelect_func ( task_obj,null );
-        dlg.saveDialogState();
+        // if (dlg.checkbox)
+        //       dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
+        // else  dlg.onSelect_func ( task_obj,null );
+        // dlg.saveDialogState();
         $(dlg.element).dialog ( 'close' );
       // } else if (avail_key[0]=='private')  {
       //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
