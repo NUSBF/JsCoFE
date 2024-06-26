@@ -338,10 +338,10 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     */
   }
 
-  title += '&nbsp;<img src="' + image_path('reference') + 
+  title += '&nbsp;&nbsp;<img src="' + image_path('reference_inline') + 
            '" onclick="javascript:__show_task_help(\'' +
-           task_obj.getHelpURL() + '\');" height="18px" ' +
-           'style="position:relative;top:2px;cursor:pointer;"/>';
+           task_obj.getHelpURL() + '\');" height="12px" ' +
+           'style="position:relative;top:1px;cursor:pointer;"/>';
 
   if (avail_key[0]!='ok')  {
     title = '<span style="line-height:16px;">' + title  +
