@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.24   <--  Date of Last Modification.
+ *    27.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,8 +75,8 @@ MenuItem.prototype.constructor = MenuItem;
 // Menu closure functions
 
 // Close the dropdown if the user clicks outside of it
-var __onclick_ignore_counter = -1;
-
+var __menu_onclick_ignore_counter = -1;
+ 
 function __close_all_menus()  {
   let dropdowns = document.getElementsByClassName("menu-dropdown-content");
   for (let i=0;i<dropdowns.length;i++) {
@@ -85,29 +85,29 @@ function __close_all_menus()  {
       openDropdown.classList.remove('menu-show');
     }
   }
-  __onclick_ignore_counter = -1;  // lock auto-calls
+  __menu_onclick_ignore_counter = -1;  // lock auto-calls
 }
 
 // document.onclick = function(event)  {
-//   if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
+//   if (__menu_onclick_ignore_counter>0)  __menu_onclick_ignore_counter--;
 //                              else  __close_all_menus();
 //   return true;
 // }
 
 // document.onclick = function(event)  {
-//   if (__onclick_ignore_counter>0)
-//     __onclick_ignore_counter--;
-//   else if (__onclick_ignore_counter==0)  {
+//   if (__menu_onclick_ignore_counter>0)
+//     __menu_onclick_ignore_counter--;
+//   else if (__menu_onclick_ignore_counter==0)  {
 //     __close_all_menus();
-//     __onclick_ignore_counter = -1;
+//     __menu_onclick_ignore_counter = -1;
 //   }
 //   return true;
 // }
 
 document.onclick = function(event)  {
-  if (__onclick_ignore_counter>=0)  {
-    if (__onclick_ignore_counter==0)  __close_all_menus();
-                                else  __onclick_ignore_counter--;
+  if (__menu_onclick_ignore_counter>=0)  {
+    if (__menu_onclick_ignore_counter==0)  __close_all_menus();
+                                else  __menu_onclick_ignore_counter--;
   }
   return true;
 }
@@ -137,15 +137,15 @@ function Menu ( text,icon_uri,right_click=false )  {
     (function(menu){
       if (right_click)  {
         menu.button.addOnRightClickListener ( function(e){
-          let oic = __onclick_ignore_counter;
+          let oic = __menu_onclick_ignore_counter;
           __close_all_menus();
           if ((!menu.disabled) && oic)  {
             if (menu.onclick_custom_function)
               menu.onclick_custom_function();
-            // if (__onclick_ignore_counter<0)
-            //       __onclick_ignore_counter = 1;
-            // else  __onclick_ignore_counter++;
-            __onclick_ignore_counter = 1;
+            // if (__menu_onclick_ignore_counter<0)
+            //       __menu_onclick_ignore_counter = 1;
+            // else  __menu_onclick_ignore_counter++;
+            __menu_onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
             if (('__active_color_mode' in window) && (__active_color_mode=='dark'))
                   menu.dropdown.element.style.boxShadow = 'none';
@@ -154,15 +154,15 @@ function Menu ( text,icon_uri,right_click=false )  {
         });
       } else  {
         menu.button.addOnClickListener ( function(e){
-          let oic = __onclick_ignore_counter;
+          let oic = __menu_onclick_ignore_counter;
           __close_all_menus();
           if ((!menu.disabled) && oic)  {
             if (menu.onclick_custom_function)
               menu.onclick_custom_function();
-            // if (__onclick_ignore_counter<0)
-            //       __onclick_ignore_counter = 1;
-            // else  __onclick_ignore_counter++;
-            __onclick_ignore_counter = 1;
+            // if (__menu_onclick_ignore_counter<0)
+            //       __menu_onclick_ignore_counter = 1;
+            // else  __menu_onclick_ignore_counter++;
+            __menu_onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
             if (('__active_color_mode' in window) && (__active_color_mode=='dark'))
                   menu.dropdown.element.style.boxShadow = 'none';
@@ -197,15 +197,17 @@ Menu.prototype.setMaxHeight = function ( height_str )  {
   this.dropdown.element.style.maxHeight = height_str;
 }
 
-Menu.prototype.addItem = function ( text,icon_uri )  {
-var mi = new MenuItem ( text,icon_uri );
+Menu.prototype.addItem = function ( text,icon_uri,padding=0 )  {
+let mi = new MenuItem ( text,icon_uri );
+  if (padding)
+    mi.setPaddings ( padding,padding,padding,padding );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
 }
 
 Menu.prototype.addSeparator = function ()  {
-var mi = new MenuItem ( '<hr/>','' );
+let mi = new MenuItem ( '<hr/>','' );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
@@ -227,7 +229,7 @@ Menu.prototype.setWidth = function ( width )  {
   this.element.style.width = width;
   if (this.button)
     this.button.setWidth ( width );
-  for (var i=0;i<this.child.length;i++)
+  for (let i=0;i<this.child.length;i++)
     this.child[i].setWidth ( width );
 }
 
@@ -235,7 +237,7 @@ Menu.prototype.setWidth_px = function ( width_int )  {
   $(this.element).width ( width_int );
   if (this.button)
     this.button.setWidth_px ( width_int );
-  for (var i=0;i<this.child.length;i++)
+  for (let i=0;i<this.child.length;i++)
     this.child[i].setWidth_px ( width_int );
 }
 
@@ -259,9 +261,9 @@ function ContextMenu ( widget,custom_func )  {
       if (custom_func)
         custom_func();
       if (!menu.disabled)  {
-        __onclick_ignore_counter++;
-        if (__onclick_ignore_counter<0)
-          __onclick_ignore_counter = 0;
+        __menu_onclick_ignore_counter++;
+        if (__menu_onclick_ignore_counter<0)
+          __menu_onclick_ignore_counter = 0;
         menu.dropdown.element.classList.toggle ( 'menu-show' );
       }
     });
@@ -285,7 +287,7 @@ DropdownItemGroup.prototype = Object.create ( Widget.prototype );
 DropdownItemGroup.prototype.constructor = DropdownItemGroup;
 
 DropdownItemGroup.prototype.addItem = function ( text,icon_uri,itemId,selected_bool )  {
-var item = new Widget ( 'option' );
+let item = new Widget ( 'option' );
   item.element.setAttribute ( 'value',itemId );
   item.value = itemId;
   if (selected_bool)
@@ -324,7 +326,7 @@ Dropdown.prototype.reset = function()  {
 }
 
 Dropdown.prototype.addItem = function ( text,icon_uri,itemId,selected_bool )  {
-var item = new Widget ( 'option' );
+let item = new Widget ( 'option' );
   item.element.setAttribute ( 'value',itemId );
   item.value = itemId;
   if (selected_bool)  {
@@ -344,7 +346,7 @@ var item = new Widget ( 'option' );
 
 Dropdown.prototype.addItemGroup = function ( dropdownItemGroup )  {
   this.select.addWidget ( dropdownItemGroup );
-  for (var j=0;j<dropdownItemGroup.child.length;j++)
+  for (let j=0;j<dropdownItemGroup.child.length;j++)
     if (dropdownItemGroup.child[j].hasAttribute('selected'))  {
       this.selected_value = dropdownItemGroup.child[j].value;
       this.selected_text  = dropdownItemGroup.child[j].element.innerHTML;
@@ -369,9 +371,9 @@ Dropdown.prototype.make = function()  {
 
         width  : ddn.width,
 
-        change : function( event, data ) {
+        change : function( evnt, data ) {
 
-            var event = new CustomEvent ( 'state_changed',{
+            let event = new CustomEvent ( 'state_changed',{
               'detail' : {
                 'text'      : data.item.label,
                 'item'      : data.item.value,
@@ -410,7 +412,7 @@ Dropdown.prototype.addOnChangeListener = function ( listener_func )  {
 
 Dropdown.prototype.click = function()  {
   (function(dropdown){
-    var event = new CustomEvent ( 'state_changed',{
+    let event = new CustomEvent ( 'state_changed',{
       'detail' : {
         'text' : dropdown.selected_text,
         'item' : dropdown.selected_value
@@ -433,9 +435,9 @@ Dropdown.prototype.getItemByPosition = function ( itemNo )  {
 
 Dropdown.prototype.getItem = function ( itemId )  {
 
-  var item = null;
+  let item = null;
   function findItem ( ddn,widget )  {
-    for (var j=0;(j<widget.child.length) && (!item);j++)
+    for (let j=0;(j<widget.child.length) && (!item);j++)
       if (widget.child[j].type=='optgroup')
         findItem ( ddn,widget.child[j] );
       else if (widget.child[j].value==itemId)
@@ -452,7 +454,7 @@ Dropdown.prototype.getItem = function ( itemId )  {
 Dropdown.prototype.selectItem = function ( itemId )  {
 
   function selItem ( ddn,widget )  {
-    for (var j=0;j<widget.child.length;j++)
+    for (let j=0;j<widget.child.length;j++)
       if (widget.child[j].type=='optgroup')  {
         selItem ( ddn,widget.child[j] );
       } else if (widget.child[j].value==itemId)  {
@@ -479,7 +481,7 @@ Dropdown.prototype.selectItemByPosition = function ( itemNo )  {
 
   if ((0<=itemNo) && (itemNo<this.select.child.length))  {
 
-    for (var j=0;j<this.select.child.length;j++)
+    for (let j=0;j<this.select.child.length;j++)
       if (j==itemNo)  {
         this.select.child[j].setAttribute ( 'selected','selected' );
         this.selected_value = this.select.child[j].value;
@@ -499,9 +501,9 @@ Dropdown.prototype.selectItemByPosition = function ( itemNo )  {
 }
 
 Dropdown.prototype.getContent = function()  {
-var content = [];
+let content = [];
 
-  for (var j=0;j<this.select.child.length;j++)
+  for (let j=0;j<this.select.child.length;j++)
     content.push ([
       this.select.child[j].element.innerHTML,
       this.select.child[j].value,
@@ -515,11 +517,11 @@ var content = [];
 
 Dropdown.prototype.disableItem = function ( itemId,disable_bool )  {
 
-  var n         = -1;
-  var wdg       = null;
-  var selItem   = null;
+  let n         = -1;
+  let wdg       = null;
+  let selItem   = null;
   function disItem ( ddn,widget )  {
-    for (var j=0;j<widget.child.length;j++)
+    for (let j=0;j<widget.child.length;j++)
       if (widget.child[j].type=='optgroup')  {
         disItem ( ddn,widget.child[j] );
       } else if (widget.child[j].value==itemId)  {
@@ -562,7 +564,7 @@ Dropdown.prototype.disableItemByPosition = function ( itemNo,disable_bool )  {
           this.select.child[itemNo].setAttribute    ( 'disabled','disabled' );
     else  this.select.child[itemNo].removeAttribute ( 'disabled' );
 
-    var refresh = true;
+    let refresh = true;
     if (disable_bool && (this.selected_value==this.select.child[itemNo].value)) {
       if (itemNo<this.select.child.length-1)  {
         this.selectItemByPosition ( itemNo+1 );
@@ -604,10 +606,10 @@ Dropdown.prototype.setEnabled = function ( enable_bool )  {
 
 Dropdown.prototype.deleteItem = function ( itemId )  {
 
-  var n       = -1;
-  var selItem = null;
+  let n       = -1;
+  let selItem = null;
   function delItem ( ddn,widget )  {
-    for (var j=0;j<widget.child.length;j++)
+    for (let j=0;j<widget.child.length;j++)
       if (widget.child[j].type=='optgroup')  {
         disItem ( ddn,widget.child[j] );
       } else if (widget.child[j].value==itemId)  {
@@ -654,8 +656,8 @@ Dropdown.prototype.deleteItemByPosition = function ( itemNo )  {
 Dropdown.prototype.isItemDisabled = function ( itemId )  {
 
   function isDis ( ddn,widget )  {
-    var dis = false;
-    for (var j=0;j<widget.child.length;j++)
+    let dis = false;
+    for (let j=0;j<widget.child.length;j++)
       if (widget.child[j].type=='optgroup')  {
         dis = isDis ( ddn,widget.child[j] );
       } else if (widget.child[j].value==itemId)  {
@@ -796,8 +798,8 @@ ComboDropdown.prototype.constructor = ComboDropdown;
 
 
 ComboDropdown.prototype.getValues = function()  {
-  var values = [];
-  for (var i=0;i<this.headers.length;i++)
+  let values = [];
+  for (let i=0;i<this.headers.length;i++)
     if (this.dropdowns[i].isVisible())
           values.push ( this.dropdowns[i].content
                             .items[this.dropdowns[i].getValue()].value );
