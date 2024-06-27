@@ -12,7 +12,7 @@ As well as fetching data public data repositories, the API allows CCP4 Cloud use
 
 In the future this will allow linking to data storage and data producing facilities, such as Diamond Light Source and in-house X-ray instruments (e.g. Bruker diffractometers).
 
-There is commandline tool included (js_client.js) to communicate with the API.
+There is commandline tool included (dl_client.js) to communicate with the API.
 
 ## Installation and Usage
 
@@ -82,7 +82,43 @@ Configuration Values:
 ### Example configuration file
 
 An example configuration file is included in the repository `config-dist.json`.
+
+## Commandline tool
+
+A commandline tool `dl_client.js` is included for communicating with the API. The commandline tool allows calling the API functions detailed below.
+
+The client can be run with `./dl_client.js` or `node dl_client.js`. It has no other 3rd party library dependencies so should work from a vanilla node install.
+
 ```
+Usage: dl_client.js [options] <action> -- [...list of files/directories]
+
+Arguments:
+  action                 sources, catalog/catalogue, search, fetch, status, update, remove, upload, stats
+
+Options:
+  --url <url>            URL of the Data Link API including port eg http://localhost:8100/api
+  --cloudrun_id <id>     CCP4 Cloud cloudrun_id for <user> used to authenticate
+  --admin_key <key>      Data Link admin_key used to authenticate
+  --user <user>          User to manage data for
+  --source <source>      Data Source to use
+  --id <id>              id of entries
+  --field <field>        Used for actions <search> and <update> to select field to search or update
+  --value <value>        Used for action <search> and <update> for value to search for or set field to
+  --no_progress          Don't output progress during upload
+  -h, --help             display help for command
+```
+
+The tool will output the JSON returned by the API.
+
+When using the `upload` action, files/directories to upload to DataLink should be provided after a `--` parameter.
+
+eg.
+
+```
+./dl_client.js --url http://localhost:8100/api --user USERNAME --cloudrun_id xxxx-xxxx-xxxx-xxxx --source test --id test1 upload -- /PATH/TO/FILES_OR_DIRECTORY
+```
+
+Multiple paths can be provided (space separated)
 
 ## API Authentication
 
@@ -579,6 +615,31 @@ eg. `GET /api/data`
   }
 }
 ```
+
+## POST /api/data/{user}/{source}/{id}/upload
+
+*Requires user's cloudrun_id or admin_key for authentication*
+
+This call requires data to be sent as multipart/formdata. The `filename` in the POST data should contain the relative path for storage if sending a directory structure. Multiple Content-Disposition sections can be included.
+
+Multiple files can also be sent as a compressed archive, which will be depacked after upload.
+
+Note that all paths and filenames are sanitized and absolute paths will be converted to relative.
+
+The commandline tool `dl_client.js` can be used to easily upload data via the DataLink API.
+
+eg. `POST /api/data/example_user/test/test1/upload`
+
+`HTTP/1.1 200 OK`
+
+```json
+{
+  "success": true,
+  "msg": "Added files to example_user/test/test1"
+}
+
+```
+
 ## GET /api/stats
 
 Gets some information about the data managed by DataLink.
