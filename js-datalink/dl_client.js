@@ -24,7 +24,7 @@ class Client {
       Object.assign(this.arg_info, {
         url: {
           form: 'url', 
-          help: 'URL of the Data Link API including port eg http://localhost:9100/api'
+          help: 'URL of the Data Link API including port eg http://localhost:8100/api'
         },
         cloudrun_id: {
           form: 'id', 
