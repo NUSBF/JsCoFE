@@ -41,7 +41,7 @@ data/
       id/
 ```
 
-Data is stored by `user`, then data `source`, and the `id` of the data. e.g. `jools.wills/pdbj/8cqm`.
+Data is stored by `user`, then data `source`, and the `id` of the data. e.g. `example_user/pdbj/8cqm`.
 
 To keep track of the data, the system stores catalog files for each user as JSON. By default these are stored in a users subfolder under the configured `catalog_dir` but can also be kept with the data and stored in the data `user` folder as `catalog.json`. The catalog files are loaded by the DataLink service on start-up.
 
@@ -123,27 +123,25 @@ Example JSON output:
 
 ```json
 {
-  irrmc: {
-    catalog_size: 6206
-    description: "Integrated Resource for Reproducibility in Macromolecular Crystallography"
-    status: "completed"
-    url: "https://proteindiffraction.org"
-  }
-  pdbj: {
-    catalog_size: 100
-    description: "PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)"
-    status: "completed"
-    url: "https://xrda.pdbjbk1.pdbj.org/"
-  }
-  sbgrid: {
-    catalog_size: 813
-    description: "The SBGrid Data Bank"
-    status: "completed"
-    url: "https://data.sbgrid.org"
+  "pdbj": {
+    "description": "PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)",
+    "url": "https://xrda.pdbj.org/",
+    "catalog_size": 131,
+    "catalog_status": "completed"
+  },
+  "sbgrid": {
+    "description": "The SBGrid Data Bank",
+    "url": "https://data.sbgrid.org",
+    "catalog_size": 824,
+    "catalog_status": "completed"
+  },
+  "irrmc": {
+    "description": "Integrated Resource for Reproducibility in Macromolecular Crystallography",
+    "url": "https://proteindiffraction.org",
+    "catalog_size": 6375,
+    "catalog_status": "completed"
   }
 }
-
-
 ```
 
 ### GET /api/sources/{id}
@@ -156,11 +154,12 @@ eg. `GET /api/sources/pdbj`
 
 ```json
 {
-  catalog_size: 100
-  description: "PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)"
-  status: "completed"
-  url: "https://xrda.pdbjbk1.pdbj.org/"
+  "description": "PDBj (Protein Data Bank Japan): The Xtal Raw Data Archive (XRDA)",
+  "url": "https://xrda.pdbj.org/",
+  "catalog_size": 131,
+  "catalog_status": "completed"
 }
+
 ```
 
 ### GET "/api/sources/{id}/catalog"
@@ -186,30 +185,33 @@ The following fields are used by the data source catalog:
 #### pdbj example:
 
 ```json
+{
+...
   "5yu7": {
-    "auth": "Yamazawa, R., Jiko, C., Lee, S.J., Yamashita, E.",
-    "date": "2021-07-09T07:13:49.000Z",
-    "name": "CRYSTAL STRUCTURE OF EXPORTIN-5",
-    "doi": "10.1016/j.str.2018.06.014",
     "path": "5yu7",
     "pdb": "5yu7",
+    "doi": "10.1016/j.str.2018.06.014",
+    "name": "CRYSTAL STRUCTURE OF EXPORTIN-5",
+    "auth": "Yamazawa, R., Jiko, C., Lee, S.J., Yamashita, E.",
+    "date": "2021-07-09T07:13:49.000Z",
     "size": 6208332959
   },
-  "6isv": {
-    "auth": "Koesoema, A.A., Sugiyama, Y., Senda, M., Senda, T., Matsuda, T.",
-    "date": "2021-03-23T03:53:35.000Z",
-    "name": "Structure of acetophenone reductase from Geotrichum candidum NBRC 4597 in complex with NAD",
-    "doi": "10.1007/s00253-019-10093-w",
-    "path": "6isv",
-    "pdb": "6isv",
-    "size": 1459683150
+  "6l46": {
+    "path": "6l46",
+    "pdb": "6l46",
+    "doi": "10.1073/pnas.1918125117",
+    "name": "High-resolution neutron and X-ray joint refined structure of copper-containing nitrite reductase from Geobacillus thermodenitrificans",
+    "auth": "Fukuda, Y., Hirano, Y., Kusaka, K., Inoue, T., Tamada, T.",
+    "date": "2021-12-21T06:42:22.000Z",
+    "size": 8946509720
   },
 ...
+}
 ```
 
 ### GET "/api/sources/*/catalog"
 
-*Requires admin_key for authentication*
+*Does not require authentication*
 
 Get a catalog of all available data from all data sources. This returns a catalog as above, with each catalog returned under a key with the data source name.
 
@@ -243,8 +245,8 @@ The API will return a success message if triggering the catalog update has been 
 
 ```json
 {
-  msg: "pdbj - Updating catalog"
-  success: true
+  "msg": "pdbj - Updating catalog"
+  "success": true
 }
 ```
 
@@ -252,8 +254,8 @@ If the catalog was already updating the API will return:
 
 ```json
 {
-  msg: "pdbj - Catalog download already in progress"
-  success: true
+  "msg": "pdbj - Catalog download already in progress"
+  "success": true
 }
 ```
 
@@ -267,8 +269,8 @@ Here's an example response for the call
 
 ```json
 {
-  msg: "Updating catalog(s): pdbj, sbgrid, irrmc"
-  success: true
+  "msg": "Updating catalog(s): pdbj, sbgrid, irrmc"
+  "success": true
 }
 ```
 
@@ -294,16 +296,17 @@ eg. for `GET /api/search/7p5l`
 
 ```json
 {
-  pdb: {
+  "pdb": {
     ... rcsb PDB API results (https://data.rcsb.org/rest/v1/core/entry/{PDBID})
   }
-  results: [
-  {
-    desc: "X-Ray Diffraction data from Mycobacterial glucosyl-3-phosphoglycerate synthase, source of 7P5L structure"
-    doi: "10.15785/SBGRID/995"
-    id: "995"
-    source: "sbgrid"
-  }
+  "results": [
+    {
+      "source": "sbgrid",
+      "id": "995",
+      "doi": "10.15785/sbgrid/995",
+      "name": "X-Ray Diffraction data from Mycobacterial glucosyl-3-phosphoglycerate synthase, source of 7P5L structure",
+      "pdb": "7p5l"
+    }
   ]
 }
 ```
@@ -316,14 +319,14 @@ Fetches data for a user from a data source. It returns a message reporting the s
 
 The data is downloaded to the configured data folder, stored in username/source/id. Once the data has been fetched, it will be unpacked (if possible).
 
-eg. for `PUT /api/data/jools.wills/pdbj/5aui`
+eg. for `PUT /api/data/example_user/pdbj/5aui`
 
 `HTTP/1.1 200 OK`
 
 ```json
 {
-  msg: "pdbj: Fetching jools.wills/pdbj/5aui"
-  success: true
+  "msg": "pdbj: Fetching example_user/pdbj/5aui"
+  "success": true
 }
 ```
 
@@ -333,8 +336,8 @@ If this is called again while the data fetch is in progress, it will report
 
 ```json
 {
-  msg: "pdbj - Data fetch for jools.wills/pdbj/5aui already in progress"
-  success: true
+  "msg": "pdbj - Data fetch for example_user/pdbj/5aui already in progress"
+  "success": true
 }
 ```
 
@@ -344,8 +347,8 @@ If the data already exists for the user, the API will return
 
 ```json
 {
-  msg: "pdbj: jools.wills/pdbj/5aui already exists"
-  success: true
+  "msg": "pdbj: example_user/pdbj/5aui already exists"
+  "success": true
 }
 ```
 
@@ -355,8 +358,8 @@ If the `id` cannot be found in the data source catalog, the API will return
 
 ```
 {
-  error: true
-  msg: "pdbj - 12345 not found in catalog"
+  "error": true
+  "msg": "pdbj - 12345 not found in catalog"
 }
 ```
 
@@ -366,8 +369,8 @@ If the data source requested doesn't currently have a catalog (eg. on first run)
 
 ```json
 {
-  error: true
-  msg: "sbgrid - data source catalog not ready"
+  "error": true
+  "msg": "sbgrid - data source catalog not ready"
 }
 ```
 
@@ -377,7 +380,7 @@ If the data source requested doesn't currently have a catalog (eg. on first run)
 
 Removes data for a user. Data that has `in_use` set to *true*, cannot be deleted - `in_use` must first be set to *false*.
 
-eg. `DELETE /api/data/jools.wills/pdbj/5aui`
+eg. `DELETE /api/data/example_user/pdbj/5aui`
 
 On success the API will return
 
@@ -385,8 +388,8 @@ On success the API will return
 
 ```json
 {
-  msg: "pdbj: Removed 5aui for jools.wills"
-  success: true
+  "msg": "pdbj: Removed 5aui for example_user"
+  "success": true
 }
 ```
 
@@ -396,8 +399,8 @@ If there is a problem removing the data, the API will return.
 
 ```json
 {
-  error: true
-  msg: "pdbj: Unable to remove 5aui for jools.wills"
+  "error": true
+  "msg": "pdbj: Unable to remove 5aui for example_user"
 }
 ```
 
@@ -415,8 +418,8 @@ If successful the API will return a JSON formatted message such as:
 
 ```json
 {
-  msg: "Updated fields in_use"
-  success: true
+  "msg": "Updated fields in_use"
+  "success": true
 }
 ```
 
@@ -426,8 +429,8 @@ If the request is not valid the API will return a HTTP response error 400. eg
 
 ```json
 {
-  error: true
-  msg: "some_field is not a valid field"
+  "error": true
+  "msg": "some_field is not a valid field"
 }
 ```
 
@@ -435,8 +438,8 @@ or
 
 ```json
 {
-  error: true
-  msg: "in_use should be set to true or false"
+  "error": true
+  "msg": "in_use should be set to true or false"
 }
 ```
 
@@ -446,39 +449,53 @@ or
 
 Retrieves the details of data fetched for a user. The following fields are returned:
 
-* `in_use`: Whether the data is in_use by a user. By default `in_use` is set to *false*, and can be changed via a PATCH API call to the same API endpoint. A data entry with `in_use` set to *true* cannot be deleted.
 * `updated`: The date and time the data entry was last changed. This is in ISO 8601 format.
 * `size`: The size of the data on disk. This is updated periodically during data retrieval.
 * `size_s`: The size of the original source data. This may be different from the `size` even for completed data, if the source data is compressed/archived.
+* `in_use`: Whether the data is in_use by a user. By default `in_use` is set to *false*, and can be changed via a PATCH API call to the same API endpoint. A data entry with `in_use` set to *true* cannot be deleted.
 * `status`: The status of the data being fetched. It can be one of three values:
   * `in_progress`: The data is currently being fetched.
   * `completed`: The data fetch has been completed.
   * `failed`: The data fetch failed (eg - if there were problems retrieving the data from the data source).
+* `name`: Name of the entry
+* `doi`: Unique Digital Object Identifier of the data (Prefix https://www.doi.org/ to it to access).
+* `user`: Username of the user (as in the request)
+* `source`: Name of the data source (as in the request)
+* `id`: ID of the data (as in the request)
+* `dir`: Storage location of the data
 
-eg. `GET /api/data/jools.wills/pdbj/5aui`
+eg. `GET /api/data/example_user/pdbj/5aui`
 
 `HTTP/1.1 200 OK`
 
 ```json
 {
-  in_use: true
-  updated: "2023-12-14T13:49:52.507Z"
-  size: 450796173
-  size_s: 450796173
-  status: "completed"
+  "updated": "2024-06-27T16:23:13.593Z",
+  "size": 450796173
+  "size_s": 450796173
+  "in_use": false,
+  "status": "completed"
+  "pdb": "5aui",
+  "name": "Crystal structure of Ferredoxin from Thermosynechococcus elongatus",
+  "doi": "10.1021/acs.biochem.5b00601",
+  "user": "example_user",
+  "source": "pdbj",
+  "id": "5aui",
+  "dir": "example_user/pdbj/5aui"
 }
+
 ```
 
 If the data entry is not found an HTTP response code of 404 is returned.
 
-eg. `GET /api/data/jools.wills/pdbj/1234`
+eg. `GET /api/data/example_user/pdbj/1234`
 
 `HTTP/1.1 404 Not Found`
 
 ```json
 {
-  error: true
-  msg: "User data jools.wills/pdbj/1234 not found"
+  "error": true
+  "msg": "User data example_user/pdbj/1234 not found"
 }
 ```
 
@@ -488,23 +505,15 @@ eg. `GET /api/data/jools.wills/pdbj/1234`
 
 This returns details of all data for a user for a particular data `source`. The structure is the same as for a specific data record, but returns multiple entries with the data source `id` as the key.
 
-eg. `GET /api/data/jools.wills/pdbj`
+eg. `GET /api/data/example_user/pdbj`
 
 ```json
 {
-  5aui: {
-    in_use: true
-    updated: "2023-12-14T13:49:52.507Z"
-    size: 450796173
-    size_s: 450796173
-    status: "completed"
-  }
-  93: {
-    in_use: false
-    updated: "2023-12-14T10:23:17.771Z"
-    size: 675426804
-    size_s: 675426804
-    status: "completed"
+  "93": {
+    ... same fields as above
+  },
+  "5aui": {
+    ... same fields as above
   }
 }
 ```
@@ -515,35 +524,23 @@ eg. `GET /api/data/jools.wills/pdbj`
 
 This returns details of all data for a user. The structure is the same as for a specific data record, but returns records in a tree structure, organised by the data `source`, then the `id`.
 
-eg. `GET /api/data/jools.wills`
+eg. `GET /api/data/example_user`
 
 `HTTP/1.1 200 OK`
 
 ```json
 {
-  pdbj: {
-    5aui: {
-      in_use: true
-      updated: "2023-12-14T13:49:52.507Z"
-      size: 450796173
-      size_s: 450796173
-      status: "completed"
+  "irrmc": {
+    "3i44": {
+      ... same fields as above
     }
-    93: {
-      in_use: false
-      updated: "2023-12-14T10:23:17.771Z"
-      size: 675426804
-      size_s: 675426804
-      status: "completed"
-    }
-  }
-  sbgrid: {
-    2: {
-      in_use: false
-      updated: "2023-12-14T14:23:36.951Z"
-      size: 0
-      size_s: 1925243880
-      status: "in_progress"
+  },
+  "pdbj": {
+    "93": {
+      ... same fields as above
+    },
+    "5aui": {
+      ... same fields as above
     }
   }
 }
@@ -561,34 +558,22 @@ eg. `GET /api/data`
 
 ```json
 {
-  jools.wills: {
-    pdbj: {
-      5aui: {
-        in_use: true
-        updated: "2023-12-14T13:49:52.507Z"
-        size: 450796173
-        size_s: 450796173
-        status: "completed"
+  "example_user": {
+    "pdbj": {
+      "5aui": {
+        ... same fields as above
       }
     }
-    sbgrid: {
-      2: {
-        in_use: false
-        updated: "2023-12-14T14:27:01.424Z"
-        size: 1925243880
-        size_s: 1925243880
-        status: "completed"
+    "sbgrid": {
+      "2": {
+        ... same fields as above
       }
     }
   }
-  test: {
-    pdbj: {
-      99: {
-        in_use: false
-        updated: "2023-12-14T09:29:05.023Z"
-        size: 6442580763
-        size_s: 6442580763
-        status: "completed"
+  "another_user": {
+    "pdbj": {
+      "99": {
+        ... same fields as above
       }
     }
   }
