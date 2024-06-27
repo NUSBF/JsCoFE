@@ -1,55 +1,59 @@
 ## Overview
 
-Data Link is a web service with a REST API, that can retrieve raw x-ray diffraction images for temporary storage and processing in CCP4 Cloud.
+DataLink is a web service with a RESTful API, that manages raw x-ray diffraction images for temporary storage and processing in CCP4 Cloud.
 
-It can currently retrieve data from the following public archives
+It can currently retrieve data from the following public archives:
 
-- https://xrda.pdbj.org/ - The Xtal Raw Data Archive from the Protein Data Bank Japan.
-- https://data.sbgrid.org/ - SBGrid Data Bank from the SBGrid consortium.
-- https://proteindifftraction.org/ - Integrated Resource for Reproducibility in Macromolecular Crystallography from the National Institute of Health.
+- https://xrda.pdbj.org/ - The Xtal Raw Data Archive from the Protein Data Bank Japan (pdbj)
+- https://data.sbgrid.org/ - SBGrid Data Bank from the SBGrid consortium (sbgrid)
+- https://proteindiffraction.org/ - Integrated Resource for Reproducibility in Macromolecular Crystallography from the National Institute of Health (irrmc)
 
-In the future it is planned to add support for linking to data storage and data producing facilities, such as ICAT @ STFC/SCD, synchrotrons and in-house X-ray instruments (e.g. Bruker diffractometers).
+As well as fetching data public data repositories, the API allows CCP4 Cloud users to upload data to it, using their cloud-run ID.
 
-Currently the API can only pull data from external sources. The ability to push data to the API will be added later which should help with linking to data producing facilities. 
+In the future this will allow linking to data storage and data producing facilities, such as Diamond Light Source and in-house X-ray instruments (e.g. Bruker diffractometers).
 
-A commandline tool will also be added to communicate with the API.
+There is commandline tool included (js_client.js) to communicate with the API.
 
 ## Installation and Usage
 
-The web service is written in JS and runs on node [https://nodejs.org/](https://nodejs.org/). It is developed as part of CCP4 Cloud and resides in the `data_link` folder on the jsCoFE repository [https://gitlab.com/CCP4/jsCoFE](https://gitlab.com/CCP4/jsCoFE).
+The web service is written in JS and runs on node [https://nodejs.org/](https://nodejs.org/). It is developed as part of CCP4 Cloud and resides in the `js-datalink` folder on the jsCoFE repository [https://gitlab.com/CCP4/jsCoFE](https://gitlab.com/CCP4/jsCoFE).
 
-Data Link requires some additional node modules that can be installed with `npm`. Data Link currently uses express, cheerio, https, and pino npm modules. The dependencies are included as part of CCP4 Cloud (jsCoFE) and can be installed by running `npm install` from within the `jsCoFE` or `data_link` directory.
+DataLink requires some additional node modules that can be installed with `npm`. DataLink currently uses express, cheerio, https, and pino npm modules. The dependencies are included as part of CCP4 Cloud (jsCoFE) and can be installed by running `npm install` from within the `jsCoFE` or `js-datalink` directory.
 
 The default configuration `config-dist.json` should be copied to `config.json` and edited accordingly. 
 
-The Data Link service is started by running `./dl_server.js` or `node dl_server.js`.
+The DataLink service is started by running `./dl_server.js` or `node dl_server.js`.
 
-### Data storage and structure
+### Data structure and storage
 
-Data needs to be stored in a dedicated file system, that can be accessed by both the CCP4 Cloud Frontend and Number Crunchers. It also needs be available for any computing resource that is utilised by the Number Crunchers.
+For integration with CCP4 Cloud data needs to be stored in a file system that can be accessed by both the CCP4 Cloud Frontend and Number Crunchers. It also needs be available for any computing resource that is utilised by the Number Crunchers.
 
-CCP4 Cloud communicates with the Data Link service via a REST based API. The API returns JSON formatted data.
+CCP4 Cloud communicates with the DataLink service via the API. The API returns JSON formatted data.
 
-The Data Link service requires access to the CCP4 Cloud Front End user directory. It uses this to authenticate when fetching data or managing existing data for users. The Data Link service checks if a user exists, and makes sure a valid Cloud Run ID is provided in the API request.
+For authentication the DataLink service requires access to the CCP4 Cloud Front End user directory. The DataLink service checks if a user exists, and makes sure a valid Cloud Run ID is provided in the API request.
 
-The data is stored in the following structure:
+Data is stored in the following structure:
 
 ```txt
 data/
-  username/
-    data_source/
-      data_id/
+  user/
+    source/
+      id/
 ```
 
-Data is stored by `user`, then data `source`, and the `id` of the data.  . eg. `jools.wills/pdbj/8cqm`. A `catalog.json` file is stored in each users data directory, to keep track of the data present. The catalog files are loaded by the Data Link service on start-up.
+Data is stored by `user`, then data `source`, and the `id` of the data. e.g. `jools.wills/pdbj/8cqm`.
 
-When a request is sent to the API for data retrieval, it first checks if available disk space is above a configured threshold. If it is not, older data sets are removed as needed to make space. The oldest data will be removed first, but no data will be removed if it has been marked as in use.
+To keep track of the data, the system stores catalog files for each user as JSON. By default these are stored in a users subfolder under the configured `catalog_dir` but can also be kept with the data and stored in the data `user` folder as `catalog.json`. The catalog files are loaded by the DataLink service on start-up.
 
-Data source catalogs are stored in the configured `catalog_dir` (`catalogs` by default).
+Data source catalogs for public data repositories are stored in the configured `catalog_dir` (`catalogs` by default).
+
+To manage storage space, DataLink managed data can be pruned if the free space is less than a configured amount or if data is older than a configured age (in days). Data that is marked in use will not be removed if older than the configured age, but will be removed if free space is lower than the configuration allows.
+
+DataLink also has the capability of pruning data from external data sources not managed by DataLink, so long as it's stored in subfolders under `username`. Data pruning for external data will only happen for data older than `data_max_days`. It will not be scanned for removal if free space goes below the configured threshold.
 
 ## Configuration
 
-The Data Link service requires a configuration file config.js to be present in the current directory the service is launched from. An example configuration file `config-dist.json` is provided that can be copied to `config.json`.
+The DataLink service requires a configuration file config.js to be present in the current directory the service is launched from. An example configuration file `config-dist.json` is provided that can be copied to `config.json`.
 
 Configuration Values:
  * `server`: **Server related configuration**
@@ -60,58 +64,25 @@ Configuration Values:
   * `data_dir`: Location to store x-ray difraction images. Default is `data`.
   * `user_dir`: Location of the CCP4 Cloud user configuration directory. This is used to authenticate with user's `cloudrun_id`.
   * `catalog_dir`: Location to store data source catalogs. Default is `catalogs`.
-  * `data_free_gb`: Amount of space to keep free on the `data` storage in gigabytes.
+  * `catalogs_with_data`: Set to true to store the user catalogs along with the data. Default is `false`.
+  * `data_free_gb`: Amount of space to keep free on the `data` storage in gigabytes. This only applies to data managed by DataLink.
+  * `data_max_days`: Maximum number of days to keep data. This option is applied to data managed by DataLink as well as data from external sources that is stored in the DataLink structure under `data_dir`. Defaults is `60`.
+  * `data_prune_mins`: How often the data pruning job will run in minutes. Default is `30`.
+
 * `data_sources`: **Configuration section containing configs for each data source**
   * `pdbj`: Data source name
-    * `enabled`: set to false to disable (defaults to true)
+    * `enabled`: set to false to disable. Default is `true`.
     * `rsync_size`: For data sources that have an rsync service, this can be used to extract the data sizes from the rsync repository for use in the data source catalog.
+  * `upload`: Data source for data uploaded to DataLink.
+    * `enabled`: Set to false to disable. Default is `true`.
+    * `limit_mb`: Limit in Megabytes for each uploaded data set. Default is `20000`.
 * `other`: **Other configuration options**
   * `rcsb_results`: Whether to return PDB information from rcsb from the search API endpoint. Defaults to false.
 
 ### Example configuration file
 
-```json
-{
-  // server & port configuration
-  "server": {
-    "host": "localhost",
-    "port": 8100,
-    "admin_key": "PASSWORD"
-  },
-  // locations for storage
-  "storage": {
-    "data_dir": "data",
-    "user_dir": "users",
-    "catalog_dir": "catalogs",
-    // amount of disk space to try keep free - older data not in use will be pruned
-    "data_free_gb": 100
-  },
-  // data source configuration
-  "data_sources": {
-    "pdbj": {
-      "enabled": true,
-      // get the data size via rsync
-      "rsync_size": true
-    },
-    "sbgrid": {
-      "enabled": true,
-      "rsync_size": true
-    },
-    "irrmc": {
-      "enabled": true
-    }
-  },
-  // other configuration settings
-  "other": {
-    // return pdb entry results from rcsb
-    "rcsb_results": false
-  }
-}
+An example configuration file is included in the repository `config-dist.json`.
 ```
-
-## Fetching Data
-
-
 
 ## API Authentication
 
@@ -625,7 +596,7 @@ eg. `GET /api/data`
 ```
 ## GET /api/stats
 
-Gets some information about the data managed by Data Link.
+Gets some information about the data managed by DataLink.
 
 eg. `GET /api/stats`
 
