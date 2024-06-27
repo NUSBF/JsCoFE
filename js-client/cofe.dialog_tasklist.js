@@ -338,10 +338,10 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     */
   }
 
-  title += '&nbsp;&nbsp;<img src="' + image_path('reference_inline') + 
-           '" onclick="javascript:__show_task_help(\'' +
-           task_obj.getHelpURL() + '\');" height="12px" ' +
-           'style="position:relative;top:1px;cursor:pointer;"/>';
+  // title += '&nbsp;&nbsp;<img src="' + image_path('reference_inline') + 
+  //          '" onclick="javascript:__show_task_help(\'' +
+  //          task_obj.getHelpURL() + '\');" height="12px" ' +
+  //          'style="position:relative;top:1px;cursor:pointer;"/>';
 
   if (avail_key[0]!='ok')  {
     title = '<span style="line-height:16px;">' + title  +
@@ -397,7 +397,8 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
 
   // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
 
-  // lbl.addOnClickListener ( taskClicked );
+  lbl.addOnClickListener ( taskClicked );
+  lbl.setCursor          ( 'pointer'   );
 
   // var contextMenu = new Menu('',image_path('dock'),true);
   // grid.setWidget   ( contextMenu,row,1,1,1 )
