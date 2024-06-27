@@ -34,8 +34,11 @@ class dataCatalog {
     this.catalog = {};
 
     // prune any external data not managed directly by datalink
-    if (this.data_max_days > 0) {
-      setInterval(this.pruneExternalData.bind(this), this.data_prune_mins * 1000 * 60, this.data_max_days);
+    if (this.data_prune_mins > 0) {
+      log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${this.data_prune_mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
+      setInterval(this.pruneData.bind(this), this.data_prune_mins * 1000 * 60);
+    } else {
+      log.info(`Configured to not prune old data`);
     }
   }
 
@@ -208,9 +211,6 @@ class dataCatalog {
       return false;
     }
 
-    // prune old data if required
-    this.pruneData(this.data_free_gb, this.data_max_days);
-
     return catalog[user][source][id];
   }
 
@@ -273,36 +273,49 @@ class dataCatalog {
     }
   }
 
-  async pruneData(min_free_gb, data_max_days) {
+  async pruneData() {
+    await this.pruneManagedData(this.data_free_gb, this.data_max_days);
+    if (this.data_max_days > 0) {
+      await this.pruneExternalData(this.data_max_days);
+    }
+  }
+
+  async pruneManagedData(min_free_gb, data_max_days) {
+    log.info(`pruneManagedData - pruning managed data older than ${data_max_days} day(s)`);
     const min_free = min_free_gb * GB;
 
     let entries = [];
     const catalog = this.getCatalog();
-    // build up list of data that is not in use by age
+    // loop through all data entries
     for (const user of Object.values(catalog)) {
       for (const source of Object.values(user)) {
         for (const entry of Object.values(source)) {
-          if (! entry.in_use && entry.status !== status.inProgress) {
-            // prune data older than data_max_days
-            if (data_max_days > 0) {
-              let check_date = this.getPruneDate(data_max_days);
-              if (new Date(entry.updated) < check_date) {
-                if (this.removeEntry(entry.user, entry.source, entry.id)) {
-                  log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
-                }
-                continue;
-              }
-            }
-            entries.push(entry);
+          // skip data that is in progress
+          if (entry.status === status.inProgress) {
+            continue;
           }
+          // if entry is not in use, prune data older than data_max_days
+          if (! entry.in_use && data_max_days > 0) {
+            let check_date = this.getPruneDate(data_max_days);
+            if (new Date(entry.updated) < check_date) {
+              if (this.removeEntry(entry.user, entry.source, entry.id)) {
+                log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
+              } else {
+                log.error(`pruneData - Error removing ${entry.dir} - size ${entry.size}`);
+              }
+              continue;
+            }
+          }
+          // add to entries list for pruning
+          entries.push(entry);
         }
       }
     }
 
     const free = tools.getFreeSpace(tools.getDataDir(), '1');
-    const size_to_free = min_free - free;
 
     if (free === false) {
+      log.error(`pruneManagedData - Unable to get free space`);
       return;
     }
 
@@ -310,9 +323,13 @@ class dataCatalog {
       return;
     }
 
+    log.info(`pruneManagedData - Free space is less than ${this.data_free_gb}GB - pruning oldest data`);
+
     entries.sort(function(a,b) {
       return new Date(a.date) - new Date(b.date);
     });
+
+    const size_to_free = min_free - free;
 
     let size = 0;
     for (const entry of entries) {
@@ -331,8 +348,8 @@ class dataCatalog {
     }
   }
 
-  async pruneExternalData(max_age_days) {
-    log.info(`pruneExternalData - pruning external data older than ${max_age_days} day(s)`);
+  async pruneExternalData(data_max_days) {
+    log.info(`pruneExternalData - pruning external data older than ${data_max_days} day(s)`);
     let users;
     try {
       users = tools.getSubDirs(tools.getDataDir());
@@ -345,8 +362,8 @@ class dataCatalog {
       return;
     }
 
-    // get the current date minus max_age_days
-    let check_date = this.getPruneDate(max_age_days);
+    // get the current date minus data_max_days
+    let check_date = this.getPruneDate(data_max_days);
 
     const catalog = this.getCatalog();
     for (const user of users) {
