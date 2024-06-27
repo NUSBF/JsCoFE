@@ -257,7 +257,7 @@ let in_dock = __current_page.dock.inDock ( task_obj );
 let dockMenu;
 
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'));
+    dockMenu = new Menu('',image_path('dock_ind_sel'),8);
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
@@ -267,7 +267,7 @@ let dockMenu;
     });
   } else  {
     dockMenu = new Menu('',image_path('dock_ind'));
-    dockMenu.addItem('Add task to dock',image_path('add'))
+    dockMenu.addItem('Add task to dock',image_path('add'),8)
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
       __current_page.dock.show();
@@ -276,16 +276,17 @@ let dockMenu;
     });
   }
 
-  // dockMenu.addItem('Task reference',image_path('reference'))
-  //         .addOnClickListener(function(){
-  // });
+  dockMenu.addItem('Task reference',image_path('reference'),8)
+          .addOnClickListener(function(){
+    new HelpBox ( '',task_obj.getHelpURL(),null );
+  });
 
   grid.setWidget ( dockMenu,row,0,1,1 )
 }
 
-function __show_task_help ( help_url )  {
-  new HelpBox ( '',help_url,null );
-}
+// function __show_task_help ( help_url )  {
+//   new HelpBox ( '',help_url,null );
+// }
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  {
 
