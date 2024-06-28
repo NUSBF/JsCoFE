@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,6 +27,7 @@ var __cmd      = null;
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
   __cmd      = require ( '../common.commands' );
+  var conf   = require('../../js-server/server.configuration');
 }
 
 // ===========================================================================
@@ -230,7 +231,6 @@ if (!__template)  {
 
   var fs     = require('fs-extra');
   var path   = require('path');
-  var conf   = require('../../js-server/server.configuration');
   var prj    = require('../../js-server/server.fe.projects');
   var utils  = require('../../js-server/server.utils');
   var task_t = require('./common.tasks.template');
