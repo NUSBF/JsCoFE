@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -291,8 +291,10 @@ function LoginPage ( sceneId )  {
     if (msg)  {
 
       new MessageBox ( 'Login',
-         'Login data is either incomplete or incorrect:<p>' +
-          msg + '<p>Please provide all needful data and try again', 'msg_excl' );
+         '<div style="width:500px">' +
+         '<h2>Login data is either incomplete or incorrect</h2>' +
+         msg + '<p>Please provide correct data and try again.</div>',
+         'msg_excl' );
 
     } else  {
 
