@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -184,6 +184,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
   ud.pwd   = user_password;
 
   serverCommand ( fe_command.login,ud,'Login',function(response){
+
+    stopSessionChecks();
 
     switch (response.status)  {
 
@@ -376,8 +378,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
       case fe_retcode.wrongLogin:
                 new MessageBox ( 'Login',
-                  '<b>Login data cannot be recognised.</b><p>' +
-                  'Please check that provided login name and password are ' +
+                  '<h2>Login data is not recognised</h2>' +
+                  'Please check that provided login name and<br>password are ' +
                   'correct.', 'msg_excl_yellow' );
           return true;
 
