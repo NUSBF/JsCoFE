@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
 // -------------------------------------------------------------------------
 // MenuItem class
 
-function MenuItem ( text,icon_uri )  {
+function MenuItem ( text,icon_uri,spacing=-1 )  {
   Widget.call ( this,'a' );
   this.setNoWrap();
   if (icon_uri.length>0)  {
@@ -53,6 +53,8 @@ function MenuItem ( text,icon_uri )  {
   } else
     this.text_div = null;
   this.menu = null;
+  if (spacing>=0)
+    this.setPaddings ( spacing,spacing,spacing,spacing );
 }
 
 MenuItem.prototype.addMenu = function ( menu )  {
@@ -116,9 +118,10 @@ document.onclick = function(event)  {
 // -------------------------------------------------------------------------
 // Menu class
 
-function Menu ( text,icon_uri,right_click=false )  {
+function Menu ( text,icon_uri,right_click=false,spacing=-1 )  {
   Widget.call ( this,'div' );
   this.addClass ( 'menu-dropdown' );
+  this.spacing  = spacing;
   this.disabled = false;
   this.onclick_custom_function = null;
   if ((text!='') || (icon_uri!=''))  {
@@ -197,17 +200,15 @@ Menu.prototype.setMaxHeight = function ( height_str )  {
   this.dropdown.element.style.maxHeight = height_str;
 }
 
-Menu.prototype.addItem = function ( text,icon_uri,padding=0 )  {
-let mi = new MenuItem ( text,icon_uri );
-  if (padding)
-    mi.setPaddings ( padding,padding,padding,padding );
+Menu.prototype.addItem = function ( text,icon_uri )  {
+let mi = new MenuItem ( text,icon_uri,this.spacing );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
 }
 
 Menu.prototype.addSeparator = function ()  {
-let mi = new MenuItem ( '<hr/>','' );
+let mi = new MenuItem ( '<hr/>','',this.spacing );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
