@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -257,7 +257,7 @@ let in_dock = __current_page.dock.inDock ( task_obj );
 let dockMenu;
 
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'),8);
+    dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
@@ -266,8 +266,8 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   } else  {
-    dockMenu = new Menu('',image_path('dock_ind'));
-    dockMenu.addItem('Add task to dock',image_path('add'),8)
+    dockMenu = new Menu('',image_path('dock_ind'),false,8);
+    dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
       __current_page.dock.show();
@@ -276,7 +276,7 @@ let dockMenu;
     });
   }
 
-  dockMenu.addItem('Task reference',image_path('reference'),8)
+  dockMenu.addItem('Task reference',image_path('reference'))
           .addOnClickListener(function(){
     new HelpBox ( '',task_obj.getHelpURL(),null );
   });
