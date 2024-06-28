@@ -65,7 +65,56 @@ def prepareMRmodelAfterASU(driver, waitShort):
     return ()
 
 
-def molrepAfterMRmodel(driver, waitLong):
+def mrParse(driver, waitShort):
+    print('Preparing MR model with mrParse')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Find and prepare MR models')
+    time.sleep(1)
+    
+
+    time.sleep(3)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    time.sleep(3)
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
+    except:
+        print('Apparently mrParse has not been completed in time; terminating')
+        sys.exit(1)
+
+    time.sleep(10)
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
+
+def molrepAfterMRmodel(driver, waitLong, jobNumber):
     print('Running MOLREP')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -95,9 +144,9 @@ def molrepAfterMRmodel(driver, waitLong):
         wait = WebDriverWait(driver, waitLong) # allowing 60 seconds to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0004]
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed')]")))
     except:
-        print('Apparently tha task molrepAfterMRmodel has not been completed in time; terminating')
+        print('Apparently the task molrepAfterMRmodel has not been completed in time; terminating')
         sys.exit(1)
         
     time.sleep(10)
@@ -110,7 +159,7 @@ def molrepAfterMRmodel(driver, waitLong):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0004\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[' + jobNumber + '\] molrep -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -157,8 +206,13 @@ def test_MolrepBasic(browser,
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         prepareMRmodelAfterASU(d.driver, d.waitShort)
-        molrepAfterMRmodel(d.driver, d.waitLong)
+        molrepAfterMRmodel(d.driver, 600, '0004')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\]')
+        mrParse(d.driver, 600)
+        molrepAfterMRmodel(d.driver, 600, '0006')
+
         sf.renameProject(d.driver, d.testName)
+
 
         d.driver.quit()
 
