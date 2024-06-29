@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    29.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -288,6 +288,8 @@ JobTree.prototype.readProjectData = function ( page_title,
       if (startmode)
         tree.projectData.desc.startmode = startmode;
 
+                // tree.projectData.desc.autorun = true;
+
       let author = '';
       if (author!=__login_id)
         author = getProjectAuthor ( tree.projectData.desc );
@@ -324,7 +326,7 @@ JobTree.prototype.readProjectData = function ( page_title,
             if ((tree.task_map[key].state==job_code.running) ||
                 (tree.task_map[key].state==job_code.ending)  ||
                 (tree.task_map[key].state==job_code.exiting))  {
-              tree.run_map [dataId] = key;
+              tree.run_map[dataId] = key;
               if (tree.task_map[key].autoRunId)  // workflow working
                 tree.projectData.desc.autorun = true;
               tree.setNodeName ( key,false );
