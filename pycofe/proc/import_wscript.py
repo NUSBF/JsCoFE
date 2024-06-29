@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    26.12.23   <--  Date of Last Modification.
+#    29.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  WSCRTIPT (WORKFLOW SCRIPT) IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023-2024
 #
 # ============================================================================
 #
