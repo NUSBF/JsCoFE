@@ -185,11 +185,21 @@ function createWindow ( url ) {
             mainWindow.webContents.send('start-search');
           }
         },
-        { type: 'separator' },
+        { type: 'separator'          },
+        { role: 'undo'               },
+        { role: 'redo'               },
+        { type: 'separator'          },
+        { role: 'cut'                },
+        { role: 'copy'               },
+        { role: 'paste'              },
+        { role: 'pasteandmatchstyle' },
+        { role: 'delete'             },
+        { role: 'selectall'          },
+        { type: 'separator'          },
         {
           id          : 'copyURL',
           label       : 'Copy URL',
-          accelerator : 'CmdOrCtrl+C',
+          // accelerator : 'CmdOrCtrl+C',
           click() {
             copyURL();
           }

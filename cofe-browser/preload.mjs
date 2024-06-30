@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    30.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -22,6 +22,10 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electronAPI', {
+
+  // copyText           : (text) => clipboard.writeText(text),
+  // pasteText          : ()     => clipboard.readText(),
+
   sendMessage        : (channel, data) => {
                          const validChannels = ['message-from-app'];
                          if (validChannels.includes(channel)) {
@@ -42,4 +46,3 @@ contextBridge.exposeInMainWorld('electronAPI', {
   findPrevious       : ()         => ipcRenderer.send('find-previous'               ),
   stopSearch         : ()         => ipcRenderer.send('stop-search'                 )
 });
-
