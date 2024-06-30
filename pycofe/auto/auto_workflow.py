@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    30.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC CUSTOM WORKFLOW FRAMEWORK
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023-2024
 #
 # ============================================================================
 #
@@ -168,6 +168,9 @@ def nextTask ( body,data,log=None ):
 
             rev_list = [] 
             revision = None
+
+            # take revision from data passed by task that just finished and
+            # requests formation of next task in the workflow
             if "data" in data:
                 cdata = data["data"]
                 if "revision" in cdata and len(cdata["revision"])>0:
@@ -177,6 +180,11 @@ def nextTask ( body,data,log=None ):
                     revision = rev_list[0]
                     wdata["revision.hkl"] = [revision["HKL"]]
 
+            # if revision was not produced by taks that just finished, try
+            # finding revision in upstream data
+            if not revision and "revision" in wdata  and len(wdata["revision"])>0:
+                revision = wdata["revision"][0]
+                wdata["revision.hkl"] = [revision["HKL"]]
 
             # parse the script
 
