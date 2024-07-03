@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    03.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -97,8 +97,9 @@ var __iOS_device      = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window
                          /MacIntel/.test(navigator.platform));
 var __any_mobile_device = __mobile_device || __iOS_device;
 
-const __regexp_login  = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
-const __regexp_uname  = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_globus_id = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
 
 // variable gets raised in jscofe-browser after loading the page
 // alert ( ' isQt=' + isQtWebEngine() );
