@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.24   <--  Date of Last Modification.
+ *    03.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -135,7 +135,8 @@ function AccountPage ( sceneId )  {
                             'Choose new password' );
     pwd1_inp  .setStyle   ( 'password','','confirm password',
                             'Type password again here' );
-    globus_inp.setStyle   ( 'text','','xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+    globus_inp.setStyle   ( 'text',__regexp_globus_id,
+                            'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
                             'Please enter your Globus ID in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
   }
   cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
@@ -446,7 +447,7 @@ function AccountPage ( sceneId )  {
 
     if (full_list)  {
 
-      msg = validateUserData ( user_inp,email_inp,login_inp );
+      msg = validateUserData ( user_inp,email_inp,login_inp,globus_inp );
 
       if (pwd_inp.getValue().length<=0)
         msg += '<b>Password</b> must be provided (old or new).<p>';
@@ -478,10 +479,15 @@ function AccountPage ( sceneId )  {
 
     if (msg)  {
 
+      
+      let msg1 = '<ul>' + replaceAll(replaceAll(msg,'<b>','<li><b>'),'<p>','</li>') +
+                 '</ul>';
+
       new MessageBox ( accLbl + ' Update',
-          accLbl + ' Update cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again',
-          'msg_information');
+          '<h2>Incorrect Update Data</h2>' +
+          'The following items do not have correct value:<p>' +
+          msg1 + 'Please check all items and try again.',
+          'msg_excl_yellow');
 
     } else  {
 

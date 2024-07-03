@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    03.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,7 +70,7 @@ var cofe_signals = {
 }
 
 
-function validateUserData ( user_inp,email_inp,login_inp )  {
+function validateUserData ( user_inp,email_inp,login_inp,globus_inp )  {
 //  All parameters are InputText classes, corresponding to the input of
 //  user name, e-mail and login name, respectively
 let msg = '';
@@ -94,6 +94,11 @@ let msg = '';
   else if (login_inp.element.validity.patternMismatch)
     msg += '<b>Login name</b> should contain only latin letters, numbers,<br> ' +
            'underscores, dashes and dots, and must start with a letter.<p>';
+
+
+  if (globus_inp && (globus_inp.getValue().length>0) && 
+      globus_inp.element.validity.patternMismatch)
+    msg += '<b>Globus Id</b> is not formatted correctly.<p>';
 
   return msg;
 
