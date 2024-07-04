@@ -2776,6 +2776,7 @@ let jobId       = data.meta.id;
           response = new cmd.Response ( cmd.fe_retcode.writeError,
                                         '[00041] Job file cannot be written.',
                                         { 'project_missing':false } );
+        }
       }
       if (('isMRSearchModel' in data.files[i]) &&
           data.files[i].isMRSearchModel)
