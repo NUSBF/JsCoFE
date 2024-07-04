@@ -84,7 +84,7 @@ TaskFetchData.prototype.clipboard_name = function()  { return '"Fetch-data"';   
 
 TaskFetchData.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return 'finds diffraction images for given PDB code and fetcheds them';
+  return 'finds diffraction images for given PDB code and fetches them';
 };
 
 TaskFetchData.prototype.currentVersion = function()  {
