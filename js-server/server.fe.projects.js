@@ -2760,6 +2760,7 @@ let jobId       = data.meta.id;
   if (utils.fileExists(jobDirPath))  {
     for (let i=0;(i<data.files.length) && (!response);i++)  {
       let fpath = path.join ( jobDirPath,data.files[i].fpath );
+      console.log ( ' >>>>> ' + i + ' fpath=' + fpath + '  len=' + data.files[i].data );
       if (!utils.writeString(fpath,data.files[i].data))  {
         let fdir = path.dirname ( fpath );
         if (fdir!=jobDirPath)  {
