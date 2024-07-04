@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1010,7 +1010,7 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
-  function _correct_name ( fname )  {
+  function _correct_name ( fname )  {  // because Moorhen makes it funny
     return fname.split(' ').join('_').split('#').join('');
   }
 
@@ -1027,8 +1027,10 @@ function onWindowMessage ( event ) {
       }
       for (let i=0;i<edata.files.length;i++)  {
         if ('fpath' in edata.files[i])  {
+          console.log ( ' >> fpath given' );
           edata1.files.push ( edata.files[i] );
         } else  {
+          console.log ( ' >> fpath NOT given' );
           edata1.files.push ({
             fpath : _correct_name(edata.files[i].molName) + '.pdb',
             data  : edata.files[i].pdbData
@@ -1037,8 +1039,6 @@ function onWindowMessage ( event ) {
             fpath : _correct_name(edata.files[i].molName) + '.mmcif',
             data  : edata.files[i].mmcifData
           });
-          console.log ( ' >>>> pdblen=' + edata.files[i].pdbData.length + 
-                        ' mmciflen=' + edata.files[i].mmcifData.length );
         }
         edata1.files[edata1.files.length-1].isMRSearchModel =
                             ('isMRSearchModel' in edata.files[i]) && 
