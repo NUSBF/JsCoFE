@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -433,7 +433,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     [ 'Select task'          ,'none'             ],
     [ 'Aimless'              ,'TaskAimless'      ],
     [ 'ASU Definition'       ,'TaskASUDef'       ],
-    [ 'Buccaneer'            ,'TaskBuccaneer'    ],
+    // [ 'Buccaneer'            ,'TaskBuccaneer'    ],  <-- retired
     [ 'Buster'               ,'TaskBuster'       ],
     [ 'Change Resolution'    ,'TaskChangeReso'   ],
     [ 'Crank-2'              ,'TaskCrank2'       ],

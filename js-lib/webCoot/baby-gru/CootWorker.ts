@@ -3,9 +3,9 @@ import { emscriptem } from "../../src/types/emscriptem"
 import { privateer } from "../../src/types/privateer";
 
 // @ts-ignore
-importScripts('./wasm/moorhen.js')
+importScripts('./moorhen.js')
 // @ts-ignore
-importScripts('./wasm/web_example.js')
+importScripts('./web_example.js')
 
 let cootModule: libcootApi.CootModule;
 let molecules_container: libcootApi.MoleculesContainerJS;
@@ -24,7 +24,24 @@ const guid = () => {
 // @ts-ignore
 let print = (stuff) => {
     console.log(stuff)
-    postMessage({ consoleMessage: JSON.stringify(stuff) })
+}
+
+const parseMonLibListCif = (fileContents: string): libcootApi.compoundInfo[] => {
+    const table = cootModule.parse_mon_lib_list_cif(fileContents)
+    const tableSize = table.size()
+
+    let result: libcootApi.compoundInfo[] = []
+    for (let i = 0; i < tableSize; i++) {
+        const compound = table.get(i)
+        result.push({
+            three_letter_code: compound.three_letter_code,
+            // @ts-ignore
+            name: compound.name.replaceAll("'", "").toLowerCase()
+        })
+    }
+
+    table.delete()
+    return result
 }
 
 const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: boolean, toSpheres: boolean = false, maxZSize: number = 10000.): libcootApi.InstancedMeshJS => {
@@ -226,7 +243,7 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
     }
 }
 
-const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false): libcootApi.SimpleMeshJS => {
+const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false, keepNorm: boolean = false): libcootApi.SimpleMeshJS => {
 
     const print_timing = false
     const ts = performance.now()
@@ -246,7 +263,11 @@ const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean 
     cootModule.getColoursFromSimpleMesh2(simpleMesh,totCol_C)
 
     if (perm){
-        cootModule.getReversedNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        if(keepNorm){
+            cootModule.getReversedNormalsFromSimpleMesh3(simpleMesh,totNorm_C)
+        } else {
+            cootModule.getReversedNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        }
         cootModule.getPermutedTriangleIndicesFromSimpleMesh2(simpleMesh,totIdxs_C)
     } else {
         cootModule.getNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
@@ -379,6 +400,27 @@ const mapMoleculeCentreInfoToJSObject = (mapMoleculeCentreInfo: libcootApi.MapMo
     return returnResult;
 }
 
+const textureAsFloatsToJSTextureAsFloats = (data:libcootApi.textureAsFloats): libcootApi.textureAsFloatsJS => {
+
+    const imageDataVecSize = data.width * data.height
+
+    let image_data = new Float32Array(imageDataVecSize)
+
+    const t1 = performance.now()
+    cootModule.getTextureArray(data,image_data)
+    const t2 = performance.now()
+    console.log("Time to convert texture array to JS",t2-t1)
+
+    return {
+        width:data.width,
+        height:data.height,
+        x_size:data.x_size,
+        y_size:data.y_size,
+        z_position:data.z_position,
+        image_data:image_data,
+    };
+}
+
 const fitLigandInfoArrayToJSArray = (fitLigandInfoVec: emscriptem.vector<libcootApi.fitLigandInfo>): libcootApi.fitLigandInfo[] => {
     const result: libcootApi.fitLigandInfo[] = []
 
@@ -417,6 +459,14 @@ const stringArrayToJSArray = (stringArray: emscriptem.vector<string>) => {
 const export_map_as_gltf = (imol: number, x: number, y: number, z: number, radius: number, contourLevel: number) => {
     const fileName = `${guid()}.glb`
     molecules_container.export_map_molecule_as_gltf(imol, x, y, z, radius, contourLevel, fileName)
+    const fileContents = cootModule.FS.readFile(fileName, { encoding: 'binary' }) as Uint8Array
+    cootModule.FS_unlink(fileName)
+    return fileContents.buffer
+}
+
+const export_molecular_represenation_as_gltf = (imol: number, cid: string, colourScheme: string, style: string) => {
+    const fileName = `${guid()}.glb`
+    molecules_container.export_molecular_represenation_as_gltf(imol, cid, colourScheme, style, fileName)
     const fileContents = cootModule.FS.readFile(fileName, { encoding: 'binary' }) as Uint8Array
     cootModule.FS_unlink(fileName)
     return fileContents.buffer
@@ -768,7 +818,7 @@ const ramachandranDataToJSArray = (ramachandraData: emscriptem.vector<libcootApi
 const vectorPairStringIntToJSArray = (vectorData: emscriptem.vector<{first: string; second: number}>) => {
     let result: {residue: string; slice: number; }[] = []
     const vectorSize = vectorData.size()
-    for(let i = 0; i < vectorSize; i++) {
+    for (let i = 0; i < vectorSize; i++) {
         const pair = vectorData.get(i)
         const residue = pair.first
         const slice = pair.second
@@ -840,7 +890,7 @@ const simpleMeshToLineMeshData = (simpleMesh: libcootApi.SimpleMeshT, normalLigh
 
 }
 
-const auto_open_mtz = (mtzData: ArrayBufferLike) => {
+const auto_read_mtz = (mtzData: ArrayBufferLike) => {
     const theGuid = guid()
     const asUint8Array = new Uint8Array(mtzData)
     cootModule.FS_createDataFile(".", `${theGuid}.mtz`, asUint8Array, true, true);
@@ -927,12 +977,12 @@ const read_ccp4_map = (mapData: ArrayBufferLike, name: string, isDiffMap: boolea
     return molNo
 }
 
-const setUserDefinedBondColours = (imol: number, colours: { cid: string; rgb: [number, number, number] }[], applyColourToNonCarbonAtoms: boolean = false) => {
-    let colourMap = new cootModule.MapIntFloat3()
+const setUserDefinedBondColours = (imol: number, colours: { cid: string; rgba: [number, number, number, number] }[], applyColourToNonCarbonAtoms: boolean = false) => {
+    let colourMap = new cootModule.MapIntFloat4()
     let indexedResiduesVec = new cootModule.VectorStringUInt_pair()
     
     colours.forEach((colour, index) => {
-        colourMap.set(index + 51, colour.rgb)
+        colourMap.set(index + 51, colour.rgba)
         const i = { first: colour.cid, second: index + 51 }
         indexedResiduesVec.push_back(i)
     })
@@ -987,7 +1037,25 @@ const privateerValidationToJSArray = (results: emscriptem.vector<privateer.Resul
 
     results.delete();
     return data;
+}
 
+const headerInfoAsJSObject = (result: libcootApi.headerInfo): libcootApi.headerInfoJS => {
+
+    const authorLines = result.author_lines
+    const author_lines: string[] = stringArrayToJSArray(authorLines)
+
+    const compoundLines = result.compound_lines
+    const compound_lines: string[] = stringArrayToJSArray(compoundLines)
+
+    const journalLines = result.journal_lines
+    const journal_lines: string[] = stringArrayToJSArray(journalLines)
+
+    return {
+        title: result.title,
+        author_lines,
+        compound_lines,
+        journal_lines
+    }
 }
 
 const doCootCommand = (messageData: { 
@@ -1012,8 +1080,8 @@ const doCootCommand = (messageData: {
             case 'shim_read_mtz':
                 cootResult = read_mtz(...commandArgs as [ArrayBufferLike, string, { F: string; PHI: string; isDifference: boolean; }])
                 break
-            case 'shim_auto_open_mtz':
-                cootResult = auto_open_mtz(...commandArgs as [ArrayBuffer])
+            case 'shim_auto_read_mtz':
+                cootResult = auto_read_mtz(...commandArgs as [ArrayBuffer])
                 break
             case 'shim_read_ccp4_map':
                 cootResult = read_ccp4_map(...commandArgs as [ArrayBuffer, string, boolean])
@@ -1025,13 +1093,19 @@ const doCootCommand = (messageData: {
                 cootResult = replace_map_by_mtz_from_file(...commandArgs as [number, ArrayBufferLike, { F: string; PHI: string; }])
                 break
             case 'shim_set_bond_colours':
-                cootResult = setUserDefinedBondColours(...commandArgs as [number, { cid: string; rgb: [number, number, number] }[], boolean])
+                cootResult = setUserDefinedBondColours(...commandArgs as [number, { cid: string; rgba: [number, number, number, number] }[], boolean])
                 break
             case 'shim_export_map_as_gltf':
                 cootResult = export_map_as_gltf(...commandArgs as [number, number, number, number, number, number])
                 break
             case 'shim_export_molecule_as_gltf':
                 cootResult = export_molecule_as_gltf(...commandArgs as [number, string, string, boolean, number, number, number, boolean, boolean])
+                break
+            case 'shim_export_molecular_represenation_as_gltf':
+                cootResult = export_molecular_represenation_as_gltf(...commandArgs as [number, string, string, string])
+                break
+            case "parse_mon_lib_list_cif":
+                cootResult =  parseMonLibListCif(...commandArgs as [string])
                 break
             default:
                 cootResult = molecules_container[command](...commandArgs)
@@ -1040,6 +1114,12 @@ const doCootCommand = (messageData: {
 
         let returnResult;
         switch (returnType) {
+            case 'header_info_t':
+                returnResult = headerInfoAsJSObject(cootResult)
+                break
+            case 'texture_as_floats_t':
+                returnResult = textureAsFloatsToJSTextureAsFloats(cootResult)
+                break;
             case 'fit_ligand_info_array':
                 returnResult = fitLigandInfoArrayToJSArray(cootResult)
                 break;
@@ -1066,6 +1146,9 @@ const doCootCommand = (messageData: {
                 break;
             case 'instanced_mesh':
                 returnResult = instancedMeshToMeshData(cootResult, false, false, 5)
+                break;
+            case 'mesh_perm3':
+                returnResult = simpleMeshToMeshData(cootResult, true, true)
                 break;
             case 'mesh_perm':
                 returnResult = simpleMeshToMeshData(cootResult, true)
@@ -1168,7 +1251,6 @@ const doCootCommand = (messageData: {
 onmessage = function (e) {
     if (e.data.message === 'CootInitialize') {
         createRSRModule({
-            locateFile: (file) => `./wasm/${file}`,
             onRuntimeInitialized: () => { },
             mainScriptUrlOrBlob: "moorhen.js",
             print: print,
@@ -1193,7 +1275,6 @@ onmessage = function (e) {
             });
         
         createCCP4Module({
-            locateFile: (file) => `./wasm/${file}`,
             onRuntimeInitialized: () => { },
             mainScriptUrlOrBlob: "web_example.js",
             print: print,

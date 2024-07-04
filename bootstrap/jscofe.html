@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    04.06.24   <..  Date of Last Modification.
+ *    23.06.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -44,7 +44,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <title>CCP4 Cloud</title>
+  <!-- <title>CCP4 Cloud</title> -->
 
   <link rel="shortcut icon" href="favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui/jquery-ui.min.css"/>
@@ -91,6 +91,7 @@
   <script type="text/javascript" src="js-client/gui/gui.tree.js"></script>
   <script type="text/javascript" src="js-client/gui/gui.dialogs.js"></script>
 
+  <script type="text/javascript" src="js-client/cofe.electron_links.js"></script>
   <script type="text/javascript" src="js-client/cofe.local_service.js"></script>
   <script type="text/javascript" src="js-client/cofe.browser_cloud_storage.js"></script>
   <script type="text/javascript" src="js-client/cofe.browser_folders.js"></script>
@@ -101,7 +102,6 @@
   <script type="text/javascript" src="js-client/cofe.dialog_archive_project.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_authorisation.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_darkmode.js"></script>
-  <script type="text/javascript" src="js-client/cofe.dialog_download_progress.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_edit_workflow.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_export_job.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_export_from_safe.js"></script>
@@ -293,11 +293,30 @@
   <script type="text/javascript" src="js-common/tasks/common.tasks.helloworld.js"></script>
   <!-- ~~~~~~~~~~~~~~~~~~~~ -->
 
+  <script type="text/javascript" src="js-client/cofe.load_page.js"></script>
+
 </head>
 
 <body class="main-page">
+
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <script type="text/javascript" src="js-client/cofe.load_page.js"></script>
+
+  <!-- <script> 
+    document.body.style.cursor = "wait";
+  </script>  -->
+
+  <!-- <div class="main-page main-scene login-scene" 
+       style="height:100vh;text-align:center;vertical-align:center;">
+    <p style="line-height:35vh;">&nbsp;</p>
+    <i style="font-size:250%;color:dodgerblue"><b>CCP4 Cloud is loading<br>
+       <span style="font-size:75%;">please wait...</span></b></i>
+  </div> -->
+
+  <!-- <div style="height:100vh;text-align:center;vertical-align:center;background-color:rgb(243, 250, 255);">
+    <p style="line-height:35vh;">&nbsp;</p>
+    <i style="font-size:125%;color:rgb(160,160,160)"><b>CCP4 Cloud is loading ...</b></i>
+  </div> -->
+
 </body>
 
 </html>

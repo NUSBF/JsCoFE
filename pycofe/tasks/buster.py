@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.03.24   <--  Date of Last Modification.
+#    16.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -457,6 +457,9 @@ class Buster(basic.TaskDriver):
                             #struct_ano.setBusterLabels    ( hkl )
                             struct_ano.copyLigands        ( istruct )
                             struct_ano.addPhasesSubtype   ()
+                            structure .setAnomMapLabels ( "F_ano","PHI_ano" )
+                            struct_ano.setAnomMapLabels ( "F_ano","PHI_ano" )
+
                             # struct_ano.refiner = "buster"
 
                             nlst = struct_ano.dname.split ( " /" )
@@ -481,6 +484,7 @@ class Buster(basic.TaskDriver):
                                 substructure.addDataAssociation ( hkl.dataId     )
                                 substructure.addDataAssociation ( istruct.dataId )  # ???
                                 substructure.setBusterLabels    ( hkl )
+                                substructure.setAnomMapLabels ( "F_ano","PHI_ano" )
                                 substructure.addPhasesSubtype()
                                 # substructure.refiner = "buster"
                             else:

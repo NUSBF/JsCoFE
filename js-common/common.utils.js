@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.10.23   <--  Date of Last Modification.
+ *    18.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -22,24 +22,24 @@
 'use strict';
 
 function mapExcludeKey ( map,exclKey )  {
-  var m = {};
-  for (var key in map)
+  let m = {};
+  for (let key in map)
     if (key!=exclKey)
       m[key] = map[key];
   return m;
 }
 
 function mapMaskIn ( map,mask_map )  {
-  var m = {};
-  for (var key in map)
+  let m = {};
+  for (let key in map)
     if (key in mask_map)
       m[key] = map[key];
   return m;
 }
 
 function mapMaskOut ( map,mask_map )  {
-  var m = {};
-  for (var key in map)
+  let m = {};
+  for (let key in map)
     if (!(key in mask_map))
       m[key] = map[key];
   return m;
@@ -58,15 +58,15 @@ function round ( number,digits ) {
 }
 
 function padStringLeft ( S,char,n ) {
-var L = S;
+let L = S;
   while (L.length<n)
     L = char + L;
   return L;
 }
 
 function padStringRight ( S,char,n ) {
-var L  = S;
-var an = Math.abs(n)
+let L  = S;
+let an = Math.abs(n)
   while (L.length<an)
     L += char;
   if ((n<0) && (L.length>an))
@@ -74,8 +74,8 @@ var an = Math.abs(n)
   return L;
 }
 
-var __regexp_int   = /^(-?[0-9]+\d*)$|^0$/;
-var __regexp_float = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
+const __regexp_int   = /^(-?[0-9]+\d*)$|^0$/;
+const __regexp_float = /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/;
 
 function isInteger ( value_str ) {
   return __regexp_int.test(value_str);
@@ -96,8 +96,8 @@ function shallowCopy ( object )  {
 // returns copy of given object which does not contain object and array parameters
   if (!object)
     return object;
-  var copy = {};
-  for (var property in object)
+  let copy = {};
+  for (let property in object)
     if (object.hasOwnProperty(property) && (!isObject(object[property])))
       copy[property] = object[property];
   return copy;
@@ -138,6 +138,16 @@ function getDateString ( timestamp = null )  {
   return d.getFullYear() + '-' + date_str;
 }
 
+function isValidURL(url) {
+  const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?' + // port
+      '(\\/[-a-z\\d%_.~+]*)*' + // path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+  return pattern.test(url);
+}
 
 // ===========================================================================
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,19 +83,19 @@ function TaskWebCoot()  {
     }
   ];
 
-  this.parameters = { // input parameters
-    NOTE : {  type     : 'label',
-              label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
-                         '<h2>This Task is Experimental</h2>' +
-                         'WebCoot/Moorhen is developing fast aiming to deliver ' +
-                         'Coot functionality in-browser; many Coot functions are ' +
-                         'currently missing.<p>Please try it now and check ' +
-                         'regularly in future!<br>Any feedback is highly appreciated.' +
-                         '</i></center>',
-              lwidth   : 500,
-              position : [0,1,1,4]
-           }
-  };
+  // this.parameters = { // input parameters
+  //   NOTE : {  type     : 'label',
+  //             label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
+  //                        '<h2>This Task is Experimental</h2>' +
+  //                        'WebCoot/Moorhen is developing fast aiming to deliver ' +
+  //                        'Coot functionality in-browser; many Coot functions are ' +
+  //                        'currently missing.<p>Please try it now and check ' +
+  //                        'regularly in future!<br>Any feedback is highly appreciated.' +
+  //                        '</i></center>',
+  //             lwidth   : 500,
+  //             position : [0,1,1,4]
+  //          }
+  // };
 
 
 }
@@ -112,7 +112,7 @@ TaskWebCoot.prototype.clipboard_name = function()  { return '"WebCoot"';    }
 
 TaskWebCoot.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return '<b>!!EXPERIMENTAL!!</b> fast-developing version of Coot for browsers';
+  return 'fit atoms and new ligands in electron density, validate and explore with WebCoot/Moorhen';
 }
 
 TaskWebCoot.prototype.taskDescription = function()  {
@@ -237,7 +237,7 @@ if (!__template)  {
           args : [ xyzURL,'molecule' ]
         });
       }
-      if (file_key.mtz in istruct.files)  {
+      if ((this._type=='TaskWebCoot') && (file_key.mtz in istruct.files))  {
         let mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
         if (istruct.FWT)
           inputFiles.push ({

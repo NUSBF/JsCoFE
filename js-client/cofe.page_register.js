@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    03.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -195,7 +195,7 @@ function RegisterPage ( sceneId )  {
   reg_btn.addOnClickListener  ( function(){
 
     // Validate the input
-    let msg = validateUserData ( user_inp,email_inp,login_inp );
+    let msg = validateUserData ( user_inp,email_inp,login_inp,null );
 
     if ([licence_code.academic,licence_code.commercial]
         .indexOf(licence_btn.getText())<0)
@@ -211,10 +211,19 @@ function RegisterPage ( sceneId )  {
 
     if (msg)  {
 
+      let msg1 = '<ul>' + replaceAll(replaceAll(msg,'<b>','<li><b>'),'<p>','</li>') +
+                 '</ul>';
+
       new MessageBox ( 'Registration',
-         'Registration of new user cannot be done due to the following:' +
-          msg + '.<p>Please make the necessary corrections and try again.',
-          'msg_information' );
+          '<h2>Incorrect Registration Data</h2>' +
+          'The following items do not have correct value:<p>' +
+          msg1 + 'Please check all items and try again.',
+          'msg_excl_yellow');
+
+      // new MessageBox ( 'Registration',
+      //    'Registration of new user cannot be done due to the following:' +
+      //     msg + '.<p>Please make the necessary corrections and try again.',
+      //     'msg_information' );
 
     } else  {
 

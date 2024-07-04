@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,11 +116,13 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   let self = this;
 
   $(self.element).dialog({
+
     resizable : true,
     height    : self.dlg_height,
     width     : self.dlg_width,
     maxHeight : $(window).height()-20,
     modal     : true,
+
     create    : function (e, ui) {
                   // if (self.combobox)  {
                   //   var pane = $(this).dialog("widget")
@@ -155,6 +157,14 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
                     });            
                   }
                 },
+
+    beforeClose : function(event, ui) {
+                  self.saveDialogState();
+                  if (self.checkbox)
+                        self.onSelect_func ( self.selected_task,self.getListSwitchValue() );
+                  else  self.onSelect_func ( self.selected_task,null );
+                },
+
     buttons   : [
       { text  : 'Help',
         click : function() {
@@ -163,10 +173,6 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       },
       { text  : 'Close',
         click : function() {
-          self.saveDialogState();
-          if (self.checkbox)
-                self.onSelect_func ( null,self.getListSwitchValue() );
-          else  self.onSelect_func ( null,null );
           $( this ).dialog( "close" );
         }
       }
@@ -187,7 +193,8 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   });
 
   // $(self.element).on( "dialogclose",function(event,ui){
-  //   self.saveDialogState();
+  //   alert ( 'exit');
+  //   // self.saveDialogState();
   // });
 
   // if (self.combobox)  {
@@ -248,8 +255,9 @@ TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
 let dockMenu;
+
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'));
+    dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
@@ -258,7 +266,7 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   } else  {
-    dockMenu = new Menu('',image_path('dock_ind'));
+    dockMenu = new Menu('',image_path('dock_ind'),false,8);
     dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
@@ -267,9 +275,18 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   }
+
+  dockMenu.addItem('Task reference',image_path('reference'))
+          .addOnClickListener(function(){
+    new HelpBox ( '',task_obj.getHelpURL(),null );
+  });
+
   grid.setWidget ( dockMenu,row,0,1,1 )
 }
 
+// function __show_task_help ( help_url )  {
+//   new HelpBox ( '',help_url,null );
+// }
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  {
 
@@ -322,6 +339,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     */
   }
 
+  // title += '&nbsp;&nbsp;<img src="' + image_path('reference_inline') + 
+  //          '" onclick="javascript:__show_task_help(\'' +
+  //          task_obj.getHelpURL() + '\');" height="12px" ' +
+  //          'style="position:relative;top:1px;cursor:pointer;"/>';
+
   if (avail_key[0]!='ok')  {
     title = '<span style="line-height:16px;">' + title  +
             '<br>' + desc_indent + '<span style="font-size:13px;"><i>** ' + 
@@ -341,7 +363,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   grid.setCellSize          ( 'auto','',row,1 );
   grid.setCellSize          ( 'auto','',row,2 );
   grid.setCellSize          ( '99%' ,'',row,3 );
-  grid.setCursor            ( 'pointer' );
+  // grid.setCursor            ( 'pointer' );
 
   btn.dataSummary = dataSummary;
 
@@ -355,47 +377,42 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     case 2  : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
-  (function(dlg,ibtn){
+  // (function(dlg,ibtn){
+  let dlg = this;
 
-    function taskClicked() {
-      if (ibtn.dataSummary.status>0)  {
-        dlg.selected_task = task_obj;
-        // if (dlg.combobox)
-        //       dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
-        // else  dlg.onSelect_func ( task_obj,null );
-        if (dlg.checkbox)
-              dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
-        else  dlg.onSelect_func ( task_obj,null );
-        dlg.saveDialogState();
-        $(dlg.element).dialog ( 'close' );
-      // } else if (avail_key[0]=='private')  {
-      //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
-      } else if (avail_key[0]!='ok')  {
-        new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
-      } else  {
-        // insufficient data
-        new TaskDataDialog ( ibtn.dataSummary,task_obj,avail_key );
-      }
+  function taskClicked() {
+    if (btn.dataSummary.status>0)  {
+      dlg.selected_task = task_obj;
+      $(dlg.element).dialog ( 'close' );
+    // } else if (avail_key[0]=='private')  {
+    //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
+    } else if (avail_key[0]!='ok')  {
+      new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
+    } else  {
+      // insufficient data
+      new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );
     }
+  }
 
-    ibtn.addOnClickListener ( taskClicked );
+  btn.addOnClickListener ( taskClicked );
 
-    // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
+  // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
 
-    lbl.addOnClickListener ( taskClicked );
+  lbl.addOnClickListener ( taskClicked );
+  lbl.setCursor          ( 'pointer'   );
 
-    // var contextMenu = new Menu('',image_path('dock'),true);
-    // grid.setWidget   ( contextMenu,row,1,1,1 )
+  // var contextMenu = new Menu('',image_path('dock'),true);
+  // grid.setWidget   ( contextMenu,row,1,1,1 )
 
-    // var contextMenu = new ContextMenu ( ibtn,null );
-    // contextMenu.setZIndex ( 600 );
-    // contextMenu.addItem('Add task to dock',image_path('add'))
-    //            .addOnClickListener(function(){
-    //             console.log ( 'add' );
-    //   // alert('add')
-    // });
+  // var contextMenu = new ContextMenu ( ibtn,null );
+  // contextMenu.setZIndex ( 600 );
+  // contextMenu.addItem('Add task to dock',image_path('add'))
+  //            .addOnClickListener(function(){
+  //             console.log ( 'add' );
+  //   // alert('add')
+  // });
 
-  }(this,btn));
+  // }(this,btn));
 
   return btn;
 
@@ -1238,6 +1255,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     'Map tools',
     new TaskOmitMap   (),
     new TaskAnoMap    (),
+    new TaskExportMaps(),
     'Coordinate data tools',
     new TaskXyzUtils  (),
     gemmi_task,

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,6 +67,8 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         // __offline_message = 'on';  // show prompt "working offline"
 
+        document.title = appName() + ' Local';
+
         if (__title_page)
               makeLocalLoginPage ( sceneId );
         else  login ( '**' + __local_user_id + '**','',sceneId,0 );
@@ -75,6 +77,13 @@ function startSession ( sceneId,dev_switch )  {
         //makeProjectListPage(sceneId);
 
       } else  {
+
+        if (isElectronAPI())  {
+          if (__setup_desc && __setup_desc.name)
+                document.title = appName() + ' @ ' + __setup_desc.name;
+          else  document.title = appName() + ' @ ' + window.location.href;
+        } else
+          document.title = appName();
 
         if (dev_switch==0)  {
 
@@ -175,6 +184,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
   ud.pwd   = user_password;
 
   serverCommand ( fe_command.login,ud,'Login',function(response){
+
+    stopSessionChecks();
 
     switch (response.status)  {
 
@@ -367,8 +378,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
       case fe_retcode.wrongLogin:
                 new MessageBox ( 'Login',
-                  '<b>Login data cannot be recognised.</b><p>' +
-                  'Please check that provided login name and password are ' +
+                  '<h2>Login data is not recognised</h2>' +
+                  'Please check that provided login name and<br>password are ' +
                   'correct.', 'msg_excl_yellow' );
           return true;
 

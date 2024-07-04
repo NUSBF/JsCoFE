@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2773,6 +2773,9 @@ let jobId       = data.meta.id;
                                         '[00041] Job file cannot be written.',
                                         { 'project_missing':false } );
       }
+      if (('isMRSearchModel' in data.files[i]) &&
+          data.files[i].isMRSearchModel)
+        utils.writeString ( fpath+'.MRSearchModel','true' );
     }
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.ok,'',
