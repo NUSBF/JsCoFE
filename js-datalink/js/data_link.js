@@ -27,7 +27,11 @@ class dataLink {
     this.ds = {};
     this.jobs = {};
 
-    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'), config.get('storage.data_free_gb'));
+    this.catalog = new data_catalog(tools.getDataDir(),
+      config.get('storage.catalogs_with_data'),
+      config.get('storage.data_free_gb'),
+      config.get('storage.data_max_days'),
+      config.get('storage.data_prune_mins'));
 
     // load data source classes
     for (let name of DATA_SOURCES) {
@@ -64,7 +68,6 @@ class dataLink {
     }
     const catalog = this.catalog.getCatalog();
     for (const user of users) {
-      catalog[user] = {};
       if (! this.catalog.loadUserCatalog(user)) {
         this.rebuildLocalCatalog(user);
       }
@@ -73,7 +76,6 @@ class dataLink {
 
   // rebuilds a user catalog file
   async rebuildLocalCatalog(user) {
-    log.info(`Rebuilding catalog for ${user}`);
     let data_dir = path.join(tools.getDataDir(), user);
     let sources = tools.getSubDirs(data_dir);
 
@@ -81,6 +83,7 @@ class dataLink {
       if (! this.ds[source]) {
         continue;
       }
+      log.info(`Rebuilding catalog for ${user}/${source}`);
       while (! this.ds[source].catalog) {
         await new Promise(r => setTimeout(r, 2000));
       }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    03.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -97,8 +97,9 @@ var __iOS_device      = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window
                          /MacIntel/.test(navigator.platform));
 var __any_mobile_device = __mobile_device || __iOS_device;
 
-const __regexp_login  = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
-const __regexp_uname  = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_globus_id = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
 
 // variable gets raised in jscofe-browser after loading the page
 // alert ( ' isQt=' + isQtWebEngine() );
@@ -142,15 +143,6 @@ function isQtWebEngine() {
           // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
 }
 
-function isElectronAPI()  {
-  return ('electronAPI' in window);
-}
-
-function sendMessageToElectron ( message )  {
-  if ('electronAPI' in window)
-    window.electronAPI.sendMessage ( 'message-from-app',message );
-}
-
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   //     (navigator.userAgent.indexOf('Safari')>=0) && (!__iOS_device))
@@ -171,44 +163,6 @@ function isProtectedConnection()  {
 }
 
 // ===========================================================================
-
-sendMessageToElectron ( 'version:' + appVersion() );
-
-if (isElectronAPI())  {
-
-  var downloadProgress = null;
-
-  // document.getElementById('download-button').addEventListener('click', () => {
-  //   const downloadUrl = 'https://example.com/file-to-download.zip';
-  //   window.electronAPI.startDownload(downloadUrl);
-  // });
-
-  window.electronAPI.onDownloadProgress ( (event,progress) => {
-    if (!downloadProgress)
-      downloadProgress = new DownloadProgressDialog();
-    if (isFloat(progress))
-      downloadProgress.setProgress ( 100*progress );
-  });
-
-  window.electronAPI.onDownloadComplete ( (event,savePath) => {
-    downloadProgress.setComplete ( savePath );
-    // alert(`Download Complete: ${savePath}`);
-    // downloadProgress.close();
-    downloadProgress = null;
-  });
-
-  window.electronAPI.onDownloadFailed(() => {
-    downloadProgress.setFailed();
-    downloadProgress = null;
-    // alert('Download Failed');
-  });
-
-  window.electronAPI.onDownloadCancelled(() => {
-    downloadProgress = null;
-    alert('Download Cancelled');
-  });
-
-}
 
 $(window).resize ( function(){
   if (__current_page)

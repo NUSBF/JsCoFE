@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.24   <--  Date of Last Modification.
+ *    28.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,7 +55,7 @@ function LoginPage ( sceneId )  {
                       //  .setHeight ( '32px' );
   // menu_panel.addClass   ( 'upper-panel'  );
 
-  this.grid.setCellSize ( '45%','45%',mrow++,0,1,1 );
+  this.grid.setCellSize ( '45%','20%',mrow++,0,1,1 );
 
   // ****
   $('#'+sceneId).addClass ( 'login-scene' );
@@ -67,8 +67,9 @@ function LoginPage ( sceneId )  {
   // adjust scene grid attributes such that login panel is centered
   // this.grid.setVerticalAlignment ( mrow,1,'middle' );
   this.grid.setCellSize          ( 'auto','auto', mrow,  1,1,1 );
-  this.grid.setCellSize          ( '40%' ,'auto', mrow++,2,1,1 );
-  this.grid.setCellSize          ( '40%' ,'45%' , mrow++,0,1,1 );
+  this.grid.setCellSize          ( '45%' ,'auto', mrow++,2,1,1 );
+  this.grid.setLabel             ( '&nbsp;',mrow,0,1,1 );  // for Firefox
+  this.grid.setCellSize          ( '45%' ,'20%' , mrow++,0,1,1 );
 
   // let synopsis_lbl = this.grid.setLabel ( '&nbsp;',mrow,1,1,1 )
   //                        .setWidth ( '640px' )
@@ -155,8 +156,7 @@ function LoginPage ( sceneId )  {
   panel.setCellSize ( '90%','',row++,1 );
 
   let pwd_inp   = panel.setInputText ( '',row++,0,1,2 )
-                       .setStyle     ( 'password','',
-                                       '','' )
+                       .setStyle     ( 'password','','','' )
                        .setWidth     ( '200px' )
                        .setHeight    ( '32px'  )
                        .setVerticalAlignment ( 'middle' )
@@ -291,8 +291,10 @@ function LoginPage ( sceneId )  {
     if (msg)  {
 
       new MessageBox ( 'Login',
-         'Login data is either incomplete or incorrect:<p>' +
-          msg + '<p>Please provide all needful data and try again', 'msg_excl' );
+         '<div style="width:500px">' +
+         '<h2>Login data is either incomplete or incorrect</h2>' +
+         msg + '<p>Please provide correct data and try again.</div>',
+         'msg_excl' );
 
     } else  {
 

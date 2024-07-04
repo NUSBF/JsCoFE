@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    08.06.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1438,16 +1438,24 @@ ImageButton.prototype.setImage = function (icon_uri) {
   this.image.setImage(icon_uri);
 }
 
-function unsetDefaultButton ( button, context_widget ) {
-  button.element.style.fontWeight = 'normal';
-  $(context_widget.element).off('keydown');
+
+var __default_button = null;
+
+function unsetDefaultButton() {
+  if (__default_button)  {
+    __default_button.button.element.style.fontWeight = 'normal';
+    $(__default_button.context_widget.element).off('keydown');
+    __default_button = null;
+  }
 }
 
 function setDefaultButton ( button, context_widget )  {
+  unsetDefaultButton();
+  __default_button = { button : button, context_widget : context_widget };
   button.element.style.fontWeight = 'bold';
   $(context_widget.element).keydown(function (e) {
     if (e.key == "Enter") {
-      unsetDefaultButton ( button,context_widget );
+      // unsetDefaultButton();
       // handle click logic here
       button.click();
       e.preventDefault();
@@ -1455,6 +1463,25 @@ function setDefaultButton ( button, context_widget )  {
     }
   });
 }
+
+
+// function unsetDefaultButton ( button, context_widget ) {
+//   button.element.style.fontWeight = 'normal';
+//   $(context_widget.element).off('keydown');
+// }
+
+// function setDefaultButton ( button, context_widget )  {
+//   button.element.style.fontWeight = 'bold';
+//   $(context_widget.element).keydown(function (e) {
+//     if (e.key == "Enter") {
+//       unsetDefaultButton ( button,context_widget );
+//       // handle click logic here
+//       button.click();
+//       e.preventDefault();
+//       return true;
+//     }
+//   });
+// }
 
 
 // -------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    29.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -295,8 +295,6 @@ function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
 }
 
 
-
-
 // export such that it could be used in both node and a browser
 
 if (!__template)  {
@@ -310,10 +308,18 @@ if (!__template)  {
   TaskImport.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname        = '';
     this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
-    this.upload_files = [];
     this.autoRunId    = '';     // automatic workflow Id
+    this.autoRunId0   = '';     // automatic workflow Id
+    this.autoRunName  = '';     // job id in automatic workflow
     this.script       = [];     // workflow script to execute
     this.script_pointer = 0;    // current position in the workflow script script
+    this.state        = job_code.new;  // 'new', 'running', 'finished'
+    this.upload_files = [];   // list of uploaded files
+    this.input_dtypes = [];   // input data type definitions; []: any input data is allowed;
+                              // [1]: no data is required but the task is allowed only
+                              // on the topmost level of job tree
+    this.file_select   = [];  // list of file select widgets
+    this.input_ligands = [];  // list of ligand description widgets
     return;
   }
 
@@ -482,13 +488,23 @@ if (!__template)  {
   TaskImport.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
+    
     TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    
     this.upload_files = inputPanel.upload.upload_files;
     this.file_mod     = inputPanel.customData.file_mod;
+
+    for (let i=0;i<this.upload_files.length;i++)  {
+      let lcname = this.upload_files[i].toLowerCase();
+      if (endsWith(lcname,'.wscript'))
+        this.autoRunId = 'wscript';  // temporary for update in job tree
+    }
+
     if (this.upload_files.length>0)
       return '';   // input is Ok
     else
       return '<b><i>No file(s) have been uploaded</i></b>';  // input is not ok
+  
   }
 
 

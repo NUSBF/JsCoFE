@@ -69,6 +69,8 @@ function __object_to_instance ( key,value ) {
     moduleRef = getModuleRef ( value._type,0,'../js-server/server.fe.' );
   }
 
+// console.log ( ' >>>> type=' + value._type );
+
   let obj = null;
   if (moduleRef.length>0)
     obj = new __modules[moduleRef][value._type]();

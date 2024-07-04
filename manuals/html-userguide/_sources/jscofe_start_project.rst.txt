@@ -119,6 +119,16 @@ Tutorials can be added by following the links below:
 
 `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_
 
+`The multi-domain Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_002.%20The%20%25multidomain%20Molecular%20Replacement.ccp4cloudt=>`_
+
+`Structure prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_
+
+`Protein-ligand structure determination by Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_004.%20Protein-ligand%20structure%20determination%20by%20Molecular%20Replacement.ccp4cloud>`_
+
+`MR with predicted model <../demo_project.html?cmount=Tutorials&project=T2_005.%20MR%20with%20predicted%20model.ccp4cloud>`_
+
+`Determining the Structure of Twinned Crystals Using Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_006.%20Determining%20the%20Structure%20of%20Twinned%20Crystals%20Using%20Molecular%20Replacement.ccp4cloud>`_
+
 `GerE: SAD and MR-SAD Phasing <../demo_project.html?cmount=Tutorials&project=T3_002.%20GerE%20SAD%20and%20MR-SAD%20Phasing.ccp4cloud>`_
 
 `Beta-Lactamase Experimental Phasing <../demo_project.html?cmount=Tutorials&project=T3_004.%20Beta-Lactamase%20Experimental%20Phasing.ccp4cloud>`_
@@ -128,5 +138,13 @@ Tutorials can be added by following the links below:
 `Refinement using REFMAC5 - Part 2: Twin Refinement <../demo_project.html?cmount=Tutorials&project=T4_002.%20Twin%20Refinement>`_
 
 `Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement <../demo_project.html?cmount=Tutorials&project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&%20Refinement.ccp4cloud>`_
+
+`Paired refinement with PaiRef <../demo_project.html?cmount=Tutorials&project=T4_004.%20Paired%20refinement%20with%20PaiRef.ccp4cloud>`_
+
+`Ligand fitting with CCP4Cloud and Coot <../demo_project.html?cmount=Tutorials&project=T4_005.%20Ligand%20fitting%20with%20CCP4Cloud%20and%20Coot.ccp4cloud>`_
+
+`Moorhen Tutorial 1: Fix up the Cyclin-Dependent Kinase <../demo_project.html?cmount=Tutorials&project=T4_006.%20Fix%20up%20the%20Cyclin-Dependent%20Kinase%20with%20Moorhen.ccp4cloud>`_
+
+`Automated model building in CCP4 Cloud <../demo_project.html?cmount=Tutorials&project=T5_002.%20Automated%20model%20building%20in%20CCP4%20Cloud.ccp4cloud>`_
 
 `Starting PISA <../demo_project.html?cmount=Tutorials&project=T5_001.%20Starting%20PISA.ccp4cloud>`_
