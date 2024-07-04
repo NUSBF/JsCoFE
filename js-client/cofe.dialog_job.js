@@ -221,8 +221,8 @@ JobDialog.prototype.delete = function()  {
   if (this.onClose_func)
     this.onClose_func ( this );
 
-  if (this.nc_browser && (this.task.state==job_code.running))
-    this.requestServer ( fe_reqtype.webappEndJob,function(rdata){});
+  // if (this.nc_browser && (this.task.state==job_code.running))
+  //   this.requestServer ( fe_reqtype.webappEndJob,function(rdata){});
 
   Widget.prototype.delete.call ( this );
 
