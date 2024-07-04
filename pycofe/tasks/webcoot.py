@@ -137,7 +137,8 @@ class WebCoot(basic.TaskDriver):
         listdir = os.listdir('.')
         self.stderrln ( " >>>> " + str(listdir) )
 
-        mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
+        mmcifout   = [f for f in os.listdir('.') if f.lower().endswith(".mmcif")]
+        self.stderrln ( " >>>> " + str(mmcifout) )
         hasResults = False
 
         if len(mmcifout)<=0:
