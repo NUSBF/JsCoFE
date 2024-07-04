@@ -1033,6 +1033,8 @@ function onWindowMessage ( event ) {
             fpath : edata.files[i].molName + '.mmcif',
             data  : edata.files[i].mmcifData
           });
+          console.log ( ' >>>> pdblen=' + edata.files[i].pdbData.length + 
+                        ' mmciflen=' + edata.files[i].mmcifData.length );
         }
         edata1.files[edata1.files.length-1].isMRSearchModel =
                             ('isMRSearchModel' in edata.files[i]) && 
