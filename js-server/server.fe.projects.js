@@ -2760,16 +2760,19 @@ let jobId       = data.meta.id;
   if (utils.fileExists(jobDirPath))  {
     for (let i=0;(i<data.files.length) && (!response);i++)  {
       let fpath = path.join ( jobDirPath,data.files[i].fpath );
-      console.log ( ' >>>>> ' + i + ' fpath=' + fpath + '  len=' + data.files[i].data );
+      console.log ( ' >>>>> ' + i + ' fpath=' + fpath + '  len=' + data.files[i].data.length );
       if (!utils.writeString(fpath,data.files[i].data))  {
         let fdir = path.dirname ( fpath );
         if (fdir!=jobDirPath)  {
           utils.mkPath ( fdir );
-          if (!utils.writeString(fpath,data.files[i].data))
+          if (!utils.writeString(fpath,data.files[i].data))  {
+            log.error ( 80,'file "' + fpath + '" cannot be written (1)' );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                           '[00040] Job file cannot be written.',
                                           { 'project_missing':false } );
-        } else
+          }
+        } else  {
+          log.error ( 80,'file "' + fpath + '" cannot be written (2)' );
           response = new cmd.Response ( cmd.fe_retcode.writeError,
                                         '[00041] Job file cannot be written.',
                                         { 'project_missing':false } );
