@@ -1010,6 +1010,10 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
+  function _correct_name ( fname )  {
+    return fname.split(' ').join('_').split('#').join('');
+  }
+
   let edata = event.data;
 
   if (edata.command=='saveFiles')  {
@@ -1026,11 +1030,11 @@ function onWindowMessage ( event ) {
           edata1.files.push ( edata.files[i] );
         } else  {
           edata1.files.push ({
-            fpath : edata.files[i].molName + '.pdb',
+            fpath : _correct_name(edata.files[i].molName) + '.pdb',
             data  : edata.files[i].pdbData
           });
           edata1.files.push ({
-            fpath : edata.files[i].molName + '.mmcif',
+            fpath : _correct_name(edata.files[i].molName) + '.mmcif',
             data  : edata.files[i].mmcifData
           });
           console.log ( ' >>>> pdblen=' + edata.files[i].pdbData.length + 
