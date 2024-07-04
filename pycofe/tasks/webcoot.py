@@ -134,6 +134,9 @@ class WebCoot(basic.TaskDriver):
         # Check for output files left by Moorhen and make the corresponding
         # output data objects
 
+        listdir = os.listdir('.')
+        self.stderrln ( " >>>> " + str(listdir) )
+
         mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
         hasResults = False
 

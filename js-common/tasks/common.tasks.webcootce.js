@@ -81,7 +81,7 @@ TaskWebCootCE.prototype.taskDescription = function()  {
 
 TaskWebCootCE.prototype.cloneItems = function() { return ['backups']; }
 
-//TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
+TaskWebCootCE.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskWebCootCE.prototype.currentVersion = function()  {
 let version = 0;
