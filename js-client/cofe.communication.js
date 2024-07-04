@@ -1010,9 +1010,9 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
-  function _correct_name ( fname )  {  // because Moorhen makes it funny
-    return fname.split(' ').join('_').split('#').join('');
-  }
+  // function _correct_name ( fname )  {  // because Moorhen makes it funny
+  //   return fname.split(' ').join('_').split('#').join('');
+  // }
 
   let edata = event.data;
 
@@ -1027,16 +1027,16 @@ function onWindowMessage ( event ) {
       }
       for (let i=0;i<edata.files.length;i++)  {
         if ('fpath' in edata.files[i])  {
-          console.log ( ' >> fpath given' );
           edata1.files.push ( edata.files[i] );
         } else  {
-          console.log ( ' >> fpath NOT given' );
           edata1.files.push ({
-            fpath : _correct_name(edata.files[i].molName) + '.pdb',
+            // fpath : _correct_name(edata.files[i].molName) + '.pdb',
+            fpath : edata.files[i].molName + '.pdb',
             data  : edata.files[i].pdbData
           });
           edata1.files.push ({
-            fpath : _correct_name(edata.files[i].molName) + '.mmcif',
+            // fpath : _correct_name(edata.files[i].molName) + '.mmcif',
+            fpath : edata.files[i].molName + '.mmcif',
             data  : edata.files[i].mmcifData
           });
         }
