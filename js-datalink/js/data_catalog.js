@@ -25,11 +25,21 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false, data_free_gb) {
+  constructor(data_dir, keep_with_data = false, data_free_gb, data_max_days, data_prune_mins) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
     this.data_free_gb = data_free_gb;
+    this.data_max_days = data_max_days;
+    this.data_prune_mins = data_prune_mins;
     this.catalog = {};
+
+    // prune any external data not managed directly by datalink
+    if (this.data_prune_mins > 0) {
+      log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${this.data_prune_mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
+      setInterval(this.pruneData.bind(this), this.data_prune_mins * 1000 * 60);
+    } else {
+      log.info(`Configured to not prune old data`);
+    }
   }
 
   getCatalog() {
@@ -44,6 +54,13 @@ class dataCatalog {
   // get the absolute data directory for an entry
   getDataDest(user = '', source = '', id = '') {
     return path.join(this.data_dir, this.getRelDataDest(user, source, id));
+  }
+
+  // get the current date minus num_days
+  getPruneDate(num_days) {
+    let check_date = new Date();
+    check_date.setDate(check_date.getDate() - num_days);
+    return check_date;
   }
 
   getUserCatalogFile(user) {
@@ -63,8 +80,12 @@ class dataCatalog {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
     } catch (err) {
-      log.error(`loadUserCatalog (${user}) - ${err.message}`);
-      return false
+      if (err.code == 'ENOENT') {
+        log.info(`loadUserCatalog (${user}) - skipping no datalink catalog`);
+      } else {
+        log.error(`loadUserCatalog (${user}) - ${err.message}`);
+      }
+      return false;
     }
     return true;
   }
@@ -190,9 +211,6 @@ class dataCatalog {
       return false;
     }
 
-    // prune old data if required
-    this.pruneData(this.data_free_gb);
-
     return catalog[user][source][id];
   }
 
@@ -255,11 +273,49 @@ class dataCatalog {
     }
   }
 
-  async pruneData(min_free_gb) {
+  async pruneData() {
+    await this.pruneManagedData(this.data_free_gb, this.data_max_days);
+    if (this.data_max_days > 0) {
+      await this.pruneExternalData(this.data_max_days);
+    }
+  }
+
+  async pruneManagedData(min_free_gb, data_max_days) {
+    log.info(`pruneManagedData - pruning managed data older than ${data_max_days} day(s)`);
     const min_free = min_free_gb * GB;
+
+    let entries = [];
+    const catalog = this.getCatalog();
+    // loop through all data entries
+    for (const user of Object.values(catalog)) {
+      for (const source of Object.values(user)) {
+        for (const entry of Object.values(source)) {
+          // skip data that is in progress
+          if (entry.status === status.inProgress) {
+            continue;
+          }
+          // if entry is not in use, prune data older than data_max_days
+          if (! entry.in_use && data_max_days > 0) {
+            let check_date = this.getPruneDate(data_max_days);
+            if (new Date(entry.updated) < check_date) {
+              if (this.removeEntry(entry.user, entry.source, entry.id)) {
+                log.info(`pruneData - Removed ${entry.dir} - size ${entry.size}`);
+              } else {
+                log.error(`pruneData - Error removing ${entry.dir} - size ${entry.size}`);
+              }
+              continue;
+            }
+          }
+          // add to entries list for pruning
+          entries.push(entry);
+        }
+      }
+    }
+
     const free = tools.getFreeSpace(tools.getDataDir(), '1');
 
     if (free === false) {
+      log.error(`pruneManagedData - Unable to get free space`);
       return;
     }
 
@@ -267,24 +323,13 @@ class dataCatalog {
       return;
     }
 
-    const size_to_free = min_free - free;
-
-    let entries = [];
-    const catalog = this.getCatalog();
-    // build up list of data that is not in use by age
-    for (const user of Object.values(catalog)) {
-      for (const source of Object.values(user)) {
-        for (const entry of Object.values(source)) {
-          if (! entry.in_use && entry.status === status.completed) {
-            entries.push(entry);
-          }
-        }
-      }
-    }
+    log.info(`pruneManagedData - Free space is less than ${this.data_free_gb}GB - pruning oldest data`);
 
     entries.sort(function(a,b) {
       return new Date(a.date) - new Date(b.date);
     });
+
+    const size_to_free = min_free - free;
 
     let size = 0;
     for (const entry of entries) {
@@ -300,6 +345,48 @@ class dataCatalog {
     const size_to_free_mb = Math.ceil(size_to_free / MB);
     if (size > 0) {
       log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
+    }
+  }
+
+  async pruneExternalData(data_max_days) {
+    log.info(`pruneExternalData - pruning external data older than ${data_max_days} day(s)`);
+    let users;
+    try {
+      users = tools.getSubDirs(tools.getDataDir());
+    } catch (err) {
+      log.error(`pruneExternalData - Unable to read user directories - ${err}`)
+      return;
+    }
+
+    if (! users) {
+      return;
+    }
+
+    // get the current date minus data_max_days
+    let check_date = this.getPruneDate(data_max_days);
+
+    const catalog = this.getCatalog();
+    for (const user of users) {
+      let sources = tools.getSubDirs(this.getDataDest(user));
+      for (const source of sources) {
+        // if we have a data entry for user + source then skip
+        if (catalog[user] && catalog[user][source]) {
+          continue;
+        }
+
+        await tools.fileCallback(this.getDataDest(user, source), true, async (file) => {
+          try {
+            let file_date = fs.statSync(file).mtime;
+            // if the file or directory is older than check_date then remove
+            if (file_date < check_date) {
+              fs.rmSync(file, { recursive: true });
+            }
+          } catch (err) {
+            log.error(`pruneExternalData - ${err}`);
+          }
+          return true;
+        });
+      }
     }
   }
 

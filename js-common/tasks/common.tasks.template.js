@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    23.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -3018,7 +3018,6 @@ if (!dbx)  {
   const uh      = require('../../js-server/server.fe.upload_handler');
   const storage = require('../../js-server/server.fe.storage');
 
-
   TaskTemplate.prototype.setOName = function ( base_name )  {
     this.oname = base_name;
   }
@@ -3026,9 +3025,26 @@ if (!dbx)  {
   TaskTemplate.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,
   // that should be reported to a queuing system like SGE or SLURM, in
-  // case the task spawns threds or processes bypassing the queuing system.
+  // case the task spawns multiple threads or processing bypassing the
+  // queuing system, or is known to use multiple cores for other reasons.
   // It is expected that the task will not utilise more cores than what is
-  // given on input to this function.
+  // given on input to this function; not doing so may cause cluttering 
+  // of the CPU cluster with processes that queuing system is not aware of
+  // and, as a result, unbalanced and inefficient use of compute nodes.
+    return 1;
+  }
+
+  TaskTemplate.prototype.getNProcesses = function ( nproc_available )  {
+  // This function should return the number of processes, up to nproc_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task launches spawns multiple parallel threds or processes
+  // through the queueing system.
+  // The task may spawn more processes than this function returns, however,
+  // they will not be reserved by the queuing system and, therefore, their
+  // execution may be postponed. It is therefore recommended that, if task
+  // submits additional processes in the queue with master process acting as a
+  // watcher/dispatcher, this function returns at least 2 processes to be 
+  // reserved by the queue. Most tasks should not reimplement this function.
     return 1;
   }
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.24   <--  Date of Last Modification.
+#    27.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -632,6 +632,8 @@ class ASUDef(basic.TaskDriver):
         seq  = []
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             seq = self.input_data.data.seq
+            for i in range(len(seq)):
+                seq[i].ncopies_auto = False  # do not adjust
 
         revision = makeRevision ( self,hkl,seq,
                                   self.getParameter(sec0.TARGET_SOL),

@@ -81,9 +81,9 @@ function Communicate ( server_request )  {
 
   this.requester_ip =
         (server_request.headers['x-forwarded-for'] || '').split(',').pop() ||
-        server_request.connection.remoteAddress ||
-        server_request.socket.remoteAddress     ||
-        server_request.connection.socket.remoteAddress;
+         server_request.connection.remoteAddress ||
+         server_request.socket.remoteAddress     ||
+         server_request.connection.socket.remoteAddress;
 
   if ((this.fe_server.malicious_attempts_max>0) &&
       (this.requester_ip in __malicious_ip_register) &&
@@ -92,6 +92,10 @@ function Communicate ( server_request )  {
     this.command = cmd.ignore;
     return;
   }
+
+  // const server_url = server_request.connection.encrypted ? 'https' : 'http' + '//' +
+  //                    server_request.headers.host;
+  // console.log ( ' Server: ' + server_url + ' ' + this.fe_server.externalURL );
 
 /*
   var ext = server_request.url.slice ( server_request.url.lastIndexOf('.') );
