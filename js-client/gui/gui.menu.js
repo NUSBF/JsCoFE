@@ -200,6 +200,10 @@ Menu.prototype.setMaxHeight = function ( height_str )  {
   this.dropdown.element.style.maxHeight = height_str;
 }
 
+Menu.prototype.setMenuSpacing = function ( spacing )  {
+  this.spacing = spacing;
+}
+
 Menu.prototype.addItem = function ( text,icon_uri )  {
 let mi = new MenuItem ( text,icon_uri,this.spacing );
   this.dropdown.addWidget ( mi );
@@ -208,7 +212,7 @@ let mi = new MenuItem ( text,icon_uri,this.spacing );
 }
 
 Menu.prototype.addSeparator = function ()  {
-let mi = new MenuItem ( '<hr/>','',this.spacing );
+let mi = new MenuItem ( '<hr/>','',2 );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
