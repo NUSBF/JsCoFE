@@ -2764,14 +2764,18 @@ let jobId       = data.meta.id;
         let fdir = path.dirname ( fpath );
         if (fdir!=jobDirPath)  {
           utils.mkPath ( fdir );
-          if (!utils.writeString(fpath,data.files[i].data))
+          if (!utils.writeString(fpath,data.files[i].data))  {
+            log.error ( 81,'file "' + fpath + '" cannot be written (1)' );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                           '[00040] Job file cannot be written.',
                                           { 'project_missing':false } );
-        } else
+          }
+        } else  {
+          log.error ( 82,'file "' + fpath + '" cannot be written (2)' );
           response = new cmd.Response ( cmd.fe_retcode.writeError,
                                         '[00041] Job file cannot be written.',
                                         { 'project_missing':false } );
+        }
       }
       if (('isMRSearchModel' in data.files[i]) &&
           data.files[i].isMRSearchModel)

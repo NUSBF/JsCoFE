@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1010,6 +1010,10 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
+  // function _correct_name ( fname )  {  // because Moorhen makes it funny
+  //   return fname.split(' ').join('_').split('#').join('');
+  // }
+
   let edata = event.data;
 
   if (edata.command=='saveFiles')  {
@@ -1026,10 +1030,12 @@ function onWindowMessage ( event ) {
           edata1.files.push ( edata.files[i] );
         } else  {
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.pdb',
             fpath : edata.files[i].molName + '.pdb',
             data  : edata.files[i].pdbData
           });
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.mmcif',
             fpath : edata.files[i].molName + '.mmcif',
             data  : edata.files[i].mmcifData
           });
