@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,7 +84,7 @@ TaskFetchData.prototype.clipboard_name = function()  { return '"Fetch-data"';   
 
 TaskFetchData.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return 'finds diffraction images for given PDB code and fetcheds them';
+  return 'finds diffraction images for given PDB code and fetches them';
 };
 
 TaskFetchData.prototype.currentVersion = function()  {
@@ -103,13 +103,17 @@ TaskFetchData.prototype.isTaskAvailable = function()  {
 
   if (__has_datalink)
     return TaskTemplate.prototype.isTaskAvailable.call ( this );
+  else if (__local_setup)
+    return ['environment-server',
+            'task software is not installed on your machine',
+            '<h3>Task software is not installed</h3>' +
+            'Fetch framework is not installed on your machine.'];
   else
     return ['environment-server',
-            'task software is not configured on ' + appName() + ' server',
-            '<h3>Task software is not configured on server</h3>' +
-            'Software, needed to run the task, is not configured on ' +
-            appName() + ' server, which you use.<br>Contact server ' +
-            'maintainer for further details.'];
+            'task software is not installed on ' + appName() + ' server',
+            '<h3>Task software is not installed</h3>' +
+            'Fetch framework is not installed on ' +  appName() + 
+            '.<br>Contact server maintainer for further details.'];
 
 }
 

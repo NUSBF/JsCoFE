@@ -134,7 +134,11 @@ class WebCoot(basic.TaskDriver):
         # Check for output files left by Moorhen and make the corresponding
         # output data objects
 
-        mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
+        listdir = os.listdir('.')
+        self.stderrln ( " >>>> " + str(listdir) )
+
+        mmcifout   = [f for f in os.listdir('.') if f.lower().endswith(".mmcif")]
+        self.stderrln ( " >>>> " + str(mmcifout) )
         hasResults = False
 
         if len(mmcifout)<=0:
@@ -321,9 +325,10 @@ class WebCoot(basic.TaskDriver):
             else:
                 summaryLine += " models saved"
         elif len(mmcifout)<=0:
-            self.stderrln ( "\n ***** no output .mmcf files found" )
+            self.stderrln ( "\n ***** no output .mmcif files found" )
         else:
-            self.stderrln ( "\n ***** " + str(len(mmcifout)) + " output .mmcf files found, but " +\
+            self.stderrln ( "\n ***** " + str(len(mmcifout))   +\
+                            " output .mmcif files found, but " +\
                             "none is found suitable" )
 
         self.generic_parser_summary["web_coot"] = {

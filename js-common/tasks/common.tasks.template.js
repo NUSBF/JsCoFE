@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -662,15 +662,14 @@ if (!dbx)  {
         return ['environment-server',
                 'task software is not installed',
                 '<h3>Task software is not installed</h3>' +
-                'Software, needed to run the task, is not available in ' +
-                appName() + ' setup, which you use.<br>Contact your software ' +
-                'maintainer for further details.'];
+                'Software, needed to run the task, is not installed on ' +
+                'your machine.'];
       else
         return ['environment-server',
                 'task software is not installed on ' + appName() + ' server',
                 '<h3>Task software is not installed on server</h3>' +
-                'Software, needed to run the task, is not installed on ' +
-                appName() + ' server, which you use.<br>Contact server ' +
+                'Software, needed for the task, is not installed on ' +
+                appName() + ' server.<br>Contact server ' +
                 'maintainer for further details.'];
     }
 
