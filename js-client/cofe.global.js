@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -57,6 +57,7 @@ var __user_settings   = {
 };
 var __user_role       = role_code.user;
 var __user_licence    = '';
+var __globus_id       = '';
 var __dormant         = 0;
 var __ccp4_version    = '';     // undefined
 
