@@ -52,7 +52,7 @@ function AdminPage ( sceneId )  {
   if (__local_user)
     accLbl = 'Settings';
   this.addMenuItem ( accLbl,'settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
+      .addMenuItem ( 'Back to Projects','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
   // make tabs
