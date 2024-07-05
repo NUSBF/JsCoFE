@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -102,87 +102,94 @@ function ProjectPage ( sceneId )  {
 
   // Make Main Menu
 
-  // (function(self){
-
-    self.addMenuItem ( 'Project folder','list',function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              makeProjectListPage ( sceneId );
-            });
-          else
+  // this.setMenuSpacing ( 10 );
+  this.addMenuItem ( 'Back to Projects','list',function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
             makeProjectListPage ( sceneId );
-        }
-      });
-    });
-
-    let accLbl = 'My Account';
-    if (__local_user)
-      accLbl = 'Settings';
-    self.addMenuItem ( accLbl,'settings',function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              makeAccountPage ( sceneId );
-            });
-          else
-            makeAccountPage ( sceneId );
-        }
-      });
-    });
-  
-    if (!__local_user)  {
-      if (__user_role==role_code.admin)
-        self.addMenuItem ( 'Admin Page',role_code.admin,function(){
-          self.confirmLeaving ( function(do_leave){
-            if (do_leave)  {
-              if (self.jobTree && self.jobTree.projectData)
-                self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-                  makeAdminPage ( sceneId );
-                });
-              else
-                makeAdminPage ( sceneId );
-            }
           });
-        });
-    }
-
-    self.addMenuSeparator();
-
-    if (!__local_user)  {
-      self.addMenuItem ( 'Work team & sharing','workteam',function(){
-        if (self.jobTree)
-          new WorkTeamDialog ( self.jobTree.projectData.desc,self.jobTree );
         else
-          new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
-                           'Please call later','msg_error' );
-      });
-    }
-
-    self.addMenuItem ( 'Project settings','project_settings',function(){
-      if (self.jobTree && self.jobTree.projectData)
-            new ProjectSettingsDialog ( self.jobTree,function(){
-              self.jobTree.saveProjectData ( [],[],true, null );
-            });
-      else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
+          makeProjectListPage ( sceneId );
+      }
     });
+  });
 
-    self.addLogoutToMenu ( function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              logout ( sceneId,0 );
-            });
-          else
+  let accLbl = 'My Account';
+  if (__local_user)
+    accLbl = 'Settings';
+  this.addMenuItem ( accLbl,'settings',function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+            makeAccountPage ( sceneId );
+          });
+        else
+          makeAccountPage ( sceneId );
+      }
+    });
+  });
+
+  if (!__local_user)  {
+    if (__user_role==role_code.admin)
+      this.addMenuItem ( 'Admin Page',role_code.admin,function(){
+        self.confirmLeaving ( function(do_leave){
+          if (do_leave)  {
+            if (self.jobTree && self.jobTree.projectData)
+              self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+                makeAdminPage ( sceneId );
+              });
+            else
+              makeAdminPage ( sceneId );
+          }
+        });
+      });
+  }
+
+  this.addMenuSeparator();
+
+  if (!__local_user)  {
+    this.addMenuItem ( 'Work team & sharing','workteam',function(){
+      if (self.jobTree)
+        new WorkTeamDialog ( self.jobTree.projectData.desc,self.jobTree );
+      else
+        new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
+                          'Please call later','msg_error' );
+    });
+  }
+
+  this.addMenuItem ( 'Project settings','project_settings',function(){
+    if (self.jobTree && self.jobTree.projectData)
+          new ProjectSettingsDialog ( self.jobTree,function(){
+            self.jobTree.saveProjectData ( [],[],true, null );
+          });
+    else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
+  });
+
+  this.addMenuSeparator();
+
+  this.addMenuItem ( 'Start Globus','globus_app',function(){
+    window.open ( 'https://app.globus.org/file-manager?two_pane=true',
+                  'Globus File Transfer',
+                  'modal=yes' );
+    // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
+    //                  null,10,null );
+  });
+
+  this.addLogoutToMenu ( function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
             logout ( sceneId,0 );
-        }
-      });
+          });
+        else
+          logout ( sceneId,0 );
+      }
     });
-
-  // }(this))
+  });
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';

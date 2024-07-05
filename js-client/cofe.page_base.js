@@ -505,6 +505,10 @@ BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
   return this;
 }
 
+BasePage.prototype.setMenuSpacing = function ( spacing )  {
+  this.headerPanel.menu.setMenuSpacing ( spacing );
+}
+
 BasePage.prototype.addMenuSeparator = function()  {
   this.headerPanel.menu.addSeparator();
   return this;
