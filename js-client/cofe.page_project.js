@@ -168,15 +168,16 @@ function ProjectPage ( sceneId )  {
     else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
   });
 
-  this.addMenuSeparator();
-
-  this.addMenuItem ( 'Start Globus','globus_app',function(){
-    window.open ( 'https://app.globus.org/file-manager?two_pane=true',
-                  'Globus File Transfer',
-                  'modal=yes' );
-    // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
-    //                  null,10,null );
-  });
+  if (__globus_id)  {
+    this.addMenuSeparator();
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      window.open ( 'https://app.globus.org/file-manager?two_pane=true',
+                    'Globus File Transfer',
+                    'modal=yes' );
+      // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
+      //                  null,10,null );
+    });
+  }
 
   this.addLogoutToMenu ( function(){
     self.confirmLeaving ( function(do_leave){

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -211,6 +211,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               bindToBrowserColorMode ( true ); 
               __user_role          = userData.role;
               __user_licence       = userData.licence;
+              __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 
