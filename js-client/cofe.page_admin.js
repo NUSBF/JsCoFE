@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,7 +52,7 @@ function AdminPage ( sceneId )  {
   if (__local_user)
     accLbl = 'Settings';
   this.addMenuItem ( accLbl,'settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
+      .addMenuItem ( 'Back to Projects','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
   // make tabs
@@ -209,8 +209,10 @@ function AdminPage ( sceneId )  {
 
 }
 
-AdminPage.prototype = Object.create ( BasePage.prototype );
-AdminPage.prototype.constructor = AdminPage;
+// AdminPage.prototype = Object.create ( BasePage.prototype );
+// AdminPage.prototype.constructor = AdminPage;
+
+registerClass ( 'AdminPage',AdminPage,BasePage.prototype );
 
 /*
 AdminPage.prototype.destructor = function ( function_ready )  {
@@ -242,41 +244,53 @@ AdminPage.prototype.refresh = function()  {
 
       } else  {
 
-        self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-        let lines = data.jobsStat.split(/\r\n|\r|\n/);
-        if ((lines.length>0) && startsWith(lines[0],'--------'))  {
-          lines[0] = lines[0].replace ( /-/g,'=' );
-          lines[2] = lines[2].replace ( /-/g,'=' );
-          if (!lines[lines.length-1])
-            lines.pop();
-          lines.push ( lines.shift() );
-          lines.push ( lines.shift() );
-          lines.push ( lines.shift() );
-        }
-        let nJobsToday = 0;
-        let usersToday = [];
-        let today_template = new Date(Date.now()).toUTCString().split(' ');
-        today_template = '[' + today_template[0] + ' ' + today_template[1] +
-                         ' ' + today_template[2] + ' ' + today_template[3];
-        for (let i=lines.length-1;i>=0;i--)
-          if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
-            if (lines[i].indexOf(today_template)>=0) {
-              nJobsToday++;
-              let user = lines[i].split(' (')[0].split(' ').pop();
-              if (usersToday.indexOf(user)<0)
-                usersToday.push ( user );
-            } else
-              break;
-          }
-        self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
-                                usersToday.length + ' users\n' +
-                                lines.reverse().join('\n') + '</pre>' );
+        window.setTimeout ( function(){
 
-        self.usageStats._url    = data.usageReportURL;
-        self.usageStats._loaded = false;
-        self.loadUsageStats();
+          self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+          
+          window.setTimeout ( function(){
+          
+            self.usageStats._url    = data.usageReportURL;
+            self.usageStats._loaded = false;
+            self.loadUsageStats();
 
-        self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+            window.setTimeout ( function(){
+          
+              self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
+              let lines = data.jobsStat.split(/\r\n|\r|\n/);
+              if ((lines.length>0) && startsWith(lines[0],'--------'))  {
+                lines[0] = lines[0].replace ( /-/g,'=' );
+                lines[2] = lines[2].replace ( /-/g,'=' );
+                if (!lines[lines.length-1])
+                  lines.pop();
+                lines.push ( lines.shift() );
+                lines.push ( lines.shift() );
+                lines.push ( lines.shift() );
+              }
+              let nJobsToday = 0;
+              let usersToday = [];
+              let today_template = new Date(Date.now()).toUTCString().split(' ');
+              today_template = '[' + today_template[0] + ' ' + today_template[1] +
+                               ' ' + today_template[2] + ' ' + today_template[3];
+              for (let i=lines.length-1;i>=0;i--)
+                if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
+                  if (lines[i].indexOf(today_template)>=0) {
+                    nJobsToday++;
+                    let user = lines[i].split(' (')[0].split(' ').pop();
+                    if (usersToday.indexOf(user)<0)
+                      usersToday.push ( user );
+                  } else
+                    break;
+                }
+              self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
+                                      usersToday.length + ' users\n' +
+                                      lines.reverse().join('\n') + '</pre>' );
+
+            },10);
+
+          },10);
+
+        },10);
 
         serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
           function(rsp){
@@ -289,8 +303,10 @@ AdminPage.prototype.refresh = function()  {
                   'when trying to fetch FE Proxy data.', 'msg_error' );
             }
             if (!__local_service)  {
-              self.makeNodesInfoTab ( data.nodesInfo );
-              self.onResize ( window.innerWidth,window.innerHeight );
+              window.setTimeout ( function(){
+                self.makeNodesInfoTab ( data.nodesInfo );
+                self.onResize ( window.innerWidth,window.innerHeight );
+              },10);
             } else  {
               localCommand ( nc_command.getNCInfo,{},'NC Info Request',
                 function(response){
@@ -302,8 +318,10 @@ AdminPage.prototype.refresh = function()  {
                         'Unknown error: <b>' + response.status + '</b><p>' +
                         'when trying to fetch Client NC data.', 'msg_error' );
                   }
-                  self.makeNodesInfoTab ( data.nodesInfo );
-                  self.onResize ( window.innerWidth,window.innerHeight );
+                  window.setTimeout ( function(){
+                    self.makeNodesInfoTab ( data.nodesInfo );
+                    self.onResize ( window.innerWidth,window.innerHeight );
+                  },0);
                   return (response!=null);
                 });
             }
@@ -764,7 +782,6 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
 }
-
 
 // -------------------------------------------------------------------------
 

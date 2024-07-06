@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportReplace Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -22,13 +22,14 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 var __migrate  = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
   __migrate  = require ( './common.tasks.migrate'  );
 }
-
 
 // ===========================================================================
 
@@ -59,10 +60,8 @@ function TaskImportReplace()  {
 }
 
 if (__migrate)
-      TaskImportReplace.prototype = Object.create ( __migrate.TaskMigrate.prototype );
-else  TaskImportReplace.prototype = Object.create ( TaskMigrate.prototype );
-TaskImportReplace.prototype.constructor = TaskImportReplace;
-
+  __cmd.registerClass ( 'TaskImportReplace',TaskImportReplace,__migrate.TaskMigrate.prototype );
+else    registerClass ( 'TaskImportReplace',TaskImportReplace,TaskMigrate.prototype );
 
 // ===========================================================================
 
@@ -116,7 +115,7 @@ if (!__template)  {
 
     TaskMigrate.prototype.collectInput.call ( this,inputPanel );
 
-    var msg = '';  // Ok if stays empty
+    let msg = '';  // Ok if stays empty
 
     if (this.file_hkl.length + this.file_mtz.length +
         this.file_xyz.length + this.file_lib.length <= 0)
@@ -129,7 +128,7 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskImportReplace.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -137,7 +136,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['ihkl'] = [revision.HKL];
       if (revision.Structure)
         this.input_data.data['istruct'] = [revision.Structure];

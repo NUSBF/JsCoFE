@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.11.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -21,13 +21,15 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-  var path  = require('path');
-  var fs    = require('fs-extra');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  __cmd      = require ( '../common.commands' );
+  var path   = require('path');
+  var fs     = require('fs-extra');
+  var conf   = require('../../js-server/server.configuration');
+  var utils  = require('../../js-server/server.utils');
 }
 
 
@@ -151,10 +153,8 @@ function TaskMrBump()  {
 }
 
 if (__template)
-      TaskMrBump.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMrBump.prototype = Object.create ( TaskTemplate.prototype );
-TaskMrBump.prototype.constructor = TaskMrBump;
-
+  __cmd.registerClass ( 'TaskMrBump',TaskMrBump,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMrBump',TaskMrBump,TaskTemplate.prototype );
 
 // ===========================================================================
 

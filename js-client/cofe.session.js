@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,14 +67,23 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         // __offline_message = 'on';  // show prompt "working offline"
 
-        // login ( '**' + __local_user_id + '**','',sceneId,0 );
+        document.title = appName() + ' Local';
 
-        makeLocalLoginPage ( sceneId );
+        if (__title_page)
+              makeLocalLoginPage ( sceneId );
+        else  login ( '**' + __local_user_id + '**','',sceneId,0 );
 
         //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
 
       } else  {
+
+        if (isElectronAPI())  {
+          if (__setup_desc && __setup_desc.name)
+                document.title = appName() + ' @ ' + __setup_desc.name;
+          else  document.title = appName() + ' @ ' + window.location.href;
+        } else
+          document.title = appName();
 
         if (dev_switch==0)  {
 
@@ -176,6 +185,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   serverCommand ( fe_command.login,ud,'Login',function(response){
 
+    stopSessionChecks();
+
     switch (response.status)  {
 
       case fe_retcode.ok:
@@ -200,6 +211,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               bindToBrowserColorMode ( true ); 
               __user_role          = userData.role;
               __user_licence       = userData.licence;
+              __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 
@@ -367,8 +379,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
       case fe_retcode.wrongLogin:
                 new MessageBox ( 'Login',
-                  '<b>Login data cannot be recognised.</b><p>' +
-                  'Please check that provided login name and password are ' +
+                  '<h2>Login data is not recognised</h2>' +
+                  'Please check that provided login name and<br>password are ' +
                   'correct.', 'msg_excl_yellow' );
           return true;
 

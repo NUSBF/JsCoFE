@@ -13,7 +13,11 @@
     // store user catalogs inside their data directories
     "catalogs_with_data": false,
     // amount of disk space to try keep free - older data not in use will be pruned
-    "data_free_gb": 100
+    "data_free_gb": 100,
+    // maximum age in days to keep data (0 to never remove)
+    "data_max_days": 60,
+    // how often to prune data in minutes
+    "data_prune_mins": 30
   },
   // data source configuration
   "data_sources": {

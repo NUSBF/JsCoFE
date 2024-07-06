@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.05.24   <--  Date of Last Modification.
+ *    29.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -288,6 +288,8 @@ JobTree.prototype.readProjectData = function ( page_title,
       if (startmode)
         tree.projectData.desc.startmode = startmode;
 
+                // tree.projectData.desc.autorun = true;
+
       let author = '';
       if (author!=__login_id)
         author = getProjectAuthor ( tree.projectData.desc );
@@ -324,7 +326,7 @@ JobTree.prototype.readProjectData = function ( page_title,
             if ((tree.task_map[key].state==job_code.running) ||
                 (tree.task_map[key].state==job_code.ending)  ||
                 (tree.task_map[key].state==job_code.exiting))  {
-              tree.run_map [dataId] = key;
+              tree.run_map[dataId] = key;
               if (tree.task_map[key].autoRunId)  // workflow working
                 tree.projectData.desc.autorun = true;
               tree.setNodeName ( key,false );
@@ -1235,7 +1237,8 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   } else  {
 
-    let newtask = eval ( 'new ' + task.task_chain[0] + '()' );
+    // let newtask = eval ( 'new ' + task.task_chain[0] + '()' );
+    let newtask = makeNewInstance ( task.task_chain[0] );
     if (task.task_chain.length>1)  {
       newtask.task_chain = [];
       for (let i=1;i<task.task_chain.length;i++)
@@ -2008,7 +2011,7 @@ JobTree.prototype.isShared = function()  {
 JobTree.prototype.copyJobToClipboard = function() {
 let crTask = this.getSelectedTask();
   if (crTask)  {
-    let reftask = eval ( 'new ' + crTask._type + '()' );
+    let reftask = makeNewInstance ( crTask._type );
     if (crTask.version<reftask.currentVersion())  {
       new MessageBox ( 'Cannot copy',
         '<h2>This job cannot be copied.</h2>' +
@@ -2027,7 +2030,8 @@ let crTask = this.getSelectedTask();
 
 JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
   if (__clipboard.task)  {
-    let task = eval ( 'new ' + __clipboard.task._type + '()' );
+    // let task = eval ( 'new ' + __clipboard.task._type + '()' );
+    let task = makeNewInstance ( __clipboard.task._type );
     task.uname      = __clipboard.task.uname;
     task.uoname     = __clipboard.task.uoname;
     task.parameters = $.extend ( true,{},__clipboard.task.parameters );
@@ -2052,7 +2056,8 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     let task0  = this.task_map[nodeId];
 
     // create an instance of selected task with default parameters
-    let task   = eval ( 'new ' + task0._type + '()' );
+    // let task   = eval ( 'new ' + task0._type + '()' );
+    let task   = makeNewInstance ( task0._type );
 
     if (task0.version<task.currentVersion())  {
 
@@ -2364,7 +2369,8 @@ let task = this.getTask ( jobId );
 
     } else  {
 
-      td0 = $.extend ( true,eval('new ' + dataType + '()'),td0 );
+      // td0 = $.extend ( true,eval('new ' + dataType + '()'),td0 );
+      td0 = $.extend ( true,makeNewInstance(dataType),td0 );
       td0.inspectData ( task );
 
     }
@@ -2458,7 +2464,8 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         this.projectData.desc.jobCount = Math.max (
                                   this.projectData.desc.jobCount,ref_task.id );
 
-        let replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
+        // let replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
+        let replay_task     = $.extend ( makeNewInstance(ref_task._type),ref_task );
         replay_task.state   = job_code.new;
         replay_task.project = this.projectData.desc.name;
         let replay_node     = this.addNode ( replay_node_list[i],ref_node.text,
@@ -2483,7 +2490,7 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
             replay_task.state = job_code.running;
             let data  = {};
             data.meta = replay_task;
-            data.ancestors = [];  // used only for knowledge facility, ignored here
+            data.ancestors = [];  // used only for knowledge framework, ignored here
             serverRequest ( fe_reqtype.replayJob,data,replay_task.title,
               function(rdata){},  //callback_ok
               null,null

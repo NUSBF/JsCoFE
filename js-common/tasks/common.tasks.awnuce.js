@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -50,12 +53,9 @@ function TaskAWNuce()  {
 
 }
 
-
 if (__template)
-      TaskAWNuce.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAWNuce.prototype = Object.create ( TaskTemplate.prototype );
-TaskAWNuce.prototype.constructor = TaskAWNuce;
-
+  __cmd.registerClass ( 'TaskAWNuce',TaskAWNuce,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskAWNuce',TaskAWNuce,TaskTemplate.prototype );
 
 // ===========================================================================
 

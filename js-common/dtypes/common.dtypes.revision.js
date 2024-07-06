@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -46,8 +49,8 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataRevision()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type          = 'DataRevision';
   this.leadKey        = 0;      // data lead key: 0: undefined, 1: coordinates, 2: phases
@@ -82,11 +85,14 @@ function DataRevision()  {
 
 }
 
-if (__template)
-      DataRevision.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataRevision.prototype = Object.create ( DataTemplate.prototype );
-DataRevision.prototype.constructor = DataRevision;
+// if (__template_d)
+//       DataRevision.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataRevision.prototype = Object.create ( DataTemplate.prototype );
+// DataRevision.prototype.constructor = DataRevision;
 
+if (__template_d)
+  __cmd.registerClass ( 'DataRevision',DataRevision,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataRevision',DataRevision,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -97,8 +103,8 @@ DataRevision.prototype.icon  = function()  { return 'data_xrayimages';    }
 // constructors
 DataRevision.prototype.currentVersion = function()  {
   let version = 5;  // advanced on Substructure inclusion
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -120,9 +126,14 @@ DataRevision.prototype.makeSample = function()  {
 }
 
 
+DataRevision.prototype.hasLigands = function()  {
+  return (this.subtype.indexOf('ligands')>=0);
+}
+
+
 // export such that it could be used in both node and a browser
 
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
 

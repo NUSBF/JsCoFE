@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,7 +66,7 @@ const conf    = require('./server.configuration');
 const utils   = require('./server.utils');
 const prj     = require('./server.fe.projects');
 const ration  = require('./server.fe.ration');
-const fcl     = require('./server.fe.facilities');
+const storage = require('./server.fe.storage');
 const adm     = require('./server.fe.admin');
 const anl     = require('./server.fe.analytics');
 const ud      = require('../js-common/common.data_user');
@@ -638,7 +638,7 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         rData.userData        = uData;
         rData.localSetup      = conf.isLocalSetup();
         rData.isArchive       = conf.isArchive();
-        rData.cloud_storage   = (fcl.getUserCloudMounts(uData).length>0);
+        rData.cloud_storage   = (storage.getUserCloudMounts(uData).length>0);
         rData.strict_dormancy = fe_server.dormancy_control.strict;
         rData.treat_private   = fe_server.treat_private;
         rData.jobs_safe       = (fe_server.getJobsSafePath().length>0);
@@ -1795,9 +1795,13 @@ function getInfo ( inData,callback_func )  {
       } else  {
         rData.helpTopics = [];
       }
-      rData.cloud_storage = (fcl.getUserCloudMounts(loginData).length>0);
+      rData.cloud_storage = (storage.getUserCloudMounts(loginData).length>0);
     }
     rData.localSetup = conf.isLocalSetup();
+    rData.titlePage  = true;
+    let desktop      = conf.getDesktopConfig()
+    if (desktop && ('titlePage' in desktop))
+      rData.titlePage = desktop.titlePage;
     rData.isArchive  = conf.isArchive   ();
     rData.regMode    = conf.getRegMode  ();
     if (fe_server.hasOwnProperty('description'))

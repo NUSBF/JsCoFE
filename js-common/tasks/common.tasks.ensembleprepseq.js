@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -22,10 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -38,7 +40,6 @@ function TaskEnsemblePrepSeq()  {
   this.name    = 'ensemble preparation (seq)';
   this.setOName ( 'ensemble' );  // default output file name template
   this.title   = 'Prepare MR Ensemble from Sequence';
-  //this.helpURL = './html/jscofe_task_ensembleprepseq.html';
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataSequence':['protein']}, // data type(s) and subtype(s)
@@ -103,10 +104,8 @@ function TaskEnsemblePrepSeq()  {
 }
 
 if (__template)
-      TaskEnsemblePrepSeq.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskEnsemblePrepSeq.prototype = Object.create ( TaskTemplate.prototype );
-TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
-
+  __cmd.registerClass ( 'TaskEnsemblePrepSeq',TaskEnsemblePrepSeq,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskEnsemblePrepSeq',TaskEnsemblePrepSeq,TaskTemplate.prototype );
 
 // ===========================================================================
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    04.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Functions for communication with local (on-client)
  *       ~~~~~~~~~  number cruncher
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -60,7 +60,7 @@ function checkLocalService ( callback_func )  {
   function probeClient ( attemptCount,callback )  {
     localCommand ( nc_command.countBrowser,{},'Advance Browser Count',
       function(response){
-        var count = attemptCount-1;
+        let count = attemptCount-1;
         if (!response)  {
           if (count<=0)  {
             setLocalService ( null );
@@ -96,7 +96,7 @@ function checkLocalService ( callback_func )  {
   function getServerInfo()  {
     serverCommand ( fe_command.getInfo,{},'getInfo',function(response){
       if (response.status==fe_retcode.ok)  {
-        var rData = response.data;
+        let rData = response.data;
         __exclude_tasks   = rData.exclude_tasks;
         __licensed_tasks  = rData.licensed_tasks;
         __cloud_storage   = rData.cloud_storage;
@@ -107,6 +107,7 @@ function checkLocalService ( callback_func )  {
         __demo_projects   = rData.demo_projects;
         __auth_software   = rData.auth_software;
         __local_setup     = rData.localSetup;
+        __title_page      = rData.titlePage;
         __is_archive      = rData.isArchive;
         __regMode         = rData.regMode;
         __setup_desc      = rData.setup_desc;
@@ -148,14 +149,14 @@ function checkLocalService ( callback_func )  {
     },null,null);
   }
 
-  var n = window.location.search.indexOf ( 'lsp=' );
-  var ls_protocol = 'http';
+  let n = window.location.search.indexOf ( 'lsp=' );
+  let ls_protocol = 'http';
   if (n<0)  {
     n = window.location.search.indexOf ( 'lsps=' ) + 1;
     ls_protocol = 'https';
   }
   if (n>=1)  {
-    var port = window.location.search.substring ( n+4 );
+    let port = window.location.search.substring ( n+4 );
     if (startsWith(port,'http'))  // full specification of local service given
           setLocalService ( port );
     else  setLocalService ( ls_protocol + '://' + localhost_name + ':' + port );
@@ -176,7 +177,7 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
 
   if (__local_service)  {
 
-    var data_obj = {};
+    let data_obj = {};
     data_obj.base_url = base_url;
     data_obj.command  = command;
     data_obj.data     = data;
@@ -197,7 +198,7 @@ function ls_RVAPIAppButtonClicked ( base_url,command,data )  {
       });
 
   } else if (command=='{viewhkl}')  {
-    var pos = base_url.indexOf ( __special_url_tag );
+    let pos = base_url.indexOf ( __special_url_tag );
     window.setTimeout ( function(){
       startViewHKL ( data.split('/').pop(),base_url.substr(pos)+'/'+data,window.parent );
     },10);

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -417,12 +420,9 @@ function TaskMolrep()  {
 
 }
 
-
 if (__template)
-      TaskMolrep.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMolrep.prototype = Object.create ( TaskTemplate.prototype );
-TaskMolrep.prototype.constructor = TaskMolrep;
-
+  __cmd.registerClass ( 'TaskMolrep',TaskMolrep,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMolrep',TaskMolrep,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -491,6 +491,8 @@ if (!__template)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       if (revision.Structure)  {
+        if (revision.subtype.indexOf('ligands')>=0)
+          this.input_data.data['ligands'] = [revision.Structure];
         if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
         // if (revision.Structure.subtype.indexOf(sdtype.structure_subtype.XYZ)>=0)

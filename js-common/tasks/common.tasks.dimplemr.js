@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -37,7 +40,6 @@ function TaskDimpleMR()  {
   this.name    = 'dimple-MR';
   this.setOName ( 'dimple_mr' );  // default output file name template
   this.title   = 'Dimple Molecular Replacement';
-  //this.helpURL = './html/jscofe_task_dimple.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataHKL':[]},  // data type(s) and subtype(s)
@@ -220,12 +222,9 @@ function TaskDimpleMR()  {
 
 }
 
-
 if (__template)
-      TaskDimpleMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDimpleMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskDimpleMR.prototype.constructor = TaskDimpleMR;
-
+  __cmd.registerClass ( 'TaskDimpleMR',TaskDimpleMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskDimpleMR',TaskDimpleMR,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser

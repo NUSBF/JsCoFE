@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.04.24   <--  Date of Last Modification.
+ *    12.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -151,9 +151,10 @@ function LocalLoginPage ( sceneId )  {
 
 }
 
-LocalLoginPage.prototype = Object.create ( BasePage.prototype );
-LocalLoginPage.prototype.constructor = LocalLoginPage;
+// LocalLoginPage.prototype = Object.create ( BasePage.prototype );
+// LocalLoginPage.prototype.constructor = LocalLoginPage;
 
+registerClass ( 'LocalLoginPage',LocalLoginPage,BasePage.prototype );
 
 function makeLocalLoginPage ( sceneId )  {
   makePage ( function() { new LocalLoginPage(sceneId); } );

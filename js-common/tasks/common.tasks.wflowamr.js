@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.12.23   <--  Date of Last Modification.
+ *    29.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Automatic MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -22,11 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -133,10 +134,8 @@ function TaskWFlowAMR()  {
 }
 
 if (__template)
-      TaskWFlowAMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowAMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowAMR.prototype.constructor = TaskWFlowAMR;
-
+  __cmd.registerClass ( 'TaskWFlowAMR',TaskWFlowAMR,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowAMR',TaskWFlowAMR,TaskTemplate.prototype );
 
 // ===========================================================================
 
@@ -157,7 +156,7 @@ TaskWFlowAMR.prototype.desc_title     = function()  {
 //TaskWFlowAMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWFlowAMR.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -188,7 +187,7 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskWFlowAMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.wflow_amr', jobManager, jobDir, this.id];

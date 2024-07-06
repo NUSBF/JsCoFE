@@ -1,11 +1,11 @@
 //
 //  =================================================================
 //
-//    06.04.24   <--  Date of Last Modification.
+//    26.05.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
-//  **** Module  :  jsrview.graph.js  <interface>
+//  **** Module  :  cofe.tree_job.js  <interface>
 //       ~~~~~~~~~
 //  **** Project :  HTML5-based presentation system
 //       ~~~~~~~~~
@@ -727,20 +727,21 @@ function addLogGraph ( gwdId,holderId, treeData,
     processFile ( treeData,"post",true,
       function(data)  {
         // console.log ( "treeData=\""+ treeData+"\"" );
-        // let pp = data.indexOf("<");
+        let pp = data.indexOf("<");
         // console.log ( " pp=" + pp);
-        // if (pp>0)
-        //   console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"");
-        // dataArray = eval (
-        //   "(" +
-        //   data.replace(new RegExp('<>','g'),"") +
-        //   ")"
-        // );
+        if (pp>=0)
+          console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"" );
         dataArray = eval (
-          "("  +
-          data +
+          "(" +
+          data.replace(new RegExp('<>','g'),"") +
           ")"
         );
+        // console.log ( ' >>>> data ');
+        // dataArray = eval (
+        //   "("  +
+        //   data +
+        //   ")"
+        // );
         _add_log_graph ( gwdId,holderId, dataArray,
                          row,col,rowSpan,colSpan );
       },

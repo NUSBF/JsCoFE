@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,23 +22,29 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
 function TaskNautilus()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    __template.TaskTemplate.call ( this );
+    this.state = __template.job_code.retired;  // do not include in task lists
+  } else  {
+    TaskTemplate.call ( this );
+    this.state = job_code.retired;  // do not include in task lists
+  }
 
   this._type   = 'TaskNautilus';
   this.name    = 'nautilus';
   this.setOName ( 'nautilus' );  // default output file name template
   this.title   = 'Automatic Model Building of RNA/DNA with Nautilus';
-  // this.helpURL = './html/jscofe_task_nautilus.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':[['rna','dna'],'!asu','!phases','~mmcif_only']}, // data type(s) and subtype(s)
@@ -152,12 +158,9 @@ function TaskNautilus()  {
 
 }
 
-
 if (__template)
-      TaskNautilus.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskNautilus.prototype = Object.create ( TaskTemplate.prototype );
-TaskNautilus.prototype.constructor = TaskNautilus;
-
+  __cmd.registerClass ( 'TaskNautilus',TaskNautilus,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskNautilus',TaskNautilus,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -166,7 +169,7 @@ TaskNautilus.prototype.icon           = function()  { return 'task_nautilus'; }
 TaskNautilus.prototype.clipboard_name = function()  { return '"Nautilus"';    }
 
 TaskNautilus.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -190,7 +193,7 @@ TaskNautilus.prototype.hotButtons = function() {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskNautilus.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -198,7 +201,7 @@ if (__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.Options.leading_structure=='substructure')  {

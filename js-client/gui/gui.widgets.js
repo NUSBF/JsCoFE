@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1042,7 +1042,7 @@ function InputText(text) {
 InputText.prototype = Object.create(Widget.prototype);
 InputText.prototype.constructor = InputText;
 
-InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip ) {
+InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, autocomplete=null ) {
   if (placeholder) this.element.setAttribute('placeholder', placeholder);
   if (tooltip) this.setTooltip(tooltip);
   if (type) this.element.setAttribute('type', type);
@@ -1056,6 +1056,7 @@ InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip ) {
       //this.element.pattern = pattern;
       this.element.setAttribute ( 'pattern',pattern );
   }
+  if (autocomplete) this.element.setAttribute ( 'autocomplete',autocomplete );
   return this;
 }
 
@@ -1437,16 +1438,24 @@ ImageButton.prototype.setImage = function (icon_uri) {
   this.image.setImage(icon_uri);
 }
 
-function unsetDefaultButton ( button, context_widget ) {
-  button.element.style.fontWeight = 'normal';
-  $(context_widget.element).off('keydown');
+
+var __default_button = null;
+
+function unsetDefaultButton() {
+  if (__default_button)  {
+    __default_button.button.element.style.fontWeight = 'normal';
+    $(__default_button.context_widget.element).off('keydown');
+    __default_button = null;
+  }
 }
 
 function setDefaultButton ( button, context_widget )  {
+  unsetDefaultButton();
+  __default_button = { button : button, context_widget : context_widget };
   button.element.style.fontWeight = 'bold';
   $(context_widget.element).keydown(function (e) {
     if (e.key == "Enter") {
-      unsetDefaultButton ( button,context_widget );
+      // unsetDefaultButton();
       // handle click logic here
       button.click();
       e.preventDefault();
@@ -1454,6 +1463,25 @@ function setDefaultButton ( button, context_widget )  {
     }
   });
 }
+
+
+// function unsetDefaultButton ( button, context_widget ) {
+//   button.element.style.fontWeight = 'normal';
+//   $(context_widget.element).off('keydown');
+// }
+
+// function setDefaultButton ( button, context_widget )  {
+//   button.element.style.fontWeight = 'bold';
+//   $(context_widget.element).keydown(function (e) {
+//     if (e.key == "Enter") {
+//       unsetDefaultButton ( button,context_widget );
+//       // handle click logic here
+//       button.click();
+//       e.preventDefault();
+//       return true;
+//     }
+//   });
+// }
 
 
 // -------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.19   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Library Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -34,18 +37,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function DataLibrary()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type = 'DataLibrary';
   this.codes = [];  // contains ligand codes
 
 }
 
-if (__template)
-      DataLibrary.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataLibrary.prototype = Object.create ( DataTemplate.prototype );
-DataLibrary.prototype.constructor = DataLibrary;
+// if (__template_d)
+//       DataLibrary.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataLibrary.prototype = Object.create ( DataTemplate.prototype );
+// DataLibrary.prototype.constructor = DataLibrary;
+
+if (__template_d)
+  __cmd.registerClass ( 'DataLibrary',DataLibrary,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataLibrary',DataLibrary,DataTemplate.prototype );
 
 
 // ===========================================================================
@@ -56,19 +63,19 @@ DataLibrary.prototype.icon  = function()  { return 'data';           }
 // when data class version is changed here, change it also in python
 // constructors
 DataLibrary.prototype.currentVersion = function()  {
-  var version = 0;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  let version = 0;
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataLibrary.prototype.makeDataSummaryPage = function ( task )  {
-    var dsp = new DataSummaryPage ( this );
+    let dsp = new DataSummaryPage ( this );
     dsp.makeRow ( 'File name',this.files[file_key.lib],'Imported or generated file name' );
     return dsp;
   }

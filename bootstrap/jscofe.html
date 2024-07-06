@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    15.05.24   <..  Date of Last Modification.
+ *    23.06.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -44,7 +44,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <title>CCP4 Cloud</title>
+  <!-- <title>CCP4 Cloud</title> -->
 
   <link rel="shortcut icon" href="favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="js-lib/jquery-ui/jquery-ui.min.css"/>
@@ -62,20 +62,20 @@
   <link rel="stylesheet" type="text/css" href="css/gui/gui.widgets.css"/>
   <link rel="stylesheet" type="text/css" href="css/cofe.upload.css"/>
 
+  <script type="text/javascript" src="js-lib/jquery/jquery-3.7.1.min.js"></script>
   <script type="text/javascript" src="js-lib/ace/ace.js"></script>
   <script type="text/javascript" src="js-lib/ace/mode-python.js"></script>
   <script type="text/javascript" src="js-lib/ace/theme-chrome.js"></script>
-  <script type="text/javascript" src="js-lib/jquery/jquery-3.7.1.min.js"></script>
   <script type="text/javascript" src="js-lib/jquery-ui/jquery-ui.min.js"></script>
   <script type="text/javascript" src="js-lib/jsrview/tablesorter/jquery.tablesorter.js"></script>
   <script type="text/javascript" src="js-lib/jsrview/js/jsrview.viewer.js"></script>
   <script type="text/javascript" src="js-lib/jstree/jstree.min.js"></script>
   <script type="text/javascript" src="js-lib/ui-ext/jquery.dialogextend.min.js"></script>
 
+  <script type="text/javascript" src="js-common/common.commands.js"></script>
   <script type="text/javascript" src="js-common/common.data_user.js"></script>
   <script type="text/javascript" src="js-common/common.data_project.js"></script>
-  <script type="text/javascript" src="js-common/common.data_facility.js"></script>
-  <script type="text/javascript" src="js-common/common.commands.js"></script>
+  <script type="text/javascript" src="js-common/common.data_storage.js"></script>
   <script type="text/javascript" src="js-common/common.knowledge.js"></script>
   <script type="text/javascript" src="js-common/common.utils.js"></script>
   <script type="text/javascript" src="js-common/common.xutils.js"></script>
@@ -91,7 +91,9 @@
   <script type="text/javascript" src="js-client/gui/gui.tree.js"></script>
   <script type="text/javascript" src="js-client/gui/gui.dialogs.js"></script>
 
+  <script type="text/javascript" src="js-client/cofe.electron_links.js"></script>
   <script type="text/javascript" src="js-client/cofe.local_service.js"></script>
+  <script type="text/javascript" src="js-client/cofe.browser_cloud_storage.js"></script>
   <script type="text/javascript" src="js-client/cofe.browser_folders.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_access_archive.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_add_project.js"></script>
@@ -120,7 +122,6 @@
   <script type="text/javascript" src="js-client/cofe.dialog_taskdata.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_tasklist.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialog_workteam.js"></script>
-  <script type="text/javascript" src="js-client/cofe.dialogs_facility.js"></script>
   <script type="text/javascript" src="js-client/cofe.dialogs.js"></script>
   <script type="text/javascript" src="js-client/cofe.dock.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_base.js"></script>
@@ -134,8 +135,8 @@
   <script type="text/javascript" src="js-client/cofe.page_project.js"></script>
   <script type="text/javascript" src="js-client/cofe.page_register.js"></script>
   <script type="text/javascript" src="js-client/cofe.session.js"></script>
-  <script type="text/javascript" src="js-client/cofe.tree_facilities.js"></script>
   <script type="text/javascript" src="js-client/cofe.tree_job.js"></script>
+  <script type="text/javascript" src="js-client/cofe.tree_storage.js"></script>
   <script type="text/javascript" src="js-client/cofe.upload.js"></script>
   <script type="text/javascript" src="js-client/cofe.viewers.js"></script>
 
@@ -208,7 +209,6 @@
   <script type="text/javascript" src="js-common/tasks/common.tasks.ensembleprepxyz.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.ensembler.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.exportmaps.js"></script>
-  <script type="text/javascript" src="js-common/tasks/common.tasks.facilityimport.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.fetchdata.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.findmysequence.js"></script>
   <script type="text/javascript" src="js-common/tasks/common.tasks.fitligand.js"></script>
@@ -293,37 +293,29 @@
   <script type="text/javascript" src="js-common/tasks/common.tasks.helloworld.js"></script>
   <!-- ~~~~~~~~~~~~~~~~~~~~ -->
 
+  <script type="text/javascript" src="js-client/cofe.load_page.js"></script>
+
 </head>
 
 <body class="main-page">
 
   <noscript>You need to enable JavaScript to run this app.</noscript>
 
-  <!-- <div id='scene' style="width:100%;font-size:16px;"></div>  -->
-  <!-- <div id='scene' class="main-page"></div> -->
-  <!-- <div id='scene'></div> now in BasePage class -->
+  <!-- <script> 
+    document.body.style.cursor = "wait";
+  </script>  -->
 
-  <script>
-    // now in main-page css
-    // document.body.style.fontSize = '16px';   // this is necessary for jquery
-    //                                          // dialogs to have correct layout
-    //                                          // despite explicit sizing set in
-    //                                          // main-page CSS class; it is
-    //                                          // unclear why
-    // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
-    //$(window).on ( 'load', function(){
-    $(document).ready ( function(){
-      // setDarkMode ( isDarkMode() );
-      bindToBrowserColorMode();
-      //console.log ( '   ready=' + document.readyState );
-      /*
-      alert ( window.location.search );
-      window.history.replaceState({}, document.title, "/" );
-      */
-      let dev_switch = 0; //3;
-      startSession ( 'scene',dev_switch );
-    });
-  </script>
+  <!-- <div class="main-page main-scene login-scene" 
+       style="height:100vh;text-align:center;vertical-align:center;">
+    <p style="line-height:35vh;">&nbsp;</p>
+    <i style="font-size:250%;color:dodgerblue"><b>CCP4 Cloud is loading<br>
+       <span style="font-size:75%;">please wait...</span></b></i>
+  </div> -->
+
+  <!-- <div style="height:100vh;text-align:center;vertical-align:center;background-color:rgb(243, 250, 255);">
+    <p style="line-height:35vh;">&nbsp;</p>
+    <i style="font-size:125%;color:rgb(160,160,160)"><b>CCP4 Cloud is loading ...</b></i>
+  </div> -->
 
 </body>
 
