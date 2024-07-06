@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Migration Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -28,7 +28,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
   __cmd      = require ( '../common.commands' );
 }
-
 
 // ===========================================================================
 
@@ -68,10 +67,8 @@ function TaskMigrate()  {
 }
 
 if (__template)
-      TaskMigrate.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskMigrate.prototype = Object.create ( TaskTemplate.prototype );
-TaskMigrate.prototype.constructor = TaskMigrate;
-
+  __cmd.registerClass ( 'TaskMigrate',TaskMigrate,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskMigrate',TaskMigrate,TaskTemplate.prototype );
 
 // ===========================================================================
 
@@ -96,7 +93,7 @@ TaskMigrate.prototype.taskDescription = function()  {
 //TaskMigrate.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskMigrate.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -138,10 +135,10 @@ if (!__template)  {
   TaskMigrate.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
-  var nSeqInputs = 1;
-  var self = this;
+  let nSeqInputs = 1;
+  let self = this;
 
-    var div = this.makeInputLayout();
+    let div = this.makeInputLayout();
 
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
@@ -158,8 +155,8 @@ if (!__template)  {
     div.file_system  = this.file_system;   //  local/cloud
     div.upload_files = [];
 
-    var row   = div.grid.getNRows();
-    var title = '';
+    let row   = div.grid.getNRows();
+    let title = '';
     if (row==0)  title = '<h2>Input Data</h2>';
            else  title = '&nbsp;<br><h3>Data to import and replace in revision</h3>';
     div.grid.setLabel ( title,row++,0,1,5 ).setFontItalic(true).setNoWrap();
@@ -168,24 +165,24 @@ if (!__template)  {
     row = 0;
 
     function setLabel ( rowNo,text,tooltip )  {
-      var lbl = div.grid1.setLabel ( text,rowNo,0,1,1 ).setTooltip(tooltip)
+      let lbl = div.grid1.setLabel ( text,rowNo,0,1,1 ).setTooltip(tooltip)
                          .setFontItalic(true).setFontBold(true).setNoWrap();
       div.grid1.setVerticalAlignment ( rowNo,0,'middle' );
       return lbl;
     }
 
     function setFileSelect ( rowNo,label,tooltip,accept_str,fname )  {
-      var lbl  = setLabel ( rowNo,label,tooltip );
-      var fsel = div.grid1.setSelectFile ( false,accept_str,rowNo,2,1,1 );
+      let lbl  = setLabel ( rowNo,label,tooltip );
+      let fsel = div.grid1.setSelectFile ( false,accept_str,rowNo,2,1,1 );
       fsel.hide();
-      var btn  = div.grid1.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
+      let btn  = div.grid1.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
 //                          .setWidth_px ( 86 );
-      var filename = fname;
+      let filename = fname;
       if ((self.state==job_code.new) && (div.file_system=='local'))
         filename = '';
 
       div.grid1.setLabel ( '&nbsp;',rowNo,1,1,1 ).setNoWrap();
-      var itext = div.grid1.setInputText ( filename,rowNo,3,1,2 )
+      let itext = div.grid1.setInputText ( filename,rowNo,3,1,2 )
                            .setWidth_px(400).setReadOnly(true).setNoWrap();
       div.grid1.setVerticalAlignment ( rowNo,2,'middle' );
       div.grid1.setVerticalAlignment ( rowNo,3,'middle' );
@@ -199,8 +196,8 @@ if (!__template)  {
               // The next line is necessary for annotating just this upload.
               // If sequences also need to be uploaded. file_mod should be cleared
               // the 'annotation' field when seq file is being uploaded
-              var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
-              var fname = 'cloudstorage::/' + div.task.currentCloudPath + '/' + items[0].name;
+              let file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+              let fname = 'cloudstorage::/' + div.task.currentCloudPath + '/' + items[0].name;
               if (fname.toLowerCase().endsWith('.sca'))  {
                 _import_checkFiles ( items,file_mod,div.upload_files,function(){
                   if ('scalepack' in file_mod)
@@ -215,12 +212,12 @@ if (!__template)  {
         }
       });
       fsel.addOnChangeListener ( function(){
-        var files = fsel.getFiles();
+        let files = fsel.getFiles();
         if (files.length>0)  {
           // The next line is necessary for annotating just this upload.
           // If sequences also need to be uploaded. file_mod should be cleared
           // the 'annotation' field when seq file is being uploaded
-          var file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
+          let file_mod = {'rename':{},'annotation':[]}; // file modification and annotation
           if (files[0].name.toLowerCase().endsWith('.sca'))  {
             _import_checkFiles ( files,file_mod,div.upload_files,function(){
               if ('scalepack' in file_mod)
@@ -284,8 +281,8 @@ if (!__template)  {
 
     this.layParameters ( div.grid,div.grid.getNRows()+1,0 );
 
-    var ncols = div.grid1.getNCols();
-    for (var i=1;i<ncols;i++)  {
+    let ncols = div.grid1.getNCols();
+    for (let i=1;i<ncols;i++)  {
       div.grid1.setLabel    ( ' ',row,i,1,1   ).setHeight_px(8);
       div.grid1.setCellSize ( 'auto','',row,i );
     }
@@ -311,7 +308,7 @@ if (!__template)  {
   TaskMigrate.prototype.collectInput = function ( inputPanel )  {
     // collects data from input widgets, created in makeInputPanel() and
     // stores it in internal fields
-    var msg = '';  // Ok if stays empty
+    let msg = '';  // Ok if stays empty
 
     this.file_hkl = '';
     this.file_mtz = '';
@@ -319,10 +316,10 @@ if (!__template)  {
     this.file_lib = '';
 
     if (inputPanel.file_system=='local')  {
-      var file_hkl = inputPanel.select_hkl['fsel'].getFiles();
-      var file_mtz = inputPanel.select_mtz['fsel'].getFiles();
-      var file_xyz = inputPanel.select_xyz['fsel'].getFiles();
-      var file_lib = inputPanel.select_lib['fsel'].getFiles();
+      let file_hkl = inputPanel.select_hkl['fsel'].getFiles();
+      let file_mtz = inputPanel.select_mtz['fsel'].getFiles();
+      let file_xyz = inputPanel.select_xyz['fsel'].getFiles();
+      let file_lib = inputPanel.select_lib['fsel'].getFiles();
       if (file_hkl.length>0)  this.file_hkl = file_hkl[0].name;
       if (file_mtz.length>0)  this.file_mtz = file_mtz[0].name;
       if (file_xyz.length>0)  this.file_xyz = file_xyz[0].name;
@@ -353,10 +350,10 @@ if (!__template)  {
   // execute function given as argument, or issue an error message if run
   // should not be done.
   TaskMigrate.prototype.doRun = function ( inputPanel,run_func )  {
-  var file_hkl = '';
-  var file_mtz = '';
-  var file_xyz = '';
-  var file_lib = '';
+  let file_hkl = '';
+  let file_mtz = '';
+  let file_xyz = '';
+  let file_lib = '';
 
     this.file_system = inputPanel.file_system;
     this.file_mod    = inputPanel.file_mod;
@@ -382,7 +379,7 @@ if (!__template)  {
       new MessageBox ( 'Stop run','Task cannot be run as no data are<br>' +
                                   'given for upload' );
     } else if (inputPanel.file_system=='local')  {
-      var files = [];
+      let files = [];
       if (file_hkl.length>0)  files.push ( file_hkl );
       if (file_mtz.length>0)  files.push ( file_mtz );
       if (file_xyz.length>0)  files.push ( file_xyz );
@@ -411,13 +408,13 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var fs    = require('fs-extra');
-  var path  = require('path');
+  const fs      = require('fs-extra');
+  const path    = require('path');
 
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
-  var uh    = require('../../js-server/server.fe.upload_handler');
-  var fcl   = require('../../js-server/server.fe.facilities');
+  const conf    = require('../../js-server/server.configuration');
+  const utils   = require('../../js-server/server.utils');
+  const uh      = require('../../js-server/server.fe.upload_handler');
+  const storage = require('../../js-server/server.fe.storage');
 
   TaskMigrate.prototype.prepare_file = function ( fpath,cloudMounts,uploads_dir )  {
     if (fpath.length>0)  {
@@ -446,7 +443,7 @@ if (!__template)  {
   }
 
   TaskMigrate.prototype.makeInputData = function ( loginData,jobDir )  {
-    var uploads_dir = path.join ( jobDir,uh.uploadDir() );
+    let uploads_dir = path.join ( jobDir,uh.uploadDir() );
 
     if (!utils.writeObject(path.join(jobDir,'annotation.json'),this.file_mod))
       console.log ( ' ***** cannot write "annotation.json" in ' + uploads_dir );
@@ -456,18 +453,18 @@ if (!__template)  {
         console.log ( ' ***** cannot create directory ' + uploads_dir );
     }
 
-    var cloudMounts = fcl.getUserCloudMounts ( loginData );
+    let cloudMounts = storage.getUserCloudMounts ( loginData );
 
     this.prepare_file ( this.file_hkl,cloudMounts,uploads_dir );
     this.prepare_file ( this.file_mtz,cloudMounts,uploads_dir );
     this.prepare_file ( this.file_xyz,cloudMounts,uploads_dir );
     this.prepare_file ( this.file_lib,cloudMounts,uploads_dir );
 
-    for (var i=0;i<this.file_mod.annotation.length;i++)  {
+    for (let i=0;i<this.file_mod.annotation.length;i++)  {
       utils.removeFile ( path.join(uploads_dir,this.file_mod.annotation[i].file) );
       //redundant_files.push ( file_mod.annotation[i].file );
-      for (var j=0;j<this.file_mod.annotation[i].items.length;j++)  {
-        var fname = this.file_mod.annotation[i].items[j].rename;
+      for (let j=0;j<this.file_mod.annotation[i].items.length;j++)  {
+        let fname = this.file_mod.annotation[i].items[j].rename;
         utils.writeString ( path.join(uploads_dir,fname),
                             this.file_mod.annotation[i].items[j].contents );
         //fdata.files.push ( fname );

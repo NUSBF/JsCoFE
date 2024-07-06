@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    31.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -102,8 +102,10 @@ function LogoutPage ( sceneId,reason_key )  {
 
 }
 
-LogoutPage.prototype = Object.create ( BasePage.prototype );
-LogoutPage.prototype.constructor = LogoutPage;
+// LogoutPage.prototype = Object.create ( BasePage.prototype );
+// LogoutPage.prototype.constructor = LogoutPage;
+
+registerClass ( 'LogoutPage',LogoutPage,BasePage.prototype );
 
 
 function logout ( sceneId,reason_key,onLogout_func=null )  {
@@ -114,7 +116,11 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
 
-  if (__login_token && (reason_key!=3) && (reason_key!=10))  {
+  if (__local_user && isElectronAPI())  {
+
+    sendMessageToElectron ( 'stop' );
+
+  } else if (__login_token && (reason_key!=3) && (reason_key!=10))  {
 
     serverRequest ( fe_reqtype.logout,0,'Logout',
       function(data){},

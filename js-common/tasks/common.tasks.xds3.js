@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.03.24   <--  Date of Last Modification.
+ *    20.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -41,7 +44,7 @@ function TaskXDS3()  {
   this.xds_inp = '';
 
   this.input_dtypes = [];
-  this.parameters   = {}
+  this.parameters   = {};
     // XDS_INP : {
     //     type     : 'label',
     //     label    : '',
@@ -53,19 +56,18 @@ function TaskXDS3()  {
 }
 
 if (__template)
-      TaskXDS3.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskXDS3.prototype = Object.create ( TaskTemplate.prototype );
-TaskXDS3.prototype.constructor = TaskXDS3;
-
+  __cmd.registerClass ( 'TaskXDS3',TaskXDS3,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskXDS3',TaskXDS3,TaskTemplate.prototype );
 
 // ===========================================================================
 
-TaskXDS3.prototype.cleanJobDir    = function ( jobDir )  {}
+// TaskXDS3.prototype.cleanJobDir         = function ( jobDir )  {}
 
-TaskXDS3.prototype.icon           = function()  { return 'task_xds3'; }
-TaskXDS3.prototype.clipboard_name = function()  { return ''; }  // no copy-paste
+TaskXDS3.prototype.icon                = function()  { return 'task_xds3'; }
+TaskXDS3.prototype.clipboard_name      = function()  { return ''; }  // no copy-paste
+TaskXDS3.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home']; }
 
-TaskXDS3.prototype.desc_title     = function()  {
+TaskXDS3.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'image processing with XDS';
 }

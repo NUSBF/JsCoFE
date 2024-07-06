@@ -48,10 +48,11 @@ from  pycofe.tasks  import basic
 class DataLink:
 
     # initialise API url, user and cloudrun_id
-    def __init__(self, url, user, cloudrun_id):
+    def __init__(self, url, user, cloudrun_id, verify_cert):
         self.url = url + '/'
         self.user = user
         self.cloudrun_id = cloudrun_id
+        self.verify_cert = verify_cert
 
     # send a request to the Data Link API
     def api(self, method, endpoint, use_auth = True):
@@ -68,7 +69,7 @@ class DataLink:
         session.mount('https://', requests.adapters.HTTPAdapter(max_retries = retries))
 
         try:
-            res = session.request(method, url, headers = auth_headers)
+            res = session.request(method, url, headers = auth_headers, verify = self.verify_cert)
         except requests.exceptions.RequestException as e:
             return False, e
 
@@ -166,14 +167,16 @@ class FetchData(basic.TaskDriver):
 
         cloud_user  = None
         cloudrun_id = None
+        verify_cert = True
         with open("__fetch_meta.json","r") as f:
             fetch_meta = json.loads ( f.read() )
             cloud_user  = fetch_meta["login"]
             cloudrun_id = fetch_meta["cloudrun_id"]
             api_url = fetch_meta["api_url"]
             mount_name = fetch_meta["mount_name"]
+            verify_cert = fetch_meta["verify_cert"]
 
-        dl = DataLink(api_url, cloud_user, cloudrun_id)
+        dl = DataLink(api_url, cloud_user, cloudrun_id, verify_cert)
 
         # search the API for data source entries that match the PDB code
         res, search_info = dl.search(field, search)

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.04.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -20,6 +20,10 @@
  */
 
 'use strict'; // *client*
+
+var __cmd  = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __cmd  = require ( '../common.commands' );
 
 // ===========================================================================
 // Task classes MUST BE named as 'TaskSomething' AND put in file named
@@ -148,6 +152,9 @@ function TaskTemplate()  {
 
 }
 
+if (__cmd)
+  __cmd.registerClass ( 'TaskTemplate',TaskTemplate,null );
+else    registerClass ( 'TaskTemplate',TaskTemplate,null );
 
 // ===========================================================================
 
@@ -655,15 +662,14 @@ if (!dbx)  {
         return ['environment-server',
                 'task software is not installed',
                 '<h3>Task software is not installed</h3>' +
-                'Software, needed to run the task, is not available in ' +
-                appName() + ' setup, which you use.<br>Contact your software ' +
-                'maintainer for further details.'];
+                'Software, needed to run the task, is not installed on ' +
+                'your machine.'];
       else
         return ['environment-server',
                 'task software is not installed on ' + appName() + ' server',
                 '<h3>Task software is not installed on server</h3>' +
-                'Software, needed to run the task, is not installed on ' +
-                appName() + ' server, which you use.<br>Contact server ' +
+                'Software, needed for the task, is not installed on ' +
+                appName() + ' server.<br>Contact server ' +
                 'maintainer for further details.'];
     }
 
@@ -2068,8 +2074,6 @@ if (!dbx)  {
   let grid      = inpDataRef.grid;
   let dataState = {};
 
-// console.log ( ' data state eval ');
-
     for (let i=0;i<this.input_dtypes.length;i++)  {
       let inputId = this.input_dtypes[i].inputId;
       let item    = this.getInputItem ( inpDataRef,inputId );
@@ -3004,15 +3008,14 @@ if (!dbx)  {
 } else  {
   //  for server side
 
-  const fs    = require('fs-extra');
-  const path  = require('path');
+  const fs      = require('fs-extra');
+  const path    = require('path');
 
-  const utils = require('../../js-server/server.utils');
-  const prj   = require('../../js-server/server.fe.projects');
-  const conf  = require('../../js-server/server.configuration');
-  const uh    = require('../../js-server/server.fe.upload_handler');
-  const fcl   = require('../../js-server/server.fe.facilities');
-
+  const utils   = require('../../js-server/server.utils');
+  const prj     = require('../../js-server/server.fe.projects');
+  const conf    = require('../../js-server/server.configuration');
+  const uh      = require('../../js-server/server.fe.upload_handler');
+  const storage = require('../../js-server/server.fe.storage');
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
     this.oname = base_name;
@@ -3021,9 +3024,26 @@ if (!dbx)  {
   TaskTemplate.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,
   // that should be reported to a queuing system like SGE or SLURM, in
-  // case the task spawns threds or processes bypassing the queuing system.
+  // case the task spawns multiple threads or processing bypassing the
+  // queuing system, or is known to use multiple cores for other reasons.
   // It is expected that the task will not utilise more cores than what is
-  // given on input to this function.
+  // given on input to this function; not doing so may cause cluttering 
+  // of the CPU cluster with processes that queuing system is not aware of
+  // and, as a result, unbalanced and inefficient use of compute nodes.
+    return 1;
+  }
+
+  TaskTemplate.prototype.getNProcesses = function ( nproc_available )  {
+  // This function should return the number of processes, up to nproc_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task launches spawns multiple parallel threds or processes
+  // through the queueing system.
+  // The task may spawn more processes than this function returns, however,
+  // they will not be reserved by the queuing system and, therefore, their
+  // execution may be postponed. It is therefore recommended that, if task
+  // submits additional processes in the queue with master process acting as a
+  // watcher/dispatcher, this function returns at least 2 processes to be 
+  // reserved by the queue. Most tasks should not reimplement this function.
     return 1;
   }
 
@@ -3089,7 +3109,7 @@ if (!dbx)  {
           console.log ( ' ***** cannot create directory ' + uploads_dir );
       }
 
-      let cloudMounts = fcl.getUserCloudMounts ( loginData );
+      let cloudMounts = storage.getUserCloudMounts ( loginData );
 
       for (let i=0;i<this.file_select.length;i++)
           this.__prepare_file ( this.file_select[i].path,cloudMounts,uploads_dir );

@@ -238,9 +238,8 @@ class server {
     const app = express();
     app.use(API_PREFIX, router);
 
-    app.get(['/', '/api'], function(req,res) {
-      res.send(router.stack.map( r => r.route?.path ));
-    });
+    // static data
+    app.use(express.static('public'))
 
     app.use((req, res, next) => {
       this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));

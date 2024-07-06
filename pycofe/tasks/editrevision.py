@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    19.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -218,7 +218,7 @@ class EditRevision(asudef.ASUDef):
             if "xyz" in edit_list or "phases" in edit_list or "lig" in edit_list:
                 # redefine structure
 
-                if not xyz_fpath and not mtz_fpath:
+                if not xyz_fpath and not mtz_fpath and len(lig_codes)<=0:
 
                     self.putMessage  ( "<h3>Structure was removed</h3>" )
                     revision.removeStructure()
@@ -283,9 +283,16 @@ class EditRevision(asudef.ASUDef):
                         #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
                         #    structure.adjust_dname()
 
+                        wtitle = "Structure and electron density"
+                        if not xyz_fpath and not mtz_fpath:
+                            wtitle = "Structure (ligand(s) only)"
+                        elif not xyz_fpath:
+                            wtitle = "Structure (electron density)"
+                        else:
+                            wtitle = "Structure (coordinates)"
+
                         self.putStructureWidget ( self.getWidgetId("structure_btn_"),
-                                                  "Structure and electron density",
-                                                  structure )
+                                                  wtitle,structure )
                         revision.setStructureData ( structure )
                     else:
                         self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )

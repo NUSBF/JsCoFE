@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    09.03.24   <--  Date of Last Modification.
+ *    26.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -189,8 +189,8 @@ var _taskIndex = {
   // suggest FindMySequence after Simbad
   'f1'  : { type: 'TaskFindMySequence'     , after: ['G'] },
 
-  // do not suggest FacilityImport
-  'g'  : { type: 'TaskFacilityImport'     , after: [] },
+  // do not suggest FacilityImport (retired)
+  // 'g'  : { type: 'TaskFacilityImport'     , after: [] },
 
   // suggest Xia2 after root
   'h'  : { type: 'TaskXia2'               , after: ['0'] },
@@ -259,9 +259,9 @@ var _taskIndex = {
 
 
 function getTasksFromTaskIndex ( ckey )  {
-var tasks = [];
+let tasks = [];
 
-  for (var key in _taskIndex)
+  for (let key in _taskIndex)
     if (_taskIndex[key].after.indexOf(ckey)>=0)
       tasks.push ( _taskIndex[key].type );
 
@@ -279,7 +279,7 @@ var _revTaskIndex = null; // Reverse _taskIndex: _revTaskIndex[task_type] = key
 function getTaskKeyFromType ( task_type )  {
   if (!_revTaskIndex)  {
     _revTaskIndex = {};
-    for (var key in _taskIndex)
+    for (let key in _taskIndex)
       _revTaskIndex[_taskIndex[key].type] = key;
   }
   if (task_type in _revTaskIndex)
@@ -306,16 +306,16 @@ function addWfKnowledgeByTypes ( wfKnowledge, new_task_type, task_type_list )  {
   //   task_type_list[1] == key2
   //   task_type_list[2] == key1
 
-  var wfkey = '';
-  for (var i=0;i<3;i++)
+  let wfkey = '';
+  for (let i=0;i<3;i++)
     if (i<task_type_list.length)
           wfkey = getTaskKeyFromType(task_type_list[i]) + wfkey;
     else  wfkey = getTaskKeyFromType('Root') + wfkey;
 
   // set or advance the counter
 
-  var tkey = getTaskKeyFromType(new_task_type);
-  var knowledge = null;
+  let tkey = getTaskKeyFromType(new_task_type);
+  let knowledge = null;
 
   if (wfkey in wfKnowledge)  {
     knowledge = wfKnowledge[wfkey];
@@ -356,23 +356,23 @@ function addWfKnowledgeByTypes ( wfKnowledge, new_task_type, task_type_list )  {
   //  { tasks: [name1,name2,...],  counts: [c1,c2,...] }
 
 
-    var k1  =  getTaskKeyFromType ( task_type1 );
-    var k2  =  getTaskKeyFromType ( task_type2 );
-    var k3  =  getTaskKeyFromType ( task_type3 );
-    var wfkey = k1 + k2 + k3;
+    let k1  =  getTaskKeyFromType ( task_type1 );
+    let k2  =  getTaskKeyFromType ( task_type2 );
+    let k3  =  getTaskKeyFromType ( task_type3 );
+    let wfkey = k1 + k2 + k3;
 
-    var knowledge   = { counts: [] };
+    let knowledge   = { counts: [] };
     knowledge.tasks = getTasksFromTaskIndex ( k3 );
-    for (var i=0;i<knowledge.tasks.length;i++)
+    for (let i=0;i<knowledge.tasks.length;i++)
       knowledge.counts.push ( 1 );
 
     if (wfkey in _wfKnowledge)  {
-      var w = _wfKnowledge[wfkey];
-      for (var taskkey in w) {
+      let w = _wfKnowledge[wfkey];
+      for (let taskkey in w) {
         if (taskkey in _taskIndex)  {
-          var t = _taskIndex[taskkey].type;
+          let t = _taskIndex[taskkey].type;
           if (t!='Root')  {
-            var k = knowledge.tasks.indexOf ( t );
+            let k = knowledge.tasks.indexOf ( t );
             if (k>=0)
               knowledge.counts[k] += w[taskkey];
             else  {
@@ -389,9 +389,9 @@ function addWfKnowledgeByTypes ( wfKnowledge, new_task_type, task_type_list )  {
   }
 
   function getWfKnowledge ( task1, task2, task3 )  {
-  var type1 = '0';
-  var type2 = '0';
-  var type3 = '0';
+  let type1 = '0';
+  let type2 = '0';
+  let type3 = '0';
     if (task1)  type1 = task1._type;
     if (task2)  type2 = task2._type;
     if (task3)  type3 = task3._type;
@@ -408,8 +408,8 @@ function addWfKnowledgeByTypes ( wfKnowledge, new_task_type, task_type_list )  {
   }
 
   function addWfKnowledge ( new_task, task_list )  {
-  var task_type_list = [];
-    for (var i=0;i<task_list.length;i++)
+  let task_type_list = [];
+    for (let i=0;i<task_list.length;i++)
       task_type_list.push ( task_list[i]._type );
     addWfKnowledgeByTypes ( _wfKnowledge, new_task._type, task_type_list );
   }

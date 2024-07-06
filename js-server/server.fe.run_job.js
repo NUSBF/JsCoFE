@@ -704,7 +704,6 @@ function runJob ( loginData,data, callback_func )  {
     rdata.timestamp = projectData.desc.timestamp;
   }
 
-
   let jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
   if (!utils.dirExists(jobDir))  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,

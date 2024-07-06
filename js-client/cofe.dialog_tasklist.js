@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,10 +24,8 @@
 
 'use strict';
 
-
 // -------------------------------------------------------------------------
 // TaskListDialog class
-
 
 var __task_dialog_state = {
   sections : {},
@@ -118,16 +116,18 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   let self = this;
 
   $(self.element).dialog({
+
     resizable : true,
     height    : self.dlg_height,
     width     : self.dlg_width,
     maxHeight : $(window).height()-20,
     modal     : true,
+
     create    : function (e, ui) {
                   // if (self.combobox)  {
-                  //   var pane = $(this).dialog("widget")
+                  //   let pane = $(this).dialog("widget")
                   //                     .find(".ui-dialog-buttonpane");
-                  //   var span = new Widget ( 'span' );
+                  //   let span = new Widget ( 'span' );
                   //   $(span.element).prependTo(pane);
                   //   span.addWidget ( self.combobox );
                   //   self.combobox.make ();
@@ -157,6 +157,14 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
                     });            
                   }
                 },
+
+    beforeClose : function(event, ui) {
+                  self.saveDialogState();
+                  if (self.checkbox)
+                        self.onSelect_func ( self.selected_task,self.getListSwitchValue() );
+                  else  self.onSelect_func ( self.selected_task,null );
+                },
+
     buttons   : [
       { text  : 'Help',
         click : function() {
@@ -165,10 +173,6 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       },
       { text  : 'Close',
         click : function() {
-          self.saveDialogState();
-          if (self.checkbox)
-                self.onSelect_func ( null,self.getListSwitchValue() );
-          else  self.onSelect_func ( null,null );
           $( this ).dialog( "close" );
         }
       }
@@ -189,7 +193,8 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   });
 
   // $(self.element).on( "dialogclose",function(event,ui){
-  //   self.saveDialogState();
+  //   alert ( 'exit');
+  //   // self.saveDialogState();
   // });
 
   // if (self.combobox)  {
@@ -250,8 +255,9 @@ TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
 let dockMenu;
+
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'));
+    dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
@@ -260,7 +266,7 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   } else  {
-    dockMenu = new Menu('',image_path('dock_ind'));
+    dockMenu = new Menu('',image_path('dock_ind'),false,8);
     dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
@@ -269,9 +275,18 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   }
+
+  dockMenu.addItem('Task reference',image_path('reference'))
+          .addOnClickListener(function(){
+    new HelpBox ( '',task_obj.getHelpURL(),null );
+  });
+
   grid.setWidget ( dockMenu,row,0,1,1 )
 }
 
+// function __show_task_help ( help_url )  {
+//   new HelpBox ( '',help_url,null );
+// }
 
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  {
 
@@ -324,6 +339,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     */
   }
 
+  // title += '&nbsp;&nbsp;<img src="' + image_path('reference_inline') + 
+  //          '" onclick="javascript:__show_task_help(\'' +
+  //          task_obj.getHelpURL() + '\');" height="12px" ' +
+  //          'style="position:relative;top:1px;cursor:pointer;"/>';
+
   if (avail_key[0]!='ok')  {
     title = '<span style="line-height:16px;">' + title  +
             '<br>' + desc_indent + '<span style="font-size:13px;"><i>** ' + 
@@ -343,7 +363,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   grid.setCellSize          ( 'auto','',row,1 );
   grid.setCellSize          ( 'auto','',row,2 );
   grid.setCellSize          ( '99%' ,'',row,3 );
-  grid.setCursor            ( 'pointer' );
+  // grid.setCursor            ( 'pointer' );
 
   btn.dataSummary = dataSummary;
 
@@ -357,47 +377,42 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     case 2  : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
-  (function(dlg,ibtn){
+  // (function(dlg,ibtn){
+  let dlg = this;
 
-    function taskClicked() {
-      if (ibtn.dataSummary.status>0)  {
-        dlg.selected_task = task_obj;
-        // if (dlg.combobox)
-        //       dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
-        // else  dlg.onSelect_func ( task_obj,null );
-        if (dlg.checkbox)
-              dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
-        else  dlg.onSelect_func ( task_obj,null );
-        dlg.saveDialogState();
-        $(dlg.element).dialog ( 'close' );
-      // } else if (avail_key[0]=='private')  {
-      //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
-      } else if (avail_key[0]!='ok')  {
-        new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
-      } else  {
-        // insufficient data
-        new TaskDataDialog ( ibtn.dataSummary,task_obj,avail_key );
-      }
+  function taskClicked() {
+    if (btn.dataSummary.status>0)  {
+      dlg.selected_task = task_obj;
+      $(dlg.element).dialog ( 'close' );
+    // } else if (avail_key[0]=='private')  {
+    //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
+    } else if (avail_key[0]!='ok')  {
+      new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
+    } else  {
+      // insufficient data
+      new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );
     }
+  }
 
-    ibtn.addOnClickListener ( taskClicked );
+  btn.addOnClickListener ( taskClicked );
 
-    // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
+  // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
 
-    lbl.addOnClickListener ( taskClicked );
+  lbl.addOnClickListener ( taskClicked );
+  lbl.setCursor          ( 'pointer'   );
 
-    // var contextMenu = new Menu('',image_path('dock'),true);
-    // grid.setWidget   ( contextMenu,row,1,1,1 )
+  // let contextMenu = new Menu('',image_path('dock'),true);
+  // grid.setWidget   ( contextMenu,row,1,1,1 )
 
-    // var contextMenu = new ContextMenu ( ibtn,null );
-    // contextMenu.setZIndex ( 600 );
-    // contextMenu.addItem('Add task to dock',image_path('add'))
-    //            .addOnClickListener(function(){
-    //             console.log ( 'add' );
-    //   // alert('add')
-    // });
+  // let contextMenu = new ContextMenu ( ibtn,null );
+  // contextMenu.setZIndex ( 600 );
+  // contextMenu.addItem('Add task to dock',image_path('add'))
+  //            .addOnClickListener(function(){
+  //             console.log ( 'add' );
+  //   // alert('add')
+  // });
 
-  }(this,btn));
+  // }(this,btn));
 
   return btn;
 
@@ -602,11 +617,11 @@ let r = 0;  // grid row
   ]);
 
 
-  for (var i=0;i<task_list.length;i++)
+  for (let i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,4 ).setHeight_px(4);
       grid.setLabel ( '<hr/>',r,0,1,2 );
-      var grid1 = grid.setGrid ( '',r++,1,1,2 );
+      let grid1 = grid.setGrid ( '',r++,1,1,2 );
       grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
            .setFontItalic(true).setFontBold(true).setNoWrap();
       grid1.setLabel ( '<hr/>',0,1,1,1 );
@@ -748,20 +763,20 @@ let r = 0;  // grid row
 
 //'manuals/html-userguide/jscofe_workflows.html'
 
-  // var ccp4go_autoMR = new TaskWFlowAMR();
+  // let ccp4go_autoMR = new TaskWFlowAMR();
   // if (this.dataBox.isEmpty())
   //   ccp4go_autoMR.inputMode = 'root'; // force 'at root mode' for the task
 
   let task_list = [
     "Workflows for starting a Project",
-    new TaskWFlowAMR (),
-    new TaskWFlowAFMR(),
-    new TaskWFlowSMR (),
+    new TaskWFlowAMR  (),
+    new TaskWFlowAFMR (),
+    new TaskWFlowSMR  (),
     new TaskWFlowDPLMR(),
-    new TaskWFlowAEP (),
+    new TaskWFlowAEP  (),
     "Workflows for using within a Project",
-    new TaskWFlowDPL (),
-    new TaskWFlowREL()
+    new TaskWFlowDPL  (),
+    new TaskWFlowREL  ()
   ];
 
   for (let i=0;i<task_list.length;i++)  {
@@ -855,7 +870,8 @@ let r         = 0;  // grid row
   for (let i=0;i<tasks.length;i++)
     if ((i<__suggested_task_nmin) || (ctotal>=cthresh))  {
       //console.log ( 'task=' + tasks[i] + ',  ctotal=' + ctotal );
-      let task = eval ( 'new ' + tasks[i] + '()' );
+      // let task = eval ( 'new ' + tasks[i] + '()' );
+      let task = makeNewInstance ( tasks[i] );
       if (this.setTask(task,grid,r,false,0))
         r++;
       ctotal -= counts[i];
@@ -970,26 +986,26 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   this.section0 = null;
   this.navail   = 0;
   this.task_cnt = 0;
-// var row      = 0;
+// let row      = 0;
 
   // this.makeSection = function ( grid,title,task_list,addToAtoZ )  {
   //   let row     = grid.getNRows();
   //   let section = grid.setSection ( title,false, row,0,1,3 );
   //   let cnt = 0;
   //   let r   = 0;
-  //   for (var n=0;n<task_list.length;n++)
+  //   for (let n=0;n<task_list.length;n++)
   //     if (task_list[n])  {
   //       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
   //         section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
   //         section.grid.setLabel ( '<hr/>',r,0,1,1 );
-  //         var grid1 = section.grid.setGrid ( '',r++,1,1,2 );
+  //         let grid1 = section.grid.setGrid ( '',r++,1,1,2 );
   //         grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
   //             .setFontItalic(true).setFontBold(true).setNoWrap();
   //         grid1.setLabel ( '<hr/>',0,1,1,1 );
   //         grid1.setCellSize ( '10%','8px',0,0 );
   //         grid1.setCellSize ( '90%','8px',0,1 );
   //       } else  {
-  //         var btn = this.setTask ( task_list[n],section.grid,r++,true,0 );
+  //         let btn = this.setTask ( task_list[n],section.grid,r++,true,0 );
   //         if (btn)  {
   //           if (btn.dataSummary.status>0)
   //             cnt++;
@@ -1006,7 +1022,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   //   return section;
   // }
 
-//   var ccp4go_task = new TaskCCP4go();
+//   let ccp4go_task = new TaskCCP4go();
 //   if (this.dataBox.isEmpty())
 //     ccp4go_task.inputMode = input_mode.root; // force 'at root mode' for the task
 // //    ccp4go_task.input_dtypes = [1]; // force 'at root mode' for the task
@@ -1023,7 +1039,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
       new TaskDocDev()
     ],false);
 
-    // var ccp4go2_task = new TaskCCP4go2();
+    // let ccp4go2_task = new TaskCCP4go2();
     // if (this.dataBox.isEmpty())
     //   ccp4go2_task.inputMode = input_mode.root; // force 'at root mode' for the task
     // //  ccp4go2_task.input_dtypes = [1]; // force 'at root mode' for the task
@@ -1039,8 +1055,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
       // new TaskCootUtils    (),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      new TaskXDS         (),
-      new TaskFetchData    (),
+      // new TaskXDS         (),
       new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
@@ -1052,9 +1067,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImport        (),
     new TaskImportSeqCP   (),
     new TaskImportPDB     (),
+    new TaskFetchData     (),
     new TaskImportReplace (),
     new TaskMigrate       ()
-    //new TaskFacilityImport()
   ];
 
   if (__cloud_storage)
@@ -1068,7 +1083,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   this.makeSection ( grid,'Data Processing',[
     new TaskXia2        (),
-    // new TaskXDS         (),
+    new TaskXDS         (),
     new TaskXDSGUI      (),
     new TaskDUI         (),
     new TaskIMosflm     (),

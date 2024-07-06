@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,10 +21,13 @@
 
 'use strict';
 
-var __template = null;
+var __template_d = null;
+var __cmd        = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
-  __template = require ( './common.dtypes.template' );
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  __template_d = require ( './common.dtypes.template' );
+  __cmd        = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -39,8 +42,8 @@ const hkl_subtype = {
 
 function DataHKL()  {
 
-  if (__template)  __template.DataTemplate.call ( this );
-             else  DataTemplate.call ( this );
+  if (__template_d)  __template_d.DataTemplate.call ( this );
+               else  DataTemplate.call ( this );
 
   this._type         = 'DataHKL';
   this.wtype         = 'choose-one'; // 'low-remote', 'peak', 'native', 'high-remote'
@@ -69,11 +72,14 @@ function DataHKL()  {
 }
 
 
-if (__template)
-      DataHKL.prototype = Object.create ( __template.DataTemplate.prototype );
-else  DataHKL.prototype = Object.create ( DataTemplate.prototype );
-DataHKL.prototype.constructor = DataHKL;
+// if (__template_d)
+//       DataHKL.prototype = Object.create ( __template_d.DataTemplate.prototype );
+// else  DataHKL.prototype = Object.create ( DataTemplate.prototype );
+// DataHKL.prototype.constructor = DataHKL;
 
+if (__template_d)
+  __cmd.registerClass ( 'DataHKL',DataHKL,__template_d.DataTemplate.prototype );
+else    registerClass ( 'DataHKL',DataHKL,DataTemplate.prototype );
 
 // ===========================================================================
 
@@ -83,8 +89,8 @@ DataHKL.prototype.icon  = function()  { return 'data';            }
 // change this synchronously with the version in dtype.hkl.py
 DataHKL.prototype.currentVersion = function()  {
   let version = 1;
-  if (__template)
-        return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
+  if (__template_d)
+        return  version + __template_d.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
@@ -99,7 +105,7 @@ DataHKL.prototype.makeSample = function()  {
 }
 
 // export such that it could be used in both node and a browser
-if (!__template)  {
+if (!__template_d)  {
   // for client side
 
   DataHKL.prototype.getMeta = function ( name,defVal )  {
@@ -178,7 +184,7 @@ if (!__template)  {
   }
 
   DataHKL.prototype.makeDataSummaryPage = function ( task )  {
-  var dsp = new DataSummaryPage ( this );
+  let dsp = new DataSummaryPage ( this );
 
     dsp.makeRow ( 'File name'            ,this.files[file_key.mtz],'Imported file name'     );
     dsp.makeRow ( 'Original dataset name',this.dataset.PROJECT + '/' +
@@ -193,7 +199,7 @@ if (!__template)  {
     dsp.makeRow ( 'Resolution low' ,round(this.getLowResolution (),2),'Low resolution limit'  );
     dsp.makeRow ( 'Resolution high',round(this.getHighResolution(),2),'High resolution limit' );
 
-    var v = 'Not present';
+    let v = 'Not present';
     if (this.hasAnomalousSignal())  {
       v = 'Present';
       if (this.ha_type)
@@ -232,11 +238,11 @@ if (!__template)  {
 
   DataHKL.prototype.layCustomDropdownInput = function ( dropdown )  {
 
-    var customGrid = dropdown.customGrid;
-    var r          = customGrid.getNRows();
+    let customGrid = dropdown.customGrid;
+    let r          = customGrid.getNRows();
 
     function setLabel ( title,row,col )  {
-      var label = customGrid.setLabel ( title,row,col,1,1 )
+      let label = customGrid.setLabel ( title,row,col,1,1 )
                             .setFontItalic(true).setNoWrap();
       customGrid.setVerticalAlignment ( row,col,'middle' );
       return label;
@@ -314,13 +320,13 @@ if (!__template)  {
       customGrid.setLabel ( this.getCellParametersHTML(),r,1,1,2 );
       customGrid.setHLine ( 1,++r,0,1,2 );
       setLabel ( 'New space group:&nbsp;',++r,0 );
-      var spg_list = get_cons_sg_list ( this.getSpaceGroup() );
+      let spg_list = get_cons_sg_list ( this.getSpaceGroup() );
       if (spg_list.length>0)  {
         customGrid.new_spg = new Dropdown();
-        var nsel = 0;
+        let nsel = 0;
         if ('new_spg' in this)
           nsel = Math.max ( 0,spg_list.indexOf(this.new_spg) );
-        for (var i=0;i<spg_list.length;i++)
+        for (let i=0;i<spg_list.length;i++)
           customGrid.new_spg.addItem ( spg_list[i],'',spg_list[i],i==nsel );
         customGrid.setWidget   ( customGrid.new_spg, r,1,1,1 );
         customGrid.new_spg.make();
@@ -339,15 +345,15 @@ if (!__template)  {
       //customGrid.spaceGroup.setWidth ( '125%' );
       customGrid.spaceGroup.setWidth ( '300px' );
 
-      var sg0         = this.getSpaceGroup();
-      var sg_enant    = getEnantiomorphSpG ( sg0 );
-      var sg_ind      = getIndistinguishableSpG ( sg0 );
-      var sglist      = getAllPointSpG ( sg0 );
+      let sg0         = this.getSpaceGroup();
+      let sg_enant    = getEnantiomorphSpG ( sg0 );
+      let sg_ind      = getIndistinguishableSpG ( sg0 );
+      let sglist      = getAllPointSpG ( sg0 );
 
-      var sg0_id      = sg0.replace(/\s+/g,'');
-      var sg_enant_id = '';
-      var sg_ind_id   = '';
-      var sgsel       = this.spg_alt;
+      let sg0_id      = sg0.replace(/\s+/g,'');
+      let sg_enant_id = '';
+      let sg_ind_id   = '';
+      let sgsel       = this.spg_alt;
 
       if (sg_enant)
         sg_enant_id = sg0_id + ';' + sg_enant.replace(/\s+/g,'');
@@ -386,8 +392,8 @@ if (!__template)  {
 
     this.makeHighResolutionLimit = function()  {
       setLabel ( 'High resolution limit (&Aring;):&nbsp;',++r,0 );
-      var res_low  = round ( this.getLowResolution (),2 );
-      var res_high = round ( this.getHighResolution(),2 );
+      let res_low  = round ( this.getLowResolution (),2 );
+      let res_high = round ( this.getHighResolution(),2 );
       customGrid.res_high = makeRealInput ( this.res_high,'auto',
           'High resolution limit. Set a value between ' + res_high + ' and ' +
           res_low + ', or leave blank for automatic choice.',r,1 );
@@ -399,10 +405,10 @@ if (!__template)  {
 
     this.makeResolutionLimits = function ( blank_key )  {
       setLabel ( 'Resolution range (&Aring;):&nbsp;',++r,0 );
-      var res_low  = round ( this.getLowResolution (),2 );
-      var res_high = round ( this.getHighResolution(),2 );
-      var def_low  = res_low;
-      var def_high = res_high;
+      let res_low  = round ( this.getLowResolution (),2 );
+      let res_high = round ( this.getHighResolution(),2 );
+      let def_low  = res_low;
+      let def_high = res_high;
       if (blank_key=='auto')  {
         def_low  = 'auto';
         def_high = 'auto';
@@ -424,7 +430,7 @@ if (!__template)  {
     }
 
     this.makeWavelengthInput = function()  {
-      var wavelength = this.getWavelength();
+      let wavelength = this.getWavelength();
       if (wavelength==null)
         wavelength = '';
       setLabel ( 'Wavelength (&Aring;):&nbsp;',++r,0 );
@@ -441,7 +447,7 @@ if (!__template)  {
     this.phaserMRLayout = function()  {
       //r++;
       this.makeResolutionLimits ( 'auto' );
-      var res_high = round ( this.getHighResolution(),2 );
+      let res_high = round ( this.getHighResolution(),2 );
       setLabel ( 'High res-n for final refinement (&Aring;):&nbsp;',++r,0 );
       customGrid.res_ref = makeRealInput ( this.res_ref,'auto',
           'Set a value equal or larger than ' + round(this.getHighResolution(),2) +
@@ -493,11 +499,11 @@ if (!__template)  {
     this.refmacLayout = function()  {
       if (dropdown.layCustom=='refmac')
         this.makeResolutionLimits ( '' );
-      var is_Imean = this.isImean();
-      var is_Fmean = this.isFmean();
-      var is_Ipm   = this.isIpm  ();
-      var is_Fpm   = this.isFpm  ();
-      var n        = 0;
+      let is_Imean = this.isImean();
+      let is_Fmean = this.isFmean();
+      let is_Ipm   = this.isIpm  ();
+      let is_Fpm   = this.isFpm  ();
+      let n        = 0;
       if (is_Imean)  n++;
       if (is_Fmean)  n++;
       if (is_Ipm)    n++;
@@ -533,7 +539,7 @@ if (!__template)  {
 
       }
 
-      var phaseBlurRow = -1;
+      let phaseBlurRow = -1;
       if ((dropdown.layCustom=='arpwarp') && dropdown.hasOwnProperty('Structure'))  {
         setLabel ( 'Phase blurring factor:&nbsp;',++r,0 );
         customGrid.phaseBlur = makeRealInput ( dropdown.Structure.phaseBlur,'1.0',
@@ -541,7 +547,7 @@ if (!__template)  {
         phaseBlurRow = r;
       }
 
-      var wlRow = -1;
+      let wlRow = -1;
       if (is_Fpm)  {
         this.makeWavelengthInput();
         wlRow = r;
@@ -573,7 +579,7 @@ if (!__template)  {
     this.modelcraftLayout = function()  {
       if (!('detwin' in this))
         this.detwin = false;
-      // var col = 0;
+      // let col = 0;
       // if (customGrid.getNRows()>0)
       //   col = 1;
       // customGrid.detwin = customGrid.setCheckbox ( 'Use twinned refinement',
@@ -617,11 +623,11 @@ if (!__template)  {
 
   DataHKL.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
 
     function readF ( inputWidget,def,allow_blank,errMsg )  {
-      var text = inputWidget.getValue().trim();
+      let text = inputWidget.getValue().trim();
       if ((text=='') && allow_blank)  {
         return text;
       } else if (isFloat(text))  {
@@ -737,8 +743,8 @@ if (!__template)  {
       if ((this.res_high=='') && (this.res_low==''))
         msg += '|<b><i>At least one resolution limit must be specified</i></b>';
       else  {
-        var res_low0  = round ( this.getLowResolution (),2 );
-        var res_high0 = round ( this.getHighResolution(),2 );
+        let res_low0  = round ( this.getLowResolution (),2 );
+        let res_high0 = round ( this.getHighResolution(),2 );
         if (this.res_high!='')  {
           if ((this.res_high<res_high0) || (this.res_high>res_low0))
             msg += '|<b><i>High resolution limit must be within ' + res_high0 + ' - ' +

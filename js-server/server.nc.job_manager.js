@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.24   <--  Date of Last Modification.
+ *    22.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1046,8 +1046,8 @@ function ncRunJob ( job_token,meta )  {
 
   if (task)  { // the task is instantiated, start the job
 
-    let nproc  = ncConfig.getMaxNProc();
-    let ncores = task.getNCores ( nproc );
+    let nproc  = task.getNProcesses ( ncConfig.getMaxNProcesses() );
+    let ncores = task.getNCores     ( ncConfig.getMaxNCores()     );
     utils.writeObject ( path.join(jobEntry.jobDir,'__despatch.meta'),{
       'sender'   : meta.sender,
       'setup_id' : meta.setup_id,
@@ -1160,18 +1160,21 @@ function ncRunJob ( job_token,meta )  {
                   break;
 
 
-      case 'SLURM' :  command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SLURM' :  //command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-
                       let sbatch_params = ncConfig.exeData.concat ([
                         '--export=ALL',
-                        '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
-                        '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
-                        '-J',jobName,
-                        '-c',ncores
+                        '--output='        + path.join(jobDir,'_job.stdo'),  // slurm stdout
+                        '--error='         + path.join(jobDir,'_job.stde'),  // slurm stderr
+                        '--job-name='      + jobName,
+                        '--cpus-per-task=' + ncores,
+                        '--ntasks=1' 
+                        // '--ntasks='        + nproc.toString() 
                       ]);
                       let sbatch_cmd = sbatch_params.concat(command);
+                      // console.log ( ' >>> sbatch ' + sbatch_cmd.join(' ') );
+                      // console.log ( ' >>> environ =\n' + JSON.stringify(process.env,null,2) );
                       let slurm_job  = utils.spawn ( 'sbatch',sbatch_cmd );
 
                       /*

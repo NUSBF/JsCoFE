@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.04.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -69,12 +72,9 @@ function TaskFetchData()  {
 
 }
 
-
 if (__template)
-      TaskFetchData.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskFetchData.prototype = Object.create ( TaskTemplate.prototype );
-TaskFetchData.prototype.constructor = TaskFetchData;
-
+  __cmd.registerClass ( 'TaskFetchData',TaskFetchData,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskFetchData',TaskFetchData,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -84,7 +84,7 @@ TaskFetchData.prototype.clipboard_name = function()  { return '"Fetch-data"';   
 
 TaskFetchData.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return 'finds diffraction images for given PDB code and fetcheds them';
+  return 'finds diffraction images for given PDB code and fetches them';
 };
 
 TaskFetchData.prototype.currentVersion = function()  {
@@ -103,13 +103,17 @@ TaskFetchData.prototype.isTaskAvailable = function()  {
 
   if (__has_datalink)
     return TaskTemplate.prototype.isTaskAvailable.call ( this );
+  else if (__local_setup)
+    return ['environment-server',
+            'task software is not installed on your machine',
+            '<h3>Task software is not installed</h3>' +
+            'Fetch framework is not installed on your machine.'];
   else
     return ['environment-server',
-            'task software is not configured on ' + appName() + ' server',
-            '<h3>Task software is not configured on server</h3>' +
-            'Software, needed to run the task, is not configured on ' +
-            appName() + ' server, which you use.<br>Contact server ' +
-            'maintainer for further details.'];
+            'task software is not installed on ' + appName() + ' server',
+            '<h3>Task software is not installed</h3>' +
+            'Fetch framework is not installed on ' +  appName() + 
+            '.<br>Contact server maintainer for further details.'];
 
 }
 
@@ -130,7 +134,8 @@ if (__template)  {
       login       : loginData.login,
       cloudrun_id : '',
       api_url     : '',
-      mount_name  : ''
+      mount_name  : '',
+      verify_cert : true
     };
     
     let uData = user.readUserData ( loginData );
@@ -140,6 +145,7 @@ if (__template)  {
     let fe_config = conf.getFEConfig();
     fetch_meta.api_url = fe_config.getDataLinkUrl();
     fetch_meta.mount_name = fe_config.getDataLinkMountName();
+    fetch_meta.verify_cert = fe_config.getDataLinkVerifyCert();
     
     // write fetch_meta in jobd directory on FE; it will travel to NC along
     // with all other data

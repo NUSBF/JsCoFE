@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,7 +106,7 @@ const conf      = require('./server.configuration');
 const utils     = require('./server.utils');
 const send_dir  = require('./server.send_dir');
 const ration    = require('./server.fe.ration');
-const fcl       = require('./server.fe.facilities');
+const storage   = require('./server.fe.storage');
 const user      = require('./server.fe.user');
 const class_map = require('./server.class_map');
 const rj        = require('./server.fe.run_job');
@@ -2526,7 +2526,7 @@ let duplicate = 0;
 
   if (tempdir)  {
 
-    let cloudMounts = fcl.getUserCloudMounts ( loginData );
+    let cloudMounts = storage.getUserCloudMounts ( loginData );
     let demoProjectPath = null;
 
     if ('cloudpath' in meta)  {
@@ -2764,15 +2764,22 @@ let jobId       = data.meta.id;
         let fdir = path.dirname ( fpath );
         if (fdir!=jobDirPath)  {
           utils.mkPath ( fdir );
-          if (!utils.writeString(fpath,data.files[i].data))
+          if (!utils.writeString(fpath,data.files[i].data))  {
+            log.error ( 81,'file "' + fpath + '" cannot be written (1)' );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
                                           '[00040] Job file cannot be written.',
                                           { 'project_missing':false } );
-        } else
+          }
+        } else  {
+          log.error ( 82,'file "' + fpath + '" cannot be written (2)' );
           response = new cmd.Response ( cmd.fe_retcode.writeError,
                                         '[00041] Job file cannot be written.',
                                         { 'project_missing':false } );
+        }
       }
+      if (('isMRSearchModel' in data.files[i]) &&
+          data.files[i].isMRSearchModel)
+        utils.writeString ( fpath+'.MRSearchModel','true' );
     }
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.ok,'',

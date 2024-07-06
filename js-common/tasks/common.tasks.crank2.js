@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -942,12 +945,9 @@ function TaskCrank2()  {
 
 }
 
-
 if (__template)
-      TaskCrank2.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskCrank2.prototype = Object.create ( TaskTemplate.prototype );
-TaskCrank2.prototype.constructor = TaskCrank2;
-
+  __cmd.registerClass ( 'TaskCrank2',TaskCrank2,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskCrank2',TaskCrank2,TaskTemplate.prototype );
 
 // ===========================================================================
 

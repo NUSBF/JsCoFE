@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.03.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -20,13 +20,14 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 var __make_lig = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template'   );
+  __cmd      = require ( '../common.commands' );
   __make_lig = require ( './common.tasks.makeligand' );
 }
-
 
 // ===========================================================================
 
@@ -150,10 +151,8 @@ function TaskWFlowDPL()  {
 }
 
 if (__template)
-      TaskWFlowDPL.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowDPL.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowDPL.prototype.constructor = TaskWFlowDPL;
-
+  __cmd.registerClass ( 'TaskWFlowDPL',TaskWFlowDPL,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWFlowDPL',TaskWFlowDPL,TaskTemplate.prototype );
 
 // ===========================================================================
 

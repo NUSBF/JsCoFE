@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.01.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,7 +70,7 @@ var cofe_signals = {
 }
 
 
-function validateUserData ( user_inp,email_inp,login_inp )  {
+function validateUserData ( user_inp,email_inp,login_inp,globus_inp )  {
 //  All parameters are InputText classes, corresponding to the input of
 //  user name, e-mail and login name, respectively
 let msg = '';
@@ -94,6 +94,11 @@ let msg = '';
   else if (login_inp.element.validity.patternMismatch)
     msg += '<b>Login name</b> should contain only latin letters, numbers,<br> ' +
            'underscores, dashes and dots, and must start with a letter.<p>';
+
+
+  if (globus_inp && (globus_inp.getValue().length>0) && 
+      globus_inp.element.validity.patternMismatch)
+    msg += '<b>Globus Id</b> is not formatted correctly.<p>';
 
   return msg;
 
@@ -335,9 +340,10 @@ function processServerQueue()  {
                           __server_queue = [];
                           __process_network_indicators();
                           makePage ( function(){
-                            eval (
-                              'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                            );
+                            // eval (
+                            //   'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
+                            // );
+                            makeNewInstance ( __current_page._type,__current_page.sceneId );
                           });
                           makeSessionCheck ( __current_page.sceneId );
                         } else  {  // should never come to here
@@ -1004,6 +1010,10 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
+  // function _correct_name ( fname )  {  // because Moorhen makes it funny
+  //   return fname.split(' ').join('_').split('#').join('');
+  // }
+
   let edata = event.data;
 
   if (edata.command=='saveFiles')  {
@@ -1015,19 +1025,25 @@ function onWindowMessage ( event ) {
         meta  : edata.meta,
         files : []
       }
-      for (let i=0;i<edata.files.length;i++)
+      for (let i=0;i<edata.files.length;i++)  {
         if ('fpath' in edata.files[i])  {
           edata1.files.push ( edata.files[i] );
         } else  {
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.pdb',
             fpath : edata.files[i].molName + '.pdb',
             data  : edata.files[i].pdbData
           });
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.mmcif',
             fpath : edata.files[i].molName + '.mmcif',
             data  : edata.files[i].mmcifData
           });
         }
+        edata1.files[edata1.files.length-1].isMRSearchModel =
+                            ('isMRSearchModel' in edata.files[i]) && 
+                            edata.files[i].isMRSearchModel;
+      }
       serverRequest ( fe_reqtype.saveJobFiles,edata1,'Save job file',
         function(rdata){
           if (rdata.project_missing)  {
@@ -1082,12 +1098,12 @@ function onWindowMessage ( event ) {
           } else if (edata.confirm=='manual')  {
             // making a backup does not count as making an output
             // setCommunicationFrameData ( edata.meta.fid,'was_output',true );
-            new MessageBox (  'Backup file written',
-                              '<div style="width:350px"><h3>Backup file written</h3>' +
-                              'Backip file saved in ' + appName() + 
-                              ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
-                              'msg_ok'
-                            );
+            new MessageBox ( 'Backup file written',
+                             '<div style="width:350px"><h3>Backup file written</h3>' +
+                             'Backip file saved in ' + appName() + 
+                             ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
+                             'msg_ok'
+                           );
           }
         },null,'persist' );
     }

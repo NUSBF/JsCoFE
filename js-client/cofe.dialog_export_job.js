@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.22   <--  Date of Last Modification.
+ *    05.06.24  <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -34,18 +34,18 @@ function ExportJobDialog ( task )  {
     serverRequest ( fe_reqtype.prepareJobExport,task,
                     'Prepare Job Export',function(){  // on success
 
-      var exportName  = task.project + '-job_' + task.id;
+      let exportName  = task.project + '-job_' + task.id;
       InputBox.call ( dlg,'Export Job ' + exportName );
 
       dlg.setText ( '','export' );
-      var grid = dlg.grid;
+      let grid = dlg.grid;
       grid.setLabel ( '<h2>Export Job "' + exportName + '"</h2>',0,2,2,3 );
 
-      var msgLabel = new Label ( 'Job <b>"' + exportName + '"</b> is being ' +
+      let msgLabel = new Label ( 'Job <b>"' + exportName + '"</b> is being ' +
                                  'prepared for download ....' );
       grid.setWidget ( msgLabel, 2,2,1,3 );
 
-      var progressBar = new ProgressBar ( 0 );
+      let progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 3,2,1,3 );
 
       dlg.jobSize = -2;
@@ -66,16 +66,17 @@ function ExportJobDialog ( task )  {
             id    : "download_btn",
             text  : "Download",
             click : function() {
-              var token;
-              var url;
-                if (__login_token)
-                      token = __login_token;
-                else  token = '404';
-                url = __special_url_tag + '/' + token   + '/' + task.project +
-                                        '/' + task.id + '/' + exportName   +
-                                        '.zip';
-                downloadFile ( url );
-                $( "#cancel_btn" ).button ( "option","label","Close" );
+              let token;
+              let url;
+              if (__login_token)
+                    token = __login_token;
+              else  token = '404';
+              url = __special_url_tag + '/' + token   + '/' + task.project +
+                                      '/' + task.id + '/' + exportName   +
+                                      '.zip';
+              $('#download_btn').hide();
+              $('#cancel_btn'  ).button ( "option","label","Close" );
+              downloadFile ( url );
             }
           },
           {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1232,6 +1232,17 @@ function ProjectListPage ( sceneId )  {
     });
   }
 
+  if (__globus_id)  {
+    this.addMenuSeparator();
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      window.open ( 'https://app.globus.org/file-manager?two_pane=true',
+                    'Globus File Transfer',
+                    'modal=yes' );
+      // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
+      //                  null,10,null );
+    });
+  }
+
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); },null );
   });
@@ -1444,8 +1455,11 @@ function ProjectListPage ( sceneId )  {
 
 }
 
-ProjectListPage.prototype = Object.create ( BasePage.prototype );
-ProjectListPage.prototype.constructor = ProjectListPage;
+// ProjectListPage.prototype = Object.create ( BasePage.prototype );
+// ProjectListPage.prototype.constructor = ProjectListPage;
+
+registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
+
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
 //  let h = (height - 164) + 'px';

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    25.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,6 +26,11 @@
 
 function BasePage ( sceneId,gridStyle,pageType )  {
 
+  unsetDefaultButton();
+
+  __electron_download_progress = null;
+  __electron_find_text_dialog  = null;
+
   // clear the page first
   $(document.body).empty().addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
@@ -34,10 +39,6 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   checkAnnouncement();
 
   __current_page = this;  // do not move this line up!
-
-  // clear the page first
-  // $('#'+sceneId).empty();
-  //  unsetDefaultButton ( null );
 
   clearNetworkIndicators();
 
@@ -246,8 +247,8 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       logoGrid.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
   }
   logoGrid.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
-           .setFontSize ( '75%' ).setNoWrap()
-           .setVerticalAlignment('middle');
+          .setFontSize ( '75%' ).setNoWrap()
+          .setVerticalAlignment('middle');
   logoGrid.setVerticalAlignment   ( 0,0,'middle'  );
   logoGrid.setCellSize            ( '50%','', 0,c );
   logoGrid.setHorizontalAlignment ( 0,c,'right'   );
@@ -335,9 +336,10 @@ let iwidth    = '26px';
 
   if (__local_setup)  {
     icon_path = image_path ( 'ccp4cloud_desktop'  );
-    if (__local_user)
-          tooltip += ' is in <b>desktop</b> mode:</i>';
-    else  tooltip += ' is in <b>local</b> mode:</i>';
+    // if (__local_user)
+    //       tooltip += ' is in <b>desktop</b> mode:</i>';
+    // else  tooltip += ' is in <b>local</b> mode:</i>';
+    tooltip += ' is in <b>local</b> mode:</i>';
     tooltip += ul_style + '<li>projects and data are stored on your system</li>';
     if (__local_service)
           tooltip += '<li>computation done on your computer</li>';
@@ -468,9 +470,12 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
   this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
   this.headerPanel.setCellSize ( '32px','32px',0,22 );
-  if (__local_user)
-        this.logout_btn .setTooltip  ( 'End session' );
-  else  this.logout_btn .setTooltip  ( 'Logout'      );
+  let end_tooltip = 'Logout';
+  if (__local_user)  {
+    if (isElectronAPI())  end_tooltip = 'Quit';
+                    else  end_tooltip = 'End session';
+  }
+  this.logout_btn.setTooltip ( end_tooltip );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -500,6 +505,10 @@ BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
   return this;
 }
 
+BasePage.prototype.setMenuSpacing = function ( spacing )  {
+  this.headerPanel.menu.setMenuSpacing ( spacing );
+}
+
 BasePage.prototype.addMenuSeparator = function()  {
   this.headerPanel.menu.addSeparator();
   return this;
@@ -524,8 +533,10 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
   let menuLabel = 'Log out';
-  if (__local_user)
-    menuLabel = 'End session';
+  if (__local_user)  {
+    if (isElectronAPI())  menuLabel = 'Quit';
+                    else  menuLabel = 'End session';
+  }
   this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
                        .addOnClickListener ( logout_func );
   return this;
@@ -559,13 +570,16 @@ BasePage.prototype.makeUserRationIndicator = function()  {
 
 BasePage.prototype.displayUserRation = function ( pdesc )  {
 
-  function getPercentLine ( used,ration )  {
+  function getPercentLine ( used,ration,ration_max=null )  {
     if (ration<=0.0)
       return '';
-    let pp = round ( (100.0*used)/ration,0 );
-    if (pp<90)       pp += '%';
-    else if (pp<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
-               else  pp  = '<font class="ration-critical">' + pp + '%</font>';
+    let pp     = round ( (100.0*used)/ration,0 );
+    let pp_max = pp;
+    if (ration_max)
+      pp_max   = round ( (100.0*used)/Math.max(ration,ration_max),0 );
+    if (pp_max<90)       pp += '%';
+    else if (pp_max<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
+                   else  pp  = '<font class="ration-critical">' + pp + '%</font>';
     return pp;
   }
 
@@ -578,10 +592,10 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 
     this.ration.pdesc = pdesc;
 
-    // if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
     if (this.rationPanel.disk_usage)  {
 
-      let storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
+      let storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage,
+                                          this.ration.storage_max );
       let cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
       let cpu_month_pp = getPercentLine ( this.ration.cpu_month_used,this.ration.cpu_month );
       let stats = '<table class="table-rations">' +
@@ -617,6 +631,17 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 
       stats += '<tr><td colspan="4"><hr/></td></tr>';
 
+      if (this.ration.storage>0)  { 
+        if (!this.ration.storage_max)
+          stats += '<tr><td colspan="4">Storage auto-topup: unlimited</td></tr>';
+        else if (this.ration.storage<this.ration.storage_max)
+          stats += '<tr><td colspan="4">Storage auto-topup limit:&nbsp;' + 
+                  this.ration.storage_max + '&nbsp;MBytes</td></tr>';
+        else
+          stats += '<tr><td colspan="4"><b>Storage auto-topup limit achieved</b></td></tr>';
+        stats += '<tr><td colspan="4"><hr/></td></tr>';
+      }
+
       if (pdesc)  {
         if ('disk_space' in pdesc)
           stats +=
@@ -640,6 +665,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 round(this.ration.cpu_total_used,4) +
                 '&nbsp;</i></td><td></td></tr>' +
         '</table>';
+
       this.rationPanel.setTooltip1 ( stats,'show',false,20000 );  // 20 secs
       if (this.ration.storage>0.0)
             this.rationPanel.disk_usage.setText ( storage_pp );
@@ -670,7 +696,7 @@ BasePage.prototype.updateUserRationDisplay = function ( rdata )  {
 BasePage.prototype.destructor = function ( function_ready )  {
   function_ready();
 }
-
+registerClass ( 'BasePage',BasePage,null );
 
 var __history_count = 0;
 
@@ -755,4 +781,5 @@ function setHistoryListener ( sceneId )  {
     } else
       window.history.back();
   });
+
 }

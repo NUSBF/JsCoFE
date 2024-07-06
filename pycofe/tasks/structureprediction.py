@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    24.05.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,6 +32,7 @@ import shutil
 # import uuid
 
 from pycofe.tasks  import basic
+from pycofe.dtypes import dtype_sequence
 from pycofe.auto   import auto
 
 # ============================================================================
@@ -62,6 +63,8 @@ class StructurePrediction(basic.TaskDriver):
     #         model.meta["seqId"] = seqid_lst[0]
     #     return
 
+    def file_seq_path (self):  return "structure_prediction.seq"
+
     def run(self):
 
         scriptf = "process.sh"
@@ -70,12 +73,23 @@ class StructurePrediction(basic.TaskDriver):
 
         # close execution logs and quit
 
-        seq  = self.makeClass ( self.input_data.data.seq[0] )
+        seq  = self.input_data.data.seq
         sec1 = self.task.parameters.sec1.contains
 
-        seqfilepath = seq.getSeqFilePath ( self.inputDir() )
-
-        # os.path.join ( os.environ["CCP4"],"bin","af2start" )
+        seqname  = []
+        sequence = []
+        ncopies  = []
+        npmax    = 0
+        for i in range(len(seq)):
+            seqname.append ( 'seq' + str(i+1) )
+            seq[i] = self.makeClass ( seq[i] )
+            sequence.append ( seq[i].getSequence(self.inputDir()).replace("-","").replace("X","") )
+            if not hasattr(seq[i],"npred"):
+                seq[i].npred = 1  # backward compatibility in existing setups
+            ncopies.append ( seq[i].npred )
+            npmax = max ( npmax,seq[i].npred )
+        dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
+                                           seqname,sequence,ncopies )
 
         simulation = False
 
@@ -113,7 +127,7 @@ class StructurePrediction(basic.TaskDriver):
             self.putWaitMessageLF ( "Prediction in progress ..." )
 
             rc = self.runApp ( configuration["script_path"],
-                               [seqfilepath,nmodels_str,dirName],
+                               [self.file_seq_path(),nmodels_str,dirName],
                                logType="Main",quitOnError=False )
 
             self.removeCitation ( configuration["script_path"] )
@@ -122,7 +136,7 @@ class StructurePrediction(basic.TaskDriver):
 
             script = "#!/bin/bash\n" +\
                     "af2start"  +\
-                    " --seqin " + seqfilepath
+                    " --seqin " + self.file_seq_path()
 
             if hasattr(sec1,"MINSCORE"):
                 script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
@@ -166,7 +180,7 @@ class StructurePrediction(basic.TaskDriver):
 
             if simulation:
                 # import shutil
-                shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
+                shutil.copytree ( "C:/Users/user_name/Projects/CCP4Cloud/AF2/af2_output",dirName )
 
             else:
                 rc = self.runApp ( "env",[
@@ -322,11 +336,25 @@ class StructurePrediction(basic.TaskDriver):
                 #                 self.rvrow,col=0,rowSpan=1 )
                 #     self.rvrow += 1
 
-                self.putTitle ( "Generated models" )
+                if nmodels_str=="1":
+                  self.putTitle ( "Generated model" )
+                else:
+                  self.putTitle ( "Generated models" )
 
-                self.putMessage ( "<i><b>Prepared models are associated " +\
-                                  "with sequence:&nbsp;" + seq.dname +\
-                                  "</b></i>&nbsp;<br>&nbsp;" )
+                if len(seq)<=1:
+                    msg = "<b>Associated sequence:</b>"
+                else:
+                    msg = "<b>Associated sequences:</b>"
+                    
+                msg += "<ul>"
+                # if len(seq)==1 and seq[0].npred==1:
+                #     msg += "<li>" + seq[0].dname + "</li>"
+                # else:
+                for s in seq:
+                    msg += "<li>" + str(s.npred) + "&nbsp;x&nbsp;" + s.dname + "</li>"
+                msg += "</ul>"
+
+                self.putMessage ( msg )
 
                 for i in range(len(fpaths)):
 
@@ -345,11 +373,11 @@ class StructurePrediction(basic.TaskDriver):
 
                     if xyz:
 
-                        nModels = nModels + 1
+                        nModels += 1
 
                         xyz.fixBFactors ( self.outputDir(),"alphafold",body=self )
-                        # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                        xyz.addDataAssociation ( seq.dataId )
+                        for s in seq:
+                            xyz.addDataAssociation ( s.dataId )
 
                         if len(fpaths)>1:
                             if i>0:

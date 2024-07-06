@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.24   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,7 +31,6 @@ const conf    = require('./server.configuration');
 const pp      = require('./server.process_post');
 const anl     = require('./server.fe.analytics');
 const user    = require('./server.fe.user');
-// const fcl   = require('./server.fe.facilities');
 const rj      = require('./server.fe.run_job');
 const comm    = require('./server.fe.communicate');
 const rh      = require('./server.fe.request_handler');
@@ -64,16 +63,6 @@ function start ( callback_func )  {
     log.standard ( 2,'NC[' + i + ']: type=' + ncConfigs[i].exeType +
                      ' url=' + ncConfigs[i].url() );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
-
-  // initialize facilities
-  /*
-  if (!fcl.checkFacilities(''))  {
-    if (!fcl.initFacilities(''))  {
-      log.standard ( 4,'facilities fault -- stop.' );
-      return;
-    }
-  }
-  */
 
   // read user login hash
   user.readUserLoginHash();

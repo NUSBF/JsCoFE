@@ -7,8 +7,9 @@
   ],
 
   "Desktop"  : {
-    "clientApp"  : "cmd",
-    "args"       : ["/s","/c","start","$feURL$clientURL"]
+    "clientApp" : "cmd",
+    "args"      : ["/s","/c","start","$feURL$clientURL"],
+    "_args"     : ["/s","/c","cd cofe-browser & npm start url=$feURL$clientURL"]
   },
 
   "FrontEnd" : {
@@ -17,14 +18,11 @@
     "port"             : 0,
     "externalURL"      : "",
     "exclusive"        : true,
-    "stoppable"        : false,
+    "stoppable"        : true,
     "exclude_tasks"    : ["unix-only"],
     "fsmount"          : "/",
     "userDataPath"     : "./win-cofe-users",
     "projectsPath"     : "./win-cofe-projects",
-    "facilitiesPath"   : "./win-cofe-facilities",
-    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
-    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
     "fileCapSize"      : 500000,
@@ -45,7 +43,7 @@
       "port"             : 0,
       "externalURL"      : "",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
@@ -69,7 +67,7 @@
       "port"             : 0,
       "externalURL"      : "",
       "exclusive"        : true,
-      "stoppable"        : false,
+      "stoppable"        : true,
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],

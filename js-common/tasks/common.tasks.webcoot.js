@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.24   <--  Date of Last Modification.
+ *    14.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,9 +22,12 @@
 'use strict'; // *client*
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -80,29 +83,26 @@ function TaskWebCoot()  {
     }
   ];
 
-  this.parameters = { // input parameters
-    NOTE : {  type     : 'label',
-              label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
-                         '<h2>This Task is Experimental</h2>' +
-                         'WebCoot/Moorhen is developing fast aiming to deliver ' +
-                         'Coot functionality in-browser; many Coot functions are ' +
-                         'currently missing.<p>Please try it now and check ' +
-                         'regularly in future!<br>Any feedback is highly appreciated.' +
-                         '</i></center>',
-              lwidth   : 500,
-              position : [0,1,1,4]
-           }
-  };
+  // this.parameters = { // input parameters
+  //   NOTE : {  type     : 'label',
+  //             label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
+  //                        '<h2>This Task is Experimental</h2>' +
+  //                        'WebCoot/Moorhen is developing fast aiming to deliver ' +
+  //                        'Coot functionality in-browser; many Coot functions are ' +
+  //                        'currently missing.<p>Please try it now and check ' +
+  //                        'regularly in future!<br>Any feedback is highly appreciated.' +
+  //                        '</i></center>',
+  //             lwidth   : 500,
+  //             position : [0,1,1,4]
+  //          }
+  // };
 
 
 }
 
-
 if (__template)
-      TaskWebCoot.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWebCoot.prototype = Object.create ( TaskTemplate.prototype );
-TaskWebCoot.prototype.constructor = TaskWebCoot;
-
+  __cmd.registerClass ( 'TaskWebCoot',TaskWebCoot,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskWebCoot',TaskWebCoot,TaskTemplate.prototype );
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -112,7 +112,7 @@ TaskWebCoot.prototype.clipboard_name = function()  { return '"WebCoot"';    }
 
 TaskWebCoot.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return '<b>!!EXPERIMENTAL!!</b> fast-developing version of Coot for browsers';
+  return 'fit atoms and new ligands in electron density, validate and explore with WebCoot/Moorhen';
 }
 
 TaskWebCoot.prototype.taskDescription = function()  {
@@ -147,6 +147,19 @@ TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
 
 if (!__template)  {
   //  for client side
+
+  TaskWebCoot.prototype.isTaskAvailable = function()  {
+
+    if (isQtWebEngine())
+      return ['incompatible-browser',
+              'task is not compatible with the browser used',
+              '<h3>Task is not compatible with the browser used</h3>' +
+              'Consider using alternative task (Coot) or choose a different<br>' +
+              'browser through ' + appName() + ' configuration utility.' ];
+    else
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+
+  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskWebCoot.prototype.hotButtons = function()  {
@@ -224,7 +237,7 @@ if (!__template)  {
           args : [ xyzURL,'molecule' ]
         });
       }
-      if (file_key.mtz in istruct.files)  {
+      if ((this._type=='TaskWebCoot') && (file_key.mtz in istruct.files))  {
         let mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
         if (istruct.FWT)
           inputFiles.push ({

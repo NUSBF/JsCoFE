@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.04.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -57,6 +57,7 @@ var __user_settings   = {
 };
 var __user_role       = role_code.user;
 var __user_licence    = '';
+var __globus_id       = '';
 var __dormant         = 0;
 var __ccp4_version    = '';     // undefined
 
@@ -70,6 +71,7 @@ var __current_folder  = {
   folders   : []
 };
 var __local_setup     = false;
+var __title_page      = true;   // whether to show title page in local/desktop mode
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
 var __cloud_storage   = false;  // true if user has cloud storage allocated
@@ -96,8 +98,12 @@ var __iOS_device      = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window
                          /MacIntel/.test(navigator.platform));
 var __any_mobile_device = __mobile_device || __iOS_device;
 
-const __regexp_login  = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
-const __regexp_uname  = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_globus_id = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
+
+// variable gets raised in jscofe-browser after loading the page
+// alert ( ' isQt=' + isQtWebEngine() );
 
 /*  ==================== unfinished userAgentData version -- for future
 
@@ -130,6 +136,12 @@ function isSafari()  {
           navigator.userAgent &&
           navigator.userAgent.indexOf('CriOS') == -1 &&
           navigator.userAgent.indexOf('FxiOS') == -1;
+}
+
+function isQtWebEngine() {
+  return /QtWebEngine/i.test(navigator.userAgent) ||
+          typeof navigator.qt !== "undefined";
+          // (typeof window.isQtWebEngine !== "undefined" && window.isQtWebEngine === true);
 }
 
 function checkBrowser()  {
@@ -397,10 +409,10 @@ var __suggested_task_prob  = 0.03;  // do not list tasks with combined probabili
                                     // less than 3%
 var __suggested_task_nmin  = 3;     // minimum 3 tasks to suggest
 
-var __task_reference_base_url = './manuals/html-taskref/';
-var __user_guide_base_url     = './manuals/html-userguide/';
-var __dev_reference_base_url  = './manuals/html-dev/';
-var __tutorials_base_url      = './manuals/html-tutorials/';
+const __task_reference_base_url = './manuals/html-taskref/';
+const __user_guide_base_url     = './manuals/html-userguide/';
+const __dev_reference_base_url  = './manuals/html-dev/';
+const __tutorials_base_url      = './manuals/html-tutorials/';
 
 //var __rvapi_config_coot_btn = true;  // switch Coot button off (when undefined) in RVAPI
 
@@ -416,10 +428,12 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  var obj= eval('new '+value._type+'()');
-  //alert ( value._type );
+  // var obj= eval('new '+value._type+'()');
+  let obj= makeNewInstance ( value._type );
+  if (!obj)
+    alert ( ' unknown class? ' + value._type );
 
-  for (var property in value)
+  for (let property in value)
     obj[property]=value[property];
 
   return obj;

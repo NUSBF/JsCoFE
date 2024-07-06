@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.03.24   <--  Date of Last Modification.
+#    14.06.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,6 +34,7 @@ import json
 #  application imports
 from   pycofe.tasks   import basic
 from   pycofe.varut   import mmcif_utils
+from   pycofe.dtypes  import dtype_model, dtype_template
 # try:
 #     from pycofe.varut import messagebox
 # except:
@@ -115,10 +116,11 @@ class WebCoot(basic.TaskDriver):
         # mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
         # lead_key  = istruct.leadKey
 
+        ligand  = None
+        ligCode = None
+        ligPath = None
+        libPath = None
         if iobject._type=="DataRevision":
-          ligand  = None
-          ligCode = None
-          ligPath = None
           if hasattr(self.input_data.data,"ligand"):
               ligand  = self.makeClass ( self.input_data.data.ligand[0] )
               ligCode = ligand.code
@@ -132,7 +134,11 @@ class WebCoot(basic.TaskDriver):
         # Check for output files left by Moorhen and make the corresponding
         # output data objects
 
-        mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
+        listdir = os.listdir('.')
+        self.stderrln ( " >>>> " + str(listdir) )
+
+        mmcifout   = [f for f in os.listdir('.') if f.lower().endswith(".mmcif")]
+        self.stderrln ( " >>>> " + str(mmcifout) )
         hasResults = False
 
         if len(mmcifout)<=0:
@@ -148,6 +154,7 @@ class WebCoot(basic.TaskDriver):
             pass
 
         outputSerialNo = 0
+        make_title     = True
         for mmcif_f in mmcifout:
 
             outputSerialNo += 1
@@ -167,9 +174,17 @@ class WebCoot(basic.TaskDriver):
                 else:
                     self.stderrln ( " >>>> cannot convert output mmCIF to PDB" )
 
-                if iobject._type in ["DataRevision","DataStructure"]:
+                iobject_type = iobject._type
 
-                    self.putTitle ( "Output Results" )
+                if os.path.exists(mmcif_f+".MRSearchModel"):
+                    # moorhen output must be converted into MR model
+                    iobject_type = dtype_model.dtype()
+
+                if iobject_type in ["DataRevision","DataStructure"]:
+
+                    if make_title:
+                        self.putTitle ( "Results" )
+                        make_title = False
 
                     self.putMessage ( "<h3>Output Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
@@ -205,7 +220,7 @@ class WebCoot(basic.TaskDriver):
                                                     "Structure and electron density",
                                                     ostruct )
 
-                        if iobject._type=="DataRevision":
+                        if iobject_type=="DataRevision":
                             # update structure revision
                             iobject.setStructureData ( ostruct  )
                             self.putMessage ( "<h3>Structure Revision" +\
@@ -219,9 +234,11 @@ class WebCoot(basic.TaskDriver):
                     else:
                         self.stderrln ( "\n ***** output structure was not formed" )
 
-                elif iobject._type=="DataEnsemble":
+                elif iobject_type=="DataEnsemble":
+                    if make_title:
+                        self.putTitle ( "Results" )
+                        make_title = False
                     self.putMessage ( "<b>Edited MR ensemble:</b> " + iobject.dname )
-                    self.putTitle   ( "Output MR Ensemble" )
                     if iobject.sequence:
                         iobject.sequence = self.makeClass ( iobject.sequence )
                     ensemble = self.registerEnsemble ( iobject.sequence,pdb_fname,checkout=True )
@@ -233,12 +250,39 @@ class WebCoot(basic.TaskDriver):
                         self.putMessage ( "<b>Error: MR ensemble could not be formed</b>" )
                         self.stderrln   ( " ***** Error: MR ensemble could not be formed" )
                         
-                elif iobject._type=="DataModel":
-                    self.putMessage ( "<b>Edited MR model:</b> " + iobject.dname )
-                    self.putTitle   ( "Output MR Model" )
-                    if iobject.sequence:
-                        iobject.sequence = self.makeClass ( iobject.sequence )
-                    model = self.registerModel ( iobject.sequence,pdb_fname,checkout=True )
+                elif iobject_type=="DataModel":
+                    if make_title:
+                        self.putTitle ( "Results" )
+                        make_title = False
+                    # if outputSerialNo>1:
+                    #     self.putMessage ( "&nbsp;" )
+                    if len(mmcifout)>1:
+                        self.putMessage ( "<h3>Output #" + str(outputSerialNo) + "</h3>" )
+                    model = None
+                    if iobject_type==iobject._type:
+                        self.putMessage ( "<b>Edited MR model:</b> " + iobject.dname )
+                        if iobject.sequence:
+                            iobject.sequence = self.makeClass ( iobject.sequence )
+                        model = self.registerModel ( iobject.sequence,pdb_fname,checkout=True )
+                    else:
+                        self.putMessage ( "<b>MR model prepared from:</b> " + iobject.dname )
+                        subtype = []
+                        if dtype_template.subtypeProtein() in iobject.subtype:
+                            subtype.append ( dtype_template.subtypeProtein() )
+                        if dtype_template.subtypeRNA() in iobject.subtype:
+                            subtype.append ( dtype_template.subtypeRNA() )
+                        if dtype_template.subtypeDNA() in iobject.subtype:
+                            subtype.append ( dtype_template.subtypeDNA() )
+                        model = self.registerModel ( subtype,pdb_fname,checkout=True )
+                        if model:
+                            model.meta  = {
+                                "rmsd"    : "1.2",
+                                "seqId"   : "100.0"
+                            }
+                            model.seqId = "100.0"
+                            model.rmsd  = "1.2"
+                            self.add_seqid_remark ( model,["100.0"] )
+
                     if model:
                         self.putModelWidget ( self.getWidgetId("model_btn"),
                                               "Coordinates:&nbsp;",model )
@@ -247,9 +291,11 @@ class WebCoot(basic.TaskDriver):
                         self.putMessage ( "<b>Error: MR model could not be formed</b>" )
                         self.stderrln   ( " ***** Error: MR model could not be formed" )
 
-                elif iobject._type=="DataXYZ":
+                elif iobject_type=="DataXYZ":
+                    if make_title:
+                        self.putTitle ( "Results" )
+                        make_title = False
                     self.putMessage ( "<b>Edited structure model:</b> " + iobject.dname )
-                    self.putTitle   ( "Output Structure Model" )
                     xyz = self.registerXYZ ( mmcif_fname,pdb_fname,checkout=True )
                     if xyz:
                         # xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
@@ -279,9 +325,10 @@ class WebCoot(basic.TaskDriver):
             else:
                 summaryLine += " models saved"
         elif len(mmcifout)<=0:
-            self.stderrln ( "\n ***** no output .mmcf files found" )
+            self.stderrln ( "\n ***** no output .mmcif files found" )
         else:
-            self.stderrln ( "\n ***** " + str(len(mmcifout)) + " output .mmcf files found, but " +\
+            self.stderrln ( "\n ***** " + str(len(mmcifout))   +\
+                            " output .mmcif files found, but " +\
                             "none is found suitable" )
 
         self.generic_parser_summary["web_coot"] = {

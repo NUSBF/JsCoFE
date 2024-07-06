@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -23,9 +23,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.asudef' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -80,11 +83,9 @@ function TaskASUMod()  {
 
 }
 
-
 if (__template)
-      TaskASUMod.prototype = Object.create ( __template.TaskASUDef.prototype );
-else  TaskASUMod.prototype = Object.create ( TaskASUDef.prototype );
-TaskASUMod.prototype.constructor = TaskASUMod;
+  __cmd.registerClass ( 'TaskASUMod',TaskASUMod,__template.TaskASUDef.prototype );
+else    registerClass ( 'TaskASUMod',TaskASUMod,TaskASUDef.prototype );
 
 
 // ===========================================================================

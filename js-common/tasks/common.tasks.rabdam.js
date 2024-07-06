@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  ROTAMER Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev  2022-2023
+ *  (C) E. Krissinel, A. Lebedev  2022-2024
  *
  *  =================================================================
  *
@@ -21,10 +21,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -77,10 +79,8 @@ function TaskRabdam()  {
 }
 
 if (__template)
-      TaskRabdam.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskRabdam.prototype = Object.create ( TaskTemplate.prototype );
-TaskRabdam.prototype.constructor = TaskRabdam;
-
+  __cmd.registerClass ( 'TaskRabdam',TaskRabdam,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskRabdam',TaskRabdam,TaskTemplate.prototype );
 
 // ===========================================================================
 

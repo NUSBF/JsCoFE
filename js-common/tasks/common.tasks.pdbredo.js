@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.05.24   <--  Date of Last Modification.
+ *    01.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,14 +19,13 @@
  *
  */
 
-var __template = null;   // null __template indicates that the code runs in
-// client browser
+var __template = null;
+var __cmd      = null;
 
-// otherwise, the code runs on a server, in which case __template references
-// a module with Task Template Class:
-
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  __cmd      = require ( '../common.commands' );
+}
 
 // ===========================================================================
 
@@ -36,7 +35,7 @@ function TaskPDBREDO()  {   // must start with Task...
 
   // invoke the template class constructor:
   if (__template)  __template.TaskTemplate.call ( this );
-  else  TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
 
   // define fields important for jsCoFE framework
 
@@ -265,9 +264,8 @@ function TaskPDBREDO()  {   // must start with Task...
 // finish constructor definition
 
 if (__template)
-      TaskPDBREDO.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBREDO.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBREDO.prototype.constructor = TaskPDBREDO;
+  __cmd.registerClass ( 'TaskPDBREDO',TaskPDBREDO,__template.TaskTemplate.prototype );
+else    registerClass ( 'TaskPDBREDO',TaskPDBREDO,TaskTemplate.prototype );
 
 // ===========================================================================
 

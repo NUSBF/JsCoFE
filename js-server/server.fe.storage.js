@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    09.05.23   <--  Date of Last Modification.
+ *    25.05.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-server/server.fe.facilities.js
+ *  **** Module  :  js-server/server.fe.storage.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -22,43 +22,25 @@
 'use strict';
 
 //  load system modules
-const fs    = require('fs-extra');
-const path  = require('path');
+const fs      = require('fs-extra');
+const path    = require('path');
 
 //  load application modules
-const conf  = require('./server.configuration');
-const prj   = require('./server.fe.projects');
-const utils = require('./server.utils');
-const uh    = require('./server.fe.upload_handler');
-const cmd   = require('../js-common/common.commands');
-const fcl   = require('../js-common/common.data_facility');
+const conf    = require('./server.configuration');
+const prj     = require('./server.fe.projects');
+const utils   = require('./server.utils');
+const cmd     = require('../js-common/common.commands');
+const storage = require('../js-common/common.data_storage');
 
 //  prepare log
-const log   = require('./server.log').newLog(18);
+const log     = require('./server.log').newLog(18);
 
 // ===========================================================================
 
-const facilityListFName  = 'facilities.list';
 const cloudFileListFName = 'cloudfiles.list';
-const ICATDirName        = 'ICAT_facility';
 const cloudDirMetaFName  = '__jscofe__.meta';
 
 // ===========================================================================
-
-
-function getFacilityPath ( name_str )  {
-  if (name_str=='icat')  // path to directory containing all ICAT facility data
-    return path.join ( conf.getFEConfig().facilitiesPath,ICATDirName );
-  return '';
-}
-
-function getUserFacilityListPath ( loginData )  {
-// path to JSON file containing list of all projects (with project
-// descriptions, represented as class ProjectList) of user with
-// given login name
-  return path.join ( prj.getUserProjectsDirPath(loginData),facilityListFName );
-}
-
 
 function getUserCloudMounts ( loginData )  {
 //
@@ -76,9 +58,9 @@ function getUserCloudMounts ( loginData )  {
 //  [[name1,path1],[name2,path2],...[nameN,pathN]] otherwise.
 //
 
-var fileListPath = path.join ( prj.getUserProjectsDirPath(loginData),cloudFileListFName );
-var paths = conf.getFEConfig().getCloudMounts ( loginData.login );
-var text  = utils.readString ( fileListPath );
+let fileListPath = path.join ( prj.getUserProjectsDirPath(loginData),cloudFileListFName );
+let paths = conf.getFEConfig().getCloudMounts ( loginData.login );
+let text  = utils.readString ( fileListPath );
 
   if (text) {
     let regex_path = /^\s*([^\s#].+?)\s*:\s*(.+?)\s*$/gm;
@@ -255,7 +237,7 @@ function dirpath2sectors(dirpath, sectors, file_list) {
 }
 
 
-function readDirMeta ( dirpath,facilityDir )  {
+function readDirMeta ( dirpath,StorageDir )  {
 //  Directory meta-file format:
 //  -------------------------------------------------------------------------
 //  Short description of directory content (will be used as tooltip)
@@ -263,24 +245,25 @@ function readDirMeta ( dirpath,facilityDir )  {
 //  Full description of directory content (will be displayed in browser)
 //  -------------------------------------------------------------------------
 //
-  var jscofe_meta = utils.readString ( path.join(dirpath,facilityDir.name,cloudDirMetaFName) );
+  let jscofe_meta = utils.readString ( path.join(dirpath,StorageDir.name,cloudDirMetaFName) );
   if (jscofe_meta)  {
-    var jsmeta = jscofe_meta.split ( '[[[]]]' );
+    let jsmeta = jscofe_meta.split ( '[[[]]]' );
     if (jsmeta.length>1)  {
-      facilityDir.shortDesc = jsmeta[0].trim();
-      facilityDir.fullDesc  = jsmeta[1].trim();
+      StorageDir.shortDesc = jsmeta[0].trim();
+      StorageDir.fullDesc  = jsmeta[1].trim();
     }
   }
-  return facilityDir;
+  return StorageDir;
 }
 
+
 function _storage_mounts_listing ( cloudMounts )  {
-var slist = new fcl.StorageList()
+let slist = new storage.StorageList()
   slist.path = '';
   slist.name  = 'Cloud File Storage';
   if (cloudMounts)  {
-    for (var i=0;i<cloudMounts.length;i++)  {
-      var sdir  = new fcl.FacilityDir();
+    for (let i=0;i<cloudMounts.length;i++)  {
+      let sdir  = new storage.StorageDir();
       sdir.name = cloudMounts[i][0];
       sdir      = readDirMeta ( cloudMounts[i][1],sdir );
       slist.dirs.push ( sdir );
@@ -291,10 +274,10 @@ var slist = new fcl.StorageList()
 
 
 function getDirListing ( spath,sroot )  {
-let slist = new fcl.StorageList()
+let slist = new storage.StorageList()
 
   function add_file ( filename,size )  {
-    var sfile  = new fcl.FacilityFile();
+    let sfile  = new storage.StorageFile();
     sfile.name = filename;
     sfile.size = size;
     slist.files.push ( sfile );
@@ -314,7 +297,7 @@ let slist = new fcl.StorageList()
   }
   if (utils.dirExists(rpath))  {
     let sdir  = null;
-    sdir      = new fcl.FacilityDir();
+    sdir      = new storage.StorageDir();
     sdir      = readDirMeta ( rpath,sdir );
     if (rpath!=rroot)  sdir.name = '..';
                  else  sdir.name = '**top**';
@@ -328,7 +311,7 @@ let slist = new fcl.StorageList()
       let stat  = utils.fileExists(fpath);
       if (stat) {
         if (fstr1 == 'dir') {
-          sdir      = new fcl.FacilityDir();
+          sdir      = new storage.StorageDir();
           sdir.name = fstr0;
           sdir      = readDirMeta ( rpath,sdir );
           slist.dirs.push(sdir);
@@ -346,7 +329,7 @@ let slist = new fcl.StorageList()
 
 
 function getCloudDirListing ( cloudMounts,spath )  {
-var slist = null;
+let slist = null;
 
   if (spath.length==0)  {
     // empty storage path: return the list of storage mounts
@@ -354,8 +337,8 @@ var slist = null;
 
     // slist.name  = 'Cloud File Storage';
     //
-    // for (var i=0;i<cloudMounts.length;i++)  {
-    //   var sdir  = new fcl.FacilityDir();
+    // for (let i=0;i<cloudMounts.length;i++)  {
+    //   let sdir  = new storage.StorageDir();
     //   sdir.name = cloudMounts[i][0];
     //   sdir      = readDirMeta ( cloudMounts[i][1],sdir );
     //   slist.dirs.push ( sdir );
@@ -364,7 +347,7 @@ var slist = null;
   } else  {
     // storage path is given; return actual directory listing for spath
 
-    slist = new fcl.StorageList()
+    slist = new storage.StorageList()
     slist.path = spath;
 
     if (!cloudMounts)  {
@@ -377,19 +360,19 @@ var slist = null;
     slist.name  = spath;
 
     function add_file ( filename,size )  {
-      var sfile  = new fcl.FacilityFile();
+      let sfile  = new storage.StorageFile();
       sfile.name = filename;
       sfile.size = size;
       slist.files.push ( sfile );
       return sfile;
     }
 
-    var lst     = spath.split('/');
-    var dirpath = null;
+    let lst     = spath.split('/');
+    let dirpath = null;
     //console.log ( spath );
     //console.log ( lst );
     //console.log ( cloudMounts );
-    for (var i=0;(i<cloudMounts.length) && (!dirpath);i++)
+    for (let i=0;(i<cloudMounts.length) && (!dirpath);i++)
       if (cloudMounts[i][0]==lst[0])  {
         if (lst.length<2)
               dirpath = cloudMounts[i][1];
@@ -405,12 +388,12 @@ var slist = null;
 
     if (dirpath)  {
       if (utils.dirExists(dirpath))  {
-        var sdir  = new fcl.FacilityDir();
+        let sdir  = new storage.StorageDir();
         sdir      = readDirMeta ( dirpath,sdir );
         sdir.name = '..';
         slist.dirs.push ( sdir );
         slist.sectors = [];
-        var file_list = dirpath2sectors ( dirpath,slist.sectors,[] );
+        let file_list = dirpath2sectors ( dirpath,slist.sectors,[] );
         for (let file_tuple of file_list) {
           let fstr0 = file_tuple[0];
           let fstr1 = file_tuple[1];
@@ -418,7 +401,7 @@ var slist = null;
           let stat  = utils.fileExists(fpath);
           if (stat) {
             if (fstr1 == 'dir') {
-              sdir      = new fcl.FacilityDir();
+              sdir      = new storage.StorageDir();
               sdir.name = fstr0;
               sdir      = readDirMeta ( dirpath,sdir );
               slist.dirs.push(sdir);
@@ -464,30 +447,30 @@ var slist = null;
     "name":"Demo projects",
     "size":0,
     "dirs":[
-      {"_type":"FacilityDir",
+      {"_type":"StorageDir",
        "name":"..",
        "size":"",
        "dirs":[],"files":[]
       },{
-       "_type":"FacilityDir",
+       "_type":"StorageDir",
        "name":"howtos",
        "size":"",
        "dirs":[],"files":[]}
      ],
      "files":[
-      {"_type":"FacilityFile",
+      {"_type":"StorageFile",
        "id":"",
        "name":"beta-blip phaser example.ccp4_demo",
        "size":67394556,
        "date":""
       },{
-       "_type":"FacilityFile",
+       "_type":"StorageFile",
        "id":"",
        "name":"beta-blip.ccp4_demo",
        "size":67394556,
        "date":""
       },{
-       "_type":"FacilityFile",
+       "_type":"StorageFile",
        "id":"",
        "name":"beta-blip.zip",
        "size":67394556,
@@ -498,42 +481,6 @@ var slist = null;
 */
 
   return slist;
-
-}
-
-
-// ===========================================================================
-
-
-function initFacilities ( facilityListPath )  {
-
-  var success = false;
-
-  var fclList = new fcl.FacilityList();
-  fclList.addFacility ( fcl.facility_names.icat,'iCAT (STFC/Diamond Ltd.)' );
-
-  var fclListPath = facilityListPath;
-  if (!fclListPath)
-    fclListPath = getFacilityListPath();
-
-  if (utils.writeObject(fclListPath,fclList))  {
-
-    var icat_path = getFacilityPath ( fcl.facility_names.icat );
-    if (utils.fileExists(icat_path))  {
-      log.standard ( 1,'facilities initialised at ' + fclListPath );
-      success = true;
-    } else if (utils.mkDir(icat_path))  {
-      log.standard ( 2,'initialised facilities at ' + fclListPath );
-      success = true;
-    } else  {
-      log.error ( 1,'fail to initialise facilities at ' + fclListPath );
-    }
-
-  } else  {
-    log.error ( 2,'fail to initialise facility list at ' + fclListPath );
-  }
-
-  return success;
 
 }
 
@@ -553,183 +500,13 @@ function getCloudFileTree ( loginData,data,callback_func )  {
   } else if (data['type']=='abspath')  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
                               getDirListing(data['path'],data['root']) ) );
-  } else  {
-    get_user_facility_list ( loginData,callback_func );
   }
   return null;
 }
 
 
-function get_user_facility_list ( loginData,callback_func )  {
-var response = null;  // must become a cmd.Response object to return
-
-  log.detailed ( 4,'get facilities list, login ' + loginData.login );
-
-  // Get users' projects list file name
-  var userFacilityListPath = getUserFacilityListPath ( loginData );
-
-  if (!utils.fileExists(userFacilityListPath))  {
-    if (!initFacilities(userFacilityListPath))  {
-      log.error ( 3,'cannot create list of facilities at ' + userFacilityListPath );
-      response = new cmd.Response ( cmd.fe_retcode.writeError,
-                            '[00150] Facilities list cannot be created.','' );
-    } else  {
-      log.standard ( 3,'list of facilities created at ' + userFacilityListPath );
-    }
-  }
-
-  if (!response)  {
-    var fList = utils.readObject ( userFacilityListPath );
-    if (fList)  {
-      response = new cmd.Response ( cmd.fe_retcode.ok,'',fList );
-    } else  {
-      log.error ( 4,'cannot read list of facilities at ' + userFacilityListPath );
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                '[00151] Facilities list cannot be read.','' );
-    }
-  }
-
-  callback_func ( response );
-
-}
-
-
-// ===========================================================================
-
-const updateResultFName = 'update_result.json';
-const updateInputFName  = 'update_input.json';
-
-// ---------------------------------------------------------------------------
-
-function updateFacility ( loginData,data )  {
-
-  log.standard ( 4,'updating facility "' + data.facility.name +
-                   '", login ' + loginData.login );
-
-  var response_data = {};
-  response_data.status = cmd.fe_retcode.ok;
-
-  var jobDir = prj.getJobDirPath ( loginData,data.project,data.tid );
-
-  var pwd  = data.pwd;
-  data.pwd = '';  // do not write password on disk
-
-  // identify processing script for the facility
-  var processor = '';
-  var fcl_name  = data.facility.name;
-  switch (fcl_name)  {
-    case 'icat'  : processor = 'pycofe.proc.icat';  break;
-    default      : response_data.status = 'unknown facility "' + data.item.name + '"';
-  }
-
-  if (response_data.status==cmd.fe_retcode.ok)  {
-
-    // clear result file
-    var resultFile = path.join(jobDir,updateResultFName);
-    utils.removeFile ( resultFile );
-
-    // write out data for the script
-    var updateFile = path.join(jobDir,updateInputFName);
-    utils.writeObject ( updateFile,data );
-
-    // launch update
-    // we use "python" instead of ccp4-python because of difficulties in getting
-    // suds (and possible requests) module(s) to work across all platforms.
-    var pythonName = 'python';
-    if (conf.isWindows())
-      pythonName = conf.pythonName();
-    var fcl_update = utils.spawn ( pythonName, // conf.pythonName(),
-                     ['-m',processor,jobDir,updateFile,resultFile,
-                      conf.getFEConfig().ICAT_wdsl,conf.getFEConfig().ICAT_ids,
-                      uh.uploadDir(),conf.getFEConfig().facilitiesPath],{} )
-    fcl_update.stdin.setEncoding('utf-8');
-    //fcl_update.stdout.pipe(process.stdout);
-    fcl_update.stdin.write ( pwd + '\n' );
-    fcl_update.stdin.end(); /// this call seems necessary, at least with plain node.js executable
-
-    /*
-    var wereErrors = false;
-    fcl_update.stderr.on ( 'data',function(data){
-      log.error ( 10,fcl_name + ' update errors in "' + jobDir + '"' );
-      wereErrors = true;
-    });
-    */
-
-    fcl_update.on ( 'close', function(code){
-      if (!utils.fileExists(resultFile))  {
-        var result = {};
-        result['status'] = 'Unknown errors';
-        utils.writeObject ( resultFile,result );
-      }
-    });
-
-  }
-
-  return new cmd.Response ( cmd.fe_retcode.ok,'',response_data );
-
-}
-
-
-// ---------------------------------------------------------------------------
-
-function checkFacilityUpdate ( loginData,data )  {
-
-  var response_data = {};
-  response_data.status = cmd.fe_retcode.inProgress;
-
-  var jobDir = prj.getJobDirPath ( loginData,data.project,data.tid );
-
-  // check result file
-  var resultFilePath = path.join(jobDir,updateResultFName);
-  if (utils.fileExists(resultFilePath))  {
-    var result = utils.readObject ( resultFilePath );
-    if (result)  {
-      if (result.status==cmd.fe_retcode.ok)  {
-        var updateFilePath = path.join(jobDir,updateInputFName);
-        var update_data = utils.readObject ( updateFilePath );
-        if (update_data)  {
-          var userFacilityListPath = getUserFacilityListPath ( loginData );
-          var userFacilityList = new fcl.FacilityList();
-          if (utils.fileExists(userFacilityListPath))
-            userFacilityList.from_JSON ( utils.readString(userFacilityListPath) );
-          switch (update_data.item._type)  {
-            case 'Facility'      :
-            case 'FacilityUser'  : userFacilityList.addVisits (
-                                        update_data.facility.name,
-                                        update_data.uid,result.vname,result.vid,
-                                        result.vdate );
-                                break;
-            case 'FacilityVisit' : userFacilityList.addDatasets (
-                                        update_data.facility.name,
-                                        update_data.uid,update_data.visit.id,
-                                        result.datasets );
-                                break;
-            default : ;
-          }
-          utils.writeObject ( userFacilityListPath,userFacilityList );
-          response_data = result;
-        } else
-          response_data.status = cmd.fe_retcode.fileNotFound;
-      } else
-        response_data.status = result.status;
-      //} else if (result.status==cmd.fe_retcode.askPassword)  {
-      //  response_data.status = result.status;
-      //} else
-      //  response_data.status = cmd.fe_retcode.fileNotFound;
-    } else
-      response_data.status = cmd.fe_retcode.readError;
-  }
-
-  return new cmd.Response ( cmd.fe_retcode.ok,'',response_data );
-
-}
-
-
 // ==========================================================================
 // export for use in node
-//module.exports.checkFacilities     = checkFacilities;
-module.exports.initFacilities      = initFacilities;
+
 module.exports.getCloudFileTree    = getCloudFileTree;
-module.exports.updateFacility      = updateFacility;
-module.exports.checkFacilityUpdate = checkFacilityUpdate;
 module.exports.getUserCloudMounts  = getUserCloudMounts;

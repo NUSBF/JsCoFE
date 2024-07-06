@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.05.24   <--  Date of Last Modification.
+ *    05.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function AccountPage ( sceneId )  {
     this.addMenuItem ( 'Current project','project',function(){
       makeProjectPage ( sceneId );
     });
-  this.addMenuItem ( 'Project folder','list',function(){
+  this.addMenuItem ( 'Back to Projects','list',function(){
     makeProjectListPage ( sceneId );
   });
 //  if (__admin)
@@ -135,15 +135,16 @@ function AccountPage ( sceneId )  {
                             'Choose new password' );
     pwd1_inp  .setStyle   ( 'password','','confirm password',
                             'Type password again here' );
-    globus_inp.setStyle   ( 'email','','username@globusid.org',
-                            'Should be a valid Globus Username (eg. username@globusid.org)');
+    globus_inp.setStyle   ( 'text',__regexp_globus_id,
+                            'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+                            'Please enter your Globus ID in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
   }
   cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
                             'from command prompt. It should be changed periodically ' +
                             'for security reasons. Press button on the left to ' +
                             'generate new CloudRun Id.' );
-  globus_inp.setTooltip   ( 'Globus Id is used for transferring data via Globus ' +
-                            'service. It does not need to be specified if Globus ' +
+  globus_inp.setTooltip   ( 'Globus Id is used for transferring data via Globus. ' +
+                            'It does not need to be specified if a Globus ' +
                             'End Point is not installed at your instance of ' +
                             appName() + '.' );
 
@@ -446,7 +447,7 @@ function AccountPage ( sceneId )  {
 
     if (full_list)  {
 
-      msg = validateUserData ( user_inp,email_inp,login_inp );
+      msg = validateUserData ( user_inp,email_inp,login_inp,globus_inp );
 
       if (pwd_inp.getValue().length<=0)
         msg += '<b>Password</b> must be provided (old or new).<p>';
@@ -478,10 +479,15 @@ function AccountPage ( sceneId )  {
 
     if (msg)  {
 
+      
+      let msg1 = '<ul>' + replaceAll(replaceAll(msg,'<b>','<li><b>'),'<p>','</li>') +
+                 '</ul>';
+
       new MessageBox ( accLbl + ' Update',
-          accLbl + ' Update cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again',
-          'msg_information');
+          '<h2>Incorrect Update Data</h2>' +
+          'The following items do not have correct value:<p>' +
+          msg1 + 'Please check all items and try again.',
+          'msg_excl_yellow');
 
     } else  {
 
@@ -643,8 +649,10 @@ function AccountPage ( sceneId )  {
 
 }
 
-AccountPage.prototype = Object.create ( BasePage.prototype );
-AccountPage.prototype.constructor = AccountPage;
+// AccountPage.prototype = Object.create ( BasePage.prototype );
+// AccountPage.prototype.constructor = AccountPage;
+
+registerClass ( 'AccountPage',AccountPage,BasePage.prototype );
 
 
 function makeAccountPage ( sceneId )  {
