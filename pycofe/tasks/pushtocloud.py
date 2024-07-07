@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.04.24   <--  Date of Last Modification.
+#    07.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -95,6 +95,10 @@ class PushToData(basic.TaskDriver):
         #     "arg2",
         #     "argN"
         # ],logType="Main" )
+
+        """
+        ./dl_client.js --url http://130.246.93.69:8100/api --user jools-dev --cloudrun_id nxvd-3uq5-ch23-u0n2 --source test --id data1 upload  -- PATH/TO/FILES
+        """
 
         self.putMessage ( "Data was pushed in folder " +\
                           os.path.join(cloud_user,destFolder) +\
