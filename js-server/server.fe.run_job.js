@@ -1139,7 +1139,8 @@ function writeJobStats ( jobEntry )  {
 
     let report_task_fpath = path.join (
       prj.getJobReportDirPath(jobEntry.loginData,jobEntry.project,jobEntry.jobId),
-      'task.tsk' );
+      'task.tsk' 
+    );
     let report_tsk = utils.readString ( report_task_fpath );
     if (report_tsk)  {
       let report_tsk_list = report_tsk.split(';;;');

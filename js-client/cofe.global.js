@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.07.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -30,8 +30,8 @@ var __maintainerEmail = 'ccp4@ccp4.ac.uk';
 // session identification
 
 var __login_token     = '';
-var __login_id        = '';
-var __login_user      = '';
+var __login_id        = '';   // login name 
+var __login_user      = '';   // user name
 var __user_settings   = {
   color_modes : {
     preferred_mode : 'light',  // light|dark|system; make 'system' in final version
