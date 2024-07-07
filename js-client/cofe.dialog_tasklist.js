@@ -1052,6 +1052,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     // */
 
     this.makeSection ( grid,'Tasks in Development',[
+      new TaskPushToCloud  (),
       // new TaskCootUtils    (),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
