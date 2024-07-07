@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -314,10 +314,10 @@ Widget.prototype.setFontLineHeight = function ( lineHeight ) {
 Widget.prototype.setFont = function ( family,size,bold,italic ) {
   this.element.style.fontFamily = family;
   this.element.style.fontSize = size;
-  if (bold) this.element.style.fontWeight = 'bold';
-  else this.element.style.fontWeight = 'normal';
-  if (italic) this.element.style.fontStyle = 'italic';
-  else this.element.style.fontStyle = 'normal';
+  if (bold)   this.element.style.fontWeight = 'bold';
+       else   this.element.style.fontWeight = 'normal';
+  if (italic) this.element.style.fontStyle  = 'italic';
+         else this.element.style.fontStyle  = 'normal';
   return this;
 }
 
@@ -333,9 +333,9 @@ Widget.prototype.setPaddings = function ( left,top,right,bottom ) {
 
 Widget.prototype.setMargins = function (left, top, right, bottom) {
   let css = {};
-  if (left) css['margin-left'] = left;
-  if (top) css['margin-top'] = top;
-  if (right) css['margin-right'] = right;
+  if (left)   css['margin-left'  ] = left;
+  if (top)    css['margin-top'   ] = top;
+  if (right)  css['margin-right' ] = right;
   if (bottom) css['margin-bottom'] = bottom;
   $(this.element).css(css);
   return this;
