@@ -650,7 +650,9 @@ if (!__template)  {
     if ((this.state!=job_code.new) && (this.state!=job_code.running))
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
-    div.grid.setLabel ( '<h2>Input Data</h2>',0,0,1,4 ).setFontItalic(true).setNoWrap();
+    div.input_title_lbl = div.grid.setLabel ( '<h2>Input Data</h2>',0,0,1,4 )
+                                  .setFontItalic(true).setNoWrap();
+    // div.grid.setLabel ( '<h2>Input Data</h2>',0,0,1,4 ).setFontItalic(true).setNoWrap();
     div.grid1 = div.grid.setGrid ( '',1,0,1,4 );
     div.grid.setLabel ( '&nbsp;',2,0,1,4 );
 

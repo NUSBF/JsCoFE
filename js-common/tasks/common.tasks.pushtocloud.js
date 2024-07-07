@@ -22,9 +22,12 @@
 'use strict';
 
 var __template = null;
+var __cmd      = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.xia2' );
+  __cmd      = require ( '../common.commands' );
+}
 
 
 // ===========================================================================
