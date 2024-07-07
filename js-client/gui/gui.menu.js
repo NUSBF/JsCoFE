@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,7 @@ function MenuItem ( text,icon_uri,spacing=-1 )  {
     });
     if (icon_uri.length>0)
       $(this.text_div.element).css({
-        'margin-left' : '1.5em'
+        'margin-left'  : '1.5em'
       });
     this.addWidget ( this.text_div );
   } else
