@@ -837,14 +837,22 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
       } else  {
 
+        // alert ( ' >>> ' + __login_id + '\n ' + __login_user + '\n ' + dlg.tree.projectData.desc.owner.login );
+
+        let projectOwner = dlg.tree.projectData.desc.owner.login;
         dlg.close_btn.setDisabled ( true );
-        serverRequest ( fe_reqtype.getUserRation,{ topup : true },'User Ration',
+        serverRequest ( fe_reqtype.getUserRation,{ 
+                          topup : true,
+                          user  : projectOwner
+                        },'User Ration',
           function(rdata){   // on success
 
             let pdesc  = dlg.parent_page.ration.pdesc;
             let ration = rdata.ration;
-            dlg.parent_page.ration = ration;
-            dlg.parent_page.displayUserRation ( pdesc );
+            if (projectOwner==__login_id)  {
+              dlg.parent_page.ration = ration;
+              dlg.parent_page.displayUserRation ( pdesc );
+            }
             // console.log ( ration.storage );
 
             // dlg.parent_page.ration = ration;
@@ -857,44 +865,77 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
             if (ration && (!__local_setup))  {
               if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
-                new MessageBox ( 'Disk Quota Exceeded',
-                    '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>' +
-                    'The job cannot be run because disk quota is up and cannot ' +
-                    'be automatically increased. Your account currently uses<p>' +
-                    '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                    '&nbsp;&nbsp;&nbsp;&nbsp;' + round(ration.storage_used,1) + 
-                    ' MBytes at ' + round(ration.storage,1) + ' MBytes allocated.</b><p>' +
-                    '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
-                    '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and ' +
-                    'CPU widgets in the top-right corner of the screen.<p>' +
-                    '<i><b>Recommended action:</b></i> export an old project and then ' +
-                    'delete it from the list. You will be able to re-import that ' +
-                    'project later using the file exported.' +
-                    '<p><i>Read about disk space and project management in ' +
-                    appName() + tiplink + '</i></div>', 'msg_excl' );
+                if (projectOwner!=__login_id)  {
+                  new MessageBox ( 'Disk Quota Exceeded',
+                      '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>'  +
+                      'The job cannot be run because <b>project owner\'s</b> '  +
+                      'disk quota is up and cannot be automatically increased.' +
+                      '<p>Contact project\'s owner (' + __login_user + 
+                      '), who can free up disk space in their account by deleting ' + 
+                      'jobs and projects.' +
+                      '<p><i>Read about disk space and project management in ' +
+                      appName() + tiplink + '</i></div>', 'msg_excl' );
+                } else  {
+                  new MessageBox ( 'Disk Quota Exceeded',
+                      '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>' +
+                      'The job cannot be run because your disk quota is up and ' +
+                      'cannot be automatically increased. Your account currently uses<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      '&nbsp;&nbsp;&nbsp;&nbsp;' + round(ration.storage_used,1) + 
+                      ' MBytes at ' + round(ration.storage,1) + ' MBytes allocated.</b><p>' +
+                      '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
+                      '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and ' +
+                      'CPU widgets in the top-right corner of the screen.<p>' +
+                      '<i><b>Recommended action:</b></i> export an old project and then ' +
+                      'delete it from the list. You will be able to re-import that ' +
+                      'project later using the file exported.' +
+                      '<p><i>Read about disk space and project management in ' +
+                      appName() + tiplink + '</i></div>', 'msg_excl' );
+                }
                 dlg.enableCloseButton ( false );
                 return;
               }
               if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
-                new MessageBox ( '24-hour CPU Quota Exceeded',
-                    '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
-                    'The job cannot be run because your 24-hour CPU quota is up. ' +
-                    'In last 24 hours, you have used<p>' +
-                    '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                    round(ration.cpu_day_used,3) + ' CPU hours at ' + 
-                    round(ration.cpu_day,3) + ' CPU hours allocated.</b><p>' +
-                    '<i><b>Hint:</b></i> resource usage can be monitored using ' +
-                    'disk and CPU widgets in the top-right corner of the screen. ' +
-                    'You may need to push the <i>"Reload"</i> button in the ' +
-                    'toolbar after periods of inactivity to get updated readings.<p>' +
-                    '<i><b>Recommended action:</b></i> run the job later or ask ' +
-                    appName() + ' maintainer to increase your 24-hour CPU quota.', 
-                    'msg_excl' );
+                if (projectOwner!=__login_id)  {
+                  new MessageBox ( '24-hour CPU Quota Exceeded',
+                      '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
+                      'The job cannot be run because <b>project owner\'s</b> 24-hour ' +
+                      'CPU quota is up.<p>' +
+                      'Try running the job later or ask your project owner (' + 
+                      __login_user + ') to contact ' + appName() + 
+                      ' maintainer to increase <b>their</b> 24-hour CPU quota.</div>', 
+                      'msg_excl' );
+                } else  {
+                  new MessageBox ( '24-hour CPU Quota Exceeded',
+                      '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
+                      'The job cannot be run because your 24-hour CPU quota is up. ' +
+                      'In last 24 hours, you have used<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      round(ration.cpu_day_used,3) + ' CPU hours at ' + 
+                      round(ration.cpu_day,3) + ' CPU hours allocated.</b><p>' +
+                      '<i><b>Hint:</b></i> resource usage can be monitored using ' +
+                      'disk and CPU widgets in the top-right corner of the screen. ' +
+                      'You may need to push the <i>"Reload"</i> button in the ' +
+                      'toolbar after periods of inactivity to get updated readings.<p>' +
+                      '<i><b>Recommended action:</b></i> run the job later or ask ' +
+                      appName() + ' maintainer to increase your 24-hour CPU quota.</div>', 
+                      'msg_excl' );
+                }
                 dlg.enableCloseButton ( false );
                 return;
               }
               if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
-                new MessageBox ( '30-day CPU Quota Exceeded',
+                if (projectOwner!=__login_id)  {
+                  new MessageBox ( '30-day CPU Quota Exceeded',
+                    '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
+                    'The job cannot be run because <b>project owner\'s</b> 30-day ' +
+                    'CPU quota is up.<p>' +
+                      'Try running the job later or ask your project owner (' + 
+                      __login_user + ') to contact ' + appName() + 
+                      ' maintainer to increase <b>their</b> 30-day CPU quota.</div>', 
+                    'msg_excl');
+                } else  {
+                  new MessageBox ( '30-day CPU Quota Exceeded',
                     '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
                     'The job cannot be run because your 30-day CPU quota is up. ' +
                     'In last 30 days, you have used<p>' +
@@ -906,14 +947,15 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     'You may need to push the <i>"Reload"</i> button in the ' +
                     'toolbar after periods of inactivity to get updated readings.<p>' +
                     '<i><b>Recommended action:</b></i> run the job later or ask ' +
-                    appName() + ' maintainer to increase your 30-day CPU quota.', 
+                    appName() + ' maintainer to increase your 30-day CPU quota.</div>', 
                     'msg_excl');
+                }
                 dlg.enableCloseButton ( false );
                 return;
               }
             }
 
-            if (rdata.code=='topup')  {
+            if ((rdata.code=='topup') && (projectOwner==__login_id))  {
               dlg.parent_page.ration = ration;
               dlg.parent_page.makeUserRationIndicator();        
               window.setTimeout ( function(){
