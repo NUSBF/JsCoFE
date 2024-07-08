@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.07.24   <--  Date of Last Modification.
+ *    04.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1068,11 +1068,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImport        (),
     new TaskImportSeqCP   (),
     new TaskImportPDB     (),
+    new TaskFetchData     (),
     new TaskImportReplace (),
-    new TaskMigrate       (),
-    // 'Upload image data to ' + appName() + ' Storage',
-    new TaskFetchData     ()
-    // new TaskPushToCloud   ()
+    new TaskMigrate       ()
   ];
 
   if (__cloud_storage)
