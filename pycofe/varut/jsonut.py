@@ -3,18 +3,19 @@
 #
 # ============================================================================
 #
-#    28.06.19   <--  Date of Last Modification.
+#    08.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  JSON HANDLING CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 import json
+import re
 
 class __jobj__(object):
 
@@ -72,6 +73,42 @@ def writejObject ( obj,file_path ):
     file.close()
     return
 
+def extract_json ( body,text ):    
+    start = -1
+    open_braces = 0
+    for i, char in enumerate(text):
+        if char == '{':
+            if open_braces == 0:
+                start = i
+            open_braces += 1
+        elif char == '}':
+            open_braces -= 1
+            if open_braces == 0 and start != -1:
+                json_str = text[start:i+1]
+                try:
+                    json_obj = json.loads(json_str)
+                    return json_obj
+                except json.JSONDecodeError:
+                    body.stderrln ( " ***** Error: found JSON is invalid" )
+                    return None
+    body.stderrln ( " ***** Error: no JSON object found in the text" )
+    return None
+
+    # # Regular expression to match a JSON object
+    # json_pattern = r'\{(?:[^{}]|(?R))*\}'
+    # match = re.search(json_pattern, text)
+    
+    # if match:
+    #     json_str = match.group(0)
+    #     try:
+    #         json_obj = json.loads(json_str)
+    #         return json_obj
+    #     except json.JSONDecodeError:
+    #         body.stderrln ( " ***** Error: found JSON is invalid" )
+    #         return None
+    # else:
+    #     body.stderrln ( " ***** Error: no JSON object found in the text" )
+    #     return None
 
 #
 #  ------------------------------------------------------------------
