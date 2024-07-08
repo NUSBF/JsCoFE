@@ -25,21 +25,10 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false, data_free_gb, data_max_days, data_prune_mins) {
+  constructor(data_dir, keep_with_data = false) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
-    this.data_free_gb = data_free_gb;
-    this.data_max_days = data_max_days;
-    this.data_prune_mins = data_prune_mins;
     this.catalog = {};
-
-    // prune any external data not managed directly by datalink
-    if (this.data_prune_mins > 0) {
-      log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${this.data_prune_mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
-      setInterval(this.pruneData.bind(this), this.data_prune_mins * 1000 * 60);
-    } else {
-      log.info(`Configured to not prune old data`);
-    }
   }
 
   getCatalog() {
@@ -273,16 +262,16 @@ class dataCatalog {
     }
   }
 
-  async pruneData() {
-    await this.pruneManagedData(this.data_free_gb, this.data_max_days);
-    if (this.data_max_days > 0) {
-      await this.pruneExternalData(this.data_max_days);
+  async pruneData(data_free_gb, data_max_days) {
+    await this.pruneManagedData(data_free_gb, data_max_days);
+    if (data_max_days > 0) {
+      await this.pruneExternalData(data_max_days);
     }
   }
 
-  async pruneManagedData(min_free_gb, data_max_days) {
+  async pruneManagedData(data_free_gb, data_max_days) {
     log.info(`pruneManagedData - pruning managed data older than ${data_max_days} day(s)`);
-    const min_free = min_free_gb * GB;
+    const min_free = data_free_gb * GB;
 
     let entries = [];
     const catalog = this.getCatalog();
@@ -323,7 +312,7 @@ class dataCatalog {
       return;
     }
 
-    log.info(`pruneManagedData - Free space is less than ${this.data_free_gb}GB - pruning oldest data`);
+    log.info(`pruneManagedData - Free space is less than ${data_free_gb}GB - pruning oldest data`);
 
     entries.sort(function(a,b) {
       return new Date(a.date) - new Date(b.date);

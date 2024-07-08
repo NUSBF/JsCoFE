@@ -19,7 +19,6 @@ class appClient extends client {
   constructor() {
     super(true);
     this.datalink = new datalink(false);
-    this.datalink.standalone = true;
 
     this.action_map = {
       search: this.datalink.searchSourceCatalogs,
