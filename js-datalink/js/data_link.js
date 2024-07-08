@@ -22,8 +22,8 @@ const MB = 1000000;
 
 class dataLink {
 
-  constructor() {
-    this.standalone = false;
+  constructor(server_mode = true) {
+    this.server_mode = server_mode;
     this.ds = {};
     this.jobs = {};
 
@@ -46,7 +46,10 @@ class dataLink {
 
     this.loadSourceCatalogs();
 
-    this.dataPruneInit(config.get('storage.data_prune_mins'))
+    // if we are running in server mode set up the data pruning jobs
+    if (this.server_mode) {
+      this.dataPruneInit(config.get('storage.data_prune_mins'))
+    }
 
     process.on('error', (err) => {
       log.error(err);
@@ -300,8 +303,8 @@ class dataLink {
     }
   }
 
-  fetchData(user, source, id, force = this.standalone) {
-    if (! tools.validUserName(user) && ! this.standalone) {
+  fetchData(user, source, id, force = ! this.server_mode) {
+    if (! tools.validUserName(user) && ! this.server_mode) {
       return tools.errorMsg(`Invalid user name`, 400);
     }
 
