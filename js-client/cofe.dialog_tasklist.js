@@ -1052,7 +1052,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     // */
 
     this.makeSection ( grid,'Tasks in Development',[
-      // new TaskPushToCloud  (),
+      new TaskPushToCloud  (),
       // new TaskCootUtils    (),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
@@ -1070,9 +1070,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImportPDB     (),
     new TaskImportReplace (),
     new TaskMigrate       (),
-    'Upload image data to ' + appName() + ' Storage',
-    new TaskFetchData     (),
-    new TaskPushToCloud   ()
+    // 'Upload image data to ' + appName() + ' Storage',
+    new TaskFetchData     ()
+    // new TaskPushToCloud   ()
   ];
 
   if (__cloud_storage)
