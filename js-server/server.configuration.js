@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.24   <--  Date of Last Modification.
+ *    08.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -587,9 +587,10 @@ function CCP4DirName()  {
                      "diskReserve" : 10000
                    }
     },
-    "facilitiesPath"   : "./cofe-facilities",
-    "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
-    "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
+    // REDUNDANT, NOT USED:
+    // "facilitiesPath"   : "./cofe-facilities",
+    // "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
+    // "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {  // optional item, may be null or missing
       "arpwarp" : {
         "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
@@ -605,6 +606,11 @@ function CCP4DirName()  {
         "icon_provider" : "org_gphl",
         "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
       }
+    },
+    "datalink" : {
+      "api_url"     : "https://data.cloud.ccp4.ac.uk/api",
+      "mount_name"  : "x",
+      "verify_cert" : true
     },
     "bootstrapHTML"    : "jscofe.html",
     "maxRestarts"      : 100,
