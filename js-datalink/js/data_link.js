@@ -27,11 +27,11 @@ class dataLink {
     this.ds = {};
     this.jobs = {};
 
-    this.catalog = new data_catalog(tools.getDataDir(),
-      config.get('storage.catalogs_with_data'),
-      config.get('storage.data_free_gb'),
-      config.get('storage.data_max_days'),
-      config.get('storage.data_prune_mins'));
+    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'));
+
+    // data pruning config
+    this.data_free_gb = config.get('storage.data_free_gb');
+    this.data_max_days = config.get('storage.data_max_days');
 
     // load data source classes
     for (let name of DATA_SOURCES) {
@@ -45,6 +45,8 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
+
+    this.dataPruneInit(config.get('storage.data_prune_mins'))
 
     process.on('error', (err) => {
       log.error(err);
@@ -103,6 +105,18 @@ class dataLink {
   loadSourceCatalogs() {
     for (let name in this.ds) {
       this.ds[name].loadCatalog(path.join(tools.getCatalogDir(), name + '.json'));
+    }
+  }
+
+  dataPruneInit(mins) {
+    // prune manage and unmanaged datalink data
+    if (mins > 0) {
+      log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
+      setInterval(this.catalog.pruneData.bind(this.catalog), mins * 1000 * 60, this.data_free_gb, this.data_max_days);
+      // run inital data prune
+      this.catalog.pruneData(this.data_free_gb, this.data_max_days);
+    } else {
+      log.info(`Configured to not prune old data`);
     }
   }
 
@@ -530,7 +544,7 @@ class dataLink {
     data_stats.size_gb = (data_stats.size / GB).toFixed(2);
 
     let free = tools.getFreeSpace(tools.getDataDir(), '1');
-    let data_free = config.get('storage.data_free_gb') * GB;
+    let data_free = this.data_free_gb * GB;
 
     // get free disk space
     data_stats.free_space = free;
