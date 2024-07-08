@@ -1132,10 +1132,14 @@ def renameProject(driver, testName):
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
-
-    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    try:
+        clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    except: pass
+    # try:
+    #     clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+    # except: pass
     if not clickResult:
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
     time.sleep(3)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
@@ -1149,7 +1153,6 @@ def renameProject(driver, testName):
     projectInput[-1].click()
     projectInput[-1].clear()
     projectInput[-1].send_keys('Successfull - %s' % testName)
-
 
     textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
     textEls[-1].click()
