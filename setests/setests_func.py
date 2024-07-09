@@ -1149,10 +1149,21 @@ def renameProject(driver, testName):
     time.sleep(3)
 
     # Shall return list of two elements for project creation
-    projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
-    projectInput[-1].click()
-    projectInput[-1].clear()
-    projectInput[-1].send_keys('Successfull - %s' % testName)
+    try:
+        projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
+        projectInput[-1].click()
+        projectInput[-1].clear()
+        projectInput[-1].send_keys('Successfull - %s' % testName)
+    except: pass
+
+    try:
+        #Put a descriptive title here
+        projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % "Put a descriptive title here")
+        projectInput[-1].click()
+        projectInput[-1].clear()
+        projectInput[-1].send_keys('Successfull - %s' % testName)
+
+    except: pass
 
     textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
     textEls[-1].click()
