@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -898,13 +898,19 @@ function topupUserRation ( loginData,callback_func )  {
 
 
 function getUserRation ( loginData,data,callback_func )  {
-  if (data.topup && (loginData.login!=ud.__local_user_id))  {
-    topupUserRation ( loginData,callback_func );
+  let userLoginData = loginData;
+  let login_id      = loginData.login;
+  if ('user' in data)
+    login_id = data.user;
+  if (login_id!=loginData.login)
+    userLoginData = getUserLoginData ( login_id );
+  if (data.topup && (login_id!=ud.__local_user_id))  {
+    topupUserRation ( userLoginData,callback_func );
   } else  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
         code    : 'ok',
         message : '',
-        ration  : ration.getUserRation(loginData)
+        ration  : ration.getUserRation ( userLoginData )
       })
     );
   }
