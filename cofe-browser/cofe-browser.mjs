@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -242,6 +242,20 @@ function createWindow ( url ) {
               focusedWindow.webContents.toggleDevTools();
             }
           }
+        },
+        {
+          label: 'Clear Cache',
+          click () {
+            // mainWindow.webContents.send('clear-cache');
+            session.defaultSession.clearCache().then(() => {
+              console.log('Cache successfully cleared');
+              // Optionally, notify the user with a dialog or other means
+              // mainWindow.webContents.send('cache-cleared');
+            }).catch((error) => {
+              console.error(`Failed to clear cache: ${error}`);
+              // mainWindow.webContents.send('cache-clear-failed', error);
+            });
+           }
         }
       ]
     }, {

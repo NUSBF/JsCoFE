@@ -169,11 +169,11 @@ class FetchData(basic.TaskDriver):
         cloudrun_id = None
         verify_cert = True
         with open("__fetch_meta.json","r") as f:
-            fetch_meta = json.loads ( f.read() )
+            fetch_meta  = json.loads ( f.read() )
             cloud_user  = fetch_meta["login"]
             cloudrun_id = fetch_meta["cloudrun_id"]
-            api_url = fetch_meta["api_url"]
-            mount_name = fetch_meta["mount_name"]
+            api_url     = fetch_meta["api_url"]
+            mount_name  = fetch_meta["mount_name"]
             verify_cert = fetch_meta["verify_cert"]
 
         dl = DataLink(api_url, cloud_user, cloudrun_id, verify_cert)
