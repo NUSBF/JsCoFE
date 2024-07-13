@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    07.07.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1227,19 +1227,23 @@ ACEditor.prototype.getText = function () {
 // -------------------------------------------------------------------------
 // TextArea class
 
-function TextArea(text, placeholder, nrows, ncols) {
-  Widget.call(this, 'textarea');
-  this.element.setAttribute('rows', nrows);
-  this.element.setAttribute('cols', ncols);
-  this.element.setAttribute('placeholder', placeholder);
+function TextArea ( text, placeholder, nrows, ncols ) {
+  Widget.call ( this,'textarea' );
+  this.element.setAttribute ( 'rows', nrows );
+  this.element.setAttribute ( 'cols', ncols );
+  this.element.setAttribute ( 'placeholder', placeholder );
   this.element.value = text;
 }
 
 TextArea.prototype = Object.create(Widget.prototype);
 TextArea.prototype.constructor = TextArea;
 
-TextArea.prototype.getValue = function () {
+TextArea.prototype.getValue = function() {
   return this.element.value;
+}
+
+TextArea.prototype.setValue = function ( text ) {
+  return this.element.value = text;
 }
 
 

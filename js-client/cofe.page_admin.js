@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,15 +90,18 @@ function AdminPage ( sceneId )  {
   this.uaPanel.setLabel    ( '   ',0,0,1,1 );
   this.uaPanel.setCellSize ( '95%','32px',0,0 );
   col = 1;
-  let newuser_btn  = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
-                                 .setSize('30px','30px')
-                                 .setTooltip('Make new user');
-  let dormant_btn  = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
-                                 .setSize('30px','30px')
-                                 .setTooltip('Identify and mark dormant users');
-  let announce_btn = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
-                                 .setSize('30px','30px')
-                                 .setTooltip('Send e-mail announcement to all users');
+  let newuser_btn   = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
+                                  .setSize('30px','30px')
+                                  .setTooltip('Make new user');
+  let dormant_btn   = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
+                                  .setSize('30px','30px')
+                                  .setTooltip('Identify and mark dormant users');
+  let announce_btn  = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
+                                  .setSize('30px','30px')
+                                  .setTooltip('Post announcement');
+  let sendtoall_btn = this.uaPanel.setButton ( '',image_path('sendtoall'),0,col++,1,1 )
+                                  .setSize('30px','30px')
+                                  .setTooltip('Send e-mail to all users');
   for (let i=1;i<col;i++)
     this.uaPanel.setCellSize ( 'auto','32px',0,i );
 
@@ -196,7 +199,11 @@ function AdminPage ( sceneId )  {
     });
 
     announce_btn.addOnClickListener ( function(){
-      new AnnounceDialog();
+      new AnnouncementDialog();
+    });
+
+    sendtoall_btn.addOnClickListener ( function(){
+      new SendToAllDialog();
     });
 
     refresh_btn.addOnClickListener ( function(){
