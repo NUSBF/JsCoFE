@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.07.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1052,7 +1052,6 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     // */
 
     this.makeSection ( grid,'Tasks in Development',[
-      new TaskPushToCloud  (),
       // new TaskCootUtils    (),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
@@ -1070,9 +1069,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImportPDB     (),
     new TaskImportReplace (),
     new TaskMigrate       (),
-    // 'Upload image data to ' + appName() + ' Storage',
-    new TaskFetchData     ()
-    // new TaskPushToCloud   ()
+    'Upload to Cloud Storage',
+    new TaskFetchData     (),
+    new TaskPushToCloud   ()
   ];
 
   if (__cloud_storage)
