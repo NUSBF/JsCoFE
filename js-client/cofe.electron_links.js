@@ -25,6 +25,7 @@
 
 var __electron_download_progress = null;
 var __electron_find_text_dialog  = null;
+var __electron_search_text       = '';
 
 // ---------------------------------------------------------------------------
 
@@ -103,8 +104,6 @@ DownloadProgressDialog.prototype.setFailed = function ( savePath )  {
 }
 
 // ---------------------------------------------------------------------------
-
-let __electron_search_text = '';
 
 function FindTextDialog()  {
 
