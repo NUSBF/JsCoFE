@@ -52,18 +52,17 @@ function TaskFetchData()  {
         },
     LABEL1 : {
           type     : 'label',
-          label    : `
-            <p>This task can fetch raw X-ray diffraction data from the following sites:</p>
-            <ul>
-            <li><a href="https://data.sbgrid.org/" target="_new">https://data.sbgrid.org/</a></li>
-            <li><a href="https://proteindiffraction.org/" target="_new">https://proteindiffraction.org/</a></li>
-            <li><a href="https://xrda.pdbj.org/" target="_new">https://xrda.pdbj.org/</a></li>
-            </ul>
-            <p>
-            You can enter a 4 character PDB identifier or a Digital Object Identifier (DOI) from <br />
-            the sites above to fetch the corresponding data into CCP4 Cloud.
-            </p>
-            `,
+          label    : 
+            '<p>This task can fetch raw X-ray diffraction data from the following sites:</p>' +
+            '<ul>' +
+            '<li><a href="https://data.sbgrid.org/" target="_new">https://data.sbgrid.org/</a></li>' +
+            '<li><a href="https://proteindiffraction.org/" target="_new">https://proteindiffraction.org/</a></li>' +
+            '<li><a href="https://xrda.pdbj.org/" target="_new">https://xrda.pdbj.org/</a></li>' +
+            '</ul>' +
+            '<p>' +
+            'You can enter a 4 character PDB identifier or a Digital Object Identifier (DOI) from <br />' +
+            'the sites above to fetch the corresponding data into CCP4 Cloud.' +
+            '</p>',
           position : [1,0,1,4]
         }
   };
