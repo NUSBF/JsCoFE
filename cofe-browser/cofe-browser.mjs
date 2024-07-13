@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    07.07.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -166,7 +166,7 @@ function createWindow ( url ) {
         ),
         { type: 'separator'  },
         {
-          label       : 'Quit CCP4 Cloud Local',
+          label       : 'Quit',
           accelerator : 'CmdOrCtrl+Q',
           click() {
             sendStopSignal ( url );
