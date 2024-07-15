@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.05.24   <--  Date of Last Modification.
+#    15.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -375,7 +375,8 @@ class StructurePrediction(basic.TaskDriver):
 
                         nModels += 1
 
-                        xyz.fixBFactors ( self.outputDir(),"alphafold",body=self )
+                        # xyz.fixBFactors ( self.outputDir(),"alphafold",body=self )
+                        xyz.BF_correction = "alphafold-suggested"
                         for s in seq:
                             xyz.addDataAssociation ( s.dataId )
 
