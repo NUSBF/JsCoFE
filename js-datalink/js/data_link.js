@@ -46,9 +46,13 @@ class dataLink {
 
     this.loadSourceCatalogs();
 
-    // if we are running in server mode set up the data pruning jobs
+    // if we are running in server mode set up the data pruning and catalog update jobs
     if (this.server_mode) {
-      this.dataPruneInit(config.get('storage.data_prune_mins'))
+      this.dataPruneInit(config.get('storage.data_prune_mins'));
+      let update_days = config.get('storage.catalog_update_days');
+      if (update_days > 0) {
+        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * 60 * 1000);
+      }
     }
 
     process.on('error', (err) => {
