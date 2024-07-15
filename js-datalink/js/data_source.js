@@ -16,9 +16,10 @@ class dataSource {
   catalog_size = 0;
   catalog_status = null;
 
-  constructor(data_dir, jobs) {
+  constructor(data_dir, catalog_dir, jobs) {
     this.data_dir = data_dir;
     this.jobs = jobs;
+    this.catalog_file = path.join(catalog_dir, this.name + '.json');;
   }
 
   getEntry(id) {
@@ -32,49 +33,60 @@ class dataSource {
     log.info(`${this.name} - Added catalog: ${this.catalog_size} entries`);
   }
 
-  saveCatalog(catalog_file, catalog) {
-    log.info(`${this.name} - Saving catalog to ${catalog_file}`);
+  saveCatalog(catalog) {
+    log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
     this.addCatalog(catalog);
     let json = JSON.stringify(catalog);
     try {
-      fs.mkdirSync(path.dirname(catalog_file), { recursive: true });
+      fs.mkdirSync(path.dirname(this.catalog_file), { recursive: true });
     } catch (err) {
       log.info(`${this.name} - Unable to create ${tools.getCatalogDir()} - ${err}`);
     }
-    let file = fs.writeFile(catalog_file, json, (err) => {
+    let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {
-        log.error(`${this.name} - Unable to save ${catalog_file} - ${err.message}`);
-      } else {
-        this.catalog_status = status.completed;
+        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err.message}`);
       }
     });
   }
 
-  async loadCatalog(catalog_file) {
-    if (! fs.existsSync(catalog_file)) {
-      log.info(`${this.name} - Fetching Catalog`);
-      const catalog = await this.fetchCatalog();
-      if (catalog) {
-        this.saveCatalog(catalog_file, catalog);
-      } else {
-        log.error(`loadCatalog - Unable to load catalog for ${this.name}`);
-      }
+  loadCatalog() {
+    if (! fs.existsSync(this.catalog_file)) {
+      this.updateCatalog(this.catalog_file);
       return;
     }
 
-    fs.readFile(catalog_file, (err, data) => {
+    fs.readFile(this.catalog_file, (err, data) => {
       if (err) {
-        log.error(`${this.name} - Unable to load ${catalog_file} - ${err.message}`);
+        log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
       } else {
         try {
-          log.info(`${this.name} - Loading catalog ${catalog_file}`);
+          log.info(`${this.name} - Loading catalog ${this.catalog_file}`);
           const catalog = JSON.parse(data);
           this.addCatalog(catalog);
         } catch (err) {
-          log.error(`${this.name} - Unable to parse ${catalog_file} - ${err.message}`);
+          log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
         }
       }
     });
+  }
+
+  async updateCatalog() {
+    if (this.catalog_status === status.inProgress) {
+      log.info(`${this.name} - Fetch already in progress`);
+      return;
+    }
+    this.catalog_status = status.inProgress
+    log.info(`${this.name} - Fetching Catalog`);
+    const catalog = await this.fetchCatalog();
+    if (catalog) {
+      this.saveCatalog(catalog);
+    } else {
+      // if there is no current catalog and the fetch mark the current catalog as failed
+      if (this.catalog_size == 0) {
+        this.catalog_status = status.failed;
+      }
+      log.error(`${this.name} - Error fetching catalog`);
+    }
   }
 
   setErrorCallback(callback) {
