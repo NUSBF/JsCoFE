@@ -31,6 +31,8 @@ class appClient extends client {
       sources_all: this.datalink.getAllSources,
       catalog: this.datalink.getSourceCatalog,
       catalog_all: this.datalink.getAllSourceCatalogs,
+      catalog_update: this.datalink.updateSourceCatalog,
+      catalog_update_all: this.datalink.updateAllSourceCatalogs,
       stats: this.datalink.getDataStats
     }
 
