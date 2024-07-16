@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.24   <--  Date of Last Modification.
+ *    16.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,6 +121,7 @@ function AccountPage ( sceneId )  {
   //                          'letters, numbers,\n dots, dashes and spaces' );
 
   if (full_list)  {
+
     user_inp  .setStyle   ( 'text',__regexp_uname, // "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$",
                             'John Smith',
                             'This name will be used for addressing to you in\n' +
@@ -138,35 +139,35 @@ function AccountPage ( sceneId )  {
     globus_inp.setStyle   ( 'text',__regexp_globus_id,
                             'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
                             'Please enter your Globus ID in the format xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
-  }
-  cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
-                            'from command prompt. It should be changed periodically ' +
-                            'for security reasons. Press button on the left to ' +
-                            'generate new CloudRun Id.' );
-  globus_inp.setTooltip   ( 'Globus Id is used for transferring data via Globus. ' +
+    globus_inp.setTooltip ( 'Globus Id is used for transferring data via Globus. ' +
                             'It does not need to be specified if a Globus ' +
                             'End Point is not installed at your instance of ' +
                             appName() + '.' );
 
-  if (full_list)  {
-    user_lbl    .setFontSize( '112%' ).setWidth('auto');
-    email_lbl   .setFontSize( '112%' );
-    login_lbl   .setFontSize( '112%' );
-    pwd_lbl     .setFontSize( '112%' );
-    pwd1_lbl    .setFontSize( '112%' );
-    licence_lbl .setFontSize( '112%' );
-    feedback_lbl.setFontSize( '112%' );
-    globus_lbl  .setFontSize( '112%' );
+    user_lbl    .setFontSize ( '112%' ).setWidth('auto');
+    email_lbl   .setFontSize ( '112%' );
+    login_lbl   .setFontSize ( '112%' );
+    pwd_lbl     .setFontSize ( '112%' );
+    pwd1_lbl    .setFontSize ( '112%' );
+    licence_lbl .setFontSize ( '112%' );
+    feedback_lbl.setFontSize ( '112%' );
+    globus_lbl  .setFontSize ( '112%' );
     /* == authoris_lbl.setFontSize( '112%' ); */
-    user_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-    email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-    login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
-    pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-    pwd1_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-    globus_inp  .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+    user_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
+    email_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
+    login_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
+    pwd_inp     .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
+    pwd1_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
+    globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('200pt');
+
   }
-  cloudrun_lbl.setFontSize( '112%' );
-  cloudrun_inp.setFontSize( '94%'  ).setReadOnly(true).setWidth('110pt').setHeight('26px');
+
+  cloudrun_lbl.setFontSize ( '112%' );
+  cloudrun_inp.setFontSize ( '94%'  ).setReadOnly(true).setWidth('110pt').setHeight('26px');
+  cloudrun_inp.setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
+                             'from command prompt. It should be changed periodically ' +
+                             'for security reasons. Press button on the left to ' +
+                             'generate new CloudRun Id.' );
 
   let row = 0;
   panel.setWidget              ( title_lbl   ,row,0,1,4   );
