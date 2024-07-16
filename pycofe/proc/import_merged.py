@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    16.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -381,12 +381,27 @@ def run ( body,   # body is reference to the main Import class
                             body.runApp ( "ctruncate",cmd )
                             if renameColumns:                             
                                 body.open_stdin()
-                                body.write_stdin ([
-                                    "LABIN  FILE 1 E1=F E2=SIGF E3="  + mf.FREE,
-                                    "LABOUT FILE 1 E1=" + meanCols[0] +\
-                                                 " E2=" + meanCols[1] +\
-                                                 " E3=" + mf.FREE
-                                ])
+                                if anomCols[4] != "X":
+                                    body.write_stdin ([
+                                        "LABIN  FILE 1 E1=F E2=SIGF"       +\
+                                                     " E3=F(+) E4=SIGF(+)" +\
+                                                     " E5=F(-) E6=SIGF(-)" +\
+                                                     " E7=" + mf.FREE,
+                                        "LABOUT FILE 1 E1=" + meanCols[0]  +\
+                                                     " E2=" + meanCols[1]  +\
+                                                     " E3=" + anomCols[0]  +\
+                                                     " E4=" + anomCols[1]  +\
+                                                     " E5=" + anomCols[2]  +\
+                                                     " E6=" + anomCols[3]  +\
+                                                     " E7=" + mf.FREE
+                                    ])
+                                else:
+                                    body.write_stdin ([
+                                        "LABIN  FILE 1 E1=F E2=SIGF E3="  + mf.FREE,
+                                        "LABOUT FILE 1 E1=" + meanCols[0] +\
+                                                    " E2="  + meanCols[1] +\
+                                                    " E3="  + mf.FREE
+                                    ])
                                 cmd = ["HKLIN1",outFileName,"HKLOUT",outFileName]
                                 body.close_stdin()
                                 body.runApp ( "cad",cmd,logType="Service" )
