@@ -1079,15 +1079,17 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     return()
 
 def exitProject(driver):
-    print('exiting test project')
+    print('!!!!exiting test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
-
-
-    time.sleep(3)
+    #
+    clickResult = driver.find_element(By.XPATH, "//id[contains(@style, 'images_png/list.png')]")
+    clickResult.click()
+    time.sleep(1)
+    if not clickResult:
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+    time.sleep(1)
 
 
 
