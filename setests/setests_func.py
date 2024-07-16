@@ -1083,12 +1083,14 @@ def exitProject(driver):
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
-    #
-    clickResult = driver.find_element(By.XPATH, "//id[contains(@style, 'images_png/list.png')]")
+    #Back to Projects
+    clickResult = driver.find_element(By.XPATH,  "//*[normalize-space()='%s']" % 'Back to Projects')
     clickResult.click()
     time.sleep(1)
     if not clickResult:
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+        # clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+        clickResult = driver.find_element(By.XPATH, "//id[contains(@style, 'images_png/list.png')]")
+        clickResult.click()
     time.sleep(1)
 
 
