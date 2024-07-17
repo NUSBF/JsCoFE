@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.24   <--  Date of Last Modification.
+ *    17.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,17 +153,17 @@ function AccountPage ( sceneId )  {
     feedback_lbl.setFontSize ( '112%' );
     globus_lbl  .setFontSize ( '112%' );
     /* == authoris_lbl.setFontSize( '112%' ); */
-    user_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
-    email_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
-    login_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
-    pwd_inp     .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
-    pwd1_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('200pt');
-    globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('200pt');
+    user_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
+    email_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
+    login_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt').setReadOnly(true);
+    pwd_inp     .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
+    pwd1_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
+    globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('234pt');
 
   }
 
   cloudrun_lbl.setFontSize ( '112%' );
-  cloudrun_inp.setFontSize ( '94%'  ).setReadOnly(true).setWidth('110pt').setHeight('26px');
+  cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('110pt').setHeight('26px');
   cloudrun_inp.setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
                              'from command prompt. It should be changed periodically ' +
                              'for security reasons. Press button on the left to ' +
@@ -352,13 +352,17 @@ function AccountPage ( sceneId )  {
                     'take an effect',prfrow,0,1,2 )
         .setFontSize ( '90%' ).setFontItalic(true);
 
+  let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
+  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
+  cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
+  cloudrun_copy_btn.addOnClickListener ( function(){
+    copyToClipboard ( cloudrun_inp.getValue() );
+  });
 
-  let cloudrun_btn = new Button  ( 'renew',image_path('regenerate') );
+  let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
   cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
                             'security reasons)' );
-  cloudrun_pnl.setWidget ( cloudrun_btn,0,1,1,1 );
-  cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
-  cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
+  cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
   cloudrun_btn.addOnClickListener ( function(){
     cloudrun_inp.setValue ( getRandomToken() );
     new MessageBox ( 'Save changes',
@@ -367,6 +371,9 @@ function AccountPage ( sceneId )  {
                      'scripts.</div>','msg_excl_yellow' );
   });
 
+  cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
+  cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
+  cloudrun_pnl.setVerticalAlignment ( 0,2,'middle' );
 
   let licence_btn  = null;
   let feedback_btn = null; 
