@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.03.24   <--  Date of Last Modification.
+#    17.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -68,15 +68,11 @@ class Simbad(asudef.ASUDef):
     def run(self):
 
         qtype = []
-        if self.jobManager in ["SGE","SLURM"]:
+        nSubJobs = "4"
+        if self.jobManager in ["SGE","SCRIPT","SLURM"]:
             nSubJobs = self.getCommandLineParameter ( "nproc" )
             if not nSubJobs:
                 nSubJobs = "0"
-            #if len(sys.argv)>5:
-            #    nSubJobs = sys.argv[5]
-            #qtype = ["-submit_qtype",self.jobManager.lower()]
-        else:
-            nSubJobs = "4"
 
         # fetch input data
         idata = None
