@@ -62,7 +62,7 @@ class Xia2(basic.TaskDriver):
 
         nSubJobs = "4"
         if self.jobManager in ["SGE","SCRIPT","SLURM"]:
-            nSubJobs = self.getCommandLineParameter ( "nproc" )
+            nSubJobs = self.getCommandLineParameter ( "ncores" )
             if not nSubJobs:
                 nSubJobs = "1"
 

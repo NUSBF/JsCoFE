@@ -1072,7 +1072,8 @@ function ncRunJob ( job_token,meta )  {
       default      :
       case 'CLIENT':
       case 'SHELL' :  log.standard ( 5,'starting... ' );
-                      command.push ( 'nproc=' + nproc.toString() );
+                      command.push ( 'nproc='  + nproc.toString()  );
+                      command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );
                       jobEntry.pid = job.pid;
 
@@ -1122,9 +1123,10 @@ function ncRunJob ( job_token,meta )  {
                       });
                   break;
 
-      case 'SGE'   :  command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SGE'   :  command.push ( 'queue='  + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      command.push ( 'nproc=' + nproc.toString() );
+                      command.push ( 'nproc='  + nproc.toString()  );
+                      command.push ( 'ncores=' + ncores.toString() );
                       let qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
@@ -1162,7 +1164,8 @@ function ncRunJob ( job_token,meta )  {
 
       case 'SLURM' :  //command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      command.push ( 'nproc=' + nproc.toString() );
+                      command.push ( 'nproc='  + nproc.toString()  );
+                      command.push ( 'ncores=' + ncores.toString() );
                       let sbatch_params = ncConfig.exeData.concat ([
                         '--export=ALL',
                         '--output='        + path.join(jobDir,'_job.stdo'),  // slurm stdout
@@ -1227,9 +1230,10 @@ function ncRunJob ( job_token,meta )  {
                   break;
 
 
-      case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SCRIPT' : command.push ( 'queue='  + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
-                      command.push ( 'nproc=' + nproc.toString() );
+                      command.push ( 'nproc='  + nproc.toString()  );
+                      command.push ( 'ncores=' + ncores.toString() );
                       let script_params = [
                         'start',
                         path.join(jobDir,'_job.stdo'),  // qsub stdout
