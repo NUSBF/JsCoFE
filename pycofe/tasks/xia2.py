@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.08.22   <--  Date of Last Modification.
+#    17.07.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -61,14 +61,11 @@ class Xia2(basic.TaskDriver):
         # Prepare xia2 job
 
         nSubJobs = "4"
-        if self.jobManager in ["SGE","SCRIPT"]:
+        if self.jobManager in ["SGE","SCRIPT","SLURM"]:
             nSubJobs = self.getCommandLineParameter ( "nproc" )
             if not nSubJobs:
                 nSubJobs = "1"
-            #if len(sys.argv)>=5:
-            #    nSubJobs = sys.argv[-1]
 
-        #have_xds = ("XDS_home" in os.environ) and ("XDSGUI_home" in os.environ)
         have_xds   = ("XDS_home"   in os.environ)
         have_durin = ("Xia2_durin" in os.environ)
 
