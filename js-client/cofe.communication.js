@@ -215,10 +215,10 @@ function checkVersionMatch ( response,localServer_bool )  {
             '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
             '</i></b><sub>&nbsp;</sub></center>' +
             'which is higher than version<br><center><sup>&nbsp;</sup><b><i>'
-            + appVersion() + '</b></i><sub>&nbsp;</sub></center>' + appName() +
-            ' server is currently using.'  +
-            '<hr/>The ' + appName() + ' client will be now disabled, which means<br>' +
-            'that you cannot run Coot and similar applications.<p>Contact your ' + 
+            + appVersion() + '</b></i><sub>&nbsp;</sub></center>the ' + appName() +
+            ' server is currently using.<br>'  +
+            '<hr/><p>The ' + appName() + ' client will be now disabled, which means<br>' +
+            'that you cannot run Coot and other local applications.<p>Contact your ' + 
             appName() + ' server maintainer.' +
             '<hr/></center>',
             'Continue', function(){
