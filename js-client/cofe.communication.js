@@ -178,6 +178,8 @@ function checkVersionMatch ( response,localServer_bool )  {
   let rs = response.version.split(' ');
   let v1 = rs[0];
 
+  console.log ( ' response ' + response.version );
+
   if (localServer_bool)
     return true;  // may need a better solution
 
