@@ -218,7 +218,7 @@ function checkVersionMatch ( response,localServer_bool )  {
             + appVersion() + '</b></i><sub>&nbsp;</sub></center>' + appName() +
             ' server is currently using.'  +
             '<hr/>The ' + appName() + ' client will be now disabled, which means<br>' +
-            'that you cannot run Coot and similar applications.<br>Contact your ' + 
+            'that you cannot run Coot and similar applications.<p>Contact your ' + 
             appName() + ' server maintainer.' +
             '<hr/></center>',
             'Continue', function(){
