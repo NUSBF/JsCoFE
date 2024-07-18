@@ -91,7 +91,7 @@ TaskPushToCloud.prototype.icon                = function() { return 'task_pushto
 TaskPushToCloud.prototype.clipboard_name      = function() { return '"PushToCloud"';    }
 // TaskPushToCloud.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home']; }
 
-// TaskPushToCloud.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
+TaskPushToCloud.prototype.lowestClientVersion = function() { return '1.8.000 [18.07.2027]'; }
 
 TaskPushToCloud.prototype.currentVersion      = function() {
 let version = 0;
