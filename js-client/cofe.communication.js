@@ -209,6 +209,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     if (v0<v1)  {
       console.log ( ' response 1 ' + rs );
       if ((rs.length>2) && (rs[2]=='client'))  {
+        console.log ( ' response 2 ' + __fe_url );
         new MessageBoxF ( appName() + ' client',
             '<center>' + appName() + ' Client has advanced to version' +
             '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
