@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.07.24   <--  Date of Last Modification.
+ *    18.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -217,8 +217,8 @@ function checkVersionMatch ( response,localServer_bool )  {
             'which is higher than version<br><center><sup>&nbsp;</sup><b><i>'
             + appVersion() + '</b></i><sub>&nbsp;</sub></center>' + appName() +
             ' server is currently using.'  +
-            '<hr/>The ' + appName() + ' client will be now disabled, which means that<br>' +
-            'you cannot run Coot and similar applications.<br>Contact your ' + 
+            '<hr/>The ' + appName() + ' client will be now disabled, which means<br>' +
+            'that you cannot run Coot and similar applications.<br>Contact your ' + 
             appName() + ' server maintainer.' +
             '<hr/></center>',
             'Continue', function(){
