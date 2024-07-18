@@ -221,8 +221,8 @@ function checkVersionMatch ( response,localServer_bool )  {
             'and similar applications. Contact your ' + appName() + ' server maintainer.' +
             '<hr/></center>',
             'Continue', function(){
-              window.location = __fe_url;
-              //"https://cloud.ccp4.ac.uk";
+              // window.location = __fe_url;
+              window.location = "https://cloud.ccp4.ac.uk";
             },true,  'msg_excl' );
         // console.log ( ' response 3 ' + rs );
         // new MessageBox ( appName() + ' client',
