@@ -178,8 +178,6 @@ function checkVersionMatch ( response,localServer_bool )  {
   let rs = response.version.split(' ');
   let v1 = rs[0];
 
-  console.log ( ' response ' + response.version );
-
   if (localServer_bool)
     return true;  // may need a better solution
 
@@ -206,24 +204,25 @@ function checkVersionMatch ( response,localServer_bool )  {
       }
     } else if (v0<v1)  {
     */
-    if (v0<v1)  {
-      console.log ( ' response 1 ' + rs );
-      if ((rs.length>2) && (rs[2]=='client'))  {
-        console.log ( ' response 2 ' + JSON.stringify(response.data) );
 
+    if ((rs.length>2) && (rs[2]=='client'))
+      __fe_url = response.data.fe_url;
+
+    if (v0<v1)  {
+      if ((rs.length>2) && (rs[2]=='client'))  {
         new MessageBoxF ( appName() + ' client',
-            '<center>' + appName() + ' Client has advanced to version' +
+            '<center>'  + appName() + ' Client has advanced to version' +
             '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
             '</i></b><sub>&nbsp;</sub></center>' +
-            'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
-            + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
-            '<hr/>The ' + appName() + ' client will be now disabled, which means that ' +
-            'you cannot run Coot<br>' +
-            'and similar applications. Contact your ' + appName() + ' server maintainer.' +
+            'which is higher than version<br><center><sup>&nbsp;</sup><b><i>'
+            + appVersion() + '</b></i><sub>&nbsp;</sub></center>' + appName() +
+            ' server is currently using.'  +
+            '<hr/>The ' + appName() + ' client will be now disabled, which means that<br>' +
+            'you cannot run Coot and similar applications.<br>Contact your ' + 
+            appName() + ' server maintainer.' +
             '<hr/></center>',
             'Continue', function(){
-              // window.location = __fe_url;
-              window.location = "https://cloud.ccp4.ac.uk";
+              window.location = response.data.fe_url;
             },true,  'msg_excl' );
         // console.log ( ' response 3 ' + rs );
         // new MessageBox ( appName() + ' client',
