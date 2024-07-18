@@ -607,7 +607,8 @@ if (!dbx)  {
 
     if (startsWith(this.nc_type,'client'))  {
 
-      console.log ( ' >>>>>>\n ' + __client_version + '\n ' + this.lowestClientVersion() );
+      console.log ( ' >>>>>>\n ' + __client_version + '\n ' + this.lowestClientVersion() +
+                    '\n ' + compareVersions(__client_version,this.lowestClientVersion()) );
 
       if (__local_service &&
           (compareVersions(__client_version,this.lowestClientVersion())<=0))  {
