@@ -234,6 +234,7 @@ function checkVersionMatch ( response,localServer_bool )  {
             'you cannot run Coot<br>' +
             'and similar applications. Contact your ' + appName() + ' server maintainer.' +
             '<hr/></center>','msg_excl' );
+        return false;
       } else if (rs.length<=2) {
         // this works if server is updated in the midst of user's session
         new MessageBoxF ( appName() + ' update',
