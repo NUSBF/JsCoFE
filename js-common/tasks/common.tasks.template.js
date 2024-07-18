@@ -611,7 +611,7 @@ if (!dbx)  {
                     '\n ' + compareVersions(__client_version,this.lowestClientVersion()) );
 
       if (__local_service &&
-          (compareVersions(__client_version,this.lowestClientVersion())<=0))  {
+          (compareVersions(__client_version,this.lowestClientVersion())<0))  {
         // task requires client of higher version
         return ['client-version',
                 'task requires a higher version of CCP4 Cloud Client ' +
