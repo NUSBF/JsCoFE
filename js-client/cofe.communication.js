@@ -174,6 +174,8 @@ function makeCommErrorMessage ( title,request_type,response )  {
 
 function checkVersionMatch ( response,localServer_bool )  {
 
+  console.log ( ' >>>>> ' + response.version );
+
   let v0 = appVersion().split(' ')[0];
   let rs = response.version.split(' ');
   let v1 = rs[0];
@@ -196,7 +198,7 @@ function checkVersionMatch ( response,localServer_bool )  {
             ' ' + rs[1] + '</b>,<br>which is not compatible with version <b>' +
             appVersion() + '</b>, running<br>on the server.<p>' + whattodo +
             '.<p>You may use ' + appName() + ' by using the direct web-link, ' +
-            'however,<br><i>Coot</i> and other graphical applications will ' +
+            'however,<br><i>Coot</i> and some other graphical applications will ' +
             'not be available.', 'msg_excl'
         );
         return false;
