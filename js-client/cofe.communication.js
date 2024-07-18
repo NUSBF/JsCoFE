@@ -174,8 +174,6 @@ function makeCommErrorMessage ( title,request_type,response )  {
 
 function checkVersionMatch ( response,localServer_bool )  {
 
-  console.log ( ' >>>>> ' + response.version );
-
   let v0 = appVersion().split(' ')[0];
   let rs = response.version.split(' ');
   let v1 = rs[0];
@@ -184,6 +182,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     return true;  // may need a better solution
 
   if (response.version!='*')  {  // else ignore (useful for debugging)
+    /*
     if ((v0!=v1) && (rs[rs.length-1]=='client'))  {
       // this works when client version is different from server version
       if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
@@ -203,7 +202,9 @@ function checkVersionMatch ( response,localServer_bool )  {
         );
         return false;
       }
-    } else if (v0<v1)  {
+    } else
+    */
+    if (v0<v1)  {
       // this works if server is updated in the midst of user's session
       new MessageBoxF ( appName() + ' update',
           '<center>' + appName() + ' has advanced to version' +
