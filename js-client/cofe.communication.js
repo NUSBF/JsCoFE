@@ -207,6 +207,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     } else if (v0<v1)  {
     */
     if (v0<v1)  {
+      console.log ( ' response 1 ' + rs );
       if ((rs.length>2) && (rs[2]=='client'))  {
         // new MessageBoxF ( appName() + ' client',
         //     '<center>' + appName() + ' Client has advanced to version' +
@@ -222,6 +223,7 @@ function checkVersionMatch ( response,localServer_bool )  {
         //       __local_service = false;
         //     },true,  'msg_excl' );
         __local_service = false;
+        console.log ( ' response 3 ' + rs );
         new MessageBox ( appName() + ' client',
             '<center>' + appName() + ' Client has advanced to version' +
             '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
