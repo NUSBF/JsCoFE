@@ -208,7 +208,21 @@ function checkVersionMatch ( response,localServer_bool )  {
     */
     if (v0<v1)  {
       if ((rs.length>2) && (rs[2]=='client'))  {
-        new MessageBoxF ( appName() + ' client',
+        // new MessageBoxF ( appName() + ' client',
+        //     '<center>' + appName() + ' Client has advanced to version' +
+        //     '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
+        //     '</i></b><sub>&nbsp;</sub></center>' +
+        //     'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
+        //     + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+        //     '<hr/>The ' + appName() + ' client will be now disabled, which means that ' +
+        //     'you cannot run Coot<br>' +
+        //     'and similar applications. Contact your ' + appName() + ' server maintainer.' +
+        //     '<hr/></center>',
+        //     'continue', function(){
+        //       __local_service = false;
+        //     },true,  'msg_excl' );
+        __local_service = false;
+        new MessageBox ( appName() + ' client',
             '<center>' + appName() + ' Client has advanced to version' +
             '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
             '</i></b><sub>&nbsp;</sub></center>' +
@@ -217,10 +231,7 @@ function checkVersionMatch ( response,localServer_bool )  {
             '<hr/>The ' + appName() + ' client will be now disabled, which means that ' +
             'you cannot run Coot<br>' +
             'and similar applications. Contact your ' + appName() + ' server maintainer.' +
-            '<hr/></center>',
-            'continue', function(){
-              __local_service = false;
-            },true,  'msg_excl' );
+            '<hr/></center>','msg_excl' );
       } else if (rs.length<=2) {
         // this works if server is updated in the midst of user's session
         new MessageBoxF ( appName() + ' update',
