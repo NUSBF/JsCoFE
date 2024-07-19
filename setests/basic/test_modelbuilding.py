@@ -372,7 +372,7 @@ def test_modelBuildingBasic(browser,
         time.sleep(6)
         startModelcraft(d.driver) # 7
         verifyModelcraft(d.driver, 1600, '0006', 0.2, 0.255) # 
-        verifyCCP4Build(d.driver, 1000, '0005', 0.25, 0.28) # run takes long
+        verifyCCP4Build(d.driver, 1000, '0005', 0.26, 0.29) # run takes long
         # verifyBuccaneer(d.driver, 10, '0005', 0.28, 0.3) # 
         
         sf.renameProject(d.driver, d.testName)

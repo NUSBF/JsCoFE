@@ -265,7 +265,7 @@ class Arcimboldo(basic.TaskDriver):
             self.stdoutln(
                 "===========================================================\n "
             )
-            shutil.rmtree("_tmp")
+            shutil.rmtree("_tmp",ignore_errors=True)
         else:
             borges_library = self.getParameter(self.sec1.LIBRARY_SEL)
             # HELI_lib_uu: helices uu
@@ -657,7 +657,7 @@ class Arcimboldo(basic.TaskDriver):
         for dname in dlist:
             fpath = os.path.join ( self.arcimboldoDir(),dname )
             if os.path.isdir(fpath):
-                shutil.rmtree(fpath)
+                shutil.rmtree(fpath,ignore_errors=True)
             elif os.path.islink(fpath):
                 lfpath = os.readlink(fpath)
                 os.unlink(fpath)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.07.24   <--  Date of Last Modification.
+ *    16.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -986,7 +986,8 @@ function readConfiguration ( confFilePath,serverType )  {
       nc_server.current_capacity = nc_server.capacity;  // initially, assume full capacity
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
-      nc_server.storage = _make_path ( nc_server.storage,null );
+      if (!fe_server)
+        nc_server.storage = _make_path ( nc_server.storage,null );
       nc_server._checkLocalStatus();
       if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
@@ -1024,7 +1025,8 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.hasOwnProperty('jobFalseStart'))
         nc_server.jobFalseStart = 1;  // days
 
-      nc_server.calcCPUCapacity();
+      if (!fe_server)
+        nc_server.calcCPUCapacity();
       nc_servers.push ( nc_server );
 
     }
