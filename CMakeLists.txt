@@ -42,6 +42,7 @@ install(DIRECTORY
     html
     images_com
     images_png
+    js-datalink
     js-client
     js-common
     js-lib

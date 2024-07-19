@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,8 +84,12 @@ let response = null;
           response = user.saveHelpTopics ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.sendAnnouncement :
-          response = user.sendAnnouncement ( loginData,data );
+    case cmd.fe_reqtype.sendMailToAllUsers :
+          response = user.sendMailToAllUsers ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.makeAnnouncement :
+          response = user.makeAnnouncement ( loginData,data );
        break;
 
     case cmd.fe_reqtype.manageDormancy :

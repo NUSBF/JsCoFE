@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.07.24   <--  Date of Last Modification.
+ *    18.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -3036,7 +3036,7 @@ if (!dbx)  {
   TaskTemplate.prototype.getNProcesses = function ( nproc_available )  {
   // This function should return the number of processes, up to nproc_available,
   // that should be reported to a queuing system like SGE or SLURM, in
-  // case the task launches spawns multiple parallel threds or processes
+  // case the task spawns multiple parallel threds or processes
   // through the queueing system.
   // The task may spawn more processes than this function returns, however,
   // they will not be reserved by the queuing system and, therefore, their

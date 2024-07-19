@@ -38,7 +38,7 @@ class dataLink {
       if (config.get('data_sources.' + name + '.enabled')) {
         let source = require(path.join(SOURCES_DIR, name));
         this.jobs[name] = {};
-        this.ds[name] = new source(tools.getDataDir(), this.jobs[name]);
+        this.ds[name] = new source(tools.getDataDir(), tools.getCatalogDir(), this.jobs[name]);
       }
     }
 
@@ -46,9 +46,13 @@ class dataLink {
 
     this.loadSourceCatalogs();
 
-    // if we are running in server mode set up the data pruning jobs
+    // if we are running in server mode set up the data pruning and catalog update jobs
     if (this.server_mode) {
-      this.dataPruneInit(config.get('storage.data_prune_mins'))
+      this.dataPruneInit(config.get('storage.data_prune_mins'));
+      let update_days = config.get('storage.catalog_update_days');
+      if (update_days > 0) {
+        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * 60 * 1000);
+      }
     }
 
     process.on('error', (err) => {
@@ -107,7 +111,7 @@ class dataLink {
 
   loadSourceCatalogs() {
     for (let name in this.ds) {
-      this.ds[name].loadCatalog(path.join(tools.getCatalogDir(), name + '.json'));
+      this.ds[name].loadCatalog();
     }
   }
 
@@ -248,13 +252,7 @@ class dataLink {
       return result;
     }
 
-    if (this.ds[name].status === status.inProgress) {
-      return tools.successMsg(`${name} - Catalog update already in progress`);
-    }
-
-    log.info(`${this.name} - Fetching Catalog`);
-    this.ds[name].status = status.inProgress;
-    this.ds[name].fetchCatalog();
+    this.ds[name].updateCatalog();
 
     return tools.successMsg(`${name} - Updating catalog`);
   }
@@ -262,11 +260,8 @@ class dataLink {
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.ds)) {
-      if (source.status !== status.inProgress) {
-        if (source.fetchCatalog()) {
-          sources.push(name);
-        }
-      }
+      source.updateCatalog();
+      sources.push(name);
     }
     return tools.successMsg(`Updating catalog(s): ${sources.join(', ')}`);
   }

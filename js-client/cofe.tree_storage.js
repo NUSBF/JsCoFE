@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    17.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,6 +70,7 @@ let icon_ext = {
   'mtz'       : 'file_mtz',
   'sca'       : 'file_mtz',
   'h5'        : 'file_hdf',
+  'nxs'       : 'file_nexus',
   'ccp4_demo' : 'file_ccp4demo',
   'ccp4cloud' : 'file_ccp4demo',
   'pdb'       : 'file_pdb',

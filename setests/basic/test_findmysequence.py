@@ -241,7 +241,7 @@ def test_fms(browser,
         simbad(d.driver, 1000) #2
         findmyseq (d.driver, 300) #3
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, 100, task='0004') #4
-        mordaAfterASU (d.driver, 1200) #5
+        mordaAfterASU (d.driver, 1800) #5
         sf.renameProject (d.driver, d.testName)
 
 

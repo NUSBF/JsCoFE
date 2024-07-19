@@ -87,6 +87,16 @@ class Client {
           path: 'sources/*/catalog',
           method: 'GET',
         },
+        catalog_update: {
+          path: 'sources/@0/update',
+          method: 'PUT',
+          auth: 'admin'
+        },
+        catalog_update_all: {
+          path: 'sources/*/update',
+          method: 'PUT',
+          auth: 'admin'
+        },
         stats: {
           path: 'stats',
           method: 'GET'
@@ -451,7 +461,7 @@ class Client {
     console.log(`Usage: ${cmd} [options] <action> -- [...list of files/directories]`);
     console.log();
     console.log('Arguments:');
-    console.log('  action'.padEnd(pad) + 'sources, catalog/catalogue, search, fetch, status, update, remove, upload, stats');
+    console.log('  action'.padEnd(pad) + 'sources, catalog, catalog_update, search, fetch, status, update, remove, upload, stats');
     console.log('\nOptions:');
 
     let out;
@@ -609,6 +619,14 @@ class Client {
           res = await this.doCall('catalog', this.opts.source);
         } else {
           res = await this.doCall('catalog_all', this.opts.source);
+        }
+        break;
+      case 'catalog_update':
+      case 'catalogue_update':
+        if (this.opts.source) {
+          res = await this.doCall('catalog_update', this.opts.source);
+        } else {
+          res = await this.doCall('catalog_update_all', this.opts.source);
         }
         break;
       case 'search':

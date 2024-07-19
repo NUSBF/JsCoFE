@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -189,7 +189,7 @@ function start ( callback_func )  {
 
         case cmd.fe_command.checkAnnouncement :
             let rdata = {
-              message : utils.readString ( path.join('message_templates','announcement.html') ),
+              message : utils.readString ( path.join(feConfig.storage,user.__announcementFile) ),
               tips    : utils.readObject ( path.join('manuals','tips.json') )
             }
             if (rdata.tips)
