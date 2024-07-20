@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -124,6 +124,11 @@ TaskStructurePrediction.prototype.clipboard_name = function()  { return '"Struct
 TaskStructurePrediction.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'generate structure model with AlphaFold2';
+}
+
+TaskStructurePrediction.prototype.usesGPU = function() {
+// Virtual function with prototype defined in TaskTemplate. See comments there.
+  return true;
 }
 
 // task.platforms() identifies suitable platforms:

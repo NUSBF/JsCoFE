@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.07.24   <--  Date of Last Modification.
+ *    20.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -206,6 +206,19 @@ TaskTemplate.prototype.canSendJobResults = function()  {
           ('DataHKL'       in this.output_data.data) ||
           ('DataUnmerged'  in this.output_data.data)
          );
+}
+
+TaskTemplate.prototype.usesGPU = function() {
+// This function is used if "exeData_GPU" is specified in NC configuration file.
+// Then, for GPU-based tasks, queue parameters from "exeData_GPU" will be used.
+// If "exeData_GPU" is not used in configuration, a separate NC must be set for
+// working with GPU farm, and "exclude_tasks" and "only_tasks" lists must be used
+// in NC configurations such that only GPU-dedicated NC receives such tasks. Note 
+// that exclusion task list must be used on NCs not connected to GPU farm so that
+// GPU-based tasks are not dispatched to such NCs. As on 20.07.2024, only 
+// TaskStructurePrediction may require access to GPU, depending on the backend 
+// used to run the task.
+  return false;
 }
 
 
