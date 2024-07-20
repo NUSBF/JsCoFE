@@ -1221,10 +1221,10 @@ if (!__template)  {
 
       if ((nNative>0) && native)  {
         if (native.dropdown[0].hasOwnProperty('customGrid'))  {
-          let customGrid    = native.dropdown[0].customGrid;
-          let showUFP_cbx   = (nNative>0) && (nHKL<=0);
-          useForPhasing_cbx = customGrid.useForPhasing;
-          IR                = useForPhasing_cbx.getValue();
+          let customGrid        = native.dropdown[0].customGrid;
+          let showUFP_cbx       = (nNative>0) && (nHKL<=0);
+          let useForPhasing_cbx = customGrid.useForPhasing;
+          IR                    = useForPhasing_cbx.getValue();
           useForPhasing_cbx.setVisible ( showUFP_cbx );
           customGrid       .setVisible ( showUFP_cbx );
         }
@@ -1313,24 +1313,37 @@ if (!__template)  {
 
     let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    function addMessage ( label,message )  {
-      input_msg += '|<b>' + label + ':</b> ' + message;
+    function addMessage ( label,dsname,message )  {
+      input_msg += '|<b>' + label + ':</b> ' + 
+                   'dataset<sub>&nbsp;</sub><br><span style="white-space:nowrap;">' +
+                   dsname + '<sub>&nbsp;</sub></span><br>' + message + '<p>';
     }
 
-    let hkl    = this.input_data.getData ( 'hkl'    );
-    let native = this.input_data.getData ( 'native' );
+    let hkl0   = this.input_data.getData ('revision' )[0].HKL;
+    let hkl    = this.input_data.getData ( 'hkl'     );
+    let native = this.input_data.getData ( 'native'  );
 
     for (let i=0;i<hkl.length;i++)  {
-      for (let j=i+1;j<hkl.length;j++)
-        if (hkl[i].dataId==hkl[j].dataId)
-          addMessage ( 'Reflection data','dataset ' + hkl[i].dname +
-                       ' is used in more than one input positions, which is not ' +
-                       'allowed' );
-      if (native.length>0)  {
+      let ok = true;
+      if (hkl[i].dataId==hkl0.dataId)  {
+        addMessage ( 'Reflection data',hkl[i].dname,
+                     'duplicates one given in Structure revision, which is not ' +
+                     'allowed. If you are trying SAD, do not specify any additional ' +
+                     'datasets' );
+        ok = false;
+      }
+      for (let j=i+1;(j<hkl.length) && ok;j++)
+        if (hkl[i].dataId==hkl[j].dataId)  {
+          addMessage ( 'Reflection data',hkl[i].dname,
+                      'is used in more than one input positions, which is not ' +
+                      'allowed' );
+          ok = false;
+        }
+      if ((native.length>0) && ok)  {
         if (hkl[i].dataId==native[0].dataId)
-          addMessage ( 'Native dataset','dataset ' + hkl[i].dname + ' is used ' +
-                       'as both anomalous data and native dataset, which is ' +
-                       'not allowed.' );
+          addMessage ( 'Native dataset',hkl[i].dname,
+                      'as both anomalous data and native dataset, which is ' +
+                      'not allowed' );
       }
     }
 
