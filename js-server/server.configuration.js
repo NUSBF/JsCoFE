@@ -689,7 +689,8 @@ function CCP4DirName()  {
       },
       "exeType"            : "SHELL",  // SHELL, SGE, SLURM, SCRIPT
       "jobManager"         : "SLURM",  // used if SCRIPT is provided
-      "exeData"            : "",
+      "exeData"            : "",       // mandatory
+      "exeData_GPU"        : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"     : 2000,
       "sendDataWaitTime"   : 1000,
       "maxSendTrials"      : 10,
@@ -725,7 +726,8 @@ function CCP4DirName()  {
       "storage"          : "./cofe-client-storage",
       "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
       "exeType"          : "CLIENT",
-      "exeData"          : "",
+      "exeData"          : "",       // mandatory
+      "exeData_GPU"      : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
