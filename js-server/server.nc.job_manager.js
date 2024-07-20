@@ -1064,8 +1064,12 @@ function ncRunJob ( job_token,meta )  {
 
     let command = task.getCommandLine ( ncConfig.jobManager,jobDir );
     // command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
+    let exeData = ncConfig.exeData;
+    if (task.usesGPU && ('exeData_GPU' in ncConfig))
+      exeData = ncConfig.exeData_GPU;
+
     command.push ( 'jscofe_version=' + cmd.appVersion() );
-    command.push ( 'end_signal=' + cmd.endJobFName );
+    command.push ( 'end_signal='     + cmd.endJobFName  );
 
     switch (jobEntry.exeType)  {
 
@@ -1127,7 +1131,7 @@ function ncRunJob ( job_token,meta )  {
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
-                      let qsub_params = ncConfig.exeData.concat ([
+                      let qsub_params = exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N',jobName
@@ -1166,7 +1170,7 @@ function ncRunJob ( job_token,meta )  {
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
-                      let sbatch_params = ncConfig.exeData.concat ([
+                      let sbatch_params = exeData.concat ([
                         '--export=ALL',
                         '--output='        + path.join(jobDir,'_job.stdo'),  // slurm stdout
                         '--error='         + path.join(jobDir,'_job.stde'),  // slurm stderr
@@ -1241,7 +1245,7 @@ function ncRunJob ( job_token,meta )  {
                         jobName,
                         ncores
                       ];
-                      let script_job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
+                      let script_job = utils.spawn ( exeData,script_params.concat(command),{} );
                                               // { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
