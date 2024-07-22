@@ -233,7 +233,7 @@ if (isElectronAPI())  {
 }
 
 function saveCredentials ( location,username,password,callback_func )  {
-  if (isElectronAPI())  {
+  if (isElectronAPI() && ('saveCredentials' in window.electronAPI))  {
     window.electronAPI.saveCredentials(location,username, password, (response) => {
       callback_func ( username,password,response );
     });
@@ -243,7 +243,7 @@ function saveCredentials ( location,username,password,callback_func )  {
 }
 
 function getCredentials ( location,callback_func )  {
-  if (isElectronAPI())  {
+  if (isElectronAPI() && ('getCredentials' in window.electronAPI))  {
      window.electronAPI.getCredentials ( location,(credentials) => {
       if (credentials)
         callback_func ( credentials.username,credentials.password );
