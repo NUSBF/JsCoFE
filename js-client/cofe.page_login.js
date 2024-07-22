@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    22.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -168,6 +168,13 @@ function LoginPage ( sceneId )  {
                        .setHeight ( '36px' );
                       //  .setFontSize ( '125%' );
 
+  // this works only in Electron
+  getCredentials ( window.location.href, function(username,password){
+    login_inp.setValue ( username );
+    pwd_inp  .setValue ( password );
+  });
+  
+
   // make upper manu
 
   let col = 0;
@@ -303,7 +310,13 @@ function LoginPage ( sceneId )  {
         if ('id' in __url_parameters)  page_switch = 102;
                                  else  page_switch = 101;
       }
-      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId,page_switch );
+
+      // gets saved only in Electron
+      saveCredentials ( window.location.href,login_inp.getValue(),pwd_inp.getValue(),
+        function(username,password,response){
+          login ( username,password,sceneId,page_switch );
+        }
+      );
 
     }
 

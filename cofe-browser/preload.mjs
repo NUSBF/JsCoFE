@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    30.06.24   <--  Date of Last Modification.
+ *    22.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -44,5 +44,20 @@ contextBridge.exposeInMainWorld('electronAPI', {
   searchText         : (text)     => ipcRenderer.send('search-text'       , text    ),
   findNext           : ()         => ipcRenderer.send('find-next'                   ),
   findPrevious       : ()         => ipcRenderer.send('find-previous'               ),
-  stopSearch         : ()         => ipcRenderer.send('stop-search'                 )
+  stopSearch         : ()         => ipcRenderer.send('stop-search'                 ),
+
+  saveCredentials    : (location,username, password, callback) => {
+    ipcRenderer.send('save-credentials', location,username, password);
+    ipcRenderer.once('save-credentials-response', (event, response) => {
+      callback(response);
+    });
+  },
+  getCredentials     : (location,callback) => {
+    ipcRenderer.send('get-credentials', location);
+    ipcRenderer.once('get-credentials-response', (event, credentials) => {
+      callback(credentials);
+    });
+  }
+
 });
+
