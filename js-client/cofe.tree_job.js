@@ -2010,22 +2010,35 @@ JobTree.prototype.isShared = function()  {
 
 JobTree.prototype.copyJobToClipboard = function() {
 let crTask = this.getSelectedTask();
+
   if (crTask)  {
+
     let reftask = makeNewInstance ( crTask._type );
     if (crTask.version<reftask.currentVersion())  {
+
       new MessageBox ( 'Cannot copy',
         '<h2>This job cannot be copied.</h2>' +
         'The job was created with a lower version of ' + appName() + 
         '<br>and cannot be copied to clipboard.<p>Please create the job ' +
         'as a new one, using "<i>Add Job</i>"<br>button from the control ' +
         'bar.','msg_stop' );
+
+    } else if (reftask.state==job_code.retired)  {
+
+      new MessageBox ( 'Cannot copy',
+        '<div style="width:360px;"><h2>This job cannot be copied.</h2>' +
+        'Task "<i>' + task.title + '</i>" was retired. Please use ' +
+        'alternative task.</div>','msg_stop' );
+
     } else
       __clipboard.task = crTask;
+
   } else
     new MessageBox ( 'No task copied',
       '<div style="width:300px;"><h2>No task copied</h2>' +
       'Task could not be copied to Clipboard.',
       'msg_error' );
+
 }
 
 JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
@@ -2062,11 +2075,20 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<h2>This job cannot be cloned.</h2>' +
+        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
         'The job was created with a lower version of ' + appName() + 
         '<br>and cannot be cloned.<p>Please create the job as ' +
         'a new one, using "<i>Add Job</i>"<br>button from the ' +
         'control bar.</div>','msg_stop' );
+      if (onAdd_func)
+        onAdd_func(-5);
+
+    } else if (task.state==job_code.retired)  {
+
+      new MessageBox ( 'Cannot clone',
+        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        'Task "<i>' + task.title + '</i>" was retired. Please use ' +
+        'alternative task.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
 
