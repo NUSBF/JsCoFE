@@ -2027,7 +2027,7 @@ let crTask = this.getSelectedTask();
 
       new MessageBox ( 'Cannot copy',
         '<div style="width:360px;"><h2>This job cannot be copied.</h2>' +
-        'Task "<i>' + task.title + '</i>" was retired. Please use ' +
+        'Task "<i>' + reftask.title + '</i>" was retired. Please use ' +
         'alternative task.</div>','msg_stop' );
 
     } else
