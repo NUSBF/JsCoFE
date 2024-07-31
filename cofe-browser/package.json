@@ -28,7 +28,7 @@
     "electron": "*"
   },
   "dependencies": {
-    "electron-store": "*",
+    "electron-store": "^8.0.0",
     "crypto-js"     : "*"
   }
 }
