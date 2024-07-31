@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -257,7 +257,7 @@ if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskParrot.prototype.hotButtons = function() {
-    return [ModelCraftHotButton(),BuccaneerHotButton(),ArpWarpHotButton()];
+    return [ModelCraftHotButton(),ArpWarpHotButton()];
   }
 
 /*
