@@ -349,11 +349,18 @@ function updateMenu() {
 function createSecondaryWindow ( url,features ) {
 
   const secondaryWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+    width  : 800,
+    height : 600,
+    // webPreferences: {
+    //   nodeIntegration: true,
+    //   contextIsolation: false,
+    // }
+    webPreferences : {
+      nodeIntegration    : false,
+      sandbox            : false,
+      contextIsolation   : true,
+      webSecurity        : true,
+      enableRemoteModule : false
     }
   });
 

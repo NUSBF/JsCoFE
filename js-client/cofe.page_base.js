@@ -514,6 +514,32 @@ BasePage.prototype.addMenuSeparator = function()  {
   return this;
 }
 
+BasePage.prototype.addGlobusLinkToMenu = function()  {
+  this.addMenuSeparator();
+  if (__globus_id)  {
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      window.open ( 'https://app.globus.org/file-manager?two_pane=true',
+                    'Globus File Transfer',
+                    'modal=yes' );
+    });
+  } else  {
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      let msg = '<div style="width:360px"><h2>Globus ID not provided</h2>' +
+                'To enable Data Link via Globus, provide your Primary Globus ID in ' +
+                'your account settings.' +
+                '<p><i>Additional information</i>:<p>';
+      // if (!isElectronAPI())
+        msg += '<a href="https://www.globusid.org/" target="_blank">' +
+               '<span style="color:blue">Create Globus ID</span></a><br>';
+      msg += '<a href="javascript:launchHelpBox1(\'Using Globus in ' + appName() + '\',' +
+             '\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
+             '<span style="color:blue">Using Globus in ' + appName() +'</span></a><br>' +
+             '<a href="https://www.globus.org/" target="_blank">' +
+             '<span style="color:blue">Globus web-site</span></a>';
+      new MessageBox ( 'Globus ID not provided',msg,'msg_stop');
+    });
+  }
+}
 
 BasePage.prototype.addFullscreenToMenu = function()  {
   if (this.headerPanel.menu.n_items>0)
