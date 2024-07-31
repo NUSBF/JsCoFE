@@ -1,6 +1,6 @@
 {
-    "name": "CCP4_Cloud",
-    "version": "1.7.0020",
+    "name": "ccp4cloud",
+    "version": "1.8.000",
     "dependencies": {
         "busboy": "^1.6.0",
         "check-disk-space": "^3.0.1",
