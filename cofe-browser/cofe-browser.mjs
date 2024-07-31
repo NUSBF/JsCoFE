@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    22.07.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -349,11 +349,18 @@ function updateMenu() {
 function createSecondaryWindow ( url,features ) {
 
   const secondaryWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+    width  : 800,
+    height : 600,
+    // webPreferences: {
+    //   nodeIntegration: true,
+    //   contextIsolation: false,
+    // }
+    webPreferences : {
+      nodeIntegration    : false,
+      sandbox            : false,
+      contextIsolation   : true,
+      webSecurity        : true,
+      enableRemoteModule : false
     }
   });
 
