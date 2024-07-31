@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1233,17 +1233,6 @@ function ProjectListPage ( sceneId )  {
   }
 
   this.addGlobusLinkToMenu();
-
-  // if (__globus_id)  {
-  //   this.addMenuSeparator();
-  //   this.addMenuItem ( 'Start Globus','globus_app',function(){
-  //     window.open ( 'https://app.globus.org/file-manager?two_pane=true',
-  //                   'Globus File Transfer',
-  //                   'modal=yes' );
-  //     // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
-  //     //                  null,10,null );
-  //   });
-  // }
 
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); },null );

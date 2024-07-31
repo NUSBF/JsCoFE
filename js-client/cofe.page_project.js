@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.07.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -168,16 +168,7 @@ function ProjectPage ( sceneId )  {
     else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
   });
 
-  if (__globus_id)  {
-    this.addMenuSeparator();
-    this.addMenuItem ( 'Start Globus','globus_app',function(){
-      window.open ( 'https://app.globus.org/file-manager?two_pane=true',
-                    'Globus File Transfer',
-                    'modal=yes' );
-      // launchHelpBox1 ( 'Globus App','https://app.globus.org/file-manager?two_pane=true',
-      //                  null,10,null );
-    });
-  }
+  this.addGlobusLinkToMenu();
 
   this.addLogoutToMenu ( function(){
     self.confirmLeaving ( function(do_leave){
