@@ -73,7 +73,6 @@ PRINT_VAR reso_high
     RUN       MrBump
 
 @REBUILD
-    # RUN       Buccaneer
     RUN       ModelCraft
 
 # Make ligand if ligand description was provided

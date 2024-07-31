@@ -86,8 +86,10 @@ let Compl0 = -1
     RUN       Parrot
 
 @QUICK_BUILD_CHECK[hand]
-    PARAMETER NCYCLES 1
-    RUN       Buccaneer
+    PARAMETER MODE_SEL "basic"  # Full or Fast pipeline modes
+    PARAMETER NCYCLES_MAX_FAST 1  # Maximum number of pipeline cycles
+    PARAMETER NOIMPROVE_CYCLES_FAST 1  # Stop if results do not improve during
+    RUN       ModelCraft
 
 let hand0 = hand; FOM0 = FOM; Compl0 = Compl if  Compl>Compl0
 
