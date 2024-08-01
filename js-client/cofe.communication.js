@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -205,7 +205,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     } else if (v0<v1)  {
     */
 
-    if ((rs.length>2) && (rs[2]=='client'))
+    if ((rs.length>2) && (rs[2]=='client') && response.data.fe_url)
       __fe_url = response.data.fe_url;
 
     if (v0<v1)  {
