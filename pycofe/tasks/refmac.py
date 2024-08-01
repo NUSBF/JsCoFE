@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    01.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -387,12 +387,12 @@ class Refmac(basic.TaskDriver):
 
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )
 
-        xyzout = self.getXYZOFName()
+        mmcifout = self.getMMCIFOFName()
         xmlOutRefmac = self.getOFName (".xml")
         cmd = [ "hklin" ,hklin,
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
-                "xyzout",xyzout,
+                "xyzout",mmcifout,
                 "xmlout",xmlOutRefmac,
                 "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
@@ -415,7 +415,7 @@ class Refmac(basic.TaskDriver):
 
         # check solution and register data
         have_results = False
-        if os.path.isfile(xyzout):
+        if os.path.isfile(mmcifout):
 
             #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
             #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
@@ -433,12 +433,12 @@ class Refmac(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             substructure = None
-            mmcifout     = self.getMMCIFOFName()
+            pdbout       = self.getXYZOFName()
 
-            structure = self.formStructure ( mmcifout,xyzout,
-                                             None,self.getMTZOFName(),
-                                             libin,hkl,istruct,
-                                             "FWT,PHWT,DELFWT,PHDELWT",True )
+            structure    = self.formStructure ( mmcifout,pdbout,
+                                                None,self.getMTZOFName(),
+                                                libin,hkl,istruct,
+                                                "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
                 refkeys = []
                 for line in stdin:
@@ -489,7 +489,7 @@ class Refmac(basic.TaskDriver):
 
                         out_merged = self.getOFName ( "_ha" )
                         is_substr  = self.merge_sites ( 
-                                            mmcifout,xyzout,subfile,
+                                            mmcifout,pdbout,subfile,
                                             hatype,out_merged 
                                         )
 
