@@ -532,7 +532,7 @@ BasePage.prototype.addGlobusLinkToMenu = function()  {
           '<a href="https://www.globusid.org/" target="_blank">' +
           '<span style="color:blue">Create Globus ID</span></a><br>' +
           '<a href="javascript:launchHelpBox1(\'Using Globus in ' + appName() + 
-          '\',\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
+          '\',\'' + __user_guide_base_url + 'jscofe_globus.html\',null,10)">' +
           '<span style="color:blue">Using Globus in ' + appName() +'</span></a><br>' +
           '<a href="https://www.globus.org/" target="_blank">' +
           '<span style="color:blue">Globus web-site</span></a>','msg_stop');
