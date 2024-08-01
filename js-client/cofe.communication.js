@@ -376,9 +376,6 @@ function processServerQueue()  {
                           __server_queue = [];
                           __process_network_indicators();
                           makePage ( function(){
-                            // eval (
-                            //   'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                            // );
                             makeNewInstance ( __current_page._type,__current_page.sceneId );
                           });
                           makeSessionCheck ( __current_page.sceneId );

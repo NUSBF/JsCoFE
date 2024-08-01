@@ -119,7 +119,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
     let ext_class = this.extend();
 //    if (newTypeName.startsWith('Data') && (newTypeName!=this._type))  {
     if (startsWith(newTypeName,'Data') && (newTypeName!=this._type))  {
-      // let new_class   = eval ( 'new '+newTypeName+'()' );      // new default class
       let new_class   = makeNewInstance ( newTypeName );      // new default class
       let cst_class   = $.extend ( true,new_class,ext_class ); // extend with this
       cst_class._type = new_class._type;   // cast to new class name

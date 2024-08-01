@@ -432,7 +432,6 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  // var obj= eval('new '+value._type+'()');
   let obj= makeNewInstance ( value._type );
   if (!obj)
     alert ( ' unknown class? ' + value._type );
