@@ -125,6 +125,7 @@ function start ( callback_func )  {
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
     // server_response.setHeader ( 'Content-Encoding','deflate, compress, gzip' );
+    // server_response.setHeader ( 'Content-Security-Policy',"script-src 'self'" );
 
     try {
 

@@ -1237,7 +1237,6 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   } else  {
 
-    // let newtask = eval ( 'new ' + task.task_chain[0] + '()' );
     let newtask = makeNewInstance ( task.task_chain[0] );
     if (task.task_chain.length>1)  {
       newtask.task_chain = [];
@@ -2043,7 +2042,6 @@ let crTask = this.getSelectedTask();
 
 JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
   if (__clipboard.task)  {
-    // let task = eval ( 'new ' + __clipboard.task._type + '()' );
     let task = makeNewInstance ( __clipboard.task._type );
     task.uname      = __clipboard.task.uname;
     task.uoname     = __clipboard.task.uoname;
@@ -2069,7 +2067,6 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     let task0  = this.task_map[nodeId];
 
     // create an instance of selected task with default parameters
-    // let task   = eval ( 'new ' + task0._type + '()' );
     let task   = makeNewInstance ( task0._type );
 
     if (task0.version<task.currentVersion())  {
@@ -2391,7 +2388,6 @@ let task = this.getTask ( jobId );
 
     } else  {
 
-      // td0 = $.extend ( true,eval('new ' + dataType + '()'),td0 );
       td0 = $.extend ( true,makeNewInstance(dataType),td0 );
       td0.inspectData ( task );
 
@@ -2486,7 +2482,6 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         this.projectData.desc.jobCount = Math.max (
                                   this.projectData.desc.jobCount,ref_task.id );
 
-        // let replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
         let replay_task     = $.extend ( makeNewInstance(ref_task._type),ref_task );
         replay_task.state   = job_code.new;
         replay_task.project = this.projectData.desc.name;

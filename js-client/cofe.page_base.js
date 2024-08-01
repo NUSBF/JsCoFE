@@ -785,7 +785,8 @@ function setHistoryListener ( sceneId )  {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
       makePage ( function(){
-        eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ); 
+        makeNewInstance ( event.originalEvent.state,sceneId );
+        // eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ); 
       });
     } else if (__current_page)  {
       if ((__current_page._type!='LoginPage') && (__current_page._type!='LogoutPage'))

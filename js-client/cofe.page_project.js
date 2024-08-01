@@ -597,40 +597,6 @@ ProjectPage.prototype.pasteJobFromClipboard = function() {
   });
 }
 
-// ProjectPage.prototype.copyJobToClipboard = function() {
-// let crTask = this.jobTree.getSelectedTask();
-//   if (crTask)  {
-//     let reftask = eval ( 'new ' + crTask._type + '()' );
-//     if (crTask.version<reftask.currentVersion())  {
-//       new MessageBox ( 'Cannot copy',
-//         '<div style="width:400px"><h2>This job cannot be copied.</h2><p>' +
-//         'The job was created with a lower version of ' + appName() + 
-//         ' and cannot be copied to clipboard.<p>Please create the job ' +
-//         'as a new one, using "<i>Add Job</i>" button from the control ' +
-//         'bar.</div>','msg_stop' );
-//     } else
-//       __clipboard.task = crTask;
-//   } else
-//     new MessageBox ( 'No task copied',
-//       '<div style="width:300px;"><h2>No task copied</h2>' +
-//       'Task could not be copied to Clipboard.',
-//       'msg_error' );
-// }
-
-// ProjectPage.prototype.pasteJobFromClipboard = function() {
-//   if (__clipboard.task)  {
-//     let task = eval ( 'new ' + __clipboard.task._type + '()' );
-//     task.uname      = __clipboard.task.uname;
-//     task.uoname     = __clipboard.task.uoname;
-//     task.parameters = $.extend ( true,{},__clipboard.task.parameters );
-//     this.addTaskToSelected ( task,image_path(task.icon()),task.title );
-//   } else
-//     new MessageBox ( 'Empty clipboard',
-//       '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
-//       'No task found in Clipboard.',
-//       'msg_error' );
-// }
-
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))  {
     let self = this;
@@ -1483,7 +1449,6 @@ ProjectPage.prototype.makeDock = function()  {
 
     function(taskType,title,icon_uri){  // left click: add task to tree
       if (!$(self.add_btn.element).button('option','disabled'))  {
-        // let task = eval ( 'new ' + taskType + '()' );
         let task = makeNewInstance ( taskType );
         self.addTaskToSelected ( task,icon_uri,title );
       }
