@@ -32,6 +32,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Add New Project' );
   document.body.appendChild ( this.element );
+  this.setScrollable ( 'hidden','hidden' );
 
   let grid = new Grid('');
   this.addWidget ( grid );
@@ -51,7 +52,8 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
         .setFontItalic ( true  )
         .setWidth      ( '520px' );
 
-  grid.setLabel ( '<h3>Project plan</h3>',row++,0,1,3 );
+  grid.setLabel ( '&nbsp;',row++,0,1,3 ).setHeight_px(12);
+  grid.setLabel ( '<b>Project plan</b>',row++,0,1,3 );
 
   let project_plans = this.makeProjectPlansWidget ( projectList );
 
@@ -125,7 +127,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
           if (msg.length>0)  {
             new MessageBox ( 'Incomplete data',
-                     'New project cannot be created due to the following:<p>' +
+                      'New project cannot be created due to the following:<p>' +
                       msg.join('<br>') +
                       '<p>Please provide all needful data in correct format ' +
                       'and try again.', 'msg_warning');
@@ -187,10 +189,30 @@ AddProjectDialog.prototype.constructor = AddProjectDialog;
 AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
 
   let panel = new Grid ( '-compact' );
+  // panel.setWidth_px  ( 600 );
   panel.setHeight_px ( 200 );
 
+  let plan_panel = panel.setPanel ( 1,0,1,1 );
+  $(plan_panel.element).css ({
+    'font-size'      : '90%',
+    'padding-top'    : '6px',
+    'padding-left'   : '12px',
+    'padding-right'  : '12px',
+    'padding-bottom' : '0px',
+    'width'          : '654px',
+    'height'         : '160px',
+    'margin-top'     : -5,
+    'margin-bottom'  : -5,
+    'border'         : '1px solid lightgray' 
+  });
+
   const plans = [
-    { code  : plan_type.mr_af,
+    { code  : plan_type.no_plan,
+      title : 'Free project (no pre-defined plan)',
+      data  : ['as required for your project'],
+      desc  : 'develop project manually using suitable tasks'
+    }, { 
+      code  : plan_type.mr_af,
       title : 'Molecular Replacement using AlphaFold model',
       data  : ['reflection data (merged or unmerged)',
                'sequence',
@@ -201,7 +223,7 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
               'ligand fitting (if provided); refinement and water modelling'
     }, { 
       code  : plan_type.mr_model,
-      title : 'Molecular Replacement using known model',
+      title : 'Molecular Replacement using a known model',
       data  : ['reflection data (merged or unmerged)',
                'structure model',
                '(optional) sequence',
@@ -216,7 +238,7 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                'sequence',
                '(optional) ligand description'
                ],
-      desc  : 'Finding structure template in the PDB, AFDB and ESM; ' +
+      desc  : 'Finding structure template in the PDB, AFDB and ESM data banks; ' +
               'ASU estimate; Molecular Replacement; ' +
               'ligand fitting (if provided); refinement and water modelling'
     }, { 
@@ -237,11 +259,6 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                ],
       desc  : 'ASU estimate; automatic Experimental Phasing; ' +
               'ligand fitting (if provided); refinement and water modelling'
-    }, { 
-      code  : plan_type.no_plan,
-      title : 'No predefined plan - free project',
-      data  : ['as required for your project'],
-      desc  : 'develop project manually using suitable tasks'
     }
   ];
   
@@ -251,33 +268,53 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
       if (plans[i].code==planCode)
         n = i;
     if (n>=0)  {
-      panel.setLabel ( '<div style="font-size:90%;padding-top:6px;">' +
-                       '<b><i>Data needed:</i></b><ul><li>' + 
-                       plans[n].data.join('</li><li>') + '</ul></div>', 1,0,1,1 )
-           .setWidth_px  ( 680 )
-           .setHeight_px ( 120 );
-      panel.setLabel ( '<div style="font-size:90%;"><b><i>Plan description:</i></b>&nbsp;' +
-                       plans[n].desc + '</div>', 2,0,1,1 )
-           .setWidth_px  ( 680 )
-           .setHeight_px ( 25  );
+       
+      let msg = '';
+      if (plans[n].code==plan_type.no_plan)  {
+        msg = 'No project plan will be used; develop your project manually ' +
+              'by using suitable tasks.' +
+              '<p>Alternatively, select a plan thet best suits your needs. ' +
+              'A pre-defined plan will develop your project automatically. ' +
+              'Regardless of the outcome of the automatic development, you ' +
+              'can always continue manually.'
+      } else  {
+        msg = '<b><i>Data needed:</i></b><ul><li>' + 
+              plans[n].data.join('</li><li>') + '</li></ul>' +
+              '<p><b><i>Plan description:</i></b>&nbsp;' +
+              plans[n].desc;
+      }
+      plan_panel.setText ( msg ); 
+
+      // plan_panel.setLabel ( '<div style="font-size:90%;padding-top:6px;">' +
+      //                  '<b><i>Data needed:</i></b><ul><li>' + 
+      //                  plans[n].data.join('</li><li>') + '</ul></div>', 1,0,1,1 )
+      //     //  .setWidth_px  ( 680 )
+      //      .setHeight_px ( 120 );
+      // plan_panel.setLabel ( '<div style="font-size:90%;"><b><i>Plan description:</i></b>&nbsp;' +
+      //                  plans[n].desc + '</div>', 2,0,1,1 )
+      //     //  .setWidth_px  ( 680 )
+      //      .setHeight_px ( 25  );
     }
   }
 
-  let p0 = '';  
+  // let p0 = '';  
   panel.plan_sel = new Dropdown();
   panel.plan_sel.setWidth ( '680px' );
-  for (let i=0;i<plans.length;i++)  {
-    panel.plan_sel.addItem ( (i+1) + '. ' + plans[i].title,'',plans[i].code,
-                             projectList.startmode==plans[i].code );
-    if (projectList.startmode==plans[i].code)
-      p0 = plans[i].code;
+
+  panel.plan_sel.addItem ( plans[0].title,'',plans[0].code,true );
+  for (let i=1;i<plans.length;i++)  {
+    panel.plan_sel.addItem ( i + '. ' + plans[i].title,'',plans[i].code,false );
+                            //  projectList.startmode==plans[i].code );
+    // if (projectList.startmode==plans[i].code)
+    //   p0 = plans[i].code;
   }
-  if (!p0)
-    projectList.startmode = plans[0].code;
+  // if (!p0)
+  //   projectList.startmode = plans[0].code;
   panel.setWidget ( panel.plan_sel, 0,0,1,1 );
   panel.plan_sel.make();
 
-  show_plan ( projectList.startmode );
+  show_plan ( plan_type.no_plan );
+  // show_plan ( projectList.startmode );
 
   panel.plan_sel.addOnChangeListener ( function(text,value){
     show_plan ( value );

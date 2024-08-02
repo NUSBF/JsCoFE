@@ -331,7 +331,7 @@ Widget.prototype.setPaddings = function ( left,top,right,bottom ) {
   return this;
 }
 
-Widget.prototype.setMargins = function (left, top, right, bottom) {
+Widget.prototype.setMargins = function ( left, top, right, bottom ) {
   let css = {};
   if (left)   css['margin-left'  ] = left;
   if (top)    css['margin-top'   ] = top;
@@ -341,7 +341,7 @@ Widget.prototype.setMargins = function (left, top, right, bottom) {
   return this;
 }
 
-Widget.prototype.setScrollable = function (onx_value, ony_value) {
+Widget.prototype.setScrollable = function ( onx_value, ony_value ) {
   if (onx_value.length > 0)
     $(this.element).css({ 'overflow-x': onx_value });
   if (ony_value.length > 0)
@@ -353,7 +353,7 @@ Widget.prototype.getScrollPosition = function () {
   return [this.element.scrollLeft, this.element.scrollTop];
 }
 
-Widget.prototype.setScrollPosition = function (scrollPos) {
+Widget.prototype.setScrollPosition = function ( scrollPos ) {
   this.element.scrollLeft = scrollPos[0];
   this.element.scrollTop = scrollPos[1];
 }
