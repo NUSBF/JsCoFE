@@ -208,7 +208,7 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
 
   const plans = [
     { code  : plan_type.no_plan,
-      title : 'Free project (no pre-defined plan)',
+      title : 'Manual mode',
       data  : ['as required for your project'],
       desc  : 'develop project manually using suitable tasks'
     }, { 
@@ -271,12 +271,10 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
        
       let msg = '';
       if (plans[n].code==plan_type.no_plan)  {
-        msg = 'No project plan will be used; develop your project manually ' +
+        msg = '<b>No project plan will be used</b>; develop your project manually ' +
               'by using suitable tasks.' +
-              '<p>Alternatively, select a plan thet best suits your needs. ' +
-              'A pre-defined plan will develop your project automatically. ' +
-              'Regardless of the outcome of the automatic development, you ' +
-              'can always continue manually.'
+              '<p>Alternatively, choose a predefined plan to automatically develop your project.' +
+              '<b>You can switch to manual mode from any plan</b>' 
       } else  {
         msg = '<b><i>Data needed:</i></b><ul><li>' + 
               plans[n].data.join('</li><li>') + '</li></ul>' +
