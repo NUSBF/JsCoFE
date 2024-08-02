@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,21 +36,28 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   let grid = new Grid('');
   this.addWidget ( grid );
   let row = 0;
-  //grid.setLabel ( '<h3>Project data</h3>',row++,0,1,2 );
 
-  grid.setLabel ( 'ID'  ,row  ,0,1,1 ).setWidth('120px').setFontBold(true);
-  grid.setLabel ( 'Name',row++,1,1,1 ).setWidth('550px').setFontBold(true);
+  grid.setLabel ( 'ID'    ,row  ,0,1,1 ).setWidth('120px').setFontBold(true);
+  grid.setLabel ( '&nbsp;',row  ,1,1,1 ).setWidth('20px' );
+  grid.setLabel ( 'Name'  ,row++,2,1,1 ).setWidth('550px').setFontBold(true);
 
   let name_inp = grid.setInputText ( '',row,0,1,1 )
         .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
         .setFontItalic ( true  )
         .setWidth      ( '120px' );
-  let title_inp = grid.setInputText ( '',row++,1,1,1 )
+  grid.setLabel ( '&nbsp;',row ,1,1,1 ).setWidth('20px' );
+  let title_inp = grid.setInputText ( '',row++,2,1,1 )
         .setStyle      ( 'text','','Put a descriptive title here','' )
         .setFontItalic ( true  )
         .setWidth      ( '520px' );
 
-  grid.setLabel ( '<h3>Initialisation mode</h3>',row++,0,1,2 );
+  grid.setLabel ( '<h3>Project plan</h3>',row++,0,1,3 );
+
+  let project_plans = this.makeProjectPlansWidget ( projectList );
+
+  grid.setWidget ( project_plans,row,0,1,3 );
+
+  /*
 
   let autosolve_rbt = new RadioButton ( 'Autostart',
                                         projectList.startmode==start_mode.auto     );
@@ -88,11 +95,13 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     'completion (can be switched to the full list).',
     row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
 
+  */
+
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
     maxHeight : 500,
-    width     : 750,
+    width     : 720,
     modal     : true,
     buttons: [
       {
@@ -127,9 +136,9 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
               title : title_inp.getValue()
             };
 
-            if (autosolve_rbt.getValue())   pspecs.startmode = start_mode.auto;
-            else if (expert_rbt.getValue()) pspecs.startmode = start_mode.standard;
-                                       else pspecs.startmode = start_mode.migrate;
+            // if (autosolve_rbt.getValue())   pspecs.startmode = start_mode.auto;
+            // else if (expert_rbt.getValue()) pspecs.startmode = start_mode.standard;
+            //                            else pspecs.startmode = start_mode.migrate;
 
             if (onclose_fnc(pspecs))
               $(this).dialog("close");
@@ -149,6 +158,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     ]
   });
 
+/*
   $(autosolve_rbt.element).click ( function(){
     $('#choose_btn').button ( 'enable' );
     expert_rbt .setValue ( false );
@@ -166,8 +176,113 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     autosolve_rbt.setValue ( false );
     expert_rbt   .setValue ( false );
   });
+*/
 
 }
 
 AddProjectDialog.prototype = Object.create ( Widget.prototype );
 AddProjectDialog.prototype.constructor = AddProjectDialog;
+
+
+AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
+
+  let panel = new Grid ( '-compact' );
+  panel.setHeight_px ( 200 );
+
+  const plans = [
+    { code  : plan_type.mr_af,
+      title : 'Molecular Replacement using AlphaFold model',
+      data  : ['reflection data (merged or unmerged)',
+               'sequence',
+               '(optional) ligand description'
+               ],
+      desc  : 'Structure template prediction, pruning and slicing; ' +
+              'ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling'
+    }, { 
+      code  : plan_type.mr_model,
+      title : 'Molecular Replacement using known model',
+      data  : ['reflection data (merged or unmerged)',
+               'structure model',
+               '(optional) sequence',
+               '(optional) ligand description'
+               ],
+      desc  : 'Model preparation; ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling'
+    }, { 
+      code  : plan_type.mr_db,
+      title : 'Molecular Replacement using structure databases',
+      data  : ['reflection data (merged or unmerged)',
+               'sequence',
+               '(optional) ligand description'
+               ],
+      desc  : 'Finding structure template in the PDB, AFDB and ESM; ' +
+              'ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling'
+    }, { 
+      code  : plan_type.mr_noseq,
+      title : 'Molecular Replacement with unknown sequence and model',
+      data  : ['reflection data (merged or unmerged)',
+               '(optional) ligand description'
+               ],
+      desc  : 'Finding structure template in the PDB; ' +
+              'ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling'
+    }, { 
+      code  : plan_type.ep_auto,
+      title : 'Automatic Experimental Phasing',
+      data  : ['reflection data with anomalous signal (merged or unmerged)',
+               'sequence',
+               '(optional) ligand description'
+               ],
+      desc  : 'ASU estimate; automatic Experimental Phasing; ' +
+              'ligand fitting (if provided); refinement and water modelling'
+    }, { 
+      code  : plan_type.no_plan,
+      title : 'No predefined plan - free project',
+      data  : ['as required for your project'],
+      desc  : 'develop project manually using suitable tasks'
+    }
+  ];
+  
+  function show_plan ( planCode )  {
+    let n = -1;
+    for (let i=0;(i<plans.length) && (n<1);i++)
+      if (plans[i].code==planCode)
+        n = i;
+    if (n>=0)  {
+      panel.setLabel ( '<div style="font-size:90%;padding-top:6px;">' +
+                       '<b><i>Data needed:</i></b><ul><li>' + 
+                       plans[n].data.join('</li><li>') + '</ul></div>', 1,0,1,1 )
+           .setWidth_px  ( 680 )
+           .setHeight_px ( 120 );
+      panel.setLabel ( '<div style="font-size:90%;"><b><i>Plan description:</i></b>&nbsp;' +
+                       plans[n].desc + '</div>', 2,0,1,1 )
+           .setWidth_px  ( 680 )
+           .setHeight_px ( 25  );
+    }
+  }
+
+  let p0 = '';  
+  panel.plan_sel = new Dropdown();
+  panel.plan_sel.setWidth ( '680px' );
+  for (let i=0;i<plans.length;i++)  {
+    panel.plan_sel.addItem ( (i+1) + '. ' + plans[i].title,'',plans[i].code,
+                             projectList.startmode==plans[i].code );
+    if (projectList.startmode==plans[i].code)
+      p0 = plans[i].code;
+  }
+  if (!p0)
+    projectList.startmode = plans[0].code;
+  panel.setWidget ( panel.plan_sel, 0,0,1,1 );
+  panel.plan_sel.make();
+
+  show_plan ( projectList.startmode );
+
+  panel.plan_sel.addOnChangeListener ( function(text,value){
+    show_plan ( value );
+  });
+
+  return panel;
+
+}

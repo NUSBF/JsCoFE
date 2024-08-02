@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.05.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -37,11 +37,21 @@ function __isArchive()  {
 
 // ===========================================================================
 
+// this should be removed, replaced by plan_type
 const start_mode = {
   auto     : 'auto',
   standard : 'standard',
   expert   : 'expert',    // legacy
   migrate  : 'migrate'
+};
+
+const plan_type = {
+  mr_af    : 'mr_af',
+  mr_model : 'mr_model',
+  mr_db    : 'mr_db',
+  mr_noseq : 'mr_noseq',
+  ep_auto  : 'ep_auto',
+  no_plan  : 'no_plan'
 };
 
 const tasklist_mode = {
@@ -878,6 +888,7 @@ function DockData()  {
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.start_mode             = start_mode;
+  module.exports.plan_type              = plan_type;
   module.exports.tasklist_mode          = tasklist_mode;
   module.exports.folder_type            = folder_type;
   module.exports.folder_path            = folder_path;
