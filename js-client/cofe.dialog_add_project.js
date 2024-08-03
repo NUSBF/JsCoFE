@@ -206,18 +206,6 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
       task  : 'TaskWFlowAFMR',
       avail_key : ['ok','','']
     }, { 
-      code  : plan_type.mr_model,
-      title : 'Molecular Replacement using a known model',
-      data  : ['reflection data (merged or unmerged)',
-               'structure model',
-               '(optional) sequence',
-               '(optional) ligand description'
-               ],
-      desc  : 'Model preparation; ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling',
-      task  : 'TaskWFlowSMR',
-      avail_key : ['ok','','']
-    }, { 
       code  : plan_type.mr_db,
       title : 'Molecular Replacement using structure databases',
       data  : ['reflection data (merged or unmerged)',
@@ -237,9 +225,17 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                ],
       desc  : 'Finding structure template in the PDB; ' +
               'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling',
-      task  : 'TaskSimbad',
-      avail_key : ['ok','','']
+              'ligand fitting (if provided); refinement and water modelling'
+    },{ 
+      code  : plan_type.mr_model,
+      title : 'Molecular Replacement using a known model',
+      data  : ['reflection data (merged or unmerged)',
+               'structure model',
+               '(optional) sequence',
+               '(optional) ligand description'
+               ],
+      desc  : 'Model preparation; ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling'
     }, { 
       code  : plan_type.ep_auto,
       title : 'Automatic Experimental Phasing',
