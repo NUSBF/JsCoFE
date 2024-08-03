@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,19 +191,11 @@ function ProjectListPage ( sceneId )  {
   let _add_project = function() {
     new AddProjectDialog ( projectList,function(pspecs){
       if (pspecs)  {
-        if (projectList.addProject(pspecs.id,pspecs.title,
-                                   pspecs.startmode,getDateString()))  {
+        if (projectList.addProject(pspecs.id,pspecs.title,getDateString()))  {
           projectList.current   = pspecs.id;
-          projectList.startmode = pspecs.startmode;
+          // projectList.startmode = pspecs.startmode;
           makeProjectListTable();
           openProject();
-          /* -- this part for not opening the project automatically
-          saveProjectList ( function(data){
-            projectList.current = pspecs.id;
-            makeProjectListTable   ();
-            welcome_lbl.setVisible ( (projectList.projects.length<1) );
-          },null );
-          */
           return true;  // close dialog
         } else  {
           new MessageBox ( 'Duplicate Project ID',

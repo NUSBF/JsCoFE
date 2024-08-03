@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -38,18 +38,19 @@ function __isArchive()  {
 // ===========================================================================
 
 // this should be removed, replaced by plan_type
-const start_mode = {
-  auto     : 'auto',
-  standard : 'standard',
-  expert   : 'expert',    // legacy
-  migrate  : 'migrate'
-};
+// const start_mode = {
+//   auto     : 'auto',
+//   standard : 'standard',
+//   expert   : 'expert',    // legacy
+//   migrate  : 'migrate'
+// };
 
 const plan_type = {
   mr_af    : 'mr_af',
   mr_model : 'mr_model',
   mr_db    : 'mr_db',
   mr_noseq : 'mr_noseq',
+  mr_hopon : 'mr_hopon',
   ep_auto  : 'ep_auto',
   no_plan  : 'no_plan'
 };
@@ -157,8 +158,8 @@ function ProjectDesc()  {
   this.jobCount     = 0;     // job count
   this.timestamp    = 0;     // Date.now()
   this.autorun      = false; // true if a task in autorun mode is runnng
-  this.startmode    = start_mode.standard;  // will be overwritten when
-                                            // project is created
+  // this.startmode    = start_mode.standard;  // will be overwritten when
+  //                                           // project is created
   this.tasklistmode = tasklist_mode.full;
   this.disk_space   = 0.0;   // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;   // in hours, accumulated over all project history
@@ -169,16 +170,17 @@ function ProjectDesc()  {
 
 }
 
-ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str )  {
+// ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str )  {
+ProjectDesc.prototype.init = function ( name_str,title_str,time_str )  {
   this.name         = name_str;
   this.title        = title_str;
   this.dateCreated  = time_str;
   this.dateLastUsed = time_str;
-  this.startmode    = startmode;
-  if ((this.startmode==start_mode.standard) ||
-      (this.startmode==start_mode.expert))  // legacy
-        this.tasklistmode = tasklist_mode.full;
-  else  this.tasklistmode = tasklist_mode.basic;
+  // this.startmode    = startmode;
+  // if ((this.startmode==start_mode.standard) ||
+  //     (this.startmode==start_mode.expert))  // legacy
+  //       this.tasklistmode = tasklist_mode.full;
+  // else  this.tasklistmode = tasklist_mode.basic;
 }
 
 function isProjectAccessible ( login,projectDesc )  {
@@ -292,7 +294,7 @@ function ProjectList ( loginName )  {
   this._type     = 'ProjectList';
   this.projects  = [];     // will contain ProjectDesc
   this.current   = '';     // current project name
-  this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
+  // this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
   this.seedFolders ( loginName );
 }
@@ -702,18 +704,17 @@ ProjectList.prototype.getProject = function ( name_str )  {
 }
 
 
-ProjectList.prototype.addProject = function ( name_str,title_str,
-                                              startmode,time_str )  {
+ProjectList.prototype.addProject = function ( name_str,title_str,time_str )  {
   if (!this.isProject(name_str))  {
     let pDesc = new ProjectDesc();
-    pDesc.init ( name_str,title_str,startmode,time_str );
+    pDesc.init ( name_str,title_str,time_str );
     pDesc.folderPath = this.currentFolder.path;
     if ([folder_path.all_projects,folder_path.shared,folder_path.joined]
         .indexOf(pDesc.folderPath)>=0)
       pDesc.folderPath = __login_id + '\'s Projects';  // virtual project folder path
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current   = name_str;
-    this.startmode = startmode;
+    // this.startmode = startmode;
     this.sortList  = null;
     return true;
   } else
@@ -887,7 +888,7 @@ function DockData()  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.start_mode             = start_mode;
+  // module.exports.start_mode             = start_mode;
   module.exports.plan_type              = plan_type;
   module.exports.tasklist_mode          = tasklist_mode;
   module.exports.folder_type            = folder_type;

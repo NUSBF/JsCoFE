@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1757,8 +1757,7 @@ function cloudRun ( server_request,server_response )  {
               let pData = prj.readProjectData ( loginData,meta.project );
               if (!pData)  {
                 let pDesc = new pd.ProjectDesc();
-                pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
-                             com_utils.getDateString() );
+                pDesc.init ( meta.project,meta.title,com_utils.getDateString() );
                 if (('folder' in meta) && meta.folder)  {
                   if (meta.folder.startsWith('/'))
                         pDesc.folderPath = meta.folder.slice(1);

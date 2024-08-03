@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -399,8 +399,8 @@ let update = false;
 
   projectDesc.folderPath = flist.join('/');
   
-  if (!projectDesc.hasOwnProperty('startmode'))
-    projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
+  // if (!projectDesc.hasOwnProperty('startmode'))
+  //   projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
   if (!projectDesc.hasOwnProperty('tasklistmode'))
     projectDesc.tasklistmode = pd.tasklist_mode.full; // too petty to save/update
   if (!projectDesc.hasOwnProperty('metrics'))
@@ -501,8 +501,8 @@ function readProjectList ( loginData )  {
     // read all project descriptions anew
     // think how to make this more smart in future
     pList.projects = [];
-    if (!('startmode' in pList))
-      pList.startmode = pd.start_mode.auto;
+    // if (!('startmode' in pList))
+    //   pList.startmode = pd.start_mode.auto;
     let dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
     for (let i=0;i<dirlist.length;i++)
       if (dirlist[i].endsWith(projectExt))  {

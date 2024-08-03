@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1193,6 +1193,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
     __current_page = this;
     self.can_reload = true;   // tree reload semaphore
     // enter empty project: first task to run or choose
+    /*
     switch (job_tree.projectData.desc.startmode)  {
       case start_mode.auto    :
               self.addJob();
@@ -1211,6 +1212,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       case start_mode.expert   :  // legacy
       default :  self.addJob();
     }
+    */
+    self.addJob();
   }
   
   this.updateUserRationDisplay ( job_tree.projectData.desc );

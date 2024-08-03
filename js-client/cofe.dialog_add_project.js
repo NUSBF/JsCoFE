@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,46 +59,6 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
 
   grid.setWidget ( project_plans,row,0,1,3 );
 
-  /*
-
-  let autosolve_rbt = new RadioButton ( 'Autostart',
-                                        projectList.startmode==start_mode.auto     );
-  let expert_rbt    = new RadioButton ( 'Standard',
-                                        (projectList.startmode==start_mode.standard) ||
-                                        (projectList.startmode==start_mode.expert) // legacy
-                                      );
-  let migrate_rbt   = new RadioButton ( 'Hop on',
-                                        projectList.startmode==start_mode.migrate  );
-
-  autosolve_rbt.setSize ( '100px','40px' );
-  expert_rbt   .setSize ( '100px','40px' );
-  migrate_rbt  .setSize ( '100px','40px' );
-
-  grid.setWidget ( autosolve_rbt,row++,0,1,2 );
-  grid.setWidget ( autosolve_rbt,row,0,1,1 );
-  grid.setLabel  (
-    'Simplified mode for starting with one of automatic workflows featuring ' +
-    'structure solution scenarios in ' + appName() + ', and optimised list of ' +
-    'essential tasks for structure completion (can be switched to the ' +
-    'full list).',
-    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
-
-  grid.setWidget ( expert_rbt,row,0,1,1 );
-  grid.setLabel  (
-    'Standard mode for operating all ' + appName() + ' tasks manually, with ' +
-    'access to the full list of tasks by default.',
-    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
-
-  grid.setWidget ( migrate_rbt,row,0,1,1 );
-  grid.setLabel  (
-    'Quick start from phased (possibly partially built and refined) ' +
-    'structure or heavy-atom substructure, for further refinement and model ' +
-    'building, with the optimised list of essential tasks for structure ' +
-    'completion (can be switched to the full list).',
-    row++,1,1,1 ).setFontSize('90%').setFontItalic(true);
-
-  */
-
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
@@ -107,9 +67,9 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     modal     : true,
     buttons: [
       {
-        id   : "Add_btn",
-        text : "Add Project",
-        click: function() {
+        id    : "Add_btn",
+        text  : "Add Project",
+        click : function() {
 
           let msg = [];
 
@@ -134,13 +94,11 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
           } else  {
 
             let pspecs = {
-              id    : name_inp.getValue(),
-              title : title_inp.getValue()
+              id        : name_inp .getValue(),
+              title     : title_inp.getValue(),
+              plan_code : project_plans.plan_code,
+              plan_task : project_plans.plan_task
             };
-
-            // if (autosolve_rbt.getValue())   pspecs.startmode = start_mode.auto;
-            // else if (expert_rbt.getValue()) pspecs.startmode = start_mode.standard;
-            //                            else pspecs.startmode = start_mode.migrate;
 
             if (onclose_fnc(pspecs))
               $(this).dialog("close");
@@ -150,9 +108,9 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
         }
       },
       {
-        id   : "cancel_btn",
-        text : "Cancel",
-        click: function() {
+        id    : "cancel_btn",
+        text  : "Cancel",
+        click : function() {
           onclose_fnc ( null );
           $(this).dialog("close");
         }
@@ -229,17 +187,17 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
               'ligand fitting (if provided); refinement and water modelling',
       task  : 'TaskWFlowSMR',
       avail_key : ['ok','','']
-    }, { 
-      code  : plan_type.mr_noseq,
-      title : 'Molecular Replacement with unknown sequence and model',
-      data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
-               '(optional) ligand description (.cif, .lib)'
-               ],
-      desc  : 'Finding structure template in the PDB; ' +
-              'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling',
-      task  : 'TaskSimbad',
-      avail_key : ['ok','','']
+    // }, { 
+    //   code  : plan_type.mr_noseq,
+    //   title : 'Molecular Replacement with unknown sequence and model',
+    //   data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
+    //            '(optional) ligand description (.cif, .lib)'
+    //            ],
+    //   desc  : 'Finding structure template in the PDB; ' +
+    //           'ASU estimate; Molecular Replacement; ' +
+    //           'ligand fitting (if provided); refinement and water modelling',
+    //   task  : 'TaskSimbad',
+    //   avail_key : ['ok','','']
     }, { 
       code  : plan_type.ep_auto,
       title : 'Automatic Experimental Phasing',
@@ -250,6 +208,19 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
       desc  : 'ASU estimate; automatic Experimental Phasing; ' +
               'ligand fitting (if provided); refinement and water modelling',
       task  : 'TaskWFlowAEP',
+      avail_key : ['ok','','']
+    }, { 
+      code  : plan_type.mr_hopon,
+      title : 'Import already solved structure for completion',
+      data  : ['reflection data (merged .mtz)',
+               'phases (merged .mtz; optional if model is given)',
+               'structure model (.pdb, .cif, .mmcif; optional if phases are given)',
+               '(optional) sequence (.fasta, .pir, .seq)',
+               '(optional) ligand description (.cif, .lib)'
+               ],
+      desc  : 'Import data and set up project for further refinement, ' +
+              'model building, water finding, ligand fitting, and PDB deposition',
+      task  : 'TaskMigrate',
       avail_key : ['ok','','']
     }
   ];
@@ -262,7 +233,10 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
         n = i;
 
     if (n>=0)  {
-       
+
+      panel.plan_code = planCode;
+      panel.plan_task = plans[n].task;
+
       let msg = '';
       if (plans[n].code==plan_type.no_plan)  {
         msg = '<b>No project plan will be used</b>; develop your project manually ' +
@@ -281,6 +255,7 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
         n = -1;
       }
       plan_panel.setText ( msg );
+
     }
   
     $('#Add_btn').button ( 'option', 'disabled',(n<0) );
