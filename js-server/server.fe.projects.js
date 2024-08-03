@@ -401,8 +401,8 @@ let update = false;
   
   // if (!projectDesc.hasOwnProperty('startmode'))
   //   projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
-  if (!projectDesc.hasOwnProperty('tasklistmode'))
-    projectDesc.tasklistmode = pd.tasklist_mode.full; // too petty to save/update
+  // if (!projectDesc.hasOwnProperty('tasklistmode'))
+  //   projectDesc.tasklistmode = pd.tasklist_mode.full; // too petty to save/update
   if (!projectDesc.hasOwnProperty('metrics'))
     projectDesc.metrics = {};  // too petty to save/update
   

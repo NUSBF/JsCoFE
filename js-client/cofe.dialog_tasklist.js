@@ -76,6 +76,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
 
     beforeClose : function(event, ui) {
                   self.saveDialogState();
+                  self.onSelect_func ( self.selected_task );
                 },
 
     buttons   : [

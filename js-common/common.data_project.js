@@ -55,10 +55,10 @@ const plan_type = {
   no_plan  : 'no_plan'
 };
 
-const tasklist_mode = {
-  basic  : 'basic',
-  full   : 'full'
-};
+// const tasklist_mode = {
+//   basic  : 'basic',
+//   full   : 'full'
+// };
 
 const folder_type = {
   user          : 'user',
@@ -160,7 +160,7 @@ function ProjectDesc()  {
   this.autorun      = false; // true if a task in autorun mode is runnng
   // this.startmode    = start_mode.standard;  // will be overwritten when
   //                                           // project is created
-  this.tasklistmode = tasklist_mode.full;
+  // this.tasklistmode = tasklist_mode.full;
   this.disk_space   = 0.0;   // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;   // in hours, accumulated over all project history
   this.njobs        = 0;     // over all project history
@@ -890,7 +890,7 @@ function DockData()  {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // module.exports.start_mode             = start_mode;
   module.exports.plan_type              = plan_type;
-  module.exports.tasklist_mode          = tasklist_mode;
+  // module.exports.tasklist_mode          = tasklist_mode;
   module.exports.folder_type            = folder_type;
   module.exports.folder_path            = folder_path;
   module.exports.share_permissions      = share_permissions;
