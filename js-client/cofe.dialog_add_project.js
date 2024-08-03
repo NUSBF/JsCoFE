@@ -102,7 +102,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
-    maxHeight : 500,
+    minHeight : 420,
     width     : 720,
     modal     : true,
     buttons: [
@@ -180,7 +180,7 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
     'padding-right'  : '12px',
     'padding-bottom' : '0px',
     'width'          : '654px',
-    'min-height'     : '160px',
+    'min-height'     : '180px',
     'margin-top'     : -5,
     'margin-bottom'  : -5,
     'border'         : '1px solid lightgray' 
@@ -196,9 +196,9 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
     }, { 
       code  : plan_type.mr_af,
       title : 'Molecular Replacement using AlphaFold model',
-      data  : ['reflection data (merged or unmerged)',
-               'sequence',
-               '(optional) ligand description'
+      data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
+               'sequence (.fasta, .pir, .seq)',
+               '(optional) ligand description (.cif, .lib)'
                ],
       desc  : 'Structure template prediction, pruning and slicing; ' +
               'ASU estimate; Molecular Replacement; ' +
@@ -208,40 +208,44 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
     }, { 
       code  : plan_type.mr_db,
       title : 'Molecular Replacement using structure databases',
-      data  : ['reflection data (merged or unmerged)',
-               'sequence',
-               '(optional) ligand description'
+      data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
+               'sequence (.fasta, .pir, .seq)',
+               '(optional) ligand description (.cif, .lib)'
                ],
       desc  : 'Finding structure template in the PDB, AFDB and ESM data banks; ' +
               'ASU estimate; Molecular Replacement; ' +
               'ligand fitting (if provided); refinement and water modelling',
       task  : 'TaskWFlowAMR',
       avail_key : ['ok','','']
-    }, { 
-      code  : plan_type.mr_noseq,
-      title : 'Molecular Replacement with unknown sequence and model',
-      data  : ['reflection data (merged or unmerged)',
-               '(optional) ligand description'
-               ],
-      desc  : 'Finding structure template in the PDB; ' +
-              'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
     },{ 
       code  : plan_type.mr_model,
       title : 'Molecular Replacement using a known model',
-      data  : ['reflection data (merged or unmerged)',
-               'structure model',
-               '(optional) sequence',
-               '(optional) ligand description'
+      data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
+               'structure model (.pdb, .cif, .mmcif)',
+               '(optional) sequence (.fasta, .pir, .seq)',
+               '(optional) ligand description (.cif, .lib)'
                ],
       desc  : 'Model preparation; ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskWFlowSMR',
+      avail_key : ['ok','','']
+    }, { 
+      code  : plan_type.mr_noseq,
+      title : 'Molecular Replacement with unknown sequence and model',
+      data  : ['reflection data (merged or unmerged; .mtz, .hkl, .sca)',
+               '(optional) ligand description (.cif, .lib)'
+               ],
+      desc  : 'Finding structure template in the PDB; ' +
+              'ASU estimate; Molecular Replacement; ' +
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskSimbad',
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.ep_auto,
       title : 'Automatic Experimental Phasing',
-      data  : ['reflection data with anomalous signal (merged or unmerged)',
-               'sequence',
-               '(optional) ligand description'
+      data  : ['reflection data with anomalous signal (merged or unmerged; .mtz, .hkl, .sca)',
+               'sequence (.fasta, .pir, .seq)',
+               '(optional) ligand description (.cif, .lib)'
                ],
       desc  : 'ASU estimate; automatic Experimental Phasing; ' +
               'ligand fitting (if provided); refinement and water modelling',
