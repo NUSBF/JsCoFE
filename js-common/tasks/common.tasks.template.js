@@ -607,7 +607,7 @@ if (!dbx)  {
 
     if ((this.nc_type=='browser-secure') && (!isProtectedConnection()))  {
       return ['browser-secure',
-              'task requires secure internet connection',
+              'secure internet connection is required',
               '<h3>Task requires secure internet connection</h3>' +
               'This task requires secure internet connection (https or<br>' +
               'localhost-based setup).<p>Contact your ' + appName() +
@@ -624,7 +624,7 @@ if (!dbx)  {
           (compareVersions(__client_version,this.lowestClientVersion())<0))  {
         // task requires client of higher version
         return ['client-version',
-                'task requires a higher version of CCP4 Cloud Client ' +
+                'higher version of CCP4 Cloud Client is required ' +
                 '(update CCP4 on your device)',
                 '<h3>Too low version of CCP4 Cloud Client</h3>' +
                 'This task requires a higher version of CCP4 Cloud ' +
@@ -635,7 +635,7 @@ if (!dbx)  {
       if (((this.nc_type=='client') || (!__cloud_storage)) &&
           (!this.checkEnvironment(__environ_client)))
         return ['environment-client',
-                'task software is not installed on your device',
+                'required software is not installed on your device',
                 '<h3>Task software is not installed on your device</h3>' +
                 'The task is to run on your device, but needful software is ' +
                 'not installed on it.<br>Consult software documentation ' +
@@ -673,13 +673,13 @@ if (!dbx)  {
     if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))  {
       if (__local_setup)
         return ['environment-server',
-                'task software is not installed',
+                'required software is not installed',
                 '<h3>Task software is not installed</h3>' +
                 'Software, needed to run the task, is not installed on ' +
                 'your machine.'];
       else
         return ['environment-server',
-                'task software is not installed on ' + appName() + ' server',
+                'required software is not installed on ' + appName() + ' server',
                 '<h3>Task software is not installed on server</h3>' +
                 'Software, needed for the task, is not installed on ' +
                 appName() + ' server.<br>Contact server ' +

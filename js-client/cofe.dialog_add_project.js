@@ -160,26 +160,6 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
     ]
   });
 
-/*
-  $(autosolve_rbt.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
-    expert_rbt .setValue ( false );
-    migrate_rbt.setValue ( false );
-  });
-
-  $(expert_rbt.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
-    autosolve_rbt.setValue ( false );
-    migrate_rbt  .setValue ( false );
-  });
-
-  $(migrate_rbt.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
-    autosolve_rbt.setValue ( false );
-    expert_rbt   .setValue ( false );
-  });
-*/
-
 }
 
 AddProjectDialog.prototype = Object.create ( Widget.prototype );
@@ -200,17 +180,19 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
     'padding-right'  : '12px',
     'padding-bottom' : '0px',
     'width'          : '654px',
-    'height'         : '160px',
+    'min-height'     : '160px',
     'margin-top'     : -5,
     'margin-bottom'  : -5,
     'border'         : '1px solid lightgray' 
   });
 
-  const plans = [
+  let plans = [
     { code  : plan_type.no_plan,
       title : 'Manual mode',
       data  : ['as required for your project'],
-      desc  : 'develop project manually using suitable tasks'
+      desc  : 'develop project manually using suitable tasks',
+      task  : null,
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.mr_af,
       title : 'Molecular Replacement using AlphaFold model',
@@ -220,7 +202,9 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                ],
       desc  : 'Structure template prediction, pruning and slicing; ' +
               'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskWFlowAFMR',
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.mr_model,
       title : 'Molecular Replacement using a known model',
@@ -230,7 +214,9 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                '(optional) ligand description'
                ],
       desc  : 'Model preparation; ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskWFlowSMR',
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.mr_db,
       title : 'Molecular Replacement using structure databases',
@@ -240,7 +226,9 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                ],
       desc  : 'Finding structure template in the PDB, AFDB and ESM data banks; ' +
               'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskWFlowAMR',
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.mr_noseq,
       title : 'Molecular Replacement with unknown sequence and model',
@@ -249,7 +237,9 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                ],
       desc  : 'Finding structure template in the PDB; ' +
               'ASU estimate; Molecular Replacement; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskSimbad',
+      avail_key : ['ok','','']
     }, { 
       code  : plan_type.ep_auto,
       title : 'Automatic Experimental Phasing',
@@ -258,15 +248,19 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
                '(optional) ligand description'
                ],
       desc  : 'ASU estimate; automatic Experimental Phasing; ' +
-              'ligand fitting (if provided); refinement and water modelling'
+              'ligand fitting (if provided); refinement and water modelling',
+      task  : 'TaskWFlowAEP',
+      avail_key : ['ok','','']
     }
   ];
   
   function show_plan ( planCode )  {
+
     let n = -1;
     for (let i=0;(i<plans.length) && (n<1);i++)
       if (plans[i].code==planCode)
         n = i;
+
     if (n>=0)  {
        
       let msg = '';
@@ -281,38 +275,33 @@ AddProjectDialog.prototype.makeProjectPlansWidget = function ( projectList )  {
               '<p><b><i>Plan description:</i></b>&nbsp;' +
               plans[n].desc;
       }
-      plan_panel.setText ( msg ); 
-
-      // plan_panel.setLabel ( '<div style="font-size:90%;padding-top:6px;">' +
-      //                  '<b><i>Data needed:</i></b><ul><li>' + 
-      //                  plans[n].data.join('</li><li>') + '</ul></div>', 1,0,1,1 )
-      //     //  .setWidth_px  ( 680 )
-      //      .setHeight_px ( 120 );
-      // plan_panel.setLabel ( '<div style="font-size:90%;"><b><i>Plan description:</i></b>&nbsp;' +
-      //                  plans[n].desc + '</div>', 2,0,1,1 )
-      //     //  .setWidth_px  ( 680 )
-      //      .setHeight_px ( 25  );
+      if (plans[n].avail_key[0]!='ok')  {
+        msg += '<p><b><i>This plan is not available:</i></b> ' + 
+               plans[n].avail_key[1].replace('task is ','').replace('task ','');
+        n = -1;
+      }
+      plan_panel.setText ( msg );
     }
+  
+    $('#Add_btn').button ( 'option', 'disabled',(n<0) );
+
   }
 
-  // let p0 = '';  
   panel.plan_sel = new Dropdown();
   panel.plan_sel.setWidth ( '680px' );
 
   panel.plan_sel.addItem ( plans[0].title,'',plans[0].code,true );
   for (let i=1;i<plans.length;i++)  {
-    panel.plan_sel.addItem ( i + '. ' + plans[i].title,'',plans[i].code,false );
-                            //  projectList.startmode==plans[i].code );
-    // if (projectList.startmode==plans[i].code)
-    //   p0 = plans[i].code;
+    let task = makeNewInstance ( plans[i].task );
+    plans[i].avail_key = task.isTaskAvailable();
+    panel.plan_sel.addItem ( 'Plan ' + i + '. ' + plans[i].title +
+                             ((plans[i].avail_key[0]=='ok') ? '' : ' (not available)'),
+                             '',plans[i].code,false );
   }
-  // if (!p0)
-  //   projectList.startmode = plans[0].code;
   panel.setWidget ( panel.plan_sel, 0,0,1,1 );
   panel.plan_sel.make();
 
   show_plan ( plan_type.no_plan );
-  // show_plan ( projectList.startmode );
 
   panel.plan_sel.addOnChangeListener ( function(text,value){
     show_plan ( value );
