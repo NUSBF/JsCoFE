@@ -1136,14 +1136,12 @@ JobTree.prototype._copy_task_cloud_path = function ( task,branch_task_list )  {
 JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
   if (this.projectData)  {
     (function(tree){
-            alert ( ' >>>>>>> p1' );
       let dataBox = tree.harvestTaskData ( 1,[] );
       let branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
       new TaskListDialog ( dataBox,branch_task_list,tree,
-          function(task,tasklistmode){
-            alert ( ' >>>>>>> p2' );
-            if (tasklistmode)
-              tree.projectData.desc.tasklistmode = tasklistmode;
+          function(task){
+            // if (tasklistmode)
+            //   tree.projectData.desc.tasklistmode = tasklistmode;
             if (task)  {  // task chosen
               if (copy_params)  {
                 if (tree._copy_task_parameters(task,branch_task_list)<0)  {
