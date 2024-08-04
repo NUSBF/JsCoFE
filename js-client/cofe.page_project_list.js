@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.24   <--  Date of Last Modification.
+ *    04.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -180,8 +180,8 @@ function ProjectListPage ( sceneId )  {
   }
 
   // function to open selected Project
-  let openProject = function() {
-    saveProjectList ( function(data){ makeProjectPage(sceneId); },null );
+  let openProject = function ( pspecs=null ) {
+    saveProjectList ( function(data){ makeProjectPage(sceneId,pspecs); },null );
   }
 
   this._open_project = function ( prjName )  {
@@ -195,7 +195,7 @@ function ProjectListPage ( sceneId )  {
           projectList.current   = pspecs.id;
           // projectList.startmode = pspecs.startmode;
           makeProjectListTable();
-          openProject();
+          openProject ( pspecs );
           return true;  // close dialog
         } else  {
           new MessageBox ( 'Duplicate Project ID',
