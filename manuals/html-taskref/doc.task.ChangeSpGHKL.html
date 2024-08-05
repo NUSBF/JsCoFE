@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -360,11 +361,11 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="change-dataset-space-group">
-<h1 id="doc-task-changespghkl--page-root">Change Dataset Space Group<a class="headerlink" href="#doc-task-changespghkl--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-changespghkl--page-root">Change Dataset Space Group<a class="headerlink" href="#doc-task-changespghkl--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The task allows changing the merged reflection dataset space group with the same point group. It can be useful in order to compare similar structures or to <a class="reference external" href="./doc.task.EditRevision.html" rel="noopener noreferrer" target="_blank">edit structure revision</a>  in order to replace the dataset. Sometimes the spacegroup or indexing convention may be different even when the crystal packing is similar. In this case, the symmetry and the indexing convention changed to match the existing structure.</p>
 <p>During the structure solution, it may become obvious that the spacegroup has been incorrectly determined. For example, a symmetry that is present in the data may have been missed leading to the selection of a spacegroup with lower symmetry, or a higher space group may have been selected due to the presence of twinning or pseudo-symmetry. If the point group has changed, then the data processing should be repeated to obtain a correct list of unique reflections.</p>
-</section>
+
 
 
           </article>
@@ -409,7 +410,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
