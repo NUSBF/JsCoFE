@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.24   <--  Date of Last Modification.
+ *    05.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -173,6 +173,8 @@ ServerConfig.prototype.calcCPUCapacity = function()  {
     this.maxNProcesses = Math.floor ( this.maxNProcesses/4 );
   this.maxNProcesses = Math.max(1,this.maxNProcesses);
 
+  console.log ( ' >>>>>> mcores=' + this.maxNCores );
+
 }
 
 
@@ -183,6 +185,7 @@ ServerConfig.prototype.getMaxNProcesses = function()  {
 
 ServerConfig.prototype.getMaxNCores = function()  {
 // returns the maximal number of cpu cores (on a single node) a task is allowed to use
+console.log ( ' >>>> mxNCores=' + this.maxNCores );
   return this.maxNCores;
 }
 
@@ -1027,8 +1030,7 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.hasOwnProperty('jobFalseStart'))
         nc_server.jobFalseStart = 1;  // days
 
-      if (!fe_server)
-        nc_server.calcCPUCapacity();
+      nc_server.calcCPUCapacity();
       nc_servers.push ( nc_server );
 
     }
