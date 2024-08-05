@@ -11,6 +11,7 @@ const def_config = {
     "data_dir": "data",
     "user_dir": "users",
     "catalog_dir": "catalogs",
+    "meta_dir": "meta",
     "catalogs_with_data": false,
     "data_free_gb": 100,
     "data_max_days": 60,
