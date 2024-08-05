@@ -27,7 +27,7 @@ class dataLink {
     this.ds = {};
     this.jobs = {};
 
-    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'));
+    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'), config.get('storage.meta_dir'));
 
     // data pruning config
     this.data_free_gb = config.get('storage.data_free_gb');
