@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -203,49 +204,56 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">5. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_globus.html" class="md-nav__link">5. Transferring data to CCP4 Cloud via Globus</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">6. Custom (user-created) project workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">7. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">9. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">10. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">11. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -278,21 +286,21 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="authorisation-instructions-for-pdb-redo">
-<h1 id="authorize-pdbredo--page-root">Authorisation instructions for PDB-REDO<a class="headerlink" href="#authorize-pdbredo--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="authorize-pdbredo--page-root">Authorisation instructions for PDB-REDO<a class="headerlink" href="#authorize-pdbredo--page-root" title="Permalink to this headline">¶</a></h1>
 <p>CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, you need to be authorised by the corresponding software provider. You can do that at <strong>My Account</strong> page.</p>
 <blockquote>
 <div><a class="reference internal image-reference" href="_images/My_account_Authorizations.png"><img alt="_images/My_account_Authorizations.png" class="align-center" src="_images/My_account_Authorizations.png" style="width: 891.2px; height: 550.4px;"/></a>
 </div></blockquote>
-<section id="pdb-redo-tokens">
-<h2 id="pdb-redo-tokens">PDB-REDO Tokens<a class="headerlink" href="#pdb-redo-tokens" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="pdb-redo-tokens">PDB-REDO Tokens<a class="headerlink" href="#pdb-redo-tokens" title="Permalink to this headline">¶</a></h2>
 <p>In order to generate token, please, <a class="reference external" href="https://pdb-redo.eu/register" rel="noopener noreferrer" target="_blank">register</a> or <a class="reference external" href="https://pdb-redo.eu/login" rel="noopener noreferrer" target="_blank">login</a> to your PDB-REDO account. After login you can generate PDB-REDO tokens on the <a class="reference external" href="https://pdb-redo.eu/token" rel="noopener noreferrer" target="_blank">Token page</a></p>
 <p>Here you should provide the Token name (can be any) and click generate (<strong>1</strong>).</p>
 <a class="reference internal image-reference" href="_images/pdb-redo_aut_1.png"><img alt="_images/pdb-redo_aut_1.png" class="align-center" src="_images/pdb-redo_aut_1.png" style="width: 952.3499999999999px; height: 313.59999999999997px;"/></a>
 <p>Once Token is generated, please copy the Token-ID(<strong>2</strong>), Token-Secret (<strong>3</strong>) and Expiry date (<strong>4</strong>)to the corresponding lines in CCP4 Cloud’s Software Authorisations page and press <a class="reference internal" href="_images/authorisation.png"><img alt="authorisation" src="_images/authorisation.png" style="width: 16px; height: 16px;"/></a> <strong>request authentication</strong> button (<strong>5</strong>)</p>
 <img alt="_images/pdb-redo_aut_2.png" class="align-center" src="_images/pdb-redo_aut_2.png"/>
-</section>
-</section>
+
+
 
 
           </article>
@@ -313,7 +321,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
