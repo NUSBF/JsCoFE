@@ -25,9 +25,10 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false) {
+  constructor(data_dir, keep_with_data = false, meta_dir) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
+    this.meta_dir = meta_dir;
     this.catalog = {};
   }
 
@@ -162,12 +163,24 @@ class dataCatalog {
   }
 
   addEntry(user, source, id, fields = {}) {
+    let dest = this.getDataDest(user, source, id);
+
     // create directory for the data
     try {
-      fs.mkdirSync(this.getDataDest(user, source, id), { recursive: true });
+      fs.mkdirSync(dest, { recursive: true });
     } catch (err) {
       log.error(`addEntry ${user}/${source}/${id} - ${err}`);
       return false;
+    }
+
+    // copy any files from 'meta' subfolder into data folder.
+    let stat = fs.statSync(this.meta_dir);
+    if (stat.isDirectory()) {
+      try {
+        fs.cpSync('meta', dest, { recursive: true });
+      } catch (err) {
+        log.error(`addEntry - Unable to copy 'meta' files - ${err}`);
+      }
     }
 
     // add user, source and id to entry - so this information is available directly from the entry
