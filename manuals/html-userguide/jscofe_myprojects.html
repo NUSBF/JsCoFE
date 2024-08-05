@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -309,49 +310,56 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">5. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_globus.html" class="md-nav__link">5. Transferring data to CCP4 Cloud via Globus</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">6. Custom (user-created) project workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">7. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">9. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">10. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">11. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -394,26 +402,26 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="my-projects">
-<h1 id="jscofe-myprojects--page-root"><span class="section-number">2.1. </span>My Projects<a class="headerlink" href="#jscofe-myprojects--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="first-time">
-<h2 id="first-time"><span class="section-number">2.1.1. </span>First time<a class="headerlink" href="#first-time" title="Permalink to this heading">¶</a></h2>
+  
+<h1 id="jscofe-myprojects--page-root"><span class="section-number">2.1. </span>My Projects<a class="headerlink" href="#jscofe-myprojects--page-root" title="Permalink to this headline">¶</a></h1>
+
+<h2 id="first-time"><span class="section-number">2.1.1. </span>First time<a class="headerlink" href="#first-time" title="Permalink to this headline">¶</a></h2>
 <p>This is the page you find yourself in immediately after login. If you read this text first time ever, you are probably new to CCP4 Cloud, just logged in with a temporary password sent to you after registration. If so, the first thing you want to do is to change your temporary password for something memorisable. You do not have to do that – your temporary password won’t expire – but if you do, look for the Menu icon: <a class="reference internal" href="_images/menu.png"><img alt="menu" src="_images/menu.png" style="width: 16px; height: 16px;"/></a> in the top-left corner of the page. Click on it, then choose <strong>“My Account”</strong> from the dropdown menu, and you will be presented with your account settings. Choose and type your new password in there, press button <strong>“Update my account”</strong> , and job’s done. You will be then taken to CCP4 Cloud’s home page in order to login with your new password.</p>
-</section>
-<section id="software-authorisation">
-<span id="id1"></span><h2 id="software-authorisation"><span class="section-number">2.1.2. </span>Software Authorisation<a class="headerlink" href="#software-authorisation" title="Permalink to this heading">¶</a></h2>
+
+
+<span id="id1"></span><h2 id="software-authorisation"><span class="section-number">2.1.2. </span>Software Authorisation<a class="headerlink" href="#software-authorisation" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at <strong>“My Account”</strong> page.</p>
 <blockquote>
 <div><a class="reference internal image-reference" href="_images/My_account_Authorizations.png"><img alt="_images/My_account_Authorizations.png" class="align-center" src="_images/My_account_Authorizations.png" style="width: 1114.0px; height: 688.0px;"/></a>
 </div></blockquote>
 <p>Click on <a class="reference internal" href="_images/authorisation.png"><img alt="authorisation" src="_images/authorisation.png" style="width: 16px; height: 16px;"/></a> manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Authorisation request will redirect you to the provider’s web-site. Any data requested by software provider will be processed at provider’s end and will not be stored in CCP4 Cloud.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Authorisation request will redirect you to the provider’s web-site. Any data requested by software provider will be processed at provider’s end and will not be stored in CCP4 Cloud.</p>
 </div>
-</section>
-<section id="projects">
-<span id="myprojects"></span><h2 id="projects"><span class="section-number">2.1.3. </span>Projects<a class="headerlink" href="#projects" title="Permalink to this heading">¶</a></h2>
+
+
+<span id="myprojects"></span><h2 id="projects"><span class="section-number">2.1.3. </span>Projects<a class="headerlink" href="#projects" title="Permalink to this headline">¶</a></h2>
 <p>In CCP4 Cloud, your work is arranged in Projects. There is no strict rules how to use them, but a good practice would be to put all work, related to a particular protein, into one Project. Projects start with uploading experimental data and subsequent jobs along the following line:</p>
 <blockquote>
 <div><p><em>data processing</em></p>
@@ -423,31 +431,31 @@
 <p><em>refinement</em></p>
 <p><em>validation and deposition</em></p>
 </div></blockquote>
-</section>
-<section id="getting-started">
-<h2 id="getting-started"><span class="section-number">2.1.4. </span>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="getting-started"><span class="section-number">2.1.4. </span>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>The page shows the list of projects, which is empty at the start. Press <a class="reference internal" href="_images/add.png"><img alt="addjob" src="_images/add.png" style="width: 16px; height: 16px;"/></a> button in the button line above the list, and create your first project. You will need to specify a short project name, and a more descriptive title in the dialog appeared, for example:</p>
 <a class="reference internal image-reference" href="_images/add_project.png"><img alt="_images/add_project.png" class="align-center" src="_images/add_project.png" style="width: 690.0px; height: 194.0px;"/></a>
 <p>then press <a class="reference internal" href="_images/add.png"><img alt="addjob" src="_images/add.png" style="width: 16px; height: 16px;"/></a> and see the new project appeared in the list.</p>
 <p>The project list is both sortable (use controls found in column titles) and selectable. In order to open a particular Project, select it and press <a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 16px; height: 16px;"/></a>  button on top of the list or, alternatively, just double-click on the project line.</p>
 <p>You can delete your projects as well: simply select the unwanted project in the list and press the <a class="reference internal" href="_images/delete.png"><img alt="delete" src="_images/delete.png" style="width: 16px; height: 16px;"/></a> button. Do this with due care: once deleted, projects cannot be restored.</p>
-</section>
-<section id="project-export-and-import">
-<h2 id="project-export-and-import"><span class="section-number">2.1.5. </span>Project export and import<a class="headerlink" href="#project-export-and-import" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="project-export-and-import"><span class="section-number">2.1.5. </span>Project export and import<a class="headerlink" href="#project-export-and-import" title="Permalink to this headline">¶</a></h2>
 <p>Using the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button, you can download the selected project as a compressed RAR archive. Exported archives can be uploaded later to your CCP4 Cloud account using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button above the project list.</p>
 <p>Exporting projects may be needed if there is no disk space left in your account, personal archival, or for transferring data to another CCP4 Cloud setup.</p>
 <p>Beware that projects usually grow to a considerable size, from 100s MBs to few GBs. You will be advised about the project size before downloading.</p>
-</section>
-<section id="after-work">
-<h2 id="after-work"><span class="section-number">2.1.6. </span>After work<a class="headerlink" href="#after-work" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="after-work"><span class="section-number">2.1.6. </span>After work<a class="headerlink" href="#after-work" title="Permalink to this headline">¶</a></h2>
 <p>Whenever you wish to end working with CCP4 Cloud, please <code class="docutils literal notranslate"><span class="pre">do</span> <span class="pre">logout</span></code>. This can be done through the Menu or by clicking on the exit button <a class="reference internal" href="_images/logout.png"><img alt="logout" src="_images/logout.png" style="width: 16px; height: 16px;"/></a> in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them.</p>
 <p>Do not worry about jobs still running: they will not be terminated if you quit your working session.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>CCP4 Cloud does not support multiple logins of the same user. Each login will forcefully terminate any other session of the same user still open.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">CCP4 Cloud does not support multiple logins of the same user. Each login will forcefully terminate any other session of the same user still open.</p>
 </div>
-</section>
-</section>
+
+
 
 
           </article>
@@ -492,7 +500,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
