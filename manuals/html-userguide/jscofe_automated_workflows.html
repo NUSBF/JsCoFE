@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -257,49 +258,56 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">5. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_globus.html" class="md-nav__link">5. Transferring data to CCP4 Cloud via Globus</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">6. Custom (user-created) project workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">7. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">9. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">10. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">11. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -332,8 +340,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="automatic-workflows">
-<span id="workflows-guide"></span><h1 id="jscofe-automated-workflows--page-root"><span class="section-number">3.3. </span>Automatic workflows<a class="headerlink" href="#jscofe-automated-workflows--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<span id="workflows-guide"></span><h1 id="jscofe-automated-workflows--page-root"><span class="section-number">3.3. </span>Automatic workflows<a class="headerlink" href="#jscofe-automated-workflows--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Automatic workflows feature structure solution scenarios, such as Molecular
 Replacement or Experimental Phasing, which include several elementary tasks.
 A workflow can start with data import and then attempt phasing, model building,
@@ -348,8 +356,8 @@ improved with elementary task in manual mode, allowing finer control over
 tasks’ parameters.</p>
 <p>Not only the workflows can reduce chores, but they may also be used for a
 better understanding of the structure solution strategy.</p>
-<section id="using-automatic-workflows">
-<h2 id="using-automatic-workflows"><span class="section-number">3.3.1. </span>Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="using-automatic-workflows"><span class="section-number">3.3.1. </span>Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this headline">¶</a></h2>
 <p>Automatic Workflows progress automatically, creating and running new tasks
 and branching as necessary. If a workflow task fails or does not produce
 useable results, the follow-up task is not formed and the corresponding
@@ -357,19 +365,19 @@ useable results, the follow-up task is not formed and the corresponding
 attempt another approach (by starting another <em>Project branch</em>) or stops.</p>
 <p>A user can:</p>
 <ul class="simple">
-<li><p>inspect any workflow job at any time without waiting for the workflow and
-job to finish</p></li>
-<li><p>stop any workflow job, which will stop the corresponding workflow branch</p></li>
-<li><p>clone a workflow job, whether running, finished, failed or terminated,
+<li>inspect any workflow job at any time without waiting for the workflow and
+job to finish</li>
+<li>stop any workflow job, which will stop the corresponding workflow branch</li>
+<li>clone a workflow job, whether running, finished, failed or terminated,
 modify its parameters and re-run. <em>Such cloned job may be run as part of
 the workflow (forming a new workflow branch), or in the standard (one-off,
-manual) mode</em></p></li>
-<li><p>use results of any workflow job for further development of the structure
+manual) mode</em></li>
+<li>use results of any workflow job for further development of the structure
 solution <em>Project</em>, irrespectively of whether the workflow has run to the
-last step or not, and in parallel to workflow running.</p></li>
+last step or not, and in parallel to workflow running.</li>
 </ul>
-</section>
-</section>
+
+
 
 
           </article>
@@ -414,7 +422,7 @@ last step or not, and in parallel to workflow running.</p></li>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
