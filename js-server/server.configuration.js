@@ -173,8 +173,6 @@ ServerConfig.prototype.calcCPUCapacity = function()  {
     this.maxNProcesses = Math.floor ( this.maxNProcesses/4 );
   this.maxNProcesses = Math.max(1,this.maxNProcesses);
 
-  console.log ( ' >>>>>> mcores=' + this.maxNCores );
-
 }
 
 
@@ -185,7 +183,6 @@ ServerConfig.prototype.getMaxNProcesses = function()  {
 
 ServerConfig.prototype.getMaxNCores = function()  {
 // returns the maximal number of cpu cores (on a single node) a task is allowed to use
-console.log ( ' >>>> mxNCores=' + this.maxNCores );
   return this.maxNCores;
 }
 
