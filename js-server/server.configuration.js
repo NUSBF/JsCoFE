@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.24   <--  Date of Last Modification.
+ *    05.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -689,7 +689,8 @@ function CCP4DirName()  {
       },
       "exeType"            : "SHELL",  // SHELL, SGE, SLURM, SCRIPT
       "jobManager"         : "SLURM",  // used if SCRIPT is provided
-      "exeData"            : "",
+      "exeData"            : "",       // mandatory
+      "exeData_GPU"        : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"     : 2000,
       "sendDataWaitTime"   : 1000,
       "maxSendTrials"      : 10,
@@ -725,7 +726,8 @@ function CCP4DirName()  {
       "storage"          : "./cofe-client-storage",
       "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
       "exeType"          : "CLIENT",
-      "exeData"          : "",
+      "exeData"          : "",       // mandatory
+      "exeData_GPU"      : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
@@ -1025,8 +1027,7 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.hasOwnProperty('jobFalseStart'))
         nc_server.jobFalseStart = 1;  // days
 
-      if (!fe_server)
-        nc_server.calcCPUCapacity();
+      nc_server.calcCPUCapacity();
       nc_servers.push ( nc_server );
 
     }

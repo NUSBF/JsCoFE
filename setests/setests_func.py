@@ -1084,14 +1084,11 @@ def exitProject(driver):
     menuButton.click()
     time.sleep(1)
     #Back to Projects
-    clickResult = driver.find_element(By.XPATH,  "//*[normalize-space()='%s']" % 'Back to Projects')
-    clickResult.click()
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+    
     time.sleep(1)
-    if not clickResult:
-        # clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
-        clickResult = driver.find_element(By.XPATH, "//id[contains(@style, 'images_png/list.png')]")
-        clickResult.click()
-    time.sleep(1)
+    return()
 
 
 
@@ -1101,7 +1098,7 @@ def cloneProject(driver, testName):
     menuButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
 
     time.sleep(1)
 

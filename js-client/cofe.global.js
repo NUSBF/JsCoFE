@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.07.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -81,7 +81,11 @@ var __jobs_safe       = false;  // true if FE supports failed jobs safe
 var __has_datalink    = false;  // true if datalink server is configured
 var __strict_dormancy = false;  // true if dormancy includes deactivation of user account
 var __treat_private   = ['none']; // list of data not to be sent out
-var __fe_url          = '';     // front-end url as returned by the server (not proxy)
+var __fe_url          =         // front-end url as returned by the server (not proxy)
+                        document.location.protocol + '//' +  // just the initial value
+                        document.location.host     +
+                        document.location.pathname;
+
 var __auth_software   = null;   // software authorisation data
 var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
@@ -428,7 +432,6 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  // var obj= eval('new '+value._type+'()');
   let obj= makeNewInstance ( value._type );
   if (!obj)
     alert ( ' unknown class? ' + value._type );
