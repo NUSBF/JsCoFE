@@ -729,8 +729,8 @@ function addLogGraph ( gwdId,holderId, treeData,
         // console.log ( "treeData=\""+ treeData+"\"" );
         let pp = data.indexOf("<");
         // console.log ( " pp=" + pp);
-        if (pp>=0)
-          console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"" );
+        // if (pp>=0)
+        //   console.log ( " str=\"" + data.substring(pp-20,pp+20) + "\"" );
         dataArray = eval (
           "(" +
           data.replace(new RegExp('<>','g'),"") +

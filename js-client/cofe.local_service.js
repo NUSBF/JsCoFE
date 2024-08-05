@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,9 +114,6 @@ function checkLocalService ( callback_func )  {
         __ccp4_version    = rData.ccp4_version;
         __maintainerEmail = rData.maintainerEmail;
         __check_session_period = rData.check_session_period;
-        __fe_url          = document.location.protocol + '//' +
-                            document.location.host     +
-                            document.location.pathname;
         if (rData.localuser)  {
           __local_user    = true;
           __login_user    = rData.localuser;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.06.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1237,7 +1237,6 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   } else  {
 
-    // let newtask = eval ( 'new ' + task.task_chain[0] + '()' );
     let newtask = makeNewInstance ( task.task_chain[0] );
     if (task.task_chain.length>1)  {
       newtask.task_chain = [];
@@ -2010,27 +2009,39 @@ JobTree.prototype.isShared = function()  {
 
 JobTree.prototype.copyJobToClipboard = function() {
 let crTask = this.getSelectedTask();
+
   if (crTask)  {
+
     let reftask = makeNewInstance ( crTask._type );
     if (crTask.version<reftask.currentVersion())  {
+
       new MessageBox ( 'Cannot copy',
         '<h2>This job cannot be copied.</h2>' +
         'The job was created with a lower version of ' + appName() + 
         '<br>and cannot be copied to clipboard.<p>Please create the job ' +
         'as a new one, using "<i>Add Job</i>"<br>button from the control ' +
         'bar.','msg_stop' );
+
+    } else if (reftask.state==job_code.retired)  {
+
+      new MessageBox ( 'Cannot copy',
+        '<div style="width:360px;"><h2>This job cannot be copied.</h2>' +
+        'Task "<i>' + reftask.title + '</i>" was retired. Please use ' +
+        'alternative task.</div>','msg_stop' );
+
     } else
       __clipboard.task = crTask;
+
   } else
     new MessageBox ( 'No task copied',
       '<div style="width:300px;"><h2>No task copied</h2>' +
       'Task could not be copied to Clipboard.',
       'msg_error' );
+
 }
 
 JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
   if (__clipboard.task)  {
-    // let task = eval ( 'new ' + __clipboard.task._type + '()' );
     let task = makeNewInstance ( __clipboard.task._type );
     task.uname      = __clipboard.task.uname;
     task.uoname     = __clipboard.task.uoname;
@@ -2056,17 +2067,25 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     let task0  = this.task_map[nodeId];
 
     // create an instance of selected task with default parameters
-    // let task   = eval ( 'new ' + task0._type + '()' );
     let task   = makeNewInstance ( task0._type );
 
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<h2>This job cannot be cloned.</h2>' +
+        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
         'The job was created with a lower version of ' + appName() + 
         '<br>and cannot be cloned.<p>Please create the job as ' +
         'a new one, using "<i>Add Job</i>"<br>button from the ' +
         'control bar.</div>','msg_stop' );
+      if (onAdd_func)
+        onAdd_func(-5);
+
+    } else if (task.state==job_code.retired)  {
+
+      new MessageBox ( 'Cannot clone',
+        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        'Task "<i>' + task.title + '</i>" was retired. Please use ' +
+        'alternative task.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
 
@@ -2369,7 +2388,6 @@ let task = this.getTask ( jobId );
 
     } else  {
 
-      // td0 = $.extend ( true,eval('new ' + dataType + '()'),td0 );
       td0 = $.extend ( true,makeNewInstance(dataType),td0 );
       td0.inspectData ( task );
 
@@ -2464,7 +2482,6 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         this.projectData.desc.jobCount = Math.max (
                                   this.projectData.desc.jobCount,ref_task.id );
 
-        // let replay_task     = $.extend ( eval('new '+ref_task._type+'()'),ref_task );
         let replay_task     = $.extend ( makeNewInstance(ref_task._type),ref_task );
         replay_task.state   = job_code.new;
         replay_task.project = this.projectData.desc.name;

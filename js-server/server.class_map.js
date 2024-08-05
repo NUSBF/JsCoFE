@@ -74,7 +74,6 @@ function __object_to_instance ( key,value ) {
   let obj = null;
   if (moduleRef.length>0)
     obj = new __modules[moduleRef][value._type]();
-      //  obj = eval ( 'new ' + moduleRef + '()' );
   else obj = {};  // no class mapping
 
   for (let property in value)
@@ -103,7 +102,6 @@ function makeTaskClass ( classType )  {
     let moduleRef = getModuleRef ( classType,4,'../js-common/tasks/common.tasks.' );
     if (moduleRef.length>0)
       return new __modules[moduleRef][classType]();
-      // return eval ( 'new ' + moduleRef + '()' );
   }
   return null;
 }

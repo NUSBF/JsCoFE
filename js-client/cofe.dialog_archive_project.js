@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.03.23   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Archive Dialog (archives given project)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2022-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
   if (__current_page)
     this.ration = __current_page.ration;
 
-  var self = this;
+  let self = this;
 
   if (this.makeLayout())  {
 
@@ -60,11 +60,11 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
           text  : 'Archive',
           click : function() {
                     if (self.validateData())  {
-                      var title = 'Confirm archiving';
-                      var msg   = '<h2>Confirm archiving</h2>' +
+                      let title = 'Confirm archiving';
+                      let msg   = '<h2>Confirm archiving</h2>' +
                                   'You are about to archive project <b>"' +
                                   projectDesc.name + '"</b>.';
-                      var btext = 'Yes, archive';
+                      let btext = 'Yes, archive';
                       if (self.projectDesc.archive)  {
                         title = 'Confirm archive updating';
                         msg   = '<h2>Confirm archive updating</h2>' +
@@ -143,7 +143,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
-  var doclink = '<a href="javascript:launchHelpBox1(\'' + appName() + ' Archive\',' +
+  let doclink = '<a href="javascript:launchHelpBox1(\'' + appName() + ' Archive\',' +
                 '\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
                 '<span style="color:blue">';
 
@@ -152,14 +152,14 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
-  var author = getProjectAuthor ( this.projectDesc );
+  let author = getProjectAuthor ( this.projectDesc );
 
-  var title     = '<h2>Archive Project "' + this.projectDesc.name + '"</h2>';
-  var archiveID = '';
-  var coauthors = '';
-  var pdbs      = '';
-  var dois      = '';
-  var kwds      = '';
+  let title     = '<h2>Archive Project "' + this.projectDesc.name + '"</h2>';
+  let archiveID = '';
+  let coauthors = '';
+  let pdbs      = '';
+  let dois      = '';
+  let kwds      = '';
   if (this.projectDesc.archive)  {
     title     = '<h2>Update Archived Project ' + this.projectDesc.archive.id + '</h2>';
     archiveID = this.projectDesc.archive.id;
@@ -226,16 +226,16 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   this.grid.setHLine ( 2, 2,2, 1,1 );
 
-  var panel = this.grid.setPanel ( 3,2,1,1 );
+  let panel = this.grid.setPanel ( 3,2,1,1 );
   $(panel.element).css({
     'width'      : 700,
     'height'     : 300,
     'overflow-y' : 'scroll'
   });
 
-  var pgrid = new Grid ( '-compact' );
+  let pgrid = new Grid ( '-compact' );
   panel.addWidget ( pgrid );
-  var row = 0;
+  let row = 0;
 
   // declaration
 
@@ -258,7 +258,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
     row++,2,1,1
   );
 
-  var sgrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+  let sgrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
   sgrid.setLabel ( __login_user + ':&nbsp;', 0,0,1,1 );
 
@@ -289,7 +289,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
       row++,2,1,1
     );
 
-  var igrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+  let igrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
   igrid.setLabel ( 'Archive ID:&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
@@ -298,7 +298,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
                                   'Archive ID may contain letters, digits and ' +
                                   'periods. It will be capitalised.' )
                       .addOnInputListener(function(){
-                        var s = this.value.trim().toUpperCase();
+                        let s = this.value.trim().toUpperCase();
                         if (s && (!s.match(/^[0-9A-Z.]+$/)))
                           s = s.slice(0,-1);
                         this.value = s;
@@ -340,7 +340,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
     row++,2,1,1
   );
 
-  var agrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+  let agrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
   agrid.setLabel ( 'Associated PDB code(s):&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
@@ -364,7 +364,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
                                 'Comma-separated list of keywords suitable for ' +
                                 'archive searches.' );
                    
-  for (var r=0;r<3;r++)
+  for (let r=0;r<3;r++)
     agrid.setVerticalAlignment ( r,0,'middle' );
 
   return true;
@@ -373,11 +373,11 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
 
 ProjectArchiveDialog.prototype.getInputList = function ( inp )  {
-  var line = inp.getValue().trim();
-  var lst  = [];
+  let line = inp.getValue().trim();
+  let lst  = [];
   if (line && ((line=='*') || (line.indexOf('*')<0)))  {
     lst = line.split(',').filter(Boolean);
-    for (var i=0;i<lst.length;i++)
+    for (let i=0;i<lst.length;i++)
       lst[i] = lst[i].trim();
   }
   return lst;
@@ -386,7 +386,7 @@ ProjectArchiveDialog.prototype.getInputList = function ( inp )  {
 
 ProjectArchiveDialog.prototype.validateData = function()  {
 
-  var msg_list = [];
+  let msg_list = [];
 
   if (this.signed_sel.getValue()!='signed')
     msg_list.push ( 'sign declaration' );
@@ -405,8 +405,8 @@ ProjectArchiveDialog.prototype.validateData = function()  {
   if (this.pdbs.length<=0)
     msg_list.push ( 'provide valid non-empty PDB code(s) annotation' );
   else if (this.pdbs[0]!='*')  {
-    var pdbok = true;
-    for (var i=0;(i<this.pdbs.length) && pdbok;i++)
+    let pdbok = true;
+    for (let i=0;(i<this.pdbs.length) && pdbok;i++)
       pdbok = (this.pdbs[i].length==4);// && /^[0-9]$/.test(this.pdbs[i].charAt(0));
     if (!pdbok)
       msg_list.push ( 'provide valid PDB code(s)' );
@@ -444,7 +444,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
 
   stopSessionChecks();
 
-  var self = this;
+  let self = this;
 
   serverRequest ( fe_reqtype.archiveProject,{
     pdesc      : this.projectDesc,
@@ -459,7 +459,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
 
     $('#archdlg_cancel_btn' ).button('enable');
 
-    var message = '';
+    let message = '';
     switch (response.code)  {
 
       case 'not_owner' : message = '<h2>No privileges</h2>' +
@@ -512,7 +512,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
                            'this may have caused.';
                       break;
 
-      case 'no_quota'  : var q = '';
+      case 'no_quota'  : let q = '';
                          if (self.ration)
                            q = '(' + self.ration.archive_year + 
                                ' archived projects per year) ';

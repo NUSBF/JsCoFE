@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -129,32 +129,32 @@ var _taskIndex = {
   'U3' : { type: 'TaskAWNuce'             , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer
-  'V'  : { type: 'TaskRefmac'             , after: ['M','N','O','P','Q','U','U1','j','r'] },
+  'V'  : { type: 'TaskRefmac'             , after: ['M','N','O','P','Q','U','U1','U2','j','r'] },
 
   // suggest Buster after both elementary MR, auto-EP, Buccaneer
-  'V1' : { type: 'TaskBuster'             , after: ['M','N','O','P','Q','U','U1','j','r'] },
+  'V1' : { type: 'TaskBuster'             , after: ['M','N','O','P','Q','U','U1','U2','j','r'] },
 
   // suggest REL Workflow after both elementary MR, auto-EP, Buccaneer
-  'V2' : { type: 'TaskWFlowREL'           , after: ['M','N','O','P','Q','U','U1','j','r'] },
+  'V2' : { type: 'TaskWFlowREL'           , after: ['M','N','O','P','Q','U','U1','U2','j','r'] },
 
   // suggest Lorester after Buccaneer and Refmac; not after itself
-  'W'  : { type: 'TaskLorestr'            , after: ['U','V','r'] },
+  'W'  : { type: 'TaskLorestr'            , after: ['U','U2','V','r'] },
 
   // suggest PaiRef after Refmac and Lorestr
   'W1' : { type: 'TaskPaiRef'             , after: ['V','W','X'] },
   'W2' : { type: 'TaskPDBREDO'            , after: ['V','W','X'] },
 
   // sugget FitLigand after Refmac, Lorestr and after itself
-  'X'  : { type: 'TaskFitLigand'          , after: ['V','W','X','U','U1','r'] },
+  'X'  : { type: 'TaskFitLigand'          , after: ['V','W','X','U','U1','U2','r'] },
 
   // suggest FitWaters after Refmac, Lorestr and Ligands, but not after itself
-  'Y'  : { type: 'TaskFitWaters'          , after: ['V','W','X','U','U1','r'] },
+  'Y'  : { type: 'TaskFitWaters'          , after: ['V','W','X','U','U1','U2','r'] },
 
   // suggest Zanuda after Refmac and Lorestr
   'Z'  : { type: 'TaskZanuda'             , after: ['V','W'] },
 
   // suggest Gesamt after Buccaneer, Refmac and Lorestr
-  'a'  : { type: 'TaskGesamt'             , after: ['U','U1','V','W','r'] },
+  'a'  : { type: 'TaskGesamt'             , after: ['U','U1','U2','V','W','r'] },
 
   // suggest PISA after Refmac and Lorestr
   'b'  : { type: 'TaskPISA'               , after: ['V','W','X'] },
@@ -197,15 +197,15 @@ var _taskIndex = {
   'h1' : { type: 'TaskXDS'                , after: ['0'] },
 
   // suggest Dimple after phasing
-  'i'  : { type: 'TaskDimple'             , after: ['M','N','O','P','Q','U','r'] },
+  'i'  : { type: 'TaskDimple'             , after: ['M','N','O','P','Q','U','U2','r'] },
 
   // suggest Coot after refinememnt
-  'j'  : { type: 'TaskCootMB'             , after: ['V','W','i','U','r'] },
+  'j'  : { type: 'TaskCootMB'             , after: ['V','W','i','U','U2','r'] },
 
   // suggest CombStructure after refinememnt
-  'j1' : { type: 'TaskCombStructure'      , after: ['V','W','i','U','r'] },
+  'j1' : { type: 'TaskCombStructure'      , after: ['V','W','i','U','U2','r'] },
 
-  'j2' : { type: 'TaskWebCoot'             , after: ['V','W','i','U','r'] },
+  'j2' : { type: 'TaskWebCoot'             , after: ['V','W','i','U','U2','r'] },
 
   // suggest PDB Deposition after Refmac
   // 'k'  : { type: 'TaskDeposition'         , after: ['V','V1'] },
@@ -238,7 +238,7 @@ var _taskIndex = {
   'r'  : { type: 'TaskCCP4Build'          , after: ['J','K','L','M','N','O','S'] },
 
   // suggest LsqKab after Buccaneer, Refmac and Lorestr
-  's'  : { type: 'TaskLsqKab'             , after: ['U','V','W','r'] },
+  's'  : { type: 'TaskLsqKab'             , after: ['U','U2','V','W','r'] },
 
   // suggest iMosflm after root
   't'  : { type: 'TaskDUI'                , after: ['0'] },

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    22.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -232,4 +232,24 @@ if (isElectronAPI())  {
 
 }
 
+function saveCredentials ( location,username,password,callback_func )  {
+  if (isElectronAPI() && ('saveCredentials' in window.electronAPI))  {
+    window.electronAPI.saveCredentials(location,username, password, (response) => {
+      callback_func ( username,password,response );
+    });
+  } else
+    callback_func ( username,password,'' );
+  return;
+}
 
+function getCredentials ( location,callback_func )  {
+  if (isElectronAPI() && ('getCredentials' in window.electronAPI))  {
+     window.electronAPI.getCredentials ( location,(credentials) => {
+      if (credentials)
+        callback_func ( credentials.username,credentials.password );
+      else
+        callback_func ( '','' );
+    });
+  } else
+    callback_func ( '','' );
+}

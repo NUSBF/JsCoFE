@@ -233,9 +233,7 @@ class dataCatalog {
     // if the user has no other sources, remove the user entry and directory
     if (Object.keys(catalog[user]).length == 0) {
       delete catalog[user];
-      if (! this.removeUser(user)) {
-        return false;
-      }
+      this.removeUser(user);
       return true;
     }
 
