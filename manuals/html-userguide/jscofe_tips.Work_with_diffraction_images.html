@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -439,18 +438,19 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-tips-work-with-diffraction-images--page-root"><span class="section-number">2.5.11. </span>Work with diffraction images within CCP4 Cloud<a class="headerlink" href="#jscofe-tips-work-with-diffraction-images--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="work-with-diffraction-images-within-ccp4-cloud">
+<h1 id="jscofe-tips-work-with-diffraction-images--page-root"><span class="section-number">2.5.11. </span>Work with diffraction images within CCP4 Cloud<a class="headerlink" href="#jscofe-tips-work-with-diffraction-images--page-root" title="Permalink to this heading">¶</a></h1>
 <p>X-ray diffraction images have a considerable size, which makes uploading them to remote servers impractical. Due to bandwidth and disk space considerations, CCP4 Cloud does <strong>NOT</strong> allow users to upload raw files.</p>
 <p>Users may launch one of the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Processing.html" rel="noopener noreferrer" target="_blank">data processing tools (Xia-2, DUI, iMosflm, XDSGUI)</a> from CCP4 Cloud project as usual, and process data locally. The result will be sent to the CCP4 Cloud automatically after the task finishes.</p>
 <div class="admonition important">
-<p class="first admonition-title">Important</p>
-<blockquote class="last">
-<div>Launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a>.</div></blockquote>
+<p class="admonition-title">Important</p>
+<blockquote>
+<div><p>Launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a>.</p>
+</div></blockquote>
 </div>
 <p><a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html" rel="noopener noreferrer" target="_blank">Xia-2</a> task can be also run remotely when diffraction images are placed on Cloud’s servers. Images can be placed on Cloud by respective CCP4 Cloud maintainers.</p>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-
+</section>
 
 
           </article>
@@ -495,7 +495,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
