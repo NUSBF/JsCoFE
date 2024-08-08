@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.08.24   <--  Date of Last Modification.
+ *    07.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ const child     = require('child_process');
 
 //  load application modules
 const utils     = require('./server.utils');
+const adm       = require('./server.fe.admin');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
 
@@ -41,13 +42,14 @@ const log       = require('./server.log').newLog(3);
 // ===========================================================================
 //  Configuration data classes
 
-var desktop       = null;   // Configuration for launching single desktop
-var work_server   = null;   // current server configuration (FE or NC/CLIENT)
-var fe_server     = null;   // FE server configuration
-var fe_proxy      = null;   // FE proxy configuration
-var nc_servers    = null;   // vector of NC server configurations
-var client_server = null;   // Client server configuration
-var emailer       = null;   // E-mailer configuration
+var desktop        = null;   // Configuration for launching single desktop
+var work_server    = null;   // current server configuration (FE or NC/CLIENT)
+var fe_server      = null;   // FE server configuration
+var fe_proxy       = null;   // FE proxy configuration
+var nc_servers     = null;   // vector of NC server configurations
+var client_server  = null;   // Client server configuration
+var emailer        = null;   // E-mailer configuration
+var environ_server = [];     // retained server environment
 
 // ===========================================================================
 
@@ -77,6 +79,7 @@ function ServerConfig ( type )  {
   this.port           = 'port';
   this.externalURL    = '';
   this.exclude_tasks  = [];   // tasks that should not run on given FE or NC server
+  this.excluded_tasks = null; // takes exclusion in NC configs into account
   this.licensed_tasks = [];   // tasks for which FE has 3rd party license ("TaskArpWarp")
   this.only_tasks     = [];   // tasks that NC server can only run
   this.storage        = null;
@@ -1228,6 +1231,22 @@ let response = null;  // must become a cmd.Response object to return
 }
 
 
+function getServerEnvironment ( callback_func )  {
+  // return NC environment
+  adm.getNCData ( [],function(ncInfo){
+    let env_server = [];
+    for (let i=0;i<ncInfo.length;i++)
+      if (ncInfo[i] && ('environ' in ncInfo[i]))  {
+        for (let j=0;j<ncInfo[i].environ.length;j++)
+          if (env_server.indexOf(ncInfo[i].environ[j])<0)
+            env_server.push ( ncInfo[i].environ[j] );
+      }
+    environ_server = env_server;
+    callback_func ( env_server );
+  });
+}
+
+
 function getAppStatus ( callback_func )  {
 let status  = [];
 let msg     = cmd.appName() + ' status: HEALTHY\n';
@@ -1443,25 +1462,32 @@ function isWindows()  {
 function getExcludedTasks()  {
 // Returns list of tasks excluded on all number crunchers.
 // NB: does not take into account servers with 'only_tasks' lists.
-let excluded = [];
+  
+  if (!fe_server.excluded_tasks !== null )  {
+  
+    let excluded = [];
 
-  for (let i=0;i<nc_servers.length;i++)
-    if (nc_servers[i].in_use)  {
-      let excl = nc_servers[i].exclude_tasks;
-      for (let j=0;j<excl.length;j++)
-        if (excluded.indexOf(excl[j])<0)
-          excluded.push ( excl[j] );
-    }
+    for (let i=0;i<nc_servers.length;i++)
+      if (nc_servers[i].in_use)  {
+        let excl = nc_servers[i].exclude_tasks;
+        for (let j=0;j<excl.length;j++)
+          if (excluded.indexOf(excl[j])<0)
+            excluded.push ( excl[j] );
+      }
 
-  for (let i=0;i<nc_servers.length;i++)
-    if (nc_servers[i].in_use)  {
-      let excl = nc_servers[i].exclude_tasks;
-      for (let j=excluded.length-1;j>=0;j--)
-        if (excl.indexOf(excluded[j])<0)
-          excluded.splice ( j,1 );
-    }
+    for (let i=0;i<nc_servers.length;i++)
+      if (nc_servers[i].in_use)  {
+        let excl = nc_servers[i].exclude_tasks;
+        for (let j=excluded.length-1;j>=0;j--)
+          if (excl.indexOf(excluded[j])<0)
+            excluded.splice ( j,1 );
+      }
 
-  return excluded.concat ( fe_server.exclude_tasks );
+    fe_server.excluded_tasks = excluded.concat ( fe_server.exclude_tasks );
+
+  }
+
+  return fe_server.excluded_tasks;
 
 }
 
@@ -1497,43 +1523,45 @@ function checkOnUpdate ( callback_func )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.getDesktopConfig   = getDesktopConfig;
-module.exports.getServerConfig    = getServerConfig;
-module.exports.getFEConfig        = getFEConfig;
-module.exports.getFEProxyConfig   = getFEProxyConfig;
-module.exports.getNCConfig        = getNCConfig;
-module.exports.getNCConfigs       = getNCConfigs;
-module.exports.getNumberOfNCs     = getNumberOfNCs;
-module.exports.getClientNCConfig  = getClientNCConfig;
-module.exports.getEmailerConfig   = getEmailerConfig;
-module.exports.readConfiguration  = readConfiguration;
-module.exports.setServerConfig    = setServerConfig;
-module.exports.assignPorts        = assignPorts;
-module.exports.writeConfiguration = writeConfiguration;
-module.exports.pythonName         = pythonName;
-module.exports.pythonVersion      = pythonVersion;
-module.exports.setPythonVersion   = setPythonVersion;
-module.exports.isSharedFileSystem = isSharedFileSystem;
-module.exports.isLocalSetup       = isLocalSetup;
-module.exports.isArchive          = isArchive;
-module.exports.getClientInfo      = getClientInfo;
-module.exports.getFEProxyInfo     = getFEProxyInfo;
-module.exports.getAppStatus       = getAppStatus;
-module.exports.getRegMode         = getRegMode;
-module.exports.isLocalFE          = isLocalFE;
-module.exports.getSetupID         = getSetupID;
-module.exports.getFETmpDir        = getFETmpDir;
-module.exports.getFETmpDir1       = getFETmpDir1;
-module.exports.getNCTmpDir        = getNCTmpDir;
-module.exports.getTmpDir          = getTmpDir;
-module.exports.getTmpFile         = getTmpFile;
-module.exports.cleanFETmpDir      = cleanFETmpDir;
-module.exports.cleanFETmpDir1     = cleanFETmpDir1;
-module.exports.cleanNCTmpDir      = cleanNCTmpDir;
-module.exports.CCP4Version        = CCP4Version;
-module.exports.CCP4DirName        = CCP4DirName;
-module.exports.isWindows          = isWindows;
-module.exports.windows_drives     = windows_drives;
-module.exports.set_python_check   = set_python_check;
-module.exports.getExcludedTasks   = getExcludedTasks;
-module.exports.checkOnUpdate      = checkOnUpdate;
+module.exports.getDesktopConfig     = getDesktopConfig;
+module.exports.getServerConfig      = getServerConfig;
+module.exports.getFEConfig          = getFEConfig;
+module.exports.getFEProxyConfig     = getFEProxyConfig;
+module.exports.getNCConfig          = getNCConfig;
+module.exports.getNCConfigs         = getNCConfigs;
+module.exports.getNumberOfNCs       = getNumberOfNCs;
+module.exports.getClientNCConfig    = getClientNCConfig;
+module.exports.getEmailerConfig     = getEmailerConfig;
+module.exports.readConfiguration    = readConfiguration;
+module.exports.setServerConfig      = setServerConfig;
+module.exports.assignPorts          = assignPorts;
+module.exports.writeConfiguration   = writeConfiguration;
+module.exports.pythonName           = pythonName;
+module.exports.pythonVersion        = pythonVersion;
+module.exports.setPythonVersion     = setPythonVersion;
+module.exports.isSharedFileSystem   = isSharedFileSystem;
+module.exports.isLocalSetup         = isLocalSetup;
+module.exports.isArchive            = isArchive;
+module.exports.getClientInfo        = getClientInfo;
+module.exports.getFEProxyInfo       = getFEProxyInfo;
+module.exports.getServerEnvironment =  getServerEnvironment;
+module.exports.getAppStatus         = getAppStatus;
+module.exports.getRegMode           = getRegMode;
+module.exports.isLocalFE            = isLocalFE;
+module.exports.getSetupID           = getSetupID;
+module.exports.getFETmpDir          = getFETmpDir;
+module.exports.getFETmpDir1         = getFETmpDir1;
+module.exports.getNCTmpDir          = getNCTmpDir;
+module.exports.getTmpDir            = getTmpDir;
+module.exports.getTmpFile           = getTmpFile;
+module.exports.cleanFETmpDir        = cleanFETmpDir;
+module.exports.cleanFETmpDir1       = cleanFETmpDir1;
+module.exports.cleanNCTmpDir        = cleanNCTmpDir;
+module.exports.CCP4Version          = CCP4Version;
+module.exports.CCP4DirName          = CCP4DirName;
+module.exports.isWindows            = isWindows;
+module.exports.windows_drives       = windows_drives;
+module.exports.environ_server       = environ_server;
+module.exports.set_python_check     = set_python_check;
+module.exports.getExcludedTasks     = getExcludedTasks;
+module.exports.checkOnUpdate        = checkOnUpdate;

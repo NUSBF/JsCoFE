@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    07.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1678,6 +1678,16 @@ let nc_servers = conf.getNCConfigs();
 function cloudRun ( server_request,server_response )  {
 // This function receives data from js-utils/cloudrun.js script, and runs the
 // requested job. New project is created if necessary.
+
+  // Check if cloudRun was run so quickly after CCP4 Cloud started that
+  // server environment is not yet calculated. This is important if data 
+  // contains custom workflow script that checks on task availability.
+
+  if (conf.environ_server.length<=0)  {
+    // asynchronous but should be very quick comparing with receiving directory
+    // below :(
+    conf.getServerEnvironment(function(environ_server){}); 
+  }
 
   // 1. Receive data and metadata
 
