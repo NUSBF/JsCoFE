@@ -36,6 +36,7 @@ add_custom_target(
 )
 
 install(DIRECTORY
+    archive
     bootstrap
     cofe-browser
     css
