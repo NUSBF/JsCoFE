@@ -59,7 +59,7 @@
     },
     "cloud_mounts"    : {
       "Tutorials"      : "/data1/opt/cloud_storage/cloud_tutorials",
-      "CCP4 Examples"  : ["$CDEMODATA","$CEXAM"],
+      "CCP4 Examples"  : ["$CDEMODATA","$CEXAM"]
     },
     "logflow" : {
       "chunk_length"  : 10000,
@@ -139,6 +139,7 @@
         "chunk_length" : 10000,
         "log_file"     : "/path/to/NC2/logs/node_nc"
       }
+    }
   ],
 
   "Emailer" : {
