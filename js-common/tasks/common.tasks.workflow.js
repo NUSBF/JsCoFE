@@ -47,7 +47,6 @@ function TaskWorkflow()  {
 
   this.script          = [];  // script to execute
   this.script_pointer  = 0;   // current script line
-  this.tasks_available = {};  // only for tasks queried with isAvailable(name)
 
   this.input_ligands   = [{ 'source':'none', 'smiles':'', 'code':'' }];
 
@@ -330,7 +329,7 @@ TaskWorkflow.prototype.desc_title     = function()  { return this.task_desc;   }
 //TaskWorkflow.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWorkflow.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -361,8 +360,11 @@ if (!__template)  {
 } else  {
   // for server side
 
+  const path      = require('path');
   const conf      = require('../../js-server/server.configuration');
   const class_map = require('../../js-server/server.class_map');
+  const user      = require('../../js-server/server.fe.user');
+  const utils     = require('../../js-server/server.utils');
 
 
   TaskWorkflow.prototype.makeInputData = function ( loginData,jobDir )  {
@@ -372,7 +374,7 @@ if (!__template)  {
 
     let uData = null;
 
-    this.tasks_available = {};  
+    let checked_tasks = {};  
     // tasks_available is used only for tasks queried with checkTask(name)
     // in WScript.
     // tasks_available[name] is set true if specified task can be run. Custom 
@@ -381,7 +383,7 @@ if (!__template)  {
     // 'Task' prefix is omitted in WScript. 
     // The variables are added in pycofe/tasks/workflow.py. 
     
-    for (let i=0;(i<this.script.length) && (!done);i++)  {
+    for (let i=0;i<this.script.length;i++)  {
       let line  = this.script[i];
       let ihash = line.indexOf('#');
       if (ihash>=0)  // remove comment
@@ -393,10 +395,14 @@ if (!__template)  {
         if (task)  {
           if (!uData)
             uData = user.readUserData ( loginData );
-          this.tasks_available[tname] = (task.canRunInWorkflow(uData)[0]=='ok');
+          checked_tasks[tname] = (task.canRunInWorkflow(uData)[0]=='ok');
         } // else workflow may fail and stop here
       }
     }
+
+    // write fetch_meta in jobd directory on FE; it will travel to NC along
+    // with all other data
+    utils.writeObject ( path.join(jobDir,'__checked_tasks.json'),checked_tasks );
 
   }
 
