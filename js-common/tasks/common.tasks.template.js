@@ -605,7 +605,7 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
                 '</a>.'];
   }
 
-  if (startsWith(this.nc_type,'client'))  {
+  if (this.nc_type.startsWith('client'))  {
 
     if (local_service &&
         (compareVersions(client_version,this.lowestClientVersion())<0))  {
@@ -719,7 +719,7 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
-    this._is_task_available ( appName(),
+    return this._is_task_available ( appName(),
       __exclude_tasks,__local_service,__any_mobile_device,__cloud_storage,
       __treat_private,isProtectedConnection(),__maintainerEmail,__client_version,
       __environ_client,__local_user,__user_authorisation,__auth_software,
@@ -3268,7 +3268,7 @@ if (!dbx)  {
     let user_guide_base_url  = './manuals/html-userguide/';
     let local_setup          = conf.isLocalSetup();
     
-    this._is_task_available ( app_name,
+    return this._is_task_available ( app_name,
       exclude_tasks,local_service,any_mobile_device,cloud_storage,
       treat_private,protected_connection,maintainerEmail,client_version,
       environ_client,local_user,user_authorisation,auth_software,

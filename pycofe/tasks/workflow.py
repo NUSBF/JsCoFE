@@ -27,6 +27,7 @@
 #  python native imports
 import os
 # import shutil
+import json
 
 #  application imports
 from   pycofe.tasks   import import_task
@@ -229,6 +230,12 @@ class Workflow(import_task.Import):
                     # if item.type.startswith("real"):
                     variables[key] = item.value
             # self.stderrln ( " variables="+str(variables) )
+
+        # put variables describing status of tasks queried with "checkTask(name)"
+        with open("__checked_tasks.json","r") as f:
+            checked_tasks = json.loads ( f.read() )
+            for key in checked_tasks:
+                variables[key+"_available"] = checked_tasks[key]
 
         if have_results:
             self.task.autoRunName = "@ROOT"   # step identifier
