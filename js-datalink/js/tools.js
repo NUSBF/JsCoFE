@@ -253,8 +253,14 @@ class tools {
             }
           });
 
+          // end the stream if the response is finished
           res.on('close', () => {
-            file.close();
+            file.end();
+          });
+
+          // resolve when the write stream has closed
+          // on node v18+ it's enough to resolve after file.end above, but this works on older node
+          file.on('close', () => {
             resolve();
           });
         } else {
