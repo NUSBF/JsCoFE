@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.24   <--  Date of Last Modification.
+#    10.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,7 +33,7 @@ import shutil
 
 from pycofe.tasks  import basic
 from pycofe.dtypes import dtype_sequence
-from pycofe.auto   import auto
+from pycofe.auto   import auto, auto_workflow
 
 # ============================================================================
 # StructurePrediction driver
@@ -434,9 +434,17 @@ class StructurePrediction(basic.TaskDriver):
                     "summary_line" : str(nModels) + " structures predicted"
                 }
 
-            auto.makeNextTask ( self,{
-                "xyz" : xyzs
-            }, log=self.file_stderr)
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                    "data" : {
+                        "xyz" : xyzs
+                    }
+                })
+            else:
+                auto.makeNextTask ( self,{
+                    "xyz" : xyzs
+                }, log=self.file_stderr)
 
         self.success ( (nModels>0) )
         return

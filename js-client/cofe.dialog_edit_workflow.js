@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    10.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -430,31 +430,33 @@ let lines  = script.split(/\r?\n/);
 EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
 
   const task_list = [
-    [ 'Select task'          ,'none'             ],
-    [ 'Aimless'              ,'TaskAimless'      ],
-    [ 'ASU Definition'       ,'TaskASUDef'       ],
+    [ 'Select task'          ,'none'                    ],
+    [ 'Aimless'              ,'TaskAimless'             ],
+    [ 'ASU Definition'       ,'TaskASUDef'              ],
     // [ 'Buccaneer'            ,'TaskBuccaneer'    ],  <-- retired
-    [ 'Buster'               ,'TaskBuster'       ],
-    [ 'Change Resolution'    ,'TaskChangeReso'   ],
-    [ 'Crank-2'              ,'TaskCrank2'       ],
-    [ 'Dimple MR'            ,'TaskDimpleMR'     ],
-    [ 'Fit Ligand'           ,'TaskFitLigand'    ],
-    [ 'Fit Waters'           ,'TaskFitWaters'    ],
-    [ 'Make Ligand'          ,'TaskMakeLigand'   ],
-    [ 'Modelcraft'           ,'TaskModelCraft'   ],
-    [ 'Model Preparation XYZ','TaskModelPrepXYZ' ],
-    [ 'Molrep'               ,'TaskMolrep'       ],
-    [ 'MoRDa'                ,'TaskMorda'        ],
-    [ 'MrBump'               ,'TaskMrBump'       ],
-    [ 'Optimise ASU'         ,'TaskOptimiseASU'  ],
-    [ 'Parrot'               ,'TaskParrot'       ],
-    [ 'PDB-REDO'             ,'TaskPDBREDO'      ],
-    [ 'PDB Validation Report','TaskPDBVal'       ],
-    [ 'Phaser EP'            ,'TaskPhaserEP'     ],
-    [ 'Phaser MR'            ,'TaskPhaserMR'     ],
-    [ 'Refmac'               ,'TaskRefmac'       ],
-    [ 'SHELX C/D'            ,'TaskShelxCD'      ],
-    [ 'XYZ Utils'            ,'TaskXyzUtils'     ]
+    [ 'Buster'               ,'TaskBuster'              ],
+    [ 'Change Resolution'    ,'TaskChangeReso'          ],
+    [ 'Crank-2'              ,'TaskCrank2'              ],
+    [ 'Dimple MR'            ,'TaskDimpleMR'            ],
+    [ 'Fit Ligand'           ,'TaskFitLigand'           ],
+    [ 'Fit Waters'           ,'TaskFitWaters'           ],
+    [ 'Make Ligand'          ,'TaskMakeLigand'          ],
+    [ 'Modelcraft'           ,'TaskModelCraft'          ],
+    [ 'Model Preparation XYZ','TaskModelPrepXYZ'        ],
+    [ 'Molrep'               ,'TaskMolrep'              ],
+    [ 'MoRDa'                ,'TaskMorda'               ],
+    [ 'MrBump'               ,'TaskMrBump'              ],
+    [ 'Optimise ASU'         ,'TaskOptimiseASU'         ],
+    [ 'Parrot'               ,'TaskParrot'              ],
+    [ 'PDB-REDO'             ,'TaskPDBREDO'             ],
+    [ 'PDB Validation Report','TaskPDBVal'              ],
+    [ 'Phaser EP'            ,'TaskPhaserEP'            ],
+    [ 'Phaser MR'            ,'TaskPhaserMR'            ],
+    [ 'Refmac'               ,'TaskRefmac'              ],
+    [ 'SHELX C/D'            ,'TaskShelxCD'             ],
+    [ 'Slice'                ,'TaskSlice'               ],
+    [ 'Structure Prediction' ,'TaskStructurePrediction' ],
+    [ 'XYZ Utils'            ,'TaskXyzUtils'            ]
   ];
   
   let dlg = new Dialog ( 'Add new task code' );
