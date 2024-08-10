@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.24   <--  Date of Last Modification.
+#    10.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -136,6 +136,7 @@ def nextTask ( body,data,log=None ):
             else:
                 w = wdata["variables"]
 
+            # add variables from task output
             if "variables" in data:
                 for v in data["variables"]:
                     w[v] = data["variables"][v]
@@ -151,6 +152,7 @@ def nextTask ( body,data,log=None ):
                                 if type(obj) == dict:
                                     wdata[d].append ( obj )
                                 else:
+                                    body.stderrln ( " >>>>> " + str(d) )
                                     wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
             # update scores and put them in variables 
@@ -533,15 +535,11 @@ def nextTask ( body,data,log=None ):
             if parse_error=="end":
                 report ( body, "Workflow finished","<i>Ended normally.</i>",
                                "workflow finishes here." )
-                # auto_api2.log_message ( "workflow finishes here." )
-                # body.putMessage ( "&nbsp;<p><h3>Workflow finished normally</h3>" )
                 return "finished"
 
             if parse_error=="stop":
                 report ( body, "Workflow finished","<i>Stopped by instruction",
                                "workflow stopped by instruction." )
-                # auto_api2.log_message ( "workflow stopped by instruction." )
-                # body.putMessage ( "&nbsp;<p><h3>Workflow stopped by instruction</h3>" )
                 return "finished"
 
             if parse_error:
