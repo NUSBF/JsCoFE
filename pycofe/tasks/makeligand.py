@@ -215,7 +215,10 @@ class MakeLigand(basic.TaskDriver):
                     if revNext:
                         rdata["revision"] = [revNext]
                     auto_workflow.nextTask ( self,{
-                        "data"  : rdata
+                        "data"      : rdata,
+                        "variables" : {
+                            "N_lig" : 1
+                        }
                     })
                     # self.putMessage ( "<h3>Workflow started</hr>" )
                 else:  # pre-coded workflow framework
