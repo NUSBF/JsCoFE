@@ -1091,8 +1091,20 @@ statements is provided.
      - Prints current values of all workflow variables in CCP4 Cloud task's log
        file.
 
-   * - END or STOP
-     - Stops the workflow.
+   * - checkTask(name)
+     - Queries task availability and assignes ``True/False`` to variable
+       ``name_available``, for example: ::
+
+           checkTask(StructurePrediction)
+           PRINT_VAR   StructurePrediction_available
+           continue  @AUTO_MR if not StructurePrediction_available 
+
+   * - STOP [if *condition*]
+     - Stops the workflow. If condition is given, then workflow is stopped if
+       condition evaluates True.
+
+   * - END
+     - Ends the workflow.
 
 
 .. _wscript_reference_predefined_variables:
