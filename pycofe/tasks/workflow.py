@@ -241,7 +241,7 @@ class Workflow(import_task.Import):
             self.task.autoRunName = "@ROOT"   # step identifier
             # self.stdoutln ( " >>>> into workflow " + str(len(self.ligdesc)) )
             self.flush()
-            if auto_workflow.nextTask ( self,{
+            rc = auto_workflow.nextTask ( self,{
                     "data" : {
                         "unmerged" : self.unm,
                         "hkl"      : self.hkl,
@@ -252,12 +252,13 @@ class Workflow(import_task.Import):
                         "ligdesc"  : self.ligdesc
                     },
                     "variables" : variables
-               }):
-                summary_line += "workflow started"
-                self.putMessage ( "<h3>Workflow started</h3>" )
-            else:
+                 })
+            if rc.startswith("error"):
                 summary_line += "workflow start failed"
                 self.putMessage ( "<h3><i>Workflow start failed</i></h3>" )
+            elif rc=="ok":
+                summary_line += "workflow started"
+                self.putMessage ( "<h3>Workflow started</h3>" )
         else:
             summary_line += "insufficient input"
 

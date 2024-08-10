@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.06.24   <--  Date of Last Modification.
+#    09.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,6 +60,15 @@ def scrollToRunName ( script,runName ):
         else:
             lno = lno + 1
     return (lno,nextRunName)
+
+def report ( body, title, message, log_message ):
+    body.putMessage ( "&nbsp;" )
+    body.putTitle ( title )
+    if message:
+        body.putMessage ( message )
+    if log_message:
+        auto_api2.log_message ( log_message )
+    return
 
 
 # Main function
@@ -333,7 +342,7 @@ def nextTask ( body,data,log=None ):
                                                 repeatNo = repeatNo - 1
                                             parentRunName += "[" + str(repeatNo) + "]"
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
-                                        if rdata and repeat_mode=="CONTINUE":
+                                        if rdata or repeat_mode=="CONTINUE":
                                             (lno,nextRunName) = scrollToRunName ( script,pRunName[0] )
                                             scope = "run"
                                         elif not rdata:
@@ -362,7 +371,25 @@ def nextTask ( body,data,log=None ):
                                 auto_api2.log_message ( 
                                     expr + " = " + str(eval_parser.parse(expr).evaluate(w))
                                 )
-                        elif w0u=="END" or w0u=="STOP":
+
+                        elif w0u=="STOP":
+                            if nwords>=2:
+                                if words[1].upper()=="IF" and nwords>2:
+                                    expr = " ".join(words[2:]);
+                                    try:
+                                        condition = eval_parser.parse(expr).evaluate(w)
+                                        if condition:
+                                            parse_error = "stop"  # just sinal end of play
+                                        auto_api2.log_comment ( "condition : " + str(condition) )
+                                    except:
+                                        parse_error = "incomputable expression \"" +\
+                                                    expr + "\""
+                                else:
+                                    parse_error = "unparseable statement"
+                            else:
+                              parse_error = "stop"  # just sinal end of play
+
+                        elif w0u=="END":
                             parse_error = "end"  # just sinal end of play
 
                         else:
@@ -504,32 +531,41 @@ def nextTask ( body,data,log=None ):
             crTask.script_end_pointer = lno
 
             if parse_error=="end":
-                auto_api2.log_message ( "workflow stops here." )
-                body.putMessage ( "<h3>Workflow finished</h3>" )
-                return False
+                report ( body, "Workflow finished","<i>Ended normally.</i>",
+                               "workflow finishes here." )
+                # auto_api2.log_message ( "workflow finishes here." )
+                # body.putMessage ( "&nbsp;<p><h3>Workflow finished normally</h3>" )
+                return "finished"
+
+            if parse_error=="stop":
+                report ( body, "Workflow finished","<i>Stopped by instruction",
+                               "workflow stopped by instruction." )
+                # auto_api2.log_message ( "workflow stopped by instruction." )
+                # body.putMessage ( "&nbsp;<p><h3>Workflow stopped by instruction</h3>" )
+                return "finished"
 
             if parse_error:
                 auto_api2.log_error ( parse_error )
-                body.putMessage ( "<h3>Workflow script error</h3><i>" + \
-                                  parse_error + "</i>" )
-                return False
+                body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>" + \
+                                  parse_error + "</i><p>&nbsp;" )
+                return "errors (1)"
 
             if nextTaskType:
 
                 if not nextRunName:
                     auto_api2.log_error ( " RUN NAME is not defined" )
-                    body.putMessage ( "<h3>Workflow script error</h3><i>" +\
-                                      "RUN NAME is not defined</i>" )
-                    return False
+                    body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>" +\
+                                      "RUN NAME is not defined</i><p>&nbsp;" )
+                    return "errors (2)"
 
                 # form new task
                 runName = nextRunName[0]
                 if nextRunName[1]:
                     if not nextRunName[1] in w:
                         auto_api2.log_error ( " RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter is not defined</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i><p>&nbsp;" )
+                        return "errors (3)"
                     else:
                         runName += "[" + str(w[nextRunName[1]]) + "]"
 
@@ -537,16 +573,16 @@ def nextTask ( body,data,log=None ):
                     # clone task
                     if not nextRunName[1] or nextRunName[1] not in w:
                         auto_api2.log_error ( "RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter is not defined</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i><p>&nbsp;" )
+                        return "errors (4)"
 
                     repeat_no = int(w[nextRunName[1]])
                     if repeat_no<1:
                         auto_api2.log_error ( "RUN NAME repeat counter does not advance" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter does not advance</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter does not advance</i><p>&nbsp;" )
+                        return "errors (5)"
                         
                     # runName   = nextRunName[0] + "[" + str(repeat_no)   + "]"
                     runName0  = nextRunName[0] + "[" + str(repeat_no-1) + "]"
@@ -606,9 +642,16 @@ def nextTask ( body,data,log=None ):
 
                 auto_api2.noteTask ( runName )
                 auto_api2.writeAutoMeta()
-                return True
+                return "ok"
 
-            return False
+            report ( body, "Workflow finished","<i>End of script</i>",
+                           "workflow finishes here (end of script)." )
+            return "no task"
+        
+        report ( body,"Workflow finished","<i>Current task could not be identified. " +\
+                      "Script may be incomplete or suspect a bug.</i>",
+                      "workflow finishes here (no instructions in the script?)." )
+        return "no current task"
 
     except Exception as inst:
         body.stderrln ( str(type(inst)) )  # the exception instance
@@ -616,6 +659,5 @@ def nextTask ( body,data,log=None ):
         body.stderrln ( str(inst)       )  # __str__ allows args to be printed directly,
         tb = traceback.format_exc()
         body.stderrln ( str(tb))
-        body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )
-
-    return False
+        body.putMessage ( "&nbsp;<p><h3><i>Automatic workflow excepted</i></h3>" )
+        return "errors (excepted)"
