@@ -51,15 +51,19 @@ def makeRunName ( word ):
     return runName    
 
 def scrollToRunName ( script,runName ):
-    lno = 0
+    lno         = 0
     nextRunName = None
-    while lno<len(script) and not nextRunName:
+    scope       = None
+    while lno<len(script) and not scope:
         words = script[lno].split()
         if len(words)>0 and runName==words[0].split("[")[0]:
             nextRunName = makeRunName ( words[0] )
+            scope = "run"
+        elif len(words)>1 and words[0].upper()=="POINT" and runName==words[1]:
+            scope = "flow"
         else:
             lno = lno + 1
-    return (lno,nextRunName)
+    return (lno,nextRunName,scope)
 
 def report ( body, title, message, log_message ):
     body.putMessage ( "&nbsp;" )
@@ -316,7 +320,7 @@ def nextTask ( body,data,log=None ):
                                         except:
                                             repeat_mode = ""
                                             parse_error = "incomputable expression \"" +\
-                                                        expr + "\""
+                                                          expr + "\""
                                     else:
                                         repeat_mode = ""
                                         parse_error = "unparseable statement"
@@ -327,9 +331,9 @@ def nextTask ( body,data,log=None ):
                                         # restore initial branch data
                                         rdata = auto_api2.getContext ( words[1] + "_rundata" )
                                         if rdata:
-                                            (lno,nextRunName) = scrollToRunName ( script,words[1] )
+                                            (lno,nextRunName,scope) = scrollToRunName ( script,words[1] )
                                             tdata = rdata["tdata"]
-                                            scope = "run"
+                                            # scope = "run"
                                         elif pass_error:
                                             auto_api2.log_comment ( "PASS executed" )
                                         else:
@@ -345,8 +349,8 @@ def nextTask ( body,data,log=None ):
                                             parentRunName += "[" + str(repeatNo) + "]"
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
                                         if rdata or repeat_mode=="CONTINUE":
-                                            (lno,nextRunName) = scrollToRunName ( script,pRunName[0] )
-                                            scope = "run"
+                                            (lno,nextRunName,scope) = scrollToRunName ( script,pRunName[0] )
+                                            # scope = "run"
                                         elif not rdata:
                                             if pass_error:
                                                 parentRunName = parRunName0
@@ -394,7 +398,7 @@ def nextTask ( body,data,log=None ):
                         elif w0u=="END":
                             parse_error = "end"  # just sinal end of play
 
-                        else:
+                        elif w0u!="POINT":  # used for specifying destination in "continue"
                             parse_error = "statement out of scope"
 
 
