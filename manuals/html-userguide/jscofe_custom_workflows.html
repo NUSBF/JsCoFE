@@ -1550,7 +1550,7 @@ as a variable with correct value:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@DENSITY_MODIFICATION</span><span class="p">[</span><span class="n">hand0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Branching may be subject to condition, evaluated to <em>True</em>:</p>
+<p>Branching may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
@@ -1561,7 +1561,7 @@ as a variable with correct value:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span>
 </pre></div>
 </div>
-<p>continuation may be subject to condition, evaluated to <em>True</em>:</p>
+<p>continuation may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
@@ -1569,7 +1569,11 @@ as a variable with correct value:</p>
 </tr>
 <tr class="row-even"><td><p>PRINT_VAR</p></td>
 <td><p>Prints current values of all workflow variables in CCP4 Cloud task’s log
-file.</p></td>
+file. example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRINT_VAR</span>  <span class="n">Rfactor</span>
+</pre></div>
+</div>
+</td>
 </tr>
 <tr class="row-odd"><td><p>checkTask(name)</p></td>
 <td><p>Queries task availability and assignes <code class="docutils literal notranslate"><span class="pre">True/False</span></code> to variable
@@ -1583,7 +1587,11 @@ file.</p></td>
 </tr>
 <tr class="row-even"><td><p>STOP [if <em>condition</em>]</p></td>
 <td><p>Stops the workflow. If condition is given, then workflow is stopped if
-condition evaluates True.</p></td>
+<em>condition</em> evaluates <code class="docutils literal notranslate"><span class="pre">True</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">STOP</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.22</span>
+</pre></div>
+</div>
+</td>
 </tr>
 <tr class="row-odd"><td><p>END</p></td>
 <td><p>Ends the workflow.</p></td>
@@ -1629,6 +1637,38 @@ assigned to variable <code class="docutils literal notranslate"><span class="pre
 <tr class="row-even"><td><p>suggested</p></td>
 <td><p>Refmac</p></td>
 <td><p>Number of suggested parameters to change.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_unmerged</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of unmerged datasets given to workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_hkl</p></td>
+<td><p>Workflow, Aimless</p></td>
+<td><p>Number of merged datasets given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_hkl_anom</p></td>
+<td><p>Workflow, Aimless</p></td>
+<td><p>Number of merged datasets with anomalous signal, given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_seq</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of sequences given to workflow.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_xyz</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of molecular models given to workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_lig</p></td>
+<td><p>Workflow, MakeLigand</p></td>
+<td><p>Number of ligand files given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">MakeLigand</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_ligdesc</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of ligand descriptinos defined in workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_lib</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of ligand libraries given to workflow.</p></td>
 </tr>
 </tbody>
 </table>
