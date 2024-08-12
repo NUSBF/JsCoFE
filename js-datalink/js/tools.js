@@ -55,7 +55,8 @@ class tools {
     return size;
 }
 
-  // callback should return 0 on failure (to abort) and 1 on success or for a directory it can return 2 to skip to next entry.
+  // for files the callback should return true on success and false on failure (to abort).
+  // for directories returning false will skip to the next entry.
   static async fileCallback(dir, include_dirs = false, callback) {
     let files;
     try {
@@ -68,11 +69,7 @@ class tools {
       if (file.isDirectory() && ! file.isSymbolicLink() ) {
         // if we want to call our callback on directories
         if (include_dirs) {
-          let ret = await callback(`${dir}/${file.name}`);
-          if (ret == 0) {
-            return false;
-          }
-          if (ret == 2) {
+          if (! await callback(`${dir}/${file.name}`)) {
             continue;
           }
         }
