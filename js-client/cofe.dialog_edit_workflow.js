@@ -453,6 +453,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     [ 'Phaser EP'            ,'TaskPhaserEP'            ],
     [ 'Phaser MR'            ,'TaskPhaserMR'            ],
     [ 'Refmac'               ,'TaskRefmac'              ],
+    [ 'Sequence Alignment'   ,'TaskSeqAlign'            ],
     [ 'SHELX C/D'            ,'TaskShelxCD'             ],
     [ 'Slice'                ,'TaskSlice'               ],
     [ 'Structure Prediction' ,'TaskStructurePrediction' ],
