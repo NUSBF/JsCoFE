@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.24   <--  Date of Last Modification.
+#    11.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -493,8 +493,12 @@ def nextTask ( body,data,log=None ):
                         elif w0u=="DATA":
                             if nwords<3:
                                 parse_error = perr
-                            else:
+                            elif words[1] not in tdata:
                                 tdata[words[1]] = words[2]
+                            elif isinstance(tdata[words[1]],list):
+                                tdata[words[1]].append ( words[2] )
+                            else:
+                                tdata[words[1]] = [tdata[words[1]],words[2]]
 
                         elif w0u=="USE":  # choose from multiple data
                             if nwords<3 or words[1].upper()!="REVISION":
@@ -611,6 +615,8 @@ def nextTask ( body,data,log=None ):
                         else:
                             dtypes += ["unmerged","hkl","seq"]
 
+                        # dtypes = ["xyz","model","ligand","lib","unmerged","hkl","seq"]
+
                         for dtype in wdata:
                             if dtype in dtypes and len(wdata[dtype])>0:
                                 auto_api2.addTaskData ( runName,
@@ -618,7 +624,11 @@ def nextTask ( body,data,log=None ):
                                     wdata[dtype] )
 
                         for dtype in tdata:
-                            auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
+                            if isinstance(tdata[dtype],list):
+                                for d in tdata[dtype]:
+                                    auto_api2.addTaskData ( runName,dtype,wdata[d] )
+                            else:
+                                auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
                     
                     # if runName in branch_points:
                     #     auto_api2.noteTask ( runName )
