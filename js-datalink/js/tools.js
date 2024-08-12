@@ -243,8 +243,9 @@ class tools {
           res.on('data', (data) => {
             // workaround for node v16 lacking AbortController support for http(s) requests
             // if the AbortController was aborted, destroy the request and trigger an error
-            if (options.signal && options.signal.aborted) {
+            if (options.signal.aborted) {
               req.destroy(new Error('AbortError: The operation was aborted (compat)'));
+              return;
             }
 
             file.write(data);
@@ -253,10 +254,21 @@ class tools {
             }
           });
 
+          // end the stream if the response is finished
           res.on('close', () => {
-            file.close();
+            file.end();
+          });
+
+          // resolve when the write stream has closed
+          // on node v18+ it's enough to resolve after file.end above, but this works on older node
+          file.on('close', () => {
             resolve();
           });
+
+          file.on('error', (err) => {
+            reject(err);
+          });
+
         } else {
           let out = '';
 
@@ -270,7 +282,7 @@ class tools {
         }
       });
       req.on('error', (err) => {
-        reject(`${err.message}`);
+        reject(err);
       });
       req.end();
     });
