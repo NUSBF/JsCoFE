@@ -218,16 +218,11 @@ class dataSource {
         await tools.unpack(dest_file, data_dest, null, null, (controller) => {
           this.addJob(entry, controller, msg);
         });
+
+        await this.unpackDirectory(entry, data_dest);
       } catch (err) {
         throw err;
       }
-
-      let ret = await this.unpackDirectory(entry, data_dest);
-
-      if (! ret) {
-        throw new Error(`Unpacking directory ${data_dest}`);
-      }
-
     }
 
   }
@@ -245,15 +240,16 @@ class dataSource {
             this.addJob(entry, controller, msg);
           });
         } catch (err) {
-          log.error(`unpackDirectory - ${err}`);
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
           if (err.code == 'ABORT_ERR') {
-            this.dataError(entry, `unpackDirectory - The operation was aborted`);
-            return 0;
+            throw err;
+          } else {
+            // log the error and continue
+            log.error(`unpackDirectory - ${err}`);
           }
         }
       }
-      return 1;
+      return true;
     });
   }
 
@@ -301,15 +297,10 @@ class dataSource {
         (controller) => {
           this.addJob(entry, controller, `Fetching (rsync) ${url}/${entry.id} to ${entry.dir}`);
         });
+
+      await this.unpackDirectory(entry, data_dest);
     } catch (err) {
       this.dataError(entry, err);
-      return;
-    }
-
-    let ret = await this.unpackDirectory(entry, data_dest);
-
-    if (! ret) {
-      this.dataError(entry);
       return;
     }
 
