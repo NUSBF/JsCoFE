@@ -230,7 +230,7 @@ class dataSource {
   async unpackDirectory(entry, dest_dir) {
     // go through the contents of the archive and unpack any additional files
     // this is required as some data source images are gzipped/bzipped individually
-    return await tools.fileCallback(dest_dir, false, async (file) => {
+    return await tools.fileCallback(dest_dir, async (file) => {
       const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
       if (cmd) {
         try {

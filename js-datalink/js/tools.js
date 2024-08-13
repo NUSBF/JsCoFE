@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const pfs = fs.promises;
+
 const path = require('path');
 const https = require('https');
 const process = require('child_process');
@@ -56,24 +58,17 @@ class tools {
 }
 
   // for files the callback should return true on success and false on failure (to abort).
-  // for directories returning false will skip to the next entry.
-  static async fileCallback(dir, include_dirs = false, callback) {
+  static async fileCallback(dir, callback) {
     let files;
     try {
-      files = fs.readdirSync(dir, { withFileTypes: true });
+      files = await pfs.readdir(dir, { withFileTypes: true });
     } catch (err) {
       log.error(`fileCallback - ${err}`);
       return true;
     }
     for (const file of files) {
       if (file.isDirectory() && ! file.isSymbolicLink() ) {
-        // if we want to call our callback on directories
-        if (include_dirs) {
-          if (! await callback(`${dir}/${file.name}`)) {
-            continue;
-          }
-        }
-        if (! await this.fileCallback(`${dir}/${file.name}`, include_dirs, callback)) {
+        if (! await this.fileCallback(`${dir}/${file.name}`, callback)) {
           return false;
         }
       } else {
@@ -83,6 +78,40 @@ class tools {
       }
     }
     return true;
+  }
+
+  static async removeEmptySubDirs(dir, depth = 0) {
+    const msg = 'removeEmptySubDirs';
+
+    try {
+      const stat = await pfs.lstat(dir);
+      if (! stat.isDirectory()) {
+        return;
+      }
+    } catch (err) {
+      log.error(`${msg} - ${err}`);
+      return;
+    }
+
+    let files = await pfs.readdir(dir);
+    if (files.length > 0) {
+      const map = files.map(
+        (file) => this.removeEmptySubDirs(path.join(dir, file), depth + 1)
+      );
+      // wait on all promises to complete
+      await Promise.all(map);
+
+      // re-check after deleting subdir as parent may be empty
+      files = await pfs.readdir(dir);
+    }
+
+    if (depth > 0 && files.length == 0) {
+      try {
+        await pfs.rmdir(dir);
+      } catch (err) {
+        log.error(`${msg} - ${err}`);
+      }
+    }
   }
 
   static getCatalogDir() {
