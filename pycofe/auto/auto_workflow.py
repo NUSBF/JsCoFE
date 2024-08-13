@@ -310,7 +310,7 @@ def nextTask ( body,data,log=None ):
 
                                 if nwords>=k+2:
                                     if words[k].upper() in ["WHILE","IF"]:
-                                        expr = " ".join(words[k+1:]);
+                                        expr = " ".join(words[k+1:])
                                         try:
                                             condition = eval_parser.parse(expr).evaluate(w)
                                             if not condition:
