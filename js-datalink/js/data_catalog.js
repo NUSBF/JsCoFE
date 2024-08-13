@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const pfs = fs.promises;
+
 const path = require('path');
 
 const { tools, status } = require('./tools.js');
@@ -349,12 +351,13 @@ class dataCatalog {
   }
 
   async pruneExternalData(data_max_days) {
-    log.info(`pruneExternalData - pruning external data older than ${data_max_days} day(s)`);
+    const name = 'pruneExternalData';
+    log.info(`${name} - pruning external data older than ${data_max_days} day(s)`);
     let users;
     try {
       users = tools.getSubDirs(tools.getDataDir());
     } catch (err) {
-      log.error(`pruneExternalData - Unable to read user directories - ${err}`)
+      log.error(`${name} - Unable to read user directories - ${err}`)
       return;
     }
 
@@ -374,18 +377,23 @@ class dataCatalog {
           continue;
         }
 
-        await tools.fileCallback(this.getDataDest(user, source), true, async (file) => {
+        let dest = this.getDataDest(user, source);
+        // remove any old files
+        await tools.fileCallback(dest, async (file) => {
           try {
-            let file_date = fs.statSync(file).mtime;
-            // if the file or directory is older than check_date then remove
-            if (file_date < check_date) {
-              fs.rmSync(file, { recursive: true });
+            let stat = await pfs.lstat(file);
+            // if the file is older than check_date then remove
+            if (stat.mtime < check_date) {
+              await pfs.unlink(file);
             }
           } catch (err) {
-            log.error(`pruneExternalData - ${err}`);
+            log.error(`${name} (files) - ${err}`);
           }
           return true;
         });
+
+        // remove any empty subdirs
+        await tools.removeEmptySubDirs(dest);
       }
     }
   }
