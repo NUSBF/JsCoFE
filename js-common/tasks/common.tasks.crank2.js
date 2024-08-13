@@ -1270,7 +1270,8 @@ if (!__template)  {
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
           let new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
           inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
-          inputPanel.job_dialog.changeTitle ( new_title );
+          if ('job_dialog' in inputPanel)  // checking for use in Workflow Creator
+            inputPanel.job_dialog.changeTitle ( new_title );
           //this.updateInputPanel ( inputPanel );
           inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                                   job_dialog_reason.rename_node );

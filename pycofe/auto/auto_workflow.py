@@ -156,7 +156,6 @@ def nextTask ( body,data,log=None ):
                                 if type(obj) == dict:
                                     wdata[d].append ( obj )
                                 else:
-                                    body.stderrln ( " >>>>> " + str(d) )
                                     wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
             # update scores and put them in variables 
@@ -245,7 +244,7 @@ def nextTask ( body,data,log=None ):
                 words  = script[lno].split()
                 nwords = len(words)
                 
-                if nwords>0:
+                if (nwords>0) and (not words[0].upper().startswith("CHECKTASK")):
 
                     w0u  = words[0].upper()
                     perr = w0u + " declared but not correctly defined"
@@ -350,6 +349,7 @@ def nextTask ( body,data,log=None ):
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
                                         if rdata or repeat_mode=="CONTINUE":
                                             (lno,nextRunName,scope) = scrollToRunName ( script,pRunName[0] )
+                                            body.stderrln ( " >>>>>> scope = " + str(scope) )
                                             # scope = "run"
                                         elif not rdata:
                                             if pass_error:
@@ -399,7 +399,7 @@ def nextTask ( body,data,log=None ):
                             parse_error = "end"  # just sinal end of play
 
                         elif w0u!="POINT":  # used for specifying destination in "continue"
-                            parse_error = "statement out of scope"
+                            parse_error = "statement " + w0u + " out of scope " + str(scope)
 
 
                     elif scope=="run":
@@ -534,7 +534,8 @@ def nextTask ( body,data,log=None ):
                             scope = "flow"
 
                         else:
-                            parse_error = "statement out of scope"
+                            # parse_error = "statement out of scope " + str(scope)
+                            parse_error = "statement " + w0u + " out of scope " + str(scope)
 
                 lno = lno + 1
 
