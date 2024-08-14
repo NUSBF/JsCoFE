@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.08.24   <--  Date of Last Modification.
+#    14.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -218,10 +218,10 @@ def nextTask ( body,data,log=None ):
             branch_points = []
             for line in script:
                 words = line.split()
-                if len(words)>2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
+                if len(words)>=2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
                     branch_points.append ( words[1].split("[")[0] )
             auto_api2.log_debug ( "branch_points=" + str(branch_points) )
-
+ 
             parentRunName = crTask.autoRunName
             if parentRunName.split("[")[0] in branch_points:
                 auto_api2.addContext ( parentRunName + "_outdata",{
@@ -332,7 +332,6 @@ def nextTask ( body,data,log=None ):
                                         if rdata:
                                             (lno,nextRunName,scope) = scrollToRunName ( script,words[1] )
                                             tdata = rdata["tdata"]
-                                            body.stderrln ( " >>>>>> scope 1 = " + str(scope) )
                                             # scope = "run"
                                         elif pass_error:
                                             auto_api2.log_comment ( "PASS executed" )
@@ -348,9 +347,9 @@ def nextTask ( body,data,log=None ):
                                                 repeatNo = repeatNo - 1
                                             parentRunName += "[" + str(repeatNo) + "]"
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
-                                        if rdata or repeat_mode=="CONTINUE":
+                                        # if rdata or repeat_mode=="CONTINUE":
+                                        if repeat_mode=="CONTINUE":
                                             (lno,nextRunName,scope) = scrollToRunName ( script,pRunName[0] )
-                                            body.stderrln ( " >>>>>> scope 2 = " + str(scope) )
                                             # scope = "run"
                                         elif not rdata:
                                             if pass_error:
