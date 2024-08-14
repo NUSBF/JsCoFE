@@ -332,11 +332,12 @@ def nextTask ( body,data,log=None ):
                                         if rdata:
                                             (lno,nextRunName,scope) = scrollToRunName ( script,words[1] )
                                             tdata = rdata["tdata"]
+                                            body.stderrln ( " >>>>>> scope 1 = " + str(scope) )
                                             # scope = "run"
                                         elif pass_error:
                                             auto_api2.log_comment ( "PASS executed" )
                                         else:
-                                            parse_error = "run name " + words[1] + " is not defined"
+                                            parse_error = "run name " + words[1] + " is not defined (1)"
                                     else:
                                         parRunName0   = parentRunName
                                         pRunName      = makeRunName ( words[1] )
@@ -349,14 +350,14 @@ def nextTask ( body,data,log=None ):
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
                                         if rdata or repeat_mode=="CONTINUE":
                                             (lno,nextRunName,scope) = scrollToRunName ( script,pRunName[0] )
-                                            body.stderrln ( " >>>>>> scope = " + str(scope) )
+                                            body.stderrln ( " >>>>>> scope 2 = " + str(scope) )
                                             # scope = "run"
                                         elif not rdata:
                                             if pass_error:
                                                 parentRunName = parRunName0
                                                 auto_api2.log_comment ( "PASS executed" )
                                             else:
-                                                parse_error = "run name " + parentRunName + " is not defined"
+                                                parse_error = "run name " + parentRunName + " is not defined (2)"
                                         tdata = {}
                                     if rdata:
                                         rev_list = rdata["rev_list"]
