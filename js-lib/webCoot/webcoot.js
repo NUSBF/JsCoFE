@@ -22,7 +22,7 @@
 
 let rootId         = 'root';
 let sf_meta        = null;
-let urlPrefix      = 'js-lib/webCoot';
+let urlPrefix      = 'js-lib/webCoot/baby-gru';
 
 let BACKUPS        = [];
 let backupsFPath   = 'backups/backups.json';
@@ -61,6 +61,7 @@ let bcopy = [];
 //   }, window.location );
 // }
 
+/*
 const exitCallback = (viewSettings,molData) => {
 // moldata = [{molName: string, pdbData: string; mmcifData: string}]
   let edata = {
@@ -83,6 +84,39 @@ const exitCallback = (viewSettings,molData) => {
   window.parent.postMessage ( edata,window.location );
 
 }
+*/
+
+const exitCallback = (resData) => {
+// resDdata = {
+//   viewData : {},
+//   molData      : [{ molName: string, pdbData: string; mmcifData: string, searchModel: bool},
+//   ligData      : {
+//     ligCode : ligDictionary, // string
+//     ...
+//   }
+// }
+  
+  let edata = {
+      'command' : 'saveFiles',
+      'files'   : [{ 'fpath'  : 'view_settings.json',
+                     'data'   : JSON.stringify(resData.viewData),
+                     'report' : false
+                  }],
+      'confirm' : 'model',
+      'meta'    : sf_meta
+  };
+  for (let i=0;i<resData.molData.length;i++)
+    edata.files.push ( resData.molData[i] );
+    // edata.files.push ({
+    //   'fpath' : molData[i].molName + '.pdb',
+    //   'data'  : molData[i].pdbData
+    // });
+
+  // post received in cofe.communication.js:onWindowMessage(...)
+  window.parent.postMessage ( edata,window.location );
+
+}
+
 
 const savePreferencesCallback = (preferences) => {
   window.parent.postMessage ({
