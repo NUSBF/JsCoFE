@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const pfs = fs.promises;
+
 const path = require('path');
 
 const { tools, status } = require('./tools.js');
@@ -25,9 +27,10 @@ class dataEntry {
 
 class dataCatalog {
 
-  constructor(data_dir, keep_with_data = false) {
+  constructor(data_dir, keep_with_data = false, meta_dir) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
+    this.meta_dir = meta_dir;
     this.catalog = {};
   }
 
@@ -162,12 +165,24 @@ class dataCatalog {
   }
 
   addEntry(user, source, id, fields = {}) {
+    let dest = this.getDataDest(user, source, id);
+
     // create directory for the data
     try {
-      fs.mkdirSync(this.getDataDest(user, source, id), { recursive: true });
+      fs.mkdirSync(dest, { recursive: true });
     } catch (err) {
       log.error(`addEntry ${user}/${source}/${id} - ${err}`);
       return false;
+    }
+
+    // copy any files from 'meta' subfolder into data folder.
+    let stat = fs.statSync(this.meta_dir);
+    if (stat.isDirectory()) {
+      try {
+        fs.cpSync('meta', dest, { recursive: true });
+      } catch (err) {
+        log.error(`addEntry - Unable to copy 'meta' files - ${err}`);
+      }
     }
 
     // add user, source and id to entry - so this information is available directly from the entry
@@ -336,12 +351,13 @@ class dataCatalog {
   }
 
   async pruneExternalData(data_max_days) {
-    log.info(`pruneExternalData - pruning external data older than ${data_max_days} day(s)`);
+    const name = 'pruneExternalData';
+    log.info(`${name} - pruning external data older than ${data_max_days} day(s)`);
     let users;
     try {
       users = tools.getSubDirs(tools.getDataDir());
     } catch (err) {
-      log.error(`pruneExternalData - Unable to read user directories - ${err}`)
+      log.error(`${name} - Unable to read user directories - ${err}`)
       return;
     }
 
@@ -361,18 +377,23 @@ class dataCatalog {
           continue;
         }
 
-        await tools.fileCallback(this.getDataDest(user, source), true, async (file) => {
+        let dest = this.getDataDest(user, source);
+        // remove any old files
+        await tools.fileCallback(dest, async (file) => {
           try {
-            let file_date = fs.statSync(file).mtime;
-            // if the file or directory is older than check_date then remove
-            if (file_date < check_date) {
-              fs.rmSync(file, { recursive: true });
+            let stat = await pfs.lstat(file);
+            // if the file is older than check_date then remove
+            if (stat.mtime < check_date) {
+              await pfs.unlink(file);
             }
           } catch (err) {
-            log.error(`pruneExternalData - ${err}`);
+            log.error(`${name} (files) - ${err}`);
           }
           return true;
         });
+
+        // remove any empty subdirs
+        await tools.removeEmptySubDirs(dest);
       }
     }
   }
