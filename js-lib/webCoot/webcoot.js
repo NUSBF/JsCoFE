@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    15.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -29,6 +29,82 @@ let backupsFPath   = 'backups/backups.json';
 let backupFPrefix  = 'backups/backup_';
 
 let moorhenWrapper = null;
+
+
+window.onload = () => {
+  
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = src
+      script.onload = () => resolve(src)
+      script.onerror = () => reject(new Error('Failed to load script: ' + src))
+      document.head.appendChild(script)
+    })
+  }
+
+  const memory64 = WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 5, 3, 1, 4, 1]))
+
+  if (memory64) {
+    loadScript(urlPrefix+'/moorhen64.js')
+      .then(src => {
+        console.log(src + ' loaded 64-bit successfully.')
+        createCoot64Module({
+          print(t) { console.log(["output", t]) },
+          printErr(t) { console.error(["output", t]) }
+        })
+        .then((returnedModule) => {
+          window.cootModule = returnedModule
+          window.CCP4Module = returnedModule
+          const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+          document.dispatchEvent(cootModuleAttachedEvent)
+        })
+        .catch((e) => {
+          console.log(e)
+          console.log("There was a problem creating Coot64Module...")
+        });
+      })
+      .catch((error) => {
+        console.error(error.message)
+        console.log("Trying 32-bit fallback")
+        loadScript(urlPrefix+'/moorhen.js')
+          .then(src => {
+            console.log(src + ' loaded 32-bit successfully (fallback).')
+            createCootModule({
+              print(t) { console.log(["output", t]) },
+              printErr(t) { console.log(["output", t]) }
+            })
+            .then((returnedModule) => {
+              window.cootModule = returnedModule;
+              window.CCP4Module = returnedModule;
+              const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+              document.dispatchEvent(cootModuleAttachedEvent)
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+          })
+      });
+  } else {
+    loadScript(urlPrefix+'/moorhen.js')
+      .then(src => {
+        console.log(src + ' loaded 32-bit successfully.')
+        createCootModule({
+          print(t) { console.log(["output", t]) },
+          printErr(t) { console.log(["output", t]) }
+        })
+        .then((returnedModule) => {
+          window.cootModule = returnedModule
+          window.CCP4Module = returnedModule
+          const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+          document.dispatchEvent(cootModuleAttachedEvent)
+        })
+        .catch((e) => {
+          console.log(e)
+        });
+      })
+  }
+}
 
 function saveBackupList()  {
 let bcopy = [];
