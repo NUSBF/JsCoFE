@@ -216,6 +216,8 @@ if (!__template)  {
         }
     }
 
+    let activeMap = true;
+
     if (istruct)  {
       let refkeys = getRefKeys ( istruct,this._type );
       if (refkeys)
@@ -239,7 +241,7 @@ if (!__template)  {
       }
       if ((this._type=='TaskWebCoot') && (file_key.mtz in istruct.files))  {
         let mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
-        if (istruct.FWT)
+        if (istruct.FWT)  {
           inputFiles.push ({
             type : 'mtz',
             args : [ mtzURL,'map',{
@@ -250,11 +252,15 @@ if (!__template)  {
                         FreeR          : istruct.FreeR_flag,
                         isDifference   : false,
                         useWeight      : false,
+                        isActiveMap    : activeMap,
+                        // colour         : {[type: string]: {r: number, g: number, b: number}},
                         calcStructFact : istruct.FP && istruct.SigFP && 
                                          istruct.FreeR_flag
                       }]
           });
-        if (istruct.DELFWT)
+          activeMap = !activeMap;
+        }
+        if (istruct.DELFWT)  {
           inputFiles.push ({
             type : 'mtz',
             args : [ mtzURL,'diff-map',{
@@ -262,10 +268,13 @@ if (!__template)  {
                         PHI            : istruct.PHDELWT,
                         isDifference   : true,
                         useWeight      : false,
+                        isActiveMap    : activeMap,
                         calcStructFact : false
                       }]
           });
-        if (istruct.FAN)
+          activeMap = !activeMap;
+        }
+        if (istruct.FAN)  {
           inputFiles.push ({
             type : 'mtz',
             args : [ mtzURL,'anom-map',{
@@ -273,12 +282,15 @@ if (!__template)  {
                         PHI            : istruct.PHAN,
                         isDifference   : false,
                         useWeight      : false,
+                        isActiveMap    : activeMap,
                         calcStructFact : false
                       }, {
                         mapColour: { r: 0.733, g: 0.2, b: 1.0 }
                       }]
           });
-        if (istruct.DELFAN)
+          activeMap = !activeMap;
+        }
+        if (istruct.DELFAN)  {
           inputFiles.push ({
             type : 'mtz',
             args : [ mtzURL,'anom-diff-map',{
@@ -286,12 +298,15 @@ if (!__template)  {
                         PHI            : istruct.PHDELAN,
                         isDifference   : true,
                         useWeight      : false,
+                        isActiveMap    : activeMap,
                         calcStructFact : false
                       }, {
                         positiveDiffColour: { r: 0.055, g: 0.4, b: 0.333 },
                         negativeDiffColour: { r: 0.98 , g: 0.5, b: 0.45  }
                       }]
           });
+          activeMap = !activeMap;
+        }
       }
     }
 
@@ -303,7 +318,7 @@ if (!__template)  {
       }
       if (file_key.mtz in isubstruct.files)  {
         let mtzURL = this.getURL ( 'input/' + isubstruct.files[file_key.mtz] );
-        if (isubstruct.FAN)
+        if (isubstruct.FAN)  {
           inputFiles.push ({
             type : 'mtz',
             args : [ mtzURL,'anom-substr-map',{
@@ -314,11 +329,14 @@ if (!__template)  {
                         // FreeR          : isubstruct.FreeR_flag,
                         isDifference   : false,
                         useWeight      : false,
+                        isActiveMap    : activeMap,
                         calcStructFact : false
                       }, {
                         mapColour: { r: 0.686, g: 0.376, b: 0.102 }
                       }]
           });
+          activeMap = !activeMap;
+        }
       }
     }
 
@@ -352,8 +370,6 @@ if (!__template)  {
                      },
       wdirURL      : this.getURL('')
     };
-
-    // console.log ( JSON.stringify(inputFiles) );
 
     // console.log (  JSON.stringify(inputFiles) );
 
