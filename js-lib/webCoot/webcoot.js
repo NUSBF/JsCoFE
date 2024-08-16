@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    15.08.24   <--  Date of Last Modification.
+ *    16.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,6 +23,9 @@
 let rootId         = 'root';
 let sf_meta        = null;
 let urlPrefix      = 'js-lib/webCoot/baby-gru';
+
+if (document.currentScript)
+  urlPrefix = document.currentScript.getAttribute('data-parameter') + '/baby-gru';
 
 let BACKUPS        = [];
 let backupsFPath   = 'backups/backups.json';
