@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    11.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -381,7 +381,9 @@ class DType(dtype_template.DType):
 
 
 def setXYZMeta ( data_class,xyz_meta ):
+
     data_class.xyzmeta = xyz_meta
+
     if type(data_class.xyzmeta) == dict:
         xyz = data_class.xyzmeta["xyz"]
         for i in range(len(xyz)):
@@ -394,6 +396,10 @@ def setXYZMeta ( data_class,xyz_meta ):
                     data_class.addSubtype ( dtype_template.subtypeDNA() )
                 elif t=="RNA":
                     data_class.addSubtype ( dtype_template.subtypeRNA() )
+                if not data_class.chainSel:
+                    data_class.chainSel     = chains[j]["id"]
+                    data_class.chainSelType = t
+
     else:
         xyz = data_class.xyzmeta.xyz
         for i in range(len(xyz)):
@@ -406,6 +412,9 @@ def setXYZMeta ( data_class,xyz_meta ):
                     data_class.addSubtype ( dtype_template.subtypeDNA() )
                 elif t=="RNA":
                     data_class.addSubtype ( dtype_template.subtypeRNA() )
+                if not data_class.chainSel:
+                    data_class.chainSel     = chains[j].id
+                    data_class.chainSelType = t
 
     return
 

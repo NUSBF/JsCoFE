@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.06.24   <--  Date of Last Modification.
+#    14.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,15 +51,28 @@ def makeRunName ( word ):
     return runName    
 
 def scrollToRunName ( script,runName ):
-    lno = 0
+    lno         = 0
     nextRunName = None
-    while lno<len(script) and not nextRunName:
+    scope       = None
+    while lno<len(script) and not scope:
         words = script[lno].split()
         if len(words)>0 and runName==words[0].split("[")[0]:
             nextRunName = makeRunName ( words[0] )
+            scope = "run"
+        elif len(words)>1 and words[0].upper()=="POINT" and runName==words[1]:
+            scope = "flow"
         else:
             lno = lno + 1
-    return (lno,nextRunName)
+    return (lno,nextRunName,scope)
+
+def report ( body, title, message, log_message ):
+    body.putMessage ( "&nbsp;" )
+    body.putTitle ( title )
+    if message:
+        body.putMessage ( message )
+    if log_message:
+        auto_api2.log_message ( log_message )
+    return
 
 
 # Main function
@@ -127,6 +140,7 @@ def nextTask ( body,data,log=None ):
             else:
                 w = wdata["variables"]
 
+            # add variables from task output
             if "variables" in data:
                 for v in data["variables"]:
                     w[v] = data["variables"][v]
@@ -204,10 +218,10 @@ def nextTask ( body,data,log=None ):
             branch_points = []
             for line in script:
                 words = line.split()
-                if len(words)>2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
+                if len(words)>=2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
                     branch_points.append ( words[1].split("[")[0] )
             auto_api2.log_debug ( "branch_points=" + str(branch_points) )
-
+ 
             parentRunName = crTask.autoRunName
             if parentRunName.split("[")[0] in branch_points:
                 auto_api2.addContext ( parentRunName + "_outdata",{
@@ -230,7 +244,7 @@ def nextTask ( body,data,log=None ):
                 words  = script[lno].split()
                 nwords = len(words)
                 
-                if nwords>0:
+                if (nwords>0) and (not words[0].upper().startswith("CHECKTASK")):
 
                     w0u  = words[0].upper()
                     perr = w0u + " declared but not correctly defined"
@@ -296,7 +310,7 @@ def nextTask ( body,data,log=None ):
 
                                 if nwords>=k+2:
                                     if words[k].upper() in ["WHILE","IF"]:
-                                        expr = " ".join(words[k+1:]);
+                                        expr = " ".join(words[k+1:])
                                         try:
                                             condition = eval_parser.parse(expr).evaluate(w)
                                             if not condition:
@@ -305,7 +319,7 @@ def nextTask ( body,data,log=None ):
                                         except:
                                             repeat_mode = ""
                                             parse_error = "incomputable expression \"" +\
-                                                        expr + "\""
+                                                          expr + "\""
                                     else:
                                         repeat_mode = ""
                                         parse_error = "unparseable statement"
@@ -316,13 +330,13 @@ def nextTask ( body,data,log=None ):
                                         # restore initial branch data
                                         rdata = auto_api2.getContext ( words[1] + "_rundata" )
                                         if rdata:
-                                            (lno,nextRunName) = scrollToRunName ( script,words[1] )
+                                            (lno,nextRunName,scope) = scrollToRunName ( script,words[1] )
                                             tdata = rdata["tdata"]
-                                            scope = "run"
+                                            # scope = "run"
                                         elif pass_error:
                                             auto_api2.log_comment ( "PASS executed" )
                                         else:
-                                            parse_error = "run name " + words[1] + " is not defined"
+                                            parse_error = "run name " + words[1] + " is not defined (1)"
                                     else:
                                         parRunName0   = parentRunName
                                         pRunName      = makeRunName ( words[1] )
@@ -333,15 +347,16 @@ def nextTask ( body,data,log=None ):
                                                 repeatNo = repeatNo - 1
                                             parentRunName += "[" + str(repeatNo) + "]"
                                         rdata = auto_api2.getContext ( parentRunName + "_outdata" )
-                                        if rdata and repeat_mode=="CONTINUE":
-                                            (lno,nextRunName) = scrollToRunName ( script,pRunName[0] )
-                                            scope = "run"
+                                        # if rdata or repeat_mode=="CONTINUE":
+                                        if repeat_mode=="CONTINUE":
+                                            (lno,nextRunName,scope) = scrollToRunName ( script,pRunName[0] )
+                                            # scope = "run"
                                         elif not rdata:
                                             if pass_error:
                                                 parentRunName = parRunName0
                                                 auto_api2.log_comment ( "PASS executed" )
                                             else:
-                                                parse_error = "run name " + parentRunName + " is not defined"
+                                                parse_error = "run name " + parentRunName + " is not defined (2)"
                                         tdata = {}
                                     if rdata:
                                         rev_list = rdata["rev_list"]
@@ -362,11 +377,29 @@ def nextTask ( body,data,log=None ):
                                 auto_api2.log_message ( 
                                     expr + " = " + str(eval_parser.parse(expr).evaluate(w))
                                 )
-                        elif w0u=="END" or w0u=="STOP":
+
+                        elif w0u=="STOP":
+                            if nwords>=2:
+                                if words[1].upper()=="IF" and nwords>2:
+                                    expr = " ".join(words[2:]);
+                                    try:
+                                        condition = eval_parser.parse(expr).evaluate(w)
+                                        if condition:
+                                            parse_error = "stop"  # just sinal end of play
+                                        auto_api2.log_comment ( "condition : " + str(condition) )
+                                    except:
+                                        parse_error = "incomputable expression \"" +\
+                                                    expr + "\""
+                                else:
+                                    parse_error = "unparseable statement"
+                            else:
+                              parse_error = "stop"  # just sinal end of play
+
+                        elif w0u=="END":
                             parse_error = "end"  # just sinal end of play
 
-                        else:
-                            parse_error = "statement out of scope"
+                        elif w0u!="POINT":  # used for specifying destination in "continue"
+                            parse_error = "statement " + w0u + " out of scope " + str(scope)
 
 
                     elif scope=="run":
@@ -460,8 +493,12 @@ def nextTask ( body,data,log=None ):
                         elif w0u=="DATA":
                             if nwords<3:
                                 parse_error = perr
-                            else:
+                            elif words[1] not in tdata:
                                 tdata[words[1]] = words[2]
+                            elif isinstance(tdata[words[1]],list):
+                                tdata[words[1]].append ( words[2] )
+                            else:
+                                tdata[words[1]] = [tdata[words[1]],words[2]]
 
                         elif w0u=="USE":  # choose from multiple data
                             if nwords<3 or words[1].upper()!="REVISION":
@@ -497,39 +534,45 @@ def nextTask ( body,data,log=None ):
                             scope = "flow"
 
                         else:
-                            parse_error = "statement out of scope"
+                            # parse_error = "statement out of scope " + str(scope)
+                            parse_error = "statement " + w0u + " out of scope " + str(scope)
 
                 lno = lno + 1
 
             crTask.script_end_pointer = lno
 
             if parse_error=="end":
-                auto_api2.log_message ( "workflow stops here." )
-                body.putMessage ( "<h3>Workflow finished</h3>" )
-                return False
+                report ( body, "Workflow finished","<i>Ended normally.</i>",
+                               "workflow finishes here." )
+                return "finished"
+
+            if parse_error=="stop":
+                report ( body, "Workflow finished","<i>Stopped by instruction",
+                               "workflow stopped by instruction." )
+                return "finished"
 
             if parse_error:
                 auto_api2.log_error ( parse_error )
-                body.putMessage ( "<h3>Workflow script error</h3><i>" + \
-                                  parse_error + "</i>" )
-                return False
+                body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>" + \
+                                  parse_error + "</i><p>&nbsp;" )
+                return "errors (1)"
 
             if nextTaskType:
 
                 if not nextRunName:
                     auto_api2.log_error ( " RUN NAME is not defined" )
-                    body.putMessage ( "<h3>Workflow script error</h3><i>" +\
-                                      "RUN NAME is not defined</i>" )
-                    return False
+                    body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>" +\
+                                      "RUN NAME is not defined</i><p>&nbsp;" )
+                    return "errors (2)"
 
                 # form new task
                 runName = nextRunName[0]
                 if nextRunName[1]:
                     if not nextRunName[1] in w:
                         auto_api2.log_error ( " RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter is not defined</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i><p>&nbsp;" )
+                        return "errors (3)"
                     else:
                         runName += "[" + str(w[nextRunName[1]]) + "]"
 
@@ -537,16 +580,16 @@ def nextTask ( body,data,log=None ):
                     # clone task
                     if not nextRunName[1] or nextRunName[1] not in w:
                         auto_api2.log_error ( "RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter is not defined</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i><p>&nbsp;" )
+                        return "errors (4)"
 
                     repeat_no = int(w[nextRunName[1]])
                     if repeat_no<1:
                         auto_api2.log_error ( "RUN NAME repeat counter does not advance" )
-                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
-                                          "repeat counter does not advance</i>" )
-                        return False
+                        body.putMessage ( "&nbsp;<p><h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter does not advance</i><p>&nbsp;" )
+                        return "errors (5)"
                         
                     # runName   = nextRunName[0] + "[" + str(repeat_no)   + "]"
                     runName0  = nextRunName[0] + "[" + str(repeat_no-1) + "]"
@@ -573,6 +616,8 @@ def nextTask ( body,data,log=None ):
                         else:
                             dtypes += ["unmerged","hkl","seq"]
 
+                        # dtypes = ["xyz","model","ligand","lib","unmerged","hkl","seq"]
+
                         for dtype in wdata:
                             if dtype in dtypes and len(wdata[dtype])>0:
                                 auto_api2.addTaskData ( runName,
@@ -580,7 +625,11 @@ def nextTask ( body,data,log=None ):
                                     wdata[dtype] )
 
                         for dtype in tdata:
-                            auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
+                            if isinstance(tdata[dtype],list):
+                                for d in tdata[dtype]:
+                                    auto_api2.addTaskData ( runName,dtype,wdata[d] )
+                            else:
+                                auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
                     
                     # if runName in branch_points:
                     #     auto_api2.noteTask ( runName )
@@ -606,9 +655,16 @@ def nextTask ( body,data,log=None ):
 
                 auto_api2.noteTask ( runName )
                 auto_api2.writeAutoMeta()
-                return True
+                return "ok"
 
-            return False
+            report ( body, "Workflow finished","<i>End of script</i>",
+                           "workflow finishes here (end of script)." )
+            return "no task"
+        
+        report ( body,"Workflow finished","<i>Current task could not be identified. " +\
+                      "Script may be incomplete or suspect a bug.</i>",
+                      "workflow finishes here (no instructions in the script?)." )
+        return "no current task"
 
     except Exception as inst:
         body.stderrln ( str(type(inst)) )  # the exception instance
@@ -616,6 +672,5 @@ def nextTask ( body,data,log=None ):
         body.stderrln ( str(inst)       )  # __str__ allows args to be printed directly,
         tb = traceback.format_exc()
         body.stderrln ( str(tb))
-        body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )
-
-    return False
+        body.putMessage ( "&nbsp;<p><h3><i>Automatic workflow excepted</i></h3>" )
+        return "errors (excepted)"

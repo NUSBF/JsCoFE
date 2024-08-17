@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    13.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -195,8 +195,8 @@ class Molrep(basic.TaskDriver):
                         "revision"  : [revision]
                     },
                     "scores" :  {
-                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                        "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                        "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"]),
                         "nfitted0" : nfitted0,                  # number of polymers before run
                         "nfitted"  : structure.getNofPolymers() # number of polymers after run
                     }
@@ -210,8 +210,6 @@ class Molrep(basic.TaskDriver):
                     "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
                     "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
                 }, log=self.file_stderr)
-
-
 
         # close execution logs and quit
         self.success ( have_results )
