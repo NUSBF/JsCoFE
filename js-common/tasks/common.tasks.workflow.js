@@ -329,7 +329,7 @@ TaskWorkflow.prototype.desc_title     = function()  { return this.task_desc;   }
 //TaskWorkflow.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWorkflow.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -360,7 +360,71 @@ if (!__template)  {
 } else  {
   // for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const path      = require('path');
+  const conf      = require('../../js-server/server.configuration');
+  const class_map = require('../../js-server/server.class_map');
+  const user      = require('../../js-server/server.fe.user');
+  const utils     = require('../../js-server/server.utils');
+
+
+  TaskWorkflow.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+
+    let uData = null;
+
+    let checked_tasks = {};  
+    // tasks_available is used only for tasks queried with checkTask(name)
+    // in WScript.
+    // tasks_available[name] is set true if specified task can be run. Custom 
+    // workflows will have pre-defined variables name_available initialised as 
+    // true or false, for example, 'StructurePrediction_available'. Note that
+    // 'Task' prefix is omitted in WScript. 
+    // The variables are added in pycofe/tasks/workflow.py. 
+    
+    for (let i=0;i<this.script.length;i++)  {
+      let line  = this.script[i];
+      let ihash = line.indexOf('#');
+      if (ihash>=0)  // remove comment
+        line = line.slice ( 0,ihash );
+      let match = line.match(/checkTask\s*\(\s*(\w+)\s*\)/);
+      let tname = match ? match[1] : null;
+      if (tname)  {
+        let task = class_map.makeTaskClass ( 'Task' + tname );
+        if (task)  {
+          if (!uData)
+            uData = user.readUserData ( loginData );
+          checked_tasks[tname] = (task.canRunInWorkflow(uData)[0]=='ok');
+        } // else workflow may fail and stop here
+      }
+    }
+
+    // write fetch_meta in jobd directory on FE; it will travel to NC along
+    // with all other data
+    utils.writeObject ( path.join(jobDir,'__checked_tasks.json'),checked_tasks );
+
+  }
+
+/*
+import re
+
+def extract_name(s):
+    # Regular expression to match 'isAvailable ( name )' with optional spaces around the brackets
+    regex = r'isAvailable\s*\(\s*(\w+)\s*\)'
+    # Search for the pattern in the input string
+    match = re.search(regex, s)
+    # If a match is found, return the captured group (the name), otherwise return None
+    return match.group(1) if match else None
+
+# Example usage:
+input_str = "The function isAvailable ( myName ) is called."
+name = extract_name(input_str)
+print(name)  # Output: myName
+
+*/
+
+
 
   TaskWorkflow.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.workflow', jobManager, jobDir, this.id];

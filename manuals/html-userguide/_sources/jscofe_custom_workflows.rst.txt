@@ -1074,16 +1074,41 @@ statements is provided.
 
            branch @DENSITY_MODIFICATION[hand0]
 
-       Branching may be subject to condition, evaluated to *True*::
+       Branching may be subject to *condition*, evaluated to *True*::
 
            branch @MODEL_BUILDING-2 if Rfree>0.4
 
+   * - continue @RUN_NAME [if *condition*]
+     - Instruction to continue the workflow from the specified task, for example: ::
+
+           continue @REFINEMENT
+
+       continuation may be subject to *condition*, evaluated to *True*::
+
+           continue @REFINEMENT if Rfree>0.4
+
    * - PRINT_VAR
      - Prints current values of all workflow variables in CCP4 Cloud task's log
-       file.
+       file. example: ::
 
-   * - END or STOP
-     - Stops the workflow.
+           PRINT_VAR  Rfactor
+
+   * - checkTask(name)
+     - Queries task availability and assignes ``True/False`` to variable
+       ``name_available``, for example: ::
+
+           checkTask(StructurePrediction)
+           PRINT_VAR   StructurePrediction_available
+           continue  @AUTO_MR if not StructurePrediction_available 
+
+   * - STOP [if *condition*]
+     - Stops the workflow. If condition is given, then workflow is stopped if
+       *condition* evaluates ``True``, for example: ::
+
+           STOP if Rfree<0.22
+
+   * - END
+     - Ends the workflow.
 
 
 .. _wscript_reference_predefined_variables:
@@ -1118,6 +1143,30 @@ assigned to variable ``Rfree``.
    * - suggested
      - Refmac
      - Number of suggested parameters to change.
+   * - N_unmerged
+     - Workflow
+     - Number of unmerged datasets given to workflow.
+   * - N_hkl
+     - Workflow, Aimless
+     - Number of merged datasets given to workflow or produced by ``Aimless``.
+   * - N_hkl_anom
+     - Workflow, Aimless
+     - Number of merged datasets with anomalous signal, given to workflow or produced by ``Aimless``.
+   * - N_seq
+     - Workflow
+     - Number of sequences given to workflow.
+   * - N_xyz
+     - Workflow
+     - Number of molecular models given to workflow.
+   * - N_lig
+     - Workflow, MakeLigand
+     - Number of ligand files given to workflow or produced by ``MakeLigand``.
+   * - N_ligdesc
+     - Workflow
+     - Number of ligand descriptinos defined in workflow.
+   * - N_lib
+     - Workflow
+     - Number of ligand libraries given to workflow.
 
 
 .. _wscript_reference_expression_syntax:

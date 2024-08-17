@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    07.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -655,14 +655,19 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         if (!rData.my_workflows)
           rData.my_workflows = [];
 
-        adm.getNCData ( [],function(ncInfo){
-          rData.environ_server = [];
-          for (let i=0;i<ncInfo.length;i++)
-            if (ncInfo[i] && ('environ' in ncInfo[i]))  {
-              for (let j=0;j<ncInfo[i].environ.length;j++)
-                if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
-                  rData.environ_server.push ( ncInfo[i].environ[j] );
-            }
+        // adm.getNCData ( [],function(ncInfo){
+        //   rData.environ_server = [];
+        //   for (let i=0;i<ncInfo.length;i++)
+        //     if (ncInfo[i] && ('environ' in ncInfo[i]))  {
+        //       for (let j=0;j<ncInfo[i].environ.length;j++)
+        //         if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
+        //           rData.environ_server.push ( ncInfo[i].environ[j] );
+        //     }
+        //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+        // });
+
+        conf.getServerEnvironment ( function(environ_server){
+          rData.environ_server = environ_server;
           callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
         });
 
