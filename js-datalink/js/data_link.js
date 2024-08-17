@@ -19,6 +19,7 @@ const DATA_SOURCES = [
 
 const GB = 1000000000;
 const MB = 1000000;
+const DAY_TO_MS = 24 * 60 * 60 * 1000;
 
 class dataLink {
 
@@ -51,7 +52,10 @@ class dataLink {
       this.dataPruneInit(config.get('storage.data_prune_mins'));
       let update_days = config.get('storage.catalog_update_days');
       if (update_days > 0) {
-        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * 60 * 1000);
+        if (update_days > 24) {
+          update_days = 24;
+        }
+        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * DAY_TO_MS);
       }
     }
 
@@ -179,7 +183,12 @@ class dataLink {
       f.pdb = ds.pdb;
       f.name = ds.name;
       f.doi = ds.doi;
-      f.size_s = ds.size;
+      // if there is no size in the data source, set size_s to 0 in user data entry
+      if (ds.size) {
+        f.size_s = ds.size;
+      } else {
+        f.size_s = 0;
+      }
     }
     f.status = st;
     return this.catalog.addEntry(user, source, id, f);
