@@ -21,7 +21,7 @@
     // how often to prune data in minutes
     "data_prune_mins": 30,
     // how often to re-fetch catalogs in days
-    "catalog_update_days": 30
+    "catalog_update_days": 10
   },
   // data source configuration
   "data_sources": {

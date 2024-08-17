@@ -16,7 +16,7 @@ const def_config = {
     "data_free_gb": 100,
     "data_max_days": 60,
     "data_prune_mins": 30,
-    "catalog_update_days": 30
+    "catalog_update_days": 10
   },
   "data_sources": {
     "pdbj": {
