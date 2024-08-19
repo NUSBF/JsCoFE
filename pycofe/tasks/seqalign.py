@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    19.06.23   <--  Date of Last Modification.
+#    11.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,20 +19,21 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
+# import sys
 
 #  ccp4-python imports
 import pyrvapi
 
 #  application imports
 from . import basic
+from pycofe.auto import auto_workflow
 
 
 # ============================================================================
@@ -249,6 +248,14 @@ class SeqAlign(basic.TaskDriver):
                         "background:black;color:yellow;white-space:nowrap;","",1,1 );
 
                 self.rvrow += 2
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                        "scores" :  {
+                            "SeqID"  : float(id_cmb)
+                        }
+                    })
 
             else:
                 self.putTitle ( "Alignment was not generated" )

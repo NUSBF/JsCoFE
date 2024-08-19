@@ -46,7 +46,7 @@
   
   
   
-    <title>6. Custom (user-created) project workflows &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>7. Custom (user-created) project workflows &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -56,8 +56,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="7. CCP4 Cloud Archive" href="jscofe_archive.html" />
-    <link rel="prev" title="5. Cloud Run facility in CCP4i interface" href="jscofe_i1toCloud.html" />
+    <link rel="next" title="8. CCP4 Cloud Archive" href="jscofe_archive.html" />
+    <link rel="prev" title="6. Cloud Run facility in CCP4i interface" href="jscofe_i1toCloud.html" />
   
    
 
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> 6. Custom (user-created) project workflows </span>
+          <span class="md-header-nav__topic"> 7. Custom (user-created) project workflows </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -205,7 +205,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">5. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_globus.html" class="md-nav__link">5. Transferring data to CCP4 Cloud via Globus</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
@@ -213,41 +220,41 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 6. Custom (user-created) project workflows </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. Custom (user-created) project workflows </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">6. Custom (user-created) project workflows</a>
+      <a href="#" class="md-nav__link md-nav__link--active">7. Custom (user-created) project workflows</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">6. Custom (user-created) project workflows</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">6.1. What are custom workflows and how one can use them</a>
+        <li class="md-nav__item"><a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">7.1. What are custom workflows and how one can use them</a>
         </li>
-        <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">6.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">7.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">6.2.1. Simple MR Workflow</a>
+        <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">7.2.1. Simple MR Workflow</a>
         </li>
-        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">6.2.2. Conditional statements and other advanced operations</a>
+        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">7.2.2. Conditional statements and other advanced operations</a>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">6.3. Custom Workflow Library</a>
+        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">7.3. Custom Workflow Library</a>
         </li>
-        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">6.4. WScript Reference</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">7.4. WScript Reference</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">6.4.1. Header section</a>
+        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">7.4.1. Header section</a>
         </li>
-        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">6.4.2. Input data section</a>
+        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">7.4.2. Input data section</a>
         </li>
-        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">6.4.3. Input parameters section</a>
+        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">7.4.3. Input parameters section</a>
         </li>
-        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">6.4.4. Workflow body section</a>
+        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">7.4.4. Workflow body section</a>
         </li>
-        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">6.4.5. Pre-defined variables</a>
+        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">7.4.5. Pre-defined variables</a>
         </li>
-        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">6.4.6. Mathematrical expressions syntax</a>
+        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">7.4.6. Mathematrical expressions syntax</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -259,26 +266,26 @@
     <li class="md-nav__item">
     
     
-      <a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">6.1. What are custom workflows and how one can use them</a>
+      <a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">7.1. What are custom workflows and how one can use them</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#writing-the-workflow-script-wscript" class="md-nav__link">6.2. Writing the Workflow script (WScript)</a>
+      <a href="#writing-the-workflow-script-wscript" class="md-nav__link">7.2. Writing the Workflow script (WScript)</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#simple-mr-workflow" class="md-nav__link">6.2.1. Simple MR Workflow</a>
+      <a href="#simple-mr-workflow" class="md-nav__link">7.2.1. Simple MR Workflow</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">6.2.2. Conditional statements and other advanced operations</a>
+      <a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">7.2.2. Conditional statements and other advanced operations</a>
       
     
     </li></ul>
@@ -287,54 +294,54 @@
     <li class="md-nav__item">
     
     
-      <a href="#custom-workflow-library" class="md-nav__link">6.3. Custom Workflow Library</a>
+      <a href="#custom-workflow-library" class="md-nav__link">7.3. Custom Workflow Library</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#wscript-reference" class="md-nav__link">6.4. WScript Reference</a>
+      <a href="#wscript-reference" class="md-nav__link">7.4. WScript Reference</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="#header-section" class="md-nav__link">6.4.1. Header section</a>
+      <a href="#header-section" class="md-nav__link">7.4.1. Header section</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#input-data-section" class="md-nav__link">6.4.2. Input data section</a>
+      <a href="#input-data-section" class="md-nav__link">7.4.2. Input data section</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#input-parameters-section" class="md-nav__link">6.4.3. Input parameters section</a>
+      <a href="#input-parameters-section" class="md-nav__link">7.4.3. Input parameters section</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#workflow-body-section" class="md-nav__link">6.4.4. Workflow body section</a>
+      <a href="#workflow-body-section" class="md-nav__link">7.4.4. Workflow body section</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#pre-defined-variables" class="md-nav__link">6.4.5. Pre-defined variables</a>
+      <a href="#pre-defined-variables" class="md-nav__link">7.4.5. Pre-defined variables</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#mathematrical-expressions-syntax" class="md-nav__link">6.4.6. Mathematrical expressions syntax</a>
+      <a href="#mathematrical-expressions-syntax" class="md-nav__link">7.4.6. Mathematrical expressions syntax</a>
       
     
     </li></ul>
@@ -345,35 +352,35 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">7. CCP4 Cloud Archive</a>
+      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">9. Questions and Answers</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">10. Troubleshooting</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">11. CCP4 Cloud Version Log</a>
+      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -391,33 +398,33 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">6. Custom (user-created) project workflows</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">6.1. What are custom workflows and how one can use them</a>
+        <li class="md-nav__item"><a href="#what-are-custom-workflows-and-how-one-can-use-them" class="md-nav__link">7.1. What are custom workflows and how one can use them</a>
         </li>
-        <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">6.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">7.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">6.2.1. Simple MR Workflow</a>
+        <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">7.2.1. Simple MR Workflow</a>
         </li>
-        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">6.2.2. Conditional statements and other advanced operations</a>
+        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">7.2.2. Conditional statements and other advanced operations</a>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">6.3. Custom Workflow Library</a>
+        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">7.3. Custom Workflow Library</a>
         </li>
-        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">6.4. WScript Reference</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">7.4. WScript Reference</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">6.4.1. Header section</a>
+        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">7.4.1. Header section</a>
         </li>
-        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">6.4.2. Input data section</a>
+        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">7.4.2. Input data section</a>
         </li>
-        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">6.4.3. Input parameters section</a>
+        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">7.4.3. Input parameters section</a>
         </li>
-        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">6.4.4. Workflow body section</a>
+        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">7.4.4. Workflow body section</a>
         </li>
-        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">6.4.5. Pre-defined variables</a>
+        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">7.4.5. Pre-defined variables</a>
         </li>
-        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">6.4.6. Mathematrical expressions syntax</a>
+        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">7.4.6. Mathematrical expressions syntax</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -433,12 +440,12 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="custom-user-created-project-workflows">
-<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">6. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">7. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4 Cloud projects can be developed automatically, using one of pre-defined
 <a class="reference internal" href="jscofe_automated_workflows.html#workflows-guide"><span class="std std-ref">automatic workflows</span></a>, as well as <em>custom workflows</em>,
 defined by user.</p>
 <section id="what-are-custom-workflows-and-how-one-can-use-them">
-<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">6.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
+<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">7.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
 <p>Custom workflow is a script (<em>WScript</em>) describing tasks that need to be
 performed and the order of their invocation, <em>i.e.</em>, the workflow algorithm.
 The script is placed in a plain text file with extension <code class="docutils literal notranslate"><span class="pre">.wscript</span></code>,
@@ -465,25 +472,11 @@ system.</p></li>
 </ul>
 </section>
 <section id="writing-the-workflow-script-wscript">
-<h2 id="writing-the-workflow-script-wscript"><span class="section-number">6.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Permalink to this heading">¶</a></h2>
-<p>The main idea behind workflows is to automate operations when the same
-project (or branch of a project) needs to be repeated many (100s) times with
-different input data, and <strong>WScript</strong> is limited to that purpose.</p>
-<p>The easiest way to create a <strong>WScript</strong> file is through using <strong>Workflow Creator</strong>
-in CCP4 Cloud. Login in your account and open <strong>Task List</strong> in any project.
-Then open tab <strong>Workflows</strong>, scroll it to section <strong>My Workflows</strong> in the end
-and push button <strong>Add workflow</strong>. This will launch <strong>Workflow Creator</strong> window
-with a template script loaded. It makes a good sense to save the newly created
-workflow in your personal library, therefore give it a unique <em>Workflow ID</em> on
-top of the dialog window. For easier workflow identification in <strong>My Workflows</strong>
-library, you may also change the colour of the workflow icon – simply click on
-it and choose from available options. Now you can save the script – it will
-appear in the <strong>My Workflows</strong> section of the <strong>Task List</strong>. You can run it as
-any other task now, but doing so will result in an empty <strong>Job Dialog</strong>, because
-we only saved a template, which does nothing.</p>
-<p>Let’s give it a useful content now. Click on <strong>Edit</strong> button on the right from
-the just created workflow in <strong>My Workflows</strong>, this opens <strong>Workflow Creator</strong>
-again, with the previous content looking something like this:</p>
+<h2 id="writing-the-workflow-script-wscript"><span class="section-number">7.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Permalink to this heading">¶</a></h2>
+<p>The main idea behind workflows is to automate operations when the same project (or branch of a project) needs to be repeated many (100s) times with  different input data, and <strong>WScript</strong> is limited to that purpose.</p>
+<p>The easiest way to create a <strong>WScript</strong> file is through using <strong>Workflow Creator</strong> in CCP4 Cloud. Login in your account and open <strong>Task List</strong> in any project.
+Then open tab <strong>Workflows</strong>, scroll it to section <strong>My Workflows</strong> in the end and push button <strong>Add workflow</strong>. This will launch <strong>Workflow Creator</strong> window with a template script loaded. It makes a good sense to save the newly created workflow in your personal library, therefore give it a unique <em>Workflow ID</em> on top of the dialog window. For easier workflow identification in <strong>My Workflows</strong> library, you may also change the colour of the workflow icon – simply click on it and choose from available options. Now you can save the script – it will appear in the <strong>My Workflows</strong> section of the <strong>Task List</strong>. You can run it as any other task now, but doing so will result in an empty <strong>Job Dialog</strong>, because we only saved a template, which does nothing.</p>
+<p>Let’s give it a useful content now. Click on <strong>Edit</strong> button on the right from  the just created workflow in <strong>My Workflows</strong>, this opens <strong>Workflow Creator</strong> again, with the previous content looking something like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
 <span class="c1"># * THIS IS A WORKFLOW SCRIPT TEMPLATE</span>
 <span class="c1"># * DO NOT ASSUME THAT IT IS FUNCTIONAL WITHOUT EDITING</span>
@@ -567,9 +560,7 @@ again, with the previous content looking something like this:</p>
 <span class="c1"># Workflow run body</span>
 </pre></div>
 </div>
-<p>In <strong>WScript</strong> lines, everything on the right from the hash “#” sign is a comment
-and may be safely deleted. Perhaps you may want to delete first few lines from
-the template, but in general, the more comments you make in the script, the more
+<p>In <strong>WScript</strong> lines, everything on the right from the hash “#” sign is a comment and may be safely deleted. Perhaps you may want to delete first few lines from the template, but in general, the more comments you make in the script, the more
 understandable and maintainable it is. You can use spaces to your aesthetic
 preferences; where there must be a space separator, any number of spaces can be
 used.</p>
@@ -579,7 +570,7 @@ Values, on contrary, should be specified with respect to upper/lower case. Full
 list of keywords is given in the end of this document.</p>
 <p>We will create new workflow in several steps now.</p>
 <section id="simple-mr-workflow">
-<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">6.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Permalink to this heading">¶</a></h3>
+<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">7.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Permalink to this heading">¶</a></h3>
 <p>As first example, let’s write a simple workflow, which takes reflection data,
 structure template, sequence and solves structure with Molecular Replacement
 using Molrep.</p>
@@ -745,12 +736,9 @@ project representing your workflow in design.</p>
 </div>
 </section>
 <section id="conditional-statements-and-other-advanced-operations">
-<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">6.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this heading">¶</a></h3>
+<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">7.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this heading">¶</a></h3>
 <p>At the moment, our molrep workflow is quite straightforward in respect to its
-input data and algorithm. We may wish to make it more flexible. For example,
-it would be good if can take both merged and unmerged reflection data on input,
-optimize refinement parameters and, optionally, prepare file for PDB deposition
-from best results achieved.</p>
+input data and algorithm. We may wish to make it more flexible. For example, it would be good if you can take both merged and unmerged reflection data on input, optimize refinement parameters and, optionally, prepare file for PDB deposition from the best results achieved.</p>
 <p><strong>Conditions based on availability of data</strong></p>
 <p>Let’s start from optional unmerged reflections input. We can instruct the
 workflow to accept both merged and unmerged reflections by modifying the
@@ -855,10 +843,7 @@ taken for further processing. In this example, results with lowest <em>R_free</e
 will be chosen. To see this, append another task, such as
 <em>“PDB Validation Report”</em> to the workflow and re-run it.</p>
 <p><strong>Workflow parameters</strong></p>
-<p>Supose no that we want to introduce workflows parameters, which a user could
-manioulate with as in any other task. For example, let user to set a
-resolution cut-off in <em>Aimless</em> and decide whether to run <em>Buccaneer</em> task.
-For this, add input of real-number parameter and a checkbox in
+<p>Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in <strong>Aimless</strong> and decide whether to run the <strong>Buccaneer</strong> task. For this, add input of real-number parameter and a checkbox in
 <a class="reference internal" href="#wscript-reference-input-parameters"><span class="std std-ref">Input parameters section</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==========================================================================</span>
 <span class="c1"># Workflow parameters section. List all parameters required, "!" specifies</span>
@@ -1027,15 +1012,15 @@ branch @REFINE-OPT[iter0]
 </section>
 </section>
 <section id="custom-workflow-library">
-<h2 id="custom-workflow-library"><span class="section-number">6.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this heading">¶</a></h2>
+<h2 id="custom-workflow-library"><span class="section-number">7.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this heading">¶</a></h2>
 <p>CCP4 Cloud comes with a library of custom workflows, which give <strong>WScript</strong>
-examples for few typiucal scenarios. They can be also used as templates for
+examples for few typical scenarios. They can be also used as templates for
 your own developments. Just open <strong>Workflow Creator</strong>, push <strong>Library</strong>
 button and select a suitable <strong>WScript</strong>. It can be further modified to your
 needs as any text file.</p>
 </section>
 <section id="wscript-reference">
-<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">6.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this heading">¶</a></h2>
+<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">7.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this heading">¶</a></h2>
 <p><strong>WScript</strong> file consists of four <strong>sections</strong>, which must follow order presented
 in this Reference. Each section contains a specific set of <strong>WScript</strong>
 statements; no statement from one section can appear in another one. Section
@@ -1043,12 +1028,12 @@ separators are not used; <strong>WScript</strong> recognises sections automatica
 <a class="reference internal" href="#wscript-reference-input-parameters"><span class="std std-ref">Input parameters section</span></a> can be empty.</p>
 <p>All <strong>WScript</strong> <strong>statements</strong> occupy a single line. Statements start with a
 case-insensitive primary key, which may be followed by additional case-insensitive
-key(s) and values. Any number of consequuitive spaces is equivalent to one space,
+key(s) and values. Any number of consecutive spaces is equivalent to one space,
 except when these spaces occur in string-type values. Part of line starting
 from hash sign “#” is considered as a comment and is ignored; empty lines are
 ignored, too.</p>
 <p>Some <strong>WScript</strong> constructs are made of several statements, which must be
-placed on consequitive lines (comments and empty lines ignored). Such constructs
+placed on consecutive lines (comments and empty lines ignored). Such constructs
 have mandatory leading and trailing statements, other statements can be placed
 in arbitrary order.</p>
 <p><strong>WScript</strong> supports pre-defined and user-defined variables, which can hold
@@ -1062,7 +1047,7 @@ viewed as a computable trivial expression made of a single variable. See
 available functions, constants and operators in
 <a class="reference internal" href="#wscript-reference-expression-syntax"><span class="std std-ref">Mathematrical expressions syntax</span></a>.</p>
 <section id="header-section">
-<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">6.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">7.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
 <p>Header section comes first in <strong>WScript</strong> and cannot be empty.</p>
 <table id="id3">
 <caption><span class="caption-text">Header section</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
@@ -1155,13 +1140,13 @@ words if necessary. Default value: <code class="docutils literal notranslate"><s
 instead of object selection widgets when workflow task is invoked from
 the root of <strong>Job Tree</strong>. This keyword should not be used if workflow
 cannot be run from the root (for example, if it uses <em>Structure Revision</em>
-as one input data type.</p></td>
+as one input data type).</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="input-data-section">
-<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">6.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">7.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
 <p>Input data section must follow <a class="reference internal" href="#wscript-reference-header"><span class="std std-ref">Header section</span></a> and cannot
 be empty. The section may contain only <code class="docutils literal notranslate"><span class="pre">DATA</span></code> and <code class="docutils literal notranslate"><span class="pre">!DATA</span></code> statements, where
 exclamation mark means that data input is mandatory. One <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement
@@ -1196,7 +1181,7 @@ statement has the following syntax:</p>
 <td><p>Macromolecular sequence</p></td>
 </tr>
 <tr class="row-even"><td><p>LIBRARY</p></td>
-<td><p>Crystallographic restraints library for non-standard residues and
+<td><p>Crystallographic restraints’ library for non-standard residues and
 ligands not found in CCP4 Monomer Library</p></td>
 </tr>
 <tr class="row-odd"><td><p>LIGAND</p></td>
@@ -1224,11 +1209,11 @@ code or upload a <code class="docutils literal notranslate"><span class="pre">.c
 <tr class="row-odd"><td><p>protein</p></td>
 <td><p>Structure coordinates or sequence corresponding to an amino acid chain</p></td>
 </tr>
-<tr class="row-even"><td><p>rna</p></td>
+<tr class="row-even"><td><p>RNA</p></td>
 <td><p>Structure coordinates or sequence corresponding to a ribonucleic acid
 chain</p></td>
 </tr>
-<tr class="row-odd"><td><p>dna</p></td>
+<tr class="row-odd"><td><p>DNA</p></td>
 <td><p>Structure coordinates or sequence corresponding to a deoxyribonucleic
 acid chain</p></td>
 </tr>
@@ -1251,10 +1236,10 @@ DATA XYZ TYPES protein
 </div>
 </section>
 <section id="input-parameters-section">
-<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">6.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">7.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
 <p>Input parameters section is optional. If used, it must follow
-<a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>. The section is made of prinicpal
-statements <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> or <code class="docutils literal notranslate"><span class="pre">!PAR_*</span></code> followed by their specificators. The leading
+<a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>. The section is made of principal
+statements <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> or <code class="docutils literal notranslate"><span class="pre">!PAR_*</span></code> followed by their specifications. The leading
 exclamation mark means that user’s input is mandatory and the corresponding
 parameter cannot have a default value. On contrary, <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> statements must
 have a default parameter specified. The exclamation mark cannot be applied in
@@ -1303,7 +1288,7 @@ has a default value (unchecked if not specified).</p></td>
 <tr class="row-even"><td><p>PAR_COMBO</p></td>
 <td><p>variable’s name</p></td>
 <td><p>Creates graphical widget for combobox input. The input (value associated
-with the seleted combobox item) is assigned to internal workflow variable
+with the selected combobox item) is assigned to internal workflow variable
 with specified name, which is created automatically. PAR_COMBO cannot be
 preceded with the exclamation sign, and it always has a default value
 (first item if not specified).</p></td>
@@ -1311,7 +1296,7 @@ preceded with the exclamation sign, and it always has a default value
 </tbody>
 </table>
 <table id="id7">
-<caption><span class="caption-text">Input parameters specificators</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Input parameters specifications</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 8.0%"/>
@@ -1356,7 +1341,7 @@ by default)</p></td>
 <td><p>Minimum and maximum acceptable values for <code class="docutils literal notranslate"><span class="pre">PAR_INTEGER</span></code> and
 <code class="docutils literal notranslate"><span class="pre">PAR_REAL</span></code> widgets, space-separated. If only one limit should be used,
 the other limit should be represented by asterisk <code class="docutils literal notranslate"><span class="pre">*</span></code>. For example,
-<code class="docutils literal notranslate"><span class="pre">RANGE</span>  <span class="pre">1</span> <span class="pre">*</span></code> means that value cannot be less then 1 but no upper limit.</p></td>
+<code class="docutils literal notranslate"><span class="pre">RANGE</span>  <span class="pre">1</span> <span class="pre">*</span></code> means that value cannot be less than 1 but no upper limit.</p></td>
 </tr>
 <tr class="row-odd"><td><p>OPTION</p></td>
 <td><p>word and string</p></td>
@@ -1403,7 +1388,7 @@ PAR_CHECK     reqValReport  # name to be used in workflow's expressions
 </div>
 </section>
 <section id="workflow-body-section">
-<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">6.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">7.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
 <p>Workflow body must be the last section in <strong>WScript</strong> file. It may contain
 task run instructions, variables and workflow control statements.</p>
 <p>Task run instructions represent a set of statements which starts with <em>Run Name</em>
@@ -1565,24 +1550,57 @@ as a variable with correct value:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@DENSITY_MODIFICATION</span><span class="p">[</span><span class="n">hand0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Branching may be subject to condition, evaluated to <em>True</em>:</p>
+<p>Branching may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p>PRINT_VAR</p></td>
-<td><p>Prints current values of all workflow variables in CCP4 Cloud task’s log
-file.</p></td>
+<tr class="row-odd"><td><p>continue @RUN_NAME [if <em>condition</em>]</p></td>
+<td><p>Instruction to continue the workflow from the specified task, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span>
+</pre></div>
+</div>
+<p>continuation may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
+</pre></div>
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><p>END or STOP</p></td>
-<td><p>Stops the workflow.</p></td>
+<tr class="row-even"><td><p>PRINT_VAR</p></td>
+<td><p>Prints current values of all workflow variables in CCP4 Cloud task’s log
+file. example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRINT_VAR</span>  <span class="n">Rfactor</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>checkTask(name)</p></td>
+<td><p>Queries task availability and assignes <code class="docutils literal notranslate"><span class="pre">True/False</span></code> to variable
+<code class="docutils literal notranslate"><span class="pre">name_available</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkTask</span><span class="p">(</span><span class="n">StructurePrediction</span><span class="p">)</span>
+<span class="n">PRINT_VAR</span>   <span class="n">StructurePrediction_available</span>
+<span class="k">continue</span>  <span class="nd">@AUTO_MR</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">StructurePrediction_available</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>STOP [if <em>condition</em>]</p></td>
+<td><p>Stops the workflow. If condition is given, then workflow is stopped if
+<em>condition</em> evaluates <code class="docutils literal notranslate"><span class="pre">True</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">STOP</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.22</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>END</p></td>
+<td><p>Ends the workflow.</p></td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="pre-defined-variables">
-<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">6.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">7.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this heading">¶</a></h3>
 <p><strong>WScript</strong> has direct access to certain metrics produced by tasks through
 pre-defined variables. For example, <em>R_free</em> value produced by <em>Refmac</em> is
 assigned to variable <code class="docutils literal notranslate"><span class="pre">Rfree</span></code>.</p>
@@ -1620,11 +1638,43 @@ assigned to variable <code class="docutils literal notranslate"><span class="pre
 <td><p>Refmac</p></td>
 <td><p>Number of suggested parameters to change.</p></td>
 </tr>
+<tr class="row-odd"><td><p>N_unmerged</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of unmerged datasets given to workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_hkl</p></td>
+<td><p>Workflow, Aimless</p></td>
+<td><p>Number of merged datasets given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_hkl_anom</p></td>
+<td><p>Workflow, Aimless</p></td>
+<td><p>Number of merged datasets with anomalous signal, given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_seq</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of sequences given to workflow.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_xyz</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of molecular models given to workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_lig</p></td>
+<td><p>Workflow, MakeLigand</p></td>
+<td><p>Number of ligand files given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">MakeLigand</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>N_ligdesc</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of ligand descriptinos defined in workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p>N_lib</p></td>
+<td><p>Workflow</p></td>
+<td><p>Number of ligand libraries given to workflow.</p></td>
+</tr>
 </tbody>
 </table>
 </section>
 <section id="mathematrical-expressions-syntax">
-<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">6.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">7.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this heading">¶</a></h3>
 <p><strong>WScript</strong> allows almost full range of <em>Python</em> mathematical expressions in
 <em>LET</em> statements and conditional statements. Available functions and operators
 are listed in this section.</p>
@@ -1819,7 +1869,7 @@ are listed in this section.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>random(n)</p></td>
-<td><p>Get a random number in the range [0, n). If n is zero, or not provided, it defaults to 1.</p></td>
+<td><p>Get a random number in the range [0, n]. If n is zero, or not provided, it defaults to 1.</p></td>
 </tr>
 <tr class="row-odd"><td><p>fac(n)</p></td>
 <td><p>n! (factorial of n: “n * (n-1) * (n-2) * … * 2 * 1”) Deprecated. Use the ! operator instead.</p></td>
@@ -1905,7 +1955,7 @@ are listed in this section.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="jscofe_i1toCloud.html" title="5. Cloud Run facility in CCP4i interface"
+            <a href="jscofe_i1toCloud.html" title="6. Cloud Run facility in CCP4i interface"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -1914,17 +1964,17 @@ are listed in this section.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">5. </span>Cloud Run facility in CCP4i interface </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>Cloud Run facility in CCP4i interface </span>
               </div>
             </a>
           
           
-            <a href="jscofe_archive.html" title="7. CCP4 Cloud Archive"
+            <a href="jscofe_archive.html" title="8. CCP4 Cloud Archive"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">7. </span>CCP4 Cloud Archive </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>CCP4 Cloud Archive </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

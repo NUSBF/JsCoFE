@@ -9,6 +9,10 @@ CCP4 Cloud Version Log
 
     #. Sanity checks in ``Crank2`` task added
 
+    #. Node.js integration disabled in secondary windows in Electron
+
+    #. Last login data now persists in Electron browser
+
 
 **Version 1.8.000** 
 
