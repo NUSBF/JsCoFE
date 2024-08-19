@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    18.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -974,6 +974,18 @@ TaskCrank2.prototype.checkKeywords = function ( keywords )  {
                                            'auto-ep', 'ep', 'substructure'] );
 }
 
+TaskCrank2.prototype.getWorkflowScript = function ( serialNo )  {
+let wscript = [];
+  if (__template)
+        wscript = __template.TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  else  wscript = TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  wscript.splice ( 1,0,'    PROPERTY REVISION.HKL wtype "peak"  ' +
+                       '# "peak", "inflection", "low-remote", "high-remote"' );
+
+  return wscript;
+}
+
+
 if (!__template)  {
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
@@ -1270,7 +1282,8 @@ if (!__template)  {
           inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
           let new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
           inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
-          inputPanel.job_dialog.changeTitle ( new_title );
+          if ('job_dialog' in inputPanel)  // checking for use in Workflow Creator
+            inputPanel.job_dialog.changeTitle ( new_title );
           //this.updateInputPanel ( inputPanel );
           inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                                   job_dialog_reason.rename_node );

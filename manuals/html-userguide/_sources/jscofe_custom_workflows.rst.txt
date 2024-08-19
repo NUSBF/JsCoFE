@@ -46,26 +46,12 @@ Custom workflow can be started in one of 3 ways:
 Writing the Workflow script (WScript)
 -------------------------------------
 
-The main idea behind workflows is to automate operations when the same
-project (or branch of a project) needs to be repeated many (100s) times with 
-different input data, and **WScript** is limited to that purpose.
+The main idea behind workflows is to automate operations when the same project (or branch of a project) needs to be repeated many (100s) times with  different input data, and **WScript** is limited to that purpose.
 
-The easiest way to create a **WScript** file is through using **Workflow Creator**
-in CCP4 Cloud. Login in your account and open **Task List** in any project.
-Then open tab **Workflows**, scroll it to section **My Workflows** in the end
-and push button **Add workflow**. This will launch **Workflow Creator** window
-with a template script loaded. It makes a good sense to save the newly created
-workflow in your personal library, therefore give it a unique *Workflow ID* on 
-top of the dialog window. For easier workflow identification in **My Workflows** 
-library, you may also change the colour of the workflow icon – simply click on 
-it and choose from available options. Now you can save the script – it will
-appear in the **My Workflows** section of the **Task List**. You can run it as
-any other task now, but doing so will result in an empty **Job Dialog**, because
-we only saved a template, which does nothing.
+The easiest way to create a **WScript** file is through using **Workflow Creator** in CCP4 Cloud. Login in your account and open **Task List** in any project.
+Then open tab **Workflows**, scroll it to section **My Workflows** in the end and push button **Add workflow**. This will launch **Workflow Creator** window with a template script loaded. It makes a good sense to save the newly created workflow in your personal library, therefore give it a unique *Workflow ID* on top of the dialog window. For easier workflow identification in **My Workflows** library, you may also change the colour of the workflow icon – simply click on it and choose from available options. Now you can save the script – it will appear in the **My Workflows** section of the **Task List**. You can run it as any other task now, but doing so will result in an empty **Job Dialog**, because we only saved a template, which does nothing.
 
-Let's give it a useful content now. Click on **Edit** button on the right from 
-the just created workflow in **My Workflows**, this opens **Workflow Creator**
-again, with the previous content looking something like this: ::
+Let's give it a useful content now. Click on **Edit** button on the right from  the just created workflow in **My Workflows**, this opens **Workflow Creator** again, with the previous content looking something like this: ::
 
     #
     # * THIS IS A WORKFLOW SCRIPT TEMPLATE
@@ -149,9 +135,7 @@ again, with the previous content looking something like this: ::
     # ==========================================================================
     # Workflow run body
 
-In **WScript** lines, everything on the right from the hash "#" sign is a comment
-and may be safely deleted. Perhaps you may want to delete first few lines from
-the template, but in general, the more comments you make in the script, the more 
+In **WScript** lines, everything on the right from the hash "#" sign is a comment and may be safely deleted. Perhaps you may want to delete first few lines from the template, but in general, the more comments you make in the script, the more 
 understandable and maintainable it is. You can use spaces to your aesthetic 
 preferences; where there must be a space separator, any number of spaces can be
 used. 
@@ -342,10 +326,7 @@ Conditional statements and other advanced operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 At the moment, our molrep workflow is quite straightforward in respect to its 
-input data and algorithm. We may wish to make it more flexible. For example,
-it would be good if can take both merged and unmerged reflection data on input,
-optimize refinement parameters and, optionally, prepare file for PDB deposition
-from best results achieved.
+input data and algorithm. We may wish to make it more flexible. For example, it would be good if you can take both merged and unmerged reflection data on input, optimize refinement parameters and, optionally, prepare file for PDB deposition from the best results achieved.
 
 **Conditions based on availability of data**
 
@@ -455,10 +436,7 @@ will be chosen. To see this, append another task, such as
 
 **Workflow parameters**
 
-Supose no that we want to introduce workflows parameters, which a user could
-manioulate with as in any other task. For example, let user to set a
-resolution cut-off in *Aimless* and decide whether to run *Buccaneer* task.
-For this, add input of real-number parameter and a checkbox in
+Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in **Aimless** and decide whether to run the **Buccaneer** task. For this, add input of real-number parameter and a checkbox in
 :ref:`wscript_reference_input_parameters`: ::
 
     # ==========================================================================
@@ -629,7 +607,7 @@ Custom Workflow Library
 -----------------------
 
 CCP4 Cloud comes with a library of custom workflows, which give **WScript** 
-examples for few typiucal scenarios. They can be also used as templates for
+examples for few typical scenarios. They can be also used as templates for
 your own developments. Just open **Workflow Creator**, push **Library**
 button and select a suitable **WScript**. It can be further modified to your
 needs as any text file.
@@ -649,13 +627,13 @@ separators are not used; **WScript** recognises sections automatically. Only
 
 All **WScript** **statements** occupy a single line. Statements start with a 
 case-insensitive primary key, which may be followed by additional case-insensitive
-key(s) and values. Any number of consequuitive spaces is equivalent to one space,
+key(s) and values. Any number of consecutive spaces is equivalent to one space,
 except when these spaces occur in string-type values. Part of line starting
 from hash sign "#" is considered as a comment and is ignored; empty lines are
 ignored, too.
 
 Some **WScript** constructs are made of several statements, which must be
-placed on consequitive lines (comments and empty lines ignored). Such constructs
+placed on consecutive lines (comments and empty lines ignored). Such constructs
 have mandatory leading and trailing statements, other statements can be placed
 in arbitrary order.
 
@@ -752,7 +730,7 @@ Header section comes first in **WScript** and cannot be empty.
        instead of object selection widgets when workflow task is invoked from
        the root of **Job Tree**. This keyword should not be used if workflow
        cannot be run from the root (for example, if it uses *Structure Revision* 
-       as one input data type.
+       as one input data type).
 
 
 .. _wscript_reference_input_data:
@@ -786,7 +764,7 @@ where the ``TYPES`` part is optional.
    * - SEQ
      - Macromolecular sequence
    * - LIBRARY
-     - Crystallographic restraints library for non-standard residues and
+     - Crystallographic restraints' library for non-standard residues and
        ligands not found in CCP4 Monomer Library
    * - LIGAND
      - Ligand descriptions for fitting in electron density. This will create
@@ -804,10 +782,10 @@ where the ``TYPES`` part is optional.
      - Reflection dataset with anomalous scattering
    * - protein
      - Structure coordinates or sequence corresponding to an amino acid chain
-   * - rna
+   * - RNA
      - Structure coordinates or sequence corresponding to a ribonucleic acid
        chain
-   * - dna
+   * - DNA
      - Structure coordinates or sequence corresponding to a deoxyribonucleic
        acid chain
 
@@ -834,8 +812,8 @@ Input parameters section
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Input parameters section is optional. If used, it must follow
-:ref:`wscript_reference_input_data`. The section is made of prinicpal
-statements ``PAR_*`` or ``!PAR_*`` followed by their specificators. The leading 
+:ref:`wscript_reference_input_data`. The section is made of principal
+statements ``PAR_*`` or ``!PAR_*`` followed by their specifications. The leading 
 exclamation mark means that user's input is mandatory and the corresponding
 parameter cannot have a default value. On contrary, ``PAR_*`` statements must 
 have a default parameter specified. The exclamation mark cannot be applied in
@@ -874,13 +852,13 @@ default value.
    * - PAR_COMBO
      - variable's name
      - Creates graphical widget for combobox input. The input (value associated
-       with the seleted combobox item) is assigned to internal workflow variable
+       with the selected combobox item) is assigned to internal workflow variable
        with specified name, which is created automatically. PAR_COMBO cannot be
        preceded with the exclamation sign, and it always has a default value
        (first item if not specified).
 
 
-.. list-table:: Input parameters specificators
+.. list-table:: Input parameters specifications
    :widths: 8 8 8 76
    :header-rows: 1
 
@@ -914,7 +892,7 @@ default value.
      - Minimum and maximum acceptable values for ``PAR_INTEGER`` and
        ``PAR_REAL`` widgets, space-separated. If only one limit should be used,
        the other limit should be represented by asterisk ``*``. For example,
-       ``RANGE  1 *`` means that value cannot be less then 1 but no upper limit.
+       ``RANGE  1 *`` means that value cannot be less than 1 but no upper limit.
    * - OPTION
      - word and string
      - yes
@@ -1096,16 +1074,41 @@ statements is provided.
 
            branch @DENSITY_MODIFICATION[hand0]
 
-       Branching may be subject to condition, evaluated to *True*::
+       Branching may be subject to *condition*, evaluated to *True*::
 
            branch @MODEL_BUILDING-2 if Rfree>0.4
 
+   * - continue @RUN_NAME [if *condition*]
+     - Instruction to continue the workflow from the specified task, for example: ::
+
+           continue @REFINEMENT
+
+       continuation may be subject to *condition*, evaluated to *True*::
+
+           continue @REFINEMENT if Rfree>0.4
+
    * - PRINT_VAR
      - Prints current values of all workflow variables in CCP4 Cloud task's log
-       file.
+       file. example: ::
 
-   * - END or STOP
-     - Stops the workflow.
+           PRINT_VAR  Rfactor
+
+   * - checkTask(name)
+     - Queries task availability and assignes ``True/False`` to variable
+       ``name_available``, for example: ::
+
+           checkTask(StructurePrediction)
+           PRINT_VAR   StructurePrediction_available
+           continue  @AUTO_MR if not StructurePrediction_available 
+
+   * - STOP [if *condition*]
+     - Stops the workflow. If condition is given, then workflow is stopped if
+       *condition* evaluates ``True``, for example: ::
+
+           STOP if Rfree<0.22
+
+   * - END
+     - Ends the workflow.
 
 
 .. _wscript_reference_predefined_variables:
@@ -1140,6 +1143,30 @@ assigned to variable ``Rfree``.
    * - suggested
      - Refmac
      - Number of suggested parameters to change.
+   * - N_unmerged
+     - Workflow
+     - Number of unmerged datasets given to workflow.
+   * - N_hkl
+     - Workflow, Aimless
+     - Number of merged datasets given to workflow or produced by ``Aimless``.
+   * - N_hkl_anom
+     - Workflow, Aimless
+     - Number of merged datasets with anomalous signal, given to workflow or produced by ``Aimless``.
+   * - N_seq
+     - Workflow
+     - Number of sequences given to workflow.
+   * - N_xyz
+     - Workflow
+     - Number of molecular models given to workflow.
+   * - N_lig
+     - Workflow, MakeLigand
+     - Number of ligand files given to workflow or produced by ``MakeLigand``.
+   * - N_ligdesc
+     - Workflow
+     - Number of ligand descriptinos defined in workflow.
+   * - N_lib
+     - Workflow
+     - Number of ligand libraries given to workflow.
 
 
 .. _wscript_reference_expression_syntax:
@@ -1278,7 +1305,7 @@ are listed in this section.
    * - Function
      - Description
    * - random(n)
-     - Get a random number in the range [0, n). If n is zero, or not provided, it defaults to 1.
+     - Get a random number in the range [0, n]. If n is zero, or not provided, it defaults to 1.
    * - fac(n)
      - n! (factorial of n: "n * (n-1) * (n-2) * … * 2 * 1") Deprecated. Use the ! operator instead.
    * - min(a,b,…)

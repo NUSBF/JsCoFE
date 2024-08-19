@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.06.24   <--  Date of Last Modification.
+#    09.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -278,7 +278,7 @@ class Import(basic.TaskDriver):
                 self.task.autoRunName = "@ROOT"   # step identifier
                 self.flush()
 
-                if auto_workflow.nextTask ( self,{
+                rc = auto_workflow.nextTask ( self,{
                         "data" : {
                             "unmerged" : self.unm,
                             "hkl"      : self.hkl,
@@ -289,12 +289,14 @@ class Import(basic.TaskDriver):
                             "ligdesc"  : self.ligdesc
                         },
                         "variables" : variables
-                   }):
+                     })
+                if rc.startswith("error"):
+                    ilist += "Workflow (1) -- start failed"
+                    self.putMessage ( "<h3><i>Workflow start failed</i></h3>" )
+                elif rc=="ok":
                     ilist += "Workflow (1) -- started"
                     self.putMessage ( "<h3>Workflow [" + self.task.autoRunId +\
                                       "] started</h3>" )
-                else:
-                    ilist += "Workflow (1) -- start failed"
 
             if ilist:
                 self.generic_parser_summary["import_task"] = {

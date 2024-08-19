@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    10.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2024
 #
 # ============================================================================
 #
@@ -287,10 +287,18 @@ class Aimless(basic.TaskDriver):
 
             if self.task.autoRunName.startswith("@"):
                 # scripted workflow framework
+                variables = {
+                    "N_hkl"      : len(hkl),
+                    "N_hkl_anom" : 0
+                }
+                for i in range(len(hkl)):
+                    if hkl[i].isAnomalous():
+                        variables["N_hkl_anom"] += 1
                 auto_workflow.nextTask ( self,{
                     "data"  : {
-                        "hkl"   : hkl
-                    }
+                        "hkl" : hkl,
+                    },
+                    "variables" : variables
                 })
                 # self.putMessage ( "<h3>Workflow started</hr>" )
             else:
@@ -302,6 +310,8 @@ class Aimless(basic.TaskDriver):
 
         else:
             self.file_stdout.write ( "Aimless failed, see above." )
+            if self.task.autoRunName.startswith("@"):
+                self.putMessage ( "<h3>Workflow stopped</h3>" )
             self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",
                         "Aimless_Failed" )
 
