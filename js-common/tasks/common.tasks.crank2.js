@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    18.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -973,6 +973,18 @@ TaskCrank2.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['crank2','experimental', 'phasing',
                                            'auto-ep', 'ep', 'substructure'] );
 }
+
+TaskCrank2.prototype.getWorkflowScript = function ( serialNo )  {
+let wscript = [];
+  if (__template)
+        wscript = __template.TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  else  wscript = TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  wscript.splice ( 1,0,'    PROPERTY REVISION.HKL wtype "peak"  ' +
+                       '# "peak", "inflection", "low-remote", "high-remote"' );
+
+  return wscript;
+}
+
 
 if (!__template)  {
 

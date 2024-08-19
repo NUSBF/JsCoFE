@@ -90,152 +90,163 @@ def nextTask ( body,data,log=None ):
 
         crTask = body.task
 
-        if crTask.autoRunId: # else workflow does not run
+        if not crTask.autoRunId: # else workflow does not run
+          report ( body,"Workflow finished","<i>Current task could not be identified. " +\
+                        "Script may be incomplete or suspect a bug.</i>",
+                        "workflow finishes here (no instructions in the script?)." )
+          return "no current task"
 
-            if log:
-                auto_api2.setLog ( log )
-            else:
-                auto_api2.setLog ( body.file_stdout1 )
-            auto_api2.initAutoMeta()
+        if log:
+            auto_api2.setLog ( log )
+        else:
+            auto_api2.setLog ( body.file_stdout1 )
+        auto_api2.initAutoMeta()
 
-            # make comment-less copy of the script
-            version = "1.0"
-            script  = []
-            for i in range(len(crTask.script)):
-                line = crTask.script[i].strip()
-                if "#" in line:
-                    line = line[:line.index("#")].strip()
-                script.append ( line )
-                words = line.split()
-                if len(words)>=2:
-                    if words[0].upper()=="VERSION":
-                        version = words[1]
-                        auto_api2.log_line ( i+1,crTask.script[i] )
-                    elif words[0].upper()=="DEBUG":
-                        auto_api2.setDebugOutput ( words[1].upper()=="ON" )
-                        auto_api2.log_line ( i+1,crTask.script[i] )
-                    elif words[0].upper()=="COMMENTS":
-                        auto_api2.setCommentsOutput ( words[1].upper()=="ON" )
-                        auto_api2.log_line ( i+1,crTask.script[i] )
-            auto_api2.log_message ( " " )
+        # make comment-less copy of the script
+        version = "1.0"
+        script  = []
+        for i in range(len(crTask.script)):
+            line = crTask.script[i].strip()
+            if "#" in line:
+                line = line[:line.index("#")].strip()
+            script.append ( line )
+            words = line.split()
+            if len(words)>=2:
+                if words[0].upper()=="VERSION":
+                    version = words[1]
+                    auto_api2.log_line ( i+1,crTask.script[i] )
+                elif words[0].upper()=="DEBUG":
+                    auto_api2.setDebugOutput ( words[1].upper()=="ON" )
+                    auto_api2.log_line ( i+1,crTask.script[i] )
+                elif words[0].upper()=="COMMENTS":
+                    auto_api2.setCommentsOutput ( words[1].upper()=="ON" )
+                    auto_api2.log_line ( i+1,crTask.script[i] )
+        auto_api2.log_message ( " " )
 
-            # prepare citation lists for passing down the project tree; this
-            # must be done here because in general framework, citations are
-            # put in place when task finishes
+        # prepare citation lists for passing down the project tree; this
+        # must be done here because in general framework, citations are
+        # put in place when task finishes
 
-            body._add_citations ( citations.citation_list )
-            for key in data:
-                if hasattr(data[key],"citations"):
-                    data[key].citations = body.citation_list
+        body._add_citations ( citations.citation_list )
+        for key in data:
+            if hasattr(data[key],"citations"):
+                data[key].citations = body.citation_list
 
-            # initialize workflow variables
-            w = {}
+        # initialize workflow variables
+        w = {}
 
-            # get workflow data from context
-            wdata = auto_api2.getContext ( "input_data" )
-            if not wdata:
-                wdata = {
-                    "variables" : w
-                }
-            else:
-                w = wdata["variables"]
+        # get workflow data from context
+        wdata = auto_api2.getContext ( "input_data" )
+        if not wdata:
+            wdata = {
+                "variables" : w
+            }
+        else:
+            w = wdata["variables"]
 
-            # add variables from task output
-            if "variables" in data:
-                for v in data["variables"]:
-                    w[v] = data["variables"][v]
+        # add variables from task output
+        if "variables" in data:
+            for v in data["variables"]:
+                w[v] = data["variables"][v]
 
-            if "data" in data:
-                ddata = data["data"]
-                for d in ddata:
-                    if len(ddata[d])>0:  # and d!="revision":
-                        if not d in wdata:
-                            wdata[d] = []
-                        for obj in ddata[d]:
-                            if obj:
-                                if type(obj) == dict:
-                                    wdata[d].append ( obj )
-                                else:
-                                    wdata[d].append ( json.loads ( obj.to_JSON() ) )
+        if "data" in data:
+            ddata = data["data"]
+            for d in ddata:
+                if len(ddata[d])>0:  # and d!="revision":
+                    if not d in wdata:
+                        wdata[d] = []
+                    for obj in ddata[d]:
+                        if obj:
+                            if type(obj) == dict:
+                                wdata[d].append ( obj )
+                            else:
+                                wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
-            # update scores and put them in variables 
-            scores = auto_api2.getContext ( "scores" )
-            if not scores:
-                scores = {}
-            if "scores" in data:
-                for key in data["scores"]:
-                    scores[key] = data["scores"][key]
-                auto_api2.addContext ( "scores",scores )
-            for key in scores:
-                w[key] = scores[key]
+        # update scores and put them in variables 
+        scores = auto_api2.getContext ( "scores" )
+        if not scores:
+            scores = {}
+        if "scores" in data:
+            for key in data["scores"]:
+                scores[key] = data["scores"][key]
+            auto_api2.addContext ( "scores",scores )
+        for key in scores:
+            w[key] = scores[key]
 
-            # update suggestions
-            suggestedParameters = auto_api2.getContext ( "suggestedParameters" )
-            w["suggested"] = 0
-            if not suggestedParameters:
-                suggestedParameters = {}
-            if "suggestedParameters" in data:
-                for key in data["suggestedParameters"]:
-                    suggestedParameters[key] = data["suggestedParameters"][key]
-                    w["suggested"] = w["suggested"] + len(data["suggestedParameters"][key])
-                auto_api2.addContext ( "suggestedParameters",suggestedParameters )
+        # update suggestions
+        suggestedParameters = auto_api2.getContext ( "suggestedParameters" )
+        w["suggested"] = 0
+        if not suggestedParameters:
+            suggestedParameters = {}
+        if "suggestedParameters" in data:
+            for key in data["suggestedParameters"]:
+                suggestedParameters[key] = data["suggestedParameters"][key]
+                w["suggested"] = w["suggested"] + len(data["suggestedParameters"][key])
+            auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
-            rev_list = [] 
-            revision = None
+        rev_list = [] 
+        revision = None
 
-            # take revision from data passed by task that just finished and
-            # requests formation of next task in the workflow
-            if "data" in data:
-                cdata = data["data"]
-                if "revision" in cdata and len(cdata["revision"])>0:
-                    rev_list = cdata["revision"]
-                    for i in range(len(rev_list)):
-                        rev_list[i] = rev_list[i].to_dict()
-                    revision = rev_list[0]
-                    wdata["revision.hkl"] = [revision["HKL"]]
-
-            # if revision was not produced by taks that just finished, try
-            # finding revision in upstream data
-            if not revision and "revision" in wdata  and len(wdata["revision"])>0:
-                revision = wdata["revision"][0]
+        # take revision from data passed by task that just finished and
+        # requests formation of next task in the workflow
+        if "data" in data:
+            cdata = data["data"]
+            if "revision" in cdata and len(cdata["revision"])>0:
+                rev_list = cdata["revision"]
+                for i in range(len(rev_list)):
+                    rev_list[i] = rev_list[i].to_dict()
+                revision = rev_list[0]
                 wdata["revision.hkl"] = [revision["HKL"]]
 
-            # parse the script
+        # if revision was not produced by taks that just finished, try
+        # finding revision in upstream data
+        if not revision and "revision" in wdata  and len(wdata["revision"])>0:
+            revision = wdata["revision"][0]
+            wdata["revision.hkl"] = [revision["HKL"]]
 
-            eval_parser   = Parser()  # algebraic parser
+        # parse the script
+
+        eval_parser   = Parser()  # algebraic parser
+
+        nextTaskType  = None
+        nextRunName   = None
+        lno           = crTask.script_pointer
+        parameters    = {}  # task parameters
+        aliases       = {}  # data aliasess
+        tdata         = {}  # specific task data from context
+        use_suggested_parameters = False
+        repeat_mode   = ""  # no task repeat mode (default)
+        parse_error   = ""
+
+        # identify runs where project loops or branches
+        branch_points = []
+        for line in script:
+            words = line.split()
+            if len(words)>=2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
+                branch_points.append ( words[1].split("[")[0] )
+        auto_api2.log_debug ( "branch_points=" + str(branch_points) )
+
+        parentRunName = crTask.autoRunName
+        if parentRunName.split("[")[0] in branch_points:
+            auto_api2.addContext ( parentRunName + "_outdata",{
+                "rev_list" : rev_list,
+                "wdata"    : wdata
+            })
+
+        if lno<=0:
+            # scroll script to the first workflow key
+            lno,key = scrollToWorkflowDesc ( script )
+            # if key and len(key)<2:
+            #     parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
+
+        parallel = 0       # >0 for tasks running in parallel, controlled in "flow"
+        scope    = "flow"  # "run" for in-run statememts
+
+        while parallel!=1 and lno<len(script):
 
             nextTaskType  = None
             nextRunName   = None
-            lno           = crTask.script_pointer
-            parameters    = {}  # task parameters
-            aliases       = {}  # data aliasess
-            tdata         = {}  # specific task data from context
-            use_suggested_parameters = False
-            repeat_mode   = ""  # no task repeat mode (default)
-            parse_error   = ""
-
-            # identify runs where project loops or branches
-            branch_points = []
-            for line in script:
-                words = line.split()
-                if len(words)>=2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
-                    branch_points.append ( words[1].split("[")[0] )
-            auto_api2.log_debug ( "branch_points=" + str(branch_points) )
- 
-            parentRunName = crTask.autoRunName
-            if parentRunName.split("[")[0] in branch_points:
-                auto_api2.addContext ( parentRunName + "_outdata",{
-                    "rev_list" : rev_list,
-                    "wdata"    : wdata
-                })
-
-            if lno<=0:
-                # scroll script to the first workflow key
-                lno,key = scrollToWorkflowDesc ( script )
-                # if key and len(key)<2:
-                #     parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
-
-            scope = "flow"
+            scope         = "flow"
 
             while lno<len(script) and not nextTaskType and not parse_error:
 
@@ -389,14 +400,28 @@ def nextTask ( body,data,log=None ):
                                         auto_api2.log_comment ( "condition : " + str(condition) )
                                     except:
                                         parse_error = "incomputable expression \"" +\
-                                                    expr + "\""
+                                                      expr + "\""
                                 else:
                                     parse_error = "unparseable statement"
                             else:
-                              parse_error = "stop"  # just sinal end of play
+                                parse_error = "stop"  # just sinal end of play
 
                         elif w0u=="END":
                             parse_error = "end"  # just sinal end of play
+
+                        elif w0u=="PARALLEL":  # used for specifying destination in "continue"
+                            if nwords>=2:
+                                if words[1].upper()=="ON":
+                                    parallel = max ( 1,parallel )
+                                elif words[1].upper()=="OFF":
+                                    if parallel>1:  # some tasks have been formed
+                                        auto_api2.writeAutoMeta()
+                                        return "ok"
+                                    parallel = 0  # no tasks formed, just reset
+                                else:
+                                    parse_error = "invalid key in \"parallel\""
+                            else:
+                                parse_error = "no key in \"parallel\""
 
                         elif w0u!="POINT":  # used for specifying destination in "continue"
                             parse_error = "statement " + w0u + " out of scope " + str(scope)
@@ -456,7 +481,7 @@ def nextTask ( body,data,log=None ):
                             else:
                                 p = " ".join(words[2:]).strip()
                                 if (p.startswith('"') and p.endswith('"')) or\
-                                   (p.startswith("'") and p.endswith("'")):
+                                  (p.startswith("'") and p.endswith("'")):
                                     parameters[words[1]] = p[1:len(p)-1]
                                 else:
                                     try:
@@ -476,7 +501,7 @@ def nextTask ( body,data,log=None ):
                                 else:
                                     p = " ".join(words[3:]).strip()
                                     if (p.startswith('"') and p.endswith('"')) or\
-                                       (p.startswith("'") and p.endswith("'")):
+                                      (p.startswith("'") and p.endswith("'")):
                                         wdata[dtype][0][words[2]] = p[1:len(p)-1]
                                     else:
                                         try:
@@ -543,12 +568,12 @@ def nextTask ( body,data,log=None ):
 
             if parse_error=="end":
                 report ( body, "Workflow finished","<i>Ended normally.</i>",
-                               "workflow finishes here." )
+                              "workflow finishes here." )
                 return "finished"
 
             if parse_error=="stop":
                 report ( body, "Workflow finished","<i>Stopped by instruction",
-                               "workflow stopped by instruction." )
+                              "workflow stopped by instruction." )
                 return "finished"
 
             if parse_error:
@@ -654,17 +679,16 @@ def nextTask ( body,data,log=None ):
                 auto_api2.addContext ( "input_data",wdata )
 
                 auto_api2.noteTask ( runName )
-                auto_api2.writeAutoMeta()
-                return "ok"
+                if parallel>0:
+                    parallel += 1
+                else:
+                    auto_api2.writeAutoMeta()
+                    return "ok"
 
-            report ( body, "Workflow finished","<i>End of script</i>",
-                           "workflow finishes here (end of script)." )
-            return "no task"
+        report ( body, "Workflow finished","<i>End of script</i>",
+                      "workflow finishes here (end of script)." )
+        return "no task"
         
-        report ( body,"Workflow finished","<i>Current task could not be identified. " +\
-                      "Script may be incomplete or suspect a bug.</i>",
-                      "workflow finishes here (no instructions in the script?)." )
-        return "no current task"
 
     except Exception as inst:
         body.stderrln ( str(type(inst)) )  # the exception instance
