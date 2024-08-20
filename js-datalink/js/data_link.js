@@ -14,7 +14,8 @@ const SOURCES_DIR = path.join(__dirname, 'sources');
 const DATA_SOURCES = [
   'pdbj',
   'sbgrid',
-  'irrmc'
+  'irrmc',
+  'zenodo'
 ]
 
 const GB = 1000000000;
