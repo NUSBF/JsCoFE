@@ -173,14 +173,14 @@ def makeTestProject(driver, testProjectID, testProjectName):
     projectInputs[1].send_keys(testProjectName)
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert'):
-        time.sleep(1)
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Standard')
-    time.sleep(1)
+    # if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert'):
+    #     time.sleep(1)
+    #     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Standard')
+    # time.sleep(1)
 
 
     # Now there are two 'Add' buttons and we want to click second one
-    addButtons = driver.find_elements_by_xpath("//button[contains(text(),'Add')]")
+    addButtons = driver.find_elements_by_xpath("//button[contains(text(),'Add Project')]")
     addButtons[-1].click()
 
     return()
