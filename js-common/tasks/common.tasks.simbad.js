@@ -387,10 +387,10 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var path  = require('path');
-  var fs    = require('fs-extra');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  const path  = require('path');
+  const fs    = require('fs-extra');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
 
   TaskSimbad.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,

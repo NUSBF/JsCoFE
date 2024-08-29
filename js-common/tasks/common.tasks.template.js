@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.08.24   <--  Date of Last Modification.
+ *    28.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -3237,6 +3237,7 @@ if (!dbx)  {
 } else  {
   //  for server side
 
+  const os      = require('os');
   const fs      = require('fs-extra');
   const path    = require('path');
 
@@ -3489,7 +3490,12 @@ if (!dbx)  {
   // given on input to this function; not doing so may cause cluttering 
   // of the CPU cluster with processes that queuing system is not aware of
   // and, as a result, unbalanced and inefficient use of compute nodes.
+
+    // if (conf.getServerConfig().localSetup)
+    //   return os.cpus().length;
+    
     return 1;
+
   }
 
   TaskTemplate.prototype.getNProcesses = function ( nproc_available )  {
@@ -3503,7 +3509,12 @@ if (!dbx)  {
   // submits additional processes in the queue with master process acting as a
   // watcher/dispatcher, this function returns at least 2 processes to be 
   // reserved by the queue. Most tasks should not reimplement this function.
+
+    // if (conf.getServerConfig().localSetup)
+    //   return os.cpus().length;
+ 
     return 1;
+  
   }
 
   TaskTemplate.prototype.getCommandLine = function ( jobManager,jobDir )  {
