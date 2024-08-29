@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.08.24   <--  Date of Last Modification.
+ *    29.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,7 @@
 'use strict';
 
 //  load system modules
+const os        = require('os');
 const fs        = require('fs-extra');
 const path      = require('path');
 const http      = require('http');
@@ -158,12 +159,12 @@ let pid     = utils.readString ( pidfile );
 
 ServerConfig.prototype.calcCPUCapacity = function()  {
 
-  this.maxNCores = 16;
+  this.maxNCores = os.cpus().length;
   if ('cpu_cores' in this)
     this.maxNCores = this.cpu_cores;
   if ('max_ncores' in this)
-    this.maxNCores = Math.min(this.maxNCores,this.max_nproc);
-  else if (this.exeType!='CLIENT')
+    this.maxNCores = Math.min(this.maxNCores,this.max_ncores);
+  else if ((this.exeType!='CLIENT') && (!this.localSetup))
     this.maxNCores = Math.floor ( this.maxNCores/4 );
   this.maxNCores = Math.max(1,this.maxNCores);
   
@@ -677,10 +678,10 @@ function CCP4DirName()  {
       "stoppable"        : false,
       "rejectUnauthorized" : true, // [optional] use only for debugging, see docs
       "fsmount"          : "/",
-      "localSetup"       : true,  // [optional] overrides automatic definition
+      "localSetup"       : true,  // [optional] overrides automatic definition, allows all CPU cores when local
       "capacity"         : 4,     // number of tasks/jobs a queue can run a time
       "max_nproc"        : 3,     // [optional] maximal number of jobs a task can spawn simultaneously
-      "cpu_cores"        : 16,    // [optional] number of cores per compute node
+      "cpu_cores"        : 16,    // [optional] number of cores per compute node as per hardware specs
       "max_ncores"       : 4,     // [optional] maximal number of cores a task can use
       "exclude_tasks"    : [],
       "only_tasks"       : [],
