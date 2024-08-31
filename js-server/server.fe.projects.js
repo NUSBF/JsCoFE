@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.24   <--  Date of Last Modification.
+ *    31.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -780,27 +780,6 @@ let erc            = '';
 let projectDirPath = getProjectDirPath ( loginData,projectName );
 let pData          = readProjectData ( loginData,projectName );
 
-  // function _delete_project()  {
-
-  //   // subtract project disck space from user's ration
-  //   ration.updateProjectStats ( loginData,projectName,0.0,
-  //                               -pData.desc.disk_space,0,true );
-
-  //   utils.removePath ( projectDirPath );
-
-  //   ration.maskProject ( loginData,projectName );
-
-  //   if (utils.fileExists(projectDirPath))
-  //     erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
-  //               'CCP4 Remove Project Directory Fails',
-  //               'Detected removePath failure at deleting project directory, ' +
-  //               'please investigate.' );
-
-  //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-  //   // clearJobs() only to decrease the amount of transmitted data
-
-  // }
-
   // maintain share lists
   if (pData && (pData.desc.owner.login==loginData.login))  {
     // project can be deleted only by owner or keeper; shared projects can be only
@@ -810,16 +789,6 @@ let pData          = readProjectData ( loginData,projectName );
 
     // remove it from all shares
     unshare_project ( pData.desc.share );
-    // for (let shareLogin in pData.desc.share)  {
-    //   let uLoginData = user.getUserLoginData ( shareLogin );
-    //   if (uLoginData)  {
-    //     let pShare = readProjectShare ( uLoginData );
-    //     pShare.removeShare ( pData.desc );
-    //     writeProjectShare  ( uLoginData,pShare );
-    //   }
-    // }
-
-    // _delete_project();
     rdata.ration = delete_project ( loginData,projectName,pData.desc.disk_space,
                                     projectDirPath);
 
