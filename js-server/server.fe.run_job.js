@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.08.24   <--  Date of Last Modification.
+ *    31.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1958,16 +1958,6 @@ function cloudRun ( server_request,server_response )  {
         }
 
       }
-
-      // remove uploaded job directory if it was not used
-      // if (tmpJobDir)
-      //   utils.removePath ( tmpJobDir );
-
-      // send response to sender
-
-      // if (!response)
-      //   response = new cmd.Response ( cmd.fe_retcode.errors,
-      //                      'cloudRun task could not be formed or started',{} );
 
       if (response)  {
         //  cloudRun did not start, clean up and respond
