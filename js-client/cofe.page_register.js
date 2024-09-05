@@ -254,7 +254,7 @@ function RegisterPage ( sceneId )  {
                 new MessageBoxW ( 'Registration',response.data,0.5 );
             else
                 new MessageBox ( 'Registration',
-                  'Dear ' + ud.name +
+                  '<div style="width:500px;">Dear ' + ud.name +
                   ',<p>You are now registered for ' + appName() + ' with ' +
                   'login name<p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>' +
                   ud.login + '</i></b>.' +
@@ -266,8 +266,12 @@ function RegisterPage ( sceneId )  {
                   '<li>Check your Spam folder</li>' +
                   '<li><b>Do not register again!</i> Instead, use the ' +
                   '<i>"Forgotten password"</i> option</li>' +
-                  '<li>Write to CCP4 if recovering your account is not successful ' +
-                  'after several attempts.</li></ol>', 'msg_information' );
+                  '<li>Write to ' + appName() + ' server maintainer at<p>' +
+                  '<a href="mailto:' + __maintainerEmail +
+                      '?Subject=' + appName() + '%20Account recovery">' +
+                       __maintainerEmail +
+                  '</a> if recovering your account is not successful ' +
+                  'after several attempts.</li></ol></div>', 'msg_information' );
             return true;
 
           case fe_retcode.existingLogin:
