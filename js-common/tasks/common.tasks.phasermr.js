@@ -397,7 +397,7 @@ function TaskPhaserMR()  {
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '7',      // value to be paired with the keyword
+                    value    : '10',      // value to be paired with the keyword
                     position : [1,3,1,1], // [row,col,rowSpan,colSpan]
                     showon   : {PACK_SEL:['PERCENT']}
                   },
