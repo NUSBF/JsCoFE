@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    05.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,8 +57,8 @@ function SendToAllDialog()  {
                   'received. For any questions, please contact ' + appName() +
                   ' maintainer at ' +
                   '<a href="mailto:' + __maintainerEmail +
-                    '?Subject=' + encodeURI(appName()) + '%20Question">' +
-                     __maintainerEmail +
+                    '?Subject=' + encodeURIComponent(appName()+' Question') + 
+                    '">' + __maintainerEmail +
                   '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
                   row++,col,1,3 );
 
