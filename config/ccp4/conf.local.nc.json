@@ -54,8 +54,8 @@
   ],
   "Emailer" : {
     "type"            : "nodemailer",
-    "emailFrom"       : "CCP4 on-line <ccp4.cofe@gmail.com>",
-    "maintainerEmail" : "ccp4.cofe@gmail.com",
+    "emailFrom"       : "CCP4 on-line <ccp4@ccp4.ac.uk>",
+    "maintainerEmail" : "ccp4@ccp4.ac.uk",
     "host"            : "smtp.gmail.com",
     "port"            : 465,
     "secure"          : true,
