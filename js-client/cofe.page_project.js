@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.09.24   <--  Date of Last Modification.
+ *    03.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1257,9 +1257,6 @@ ProjectPage.prototype.onTreeItemSelect = function()  {
 
 ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   // blink==true will force page blinking, for purely aesthatic reasons
-  // blink mode causes exception if there are minimised job dialogs before 
-  // blinking. Therefore, commented out as below. The blink is still
-  // noticeable in the tree widget and the toolbar.
 
   if (this.jobTree && this.jobTree.parent && this.can_reload)  {
 
@@ -1271,7 +1268,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
     let jobTree1  = this.makeJobTree();
     let timestamp = this.jobTree.projectData.desc.timestamp;
     if (blink)  {
-      // this.jobTree.closeAllJobDialogs();
+      this.jobTree.closeAllJobDialogs();
       this.jobTree.hide();
       timestamp = -1; // force reload
     } else  {
@@ -1302,11 +1299,11 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               self.jobTree.selectTasks ( selTasks );
               self.jobTree.show ();
               self.jobTree.parent.setScrollPosition ( scrollPos );
-              // if (!blink)  {
+              if (!blink)  {
                 self.jobTree.relinkJobDialogs ( dlg_map,self );
-              // } else  {
-              //   self.jobTree.openJobs ( dlg_task_parameters,self );
-              // }
+              } else  {
+                self.jobTree.openJobs ( dlg_task_parameters,self );
+              }
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );
                 if ('completed_map' in rdata)
