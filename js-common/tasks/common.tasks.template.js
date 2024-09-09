@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.09.24   <--  Date of Last Modification.
+ *    09.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -601,7 +601,7 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
             ' maintainer at<br>' +
                 '<a href="mailto:' + maintainerEmail +
                   '?Subject=' + 
-                    encodeURIComponent(cmd.appName()+' Secure connection') +
+                    encodeURIComponent(app_name+' Secure connection') +
                   '">' + maintainerEmail +
                 '</a>.'];
   }
