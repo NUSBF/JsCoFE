@@ -729,7 +729,7 @@ function CCP4DirName()  {
       "fasttrack"        : 1,
       "storage"          : "./cofe-client-storage",
       "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
-      "exeType"          : "CLIENT",
+      "exeType"          : "CLIENT", // can be also "REMOTE"
       "exeData"          : "",       // mandatory
       "exeData_GPU"      : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"   : 2000,
