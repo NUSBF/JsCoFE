@@ -131,7 +131,7 @@ if (!__template)  {
               'task software is not installed on ' + appName() + ' server',
               '<div style="width:400px;"><h3>Task software is not installed</h3>' +
               'Data push framework is not installed on ' +  appName() + 
-              'server.<p>Contact server maintainer for further details.</div>'];
+              ' server.<p>Contact server maintainer for further details.</div>'];
 
   }
 
