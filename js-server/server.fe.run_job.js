@@ -595,14 +595,17 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       // prepare input data
       task.makeInputData ( loginData,jobDir );
 
-      let nc_url = conf.getNCConfig(nc_number).externalURL;
+      let nc_cfg = conf.getNCConfig(nc_number);
+      let nc_url = nc_cfg.externalURL;
       let uData  = user.readUserData ( loginData );
       let meta   = {};
       meta.setup_id  = conf.getSetupID();
-      meta.nc_name   = conf.getNCConfig(nc_number).name;
+      meta.nc_name   = nc_cfg.name;
       meta.user_id   = loginData.login;
       meta.feedback  = ud.feedback_code.decline;
       meta.user_name = '';
+      // results may be pushed back to FE or pulled by FE in case of remote NC 
+      meta.push_back = (nc_cfg.exeType.toUpperCase()!='REMOTE');
       meta.email     = '';
       if (uData)  {
         meta.feedback = uData.feedback;

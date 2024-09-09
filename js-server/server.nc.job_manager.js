@@ -1015,6 +1015,7 @@ function ncRunJob ( job_token,meta )  {
   jobEntry.feedback  = meta.feedback;
   jobEntry.user_name = meta.user_name;
   jobEntry.email     = meta.email;
+  jobEntry.push_back = meta.push_back;
   writeNCJobRegister();
 
   // get number cruncher configuration object

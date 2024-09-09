@@ -62,7 +62,7 @@ function zipfile()  {
 function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 // Pack files, assume zip
 
-  var tmpFile = conf.getTmpFile();
+  let tmpFile = conf.getTmpFile();
   if (!tmpFile)  {
     log.error ( 1,'temporary directory not found, encountered at zipping ' + dirPath );
     onReady_func ( -2,-1 );
@@ -70,7 +70,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
   }
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
-  var jobballPath = getJobballPath ( dirPath );
+  let jobballPath = getJobballPath ( dirPath );
 
   if (__use_ziplib)  {
 
@@ -88,7 +88,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   } else  {
 
-    var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-c',tmpFile,
+    let zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-c',tmpFile,
                                                 dirPath + path.sep + '.'],{
       stdio : ['ignore']
     });
@@ -99,7 +99,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
     zip.on ( 'close', function(code){
       //if (code!=0)  {
-      var jobballSize = -1;
+      let jobballSize = -1;
       if (code)  {
         log.error ( 4,'zip packing code: ' + code + ', encountered in ' + dirPath );
         utils.removeFile ( tmpFile );
@@ -121,11 +121,11 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
 function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
                    onReady_func, onErr_func )  {
-var sender_cfg = conf.getServerConfig();
+let sender_cfg = conf.getServerConfig();
 
   function pushToServer ( formData,jobballPath )  {
 
-    var post_options = {
+    let post_options = {
       url      : serverURL + '/' + command,
       formData : formData,
       rejectUnauthorized : sender_cfg.rejectUnauthorized
@@ -153,7 +153,7 @@ var sender_cfg = conf.getServerConfig();
         log.error ( 6,'upload failed: ' + err );
       } else  {
         try {
-          var resp = JSON.parse ( response );
+          let resp = JSON.parse ( response );
           if (resp.status==cmd.fe_retcode.ok)  {
             if (onReady_func)
               onReady_func ( resp.data,utils.fileSize(jobballPath) );
@@ -173,11 +173,11 @@ var sender_cfg = conf.getServerConfig();
 
   if (sender_cfg.fsmount)  {
 
-    var formData = {};
+    let formData = {};
     formData['sender' ] = sender_cfg.externalURL;
     formData['dirpath'] = path.resolve ( dirPath );  // convert to absolute path
     if (metaData)  // pass in form of simple key-value pairs
-      for (var key in metaData)
+      for (let key in metaData)
         formData[key] = metaData[key];
 
     pushToServer ( formData,null );
@@ -192,14 +192,14 @@ var sender_cfg = conf.getServerConfig();
 
         // 2. Send jobball to server
 
-        var formData = {};
+        let formData = {};
         formData['sender'] = conf.getServerConfig().externalURL;
 
         if (metaData)  // pass in form of simple key-value pairs
-          for (var key in metaData)
+          for (let key in metaData)
             formData[key] = metaData[key];
 
-        var jobballPath  = path.join(dirPath,jobballName);
+        let jobballPath  = path.join(dirPath,jobballName);
         formData['file'] = fs.createReadStream ( jobballPath );
 
         pushToServer ( formData,jobballPath );
@@ -246,8 +246,8 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
 // unpack all service jobballs (their names start with double underscore)
 // and clean them out if remove_jobball_bool is true
 
-  var unpack_dir = dirPath;
-  var tmpDir     = '';
+  let unpack_dir = dirPath;
+  let tmpDir     = '';
   if (cleanTmpDir)  {
     do {
       unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
@@ -256,7 +256,7 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     tmpDir = unpack_dir + '_JOBDIRCOPY';
   }
 
-  var jobballSize = utils.fileSize ( jobballPath );
+  let jobballSize = utils.fileSize ( jobballPath );
 
   if (__use_ziplib)  {
 
@@ -279,8 +279,8 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
 
   } else  {
 
-    var errs = '';
-    var zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-e',jobballPath,unpack_dir],{
+    let errs = '';
+    let zip = utils.spawn ( conf.pythonName(),['-m',zipfile(),'-e',jobballPath,unpack_dir],{
       stdio : ['ignore']
     });
 
@@ -309,7 +309,7 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
 function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 // unpack all service jobballs (their names start with double underscore)
 // and clean them out
-  var jobballPath = getJobballPath ( dirPath );
+  let jobballPath = getJobballPath ( dirPath );
   unpackDir1 ( dirPath,jobballPath,cleanTmpDir,true,onReady_func );
 }
 
@@ -319,11 +319,11 @@ function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
   // make structure to keep download metadata
-  var upload_meta   = {};
+  let upload_meta   = {};
   upload_meta.files = {};
 
   // create an incoming form object
-  var form = new formidable.IncomingForm();
+  let form = new formidable.IncomingForm();
   form.maxFileSize = 100 * 1024 * 1024 * 1024;  // 100 Gb
 
   // specify that we want to allow the user to upload multiple files in a single request
@@ -355,7 +355,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
   });
 
   // log any errors that occur
-  var errs = '';
+  let errs = '';
   form.on('error', function(err) {
     log.error ( 11,'receive directory error:' );
     log.error ( 11,err );
@@ -391,7 +391,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
         } else  {
 
           // restore original file names
-          for (var key in upload_meta.files)
+          for (let key in upload_meta.files)
             if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
               errs = 'file move error';
 
