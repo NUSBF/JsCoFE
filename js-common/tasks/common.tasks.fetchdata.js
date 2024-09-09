@@ -113,7 +113,7 @@ if (!__template)  {
       return ['environment-server',
               'task software is not installed on ' + appName() + ' server',
               '<div style="width:400px;"><h3>Task software is not installed</h3>' +
-              'Fetch framework is not installed on ' +  appName() + 
+              'Data fetch framework is not installed on ' +  appName() + 
               'server.<p>Contact server maintainer for further details.</div>'];
 
   }
