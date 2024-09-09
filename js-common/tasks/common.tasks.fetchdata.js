@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.07.24   <--  Date of Last Modification.
+ *    09.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -98,26 +98,27 @@ TaskFetchData.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['fetch','diffraction','images'] );
 }
 
-TaskFetchData.prototype.isTaskAvailable = function()  {
+if (!__template)  {
 
-  if (__has_datalink)
-    return TaskTemplate.prototype.isTaskAvailable.call ( this );
-  else if (__local_setup)
-    return ['environment-server',
-            'task software is not installed on your machine',
-            '<h3>Task software is not installed</h3>' +
-            'Fetch framework is not installed on your machine.'];
-  else
-    return ['environment-server',
-            'task software is not installed on ' + appName() + ' server',
-            '<h3>Task software is not installed</h3>' +
-            'Fetch framework is not installed on ' +  appName() + 
-            '.<br>Contact server maintainer for further details.'];
+  TaskFetchData.prototype.isTaskAvailable = function()  {
 
-}
+    if (__has_datalink)
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+    else if (__local_setup)
+      return ['environment-server',
+              'task software is not installed on your machine',
+              '<h3>Task software is not installed</h3>' +
+              'Fetch framework is not installed on your machine.'];
+    else
+      return ['environment-server',
+              'task software is not installed on ' + appName() + ' server',
+              '<div style="width:400px;"><h3>Task software is not installed</h3>' +
+              'Fetch framework is not installed on ' +  appName() + 
+              'server.<p>Contact server maintainer for further details.</div>'];
 
+  }
 
-if (__template)  {
+} else  {
   //  for server side
 
   const path  = require('path');
