@@ -14,6 +14,9 @@ const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
 const CATALOG_DIR = config.get('storage.catalog_dir');
 
+// maximum number of http redirects
+const HTTP_REDIRECTS = 5;
+
 const status = {
   completed: 'completed',
   inProgress: 'in_progress',
@@ -247,9 +250,45 @@ class tools {
       const controller = new AbortController();
       options.signal = controller.signal;
       let req = https.request(url, options, (res) => {
-        if (! [200, 206].includes(res.statusCode)) {
+
+        let err_msg;
+        switch (res.statusCode) {
+          // http redirect
+          case 301:
+          case 302:
+            // if no redirect counter set, set it in options
+            if (! options.dl_redirects) {
+              options.dl_redirects = 0;
+            }
+            if (options.dl_redirects < HTTP_REDIRECTS && res.headers.location) {
+              options.dl_redirects += 1;
+              log.debug(`httpRequest - redirecting to ${res.headers.location} (try ${options.dl_redirects})`);
+              return this.httpRequest(res.headers.location, options, dest, signalCallback, writeCallback)
+              .then((ret) => {
+                resolve(ret);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+            } else {
+              err_msg = `httpRequest - Too many redirects for ${url}`;
+              return;
+            }
+            break;
+          case 200:
+          case 206:
+            break;
+          case 404:
+            err_msg = `httpRequest - 404 not found: ${url}`;
+            break;
+          default:
+            err_msg = `httpRequest - unsupported statusCode ${res.statusCode}`;
+            break;
+        }
+
+        if (err_msg) {
           res.resume();
-          reject(`httpRequest - unsupported statusCode ${res.statusCode}`);
+          reject(err_msg);
           return;
         }
 
