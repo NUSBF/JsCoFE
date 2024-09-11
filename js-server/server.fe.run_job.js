@@ -605,7 +605,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       meta.feedback  = ud.feedback_code.decline;
       meta.user_name = '';
       // results may be pushed back to FE or pulled by FE in case of remote NC 
-      meta.push_back = (nc_cfg.exeType.toUpperCase()!='REMOTE');
+      if (nc_cfg.exeType.toUpperCase()=='REMOTE')
+            meta.push_back = 'NO';
+      else  meta.push_back = 'YES';
       meta.email     = '';
       if (uData)  {
         meta.feedback = uData.feedback;
