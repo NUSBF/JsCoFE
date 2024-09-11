@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    11.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Log file functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -49,7 +49,7 @@ function newLog ( logId )  {
 }
 
 log.prototype.write = function ( code,message ) {
-  var d = new Date();
+  let d = new Date();
   console.log ( '[' + d.toISOString() + this.idstr + com_utils.padDigits(code,3)
                     + ' ' + message );
 }
