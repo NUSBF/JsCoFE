@@ -17,6 +17,14 @@ const CATALOG_DIR = config.get('storage.catalog_dir');
 // maximum number of http redirects
 const HTTP_REDIRECTS = 5;
 
+// maximum number of http retries (eg for 429 reponses)
+const HTTP_RETRIES = 5;
+// retry backoff delays (HTTP_DELAY_INT * HTTP_DELAY_EXP^RETRY_NUM)
+// backoff interval in ms
+const HTTP_DELAY_INT = 1000;
+// backoff exponential
+const HTTP_DELAY_EXP = 3;
+
 const status = {
   completed: 'completed',
   inProgress: 'in_progress',
@@ -280,6 +288,29 @@ class tools {
             break;
           case 404:
             err_msg = `httpRequest - 404 not found: ${url}`;
+            break;
+          // too many requests - so we will back off and retry
+          case 429:
+            if (! options.dl_retries) {
+              options.dl_retries = 0;
+            }
+            if (options.dl_retries < HTTP_RETRIES) {
+              options.dl_retries += 1;
+              let delay = HTTP_DELAY_INT * (HTTP_DELAY_EXP ** options.dl_retries);
+              log.debug(`httpRequest - 429 too many requests - Delaying ${delay} ms before retry (try ${options.dl_redirects})`);
+              // retry the request after a delay - note the return is important to stop further processing
+              return setTimeout(() => {
+                this.httpRequest(url, options, dest, signalCallback, writeCallback)
+                .then((ret) => {
+                  resolve(ret);
+                })
+                .catch((err) => {
+                  reject(err);
+                });
+              }, delay);
+            } else {
+              err_msg = `httpRequest - 429 too many requests - Retry count ${HTTP_RETRIES} exceeded`;
+            }
             break;
           default:
             err_msg = `httpRequest - unsupported statusCode ${res.statusCode}`;
