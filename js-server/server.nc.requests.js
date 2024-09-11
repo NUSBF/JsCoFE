@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    11.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Requests Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -41,13 +41,13 @@ function ncSelectDir ( post_data_obj,callback_func )  {
 
 //  console.log ( ' request='+JSON.stringify(post_data_obj));
 
-  var job = utils.spawn ( conf.pythonName(),
+  let job = utils.spawn ( conf.pythonName(),
                           ['-m', 'pycofe.varut.selectdir', post_data_obj.title],
                           {} );
 
   // make stdout and stderr catchers for debugging purposes
-  var stdout = '';
-  var stderr = '';
+  let stdout = '';
+  let stderr = '';
   job.stdout.on('data', function(buf) {
     stdout += buf;
   });
@@ -76,14 +76,14 @@ function ncSelectFile ( post_data_obj,callback_func )  {
 
   //console.log ( ' request='+JSON.stringify(post_data_obj));
 
-  var job = utils.spawn ( conf.pythonName(),
+  let job = utils.spawn ( conf.pythonName(),
                           ['-m', 'pycofe.varut.selectfile',
                            post_data_obj.title,post_data_obj.filters],
                           {} );
 
   // make stdout and stderr catchers for debugging purposes
-  var stdout = '';
-  var stderr = '';
+  let stdout = '';
+  let stderr = '';
   job.stdout.on('data', function(buf) {
     stdout += buf;
   });
@@ -112,13 +112,13 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
 
 //  console.log ( ' request='+JSON.stringify(post_data_obj));
 
-  var job = utils.spawn ( conf.pythonName(),
+  let job = utils.spawn ( conf.pythonName(),
                           ['-m', 'pycofe.varut.select_image_dir', post_data_obj.title],
                           {} );
 
   // make stdout and stderr catchers for debugging purposes
-  var stdout = '';
-  var stderr = '';
+  let stdout = '';
+  let stderr = '';
   job.stdout.on('data', function(buf) {
     stdout += buf;
   });
@@ -132,8 +132,8 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
     if (!code)  {
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',JSON.parse(stdout) ) );
       /*
-      var meta    = JSON.parse ( stdout );
-      var dirPath = meta['path'];
+      let meta    = JSON.parse ( stdout );
+      let dirPath = meta['path'];
       callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',
                                      {'directory':dirPath.replace('\n','')} ) );
       */
@@ -151,12 +151,12 @@ function ncSelectImageDir ( post_data_obj,callback_func )  {
 function ncGetInfo ( server_request,server_response )  {
 
   function checkFile ( fpath )  {
-    var flist = fpath.split('/');
-    var ok    = true;
-    var vpath = null;
-    for (var i=0;(i<flist.length) && ok;i++)  {
+    let flist = fpath.split('/');
+    let ok    = true;
+    let vpath = null;
+    for (let i=0;(i<flist.length) && ok;i++)  {
       if (flist[i].startsWith('$'))  {
-        var vname = flist[i].substring(1);
+        let vname = flist[i].substring(1);
         if (vname in process.env)  flist[i] = process.env[vname];
                              else  ok = false;
       }
@@ -168,16 +168,16 @@ function ncGetInfo ( server_request,server_response )  {
     return utils.fileExists(vpath);
   }
 
-  var ncInfo = {};
+  let ncInfo = {};
   ncInfo.config      = conf.getServerConfig();
   ncInfo.jobRegister = {};
-  var jobRegister    = jm.readNCJobRegister ( 1 );
+  let jobRegister    = jm.readNCJobRegister ( 1 );
   ncInfo.jobRegister.launch_count = jobRegister.launch_count;
   ncInfo.jobRegister.job_map      = jobRegister.job_map;
   ncInfo.ccp4_version   = conf.CCP4Version();
   ncInfo.jscofe_version = cmd.appVersion();
   ncInfo.environ = [];
-  for (var i=0;i<task_t.keyEnvironment.length;i++)
+  for (let i=0;i<task_t.keyEnvironment.length;i++)
     if ((task_t.keyEnvironment[i] in process.env) ||
         checkFile(task_t.keyEnvironment[i]))
       ncInfo.environ.push ( task_t.keyEnvironment[i] );

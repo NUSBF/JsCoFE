@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.24   <--  Date of Last Modification.
+ *    11.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,6 +116,7 @@ let crTime        = Date.now();
     startTime     : crTime,
     startTime_iso : new Date(crTime).toISOString(),
     endTime       : null,
+    push_back     : 'YES',
     progress      : 0,      // progress measure
     lastAlive     : crTime, // last time when job was alive
     exeType       : '',     // SHELL, SGE or SCRIPT
@@ -137,6 +138,7 @@ let crTime        = Date.now();
     startTime     : crTime,
     startTime_iso : new Date(crTime).toISOString(),
     endTime       : null,
+    push_back     : 'YES',
     progress      : 0,      // progress measure
     lastAlive     : crTime, // last time when job was alive
     exeType       : '',     // SHELL or SGE
@@ -246,6 +248,8 @@ function readNCJobRegister ( readKey )  {
               ncJobRegister.job_map[job_token].progress  = 0;
               ncJobRegister.job_map[job_token].lastAlive = null;
             }
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('push_back'))
+              ncJobRegister.job_map[job_token].push_back = 'YES';
           }
       }
 
@@ -654,7 +658,8 @@ let nRegJobs = 0;  // number of jobs listed as active in registry
   switch (ncConfig.exeType)  {
 
     default       :
-    case 'CLIENT' :
+    case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+    case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
     case 'SHELL'  : //capacity -= Math.max(Object.keys(ncJobRegister.job_map).length-1,0);
                     capacity -= nRegJobs;
                     onFinish_func ( capacity );
@@ -832,6 +837,11 @@ let cfg = conf.getServerConfig();
     jobEntry.endTime     = Date.now();
     jobEntry.endTime_iso = new Date(jobEntry.endTime).toISOString();
   }
+  
+  if ((jobEntry.push_back=='NO') && (jobEntry.sendTrials<=0))  {
+    // all wrap-up actions are already done, wait for pull request from FE
+    return;
+  }
 
   if (!('logflow' in ncJobRegister))  {
     ncJobRegister.logflow = {};
@@ -913,93 +923,99 @@ let cfg = conf.getServerConfig();
 
   }
 
-  // Send directory back to FE. This operation is asynchronous but we DO NOT
-  // stop the job checking loop for it. The job is marked as 'exiting' in job
-  // registry entry, which prevents interference with the job check loop.
+  if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull request from FE
 
-  //   Results are being sent together with the remaining capcity estimations,
-  // which are calculated differently in SHELL and SGE modes
+    // Send directory back to FE. This operation is asynchronous but we DO NOT
+    // stop the job checking loop for it. The job is marked as 'exiting' in job
+    // registry entry, which prevents interference with the job check loop.
 
-  calcCapacity ( function(current_capacity){
+    //   Results are being sent together with the remaining capcity estimations,
+    // which are calculated differently in SHELL and SGE modes
 
-    log.standard ( 104,'NC current capacity: ' + current_capacity );
+    calcCapacity ( function(current_capacity){
 
-    // get original front-end url
-    let feURL = jobEntry.feURL;
+      log.standard ( 104,'NC current capacity: ' + current_capacity );
 
-    // but, if FE is configured, take it from configuration
-    let fe_config = conf.getFEConfig();
-    if (fe_config && fe_config.localSetup)
-      feURL = fe_config.externalURL;
+      // get original front-end url
+      let feURL = jobEntry.feURL;
 
-    if (feURL.endsWith('/'))
-      feURL = feURL.substr(0,feURL.length-1);
+      // but, if FE is configured, take it from configuration
+      let fe_config = conf.getFEConfig();
+      if (fe_config && fe_config.localSetup)
+        feURL = fe_config.externalURL;
 
-// *** for debugging
-//if (__use_fake_fe_url) feURL = 'http://localhost:54321';
+      if (feURL.endsWith('/'))
+        feURL = feURL.substr(0,feURL.length-1);
 
-    // if (code==1001)  {
-    if (code)  {
-      log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
-      utils.removeSymLinks ( jobEntry.jobDir );
-    }
+  // *** for debugging
+  //if (__use_fake_fe_url) feURL = 'http://localhost:54321';
 
-    send_dir.sendDir ( jobEntry.jobDir,'*',
-                       feURL,
-                       cmd.fe_command.jobFinished + job_token, {
-                          'capacity'         : cfg.capacity,
-                          'current_capacity' : current_capacity,
-                          'tokens'           : ncJobRegister.getListOfTokens()
-                       },
+      // if (code==1001)  {
+      if (code)  {
+        log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
+        utils.removeSymLinks ( jobEntry.jobDir );
+      }
 
-      function(rdata)  {  // send was successful
+      send_dir.sendDir ( jobEntry.jobDir,'*',
+                        feURL,
+                        cmd.fe_command.jobFinished + job_token, {
+                            'capacity'         : cfg.capacity,
+                            'current_capacity' : current_capacity,
+                            'tokens'           : ncJobRegister.getListOfTokens()
+                        },
 
-        // just remove the job; do it in a separate thread and delayed,
-        // which is useful for debugging etc.
+        function(rdata)  {  // send was successful
 
-        log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
-                           job_token );
-        removeJobDelayed ( job_token,task_t.job_code.finished );
+          // just remove the job; do it in a separate thread and delayed,
+          // which is useful for debugging etc.
 
-      },function(stageNo,errcode)  {  // send failed
-
-        if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
-            ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
-
-          if (stageNo==1)  {
-            // hypothesize that the failure is because of symlinks and try 
-            // replace them with files
-            log.standard ( 102,'removing symlinks after packing errors, job_token=' + job_token );
-            utils.removeSymLinks ( jobEntry.jobDir );
-          }
-
-          jobEntry.sendTrials--;
-          log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
-                          job_token + ' back to FE due to FE/transmission errors (stage' +
-                          stageNo + ', code [' + JSON.stringify(errcode) + '])' );
-          setTimeout ( function(){ ncJobFinished(job_token,code); },
-                       conf.getServerConfig().sendDataWaitTime );
-
-        } else if (comut.isObject(errcode) &&
-                   ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
-                    (errcode.status==cmd.nc_retcode.fileErrors)))  {
-          // the job cannot be accepted by FE, e.g., if task was deleted by user.
-
+          log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
+                            job_token );
           removeJobDelayed ( job_token,task_t.job_code.finished );
-          log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
-                        '). TASK DELETED.' );
 
-        } else  {
+        },function(stageNo,errcode)  {  // send failed
 
-          log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
-                         job_token );
+          if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
+              ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
 
-        }
-        writeNCJobRegister();
+            if (stageNo==1)  {
+              // hypothesize that the failure is because of symlinks and try 
+              // replace them with files
+              log.standard ( 102,'removing symlinks after packing errors, job_token=' + job_token );
+              utils.removeSymLinks ( jobEntry.jobDir );
+            }
+
+            jobEntry.sendTrials--;
+            log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
+                            job_token + ' back to FE due to FE/transmission errors (stage' +
+                            stageNo + ', code [' + JSON.stringify(errcode) + '])' );
+            setTimeout ( function(){ ncJobFinished(job_token,code); },
+                        conf.getServerConfig().sendDataWaitTime );
+
+          } else if (comut.isObject(errcode) &&
+                    ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
+                      (errcode.status==cmd.nc_retcode.fileErrors)))  {
+            // the job cannot be accepted by FE, e.g., if task was deleted by user.
+
+            removeJobDelayed ( job_token,task_t.job_code.finished );
+            log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
+                          '). TASK DELETED.' );
+
+          } else  {
+
+            log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
+                          job_token );
+
+          }
+          writeNCJobRegister();
+
+        });
 
       });
 
-  });
+  } else  {
+    jobEntry.sendTrials = 0;
+  }
 
 }
 
@@ -1074,9 +1090,10 @@ function ncRunJob ( job_token,meta )  {
 
     switch (jobEntry.exeType)  {
 
-      default      :
-      case 'CLIENT':
-      case 'SHELL' :  log.standard ( 5,'starting... ' );
+      default       :
+      case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+      case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
+      case 'SHELL'  : log.standard ( 5,'starting... ' );
                       command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );
@@ -1398,7 +1415,8 @@ function _stop_job ( jobEntry )  {
     switch (jobEntry.exeType)  {
 
       default       :
-      case 'CLIENT' :
+      case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+      case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
       case 'SHELL'  : //let isWindows = /^win/.test(process.platform);
                       if(!conf.isWindows()) {
                         psTree ( jobEntry.pid, function (err,children){
