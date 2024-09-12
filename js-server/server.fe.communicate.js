@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.04.24   <--  Date of Last Modification.
+ *    15.04.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -197,9 +197,8 @@ function Communicate ( server_request )  {
   }
   if (ix<0) {
     ix = server_request.url.lastIndexOf('reqid=authorisation-');
-    if (ix>=0)  {
+    if (ix>=0)
       this.command = cmd.fe_command.authResponse;
-    }
   }
   if (ix<0) {
     ix = this.filePath.indexOf('js-lib')
@@ -214,6 +213,14 @@ function Communicate ( server_request )  {
                                                 process.env.CLIBD_MON );
     } else
       ix = -1;
+  }
+  if ((ix<0) && this.filePath.endsWith('moorhen.data'))  {
+    this.filePath = 'js-lib/webCoot/baby-gru/moorhen.data';
+    ix = 1;
+  }
+  if ((ix<0) && this.filePath.endsWith('moorhen64.data'))  {
+    this.filePath = 'js-lib/webCoot/baby-gru/moorhen64.data';
+    ix = 1;
   }
 
   if (ix<0) {

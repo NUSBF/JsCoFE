@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.03.24   <--  Date of Last Modification.
+#    13.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -298,8 +298,8 @@ class DimpleMR(basic.TaskDriver):
                                 "revision"  : [revision]
                             },
                             "scores" :  {
-                                "Rfactor" : self.generic_parser_summary["refmac"]["R_factor"],
-                                "Rfree"   : self.generic_parser_summary["refmac"]["R_free"]
+                                "Rfactor" : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"   : float(self.generic_parser_summary["refmac"]["R_free"])
                             },
                             "suggestedParameters" : {
                                 "TaskRefmac" : suggestedParameters

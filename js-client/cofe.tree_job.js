@@ -272,9 +272,9 @@ JobTree.prototype.readProjectData = function ( page_title,
       tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
       tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
 
-      let startmode = null;
-      if (tree.projectData)
-        startmode = tree.projectData.desc.startmode;
+      // let startmode = null;
+      // if (tree.projectData)
+      //   startmode = tree.projectData.desc.startmode;
 
       tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
       tree.projectData.desc.dateLastUsed = getDateString();
@@ -285,10 +285,8 @@ JobTree.prototype.readProjectData = function ( page_title,
       tree.view_only   = tree.in_archive ||
                           (tree.permissions == share_permissions.view_only);
 
-      if (startmode)
-        tree.projectData.desc.startmode = startmode;
-
-                // tree.projectData.desc.autorun = true;
+      // if (startmode)
+      //   tree.projectData.desc.startmode = startmode;
 
       let author = '';
       if (author!=__login_id)
@@ -1141,9 +1139,9 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
       let dataBox = tree.harvestTaskData ( 1,[] );
       let branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
       new TaskListDialog ( dataBox,branch_task_list,tree,
-          function(task,tasklistmode){
-            if (tasklistmode)
-              tree.projectData.desc.tasklistmode = tasklistmode;
+          function(task){
+            // if (tasklistmode)
+            //   tree.projectData.desc.tasklistmode = tasklistmode;
             if (task)  {  // task chosen
               if (copy_params)  {
                 if (tree._copy_task_parameters(task,branch_task_list)<0)  {

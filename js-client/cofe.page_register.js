@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    05.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -254,7 +254,7 @@ function RegisterPage ( sceneId )  {
                 new MessageBoxW ( 'Registration',response.data,0.5 );
             else
                 new MessageBox ( 'Registration',
-                  'Dear ' + ud.name +
+                  '<div style="width:650px;">Dear ' + ud.name +
                   ',<p>You are now registered for ' + appName() + ' with ' +
                   'login name<p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>' +
                   ud.login + '</i></b>.' +
@@ -266,15 +266,21 @@ function RegisterPage ( sceneId )  {
                   '<li>Check your Spam folder</li>' +
                   '<li><b>Do not register again!</i> Instead, use the ' +
                   '<i>"Forgotten password"</i> option</li>' +
-                  '<li>Write to CCP4 if recovering your account is not successful ' +
-                  'after several attempts.</li></ol>', 'msg_information' );
+                  '<li>Write to ' + appName() + ' server maintainer at ' +
+                  '<a href="mailto:' + __maintainerEmail +
+                      '?Subject=' + 
+                         encodeURIComponent(appName()+' Cloud Account recovery') +
+                      '">'  + __maintainerEmail +
+                  '</a> if recovering your account is not successful ' +
+                  'after several attempts.</li></ol></div>', 'msg_information' );
             return true;
 
           case fe_retcode.existingLogin:
             new MessageBox ( 'Registration',
-              '<b>Login name <i>"' + ud.login + '"</i> is already used.</b><p>' +
-              'If this is your name: Go back to Login Page and use button ' +
-              '<i>Forgotten password</i><p>' +
+              '<div style="width:420px;"><h2>Login name already exists</h2>' +
+              'Login name <b><i>"' + ud.login + '"</i></b> is already used.</b><p>' +
+              'If this is your name: Go back to Login Page and use the ' +
+              '<b><i>"Forgotten password"</i></b> option.<p>' +
               'If you try to register a new user: Please choose a different ' +
               'login name.', 'msg_excl' );
             return true;

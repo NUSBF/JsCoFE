@@ -1,0 +1,21 @@
+{
+  "name": "Moorhen (Web-Coot)",
+  "short_name": "Moorhen",
+  "description": "Interactive model building.",
+  "start_url": "/webcoot.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0000ff",
+  "icons": [
+    {
+      "src": "images/moorhen-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/moorhen-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

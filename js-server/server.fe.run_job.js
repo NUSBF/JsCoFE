@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.05.24   <--  Date of Last Modification.
+ *    31.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1679,6 +1679,16 @@ function cloudRun ( server_request,server_response )  {
 // This function receives data from js-utils/cloudrun.js script, and runs the
 // requested job. New project is created if necessary.
 
+  // Check if cloudRun was run so quickly after CCP4 Cloud started that
+  // server environment is not yet calculated. This is important if data 
+  // contains custom workflow script that checks on task availability.
+
+  if (conf.environ_server.length<=0)  {
+    // asynchronous but should be very quick comparing with receiving directory
+    // below :(
+    conf.getServerEnvironment(function(environ_server){}); 
+  }
+
   // 1. Receive data and metadata
 
   let tmpDir    = conf.getTmpFile();
@@ -1757,8 +1767,7 @@ function cloudRun ( server_request,server_response )  {
               let pData = prj.readProjectData ( loginData,meta.project );
               if (!pData)  {
                 let pDesc = new pd.ProjectDesc();
-                pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
-                             com_utils.getDateString() );
+                pDesc.init ( meta.project,meta.title,com_utils.getDateString() );
                 if (('folder' in meta) && meta.folder)  {
                   if (meta.folder.startsWith('/'))
                         pDesc.folderPath = meta.folder.slice(1);
@@ -1949,16 +1958,6 @@ function cloudRun ( server_request,server_response )  {
         }
 
       }
-
-      // remove uploaded job directory if it was not used
-      // if (tmpJobDir)
-      //   utils.removePath ( tmpJobDir );
-
-      // send response to sender
-
-      // if (!response)
-      //   response = new cmd.Response ( cmd.fe_retcode.errors,
-      //                      'cloudRun task could not be formed or started',{} );
 
       if (response)  {
         //  cloudRun did not start, clean up and respond
