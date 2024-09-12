@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -226,7 +227,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -396,7 +397,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -439,13 +440,13 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="custom-user-created-project-workflows">
-<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">7. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">7. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Permalink to this headline">¶</a></h1>
 <p>CCP4 Cloud projects can be developed automatically, using one of pre-defined
 <a class="reference internal" href="jscofe_automated_workflows.html#workflows-guide"><span class="std std-ref">automatic workflows</span></a>, as well as <em>custom workflows</em>,
 defined by user.</p>
-<section id="what-are-custom-workflows-and-how-one-can-use-them">
-<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">7.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
+
+<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">7.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this headline">¶</a></h2>
 <p>Custom workflow is a script (<em>WScript</em>) describing tasks that need to be
 performed and the order of their invocation, <em>i.e.</em>, the workflow algorithm.
 The script is placed in a plain text file with extension <code class="docutils literal notranslate"><span class="pre">.wscript</span></code>,
@@ -455,24 +456,24 @@ which can be created by most text editors, such as <em>vim</em>, <em>nano</em>, 
 (not recommended).</p>
 <p>Custom workflow can be started in one of 3 ways:</p>
 <ul class="simple">
-<li><p>Import <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> file with other needed files, such as <code class="docutils literal notranslate"><span class="pre">.mtz</span></code>
+<li>Import <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> file with other needed files, such as <code class="docutils literal notranslate"><span class="pre">.mtz</span></code>
 (reflections, phases), <code class="docutils literal notranslate"><span class="pre">.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">.mmcif</span></code> (structure models),
 <code class="docutils literal notranslate"><span class="pre">.cif</span></code> (ligand descriptions), <code class="docutils literal notranslate"><span class="pre">.lib</span></code> (restraint libraries),
 <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, in a <em>single</em> import task. After importing, the task will
 start workflow automatically if <em>WScript</em> is correct and all necessary
-data files are provided</p></li>
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> files to the set of data files in
+data files are provided</li>
+<li>Add <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> files to the set of data files in
 <a class="reference internal" href="jscofe_cloudrun.html#cloudrun"><span class="std std-ref">CloudRun command file</span></a> (use generic <a class="reference internal" href="jscofe_cloudrun.html#cloudrun-file"><span class="std std-ref">FILE</span></a>
 keyword), choose <a class="reference internal" href="jscofe_cloudrun.html#cloudrun-task"><span class="std std-ref">import</span></a> task and execute the
 <code class="docutils literal notranslate"><span class="pre">CloudRun</span></code> utility. All file will be uploaded to CCP4 Cloud, project
-created and workflow started automatically</p></li>
-<li><p>Add <em>WScript</em> to the <em>My Workflows</em> list in the <em>Workflows</em> tab of the
+created and workflow started automatically</li>
+<li>Add <em>WScript</em> to the <em>My Workflows</em> list in the <em>Workflows</em> tab of the
 <em>Task List</em>, after which it can be used as any other task in the
-system.</p></li>
+system.</li>
 </ul>
-</section>
-<section id="writing-the-workflow-script-wscript">
-<h2 id="writing-the-workflow-script-wscript"><span class="section-number">7.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="writing-the-workflow-script-wscript"><span class="section-number">7.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Permalink to this headline">¶</a></h2>
 <p>The main idea behind workflows is to automate operations when the same project (or branch of a project) needs to be repeated many (100s) times with  different input data, and <strong>WScript</strong> is limited to that purpose.</p>
 <p>The easiest way to create a <strong>WScript</strong> file is through using <strong>Workflow Creator</strong> in CCP4 Cloud. Login in your account and open <strong>Task List</strong> in any project.
 Then open tab <strong>Workflows</strong>, scroll it to section <strong>My Workflows</strong> in the end and push button <strong>Add workflow</strong>. This will launch <strong>Workflow Creator</strong> window with a template script loaded. It makes a good sense to save the newly created workflow in your personal library, therefore give it a unique <em>Workflow ID</em> on top of the dialog window. For easier workflow identification in <strong>My Workflows</strong> library, you may also change the colour of the workflow icon – simply click on it and choose from available options. Now you can save the script – it will appear in the <strong>My Workflows</strong> section of the <strong>Task List</strong>. You can run it as any other task now, but doing so will result in an empty <strong>Job Dialog</strong>, because we only saved a template, which does nothing.</p>
@@ -569,8 +570,8 @@ Keywords, which normally start <strong>WScript</strong> statements, are case-ins
 Values, on contrary, should be specified with respect to upper/lower case. Full
 list of keywords is given in the end of this document.</p>
 <p>We will create new workflow in several steps now.</p>
-<section id="simple-mr-workflow">
-<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">7.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Permalink to this heading">¶</a></h3>
+
+<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">7.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Permalink to this headline">¶</a></h3>
 <p>As first example, let’s write a simple workflow, which takes reflection data,
 structure template, sequence and solves structure with Molecular Replacement
 using Molrep.</p>
@@ -625,11 +626,11 @@ the workflows now; it will fail immediately though because we did not specify
 any tasks in the <strong>WScript</strong> file yet.</p>
 <p>We now want to make a sequence of at least 5 tasks:</p>
 <ul class="simple">
-<li><p>prepare MR model</p></li>
-<li><p>define ASU</p></li>
-<li><p>run Molrep</p></li>
-<li><p>re-build model with, e.g., Buccaneer</p></li>
-<li><p>refine with Refmac</p></li>
+<li>prepare MR model</li>
+<li>define ASU</li>
+<li>run Molrep</li>
+<li>re-build model with, e.g., Buccaneer</li>
+<li>refine with Refmac</li>
 </ul>
 <p>Re-open molrep workflow script in <strong>Workflow Cretor</strong> again. In the bottom of
 the dialog window, click button <strong>Add task</strong> and select <em>“Model Preparation XYZ”</em>
@@ -726,17 +727,17 @@ copy-paste <strong>WScript</strong> from <strong>Workflow Creator</strong> into 
 <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> extension for using it with the <strong>Import</strong> task or <strong>CloudRun</strong>
 utility).</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Unlike in manually-developed CCP4 Cloud projects, where a user cannot
+<p class="first admonition-title">Note</p>
+<p class="last">Unlike in manually-developed CCP4 Cloud projects, where a user cannot
 create a task if there is no suitable data for it, workflows do not
 check or control that task order is correct from the data flow point of
 view. Therefore, you should have a good understanding of task order
 suitable for your purposes, or, better, take it from a manually developed
 project representing your workflow in design.</p>
 </div>
-</section>
-<section id="conditional-statements-and-other-advanced-operations">
-<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">7.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this heading">¶</a></h3>
+
+
+<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">7.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this headline">¶</a></h3>
 <p>At the moment, our molrep workflow is quite straightforward in respect to its
 input data and algorithm. We may wish to make it more flexible. For example, it would be good if you can take both merged and unmerged reflection data on input, optimize refinement parameters and, optionally, prepare file for PDB deposition from the best results achieved.</p>
 <p><strong>Conditions based on availability of data</strong></p>
@@ -785,8 +786,8 @@ task’s description:</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> statement, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code> must be in lower case.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> statement, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code> must be in lower case.</p>
 </div>
 <p>Now, the workflow will work with both merged and unmerged reflection data. If a
 task needs to be run when data <em>is not</em> available, use <code class="docutils literal notranslate"><span class="pre">IFNOTDATA</span></code> instead.
@@ -799,8 +800,8 @@ For example, an equivalent (but less obvious) solution could be</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>data names in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> and <code class="docutils literal notranslate"><span class="pre">IFNOTDATA</span></code> statements are given by the
+<p class="first admonition-title">Note</p>
+<p class="last">data names in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> and <code class="docutils literal notranslate"><span class="pre">IFNOTDATA</span></code> statements are given by the
 lower-case versions of the corresponding data types used in <code class="docutils literal notranslate"><span class="pre">DATA</span></code>
 statements, i.e., <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code> and so on.
 See <a class="reference internal" href="#wscript-reference"><span class="std std-ref">WScript Reference</span></a>  for details.</p>
@@ -890,8 +891,8 @@ instead of “1.4” and restore the <code class="docutils literal notranslate">
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Where a variable is used, any function can be used as well. For example,
+<p class="first admonition-title">Note</p>
+<p class="last">Where a variable is used, any function can be used as well. For example,
 one can put <code class="docutils literal notranslate"><span class="pre">2*resHigh</span></code>, <code class="docutils literal notranslate"><span class="pre">max(1.5,resHigh)</span></code> and similar expressions
 instead of <code class="docutils literal notranslate"><span class="pre">resHigh</span></code> in the above <strong>WScript</strong> fragment.</p>
 </div>
@@ -1005,22 +1006,22 @@ branch @REFINE-OPT[iter0]
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Workflows with input parameters cannot be used in <em>Import</em> task and in the
+<p class="first admonition-title">Note</p>
+<p class="last">Workflows with input parameters cannot be used in <em>Import</em> task and in the
 <em>CloudRun</em> utility.</p>
 </div>
-</section>
-</section>
-<section id="custom-workflow-library">
-<h2 id="custom-workflow-library"><span class="section-number">7.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this heading">¶</a></h2>
+
+
+
+<h2 id="custom-workflow-library"><span class="section-number">7.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud comes with a library of custom workflows, which give <strong>WScript</strong>
 examples for few typical scenarios. They can be also used as templates for
 your own developments. Just open <strong>Workflow Creator</strong>, push <strong>Library</strong>
 button and select a suitable <strong>WScript</strong>. It can be further modified to your
 needs as any text file.</p>
-</section>
-<section id="wscript-reference">
-<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">7.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this heading">¶</a></h2>
+
+
+<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">7.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this headline">¶</a></h2>
 <p><strong>WScript</strong> file consists of four <strong>sections</strong>, which must follow order presented
 in this Reference. Each section contains a specific set of <strong>WScript</strong>
 statements; no statement from one section can appear in another one. Section
@@ -1046,107 +1047,107 @@ which may also include other variables; reference to variable’s value should b
 viewed as a computable trivial expression made of a single variable. See
 available functions, constants and operators in
 <a class="reference internal" href="#wscript-reference-expression-syntax"><span class="std std-ref">Mathematrical expressions syntax</span></a>.</p>
-<section id="header-section">
-<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">7.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+
+<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">7.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this headline">¶</a></h3>
 <p>Header section comes first in <strong>WScript</strong> and cannot be empty.</p>
-<table id="id3">
+<table border="1" id="id3">
 <caption><span class="caption-text">Header section</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 6.0%"/>
-<col style="width: 6.0%"/>
-<col style="width: 80.0%"/>
+<col width="8%"/>
+<col width="6%"/>
+<col width="6%"/>
+<col width="80%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Mandatory</p></th>
-<th class="head"><p>Values</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Mandatory</th>
+<th class="head">Values</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>VERSION</p></td>
-<td><p>No</p></td>
-<td><p>Numeric</p></td>
-<td><p>Version number, dependent on CCP4 Cloud version, for backward compatibility.
+<tbody valign="top">
+<tr class="row-even"><td>VERSION</td>
+<td>No</td>
+<td>Numeric</td>
+<td>Version number, dependent on CCP4 Cloud version, for backward compatibility.
 Outdated versions will be reported when workflow is used. Default value:
-<code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></td>
+<code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>DEBUG</p></td>
-<td><p>No</p></td>
-<td><p>ON/OFF</p></td>
-<td><p>Flag to produce extended workflow log and diagnostics. Default value:
-<code class="docutils literal notranslate"><span class="pre">OFF</span></code>.</p></td>
+<tr class="row-odd"><td>DEBUG</td>
+<td>No</td>
+<td>ON/OFF</td>
+<td>Flag to produce extended workflow log and diagnostics. Default value:
+<code class="docutils literal notranslate"><span class="pre">OFF</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>COMMENTS</p></td>
-<td><p>No</p></td>
-<td><p>ON/OFF</p></td>
-<td><p>Flag to produce additional comments such as results of <em>LET</em> statements
-in workflow log. Default value: <code class="docutils literal notranslate"><span class="pre">ON</span></code>.</p></td>
+<tr class="row-even"><td>COMMENTS</td>
+<td>No</td>
+<td>ON/OFF</td>
+<td>Flag to produce additional comments such as results of <em>LET</em> statements
+in workflow log. Default value: <code class="docutils literal notranslate"><span class="pre">ON</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>WID</p></td>
-<td><p>Yes/No</p></td>
-<td><p>String</p></td>
-<td><p>Workflow ID which <strong>must be given</strong> when workflow is used in <em>Import</em> task
+<tr class="row-odd"><td>WID</td>
+<td>Yes/No</td>
+<td>String</td>
+<td>Workflow ID which <strong>must be given</strong> when workflow is used in <em>Import</em> task
 or via <strong>CloudRun</strong> utility. Ignored if workflow is used as task included
-in <strong>My Workflows</strong> section of the <strong>Task List</strong>. Default value is not set.</p></td>
+in <strong>My Workflows</strong> section of the <strong>Task List</strong>. Default value is not set.</td>
 </tr>
-<tr class="row-even"><td><p>NAME</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Workflow name which identifies workflow task in <strong>Job Tree</strong>; can contain
-several space-separated words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</p></td>
+<tr class="row-even"><td>NAME</td>
+<td>No</td>
+<td>String</td>
+<td>Workflow name which identifies workflow task in <strong>Job Tree</strong>; can contain
+several space-separated words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>ONAME</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Alphanumeric word used to name data objects created by the <em>Workflow</em> task.
-Default value: <code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</p></td>
+<tr class="row-odd"><td>ONAME</td>
+<td>No</td>
+<td>String</td>
+<td>Alphanumeric word used to name data objects created by the <em>Workflow</em> task.
+Default value: <code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>TITLE</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Workflow title which identifies workflow task in <strong>Task List</strong> and
+<tr class="row-even"><td>TITLE</td>
+<td>No</td>
+<td>String</td>
+<td>Workflow title which identifies workflow task in <strong>Task List</strong> and
 report pages; can contain several space-separated words if necessary.
-Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</p></td>
+Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>DESC</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Workflow description which appears in small font under the workflow title
+<tr class="row-odd"><td>DESC</td>
+<td>No</td>
+<td>String</td>
+<td>Workflow description which appears in small font under the workflow title
 in <strong>Task List</strong> and report pages; can contain several space-separated
-words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">workflow</span></code>.</p></td>
+words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">workflow</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>ICON</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Colour code for workflow’s icon, which can help to organise
+<tr class="row-even"><td>ICON</td>
+<td>No</td>
+<td>String</td>
+<td>Colour code for workflow’s icon, which can help to organise
 <strong>My Workflows</strong> section in <strong>Task List</strong>. Available codes include:
 <code class="docutils literal notranslate"><span class="pre">Aqua</span></code>, <code class="docutils literal notranslate"><span class="pre">Asparagus</span></code>, <code class="docutils literal notranslate"><span class="pre">Black</span></code>, <code class="docutils literal notranslate"><span class="pre">Gold</span></code>, <code class="docutils literal notranslate"><span class="pre">Grape</span></code>, <code class="docutils literal notranslate"><span class="pre">Lavender</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Maraschino</span></code>, <code class="docutils literal notranslate"><span class="pre">Maroon</span></code>, <code class="docutils literal notranslate"><span class="pre">Mocha</span></code>, <code class="docutils literal notranslate"><span class="pre">Pink</span></code>, <code class="docutils literal notranslate"><span class="pre">Salmon</span></code>, <code class="docutils literal notranslate"><span class="pre">Spring</span></code>,
-<code class="docutils literal notranslate"><span class="pre">Tangerine</span></code>, <code class="docutils literal notranslate"><span class="pre">Teal</span></code>, <code class="docutils literal notranslate"><span class="pre">Tin</span></code>. Default value: <code class="docutils literal notranslate"><span class="pre">Aqua</span></code>.</p></td>
+<code class="docutils literal notranslate"><span class="pre">Tangerine</span></code>, <code class="docutils literal notranslate"><span class="pre">Teal</span></code>, <code class="docutils literal notranslate"><span class="pre">Tin</span></code>. Default value: <code class="docutils literal notranslate"><span class="pre">Aqua</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>KEYWORDS</p></td>
-<td><p>No</p></td>
-<td><p>String</p></td>
-<td><p>Space-separated listr of keywords to be used in <strong>A-Z</strong> tab of
+<tr class="row-odd"><td>KEYWORDS</td>
+<td>No</td>
+<td>String</td>
+<td>Space-separated listr of keywords to be used in <strong>A-Z</strong> tab of
 <strong>Task List</strong> for keyword-based task searches. Default value:
-<code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</p></td>
+<code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>ALLOW_UPLOAD</p></td>
-<td><p>No</p></td>
-<td></td>
-<td><p>If given, this keyword creates file upload widgets, which are used
+<tr class="row-even"><td>ALLOW_UPLOAD</td>
+<td>No</td>
+<td> </td>
+<td>If given, this keyword creates file upload widgets, which are used
 instead of object selection widgets when workflow task is invoked from
 the root of <strong>Job Tree</strong>. This keyword should not be used if workflow
 cannot be run from the root (for example, if it uses <em>Structure Revision</em>
-as one input data type).</p></td>
+as one input data type).</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="input-data-section">
-<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">7.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+
+
+<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">7.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this headline">¶</a></h3>
 <p>Input data section must follow <a class="reference internal" href="#wscript-reference-header"><span class="std std-ref">Header section</span></a> and cannot
 be empty. The section may contain only <code class="docutils literal notranslate"><span class="pre">DATA</span></code> and <code class="docutils literal notranslate"><span class="pre">!DATA</span></code> statements, where
 exclamation mark means that data input is mandatory. One <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement
@@ -1156,66 +1157,66 @@ statement has the following syntax:</p>
 </pre></div>
 </div>
 <p>where the <code class="docutils literal notranslate"><span class="pre">TYPES</span></code> part is optional.</p>
-<table id="id4">
+<table border="1" id="id4">
 <caption><span class="caption-text">Header section: data objects</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 15.0%"/>
-<col style="width: 85.0%"/>
+<col width="15%"/>
+<col width="85%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Object name</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Object name</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>UNMERGED</p></td>
-<td><p>Unmerged reflection dataset</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>UNMERGED</td>
+<td>Unmerged reflection dataset</td>
 </tr>
-<tr class="row-odd"><td><p>HKL</p></td>
-<td><p>Merged reflection dataset</p></td>
+<tr class="row-odd"><td>HKL</td>
+<td>Merged reflection dataset</td>
 </tr>
-<tr class="row-even"><td><p>XYZ</p></td>
-<td><p>Structure model coordinates</p></td>
+<tr class="row-even"><td>XYZ</td>
+<td>Structure model coordinates</td>
 </tr>
-<tr class="row-odd"><td><p>SEQ</p></td>
-<td><p>Macromolecular sequence</p></td>
+<tr class="row-odd"><td>SEQ</td>
+<td>Macromolecular sequence</td>
 </tr>
-<tr class="row-even"><td><p>LIBRARY</p></td>
-<td><p>Crystallographic restraints’ library for non-standard residues and
-ligands not found in CCP4 Monomer Library</p></td>
+<tr class="row-even"><td>LIBRARY</td>
+<td>Crystallographic restraints’ library for non-standard residues and
+ligands not found in CCP4 Monomer Library</td>
 </tr>
-<tr class="row-odd"><td><p>LIGAND</p></td>
-<td><p>Ligand descriptions for fitting in electron density. This will create
+<tr class="row-odd"><td>LIGAND</td>
+<td>Ligand descriptions for fitting in electron density. This will create
 graphical widgets for specifying either a SMILES string, 3-letter ligand
-code or upload a <code class="docutils literal notranslate"><span class="pre">.cif</span></code> file with ligand descriptions.</p></td>
+code or upload a <code class="docutils literal notranslate"><span class="pre">.cif</span></code> file with ligand descriptions.</td>
 </tr>
 </tbody>
 </table>
-<table id="id5">
+<table border="1" id="id5">
 <caption><span class="caption-text">Header section: data objects subtypes</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 15.0%"/>
-<col style="width: 85.0%"/>
+<col width="15%"/>
+<col width="85%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Subtype name</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Subtype name</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>anomalous</p></td>
-<td><p>Reflection dataset with anomalous scattering</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>anomalous</td>
+<td>Reflection dataset with anomalous scattering</td>
 </tr>
-<tr class="row-odd"><td><p>protein</p></td>
-<td><p>Structure coordinates or sequence corresponding to an amino acid chain</p></td>
+<tr class="row-odd"><td>protein</td>
+<td>Structure coordinates or sequence corresponding to an amino acid chain</td>
 </tr>
-<tr class="row-even"><td><p>RNA</p></td>
-<td><p>Structure coordinates or sequence corresponding to a ribonucleic acid
-chain</p></td>
+<tr class="row-even"><td>RNA</td>
+<td>Structure coordinates or sequence corresponding to a ribonucleic acid
+chain</td>
 </tr>
-<tr class="row-odd"><td><p>DNA</p></td>
-<td><p>Structure coordinates or sequence corresponding to a deoxyribonucleic
-acid chain</p></td>
+<tr class="row-odd"><td>DNA</td>
+<td>Structure coordinates or sequence corresponding to a deoxyribonucleic
+acid chain</td>
 </tr>
 </tbody>
 </table>
@@ -1234,9 +1235,9 @@ DATA XYZ TYPES protein
 !DATA SEQ TYPES protein dna rna
 </pre></div>
 </div>
-</section>
-<section id="input-parameters-section">
-<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">7.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
+
+
+<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">7.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this headline">¶</a></h3>
 <p>Input parameters section is optional. If used, it must follow
 <a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>. The section is made of principal
 statements <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> or <code class="docutils literal notranslate"><span class="pre">!PAR_*</span></code> followed by their specifications. The leading
@@ -1245,121 +1246,121 @@ parameter cannot have a default value. On contrary, <code class="docutils litera
 have a default parameter specified. The exclamation mark cannot be applied in
 case of <code class="docutils literal notranslate"><span class="pre">PAR_CHECK</span></code> and <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code> parameters, which always have a
 default value.</p>
-<table id="id6">
+<table border="1" id="id6">
 <caption><span class="caption-text">Principal parameter statements</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 10.0%"/>
-<col style="width: 82.0%"/>
+<col width="8%"/>
+<col width="10%"/>
+<col width="82%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Value</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>PAR_INTEGER</p></td>
-<td><p>variable’s name</p></td>
-<td><p>Creates graphical widget for integer number input. The input is assigned
+<tbody valign="top">
+<tr class="row-even"><td>PAR_INTEGER</td>
+<td>variable’s name</td>
+<td>Creates graphical widget for integer number input. The input is assigned
 to internal workflow variable with specified name, which is created
-automatically.</p></td>
+automatically.</td>
 </tr>
-<tr class="row-odd"><td><p>PAR_REAL</p></td>
-<td><p>variable’s name</p></td>
-<td><p>Creates graphical widget for real number input. The input is assigned to
+<tr class="row-odd"><td>PAR_REAL</td>
+<td>variable’s name</td>
+<td>Creates graphical widget for real number input. The input is assigned to
 internal workflow variable with specified name, which is created
-automatically.</p></td>
+automatically.</td>
 </tr>
-<tr class="row-even"><td><p>PAR_STRING</p></td>
-<td><p>variable’s name</p></td>
-<td><p>Creates graphical widget for string value input (such as atom name of
+<tr class="row-even"><td>PAR_STRING</td>
+<td>variable’s name</td>
+<td>Creates graphical widget for string value input (such as atom name of
 anomalous scatterer). The input is assigned to internal workflow variable
-with specified name, which is created automatically.</p></td>
+with specified name, which is created automatically.</td>
 </tr>
-<tr class="row-odd"><td><p>PAR_CHECK</p></td>
-<td><p>variable’s name</p></td>
-<td><p>Creates graphical widget for a checkbox input. The input (<code class="docutils literal notranslate"><span class="pre">True/False</span></code>
+<tr class="row-odd"><td>PAR_CHECK</td>
+<td>variable’s name</td>
+<td>Creates graphical widget for a checkbox input. The input (<code class="docutils literal notranslate"><span class="pre">True/False</span></code>
 for checked/unchecked states, respectively) is assigned to internal
 workflow variable with specified name, which is created automatically.
 PAR_CHECK cannot be preceded with the exclamation sign, and it always
-has a default value (unchecked if not specified).</p></td>
+has a default value (unchecked if not specified).</td>
 </tr>
-<tr class="row-even"><td><p>PAR_COMBO</p></td>
-<td><p>variable’s name</p></td>
-<td><p>Creates graphical widget for combobox input. The input (value associated
+<tr class="row-even"><td>PAR_COMBO</td>
+<td>variable’s name</td>
+<td>Creates graphical widget for combobox input. The input (value associated
 with the selected combobox item) is assigned to internal workflow variable
 with specified name, which is created automatically. PAR_COMBO cannot be
 preceded with the exclamation sign, and it always has a default value
-(first item if not specified).</p></td>
+(first item if not specified).</td>
 </tr>
 </tbody>
 </table>
-<table id="id7">
+<table border="1" id="id7">
 <caption><span class="caption-text">Input parameters specifications</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 8.0%"/>
-<col style="width: 8.0%"/>
-<col style="width: 76.0%"/>
+<col width="8%"/>
+<col width="8%"/>
+<col width="8%"/>
+<col width="76%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Value</p></th>
-<th class="head"><p>Mandatory</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Value</th>
+<th class="head">Mandatory</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>LABEL</p></td>
-<td><p>String</p></td>
-<td><p>yes</p></td>
-<td><p>Descriptive label for input widget, could be several space-separated
-words. Example: <code class="docutils literal notranslate"><span class="pre">Number</span> <span class="pre">of</span> <span class="pre">refinement</span> <span class="pre">cycles</span></code>.</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>LABEL</td>
+<td>String</td>
+<td>yes</td>
+<td>Descriptive label for input widget, could be several space-separated
+words. Example: <code class="docutils literal notranslate"><span class="pre">Number</span> <span class="pre">of</span> <span class="pre">refinement</span> <span class="pre">cycles</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>TOOLTIP</p></td>
-<td><p>String</p></td>
-<td><p>no</p></td>
-<td><p>Extend description for input widget, which appears on mouse hovering
-over widget’s fields. Could be several space-separated words.</p></td>
+<tr class="row-odd"><td>TOOLTIP</td>
+<td>String</td>
+<td>no</td>
+<td>Extend description for input widget, which appears on mouse hovering
+over widget’s fields. Could be several space-separated words.</td>
 </tr>
-<tr class="row-even"><td><p>IWIDTH</p></td>
-<td><p>number</p></td>
-<td><p>no</p></td>
-<td><p>Width of input widget’s active field, in pixels. Default values depend
-on the widget type and should be suitable in most cases.</p></td>
+<tr class="row-even"><td>IWIDTH</td>
+<td>number</td>
+<td>no</td>
+<td>Width of input widget’s active field, in pixels. Default values depend
+on the widget type and should be suitable in most cases.</td>
 </tr>
-<tr class="row-odd"><td><p>MAXLENGTH</p></td>
-<td><p>number</p></td>
-<td><p>no</p></td>
-<td><p>Maximum number of input characters in <code class="docutils literal notranslate"><span class="pre">PAR_STRING</span></code> widget (unlimited
-by default)</p></td>
+<tr class="row-odd"><td>MAXLENGTH</td>
+<td>number</td>
+<td>no</td>
+<td>Maximum number of input characters in <code class="docutils literal notranslate"><span class="pre">PAR_STRING</span></code> widget (unlimited
+by default)</td>
 </tr>
-<tr class="row-even"><td><p>RANGE</p></td>
-<td><p>2 numbers</p></td>
-<td><p>no</p></td>
-<td><p>Minimum and maximum acceptable values for <code class="docutils literal notranslate"><span class="pre">PAR_INTEGER</span></code> and
+<tr class="row-even"><td>RANGE</td>
+<td>2 numbers</td>
+<td>no</td>
+<td>Minimum and maximum acceptable values for <code class="docutils literal notranslate"><span class="pre">PAR_INTEGER</span></code> and
 <code class="docutils literal notranslate"><span class="pre">PAR_REAL</span></code> widgets, space-separated. If only one limit should be used,
 the other limit should be represented by asterisk <code class="docutils literal notranslate"><span class="pre">*</span></code>. For example,
-<code class="docutils literal notranslate"><span class="pre">RANGE</span>  <span class="pre">1</span> <span class="pre">*</span></code> means that value cannot be less than 1 but no upper limit.</p></td>
+<code class="docutils literal notranslate"><span class="pre">RANGE</span>  <span class="pre">1</span> <span class="pre">*</span></code> means that value cannot be less than 1 but no upper limit.</td>
 </tr>
-<tr class="row-odd"><td><p>OPTION</p></td>
-<td><p>word and string</p></td>
-<td><p>yes</p></td>
-<td><p>Selection item for <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code> widget. Statement’s value consists of a
+<tr class="row-odd"><td>OPTION</td>
+<td>word and string</td>
+<td>yes</td>
+<td>Selection item for <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code> widget. Statement’s value consists of a
 key and text string, which is displayed as a selectable string in the
 combobox. If string is selected by user, widget’s variable is assigned
 the corresponding key. For example, <code class="docutils literal notranslate"><span class="pre">OPTION</span> <span class="pre">A</span> <span class="pre">Choose</span> <span class="pre">option</span> <span class="pre">A</span></code> will
 put line <code class="docutils literal notranslate"><span class="pre">Choose</span> <span class="pre">option</span> <span class="pre">A</span></code> in the combobox. If this line is selected,
-combobox’s value is string <code class="docutils literal notranslate"><span class="pre">"A"</span></code>.</p></td>
+combobox’s value is string <code class="docutils literal notranslate"><span class="pre">"A"</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>DEFAULT</p></td>
-<td><p>String or number</p></td>
-<td><p>yes/no</p></td>
-<td><p>Default value for widget/parameter. This statement is mandatory if
+<tr class="row-even"><td>DEFAULT</td>
+<td>String or number</td>
+<td>yes/no</td>
+<td>Default value for widget/parameter. This statement is mandatory if
 widget is described with leading exclamation sign, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">!PAR_REAL</span></code>.
 For <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code>, default value must be one of keys listed in
-<code class="docutils literal notranslate"><span class="pre">OPTION</span></code> statements.</p></td>
+<code class="docutils literal notranslate"><span class="pre">OPTION</span></code> statements.</td>
 </tr>
 </tbody>
 </table>
@@ -1386,9 +1387,9 @@ PAR_CHECK     reqValReport  # name to be used in workflow's expressions
     DEFAULT   Unchecked
 </pre></div>
 </div>
-</section>
-<section id="workflow-body-section">
-<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">7.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
+
+
+<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">7.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this headline">¶</a></h3>
 <p>Workflow body must be the last section in <strong>WScript</strong> file. It may contain
 task run instructions, variables and workflow control statements.</p>
 <p>Task run instructions represent a set of statements which starts with <em>Run Name</em>
@@ -1402,114 +1403,140 @@ statement and finishes with <em>Run</em> statenment:</p>
 <strong>Workflow Creator</strong>, as described in <a class="reference internal" href="#simple-mr-workflow"><span class="std std-ref">Simple MR Workflow</span></a> with many
 examples and explanations. Therefore, here only the reference of relevant
 statements is provided.</p>
-<table id="id8">
+<table border="1" id="id8">
 <caption><span class="caption-text">Task run statements</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 18.0%"/>
-<col style="width: 74.0%"/>
+<col width="8%"/>
+<col width="18%"/>
+<col width="74%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Key</p></th>
-<th class="head"><p>Parameters</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Parameters</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>@RUN_NAME</p></td>
-<td><p>None</p></td>
-<td><p>Unique name, which opens the set of relevant statements and is used
-for referencing task in looping and branching</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>@RUN_NAME</td>
+<td>None</td>
+<td>Unique name, which opens the set of relevant statements and is used
+for referencing task in looping and branching</td>
 </tr>
-<tr class="row-odd"><td><p>@RUN_NAME[x]</p></td>
-<td><p>None</p></td>
-<td><p>Same as <code class="docutils literal notranslate"><span class="pre">@RUN_NAME</span></code> but modified with the value of variable <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+<tr class="row-odd"><td>@RUN_NAME[x]</td>
+<td>None</td>
+<td>Same as <code class="docutils literal notranslate"><span class="pre">@RUN_NAME</span></code> but modified with the value of variable <code class="docutils literal notranslate"><span class="pre">x</span></code>.
 Such modification is used in loops and branching, see examples in
-<a class="reference internal" href="#simple-mr-workflow"><span class="std std-ref">Simple MR Workflow</span></a>.</p></td>
+<a class="reference internal" href="#simple-mr-workflow"><span class="std std-ref">Simple MR Workflow</span></a>.</td>
 </tr>
-<tr class="row-even"><td><p>IF</p></td>
-<td><p>expression</p></td>
-<td><p>Instructs to run the task only if <code class="docutils literal notranslate"><span class="pre">expression</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
-for example, <code class="docutils literal notranslate"><span class="pre">IF</span>  <span class="pre">Rfree&lt;0.4</span></code>.</p></td>
+<tr class="row-even"><td>IF</td>
+<td>expression</td>
+<td>Instructs to run the task only if <code class="docutils literal notranslate"><span class="pre">expression</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+for example, <code class="docutils literal notranslate"><span class="pre">IF</span>  <span class="pre">Rfree&lt;0.4</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>IFDATA</p></td>
-<td><p>data type</p></td>
-<td><p>Instructs to run the task only if data of specified type is present.
+<tr class="row-odd"><td>IFDATA</td>
+<td>data type</td>
+<td>Instructs to run the task only if data of specified type is present.
 data type should be given as a lowercase of data types used in <code class="docutils literal notranslate"><span class="pre">DATA</span></code>
 statements in <a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>, for example,
-<code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code>, <code class="docutils literal notranslate"><span class="pre">library</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand</span></code>.</p></td>
+<code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code>, <code class="docutils literal notranslate"><span class="pre">library</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>IFNOTDATA</p></td>
-<td><p>data type</p></td>
-<td><p>Instructs to run the task only if data of specified type is <em>NOT</em> present.
+<tr class="row-even"><td>IFNOTDATA</td>
+<td>data type</td>
+<td>Instructs to run the task only if data of specified type is <em>NOT</em> present.
 data type should be given as a lowercase of data types used in <code class="docutils literal notranslate"><span class="pre">DATA</span></code>
 statements in <a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>, for example,
-<code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code>, <code class="docutils literal notranslate"><span class="pre">library</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand</span></code>.</p></td>
+<code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code>, <code class="docutils literal notranslate"><span class="pre">library</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>DATA</p></td>
-<td><p>data id and data name</p></td>
-<td><p>Forces placement of specified data in particular item of CCP4 Cloud task
-interface with “not standard” data id. For example, <em>Aimless</em> task assumes
-input of merged or unmerged reflections for symmetry reference in data
-object with id <code class="docutils literal notranslate"><span class="pre">ds0</span></code>. This id is not recognised automatically as a
+<tr class="row-odd"><td>DATA</td>
+<td>data id and data name</td>
+<td><p class="first">Forces placement of specified data in particular item of CCP4 Cloud task.
+This is necessary when task interface has “not standard” data id, or
+when task does not use Structure Revision that is already in the branch.</p>
+<p>Example 1. <em>Aimless</em> task
+assumes input of merged or unmerged reflections for symmetry reference in
+data object with id <code class="docutils literal notranslate"><span class="pre">ds0</span></code>. This id is not recognised automatically as a
 recipient of reflection data, therefore, statement <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">unmerged</span></code>
-or <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">hkl</span></code> must be placed in task instructions for <em>Aimless</em>.</p></td>
+or <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">hkl</span></code> must be placed in task instructions for <em>Aimless</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">IFDATA</span>    <span class="n">unmerged</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+</pre></div>
+</div>
+<p>Example 2. Sequence alignment task expects input of mixed objects, such
+as sequences and models, in a single field named <code class="docutils literal notranslate"><span class="pre">seq</span></code>. The corresponding
+description is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@SEQALIGN</span>
+    <span class="n">DATA</span> <span class="n">seq</span> <span class="n">seq</span>
+    <span class="n">DATA</span> <span class="n">seq</span> <span class="n">xyz</span>
+    <span class="n">RUN</span> <span class="n">SeqAlign</span>
+</pre></div>
+</div>
+<p>Example 3. Dimple-MR takes merged reflections and atomic coordinates
+rather than Structure Revision:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@DIMPLEMR</span>
+    <span class="n">DATA</span> <span class="n">hkl</span> <span class="n">hkl</span>
+    <span class="n">DATA</span> <span class="n">xyz</span> <span class="n">xyz</span>
+    <span class="n">RUN</span> <span class="n">DimpleMR</span>
+</pre></div>
+</div>
+</td>
 </tr>
-<tr class="row-even"><td><p>ALIAS</p></td>
-<td><p>standard data id and task data id</p></td>
-<td><p>Used in cases when data id, used in task interface, is not “standard”,
+<tr class="row-even"><td>ALIAS</td>
+<td>standard data id and task data id</td>
+<td>Used in cases when data id, used in task interface, is not “standard”,
 such as <code class="docutils literal notranslate"><span class="pre">revision</span></code>, <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code> and similar. Example:
-<code class="docutils literal notranslate"><span class="pre">ALIAS</span>  <span class="pre">revision</span> <span class="pre">istruct</span></code> (for <em>XyzUtils</em>).</p></td>
+<code class="docutils literal notranslate"><span class="pre">ALIAS</span>  <span class="pre">revision</span> <span class="pre">istruct</span></code> (for <em>XyzUtils</em>).</td>
 </tr>
-<tr class="row-odd"><td><p>USE</p></td>
-<td><p>data name and number / variable / expression</p></td>
-<td><p>Used for data object specification in cases when several data objects
+<tr class="row-odd"><td>USE</td>
+<td>data name and number / variable / expression</td>
+<td>Used for data object specification in cases when several data objects
 with given name are available. For example, <em>Crank-2</em> creates up to 4
 <em>Structure Revisions</em> after MAD phasing, and the following statement:
 <code class="docutils literal notranslate"><span class="pre">USE</span> <span class="pre">REVISION</span> <span class="pre">2</span></code> could be used in next task description in order to
-force using 2nd revision produced.</p></td>
+force using 2nd revision produced.</td>
 </tr>
-<tr class="row-even"><td><p>PROPERTY</p></td>
-<td><p>data name, property id and property value</p></td>
-<td><p>Used for modifying properties of data objects. For example,
+<tr class="row-even"><td>PROPERTY</td>
+<td>data name, property id and property value</td>
+<td>Used for modifying properties of data objects. For example,
 <code class="docutils literal notranslate"><span class="pre">PROPERTY</span> <span class="pre">HKL</span> <span class="pre">res_high</span> <span class="pre">1.4</span></code> request cutting reflection dataset to
 1.4A in <em>Change Resolution</em> task; <code class="docutils literal notranslate"><span class="pre">PROPERTY</span> <span class="pre">REVISION&gt;HKL</span> <span class="pre">wtype</span> <span class="pre">"peak"</span></code>
 sets string value <code class="docutils literal notranslate"><span class="pre">"peak"</span></code> (not to be mistaken with <code class="docutils literal notranslate"><span class="pre">peak</span></code> variable,
-therefore, enquoted) for the wavelength type in <em>Crank-2</em> or <em>ShelxCD</em>.</p></td>
+therefore, enquoted) for the wavelength type in <em>Crank-2</em> or <em>ShelxCD</em>.</td>
 </tr>
-<tr class="row-odd"><td><p>PARAMETER</p></td>
-<td><p>parameter id and value (expression)</p></td>
-<td><p>Assigns the specified value (or result of specified expression) to
+<tr class="row-odd"><td>PARAMETER</td>
+<td>parameter id and value (expression)</td>
+<td>Assigns the specified value (or result of specified expression) to
 task parameter with specified id. Parameters ids coincide with keys in
 “parameters” structure of the corrsponding task class. Example:
-<code class="docutils literal notranslate"><span class="pre">PARAMETER</span> <span class="pre">VDW_VAL</span> <span class="pre">2.0</span></code> (for <em>Refmac</em>).</p></td>
+<code class="docutils literal notranslate"><span class="pre">PARAMETER</span> <span class="pre">VDW_VAL</span> <span class="pre">2.0</span></code> (for <em>Refmac</em>).</td>
 </tr>
-<tr class="row-even"><td><p>USE_SUGGESTED_PARAMETERS</p></td>
-<td><p>none</p></td>
-<td><p>Forces using parameters suggested based on results of previous task of
-the same types. Currently, this is applicable only to <em>Refmac</em>.</p></td>
+<tr class="row-even"><td>USE_SUGGESTED_PARAMETERS</td>
+<td>none</td>
+<td>Forces using parameters suggested based on results of previous task of
+the same types. Currently, this is applicable only to <em>Refmac</em>.</td>
 </tr>
-<tr class="row-odd"><td><p>RUN</p></td>
-<td><p>Task name</p></td>
-<td><p>Gives the name of CCP4 Cloud task that must be run, and finishes the set
-of task run statements.</p></td>
+<tr class="row-odd"><td>RUN</td>
+<td>Task name</td>
+<td>Gives the name of CCP4 Cloud task that must be run, and finishes the set
+of task run statements.</td>
 </tr>
 </tbody>
 </table>
-<table id="id9">
+<table border="1" id="id9">
 <caption><span class="caption-text">Workflow variables and control</span><a class="headerlink" href="#id9" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 92.0%"/>
+<col width="8%"/>
+<col width="92%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Operator</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Operator</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>let x = <em>expression</em> [if <em>condition</em>]</p></td>
-<td><p>Variable assignment, for example:</p>
+<tbody valign="top">
+<tr class="row-even"><td>let x = <em>expression</em> [if <em>condition</em>]</td>
+<td><p class="first">Variable assignment, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
 </pre></div>
 </div>
@@ -1518,20 +1545,20 @@ of task run statements.</p></td>
 </pre></div>
 </div>
 <p>The whole statement may be made conditional:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">PI</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.3</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">y</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">PI</span><span class="o">/</span><span class="mi">4</span><span class="p">);</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.3</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p>repeat @RUN_NAME while <em>condition</em></p></td>
-<td><p>Instruction to repeat the specified task while <em>condition</em> evaluates to
+<tr class="row-odd"><td>repeat @RUN_NAME while <em>condition</em></td>
+<td><p class="first">Instruction to repeat the specified task while <em>condition</em> evaluates to
 <em>True</em>, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">repeat</span> <span class="nd">@REFINEMENT</span> <span class="k">while</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span> <span class="ow">and</span> <span class="nb">iter</span><span class="o">&lt;</span><span class="mi">10</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Task, used in <code class="docutils literal notranslate"><span class="pre">repeat</span></code> statement, should be described with modificator,
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Task, used in <code class="docutils literal notranslate"><span class="pre">repeat</span></code> statement, should be described with modificator,
 <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">@REFINEMENT[iter]</span></code>, and modificator should be advanced
 within the repeat loop scope, <em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">iter</span> <span class="pre">=</span> <span class="pre">iter</span> <span class="pre">+</span> <span class="pre">1</span></code>. Always
 limit the maximum number of repeats (10 in the above example) to avoid
@@ -1540,8 +1567,8 @@ modificator in <code class="docutils literal notranslate"><span class="pre">repe
 </div>
 </td>
 </tr>
-<tr class="row-even"><td><p>branch @RUN_NAME [if <em>condition</em>]</p></td>
-<td><p>Instruction to continue next task from the specified task, for example:</p>
+<tr class="row-even"><td>branch @RUN_NAME [if <em>condition</em>]</td>
+<td><p class="first">Instruction to continue next task from the specified task, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">1</span>
 </pre></div>
 </div>
@@ -1551,399 +1578,409 @@ as a variable with correct value:</p>
 </pre></div>
 </div>
 <p>Branching may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p>continue @RUN_NAME [if <em>condition</em>]</p></td>
-<td><p>Instruction to continue the workflow from the specified task, for example:</p>
+<tr class="row-odd"><td>continue @RUN_NAME [if <em>condition</em>]</td>
+<td><p class="first">Instruction to continue the workflow from the specified task, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span>
 </pre></div>
 </div>
 <p>continuation may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-even"><td><p>PRINT_VAR</p></td>
-<td><p>Prints current values of all workflow variables in CCP4 Cloud task’s log
+<tr class="row-even"><td>POINT @RUN_NAME</td>
+<td>Marks point in the workflow which can be used in <code class="docutils literal notranslate"><span class="pre">continue</span></code> (and only
+in <code class="docutils literal notranslate"><span class="pre">continue</span></code>). There are no actions associated with this operator.</td>
+</tr>
+<tr class="row-odd"><td>PARALLEL ON|OFF</td>
+<td>Tasks found between <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">ON</span></code> and <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">OFF</span></code> statements will
+be executed in parallel. Each such task will start a new branch, and
+statements after <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">OFF</span></code> will be applied in each branch. Therefore,
+parallel tasks should produce compatible output.</td>
+</tr>
+<tr class="row-even"><td>PRINT_VAR</td>
+<td><p class="first">Prints current values of all workflow variables in CCP4 Cloud task’s log
 file. example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRINT_VAR</span>  <span class="n">Rfactor</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRINT_VAR</span>  <span class="n">Rfactor</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p>checkTask(name)</p></td>
-<td><p>Queries task availability and assignes <code class="docutils literal notranslate"><span class="pre">True/False</span></code> to variable
+<tr class="row-odd"><td>checkTask(name)</td>
+<td><p class="first">Queries task availability and assignes <code class="docutils literal notranslate"><span class="pre">True/False</span></code> to variable
 <code class="docutils literal notranslate"><span class="pre">name_available</span></code>, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkTask</span><span class="p">(</span><span class="n">StructurePrediction</span><span class="p">)</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkTask</span><span class="p">(</span><span class="n">StructurePrediction</span><span class="p">)</span>
 <span class="n">PRINT_VAR</span>   <span class="n">StructurePrediction_available</span>
 <span class="k">continue</span>  <span class="nd">@AUTO_MR</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">StructurePrediction_available</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-even"><td><p>STOP [if <em>condition</em>]</p></td>
-<td><p>Stops the workflow. If condition is given, then workflow is stopped if
+<tr class="row-even"><td>STOP [if <em>condition</em>]</td>
+<td><p class="first">Stops the workflow. If condition is given, then workflow is stopped if
 <em>condition</em> evaluates <code class="docutils literal notranslate"><span class="pre">True</span></code>, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">STOP</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.22</span>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">STOP</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.22</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p>END</p></td>
-<td><p>Ends the workflow.</p></td>
+<tr class="row-odd"><td>END</td>
+<td>Ends the workflow.</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="pre-defined-variables">
-<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">7.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this heading">¶</a></h3>
+
+
+<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">7.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this headline">¶</a></h3>
 <p><strong>WScript</strong> has direct access to certain metrics produced by tasks through
 pre-defined variables. For example, <em>R_free</em> value produced by <em>Refmac</em> is
 assigned to variable <code class="docutils literal notranslate"><span class="pre">Rfree</span></code>.</p>
-<table id="id10">
+<table border="1" id="id10">
 <caption><span class="caption-text">Pre-defined variables</span><a class="headerlink" href="#id10" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 8.0%"/>
-<col style="width: 18.0%"/>
-<col style="width: 74.0%"/>
+<col width="8%"/>
+<col width="18%"/>
+<col width="74%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Variable</p></th>
-<th class="head"><p>Producing tasks</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Variable</th>
+<th class="head">Producing tasks</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>nasu</p></td>
-<td><p>ASU Definition</p></td>
-<td><p>Predicted number of monomeric units in ASU.</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>nasu</td>
+<td>ASU Definition</td>
+<td>Predicted number of monomeric units in ASU.</td>
 </tr>
-<tr class="row-odd"><td><p>nfitted</p></td>
-<td><p>PhaserMR Molrep</p></td>
-<td><p>Number of fitted (molecular replaced) monomeric units in ASU.</p></td>
+<tr class="row-odd"><td>nfitted</td>
+<td>PhaserMR Molrep</td>
+<td>Number of fitted (molecular replaced) monomeric units in ASU.</td>
 </tr>
-<tr class="row-even"><td><p>Rfree</p></td>
-<td><p>All tasks with refinement</p></td>
-<td><p>Free R-factor (varies between 0 and 1).</p></td>
+<tr class="row-even"><td>Rfree</td>
+<td>All tasks with refinement</td>
+<td>Free R-factor (varies between 0 and 1).</td>
 </tr>
-<tr class="row-odd"><td><p>Rfactor</p></td>
-<td><p>All tasks with refinement</p></td>
-<td><p>Work R-factor (varies between 0 and 1).</p></td>
+<tr class="row-odd"><td>Rfactor</td>
+<td>All tasks with refinement</td>
+<td>Work R-factor (varies between 0 and 1).</td>
 </tr>
-<tr class="row-even"><td><p>suggested</p></td>
-<td><p>Refmac</p></td>
-<td><p>Number of suggested parameters to change.</p></td>
+<tr class="row-even"><td>suggested</td>
+<td>Refmac</td>
+<td>Number of suggested parameters to change.</td>
 </tr>
-<tr class="row-odd"><td><p>N_unmerged</p></td>
-<td><p>Workflow</p></td>
-<td><p>Number of unmerged datasets given to workflow.</p></td>
+<tr class="row-odd"><td>N_unmerged</td>
+<td>Workflow</td>
+<td>Number of unmerged datasets given to workflow by user.</td>
 </tr>
-<tr class="row-even"><td><p>N_hkl</p></td>
-<td><p>Workflow, Aimless</p></td>
-<td><p>Number of merged datasets given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+<tr class="row-even"><td>N_hkl</td>
+<td>Workflow, Aimless</td>
+<td>Number of merged datasets given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>N_hkl_anom</p></td>
-<td><p>Workflow, Aimless</p></td>
-<td><p>Number of merged datasets with anomalous signal, given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</p></td>
+<tr class="row-odd"><td>N_hkl_anom</td>
+<td>Workflow, Aimless</td>
+<td>Number of merged datasets with anomalous signal, given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</td>
 </tr>
-<tr class="row-even"><td><p>N_seq</p></td>
-<td><p>Workflow</p></td>
-<td><p>Number of sequences given to workflow.</p></td>
+<tr class="row-even"><td>N_seq</td>
+<td>Workflow</td>
+<td>Number of sequences given to workflow by user.</td>
 </tr>
-<tr class="row-odd"><td><p>N_xyz</p></td>
-<td><p>Workflow</p></td>
-<td><p>Number of molecular models given to workflow.</p></td>
+<tr class="row-odd"><td>N_xyz</td>
+<td>Workflow</td>
+<td>Number of molecular models given to workflow by user.</td>
 </tr>
-<tr class="row-even"><td><p>N_lig</p></td>
-<td><p>Workflow, MakeLigand</p></td>
-<td><p>Number of ligand files given to workflow or produced by <code class="docutils literal notranslate"><span class="pre">MakeLigand</span></code>.</p></td>
+<tr class="row-even"><td>N_lig</td>
+<td>Workflow, MakeLigand</td>
+<td>Number of ligand files given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">MakeLigand</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><p>N_ligdesc</p></td>
-<td><p>Workflow</p></td>
-<td><p>Number of ligand descriptinos defined in workflow.</p></td>
+<tr class="row-odd"><td>N_ligdesc</td>
+<td>Workflow</td>
+<td>Number of ligand descriptinos defined by user in workflow’s input section.</td>
 </tr>
-<tr class="row-even"><td><p>N_lib</p></td>
-<td><p>Workflow</p></td>
-<td><p>Number of ligand libraries given to workflow.</p></td>
+<tr class="row-even"><td>N_lib</td>
+<td>Workflow</td>
+<td>Number of ligand libraries given by user to workflow.</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="mathematrical-expressions-syntax">
-<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">7.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this heading">¶</a></h3>
+
+
+<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">7.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this headline">¶</a></h3>
 <p><strong>WScript</strong> allows almost full range of <em>Python</em> mathematical expressions in
 <em>LET</em> statements and conditional statements. Available functions and operators
 are listed in this section.</p>
-<table id="id11">
+<table border="1" id="id11">
 <caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 15.0%"/>
-<col style="width: 15.0%"/>
-<col style="width: 70.0%"/>
+<col width="15%"/>
+<col width="15%"/>
+<col width="70%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Operator</p></th>
-<th class="head"><p>Associativity</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Operator</th>
+<th class="head">Associativity</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>(…)</p></td>
-<td><p>None</p></td>
-<td><p>Grouping</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>(…)</td>
+<td>None</td>
+<td>Grouping</td>
 </tr>
-<tr class="row-odd"><td><p>f(), x.y, a[i]</p></td>
-<td><p>Left</p></td>
-<td><p>Function call, property access, array indexing</p></td>
+<tr class="row-odd"><td>f(), x.y, a[i]</td>
+<td>Left</td>
+<td>Function call, property access, array indexing</td>
 </tr>
-<tr class="row-even"><td><p>!</p></td>
-<td><p>Left</p></td>
-<td><p>Factorial</p></td>
+<tr class="row-even"><td>!</td>
+<td>Left</td>
+<td>Factorial</td>
 </tr>
-<tr class="row-odd"><td><p>^</p></td>
-<td><p>Right</p></td>
-<td><p>Exponentiation</p></td>
+<tr class="row-odd"><td>^</td>
+<td>Right</td>
+<td>Exponentiation</td>
 </tr>
-<tr class="row-even"><td><p>+, -, not, sqrt, etc.</p></td>
-<td><p>Right</p></td>
-<td><p>Unary prefix operators (see below for the full list)</p></td>
+<tr class="row-even"><td>+, -, not, sqrt, etc.</td>
+<td>Right</td>
+<td>Unary prefix operators (see below for the full list)</td>
 </tr>
-<tr class="row-odd"><td><p>*, /, %</p></td>
-<td><p>Left</p></td>
-<td><p>Multiplication, division, remainder</p></td>
+<tr class="row-odd"><td>*, /, %</td>
+<td>Left</td>
+<td>Multiplication, division, remainder</td>
 </tr>
-<tr class="row-even"><td><p>+, -, ||</p></td>
-<td><p>Left</p></td>
-<td><p>Addition, subtraction, array/list concatenation</p></td>
+<tr class="row-even"><td>+, -, ||</td>
+<td>Left</td>
+<td>Addition, subtraction, array/list concatenation</td>
 </tr>
-<tr class="row-odd"><td><p>==, !=, &gt;=, &lt;=, &gt;, &lt;, in</p></td>
-<td><p>Left</p></td>
-<td><p>Equals, not equals, etc. “in” means “is the left operand included in the right array operand?”</p></td>
+<tr class="row-odd"><td>==, !=, &gt;=, &lt;=, &gt;, &lt;, in</td>
+<td>Left</td>
+<td>Equals, not equals, etc. “in” means “is the left operand included in the right array operand?”</td>
 </tr>
-<tr class="row-even"><td><p>and</p></td>
-<td><p>Left</p></td>
-<td><p>Logical AND</p></td>
+<tr class="row-even"><td>and</td>
+<td>Left</td>
+<td>Logical AND</td>
 </tr>
-<tr class="row-odd"><td><p>or</p></td>
-<td><p>Left</p></td>
-<td><p>Logical OR</p></td>
+<tr class="row-odd"><td>or</td>
+<td>Left</td>
+<td>Logical OR</td>
 </tr>
-<tr class="row-even"><td><p>x ? y : z</p></td>
-<td><p>Right</p></td>
-<td><p>Ternary conditional (if x then y else z)</p></td>
+<tr class="row-even"><td>x ? y : z</td>
+<td>Right</td>
+<td>Ternary conditional (if x then y else z)</td>
 </tr>
-<tr class="row-odd"><td><p>=</p></td>
-<td><p>Right</p></td>
-<td><p>Variable assignment</p></td>
+<tr class="row-odd"><td>=</td>
+<td>Right</td>
+<td>Variable assignment</td>
 </tr>
-<tr class="row-even"><td><p>;</p></td>
-<td><p>Left</p></td>
-<td><p>Expression separator</p></td>
+<tr class="row-even"><td>;</td>
+<td>Left</td>
+<td>Expression separator</td>
 </tr>
 </tbody>
 </table>
-<table id="id12">
+<table border="1" id="id12">
 <caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id12" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 15.0%"/>
-<col style="width: 85.0%"/>
+<col width="15%"/>
+<col width="85%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Operator</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Operator</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>-x</p></td>
-<td><p>Negation</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>-x</td>
+<td>Negation</td>
 </tr>
-<tr class="row-odd"><td><p>+x</p></td>
-<td><p>Unary plus. This converts it’s operand to a number, but has no other effect.</p></td>
+<tr class="row-odd"><td>+x</td>
+<td>Unary plus. This converts it’s operand to a number, but has no other effect.</td>
 </tr>
-<tr class="row-even"><td><p>x!</p></td>
-<td><p>Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.</p></td>
+<tr class="row-even"><td>x!</td>
+<td>Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.</td>
 </tr>
-<tr class="row-odd"><td><p>abs(x)</p></td>
-<td><p>Absolute value (magnitude) of x</p></td>
+<tr class="row-odd"><td>abs(x)</td>
+<td>Absolute value (magnitude) of x</td>
 </tr>
-<tr class="row-even"><td><p>acos(x)</p></td>
-<td><p>Arc cosine of x (in radians)</p></td>
+<tr class="row-even"><td>acos(x)</td>
+<td>Arc cosine of x (in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>acosh(x)</p></td>
-<td><p>Hyperbolic arc cosine of x (in radians)</p></td>
+<tr class="row-odd"><td>acosh(x)</td>
+<td>Hyperbolic arc cosine of x (in radians)</td>
 </tr>
-<tr class="row-even"><td><p>asin(x)</p></td>
-<td><p>Arc sine of x (in radians)</p></td>
+<tr class="row-even"><td>asin(x)</td>
+<td>Arc sine of x (in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>asinh(x)</p></td>
-<td><p>Hyperbolic arc sine of x (in radians)</p></td>
+<tr class="row-odd"><td>asinh(x)</td>
+<td>Hyperbolic arc sine of x (in radians)</td>
 </tr>
-<tr class="row-even"><td><p>atan(x)</p></td>
-<td><p>Arc tangent of x (in radians)</p></td>
+<tr class="row-even"><td>atan(x)</td>
+<td>Arc tangent of x (in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>atanh(x)</p></td>
-<td><p>Hyperbolic arc tangent of x (in radians)</p></td>
+<tr class="row-odd"><td>atanh(x)</td>
+<td>Hyperbolic arc tangent of x (in radians)</td>
 </tr>
-<tr class="row-even"><td><p>cbrt(x)</p></td>
-<td><p>Cube root of x</p></td>
+<tr class="row-even"><td>cbrt(x)</td>
+<td>Cube root of x</td>
 </tr>
-<tr class="row-odd"><td><p>ceil(x)</p></td>
-<td><p>Ceiling of x — the smallest integer that’s &gt;= x</p></td>
+<tr class="row-odd"><td>ceil(x)</td>
+<td>Ceiling of x — the smallest integer that’s &gt;= x</td>
 </tr>
-<tr class="row-even"><td><p>cos(x)</p></td>
-<td><p>Cosine of x (x is in radians)</p></td>
+<tr class="row-even"><td>cos(x)</td>
+<td>Cosine of x (x is in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>cosh(x)</p></td>
-<td><p>Hyperbolic cosine of x (x is in radians)</p></td>
+<tr class="row-odd"><td>cosh(x)</td>
+<td>Hyperbolic cosine of x (x is in radians)</td>
 </tr>
-<tr class="row-even"><td><p>exp(x)</p></td>
-<td><p>e^x (exponential/antilogarithm function with base e)</p></td>
+<tr class="row-even"><td>exp(x)</td>
+<td>e^x (exponential/antilogarithm function with base e)</td>
 </tr>
-<tr class="row-odd"><td><p>expm1(x)</p></td>
-<td><p>e^x - 1</p></td>
+<tr class="row-odd"><td>expm1(x)</td>
+<td>e^x - 1</td>
 </tr>
-<tr class="row-even"><td><p>floor(x)</p></td>
-<td><p>Floor of x — the largest integer that’s &lt;= x</p></td>
+<tr class="row-even"><td>floor(x)</td>
+<td>Floor of x — the largest integer that’s &lt;= x</td>
 </tr>
-<tr class="row-odd"><td><p>length(x)</p></td>
-<td><p>String or array length of x</p></td>
+<tr class="row-odd"><td>length(x)</td>
+<td>String or array length of x</td>
 </tr>
-<tr class="row-even"><td><p>ln(x)</p></td>
-<td><p>Natural logarithm of x</p></td>
+<tr class="row-even"><td>ln(x)</td>
+<td>Natural logarithm of x</td>
 </tr>
-<tr class="row-odd"><td><p>log(x)</p></td>
-<td><p>Natural logarithm of x (synonym for ln, not base-10)</p></td>
+<tr class="row-odd"><td>log(x)</td>
+<td>Natural logarithm of x (synonym for ln, not base-10)</td>
 </tr>
-<tr class="row-even"><td><p>log10(x)</p></td>
-<td><p>Base-10 logarithm of x</p></td>
+<tr class="row-even"><td>log10(x)</td>
+<td>Base-10 logarithm of x</td>
 </tr>
-<tr class="row-odd"><td><p>log2(x)</p></td>
-<td><p>Base-2 logarithm of x</p></td>
+<tr class="row-odd"><td>log2(x)</td>
+<td>Base-2 logarithm of x</td>
 </tr>
-<tr class="row-even"><td><p>log1p(x)</p></td>
-<td><p>Natural logarithm of (1 + x)</p></td>
+<tr class="row-even"><td>log1p(x)</td>
+<td>Natural logarithm of (1 + x)</td>
 </tr>
-<tr class="row-odd"><td><p>not x</p></td>
-<td><p>Logical NOT operator</p></td>
+<tr class="row-odd"><td>not x</td>
+<td>Logical NOT operator</td>
 </tr>
-<tr class="row-even"><td><p>round(x)</p></td>
-<td><p>X, rounded to the nearest integer, using “grade-school rounding”</p></td>
+<tr class="row-even"><td>round(x)</td>
+<td>X, rounded to the nearest integer, using “grade-school rounding”</td>
 </tr>
-<tr class="row-odd"><td><p>sign(x)</p></td>
-<td><p>Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)</p></td>
+<tr class="row-odd"><td>sign(x)</td>
+<td>Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)</td>
 </tr>
-<tr class="row-even"><td><p>sin(x)</p></td>
-<td><p>Sine of x (x is in radians)</p></td>
+<tr class="row-even"><td>sin(x)</td>
+<td>Sine of x (x is in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>sinh(x)</p></td>
-<td><p>Hyperbolic sine of x (x is in radians)</p></td>
+<tr class="row-odd"><td>sinh(x)</td>
+<td>Hyperbolic sine of x (x is in radians)</td>
 </tr>
-<tr class="row-even"><td><p>sqrt(x)</p></td>
-<td><p>Square root of x. Result is NaN (Not a Number) if x is negative.</p></td>
+<tr class="row-even"><td>sqrt(x)</td>
+<td>Square root of x. Result is NaN (Not a Number) if x is negative.</td>
 </tr>
-<tr class="row-odd"><td><p>tan(x)</p></td>
-<td><p>Tangent of x (x is in radians)</p></td>
+<tr class="row-odd"><td>tan(x)</td>
+<td>Tangent of x (x is in radians)</td>
 </tr>
-<tr class="row-even"><td><p>tanh(x)</p></td>
-<td><p>Hyperbolic tangent of x (x is in radians)</p></td>
+<tr class="row-even"><td>tanh(x)</td>
+<td>Hyperbolic tangent of x (x is in radians)</td>
 </tr>
-<tr class="row-odd"><td><p>trunc(x)</p></td>
-<td><p>Integral part of a X, looks like floor(x) unless for negative number</p></td>
+<tr class="row-odd"><td>trunc(x)</td>
+<td>Integral part of a X, looks like floor(x) unless for negative number</td>
 </tr>
 </tbody>
 </table>
-<table id="id13">
+<table border="1" id="id13">
 <caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id13" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 17.0%"/>
-<col style="width: 83.0%"/>
+<col width="17%"/>
+<col width="83%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Function</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Function</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>random(n)</p></td>
-<td><p>Get a random number in the range [0, n]. If n is zero, or not provided, it defaults to 1.</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>random(n)</td>
+<td>Get a random number in the range [0, n]. If n is zero, or not provided, it defaults to 1.</td>
 </tr>
-<tr class="row-odd"><td><p>fac(n)</p></td>
-<td><p>n! (factorial of n: “n * (n-1) * (n-2) * … * 2 * 1”) Deprecated. Use the ! operator instead.</p></td>
+<tr class="row-odd"><td>fac(n)</td>
+<td>n! (factorial of n: “n * (n-1) * (n-2) * … * 2 * 1”) Deprecated. Use the ! operator instead.</td>
 </tr>
-<tr class="row-even"><td><p>min(a,b,…)</p></td>
-<td><p>Get the smallest (minimum) number in the list.</p></td>
+<tr class="row-even"><td>min(a,b,…)</td>
+<td>Get the smallest (minimum) number in the list.</td>
 </tr>
-<tr class="row-odd"><td><p>max(a,b,…)</p></td>
-<td><p>Get the largest (maximum) number in the list.</p></td>
+<tr class="row-odd"><td>max(a,b,…)</td>
+<td>Get the largest (maximum) number in the list.</td>
 </tr>
-<tr class="row-even"><td><p>hypot(a,b)</p></td>
-<td><p>Hypotenuse, i.e. the square root of the sum of squares of its arguments.</p></td>
+<tr class="row-even"><td>hypot(a,b)</td>
+<td>Hypotenuse, i.e. the square root of the sum of squares of its arguments.</td>
 </tr>
-<tr class="row-odd"><td><p>pyt(a, b)</p></td>
-<td><p>Alias for hypot.</p></td>
+<tr class="row-odd"><td>pyt(a, b)</td>
+<td>Alias for hypot.</td>
 </tr>
-<tr class="row-even"><td><p>pow(x, y)</p></td>
-<td><p>Equivalent to x^y. For consistency with JavaScript’s Math object.</p></td>
+<tr class="row-even"><td>pow(x, y)</td>
+<td>Equivalent to x^y. For consistency with JavaScript’s Math object.</td>
 </tr>
-<tr class="row-odd"><td><p>atan2(y, x)</p></td>
-<td><p>Arc tangent of x/y. i.e. the angle between (0, 0) and (x, y) in radians.</p></td>
+<tr class="row-odd"><td>atan2(y, x)</td>
+<td>Arc tangent of x/y. i.e. the angle between (0, 0) and (x, y) in radians.</td>
 </tr>
-<tr class="row-even"><td><p>roundTo(x, n)</p></td>
-<td><p>Rounds x to n places after the decimal point.</p></td>
+<tr class="row-even"><td>roundTo(x, n)</td>
+<td>Rounds x to n places after the decimal point.</td>
 </tr>
-<tr class="row-odd"><td><p>map(f, a)</p></td>
-<td><p>Array map: Pass each element of <cite>a</cite> the function <cite>f</cite>, and return an array of the results.</p></td>
+<tr class="row-odd"><td>map(f, a)</td>
+<td>Array map: Pass each element of <cite>a</cite> the function <cite>f</cite>, and return an array of the results.</td>
 </tr>
-<tr class="row-even"><td><p>fold(f, y, a)</p></td>
-<td><p>Array fold: Fold/reduce array <cite>a</cite> into a single value, <cite>y</cite> by setting <cite>y = f(y, x, index)</cite> for each element <cite>x</cite> of the array.</p></td>
+<tr class="row-even"><td>fold(f, y, a)</td>
+<td>Array fold: Fold/reduce array <cite>a</cite> into a single value, <cite>y</cite> by setting <cite>y = f(y, x, index)</cite> for each element <cite>x</cite> of the array.</td>
 </tr>
-<tr class="row-odd"><td><p>filter(f, a)</p></td>
-<td><p>Array filter: Return an array containing only the values from <cite>a</cite> where <cite>f(x, index)</cite> is <cite>true</cite>.</p></td>
+<tr class="row-odd"><td>filter(f, a)</td>
+<td>Array filter: Return an array containing only the values from <cite>a</cite> where <cite>f(x, index)</cite> is <cite>true</cite>.</td>
 </tr>
-<tr class="row-even"><td><p>indexOf(x, a)</p></td>
-<td><p>Return the first index of string or array <cite>a</cite> matching the value <cite>x</cite>, or <cite>-1</cite> if not found.</p></td>
+<tr class="row-even"><td>indexOf(x, a)</td>
+<td>Return the first index of string or array <cite>a</cite> matching the value <cite>x</cite>, or <cite>-1</cite> if not found.</td>
 </tr>
-<tr class="row-odd"><td><p>join(sep, a)</p></td>
-<td><p>Concatenate the elements of <cite>a</cite>, separated by <cite>sep</cite>.</p></td>
+<tr class="row-odd"><td>join(sep, a)</td>
+<td>Concatenate the elements of <cite>a</cite>, separated by <cite>sep</cite>.</td>
 </tr>
-<tr class="row-even"><td><p>if(c, a, b)</p></td>
-<td><p>Function form of c ? a : b. Note: This always evaluates both <cite>a</cite> and <cite>b</cite>, regardless of whether <cite>c</cite> is <cite>true</cite> or not. Use <cite>c ? a : b</cite> instead if there are side effects, or if evaluating the branches could be expensive.</p></td>
+<tr class="row-even"><td>if(c, a, b)</td>
+<td>Function form of c ? a : b. Note: This always evaluates both <cite>a</cite> and <cite>b</cite>, regardless of whether <cite>c</cite> is <cite>true</cite> or not. Use <cite>c ? a : b</cite> instead if there are side effects, or if evaluating the branches could be expensive.</td>
 </tr>
 </tbody>
 </table>
-<table id="id14">
+<table border="1" id="id14">
 <caption><span class="caption-text">Constants</span><a class="headerlink" href="#id14" title="Permalink to this table">¶</a></caption>
 <colgroup>
-<col style="width: 15.0%"/>
-<col style="width: 85.0%"/>
+<col width="15%"/>
+<col width="85%"/>
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Constant</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Constant</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>E</p></td>
-<td><p>The value of <cite>Math.E</cite> from your JavaScript runtime</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>E</td>
+<td>The value of <cite>Math.E</cite> from your JavaScript runtime</td>
 </tr>
-<tr class="row-odd"><td><p>PI</p></td>
-<td><p>The value of <cite>Math.PI</cite> from your JavaScript runtime</p></td>
+<tr class="row-odd"><td>PI</td>
+<td>The value of <cite>Math.PI</cite> from your JavaScript runtime</td>
 </tr>
-<tr class="row-even"><td><p>True</p></td>
-<td><p>Logical <cite>true</cite> value</p></td>
+<tr class="row-even"><td>True</td>
+<td>Logical <cite>true</cite> value</td>
 </tr>
-<tr class="row-odd"><td><p>False</p></td>
-<td><p>Logical <cite>false</cite> value</p></td>
+<tr class="row-odd"><td>False</td>
+<td>Logical <cite>false</cite> value</td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-</section>
+
+
+
 
 
           </article>
@@ -1964,7 +2001,7 @@ are listed in this section.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>Cloud Run facility in CCP4i interface </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">6. </span>Cloud Run facility in CCP4i interface </span>
               </div>
             </a>
           
@@ -1974,7 +2011,7 @@ are listed in this section.</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>CCP4 Cloud Archive </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">8. </span>CCP4 Cloud Archive </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -1988,7 +2025,7 @@ are listed in this section.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
