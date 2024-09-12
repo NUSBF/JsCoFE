@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.06.24   <--  Date of Last Modification.
+#    10.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import os
 #  application imports
 from . import basic
 # from   pycofe.proc   import seqal
-from   pycofe.auto   import auto
+from   pycofe.auto   import auto, auto_workflow
 
 # ============================================================================
 # Model preparation driver
@@ -123,9 +123,17 @@ class Slice(basic.TaskDriver):
             }
 
         #
-        auto.makeNextTask ( self,{
-            "models" : models
-        })
+        if self.task.autoRunName.startswith("@"):
+            # scripted workflow framework
+            auto_workflow.nextTask ( self,{
+                "data" : {
+                    "models" : models
+                }
+            })
+        else:
+            auto.makeNextTask ( self,{
+                "models" : models
+            })
 
 
         self.success ( nmodels>0 )

@@ -105,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -185,7 +185,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#setup--page-root" class="md-nav__link">1. Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -416,7 +416,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#setup--page-root" class="md-nav__link">1. Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -918,7 +918,7 @@ exit
 </li>
 </ol>
 <p>For example, for port number and <strong>FE</strong> URL path used in this document, <code class="docutils literal notranslate"><span class="pre">apache_site_dir</span></code> should receive file <code class="docutils literal notranslate"><span class="pre">ccp4cloud.conf</span></code> with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8085</span><span class="o">/*&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span><span class="o">/*&gt;</span>
   <span class="n">Allow</span> <span class="kn">from</span> <span class="nn">all</span>
 <span class="o">&lt;/</span><span class="n">Proxy</span><span class="o">&gt;</span>
 
@@ -965,7 +965,7 @@ exit
 </pre></div>
 </div>
 <p>anything else indicates a problem. A message similar to</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">listen</span> <span class="n">EADDRINUSE</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8085</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">listen</span> <span class="n">EADDRINUSE</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span>
 </pre></div>
 </div>
 <p>may mean that the selected <em>localhost</em> port is used by another process running on the host machine. Messages similar to</p>
@@ -1021,11 +1021,11 @@ exit
 </li>
 </ol>
 <p>For the Front-End, the answer should be something like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">FE</span> <span class="mf">1.6.016</span> <span class="p">[</span><span class="mf">26.10.2020</span><span class="p">]</span> <span class="n">CCP4</span><span class="o">-</span><span class="mf">7.1.006</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">FE</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="n">CCP4</span><span class="o">-</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">006</span>
 </pre></div>
 </div>
 <p>and Number Crunchers should reply</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">NC</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span><span class="p">)</span> <span class="mf">1.6.016</span> <span class="p">[</span><span class="mf">26.10.2020</span><span class="p">]</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">NC</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span><span class="p">)</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <ol class="arabic" start="3">
@@ -1089,7 +1089,7 @@ exit
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Developer’s Reference </span>
+                      class="md-footer-nav__direction"> Previous </span> Developer’s Reference </span>
               </div>
             </a>
           
@@ -1099,7 +1099,7 @@ exit
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">2. </span>CCP4 Cloud Launch Scripts </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">2. </span>CCP4 Cloud Launch Scripts </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -1113,7 +1113,7 @@ exit
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

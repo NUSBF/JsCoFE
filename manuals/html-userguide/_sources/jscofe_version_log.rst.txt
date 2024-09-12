@@ -3,11 +3,36 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.8.002** 
+
+    *Released with CCP4 v.9.0.004*
+
+    #. Fixed bug preventing deleting job directories on MS Windows in rare circumstances
+
+    #. CCP4 programs can now use all available CPU cores in local/desktop mode
+
+    #. Default packing criterion in Phaser task adjusted
+
+    #. Corrected data requirements for automatic workflows
+
+    #. Introduced pre-defdined pland for project development, project creation dialog changed accordingly
+
+    #. Moorhen updated to latest version available
+
+    #. WScript added with advanced branching options and possibility to run tasks in parallel
+
+    #. Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised
+
+
 **Version 1.8.001** 
 
     *Released with CCP4 v.9.0.003*
 
     #. Sanity checks in ``Crank2`` task added
+
+    #. Node.js integration disabled in secondary windows in Electron
+
+    #. Last login data now persists in Electron browser
 
 
 **Version 1.8.000** 

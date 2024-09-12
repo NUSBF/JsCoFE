@@ -104,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -291,11 +291,27 @@
             
   
 <h1 id="jscofe-version-log--page-root"><span class="section-number">12. </span>CCP4 Cloud Version Log<a class="headerlink" href="#jscofe-version-log--page-root" title="Permalink to this headline">¶</a></h1>
+<p><strong>Version 1.8.002</strong></p>
+<blockquote>
+<div><p><em>Released with CCP4 v.9.0.004</em></p>
+<ol class="arabic simple">
+<li>Fixed bug preventing deleting job directories on MS Windows in rare circumstances</li>
+<li>CCP4 programs can now use all available CPU cores in local/desktop mode</li>
+<li>Default packing criterion in Phaser task adjusted</li>
+<li>Corrected data requirements for automatic workflows</li>
+<li>Introduced pre-defdined pland for project development, project creation dialog changed accordingly</li>
+<li>Moorhen updated to latest version available</li>
+<li>WScript added with advanced branching options and possibility to run tasks in parallel</li>
+<li>Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised</li>
+</ol>
+</div></blockquote>
 <p><strong>Version 1.8.001</strong></p>
 <blockquote>
 <div><p><em>Released with CCP4 v.9.0.003</em></p>
 <ol class="arabic simple">
 <li>Sanity checks in <code class="docutils literal notranslate"><span class="pre">Crank2</span></code> task added</li>
+<li>Node.js integration disabled in secondary windows in Electron</li>
+<li>Last login data now persists in Electron browser</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.8.000</strong></p>
@@ -927,7 +943,7 @@ files and ligand dictionaries</li>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">11. </span>Troubleshooting </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">11. </span>Troubleshooting </span>
               </div>
             </a>
           
@@ -940,7 +956,7 @@ files and ligand dictionaries</li>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

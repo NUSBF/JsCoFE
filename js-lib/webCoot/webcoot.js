@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    14.06.24   <--  Date of Last Modification.
+ *    16.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,13 +22,92 @@
 
 let rootId         = 'root';
 let sf_meta        = null;
-let urlPrefix      = 'js-lib/webCoot';
+let urlPrefix      = 'js-lib/webCoot/baby-gru';
+
+if (document.currentScript)
+  urlPrefix = document.currentScript.getAttribute('data-parameter') + '/baby-gru';
 
 let BACKUPS        = [];
 let backupsFPath   = 'backups/backups.json';
 let backupFPrefix  = 'backups/backup_';
 
 let moorhenWrapper = null;
+
+
+window.onload = () => {
+  
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = src
+      script.onload = () => resolve(src)
+      script.onerror = () => reject(new Error('Failed to load script: ' + src))
+      document.head.appendChild(script)
+    })
+  }
+
+  const memory64 = WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 5, 3, 1, 4, 1]))
+
+  if (memory64) {
+    loadScript(urlPrefix+'/moorhen64.js')
+      .then(src => {
+        console.log(src + ' loaded 64-bit successfully.')
+        createCoot64Module({
+          print(t) { console.log(["output", t]) },
+          printErr(t) { console.error(["output", t]) }
+        })
+        .then((returnedModule) => {
+          window.cootModule = returnedModule
+          window.CCP4Module = returnedModule
+          const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+          document.dispatchEvent(cootModuleAttachedEvent)
+        })
+        .catch((e) => {
+          console.log(e)
+          console.log("There was a problem creating Coot64Module...")
+        });
+      })
+      .catch((error) => {
+        console.error(error.message)
+        console.log("Trying 32-bit fallback")
+        loadScript(urlPrefix+'/moorhen.js')
+          .then(src => {
+            console.log(src + ' loaded 32-bit successfully (fallback).')
+            createCootModule({
+              print(t) { console.log(["output", t]) },
+              printErr(t) { console.log(["output", t]) }
+            })
+            .then((returnedModule) => {
+              window.cootModule = returnedModule;
+              window.CCP4Module = returnedModule;
+              const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+              document.dispatchEvent(cootModuleAttachedEvent)
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+          })
+      });
+  } else {
+    loadScript(urlPrefix+'/moorhen.js')
+      .then(src => {
+        console.log(src + ' loaded 32-bit successfully.')
+        createCootModule({
+          print(t) { console.log(["output", t]) },
+          printErr(t) { console.log(["output", t]) }
+        })
+        .then((returnedModule) => {
+          window.cootModule = returnedModule
+          window.CCP4Module = returnedModule
+          const cootModuleAttachedEvent = new CustomEvent("cootModuleAttached", { })
+          document.dispatchEvent(cootModuleAttachedEvent)
+        })
+        .catch((e) => {
+          console.log(e)
+        });
+      })
+  }
+}
 
 function saveBackupList()  {
 let bcopy = [];
@@ -61,6 +140,7 @@ let bcopy = [];
 //   }, window.location );
 // }
 
+/*
 const exitCallback = (viewSettings,molData) => {
 // moldata = [{molName: string, pdbData: string; mmcifData: string}]
   let edata = {
@@ -83,6 +163,39 @@ const exitCallback = (viewSettings,molData) => {
   window.parent.postMessage ( edata,window.location );
 
 }
+*/
+
+const exitCallback = (resData) => {
+// resDdata = {
+//   viewData : {},
+//   molData      : [{ molName: string, pdbData: string; mmcifData: string, searchModel: bool},
+//   ligData      : {
+//     ligCode : ligDictionary, // string
+//     ...
+//   }
+// }
+  
+  let edata = {
+      'command' : 'saveFiles',
+      'files'   : [{ 'fpath'  : 'view_settings.json',
+                     'data'   : JSON.stringify(resData.viewData),
+                     'report' : false
+                  }],
+      'confirm' : 'model',
+      'meta'    : sf_meta
+  };
+  for (let i=0;i<resData.molData.length;i++)
+    edata.files.push ( resData.molData[i] );
+    // edata.files.push ({
+    //   'fpath' : molData[i].molName + '.pdb',
+    //   'data'  : molData[i].pdbData
+    // });
+
+  // post received in cofe.communication.js:onWindowMessage(...)
+  window.parent.postMessage ( edata,window.location );
+
+}
+
 
 const savePreferencesCallback = (preferences) => {
   window.parent.postMessage ({

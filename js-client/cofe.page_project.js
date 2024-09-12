@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    01.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -24,7 +24,18 @@
 // ---------------------------------------------------------------------------
 // projects page class
 
-function ProjectPage ( sceneId )  {
+function ProjectPage ( sceneId,pspecs=null )  {
+
+// The pspecs parameter works only when project is new and empty. It sets up project
+// plan and starts first task from the plan's workflow. The object is created in
+// cofe.dialog_add_project.js and has the following structure: 
+
+// pspecs = {
+//   id        : project_name,        // e.g. 'mdm2
+//   title     : project_title,       // e.g. 'MDM2 Protein bound to Nutlin'
+//   plan_code : project_plan_code,   // one from common.data_project.js:project_type
+//   plan_task : task_to_run          // e.g. 'TaskWFlowAFMR'
+// }
 
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','ProjectPage' );
@@ -73,6 +84,7 @@ function ProjectPage ( sceneId )  {
   // let setButtonState_timer = null;
 
   // -------------------------------------------------------------------------
+  // Make page header
 
   this.makeHeader0 ( 3 );
   if (self.logout_btn)
@@ -100,6 +112,7 @@ function ProjectPage ( sceneId )  {
   this.makeDock();
   this.dock.loadDockData();
 
+  // -------------------------------------------------------------------------
   // Make Main Menu
 
   // this.setMenuSpacing ( 10 );
@@ -182,6 +195,8 @@ function ProjectPage ( sceneId )  {
       }
     });
   });
+
+  // -------------------------------------------------------------------------
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';
@@ -360,7 +375,7 @@ function ProjectPage ( sceneId )  {
   // takes project name from projectList.current
   self.jobTree.readProjectData ( 'Project',true,-1,
     function(){
-      if (self.onTreeLoaded(false,self.jobTree))  {
+      if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
         // self.dock.loadDockData();
         // add button listeners
         self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
@@ -1132,7 +1147,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
 }
 
 
-ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
+ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree,pspecs )  {
 
   // these go first in all cases
   this.refresh_btn.setDisabled ( false );
@@ -1193,6 +1208,21 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
     __current_page = this;
     self.can_reload = true;   // tree reload semaphore
     // enter empty project: first task to run or choose
+    if (pspecs && (pspecs.plan_code!=plan_type.no_plan))  {
+      if (self.start_action('add_job'))  {
+        self.can_reload = true;
+        let task = makeNewInstance ( pspecs.plan_task );
+        task.inputMode = input_mode.root;
+        self.jobTree.addTask ( task,false,false,self,
+          function(key,avail_key,dataSummary){
+            self._set_del_button_state();
+            self.end_action();
+          });
+      }
+    } else  {
+      self.addJob();
+    }
+    /*
     switch (job_tree.projectData.desc.startmode)  {
       case start_mode.auto    :
               self.addJob();
@@ -1211,6 +1241,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       case start_mode.expert   :  // legacy
       default :  self.addJob();
     }
+    */
+    // self.addJob();
   }
   
   this.updateUserRationDisplay ( job_tree.projectData.desc );
@@ -1225,6 +1257,9 @@ ProjectPage.prototype.onTreeItemSelect = function()  {
 
 ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   // blink==true will force page blinking, for purely aesthatic reasons
+  // blink mode causes exception if there are minimised job dialogs before 
+  // blinking. Therefore, commented out as below. The blink is still
+  // noticeable in the tree widget and the toolbar.
 
   if (this.jobTree && this.jobTree.parent && this.can_reload)  {
 
@@ -1236,7 +1271,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
     let jobTree1  = this.makeJobTree();
     let timestamp = this.jobTree.projectData.desc.timestamp;
     if (blink)  {
-      this.jobTree.closeAllJobDialogs();
+      // this.jobTree.closeAllJobDialogs();
       this.jobTree.hide();
       timestamp = -1; // force reload
     } else  {
@@ -1259,7 +1294,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           }
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
-            if (self.onTreeLoaded(true,job_tree_1))  {
+            if (self.onTreeLoaded(true,job_tree_1,null))  {
               let selTasks = self.jobTree.getSelectedTasks();
               let dlg_map  = self.jobTree.dlg_map;
               self.jobTree.delete();
@@ -1267,11 +1302,11 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               self.jobTree.selectTasks ( selTasks );
               self.jobTree.show ();
               self.jobTree.parent.setScrollPosition ( scrollPos );
-              if (!blink)  {
+              // if (!blink)  {
                 self.jobTree.relinkJobDialogs ( dlg_map,self );
-              } else  {
-                self.jobTree.openJobs ( dlg_task_parameters,self );
-              }
+              // } else  {
+              //   self.jobTree.openJobs ( dlg_task_parameters,self );
+              // }
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );
                 if ('completed_map' in rdata)
@@ -1595,7 +1630,7 @@ function rvapi_runHotButtonJob ( jobId,task_name,options )  {
 
 // =========================================================================
 
-function makeProjectPage ( sceneId )  {
-  makePage ( function(){ new ProjectPage(sceneId); } );
+function makeProjectPage ( sceneId,pspecs=null )  {
+  makePage ( function(){ new ProjectPage(sceneId,pspecs); } );
   setHistoryState ( 'ProjectPage' );
 }

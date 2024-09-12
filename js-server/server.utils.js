@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.24   <--  Date of Last Modification.
+ *    31.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -107,18 +107,6 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 }
 
 
-// function readObject ( fpath )  {
-//   if (!fs.existsSync(fpath)) {
-//     return null;
-//   }
-//   try {
-//     return JSON.parse ( fs.readFileSync(fpath).toString() );
-//   } catch (e)  {
-//     log.error ( 30, e.message + ' when loading ' + fpath );
-//     return null;
-//   }
-// }
-
 function readObject ( fpath )  {
   try {
     return JSON.parse ( fs.readFileSync(fpath).toString() );
@@ -138,44 +126,6 @@ function readClass ( fpath ) {  // same as object but with class functions
   }
 }
 
-/*
-function writeString ( path,data_string )  {
-
-  let backup = null;
-  try {
-    if (fs.statSync(path))  {
-      backup = path + '~';
-      fs.renameSync ( path,backup );
-    }
-  } catch (e) {
-    log.error ( 12,'cannot make backup copy at file write at ' + path );
-    return false;
-  }
-
-  let ok = true;
-  try {
-    fs.writeFileSync ( path,data_string );
-    //return true;
-  } catch (e)  {
-    log.error ( 1,'cannot write file ' + path );
-    ok = false;
-    //return false;
-  }
-
-  try {
-    if (ok && backup)
-      fs.unlinkSync ( backup );
-    else if (backup)  {  // rollback
-      if (fs.statSync(path))
-        fs.unlinkSync ( path );
-      fs.renameSync ( backup,path );
-    }
-  } catch (e) {}
-
-  return ok;
-
-}
-*/
 
 function writeString ( fpath,data_string )  {
   try {
@@ -202,52 +152,6 @@ function appendString ( fpath,data_string )  {
   }
 }
 
-/*
-function writeObject ( path,dataObject )  {
-
-  let json_str = '';
-  try {
-    json_str = JSON.stringify ( dataObject,null,2 );
-  } catch (e) {
-    log.error ( 31,'attempt to write corrupt data object at ' + path );
-    return false;
-  }
-
-  let backup = null;
-  try {
-    if (fs.statSync(path))  {
-      backup = path + '~';
-      fs.renameSync ( path,backup );
-    }
-  } catch (e) {
-    log.error ( 32,'cannot make backup copy at file write at ' + path );
-    return false;
-  }
-
-  let ok = true;
-  try {
-    fs.writeFileSync ( path,json_str );
-    //return true;
-  } catch (e)  {
-    log.error ( 3,'cannot write file ' + path );
-    ok = false;
-    //return false;
-  }
-
-  try {
-    if (ok && backup)
-      fs.unlinkSync ( backup );
-    else if (backup)  {  // rollback
-      if (fs.statSync(path))
-        fs.unlinkSync ( path );
-      fs.renameSync ( backup,path );
-    }
-  } catch (e) {}
-
-  return ok;
-
-}
-*/
 
 function writeObject ( fpath,dataObject )  {
 
@@ -272,6 +176,8 @@ function writeObject ( fpath,dataObject )  {
   }
 
 }
+
+// ----------------------------------------------------------------------------
 
 
 function copyFile ( old_path,new_path )  {
@@ -320,57 +226,6 @@ function moveFile ( old_path,new_path )  {
 }
 
 
-function moveDir ( old_path,new_path,overwrite_bool )  {
-  // uses sync mode, which is Ok for source/destinations being on the same
-  // file systems; use not-synced version when moving across devices
-  try {
-    if (_is_windows && overwrite_bool && fileExists(new_path))
-      fs.removePath ( new_path );
-  } catch (e) {
-    log.error ( 50,'cannot remove directory ' + new_path );
-    log.error ( 50,'error: ' + JSON.stringify(e) );
-    console.error(e);
-  }
-  try {
-    fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
-    return true;
-  } catch (e)  {
-    let old_exist = '(non-existing)';
-    let new_exist = '(non-existing)';
-    if (fileExists(old_path))  old_exist = '(existing)';
-    if (fileExists(new_path))  new_exist = '(existing)';
-    log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
-                   ' to ' + new_exist + ' ' + new_path );
-    log.error ( 51,'error: ' + JSON.stringify(e) );
-    console.error(e);
-    return false;
-  }
-}
-
-function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
-  try {
-    if (_is_windows && overwrite_bool && fileExists(new_path))
-      fs.removePath ( new_path );
-  } catch (e) {
-    log.error ( 50,'cannot remove directory ' + new_path );
-    log.error ( 50,'error: ' + JSON.stringify(e) );
-    console.error(e);
-  }
-  fs.move ( old_path,new_path,{'overwrite':overwrite_bool},function(err){
-    if (err)  {
-      let old_exist = '(non-existing)';
-      let new_exist = '(non-existing)';
-      if (fileExists(old_path))  old_exist = '(existing)';
-      if (fileExists(new_path))  new_exist = '(existing)';
-      log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
-                     ' to ' + new_exist + ' ' + new_path );
-      log.error ( 51,'error: ' + JSON.stringify(err) );
-      console.error(err);
-    }
-    callback_func(err);
-  });
-}
-
 function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 // if old_path is a directory, it will copy all its content but not the directory
 // itself
@@ -380,21 +235,6 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
     'dereference'        : true
   }, callback_func );
 }
-
-
-// function mkDir ( dirPath )  {
-//   if (!dirExists(dirPath))  {
-//     try {
-//       fs.mkdirSync ( dirPath );
-//       return true;
-//     } catch (e)  {
-//       log.error ( 6,'cannot create directory ' + dirPath +
-//                     ' error: ' + JSON.stringify(e) );
-//       return false;
-//     }
-//   }
-//   return true;
-// }
 
 function mkDir ( dirPath )  {
   try {
@@ -459,8 +299,6 @@ function removePath ( dir_path )  {
 let rc   = true;
 let stat = fileExists(dir_path);
 
-//  removeLock ( dir_path );
-
   if (stat && stat.isSymbolicLink())  {
     fs.unlinkSync ( dir_path );
   } else if (stat)  {
@@ -496,20 +334,56 @@ let stat = fileExists(dir_path);
 }
 
 
-// function removeLockedPath ( dir_path ) {
-//   if (fileExists(dir_path))  {
-//     let n = checkLock ( dir_path );
-//     if (n<=0)
-//       removePath ( dir_path );
-//     else  {
-//       setLock ( dir_path,n-1 );
-//       setTimeout ( function(){
-//         removeLockedPath ( dir_path );
-//       },60000);
-//     }
-//   }
-// }
+function moveDir ( old_path,new_path,overwrite_bool )  {
+  // uses sync mode, which is Ok for source/destinations being on the same
+  // file systems; use not-synced version when moving across devices
+  try {
+    if (_is_windows && overwrite_bool && fileExists(new_path))
+      removePath ( new_path );
+  } catch (e) {
+    log.error ( 50,'cannot remove directory ' + new_path );
+    log.error ( 50,'error: ' + JSON.stringify(e) );
+    console.error(e);
+  }
+  try {
+    fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
+    return true;
+  } catch (e)  {
+    let old_exist = '(non-existing)';
+    let new_exist = '(non-existing)';
+    if (fileExists(old_path))  old_exist = '(existing)';
+    if (fileExists(new_path))  new_exist = '(existing)';
+    log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
+                   ' to ' + new_exist + ' ' + new_path );
+    log.error ( 51,'error: ' + JSON.stringify(e) );
+    console.error(e);
+    return false;
+  }
+}
 
+function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
+  try {
+    if (_is_windows && overwrite_bool && fileExists(new_path))
+      removePath ( new_path );
+  } catch (e) {
+    log.error ( 50,'cannot remove directory ' + new_path );
+    log.error ( 50,'error: ' + JSON.stringify(e) );
+    console.error(e);
+  }
+  fs.move ( old_path,new_path,{'overwrite':overwrite_bool},function(err){
+    if (err)  {
+      let old_exist = '(non-existing)';
+      let new_exist = '(non-existing)';
+      if (fileExists(old_path))  old_exist = '(existing)';
+      if (fileExists(new_path))  new_exist = '(existing)';
+      log.error ( 51,'cannot move ' + old_exist + ' directory ' + old_path +
+                     ' to ' + new_exist + ' ' + new_path );
+      log.error ( 51,'error: ' + JSON.stringify(err) );
+      console.error(err);
+    }
+    callback_func(err);
+  });
+}
 
 function cleanDir ( dir_path ) {
   // removes everything in the directory, but does not remove it
@@ -765,24 +639,6 @@ let signal = readString ( path.join(jobDir,signal_file_name) );
   return code;
 }
 
-// ===========================================================================
-
-// let lock_map = {};
-//
-// function setLock ( lockName,value )  {
-//   lock_map[lockName] = true;
-// }
-//
-// function checkLock ( lockName )  {
-//   if (lockName in lock_map)
-//     return lock_map[lockName];
-//   return 0;
-// }
-//
-// function removeLock ( lockName )  {
-//   if (lockName in lock_map)
-//     delete lock_map[lockName];
-// }
 
 // ===========================================================================
 
@@ -1026,7 +882,6 @@ module.exports.cleanDir              = cleanDir;
 module.exports.cleanDirExt           = cleanDirExt;
 module.exports.removeSymLinks        = removeSymLinks;
 module.exports.removePath            = removePath;
-// module.exports.removeLockedPath      = removeLockedPath;
 module.exports.getDirectorySize      = getDirectorySize;
 module.exports.searchTree            = searchTree;
 module.exports.removeFiles           = removeFiles;
@@ -1042,6 +897,3 @@ module.exports.send_file             = send_file;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
 module.exports.padDigits             = padDigits;
-// module.exports.setLock               = setLock;
-// module.exports.checkLock             = checkLock;
-// module.exports.removeLock            = removeLock;

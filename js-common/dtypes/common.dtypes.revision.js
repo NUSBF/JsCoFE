@@ -359,7 +359,8 @@ if (!__template_d)  {
     //showNDis();
     showHA();
 
-    this.HKL.layCustomDropdownInput ( dropdown );
+    if (this.HKL)  // necessary to check for use in Workflow Creator
+      this.HKL.layCustomDropdownInput ( dropdown );
 
   }
 
@@ -995,7 +996,8 @@ if (!__template_d)  {
           this.ASU.ndisulph = '';
       }
     }
-    msg += this.HKL.collectCustomDropdownInput ( dropdown );
+    if (this.HKL)  // checking for use in Workflow Creator
+      msg += this.HKL.collectCustomDropdownInput ( dropdown );
     return msg;
   }
 

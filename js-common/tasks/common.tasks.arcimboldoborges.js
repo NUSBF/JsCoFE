@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    28.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -189,7 +189,18 @@ TaskArcimboldoBorges.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
+
+
+  TaskArcimboldoBorges.prototype.getNCores = function ( ncores_available )  {
+  // This function should return the number of cores, up to ncores_available,
+  // that should be reported to a queuing system like SGE or SLURM, in
+  // case the task spawns threds or processes bypassing the queuing system.
+  // It is expected that the task will not utilise more cores than what is
+  // given on input to this function.
+    return ncores_available;
+  }
+  
 
   TaskArcimboldoBorges.prototype.makeInputData = function ( loginData,jobDir )  {
 

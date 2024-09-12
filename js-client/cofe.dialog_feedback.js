@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.24   <--  Date of Last Modification.
+ *    06.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -103,6 +103,8 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
   grid.setCellSize ( '100%','',2,2 );
 
   let w = 3*$(window).width()/5 + 'px';
+  let choose_id = 'choose_btn_' + __id_cnt++;
+
 
   $(this.element).dialog({
     resizable : false,
@@ -110,10 +112,20 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
     maxHeight : 500,
     width     : w,
     modal     : true,
+    create    : function (e, ui) {
+      if (current_agreement==feedback_code.agree1)
+        agree1_btn.setValue ( true );
+      else if (current_agreement==feedback_code.agree2)
+        agree2_btn.setValue ( true );
+      else if (current_agreement==feedback_code.decline)
+        decline_btn.setValue ( true );
+      else
+        $('#'+choose_id).button ( 'disable' );
+    },
     buttons: [
       {
-        id   : "choose_btn",
-        text : "Choose",
+        id   : choose_id,
+        text : 'Choose',
         click: function() {
           if (agree1_btn.getValue())
                 onclose_fnc ( feedback_code.agree1  );
@@ -134,32 +146,23 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
     ]
   });
 
-  if (current_agreement==feedback_code.agree1)
-    agree1_btn.setValue ( true );
-  else if (current_agreement==feedback_code.agree2)
-    agree2_btn.setValue ( true );
-  else if (current_agreement==feedback_code.decline)
-    decline_btn.setValue ( true );
-  else
-    $('#choose_btn').button ( 'disable' );
-
   agree1_btn .setWidth_px ( $(agree2_btn.element).width() );
   decline_btn.setWidth_px ( $(agree2_btn.element).width() );
 
   $(agree1_btn.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
+    $('#'+choose_id).button ( 'enable' );
     agree2_btn .setValue ( false );
     decline_btn.setValue ( false );
   });
 
   $(agree2_btn.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
+    $('#'+choose_id).button ( 'enable' );
     agree1_btn .setValue ( false );
     decline_btn.setValue ( false );
   });
 
   $(decline_btn.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
+    $('#'+choose_id).button ( 'enable' );
     agree1_btn .setValue ( false );
     agree2_btn .setValue ( false );
   });

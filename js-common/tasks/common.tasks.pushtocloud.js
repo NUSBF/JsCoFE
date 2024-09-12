@@ -115,7 +115,25 @@ if (!__template)  {
   TaskPushToCloud.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'pushes data to Cloud storage';
-  };
+  }
+
+  TaskPushToCloud.prototype.isTaskAvailable = function()  {
+
+    if (__has_datalink)
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+    else if (__local_setup)
+      return ['environment-server',
+              'task software is not installed on your machine',
+              '<h3>Task software is not installed</h3>' +
+              'Fetch framework is not installed on your machine.'];
+    else
+      return ['environment-server',
+              'task software is not installed on ' + appName() + ' server',
+              '<div style="width:400px;"><h3>Task software is not installed</h3>' +
+              'Data push framework is not installed on ' +  appName() + 
+              ' server.<p>Contact server maintainer for further details.</div>'];
+
+  }
 
   TaskPushToCloud.prototype.makeInputPanel = function ( dataBox )  {
     let div = TaskXia2.prototype.makeInputPanel.call ( this,dataBox );

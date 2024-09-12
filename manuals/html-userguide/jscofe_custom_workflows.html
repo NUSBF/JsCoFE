@@ -105,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -227,7 +227,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -397,7 +397,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-custom-workflows--page-root" class="md-nav__link">7. Custom (user-created) project workflows</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -1449,12 +1449,38 @@ statements in <a class="reference internal" href="#wscript-reference-input-data"
 </tr>
 <tr class="row-odd"><td>DATA</td>
 <td>data id and data name</td>
-<td>Forces placement of specified data in particular item of CCP4 Cloud task
-interface with “not standard” data id. For example, <em>Aimless</em> task assumes
-input of merged or unmerged reflections for symmetry reference in data
-object with id <code class="docutils literal notranslate"><span class="pre">ds0</span></code>. This id is not recognised automatically as a
+<td><p class="first">Forces placement of specified data in particular item of CCP4 Cloud task.
+This is necessary when task interface has “not standard” data id, or
+when task does not use Structure Revision that is already in the branch.</p>
+<p>Example 1. <em>Aimless</em> task
+assumes input of merged or unmerged reflections for symmetry reference in
+data object with id <code class="docutils literal notranslate"><span class="pre">ds0</span></code>. This id is not recognised automatically as a
 recipient of reflection data, therefore, statement <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">unmerged</span></code>
-or <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">hkl</span></code> must be placed in task instructions for <em>Aimless</em>.</td>
+or <code class="docutils literal notranslate"><span class="pre">DATA</span> <span class="pre">ds0</span> <span class="pre">hkl</span></code> must be placed in task instructions for <em>Aimless</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">IFDATA</span>    <span class="n">unmerged</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+</pre></div>
+</div>
+<p>Example 2. Sequence alignment task expects input of mixed objects, such
+as sequences and models, in a single field named <code class="docutils literal notranslate"><span class="pre">seq</span></code>. The corresponding
+description is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@SEQALIGN</span>
+    <span class="n">DATA</span> <span class="n">seq</span> <span class="n">seq</span>
+    <span class="n">DATA</span> <span class="n">seq</span> <span class="n">xyz</span>
+    <span class="n">RUN</span> <span class="n">SeqAlign</span>
+</pre></div>
+</div>
+<p>Example 3. Dimple-MR takes merged reflections and atomic coordinates
+rather than Structure Revision:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@DIMPLEMR</span>
+    <span class="n">DATA</span> <span class="n">hkl</span> <span class="n">hkl</span>
+    <span class="n">DATA</span> <span class="n">xyz</span> <span class="n">xyz</span>
+    <span class="n">RUN</span> <span class="n">DimpleMR</span>
+</pre></div>
+</div>
+</td>
 </tr>
 <tr class="row-even"><td>ALIAS</td>
 <td>standard data id and task data id</td>
@@ -1551,18 +1577,61 @@ as a variable with correct value:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@DENSITY_MODIFICATION</span><span class="p">[</span><span class="n">hand0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Branching may be subject to condition, evaluated to <em>True</em>:</p>
+<p>Branching may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">branch</span> <span class="nd">@MODEL_BUILDING</span><span class="o">-</span><span class="mi">2</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
 </pre></div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td>PRINT_VAR</td>
-<td>Prints current values of all workflow variables in CCP4 Cloud task’s log
-file.</td>
+<tr class="row-odd"><td>continue @RUN_NAME [if <em>condition</em>]</td>
+<td><p class="first">Instruction to continue the workflow from the specified task, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span>
+</pre></div>
+</div>
+<p>continuation may be subject to <em>condition</em>, evaluated to <em>True</em>:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">continue</span> <span class="nd">@REFINEMENT</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&gt;</span><span class="mf">0.4</span>
+</pre></div>
+</div>
+</td>
 </tr>
-<tr class="row-even"><td>END or STOP</td>
-<td>Stops the workflow.</td>
+<tr class="row-even"><td>POINT @RUN_NAME</td>
+<td>Marks point in the workflow which can be used in <code class="docutils literal notranslate"><span class="pre">continue</span></code> (and only
+in <code class="docutils literal notranslate"><span class="pre">continue</span></code>). There are no actions associated with this operator.</td>
+</tr>
+<tr class="row-odd"><td>PARALLEL ON|OFF</td>
+<td>Tasks found between <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">ON</span></code> and <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">OFF</span></code> statements will
+be executed in parallel. Each such task will start a new branch, and
+statements after <code class="docutils literal notranslate"><span class="pre">PARALLEL</span> <span class="pre">OFF</span></code> will be applied in each branch. Therefore,
+parallel tasks should produce compatible output.</td>
+</tr>
+<tr class="row-even"><td>PRINT_VAR</td>
+<td><p class="first">Prints current values of all workflow variables in CCP4 Cloud task’s log
+file. example:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRINT_VAR</span>  <span class="n">Rfactor</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>checkTask(name)</td>
+<td><p class="first">Queries task availability and assignes <code class="docutils literal notranslate"><span class="pre">True/False</span></code> to variable
+<code class="docutils literal notranslate"><span class="pre">name_available</span></code>, for example:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">checkTask</span><span class="p">(</span><span class="n">StructurePrediction</span><span class="p">)</span>
+<span class="n">PRINT_VAR</span>   <span class="n">StructurePrediction_available</span>
+<span class="k">continue</span>  <span class="nd">@AUTO_MR</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">StructurePrediction_available</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td>STOP [if <em>condition</em>]</td>
+<td><p class="first">Stops the workflow. If condition is given, then workflow is stopped if
+<em>condition</em> evaluates <code class="docutils literal notranslate"><span class="pre">True</span></code>, for example:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">STOP</span> <span class="k">if</span> <span class="n">Rfree</span><span class="o">&lt;</span><span class="mf">0.22</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td>END</td>
+<td>Ends the workflow.</td>
 </tr>
 </tbody>
 </table>
@@ -1605,6 +1674,38 @@ assigned to variable <code class="docutils literal notranslate"><span class="pre
 <tr class="row-even"><td>suggested</td>
 <td>Refmac</td>
 <td>Number of suggested parameters to change.</td>
+</tr>
+<tr class="row-odd"><td>N_unmerged</td>
+<td>Workflow</td>
+<td>Number of unmerged datasets given to workflow by user.</td>
+</tr>
+<tr class="row-even"><td>N_hkl</td>
+<td>Workflow, Aimless</td>
+<td>Number of merged datasets given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>N_hkl_anom</td>
+<td>Workflow, Aimless</td>
+<td>Number of merged datasets with anomalous signal, given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">Aimless</span></code>.</td>
+</tr>
+<tr class="row-even"><td>N_seq</td>
+<td>Workflow</td>
+<td>Number of sequences given to workflow by user.</td>
+</tr>
+<tr class="row-odd"><td>N_xyz</td>
+<td>Workflow</td>
+<td>Number of molecular models given to workflow by user.</td>
+</tr>
+<tr class="row-even"><td>N_lig</td>
+<td>Workflow, MakeLigand</td>
+<td>Number of ligand files given to workflow by user or produced by <code class="docutils literal notranslate"><span class="pre">MakeLigand</span></code>.</td>
+</tr>
+<tr class="row-odd"><td>N_ligdesc</td>
+<td>Workflow</td>
+<td>Number of ligand descriptinos defined by user in workflow’s input section.</td>
+</tr>
+<tr class="row-even"><td>N_lib</td>
+<td>Workflow</td>
+<td>Number of ligand libraries given by user to workflow.</td>
 </tr>
 </tbody>
 </table>
@@ -1900,7 +2001,7 @@ are listed in this section.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>Cloud Run facility in CCP4i interface </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">6. </span>Cloud Run facility in CCP4i interface </span>
               </div>
             </a>
           
@@ -1910,7 +2011,7 @@ are listed in this section.</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>CCP4 Cloud Archive </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">8. </span>CCP4 Cloud Archive </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -1924,7 +2025,7 @@ are listed in this section.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -989,12 +989,38 @@ statements is provided.
        ``hkl``, ``unmerged``, ``xyz``, ``seq``, ``library``, ``ligand``.
    * - DATA
      - data id and data name
-     - Forces placement of specified data in particular item of CCP4 Cloud task
-       interface with "not standard" data id. For example, *Aimless* task assumes
-       input of merged or unmerged reflections for symmetry reference in data
-       object with id ``ds0``. This id is not recognised automatically as a
+     - Forces placement of specified data in particular item of CCP4 Cloud task.
+       This is necessary when task interface has "not standard" data id, or
+       when task does not use Structure Revision that is already in the branch. 
+       
+       Example 1. *Aimless* task
+       assumes input of merged or unmerged reflections for symmetry reference in
+       data object with id ``ds0``. This id is not recognised automatically as a
        recipient of reflection data, therefore, statement ``DATA ds0 unmerged`` 
-       or ``DATA ds0 hkl`` must be placed in task instructions for *Aimless*.
+       or ``DATA ds0 hkl`` must be placed in task instructions for *Aimless*: ::
+
+          @AIMLESS
+              IFDATA    unmerged
+              DATA      ds0  unmerged
+              RUN Aimless
+
+       Example 2. Sequence alignment task expects input of mixed objects, such
+       as sequences and models, in a single field named ``seq``. The corresponding
+       description is as follows: ::
+
+          @SEQALIGN
+              DATA seq seq
+              DATA seq xyz
+              RUN SeqAlign
+
+       Example 3. Dimple-MR takes merged reflections and atomic coordinates 
+       rather than Structure Revision: ::
+
+          @DIMPLEMR
+              DATA hkl hkl
+              DATA xyz xyz
+              RUN DimpleMR
+
    * - ALIAS
      - standard data id and task data id
      - Used in cases when data id, used in task interface, is not "standard",
@@ -1074,16 +1100,51 @@ statements is provided.
 
            branch @DENSITY_MODIFICATION[hand0]
 
-       Branching may be subject to condition, evaluated to *True*::
+       Branching may be subject to *condition*, evaluated to *True*::
 
            branch @MODEL_BUILDING-2 if Rfree>0.4
 
+   * - continue @RUN_NAME [if *condition*]
+     - Instruction to continue the workflow from the specified task, for example: ::
+
+           continue @REFINEMENT
+
+       continuation may be subject to *condition*, evaluated to *True*::
+
+           continue @REFINEMENT if Rfree>0.4
+
+   * - POINT @RUN_NAME
+     - Marks point in the workflow which can be used in ``continue`` (and only 
+       in ``continue``). There are no actions associated with this operator.
+
+   * - PARALLEL ON|OFF
+     - Tasks found between ``PARALLEL ON`` and ``PARALLEL OFF`` statements will
+       be executed in parallel. Each such task will start a new branch, and 
+       statements after ``PARALLEL OFF`` will be applied in each branch. Therefore,
+       parallel tasks should produce compatible output.
+
    * - PRINT_VAR
      - Prints current values of all workflow variables in CCP4 Cloud task's log
-       file.
+       file. example: ::
 
-   * - END or STOP
-     - Stops the workflow.
+           PRINT_VAR  Rfactor
+
+   * - checkTask(name)
+     - Queries task availability and assignes ``True/False`` to variable
+       ``name_available``, for example: ::
+
+           checkTask(StructurePrediction)
+           PRINT_VAR   StructurePrediction_available
+           continue  @AUTO_MR if not StructurePrediction_available 
+
+   * - STOP [if *condition*]
+     - Stops the workflow. If condition is given, then workflow is stopped if
+       *condition* evaluates ``True``, for example: ::
+
+           STOP if Rfree<0.22
+
+   * - END
+     - Ends the workflow.
 
 
 .. _wscript_reference_predefined_variables:
@@ -1118,6 +1179,30 @@ assigned to variable ``Rfree``.
    * - suggested
      - Refmac
      - Number of suggested parameters to change.
+   * - N_unmerged
+     - Workflow
+     - Number of unmerged datasets given to workflow by user.
+   * - N_hkl
+     - Workflow, Aimless
+     - Number of merged datasets given to workflow by user or produced by ``Aimless``.
+   * - N_hkl_anom
+     - Workflow, Aimless
+     - Number of merged datasets with anomalous signal, given to workflow by user or produced by ``Aimless``.
+   * - N_seq
+     - Workflow
+     - Number of sequences given to workflow by user.
+   * - N_xyz
+     - Workflow
+     - Number of molecular models given to workflow by user.
+   * - N_lig
+     - Workflow, MakeLigand
+     - Number of ligand files given to workflow by user or produced by ``MakeLigand``.
+   * - N_ligdesc
+     - Workflow
+     - Number of ligand descriptinos defined by user in workflow's input section.
+   * - N_lib
+     - Workflow
+     - Number of ligand libraries given by user to workflow.
 
 
 .. _wscript_reference_expression_syntax:
