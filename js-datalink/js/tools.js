@@ -14,6 +14,17 @@ const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
 const CATALOG_DIR = config.get('storage.catalog_dir');
 
+// maximum number of http redirects
+const HTTP_REDIRECTS = 5;
+
+// maximum number of http retries (eg for 429 reponses)
+const HTTP_RETRIES = 5;
+// retry backoff delays (HTTP_DELAY_INT * HTTP_DELAY_EXP^RETRY_NUM)
+// backoff interval in ms
+const HTTP_DELAY_INT = 1000;
+// backoff exponential
+const HTTP_DELAY_EXP = 3;
+
 const status = {
   completed: 'completed',
   inProgress: 'in_progress',
@@ -247,9 +258,68 @@ class tools {
       const controller = new AbortController();
       options.signal = controller.signal;
       let req = https.request(url, options, (res) => {
-        if (! [200, 206].includes(res.statusCode)) {
+
+        let err_msg;
+        switch (res.statusCode) {
+          // http redirect
+          case 301:
+          case 302:
+            // if no redirect counter set, set it in options
+            if (! options.dl_redirects) {
+              options.dl_redirects = 0;
+            }
+            if (options.dl_redirects < HTTP_REDIRECTS && res.headers.location) {
+              options.dl_redirects += 1;
+              log.debug(`httpRequest - redirecting to ${res.headers.location} (try ${options.dl_redirects})`);
+              return this.httpRequest(res.headers.location, options, dest, signalCallback, writeCallback)
+              .then((ret) => {
+                resolve(ret);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+            } else {
+              err_msg = `httpRequest - Too many redirects for ${url}`;
+              return;
+            }
+            break;
+          case 200:
+          case 206:
+            break;
+          case 404:
+            err_msg = `httpRequest - 404 not found: ${url}`;
+            break;
+          // too many requests - so we will back off and retry
+          case 429:
+            if (! options.dl_retries) {
+              options.dl_retries = 0;
+            }
+            if (options.dl_retries < HTTP_RETRIES) {
+              options.dl_retries += 1;
+              let delay = HTTP_DELAY_INT * (HTTP_DELAY_EXP ** options.dl_retries);
+              log.debug(`httpRequest - 429 too many requests - Delaying ${delay} ms before retry (try ${options.dl_redirects})`);
+              // retry the request after a delay - note the return is important to stop further processing
+              return setTimeout(() => {
+                this.httpRequest(url, options, dest, signalCallback, writeCallback)
+                .then((ret) => {
+                  resolve(ret);
+                })
+                .catch((err) => {
+                  reject(err);
+                });
+              }, delay);
+            } else {
+              err_msg = `httpRequest - 429 too many requests - Retry count ${HTTP_RETRIES} exceeded`;
+            }
+            break;
+          default:
+            err_msg = `httpRequest - unsupported statusCode ${res.statusCode}`;
+            break;
+        }
+
+        if (err_msg) {
           res.resume();
-          reject(`httpRequest - unsupported statusCode ${res.statusCode}`);
+          reject(err_msg);
           return;
         }
 
