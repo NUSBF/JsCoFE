@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.09.24   <--  Date of Last Modification.
+ *    13.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,7 @@
  *    function make_local_job    ( files,base_url,destDir,job_token,callback_func )
  *    function ncRunRVAPIApp     ( post_data_obj,callback_func )
  *    function ncSendJobResults  ( post_data_obj,callback_func )
+ *    function ncGetJobResults   ( server_request,server_response )
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
@@ -1647,83 +1648,6 @@ function make_local_job ( files,base_url,destDir,job_token,callback_func )  {
 }
 
 
-/*
-function make_local_job ( args,exts,base_url,jobDir,job_token,callback_func )  {
-
-  function prepare_job ( ix )  {
-
-    if (ix<args.length)  {  // process ixth argument
-
-      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
-
-      if (ip>=0)  {
-
-        let ext = args[ix].substring(ip).toLowerCase();
-
-        if (exts.indexOf(ext)>=0)  {  // file extension is recognised
-
-          // compute full download url
-          let url   = base_url + '/' + args[ix];
-          // compute full local path to accept the download
-          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
-
-          let get_options = {
-            url                : url,
-            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
-          };
-
-          request  // issue the download request
-            .get ( get_options )
-            .on('error', function(err) {
-              log.error ( 17,'Download errors from ' + url );
-              log.error ( 17,'Error: ' + err );
-              // remove job
-              if (job_token)  {
-                ncJobRegister.removeJob ( job_token );
-                writeNCJobRegister      ();
-              }
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00115] Download errors: ' + err,{} ) );
-            })
-            .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
-            .on('error', function(err) {
-              log.error ( 22,'Download errors from ' + url );
-              log.error ( 22,'Error: ' + err );
-              // remove job
-              if (job_token)  {
-                ncJobRegister.removeJob ( job_token );
-                writeNCJobRegister      ();
-              }
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00120] Download errors: ' + err,{} ) );
-            })
-            .on('close',function(){   // finish,end,
-              // successful download, note file path and move to next argument
-              args[ix] = fpath;
-              prepare_job ( ix+1 );
-            });
-
-        } else  // extension is not recognised, just move to next argument
-          prepare_job ( ix+1 );
-
-      } else // no extension, just move to next argument
-        prepare_job ( ix+1 );
-
-    } else  {
-      // all argument list is processed, data files downloaded in subdirectory
-      // 'input' of the job directory; prepare job metadata and start the
-      // job
-      callback_func();
-    }
-
-  }
-
-  // invoke preparation recursion
-  prepare_job ( 0 );
-
-}
-*/
-
 function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
   // 1. Get new job directory and create an entry in job registry
@@ -1795,93 +1719,6 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
       }
   
   });
-
-
-  /*
-  function prepare_job ( ix )  {
-
-    if (ix<args.length)  {  // process ixth argument
-
-      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
-
-      if (ip>=0)  {
-
-        let ext = args[ix].substring(ip).toLowerCase();
-
-        if (exts.indexOf(ext)>=0)  {  // file extension is recognised
-
-          // compute full download url
-          let url   = post_data_obj.base_url + '/' + args[ix];
-          // compute full local path to accept the download
-          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
-
-          let get_options = {
-            url: url,
-            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
-          };
-
-          request  // issue the download request
-            .get ( get_options )
-            .on('error', function(err) {
-              log.error ( 17,'Download errors from ' + url );
-              log.error ( 17,'Error: ' + err );
-              // remove job
-              ncJobRegister.removeJob ( job_token );
-              writeNCJobRegister      ();
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00115] Download errors: ' + err,{} ) );
-            })
-            .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
-            .on('error', function(err) {
-              log.error ( 22,'Download errors from ' + url );
-              log.error ( 22,'Error: ' + err );
-              // remove job
-              ncJobRegister.removeJob ( job_token );
-              writeNCJobRegister      ();
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00120] Download errors: ' + err,{} ) );
-            })
-            .on('close',function(){   // finish,end,
-              // successful download, note file path and move to next argument
-              args[ix] = fpath;
-              prepare_job ( ix+1 );
-            });
-
-        } else  // extension is not recognised, just move to next argument
-          prepare_job ( ix+1 );
-
-      } else // no extension, just move to next argument
-        prepare_job ( ix+1 );
-
-    } else  {
-      // all argument list is processed, data files downloaded in subdirectory
-      // 'input' of the job directory; prepare job metadata and start the
-      // job
-
-      let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
-      taskRVAPIApp.id            = ncJobRegister.launch_count;
-      taskRVAPIApp.rvapi_command = post_data_obj.command;
-      taskRVAPIApp.rvapi_args    = args;
-      utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
-
-      ncRunJob ( job_token,{
-        'sender'   : '',
-        'setup_id' : '',
-        'nc_name'  : 'client-rvapi',
-        'user_id'  : ''
-      });
-
-      // signal 'ok' to client
-      callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
-
-    }
-
-  }
-
-  // invoke preparation recursion
-  prepare_job ( 0 );
-
-  */
 
 }
 
@@ -1987,6 +1824,105 @@ let data_obj    = [];
 
 }
 
+
+// ===========================================================================
+
+function ncGetJobResults ( post_data_obj,callback_func )  {
+// post_data_obj = {
+//   job_token: job_token
+// }
+  
+  let response = null;
+
+  // log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
+
+  let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
+
+  if (!jobEntry)  {
+
+    log.error ( 16,'remote fetch failed no token found: ' + post_data_obj.job_token );
+    response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
+                    '[00123] Job not found token=' + post_data_obj.job_token,
+                    {} );
+  
+  } else if (jobEntry.jobStatus==task_t.job_code.running)  {
+  
+    response = new cmd.Response ( cmd.nc_retcode.jobIsRunning,post_data_obj.job_token,{} );
+  
+  } else  {
+
+  }
+
+  //console.log ( ' ################# ' + JSON.stringify(post_data_obj) );
+
+  if (post_data_obj.hasOwnProperty('job_token'))  {
+
+    let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
+
+    if (jobEntry)  {
+
+      if (post_data_obj.hasOwnProperty('return_data') && (!post_data_obj.return_data))  {
+        jobEntry.return_data = post_data_obj.return_data;
+        writeNCJobRegister();
+      }
+
+      if (post_data_obj.gracefully)  {
+
+        log.standard ( 60,'attempt to gracefully end the job ' +
+                          post_data_obj.job_token + ' pid=' + jobEntry.pid );
+        utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
+        utils.writeString (  path.join(jobEntry.jobDir,'report',cmd.endJobFName1),'end' );
+        response = new cmd.Response ( cmd.nc_retcode.ok,
+          '[00109] Job scheduled for graceful stop, token=' + post_data_obj.job_token,
+          {} );
+
+      } else  {
+
+        if (jobEntry.pid>0)  {
+
+          if (jobEntry.return_data)  {
+            log.standard ( 61,'attempt to stop job ' +
+                                post_data_obj.job_token + ' pid=' + jobEntry.pid );
+            response = new cmd.Response ( cmd.nc_retcode.ok,
+                '[00110] Job scheduled for stopping, token=' + post_data_obj.job_token,
+                {} );
+          } else  {
+            log.standard ( 62,'attempt to kill job ' +
+                                post_data_obj.job_token + ' pid=' + jobEntry.pid );
+            response = new cmd.Response ( cmd.nc_retcode.ok,
+                '[00111] Job scheduled for stopping, token=' + post_data_obj.job_token,
+                {} );
+          }
+          _stop_job ( jobEntry );
+
+        } else  {
+          log.detailed ( 12,'attempt to kill a process without a pid' );
+          response = new cmd.Response ( cmd.nc_retcode.pidNotFound,
+              '[00112] Job\'s PID not found; just stopped? token=' + post_data_obj.job_token,
+              {} );
+        }
+
+      }
+
+    } else  {
+      log.error ( 13,'attempt to kill/end failed no token found: ' +
+                      post_data_obj.job_token );
+      response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
+          '[00113] Job not found; just stopped? token=' + post_data_obj.job_token,
+          {} );
+    }
+
+  } else  {
+    log.error ( 14,'wrong request to kill/end post_data="' +
+                          JSON.stringify(post_data_obj) + '"' );
+    response = new cmd.Response ( cmd.nc_retcode.wrongRequest,
+        '[00114] Wrong request data, token=' + post_data_obj.job_token,
+        {} );
+  }
+
+  callback_func ( response );
+
+}
 
 // ===========================================================================
 
@@ -2116,6 +2052,7 @@ module.exports.ncStopJob          = ncStopJob;
 module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncSendJobResults   = ncSendJobResults;
+module.exports.ncGetJobResults    = ncGetJobResults;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;
 module.exports.readNCJobRegister  = readNCJobRegister;

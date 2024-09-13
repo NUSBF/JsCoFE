@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    11.09.24   <--  Date of Last Modification.
+ *    13.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.002 [11.09.2024]';   // for update
+const jsCoFE_version = '1.8.002 [13.09.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -224,7 +224,8 @@ const nc_command = {
   runClientJob   : '-runClientJob',   // run client job (local service)
   getNCInfo      : '-getNCInfo',      // get NC config and other info
   getNCCapacity  : '-getNCCapacity',  // get NC current capacity
-  sendJobResults : '-sendJobResults'  // request to send job results to 3rd party application
+  sendJobResults : '-sendJobResults', // request to send job results to 3rd party application
+  getJobResults  : '-getJobResults'   // request to return job results to FE via pull
 };
 
 
@@ -242,7 +243,8 @@ const nc_retcode = {
   unpackErrors   : 'unpackErrors',   // unpack errors
   wrongRequest   : 'wrongRequest',   // incomplete or malformed request
   jobNotFound    : 'jobNotFound',    // job token not found in registry
-  pidNotFound    : 'pidNotFound'     // job's pid not found in registry
+  pidNotFound    : 'pidNotFound',    // job's pid not found in registry
+  jobIsRunning   : 'jobIsRunning'    // results reauested but job is still running
 };
 
 
