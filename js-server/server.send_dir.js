@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.22   <--  Date of Last Modification.
+ *    13.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,16 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *     function getJobballPath ( dirPath )
+ *     function zipfile    ()
+ *     function packDir    ( dirPath, fileSelection, dest_path, 
+ *                           onReady_func )
+ *     function sendDir    ( dirPath, fileSelection, serverURL, command, 
+ *                           metaData, onReady_func, onErr_func )
+ *     function unpackDir  ( dirPath,cleanTmpDir, onReady_func )
+ *     function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )
+ * 
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -443,6 +452,12 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
 }
 
+
+// ==========================================================================
+
+function returnDir ( jobDir,server_response,onFinish_func )  {
+}
+
 // ==========================================================================
 // export for use in node
 module.exports.jobballName    = jobballName;
@@ -452,3 +467,4 @@ module.exports.unpackDir      = unpackDir;
 module.exports.getJobballPath = getJobballPath;
 module.exports.sendDir        = sendDir;
 module.exports.receiveDir     = receiveDir;
+module.exports.returnDir      = returnDir;

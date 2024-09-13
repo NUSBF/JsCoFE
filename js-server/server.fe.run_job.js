@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.09.24   <--  Date of Last Modification.
+ *    13.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1012,8 +1012,8 @@ function replayJob ( loginData,data, callback_func )  {
 function stopJob ( loginData,data )  {
 // Request to stop a running job. 'data' must contain a 'meta' field, which
 // must be the Task class of job to be terminated.
-let response = null;
 
+  let response = null;
   let task     = data.meta;
   let jobEntry = getEFJobEntry ( loginData,task.project,task.id );
 
@@ -1034,7 +1034,7 @@ let response = null;
         method  : 'POST',
         body    : { job_token   : jobEntry.job_token,
                     gracefully  : data.gracefully,
-                    return_data : true
+                    return_data : true  // push job results back to FE
                   },
         json    : true,
         rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
