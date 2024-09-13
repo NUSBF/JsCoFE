@@ -87,7 +87,7 @@ class MakeLigand(basic.TaskDriver):
                 lig_path = os.path.join ( os.environ["CCP4"],"lib","data","monomers",
                                           code[0].lower(),code + ".cif" )
             xyzPath  = code + ".pdb"
-            cifPath  = code + ".cif"
+#           cifPath  = code + ".cif"
 
             if os.path.isfile(lig_path):
                 # make AceDrg command line
@@ -134,7 +134,7 @@ class MakeLigand(basic.TaskDriver):
                     code  = "LIG"
 
                 xyzPath = code + ".pdb"
-                cifPath = code + ".cif"
+#               cifPath = code + ".cif"
 
                 f = open ( self.smiles_file_path(),'w' )
                 f.write  ( smiles + '\n' )
@@ -155,6 +155,9 @@ class MakeLigand(basic.TaskDriver):
 
         summary_line = "no ligand created (errors)"
         if code:  # can continue
+            cifPath = code + ".cif"
+            if not os.path.isfile(cifPath):
+                cifPath = code + "_final.cif"
 
             if self.outputFName == "":
                 self.outputFName = code.upper()
