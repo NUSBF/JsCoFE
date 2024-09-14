@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.09.24   <--  Date of Last Modification.
+ *    14.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ const fs         = require('fs-extra'  );
 const crypto     = require('crypto'    );
 
 // if (__use_ziplib)
-const zl = require('zip-lib'   );
+const zl = require('zip-lib');
 
 //  load application modules
 const conf  = require('./server.configuration'      );
@@ -342,7 +342,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
       if (onFinish_func)
-        onFinish_func ( 'err_dirnoexist',errs,upload_meta );  // file renaming errors
+        onFinish_func ( 'err_dirnotexist','err_makedir',upload_meta );  // file renaming errors
       log.error ( 10,'upload directory ' + tmpDir + ' cannot be created' );
       return;
     }
@@ -431,7 +431,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
       } else  {
         if (onFinish_func)
-          onFinish_func ( 'err_dirnoexist',errs,upload_meta );  // file renaming errors
+          onFinish_func ( 'err_dirnotexist',errs,upload_meta );  // file renaming errors
         log.error ( 18,'target directory ' + jobDir + ' does not exist' );
       }
 
@@ -455,7 +455,37 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
 // ==========================================================================
 
-function returnDir ( jobDir,server_response,onFinish_func )  {
+function returnDir ( jobDir,uniqueName,server_response,onFinish_func )  {
+// onFinish_func must take care of finalising response to the server
+  
+  // Set response headers
+  server_response.setHeader('Content-Type', 'application/zip');
+  server_response.setHeader('Content-Disposition', 'attachment; filename=' + uniqueName + '.zip');
+
+  // Create a zip instance
+  const zip = new zl.Zip();
+
+  // Add folder to the zip archive
+  zip.addFolder(jobDir)
+    .then(() => {
+      // Pipe the zip stream directly to the response
+      const zipStream = zip.archive();
+      zipStream.pipe(res);
+      zipStream.on('end', () => {
+        server_response.end();
+        onFinish_func ( 0,'' );
+      });
+    })
+    .catch((err) => {
+      server_response.status(500).send({ error : err.message });
+      // onFinish_func ( err.message );
+
+      let errs = 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
+      log.error ( 20,'return directory errors: ' + err );
+      onFinish_func ( 'err_returning',errs );  // file send errors
+  
+    });
+
 }
 
 // ==========================================================================

@@ -1511,7 +1511,7 @@ function _place_job_results ( job_token,code,errs,meta,server_response )  {
     log.error ( 10,'cannot accept job from NC due to file rename errors' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
                       '[00012] File rename errors' );
-  } else if (code=='err_dirnoexist')  { // work directory deleted
+  } else if (code=='err_dirnotexist')  { // work directory deleted
     log.error ( 11,'cannot accept job from NC as job directory does not ' +
                    'exist' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
@@ -1620,7 +1620,7 @@ function getJobResults ( job_token,server_request,server_response )  {
         //   log.error ( 10,'cannot accept job from NC due to file rename errors' );
         //   cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
         //                     '[00012] File rename errors' );
-        // } else if (code=='err_dirnoexist')  { // work directory deleted
+        // } else if (code=='err_dirnotexist')  { // work directory deleted
         //   log.error ( 11,'cannot accept job from NC as job directory does not ' +
         //                  'exist' );
         //   cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
