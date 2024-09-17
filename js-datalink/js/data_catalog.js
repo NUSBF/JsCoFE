@@ -165,23 +165,26 @@ class dataCatalog {
   }
 
   addEntry(user, source, id, fields = {}) {
+    const err_msg = `addEntry ${user}/${source}/${id}`;
     let dest = this.getDataDest(user, source, id);
 
     // create directory for the data
     try {
       fs.mkdirSync(dest, { recursive: true });
     } catch (err) {
-      log.error(`addEntry ${user}/${source}/${id} - ${err}`);
+      log.error(`${err_msg} - ${err}`);
       return false;
     }
 
     // copy any files from 'meta' subfolder into data folder.
-    let stat = fs.statSync(this.meta_dir);
-    if (stat.isDirectory()) {
-      try {
-        fs.cpSync('meta', dest, { recursive: true });
-      } catch (err) {
-        log.error(`addEntry - Unable to copy 'meta' files - ${err}`);
+    try {
+      if (fs.statSync(this.meta_dir).isDirectory()) {
+        fs.cpSync(this.meta_dir, dest, { recursive: true });
+      }
+    } catch (err) {
+      // log errors apart from meta directory not being found
+      if (err.code != 'ENOENT') {
+        log.error(`${err_msg} - ${err}`);
       }
     }
 
