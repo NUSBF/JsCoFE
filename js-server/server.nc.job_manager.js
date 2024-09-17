@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.24   <--  Date of Last Modification.
+ *    16.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@
  *    function make_local_job    ( files,base_url,destDir,job_token,callback_func )
  *    function ncRunRVAPIApp     ( post_data_obj,callback_func )
  *    function ncSendJobResults  ( post_data_obj,callback_func )
- *    function ncGetJobResults   ( server_request,server_response )
+ *    function ncGetJobResults   ( post_data_obj,callback_func,server_response )
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
@@ -958,12 +958,12 @@ let cfg = conf.getServerConfig();
       }
 
       send_dir.sendDir ( jobEntry.jobDir,'*',
-                        feURL,
-                        cmd.fe_command.jobFinished + job_token, {
+                         feURL,
+                         cmd.fe_command.jobFinished + job_token, {
                             'capacity'         : cfg.capacity,
                             'current_capacity' : current_capacity,
                             'tokens'           : ncJobRegister.getListOfTokens()
-                        },
+                         },
 
         function(rdata)  {  // send was successful
 
@@ -1015,7 +1015,14 @@ let cfg = conf.getServerConfig();
       });
 
   } else  {
-    jobEntry.sendTrials = 0;
+    jobEntry.sendTrials = -10;
+    send_dir.packDir ( jobEntry.jobDir,'*',null,function(errs,jobbal_size){
+      if (jobbal_size>0)  {
+        jobEntry.sendTrials = 0;
+      } // else  {
+        // errors
+        // }
+    });
   }
 
 }
@@ -1827,10 +1834,11 @@ let data_obj    = [];
 
 // ===========================================================================
 
-function ncGetJobResults ( post_data_obj,callback_func )  {
-// post_data_obj = {
-//   job_token: job_token
-// }
+function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
+// Response to pull request from FE for job resuilts for 'REMOTE' NCs 
+//     post_data_obj = {
+//       job_token: job_token
+//     }
   
   let response = null;
 
@@ -1844,27 +1852,38 @@ function ncGetJobResults ( post_data_obj,callback_func )  {
     response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
                     '[00123] Job not found token=' + post_data_obj.job_token,
                     {} );
+    callback_func ( response );
   
   } else if (jobEntry.jobStatus==task_t.job_code.running)  {
   
     response = new cmd.Response ( cmd.nc_retcode.jobIsRunning,post_data_obj.job_token,{} );
+    callback_func ( response );
   
   } else  {
 
-    send_dir.returnDir ( jobEntry.jobDir,post_data_obj.job_token,server_response,
-      function(code,errs){
-        if (!code)  {
-          log.standard ( 66,'job ' + post_data_obj.job_token + ' pid=' + jobEntry.pid +
-                            ' was returned to FE' );
-        } else  {
-          log.error ( 17,'remote fetch failed jobtoken=' + post_data_obj.job_token +
-                         '\n          ' + errs );
+    let jobballPath = send_dir.getJobballPath(jobEntry.jobDir);
+    console.log ( 'jobballPath=' + jobballPath);
+    if (utils.fileExists(jobballPath))  {
+      utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
+        function(rc){
+          if (!rc)  // no errors
+            ncJobRegister.removeJob ( post_data_obj.job_token );
         }
-      });
+      );
+    }
+
+    // send_dir.returnDir ( jobEntry.jobDir,post_data_obj.job_token,server_response,
+    //   function(code,errs){
+    //     if (!code)  {
+    //       log.standard ( 66,'job ' + post_data_obj.job_token + ' pid=' + jobEntry.pid +
+    //                         ' was returned to FE' );
+    //     } else  {
+    //       log.error ( 17,'remote fetch failed jobtoken=' + post_data_obj.job_token +
+    //                      '\n          ' + errs );
+    //     }
+    //   });
 
   }
-
-  // callback_func ( response );
 
 }
 
