@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.09.24   <--  Date of Last Modification.
+ *    17.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -53,6 +53,7 @@
 'use strict';
 
 //  load system modules
+const fs        = require('fs-extra');
 const path      = require('path');
 const crypto    = require('crypto');
 const request   = require('request');
@@ -99,7 +100,9 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
   this.job_map[job_token] = {
     nc_number        : nc_number,
     nc_type          : 'ordinary',
-    job_token        : job_token,  // job_token issued by NC
+    job_token        : job_token,  // job_token issued by NC (clashes hopefully minimal)
+                                   // make tokens surely NC-specific through NC
+                                   // confoguration
     loginData        : loginData,
     project          : project,
     jobId            : jobId,
@@ -155,7 +158,9 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
         delete this.token_map[index_list[i]];
     }
     delete this.job_map[job_token];
+    return true;
   }
+  return false;
 }
 
 FEJobRegister.prototype.cleanup = function ( job_token,token_list )  {
@@ -219,6 +224,8 @@ function readFEJobRegister()  {
     } else
       writeFEJobRegister();
   }
+  
+  checkPullMap();
 
 }
 
@@ -269,6 +276,149 @@ function getEFJobEntry ( loginData,project,jobId )  {
   return feJobRegister.getJobEntry ( loginData,project,jobId );
 }
 
+// ===========================================================================
+
+var pull_jobs_timer = null;
+
+function checkPullMap()  {
+
+  if (Object.keys(feJobRegister.token_pull_map).length > 0) {
+  
+    if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
+  
+      pull_jobs_timer = setTimeout ( function(){
+
+        let runaway_tokens = [];  // to check on register consistency later
+        let check_tokens   = [];  // buffer array needed because token_pull_map may change
+        for (let index in feJobRegister.token_pull_map)  {        
+          let job_token = feJobRegister.token_pull_map[index];
+          let jobEntry  = feJobRegister.getJobEntryByToken ( job_token );
+          if (!jobEntry)  runaway_tokens.push(index);  // inconsistency, will delete later
+                    else  check_tokens  .push(job_token);
+        }
+
+        // remove runaway tokens
+        for (let i=0;i<runaway_tokens.length;i++)  {
+          // should never happen; not critical therefore warning only
+          log.warning ( 1,'runaway pull token ' + feJobRegister.token_pull_map[index] + 
+                          ' for ' + index );
+          delete feJobRegister.token_pull_map[index];
+          if (index in feJobRegister.token_map)
+            delete feJobRegister.token_map[index];
+        }
+
+        // check status of jobs on 'REMOTE' NCs
+
+        let tmpDir = conf.getFETmpDir();
+
+        for (let i=0;i<check_tokens.length;i++)  {
+        
+          let job_token = check_tokens[i];
+          let jobEntry  = feJobRegister.getJobEntryByToken ( job_token );
+          
+          // Send pull request to REMOTE number cruncher. It will return a file which 
+          // can be either:
+          //    - a JSON of Response object with code "Job is running"
+          //    - a JSON of Response object with code "Job is not found on NC"
+          //    - a jobball of completed job directory
+          let ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
+          if (ncCfg)  {
+
+            let nc_url   = ncCfg.externalURL;
+            let filePath = path.join ( tmpDir,job_token + '.zip' ); // Destination path for the file
+            let file     = fs.createWriteStream ( filePath );
+            
+            request({
+                uri     : cmd.nc_command.getJobResults,
+                baseUrl : nc_url,
+                method  : 'POST',
+                body    : { job_token : jobEntry.job_token },
+                json    : true,
+                rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+              }
+            )
+            .pipe(file)
+            .on('finish',function()  {
+
+              // check whether this is a signal response or a possible zip file
+              if (utils.fileSize(filePath)<1000)  {  // likely a signal
+                let rdata = utils.readObject ( filePath );
+                if (rdata)  {
+                  // if job is still running, just ignore received file till next round
+                  if (rdata.status==cmd.nc_retcode.jobIsRunning)
+                    return;
+                  // the other signal is job noyt found on NC
+                  if (rdata.status==cmd.nc_retcode.jobNotFound)  {
+                    log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
+                                    '" job_token=' + job_token + ' -- removed' );
+                    feJobRegister.removeJob ( job_token );
+                    writeFEJobRegister();
+                    return;
+                  }
+                }
+              }
+
+              let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+                                               jobEntry.jobId );
+              send_dir.unpackDir1 ( jobDir,filePath,null,true,
+                function(code,jobballSize){
+                  if (code)  {
+                    log.error ( 1,'unpack errors, code=' + code + 
+                                  ', filesize='  + jobballSize  +
+                                  ', job_token=' + job_token );
+                  } else  {
+                    feJobRegister.removeJob ( job_token );
+                    writeFEJobRegister();
+                  }
+                });
+
+            })
+            .on('error', (err) => {
+              utils.removeFile ( filePath ); // Remove file on error
+              log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
+            });            
+          }
+          
+        }
+
+        checkPullMap();
+
+      },conf.getFEConfig().jobsPullPeriod);
+
+    }
+      
+  } else
+    pull_jobs_timer = null;
+
+            /**
+             * FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
+                                            project,jobId,shared_logins,
+                                            eoj_notification,push_back )  {
+  this.job_map[job_token] = {
+    nc_number        : nc_number,
+    nc_type          : 'ordinary',
+    job_token        : job_token,  // job_token issued by NC
+    loginData        : loginData,
+    project          : project,
+    jobId            : jobId,
+    is_shared        : (Object.keys(shared_logins).length>0),
+    start_time       : Date.now(),
+    eoj_notification : eoj_notification,
+    push_back        : push_back
+  };
+  let index = loginData.login + ':' + project + ':' + jobId;
+  this.token_map[index] = job_token;
+  if (push_back=='NO')
+    this.token_pull_map[index] = job_token;
+  for (let login in shared_logins)  {
+    index = login + ':' + project + ':' + jobId;
+    this.token_map[index] = job_token;
+  }
+}
+
+             */
+
+}
 
 // ===========================================================================
 
@@ -538,20 +688,20 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
             conf.getNCConfigs()[nc_number].current_capacity--;
           callback_func ( nc_number );
         } else  {
-          log.standard ( 1,'NC-' + nc_number + ' does not answer' );
-          log.error    ( 1,'NC-' + nc_number + ' does not answer' );
+          // log.standard ( 1,'NC-' + nc_number + ' does not answer' );
+          log.error    ( 3,'NC-' + nc_number + ' does not answer' );
           if (nc_counter>0)  {
             ncSelectAndCheck ( nc_counter-1,task,callback_func );
           } else  {
-            log.standard ( 2,'no response from number crunchers' );
-            log.error    ( 2,'no response from number crunchers' );
+            // log.standard ( 2,'no response from number crunchers' );
+            log.error    ( 4,'no response from number crunchers' );
             callback_func ( -102 );
           }
         }
       });
     } else  {
-      log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
-      log.error    ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
+      // log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
+      log.error    ( 5,'NC-' + nc_number + ' configuration cannot be obtained' );
       callback_func ( -101 );
     }
   } else  {
@@ -640,6 +790,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
                                  uData.settings.notifications.end_of_job,
                                  meta.push_back );
           writeFEJobRegister();
+          checkPullMap();
 
           if (callback_func)
             callback_func ( retdata.job_token );
@@ -690,7 +841,7 @@ function runJob ( loginData,data, callback_func )  {
 
   let task = class_map.makeClass ( data.meta );
   if (!task)  {
-    log.error ( 4,'Cannot make job class' );
+    log.error ( 7,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
                     '[00201] Corrupt job metadata',rdata) );
     return;
@@ -703,7 +854,7 @@ function runJob ( loginData,data, callback_func )  {
     knowledge = utils.readObject ( userKnowledgePath );
   knlg.addWfKnowledgeByTypes ( knowledge,task._type,data.ancestors );
   if (!utils.writeObject(userKnowledgePath,knowledge))
-    log.error ( 5,'Cannot write user knowledge at ' + userKnowledgePath );
+    log.error ( 8,'Cannot write user knowledge at ' + userKnowledgePath );
 
   // run job
 
@@ -833,7 +984,7 @@ function webappEndJob ( loginData,data, callback_func )  {
 
   let task = class_map.makeClass ( data.meta );
   if (!task)  {
-    log.error ( 4,'Cannot make job class' );
+    log.error ( 9,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
                     '[00201] Corrupt job metadata',rdata) );
     return;
@@ -873,7 +1024,7 @@ function replayJob ( loginData,data, callback_func )  {
 
   let replay_task = class_map.makeClass ( data.meta );
   if (!replay_task)  {
-    log.error ( 7,'Cannot make replay job class' );
+    log.error ( 10,'Cannot make replay job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
                     '[00202] Corrupt replay job metadata',{}) );
     return;
@@ -979,7 +1130,7 @@ function replayJob ( loginData,data, callback_func )  {
             case 2: utils.writeJobReportMessage ( jobDir,
                     '<h1>[00008] Failed: data transmission errors.</h1>' +
                     '<p><i>Return: ' + code + '</i>',false );
-                    log.error ( 8,'[00008] Cannot send data to NC at ' + nc_url );
+                    log.error ( 11,'[00008] Cannot send data to NC at ' + nc_url );
                   break;
 
             default: utils.writeJobReportMessage ( jobDir,
@@ -1029,17 +1180,17 @@ function stopJob ( loginData,data )  {
       else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
 
       request({
-        uri     : cmd.nc_command.stopJob,
-        baseUrl : nc_url,
-        method  : 'POST',
-        body    : { job_token   : jobEntry.job_token,
-                    gracefully  : data.gracefully,
-                    return_data : true  // push job results back to FE
-                  },
-        json    : true,
-        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-      },function(error,response,body){
-          if (!error && (response.statusCode==200)) {
+          uri     : cmd.nc_command.stopJob,
+          baseUrl : nc_url,
+          method  : 'POST',
+          body    : { job_token   : jobEntry.job_token,
+                      gracefully  : data.gracefully,
+                      return_data : true  // push job results back to FE
+                    },
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          if ((!error) && (response.statusCode==200)) {
             log.standard ( 10,body.message );
           }
         }
@@ -1097,17 +1248,17 @@ function killJob ( loginData,projectName,taskId )  {
       log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
 
       request({
-        uri     : cmd.nc_command.stopJob,
-        baseUrl : nc_url,
-        method  : 'POST',
-        body    : { job_token   : jobEntry.job_token,
-                    gracefully  : false,
-                    return_data : false
-                  },
-        json    : true,
-        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-      },function(error,response,body){
-          if (!error && (response.statusCode==200)) {
+          uri     : cmd.nc_command.stopJob,
+          baseUrl : nc_url,
+          method  : 'POST',
+          body    : { job_token   : jobEntry.job_token,
+                      gracefully  : false,
+                      return_data : false
+                    },
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          if ((!error) && (response.statusCode==200)) {
             log.standard ( 101,body.message );
           }
         }
@@ -1242,7 +1393,7 @@ function writeJobStats ( jobEntry )  {
 
   } else  {
 
-    log.error ( 9,'No job metadata found at path ' + jobDataPath );
+    log.error ( 12,'No job metadata found at path ' + jobDataPath );
 
   }
 
@@ -1272,7 +1423,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
     let projectDesc = prj.readProjectDesc ( loginData,projectName );
 
     if (!projectDesc)  {
-      log.error ( 20,'project data ' + projectName + ' not found, login ' +
+      log.error ( 13,'project data ' + projectName + ' not found, login ' +
                      loginData.login );
     } else  {
 
@@ -1299,7 +1450,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               let task = class_map.makeTaskClass ( auto_meta[key]._type );
   
               if (!task)  {
-                log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
+                log.error ( 14,'wrong task class name ' + auto_meta[key]._type );
               } else  {
   
                 // place job tree node
@@ -1310,12 +1461,12 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
   
                 let pnode = pd.getProjectNode ( projectData,pid );
                 if (!pnode)  {
-                  log.error ( 22,'cannot get project node in workflow [' + loginData.login +
+                  log.error ( 15,'cannot get project node in workflow [' + loginData.login +
                                  ']:' + projectName + ':' + pid );
-                  log.error ( 22,'jobEntry=\n' + JSON.stringify(jobEntry) );
-                  log.error ( 22,'key=\n' + key );
-                  log.error ( 22,'auto_meta[key]=\n' + JSON.stringify(auto_meta[key]) );
-                  log.error ( 22,'projectData=\n' + JSON.stringify(projectData) );
+                  log.error ( 15,'jobEntry=\n' + JSON.stringify(jobEntry) );
+                  log.error ( 15,'key=\n' + key );
+                  log.error ( 15,'auto_meta[key]=\n' + JSON.stringify(auto_meta[key]) );
+                  log.error ( 15,'projectData=\n' + JSON.stringify(projectData) );
                   pd.printProjectTree ( ' >>>auto-2',projectData );
                   pd.printProjectTree ( ' >>>auto-3',prj.readProjectData ( loginData,projectName ) );
                 } else  {
@@ -1326,7 +1477,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
                   if (mjd[0]<0)  {
                     // job directory cannot be created because if errors
-                    log.error ( 23,'cannot create job directory in workflow at ' + mjd[1] );
+                    log.error ( 16,'cannot create job directory in workflow at ' + mjd[1] );
                   } else  {
 
                     // form task
@@ -1402,7 +1553,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
             let jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
             if (!utils.writeObject(jobDataPath,task))  {
-              log.error ( 24,'cannot write job metadata at ' + jobDataPath );
+              log.error ( 17,'cannot write job metadata at ' + jobDataPath );
             } else if (task_state==task_t.job_code.new)  {
 
               auto_meta.context.custom.excludedTasks = conf.getFEConfig().exclude_tasks;
@@ -1452,7 +1603,7 @@ function _place_job_results ( job_token,code,errs,meta,server_response )  {
   if (jobEntry.nc_number>=0)  {
     let nc_servers = conf.getNCConfigs();
     if (jobEntry.nc_number>=nc_servers.length)  {
-      log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ')' );
+      log.error ( 18,'wrong NC number (' + jobEntry.nc_number + ')' );
     } else  {
       if ('current_capacity' in meta)  {
         nc_servers[jobEntry.nc_number].capacity         = meta.capacity;
@@ -1508,27 +1659,27 @@ function _place_job_results ( job_token,code,errs,meta,server_response )  {
     cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
 
   } else if (code=='err_rename')  { // file renaming errors
-    log.error ( 10,'cannot accept job from NC due to file rename errors' );
+    log.error ( 20,'cannot accept job from NC due to file rename errors' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
                       '[00012] File rename errors' );
   } else if (code=='err_dirnotexist')  { // work directory deleted
-    log.error ( 11,'cannot accept job from NC as job directory does not ' +
+    log.error ( 21,'cannot accept job from NC as job directory does not ' +
                    'exist' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
                       '[00013] Recepient directory does not exist ' +
                       '(job deleted?)' );
   } else if (code=='err_transmission')  {  // data transmission errors
-    log.error ( 12,'cannot accept job from NC due to transmission errors: ' +
+    log.error ( 22,'cannot accept job from NC due to transmission errors: ' +
                    errs );
     cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
                       '[00014] Data transmission errors: ' + errs );
   } else if (code=='data_unpacking_errors')  {  // data unpacking errors
-    log.error ( 13,'cannot accept job from NC due to unpacking errors: ' +
+    log.error ( 23,'cannot accept job from NC due to unpacking errors: ' +
                    errs );
     cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
                       '[00015] Data unpack errors: ' + errs );
   } else  {
-    log.error ( 14,'cannot accept job from NC due to unspecified unpacking ' +
+    log.error ( 24,'cannot accept job from NC due to unspecified unpacking ' +
                    'errors' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.unpackErrors,
                       '[00016] Unspecified unpacking errors' );
@@ -1648,8 +1799,8 @@ function getJobResults ( job_token,server_request,server_response )  {
       });
 
   } else  { // job token not recognised, return Ok
-    log.error ( 15,'cannot accept job from NC because job token is not recognised' );
-    log.error ( 15,'job token: [' + JSON.stringify(job_token) + ']' );
+    log.error ( 25,'cannot accept job from NC because job token is not recognised' );
+    log.error ( 25,'job token: [' + JSON.stringify(job_token) + ']' );
     cmd.sendResponse ( server_response, cmd.fe_retcode.wrongJobToken,'','' );
   }
 
@@ -1756,12 +1907,12 @@ let nc_servers = conf.getNCConfigs();
           // console.log ( ' >>> NC#' + n + ' responded ' + JSON.stringify(response) );
           // console.log ( ' >>> NC#' + n + ' responded with ' + response.body.data.nzombies + ' zombies' );
           if (error)
-            log.error ( 17,'errors communicating with NC' + n + ': ' + error );
+            log.error ( 26,'errors communicating with NC' + n + ': ' + error );
           else  {
             try {
               nzombies += response.body.data.nzombies;
             } catch (e)  {
-              log.error ( 30,'corrupt response on wake zombies: ' + JSON.stringify(response) );
+              log.error ( 27,'corrupt response on wake zombies: ' + JSON.stringify(response) );
             }
           }
           nc_wake_zombie ( n+1 );
@@ -1805,7 +1956,7 @@ function cloudRun ( server_request,server_response )  {
   let tmpJobDir = conf.getTmpFile();
 
   if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
-    log.error ( 16,'cannot make temporary directory for cloud run' );
+    log.error ( 28,'cannot make temporary directory for cloud run' );
     utils.removePath ( tmpDir    );
     utils.removePath ( tmpJobDir );
     cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
@@ -1824,7 +1975,7 @@ function cloudRun ( server_request,server_response )  {
 
       if (code)  {
         // upload errors, directory with data was not received
-        log.error ( 11,'receive directory errors: code=' + code + '; desc=' + errs );
+        log.error ( 29,'receive directory errors: code=' + code + '; desc=' + errs );
         response = new cmd.Response ( cmd.fe_retcode.uploadErrors,
                                       'errors: code='+code+'; desc='+errs,{} );
       } else  {
@@ -1887,7 +2038,7 @@ function cloudRun ( server_request,server_response )  {
                 if (response.status==cmd.fe_retcode.ok)  {
                   pData = prj.readProjectData ( loginData,meta.project );
                   if (!pData)  {
-                    log.error ( 12,'error creating new project for cloudRun: login ' +
+                    log.error ( 30,'error creating new project for cloudRun: login ' +
                                   loginData.login );
                     response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                                   'error creating new project',{} );
@@ -1929,7 +2080,7 @@ function cloudRun ( server_request,server_response )  {
 
                 let task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
                 if (!task)  {
-                  log.error ( 13,'error reading task meta in cloudRun: login ' +
+                  log.error ( 31,'error reading task meta in cloudRun: login ' +
                                  loginData.login + ', project ' + meta.project );
                   response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                                 'error creating new project',{} );
@@ -1943,7 +2094,7 @@ function cloudRun ( server_request,server_response )  {
 
                   if (mjd[0]<0)  {
                     // job directory cannot be created because if errors
-                    log.error ( 24,'cannot create job directory in workflow at ' + mjd[1] );
+                    log.error ( 32,'cannot create job directory in workflow at ' + mjd[1] );
                     response = new cmd.Response ( cmd.fe_retcode.errors,
                         'cloudRun rejected because job directory could not be created.',{} );
                   } else  {
@@ -1975,7 +2126,7 @@ function cloudRun ( server_request,server_response )  {
                         let jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
 
                         if (!utils.writeObject(jobDataPath,task))  {
-                          log.error ( 14,'cannot write job metadata at ' + jobDataPath );
+                          log.error ( 33,'cannot write job metadata at ' + jobDataPath );
                           utils.removePath ( jobDirPath );
                           response = new cmd.Response ( cmd.fe_retcode.ok,
                                 'cloudRun task failed because of error in writing ' +

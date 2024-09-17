@@ -413,7 +413,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               if (!code)
-                log.detailed ( 6,'directory contents has been received in ' + jobDir );
+                log.detailed (  6,'directory contents has been received in ' + jobDir );
               else  {
                 log.standard (  2,'directory contents has been received in ' + jobDir +
                                   ' with errors: ' + code +
@@ -455,38 +455,36 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
 // ==========================================================================
 
-function returnDir ( jobDir,uniqueName,server_response,onFinish_func )  {
-// onFinish_func must take care of finalising response to the server
+// function returnDir ( jobDir,uniqueName,server_response,onFinish_func )  {
+// // onFinish_func must take care of finalising response to the server
   
-  // Set response headers
-  server_response.setHeader('Content-Type', 'application/zip');
-  server_response.setHeader('Content-Disposition', 'attachment; filename=' + uniqueName + '.zip');
+//   // Set response headers
+//   server_response.setHeader('Content-Type', 'application/zip');
+//   server_response.setHeader('Content-Disposition', 'attachment; filename=' + uniqueName + '.zip');
 
-  // Create a zip instance
-  const zip = new zl.Zip();
+//   // Create a zip instance
+//   const zip = new zl.Zip();
 
-  // Add folder to the zip archive
-  zip.addFolder(jobDir)
-    .then(() => {
-      // Pipe the zip stream directly to the response
-      const zipStream = zip.archive();
-      zipStream.pipe(res);
-      zipStream.on('end', () => {
-        server_response.end();
-        onFinish_func ( 0,'' );
-      });
-    })
-    .catch((err) => {
-      server_response.status(500).send({ error : err.message });
-      // onFinish_func ( err.message );
+//   // Add folder to the zip archive
+//   zip.addFolder(jobDir)
+//     .then(() => {
+//       // Pipe the zip stream directly to the response
+//       const zipStream = zip.archive();
+//       zipStream.pipe(server_response);
+//       zipStream.on('end', () => {
+//         server_response.end();
+//         onFinish_func ( 0,'' );
+//       });
+//     })
+//     .catch((err) => {
+//       server_response.status(500).send({ error : err.message });
+//       // onFinish_func ( err.message );
+//       let errs = 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
+//       log.error ( 20,'return directory errors: ' + err );
+//       onFinish_func ( 'err_returning',errs );  // file send errors
+//     });
 
-      let errs = 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
-      log.error ( 20,'return directory errors: ' + err );
-      onFinish_func ( 'err_returning',errs );  // file send errors
-  
-    });
-
-}
+// }
 
 // ==========================================================================
 // export for use in node
@@ -497,4 +495,4 @@ module.exports.unpackDir      = unpackDir;
 module.exports.getJobballPath = getJobballPath;
 module.exports.sendDir        = sendDir;
 module.exports.receiveDir     = receiveDir;
-module.exports.returnDir      = returnDir;
+// module.exports.returnDir      = returnDir;
