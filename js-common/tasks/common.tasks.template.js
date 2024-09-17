@@ -43,7 +43,8 @@ const job_code = {
   remark        : 'remark',        // remark node
   remdet        : 'remdet',        // detached remark node
   remdoc        : 'remdoc',        // remark node converted from documentation import
-  retired       : 'retired'        // indicates that the task should not appear in task list
+  retired       : 'retired',       // indicates that the task should not appear in task list
+  remove        : 'remove'         // special code for removing job from registry on REMOTE NCs
 };
 
 const input_mode = {
