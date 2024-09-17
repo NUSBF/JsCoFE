@@ -105,8 +105,9 @@ function NCJobRegister()  {
 
 
 NCJobRegister.prototype.addJob = function ( jobDir )  {
-let job_token     = crypto.randomBytes(20).toString('hex');
-let maxSendTrials = conf.getServerConfig().maxSendTrials;
+let ncCfg         = conf.getServerConfig();
+let job_token     = ncCfg.name + '-' + crypto.randomBytes(20).toString('hex');
+let maxSendTrials = ncCfg.maxSendTrials;
 let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
@@ -1834,6 +1835,37 @@ let data_obj    = [];
 
 // ===========================================================================
 
+function ncCheckJobResults ( post_data_obj,callback_func,server_response )  {
+// Returns status of jobs identified by job tokens
+//     post_data_obj = {
+//       index1 : { job_token : job_tyoken, nc_number : nc_number, status : status },
+//       index2 : { job_token : job_tyoken, nc_number : nc_number, status : status },
+//       ............
+//     }
+
+  let wreg = false;
+  for (let index in post_data_obj)  {
+    let jobEntry = ncJobRegister.getJobEntry ( post_data_obj[index].job_token );
+    if (!post_data_obj[index].status) {
+      if (jobEntry)
+        post_data_obj[index].status = jobEntry.jobStatus;
+    } else if (post_data_obj[index].status==task_t.job_code.remove)  {
+      if (jobEntry && (jobEntry.jobStatus==task_t.job_code.running))  {
+        _stop_job ( jobEntry );
+      } else  {
+        ncJobRegister.removeJob ( post_data_obj[index].job_token );
+        wreg = true;
+      }
+    }
+  }
+
+  if (wreg)
+    writeNCJobRegister();
+
+  callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',post_data_obj ) );
+
+}
+
 function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
 // Response to pull request from FE for job resuilts for 'REMOTE' NCs 
 //     post_data_obj = {
@@ -1862,12 +1894,12 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   } else  {
 
     let jobballPath = send_dir.getJobballPath(jobEntry.jobDir);
-    console.log ( 'jobballPath=' + jobballPath);
+    console.log ( 'jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){
-          if (!rc)  // no errors
-            ncJobRegister.removeJob ( post_data_obj.job_token );
+          // if (!rc)  // no errors
+          //   ncJobRegister.removeJob ( post_data_obj.job_token );
         }
       );
     }
@@ -2015,6 +2047,7 @@ module.exports.ncStopJob          = ncStopJob;
 module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncSendJobResults   = ncSendJobResults;
+module.exports.ncCheckJobResults  = ncCheckJobResults;
 module.exports.ncGetJobResults    = ncGetJobResults;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;

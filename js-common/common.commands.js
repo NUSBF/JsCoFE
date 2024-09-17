@@ -212,20 +212,21 @@ const fe_retcode = {
 // Commands for NC Server exchange.
 
 const nc_command = {
-  stop           : 'stop',            // quit the server
-  countBrowser   : '-countBrowser',   // request to advance browser start counter
-  runJob         : '-runJob',         // request to upload job data and run the job
-  stopJob        : '-stopJob',        // request to stop a running job
+  stop            : 'stop',            // quit the server
+  countBrowser    : '-countBrowser',   // request to advance browser start counter
+  runJob          : '-runJob',         // request to upload job data and run the job
+  stopJob         : '-stopJob',        // request to stop a running job
   wakeZombieJobs  : '-wakeZombieJobs',  // request to send zombi jobs to FE
-  selectDir      : '-selectDir',      // request to select directory (local service)
-  selectFile     : '-selectFile',     // request to select file (local service)
-  selectImageDir : '-selectImageDir', // request to select image directory (local service)
-  runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
-  runClientJob   : '-runClientJob',   // run client job (local service)
-  getNCInfo      : '-getNCInfo',      // get NC config and other info
-  getNCCapacity  : '-getNCCapacity',  // get NC current capacity
-  sendJobResults : '-sendJobResults', // request to send job results to 3rd party application
-  getJobResults  : '-getJobResults'   // request to return job results to FE via pull
+  selectDir       : '-selectDir',      // request to select directory (local service)
+  selectFile      : '-selectFile',     // request to select file (local service)
+  selectImageDir  : '-selectImageDir', // request to select image directory (local service)
+  runRVAPIApp     : '-runRVAPIApp',    // run RVAPI helper application (local service)
+  runClientJob    : '-runClientJob',   // run client job (local service)
+  getNCInfo       : '-getNCInfo',      // get NC config and other info
+  getNCCapacity   : '-getNCCapacity',  // get NC current capacity
+  sendJobResults  : '-sendJobResults', // request to send job results to 3rd party application
+  checkJobResults : '-checkJobResults', // request to check job results for a list of job tokens
+  getJobResults   : '-getJobResults'   // request to return job results to FE via pull
 };
 
 

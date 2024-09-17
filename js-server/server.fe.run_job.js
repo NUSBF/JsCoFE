@@ -278,8 +278,102 @@ function getEFJobEntry ( loginData,project,jobId )  {
 
 // ===========================================================================
 
+function checkRemoteJobs ( check_jobs,nc_number )  {
+let nc_servers = conf.getNCConfigs();
+
+  if (nc_number>=nc_servers.length)  {
+
+    console.log ( ' >>>>> check_jobs = ' + JSON.stringify(check_jobs) );
+
+    // download and unpack jobbals of finished jobs, replace them in projects and
+    // mark for deletion on NCs if success
+    let were_changes = false;
+
+    for (let index in check_jobs)  
+      if ((!check_jobs[index].status) || (check_jobs[index].status==cmd.nc_retcode.jobNotFound))  {
+
+        // remove runaway job
+        check_jobs[index].status = task_t.job_code.remove;
+          // should never happen; not critical therefore warning only
+         log.warning ( 1,'runaway pull token ' + check_jobs[index].job_token + 
+                         ' for ' + index );
+        delete feJobRegister.token_pull_map[index];
+        if (index in feJobRegister.token_map)
+        delete feJobRegister.token_map[index];
+        were_changes = true;
+      
+      } else if (!check_jobs[index].status!=task_t.job_code.running)  {
+        // job finished, results are ready 
+        '''''''''
+      }
+
+    if (were_changes)  {
+      checkRemoteJobs ( check_jobs,0 );
+      writeFEJobRegister();
+    }
+
+    return;
+
+  } else if (nc_servers[nc_number].exeType.toUpperCase()=='REMOTE')  {
+
+    request({
+      uri     : cmd.nc_command.checkJobResults,
+      baseUrl : nc_servers[nc_number].externalURL,
+      method  : 'POST',
+      body    : check_jobs,
+      json    : true,
+      rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+    },function(error,response,body){
+      console.log ( ' >>>>> error = "' + error + '"' );
+      console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+      checkRemoteJobs ( body.data,nc_number+1 );
+    });
+
+  } else  {
+    checkRemoteJobs ( check_jobs,nc_number+1 );
+  }
+
+}
+
+
 var pull_jobs_timer = null;
 
+function checkPullMap()  {
+
+  if (Object.keys(feJobRegister.token_pull_map).length <= 0)  {
+    pull_jobs_timer = null;
+  } else if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
+
+    pull_jobs_timer = setTimeout ( function(){
+
+      let check_jobs = {};  // buffer structure for convenience
+      for (let index in feJobRegister.token_pull_map)  {
+        let job_token = feJobRegister.token_pull_map[index];
+        let jobEntry  = feJobRegister.getJobEntryByToken ( job_token );
+        if (jobEntry)  {
+          check_jobs[index] = {
+            job_token : feJobRegister.token_pull_map[index],
+            nc_number : jobEntry.nc_number,
+            status    : ''
+          }
+        } else  {  // no job entry, job cannot return therefore remove
+          check_jobs[index] = {
+            job_token : feJobRegister.token_pull_map[index],
+            nc_number : -1,
+            status    : task_t.job_code.remove
+          }
+        }
+      }
+
+      checkRemoteJobs ( check_jobs,0 );
+
+    },conf.getFEConfig().jobsPullPeriod);
+
+  }
+
+}
+
+/*
 function checkPullMap()  {
 
   if (Object.keys(feJobRegister.token_pull_map).length > 0) {
@@ -390,35 +484,8 @@ function checkPullMap()  {
   } else
     pull_jobs_timer = null;
 
-            /**
-             * FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
-                                            project,jobId,shared_logins,
-                                            eoj_notification,push_back )  {
-  this.job_map[job_token] = {
-    nc_number        : nc_number,
-    nc_type          : 'ordinary',
-    job_token        : job_token,  // job_token issued by NC
-    loginData        : loginData,
-    project          : project,
-    jobId            : jobId,
-    is_shared        : (Object.keys(shared_logins).length>0),
-    start_time       : Date.now(),
-    eoj_notification : eoj_notification,
-    push_back        : push_back
-  };
-  let index = loginData.login + ':' + project + ':' + jobId;
-  this.token_map[index] = job_token;
-  if (push_back=='NO')
-    this.token_pull_map[index] = job_token;
-  for (let login in shared_logins)  {
-    index = login + ':' + project + ':' + jobId;
-    this.token_map[index] = job_token;
-  }
 }
-
-             */
-
-}
+*/
 
 // ===========================================================================
 

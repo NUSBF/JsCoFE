@@ -258,6 +258,10 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncSendJobResults,srvConfig.state );
             break;
 
+          case cmd.nc_command.checkJobResults :
+              pp.processPOSTData ( server_request,server_response,jm.ncCheckJobResults,srvConfig.state );
+            break;
+
           case cmd.nc_command.getJobResults :
               pp.processPOSTData ( server_request,server_response,jm.ncGetJobResults,srvConfig.state );
             break;
