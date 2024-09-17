@@ -37,6 +37,9 @@
     "irrmc": {
       "enabled": true
     },
+    "zenodo": {
+      "enabled": true
+    },
     // used for user uploaded data
     "upload": {
       // allow user uploads
