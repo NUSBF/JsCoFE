@@ -30,6 +30,9 @@ const def_config = {
     "irrmc": {
       "enabled": true
     },
+    "zenodo": {
+      "enabled": true
+    },
     "upload": {
       "enabled": true,
       "limit_mb": 20000
