@@ -1489,9 +1489,9 @@ class TaskDriver(object):
         file.close  ()
         model.seqrem  = True
         model.simtype = "rmsd"
-        
-        # if len(seqid_lst)==1:
-        #     model.meta["seqId"] = seqid_lst[0]
+  
+        if len(seqid_lst)==1:
+            model.meta["seqId"] = seqid_lst[0]
         return
 
     # ----------------------------------------------------------------------
