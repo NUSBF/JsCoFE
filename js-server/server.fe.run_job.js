@@ -2030,7 +2030,8 @@ let nc_servers = conf.getNCConfigs();
       let jobEntry = feJobRegister.job_map[token];
       // here to check for job expiration date (to be defined for FE)
       if ((jobEntry.loginData.login==loginData.login) &&
-          (jobEntry.project==projectName))
+          (jobEntry.project==projectName) &&
+          (jobEntry.push_back=='YES'))
         tokens.push ( token );
     }
   }
@@ -2071,7 +2072,7 @@ let nc_servers = conf.getNCConfigs();
             try {
               nzombies += response.body.data.nzombies;
             } catch (e)  {
-              log.error ( 27,'corrupt response on wake zombies: ' + JSON.stringify(response) );
+              log.error ( 27,'corrupt response on waking zombies: ' + JSON.stringify(response) );
             }
           }
           nc_wake_zombie ( n+1 );
