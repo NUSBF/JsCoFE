@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    19.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -697,7 +697,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       'Total number of jobs executed on the node',
       'Estimated job capacity of the node',
       'Current number of jobs running on the node',
-      'Current number of stalled or zombie jobs on the node'
+      'Current number of stalled or zombie jobs on the node. Square brackets, ' +
+      'if shown, indicate number of jobs awaiting pull request from FE'
     ]
   );
 
@@ -753,6 +754,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
         fasttrack = '-';
       let njobs     = 0;
       let nzombies  = 0;
+      let npulls    = 0;
       let njdone    = 0;
       let state     = 'running';
       let startDate = 'N/A';
@@ -761,8 +763,11 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       else if (nci.jobRegister)  {
         njdone  = nci.jobRegister.launch_count;
         for (let item in nci.jobRegister.job_map)
-          if (nci.jobRegister.job_map[item].endTime)  nzombies++;
-                                                else  njobs++;
+          if (nci.jobRegister.job_map[item].endTime)  {
+            if (nci.jobRegister.job_map[item].push_back=='YES')  nzombies++;
+                                                           else  npulls++;
+          } else
+            njobs++;
         startDate = small_font(nci.config.startDate);
       } else  {
         state = 'dead';
@@ -772,10 +777,13 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
         nc_name += '(' + nci.config.jobManager + ')';
       if ('jscofe_version' in nci)  app_version = nci.jscofe_version;
                               else  app_version = 'unspecified';
+      let nzp = '' + nzombies;
+      if (npulls>0)
+        nzp = nzombies + '[' + npulls + ']';
       this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
          startDate,nci.ccp4_version,app_version,fasttrack,state,
-         njdone,nci.config.capacity,njobs,nzombies],row,(row & 1)==1 );
+         njdone,nci.config.capacity,njobs,nzp],row,(row & 1)==1 );
       row++;
       ncn++;
     }
