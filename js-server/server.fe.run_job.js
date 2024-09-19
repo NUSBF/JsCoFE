@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.09.24   <--  Date of Last Modification.
+ *    19.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -97,6 +97,7 @@ function FEJobRegister()  {
 FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
                                             project,jobId,shared_logins,
                                             eoj_notification,push_back )  {
+  let crTime = Date.now();
   this.job_map[job_token] = {
     nc_number        : nc_number,
     nc_type          : 'ordinary',
@@ -107,7 +108,8 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     project          : project,
     jobId            : jobId,
     is_shared        : (Object.keys(shared_logins).length>0),
-    start_time       : Date.now(),
+    start_time       : crTime,
+    startTime_iso    : new Date(crTime).toISOString(),
     eoj_notification : eoj_notification,
     push_back        : push_back
   };
@@ -277,19 +279,39 @@ function getEFJobEntry ( loginData,project,jobId )  {
 }
 
 // ===========================================================================
+//
+// REMOTE job management. REMOTE jobs are running on NC that cannot push results 
+// back to FE. Typically, this is the case when jobs are sent to remote NC from 
+// local (desktop) Cloud configuration. 'REMOTE' NCs are configured as any ordinary 
+// NC, but on FE side, they should contain 'REMOTE' value for 'exeType':
+
+//        exeType : 'REMOTE'
+
+// On NC side, the configuration should specify the relevant NC typeof, such as
+// 'SLURM', 'SGE' etc. When jobs are sent to 'REMOTE' NC, the results are pulled 
+// back by FE, rather than pushed from NC. This is a less efficient model, which 
+// should be used only when absolutely necessary, for example, when a task needs 
+// complex software setup such as AF2.
+//
+
+var pull_jobs_timer = null;
 
 function checkRemoteJobs ( check_jobs,nc_number )  {
 let nc_servers = conf.getNCConfigs();
 
   if (nc_number>=nc_servers.length)  {
+    // jobs on all REMOTE NCs are checked, analyse results now
 
-    console.log ( ' >>>>> check_jobs = ' + JSON.stringify(check_jobs) );
+    // console.log ( ' >>>>> check_jobs = ' + JSON.stringify(check_jobs) );
 
     // download and unpack jobbals of finished jobs, replace them in projects and
     // mark for deletion on NCs if success
     let were_changes = false;
 
-    for (let index in check_jobs)  
+    for (let index in check_jobs)  {
+
+      let jobEntry  = feJobRegister.getJobEntryByToken ( check_jobs[index].job_token );
+
       if ((!check_jobs[index].status) || (check_jobs[index].status==cmd.nc_retcode.jobNotFound))  {
 
         // remove runaway job
@@ -303,18 +325,87 @@ let nc_servers = conf.getNCConfigs();
         were_changes = true;
       
       } else if (!check_jobs[index].status!=task_t.job_code.running)  {
-        // job finished, results are ready 
-        '''''''''
+        // job finished, results are ready
+
+        let ncCfg    = nc_servers[check_jobs[index].nc_number];
+        let nc_url   = ncCfg.externalURL;
+        let filePath = path.join ( conf.getFETmpDir(),jobEntry.job_token + '.zip' );
+        let file     = fs.createWriteStream ( filePath );
+        
+        request({
+            uri     : cmd.nc_command.getJobResults,
+            baseUrl : nc_url,
+            method  : 'POST',
+            body    : { job_token : jobEntry.job_token },
+            json    : true,
+            rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+          }
+        )
+        .pipe(file)
+        .on('finish',function()  {
+
+          // Check whether this is a signal response or a possible zip file
+          // this is redundant in view of preliminary checks, but we leave
+          // this code for safety
+          if (utils.fileSize(filePath)<1000)  {  // likely a signal
+            let rdata = utils.readObject ( filePath );
+            if (rdata)  {
+              // if job is still running, just ignore received file till next round
+              if (rdata.status==cmd.nc_retcode.jobIsRunning)
+                return;
+              // the other signal is job not found on NC
+              if (rdata.status==cmd.nc_retcode.jobNotFound)  {
+                log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
+                                '" job_token=' + job_token + ' -- removed' );
+                feJobRegister.removeJob ( jobEntry.job_token );
+                writeFEJobRegister();
+                check_jobs[index].status = task_t.job_code.remove;
+                were_changes = true;
+                return;
+              }
+            }
+          }
+
+          let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
+                                           jobEntry.jobId );
+          send_dir.unpackDir1 ( jobDir,filePath,null,true,
+            function(code,jobballSize){
+              if (code)  {
+                // make a counter here to avoid infinite looping
+                log.error ( 1,'unpack errors, code=' + code + 
+                              ', filesize='  + jobballSize  +
+                              ', job_token=' + job_token );
+              } else  {
+                feJobRegister.removeJob ( jobEntry.job_token );
+                writeFEJobRegister();
+                check_jobs[index].status = task_t.job_code.remove;
+                were_changes = true;
+              }
+            });
+
+        })
+        .on('error', (err) => {
+          // make a counter here to avoid infinite looping
+          utils.removeFile ( filePath ); // Remove file on error
+          log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
+        });            
       }
 
+    }
+
     if (were_changes)  {
-      checkRemoteJobs ( check_jobs,0 );
+      checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
       writeFEJobRegister();
+    } else  {
+      pull_jobs_timer = null;  // note that timer was blocked up to this point
+      checkPullMap();
     }
 
     return;
 
-  } else if (nc_servers[nc_number].exeType.toUpperCase()=='REMOTE')  {
+  } else if (nc_servers[nc_number].in_use && 
+             (nc_servers[nc_number].exeType.toUpperCase()=='REMOTE'))  {
+    // check jobs on next REMOTE NC
 
     request({
       uri     : cmd.nc_command.checkJobResults,
@@ -324,8 +415,8 @@ let nc_servers = conf.getNCConfigs();
       json    : true,
       rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
     },function(error,response,body){
-      console.log ( ' >>>>> error = "' + error + '"' );
-      console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+      // console.log ( ' >>>>> error = "' + error + '"' );
+      // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
       checkRemoteJobs ( body.data,nc_number+1 );
     });
 
@@ -335,13 +426,14 @@ let nc_servers = conf.getNCConfigs();
 
 }
 
-
-var pull_jobs_timer = null;
-
 function checkPullMap()  {
 
+  // console.log ( ' >>>>> checkPullMap '); 
+
   if (Object.keys(feJobRegister.token_pull_map).length <= 0)  {
+
     pull_jobs_timer = null;
+  
   } else if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
 
     pull_jobs_timer = setTimeout ( function(){

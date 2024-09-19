@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.24   <--  Date of Last Modification.
+ *    19.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -159,24 +159,17 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     let jobEntry = this.job_map[job_token];
-    let crTime   = Date.now();
-    // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
-    // if (jobEntry && jobEntry.endTime &&
-    //      ((jobEntry.jobStatus==task_t.job_code.exiting) ||
-    //       (([task_t.job_code.finished,task_t.job_code.failed,task_t.job_code.stopped]
-    //         .indexOf(jobEntry.jobStatus)>=0) &&
-    //        ((crTime-jobEntry.endTime)>86400)
-    //       )
-    //      )
-    //    )  {
-    if (jobEntry && jobEntry.endTime &&
-         ((jobEntry.jobStatus==task_t.job_code.exiting) || 
-          (crTime-jobEntry.endTime>__day_ms)))  {
-      // (jobEntry.sendTrials<=0))  {
-      jobEntry.jobStatus  = task_t.job_code.running;
-      jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
-      jobEntry.awakening  = true;
-      return true;
+    if (jobEntry.push_back=='YES')  {
+      let crTime   = Date.now();
+      if (jobEntry && jobEntry.endTime &&
+          ((jobEntry.jobStatus==task_t.job_code.exiting) || 
+            (crTime-jobEntry.endTime>__day_ms)))  {
+        // (jobEntry.sendTrials<=0))  {
+        jobEntry.jobStatus  = task_t.job_code.running;
+        jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
+        jobEntry.awakening  = true;
+        return true;
+      }
     }
   }
   return false;
@@ -356,15 +349,17 @@ function cleanNC ( cleanDeadJobs_bool )  {
     let _false_start = srvConfig.jobFalseStart;   // days; should come from config
     let _timeout     = srvConfig.jobTimeout;      // days; should come from config
     let _zombie_life = srvConfig.zombieLifeTime;  // days
-    let t = Date.now()/__day_ms;
-    let n = 0;
-    let nzombies = 0;
+    let t            = Date.now()/__day_ms;
+    let n            = 0;
+    let nzombies     = 0;
+    let npulls       = 0;
     for (let job_token in ncJobRegister.job_map)  {
       let jobEntry = ncJobRegister.job_map[job_token];
       let endTime  = ncJobRegister.job_map[job_token].endTime;
       if (endTime)  {
         endTime /= __day_ms;
-        nzombies++;
+        if (jobEntry.push_back=='YES')  nzombies++;
+                                  else  npulls++;
       }
       let startTime = t;
       if ('startTime' in jobEntry)
@@ -391,7 +386,8 @@ function cleanNC ( cleanDeadJobs_bool )  {
       }
     }
     log.standard ( 37,'total dead/zombie/timeout jobs scheduled for deletion: ' + n );
-    log.standard ( 38,'total zombie jobs: ' + nzombies );
+    log.standard ( 38,'total zombie jobs: '       + nzombies );
+    log.standard ( 38,'total pull waiting jobs: ' + npulls   );
   }
 
   // start job check loop
@@ -1838,8 +1834,8 @@ let data_obj    = [];
 function ncCheckJobResults ( post_data_obj,callback_func,server_response )  {
 // Returns status of jobs identified by job tokens
 //     post_data_obj = {
-//       index1 : { job_token : job_tyoken, nc_number : nc_number, status : status },
-//       index2 : { job_token : job_tyoken, nc_number : nc_number, status : status },
+//       index1 : { job_token : job_token, nc_number : nc_number, status : status },
+//       index2 : { job_token : job_token, nc_number : nc_number, status : status },
 //       ............
 //     }
 
