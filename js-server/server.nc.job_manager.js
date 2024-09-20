@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.24   <--  Date of Last Modification.
+ *    20.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -345,7 +345,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   if (cleanDeadJobs_bool)  {
     // let _day = __day_ms; // 86400000.0;
-    let srvConfig = conf.getServerConfig();
+    let srvConfig    = conf.getServerConfig();
     let _false_start = srvConfig.jobFalseStart;   // days; should come from config
     let _timeout     = srvConfig.jobTimeout;      // days; should come from config
     let _zombie_life = srvConfig.zombieLifeTime;  // days
@@ -385,7 +385,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
         }
       }
     }
-    log.standard ( 37,'total dead/zombie/timeout jobs scheduled for deletion: ' + n );
+    log.standard ( 37,'total dead/zombie/pull/timeout jobs scheduled for deletion: ' + n );
     log.standard ( 38,'total zombie jobs: '       + nzombies );
     log.standard ( 38,'total pull waiting jobs: ' + npulls   );
   }
@@ -882,7 +882,7 @@ let cfg = conf.getServerConfig();
   task.job_dialog_data.viewed = false;
 
   if ((!task.informFE) || (!jobEntry.return_data))  {
-    // FE need not to be informed of job status (RVAPI application or kill),
+    // FE need not be informed of job status (RVAPI application or hard kill),
     // just remove the job and quit
     ncJobRegister.removeJob ( job_token );
     writeNCJobRegister      ();
@@ -1506,6 +1506,8 @@ let response = null;
 
         log.standard ( 60,'attempt to gracefully end the job ' +
                           post_data_obj.job_token + ' pid=' + jobEntry.pid );
+        // write signal files, which are supposed to be read by tasks supporting
+        // graceful exiting
         utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
         utils.writeString (  path.join(jobEntry.jobDir,'report',cmd.endJobFName1),'end' );
         response = new cmd.Response ( cmd.nc_retcode.ok,
@@ -1903,26 +1905,19 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   } else  {
 
     let jobballPath = send_dir.getJobballPath(jobEntry.jobDir);
-    console.log ( 'jobballPath=' + jobballPath );
+    // console.log ( 'jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){
-          // if (!rc)  // no errors
-          //   ncJobRegister.removeJob ( post_data_obj.job_token );
+          if (rc)
+            log.error ( 17,'remote pull failed, job_token=' + post_data_obj.job_token );
+          // // if (!rc)  // no errors
+          // //   ncJobRegister.removeJob ( post_data_obj.job_token );
+          // Jobs are deleted by a separate command from FE, after checking on
+          // transmission and unoacking errors
         }
       );
     }
-
-    // send_dir.returnDir ( jobEntry.jobDir,post_data_obj.job_token,server_response,
-    //   function(code,errs){
-    //     if (!code)  {
-    //       log.standard ( 66,'job ' + post_data_obj.job_token + ' pid=' + jobEntry.pid +
-    //                         ' was returned to FE' );
-    //     } else  {
-    //       log.error ( 17,'remote fetch failed jobtoken=' + post_data_obj.job_token +
-    //                      '\n          ' + errs );
-    //     }
-    //   });
 
   }
 
