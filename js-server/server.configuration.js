@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.24   <--  Date of Last Modification.
+ *    16.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,9 +86,9 @@ function ServerConfig ( type )  {
   this.storage        = null;
   this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
   this.rejectUnauthorized = true; // should be true by default
-  if (type=='FEProxy')
+  // if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
-  else  this.state = 'active';  // server state: 'active', 'inactive'
+  // else  this.state = 'active';  // server state: 'active', 'inactive'
   this.startDate     = new Date(Date.now()).toUTCString();
   this.logflow       = {};
   this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
@@ -626,8 +626,9 @@ function CCP4DirName()  {
         "after"  : 180      // accounts become dormant automatically after 180 days
                       // of inactivity; 0 means no auto-dormancy
     },
-    "cache_max_age"    : 31536000,  // (optional) 1 year in ms; max age for caching icons on clients  
-    "sessionCheckPeriod" : 2000,
+    "cache_max_age"    : 31536000, // (optional) 1 year in ms; max age for caching icons on clients  
+    "sessionCheckPeriod" : 2000,   // (optional) in ms
+    "jobsPullPeriod"   : 4000,     // (optional, in ms) period for checking jobs on 'REMOTE' NCs  
     "ration"           : {
         "storage"      : 5000,     // currently comitted storage
         "storage_max"  : 20000,    // maximum possible allocation
@@ -729,7 +730,7 @@ function CCP4DirName()  {
       "fasttrack"        : 1,
       "storage"          : "./cofe-client-storage",
       "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
-      "exeType"          : "CLIENT",
+      "exeType"          : "CLIENT", // can be also "REMOTE"
       "exeData"          : "",       // mandatory
       "exeData_GPU"      : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"   : 2000,
@@ -840,9 +841,10 @@ function readConfiguration ( confFilePath,serverType )  {
       after  : 180      // accounts become dormant automatically after 180 days
                         // of inactivity; 0 means no auto-dormancy
     };
-    fe_server.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
+    fe_server.cache_max_age      = 31536000;  // 1 year in ms; max age for caching icons on clients  
     fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
-
+    fe_server.sessionCheckPeriod = 2000; // (optional) in ms
+    fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
 
     // read configuration file
     for (let key in confObj.FrontEnd)
