@@ -703,7 +703,7 @@ function capData ( data,n )  {
 
 
 function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
-                     persistance,nofile_callback )  {
+                     persistance,nofile_callback,onDone_callback=null )  {
 
   fs.stat ( fpath,function(err,stats){
 
@@ -713,7 +713,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
         if (persistance>0)  {
           setTimeout ( function(){
             send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
-                        persistance-1,nofile_callback );
+                        persistance-1,nofile_callback,onDone_callback );
           },50 );
         } else  {
           let rc = true;
@@ -721,6 +721,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
             rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
           else if (deleteOnDone)
             removeFile ( fpath );
+          if (onDone_callback)
+            onDone_callback ( rc );
           if (rc)  {
             log.error ( 13,'Read file errors, file = ' + fpath );
             log.error ( 13,'Error: ' + err );
@@ -745,6 +747,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
           server_response.end();
           if (deleteOnDone)
             removeFile ( fpath );
+          if (onDone_callback)
+            onDone_callback(false);
         });
 
         fReadStream.on ( 'error',function(e){
@@ -755,6 +759,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
           server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
           if (deleteOnDone)
             removeFile ( fpath );
+          if (onDone_callback)
+            onDone_callback(true);
         });
 
         if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
