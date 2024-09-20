@@ -324,7 +324,7 @@ let nc_servers = conf.getNCConfigs();
         delete feJobRegister.token_map[index];
         were_changes = true;
       
-      } else if (!check_jobs[index].status!=task_t.job_code.running)  {
+      } else if (jobEntry && (!check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
         let ncCfg    = nc_servers[check_jobs[index].nc_number];
@@ -379,7 +379,7 @@ let nc_servers = conf.getNCConfigs();
                 feJobRegister.removeJob ( jobEntry.job_token );
                 writeFEJobRegister();
                 check_jobs[index].status = task_t.job_code.remove;
-                were_changes = true;
+                checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
               }
             });
 
@@ -464,120 +464,6 @@ function checkPullMap()  {
   }
 
 }
-
-/*
-function checkPullMap()  {
-
-  if (Object.keys(feJobRegister.token_pull_map).length > 0) {
-  
-    if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
-  
-      pull_jobs_timer = setTimeout ( function(){
-
-        let runaway_tokens = [];  // to check on register consistency later
-        let check_tokens   = [];  // buffer array needed because token_pull_map may change
-        for (let index in feJobRegister.token_pull_map)  {        
-          let job_token = feJobRegister.token_pull_map[index];
-          let jobEntry  = feJobRegister.getJobEntryByToken ( job_token );
-          if (!jobEntry)  runaway_tokens.push(index);  // inconsistency, will delete later
-                    else  check_tokens  .push(job_token);
-        }
-
-        // remove runaway tokens
-        for (let i=0;i<runaway_tokens.length;i++)  {
-          // should never happen; not critical therefore warning only
-          log.warning ( 1,'runaway pull token ' + feJobRegister.token_pull_map[index] + 
-                          ' for ' + index );
-          delete feJobRegister.token_pull_map[index];
-          if (index in feJobRegister.token_map)
-            delete feJobRegister.token_map[index];
-        }
-
-        // check status of jobs on 'REMOTE' NCs
-
-        let tmpDir = conf.getFETmpDir();
-
-        for (let i=0;i<check_tokens.length;i++)  {
-        
-          let job_token = check_tokens[i];
-          let jobEntry  = feJobRegister.getJobEntryByToken ( job_token );
-          
-          // Send pull request to REMOTE number cruncher. It will return a file which 
-          // can be either:
-          //    - a JSON of Response object with code "Job is running"
-          //    - a JSON of Response object with code "Job is not found on NC"
-          //    - a jobball of completed job directory
-          let ncCfg  = conf.getNCConfig ( jobEntry.nc_number );
-          if (ncCfg)  {
-
-            let nc_url   = ncCfg.externalURL;
-            let filePath = path.join ( tmpDir,job_token + '.zip' ); // Destination path for the file
-            let file     = fs.createWriteStream ( filePath );
-            
-            request({
-                uri     : cmd.nc_command.getJobResults,
-                baseUrl : nc_url,
-                method  : 'POST',
-                body    : { job_token : jobEntry.job_token },
-                json    : true,
-                rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-              }
-            )
-            .pipe(file)
-            .on('finish',function()  {
-
-              // check whether this is a signal response or a possible zip file
-              if (utils.fileSize(filePath)<1000)  {  // likely a signal
-                let rdata = utils.readObject ( filePath );
-                if (rdata)  {
-                  // if job is still running, just ignore received file till next round
-                  if (rdata.status==cmd.nc_retcode.jobIsRunning)
-                    return;
-                  // the other signal is job noyt found on NC
-                  if (rdata.status==cmd.nc_retcode.jobNotFound)  {
-                    log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
-                                    '" job_token=' + job_token + ' -- removed' );
-                    feJobRegister.removeJob ( job_token );
-                    writeFEJobRegister();
-                    return;
-                  }
-                }
-              }
-
-              let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
-                                               jobEntry.jobId );
-              send_dir.unpackDir1 ( jobDir,filePath,null,true,
-                function(code,jobballSize){
-                  if (code)  {
-                    log.error ( 1,'unpack errors, code=' + code + 
-                                  ', filesize='  + jobballSize  +
-                                  ', job_token=' + job_token );
-                  } else  {
-                    feJobRegister.removeJob ( job_token );
-                    writeFEJobRegister();
-                  }
-                });
-
-            })
-            .on('error', (err) => {
-              utils.removeFile ( filePath ); // Remove file on error
-              log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
-            });            
-          }
-          
-        }
-
-        checkPullMap();
-
-      },conf.getFEConfig().jobsPullPeriod);
-
-    }
-      
-  } else
-    pull_jobs_timer = null;
-
-}
-*/
 
 // ===========================================================================
 
