@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.09.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -660,7 +660,7 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
   }
 
   if ((this.nc_type!='client') && (!this.checkEnvironment(environ_server)))  {
-    if (local_setup)
+    if (local_setup>0)
       return ['environment-server',
               'task software is not installed',
               '<h3>Task software is not installed</h3>' +
@@ -729,185 +729,6 @@ if (!dbx)  {
   }
 
 
-  // TaskTemplate.prototype.isTaskAvailable = function()  {
-
-  //   if ((this.nc_type!='client') && (__exclude_tasks.indexOf(this._type)>=0))  {
-  //     // task excluded in server configuration
-  //     return ['server-excluded',
-  //             'task is not available on ' + appName() + ' server',
-  //             '<h3>Task is not available on server</h3>' +
-  //             'The task is excluded from configuration on ' + appName() +
-  //             ' server which you use.<br>This may be due to the ' +
-  //             'unavailability of software or resources, which are ' +
-  //             '<br>required for the task.'];
-  //   }
-
-  //   if ((__exclude_tasks.indexOf('unix-only')>=0) &&
-  //       (this.platforms().indexOf('W')<0))  {
-  //     // task not supported on Windows
-  //     return ['windows-excluded',
-  //             'task is not available on MS Windows systems',
-  //             '<h3>Task is not available on MS Windows systems</h3>' +
-  //             'The task is based on program components that are not ' +
-  //             'suitable for MS Windows,<br>and, therefore, cannot be run.'];
-
-  //   }
-
-  //   if ((this.nc_type=='client') && (!__local_service))  {
-  //     // client task while there is no client running
-  //     if (__any_mobile_device)  {
-  //       return ['client',
-  //               'task is not available on mobile devices',
-  //               '<h3>CCP4 Cloud Client is required</h3>'+
-  //               'This task cannot be used when working with ' + appName() +
-  //               ' from mobile devices.<br>In order to use the task, ' +
-  //               'access ' + appName() + ' via CCP4 Cloud Client,<br>' +
-  //               'found in CCP4 Software Suite.'];
-  //     } else  {
-  //       return ['client',
-  //               'task is available only if started via CCP4 Cloud Client',
-  //               '<h3>CCP4 Cloud Client is required</h3>' +
-  //               'This task can be used only if ' + appName() +
-  //               ' was accessed via CCP4 Cloud Client,<br>found in ' +
-  //               'CCP4 Software Suite.'];
-  //     }
-  //   }
-
-  //   if ((this.nc_type=='client-storage') &&
-  //       (!__local_service) && (!__cloud_storage))  {
-  //     // task require either client or cloud storage but neither is given
-  //     return ['client-storage',
-  //             'task is available only if started via CCP4 Cloud Client ' +
-  //             'or if Cloud Storage is configured',
-  //             '<h3>CCP4 Cloud Client is required</h3>' +
-  //             'This task can be used only if ' + appName() +
-  //             ' was accessed via ' + appName() + ' Client,<br>found in ' +
-  //             'CCP4 Software Suite, or if user has access to ' +
-  //             'Cloud Storage.'];
-  //   }
-
-  //   if (__treat_private.length>0)  {
-  //     let sends_out = this.sendsOut();
-  //     if (sends_out.length>0)  {
-  //       if ((__treat_private.indexOf('all')>=0) || (sends_out.indexOf('all')>=0))
-  //         return ['private',
-  //                 'task can transmit data to external servers, which ' +
-  //                 'is not allowed by ' + appName() + ' configuration',
-  //                 '<div style="width:350px;"><h3>Data confidentiality conflict</h3>' +
-  //                 'This task can transmit data to external servers, which ' +
-  //                 'is blocked in the configuration of ' + appName() + 
-  //                 ' server you are currently using.</div>'];
-  //       let breachlist = [];
-  //       for (let i=0;i<sends_out.length;i++)
-  //         if ((sends_out[i]!='none') && (sends_out[i]!='all') && 
-  //             (__treat_private.indexOf(sends_out[i])>=0))  {
-  //           switch (sends_out[i])  {
-  //             case 'seq' : breachlist.push ( 'sequence(s)' );         break;
-  //             case 'xyz' : breachlist.push ( 'structure model(s)' );  break;
-  //             case 'lig' : breachlist.push ( 'ligand structure(s)' ); break;
-  //             case 'hkl' : breachlist.push ( 'reflections' );         break;
-  //             default    : breachlist.push ( 'unspecified' );
-  //           }
-  //         }
-  //       if (breachlist.length>0)  {
-  //         let blist = breachlist.join ( ', ' );
-  //         return ['private',
-  //                 'task can transmit ' + blist + ' to external servers, which ' +
-  //                 'is not allowed by ' + appName() + ' configuration',
-  //                 '<div style="width:350px;"><h3>Data confidentiality conflict</h3>' +
-  //                 'This task can transmit ' + blist + ' to external servers, which ' +
-  //                 'is blocked in the configuration of ' + appName() + 
-  //                 ' server you are currently using.</div>'];
-  //       }
-  //     }
-  //   }
-
-  //   if ((this.nc_type=='browser-secure') && (!isProtectedConnection()))  {
-  //     return ['browser-secure',
-  //             'task requires secure internet connection',
-  //             '<h3>Task requires secure internet connection</h3>' +
-  //             'This task requires secure internet connection (https or<br>' +
-  //             'localhost-based setup).<p>Contact your ' + appName() +
-  //             ' maintainer at<br>' +
-  //                 '<a href="mailto:' + __maintainerEmail +
-  //                   '?Subject=' + encodeURI(appName()) + '%20Secure%20connection">' + 
-  //                   __maintainerEmail +
-  //                 '</a>.'];
-  //   }
-
-  //   if (startsWith(this.nc_type,'client'))  {
-
-  //     if (__local_service &&
-  //         (compareVersions(__client_version,this.lowestClientVersion())<0))  {
-  //       // task requires client of higher version
-  //       return ['client-version',
-  //               'task requires a higher version of CCP4 Cloud Client ' +
-  //               '(update CCP4 on your device)',
-  //               '<h3>Too low version of CCP4 Cloud Client</h3>' +
-  //               'This task requires a higher version of CCP4 Cloud ' +
-  //               'Client.<br>Please update CCP4 Software Suite on ' +
-  //               'your device.'];
-  //     }
-
-  //     if (((this.nc_type=='client') || (!__cloud_storage)) &&
-  //         (!this.checkEnvironment(__environ_client)))
-  //       return ['environment-client',
-  //               'task software is not installed on your device',
-  //               '<h3>Task software is not installed on your device</h3>' +
-  //               'The task is to run on your device, but needful software is ' +
-  //               'not installed on it.<br>Consult software documentation ' +
-  //               'for further details.'];
-
-  //   } else  {
-
-  //     let authID = this.authorisationID();
-  //     if (authID && //__auth_software && (authID in __auth_software) &&
-  //         (!__local_user) && ((!(authID in __user_authorisation)) ||
-  //                             (!__user_authorisation[authID].auth_date)))  {
-  //       if (__auth_software && (authID in __auth_software))  {
-  //         return ['authorisation',
-  //                 'task requires authorisation from ' +
-  //                 __auth_software[this.authorisationID()].desc_provider +
-  //                 ' (available in "My Account")',
-  //                 '<h3>Authorisation is required</h3>' +
-  //                 'This task requires authorisation from ' +
-  //                 __auth_software[this.authorisationID()].desc_provider +
-  //                 ',<br>which may be obtained in "My Account" page.</br><br>' +
-  //                 '<a href="javascript:launchHelpBox1(\'Authorisation instructions\',' +
-  //                 '\'' + __user_guide_base_url +__auth_software[this.authorisationID()].help_page +
-  //                 '.html\',null,10)"><span style="color:blue">Authorisation instructions</span></a></br>'];
-  //       } else  {
-  //         return ['authorisation',
-  //                 'task requires authorisation, which is not configured',
-  //                 '<h3>Authorisation is required</h3>' +
-  //                 'This task requires authorisation, which is not available ' +
-  //                 ',<br>due to server misconfiguration.'];
-  //       }
-  //     }
-
-  //   }
-
-  //   if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))  {
-  //     if (__local_setup)
-  //       return ['environment-server',
-  //               'task software is not installed',
-  //               '<h3>Task software is not installed</h3>' +
-  //               'Software, needed to run the task, is not installed on ' +
-  //               'your machine.'];
-  //     else
-  //       return ['environment-server',
-  //               'task software is not installed on ' + appName() + ' server',
-  //               '<h3>Task software is not installed on server</h3>' +
-  //               'Software, needed for the task, is not installed on ' +
-  //               appName() + ' server.<br>Contact server ' +
-  //               'maintainer for further details.'];
-  //   }
-
-  //   return ['ok','',''];
-
-  // }
-
-
   TaskTemplate.prototype.canClone = function ( node,jobTree )  {
     return (this.isTaskAvailable()[0]=='ok') && jobTree && 
            (!jobTree.view_only);
@@ -917,6 +738,7 @@ if (!dbx)  {
     return true;
     */
   }
+
 
   TaskTemplate.prototype.isArchived = function()  {
     return ('archive_version' in this) && (this.archive_version>0);

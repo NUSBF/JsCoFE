@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.09.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,8 +111,10 @@ let maxSendTrials = ncCfg.maxSendTrials;
 let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
+    fe_fsmount    : null,
     jobDir        : jobDir,
     jobStatus     : task_t.job_code.new,
+    task_id       : '',
     return_data   : true,
     sendTrials    : maxSendTrials,
     startTime     : crTime,
@@ -133,8 +135,10 @@ let maxSendTrials = conf.getServerConfig().maxSendTrials;
 let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
+    fe_fsmount    : null,
     jobDir        : jobDir,
     jobStatus     : task_t.job_code.new,
+    task_id       : '',
     return_data   : true,
     sendTrials    : maxSendTrials,
     startTime     : crTime,
@@ -235,16 +239,18 @@ function readNCJobRegister ( readKey )  {
             if (ncJobRegister.job_map[job_token].jobStatus==task_t.job_code.exiting) {
               ncJobRegister.job_map[job_token].jobStatus  = task_t.job_code.running;
               ncJobRegister.job_map[job_token].sendTrials = maxSendTrials;
-              let saveRegister = true;
+              saveRegister = true;
             }
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('endTime'))
-              ncJobRegister.job_map[job_token].endTime = null;
+              ncJobRegister.job_map[job_token].endTime   = null;
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('progress'))  {
               ncJobRegister.job_map[job_token].progress  = 0;
               ncJobRegister.job_map[job_token].lastAlive = null;
             }
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('push_back'))
-              ncJobRegister.job_map[job_token].push_back = 'YES';
+              ncJobRegister.job_map[job_token].push_back  = 'YES';
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('fe_fsmount'))
+              ncJobRegister.job_map[job_token].fe_fsmount = null;
           }
       }
 
@@ -312,7 +318,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
       mask[job_token] = true;
     } else  {
       n++;
-      log.standard ( 30,'removed unassigned job token: ' + job_token );
+      log.standard ( 30,'removed unassigned job token:' + job_token );
     }
   // delete job registry entries with tokens that were not masked
   ncJobRegister.job_map = comut.mapMaskIn ( ncJobRegister.job_map,mask );
@@ -948,12 +954,15 @@ let cfg = conf.getServerConfig();
       log.standard ( 104,'NC current capacity: ' + current_capacity );
 
       // get original front-end url
-      let feURL = jobEntry.feURL;
+      let feURL      = jobEntry.feURL;
+      let fe_fsmount = jobEntry.fe_fsmount;
 
       // but, if FE is configured, take it from configuration
       let fe_config = conf.getFEConfig();
-      if (fe_config && fe_config.localSetup)
-        feURL = fe_config.externalURL;
+      if (fe_config && fe_config.localSetup)  {
+        feURL      = fe_config.externalURL;
+        fe_fsmount = fe_config.fsmount;
+      }
 
       if (feURL.endsWith('/'))
         feURL = feURL.substr(0,feURL.length-1);
@@ -968,7 +977,7 @@ let cfg = conf.getServerConfig();
       }
 
       send_dir.sendDir ( jobEntry.jobDir,'*',
-                         feURL,
+                         feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token, {
                             'capacity'         : cfg.capacity,
                             'current_capacity' : current_capacity,
@@ -981,7 +990,7 @@ let cfg = conf.getServerConfig();
           // which is useful for debugging etc.
 
           log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
-                            job_token );
+                             job_token );
           removeJobDelayed ( job_token,task_t.job_code.finished );
 
         },function(stageNo,errcode)  {  // send failed
@@ -1046,11 +1055,11 @@ function ncRunJob ( job_token,meta )  {
   // acquire the corresponding job entry
   let jobEntry = ncJobRegister.getJobEntry ( job_token );
   jobEntry.feURL     = meta.sender;
+  jobEntry.fe_fsmount= meta.fsmount;
   jobEntry.feedback  = meta.feedback;
   jobEntry.user_name = meta.user_name;
   jobEntry.email     = meta.email;
   jobEntry.push_back = meta.push_back;
-  writeNCJobRegister();
 
   // get number cruncher configuration object
   let ncConfig = conf.getServerConfig();
@@ -1068,6 +1077,9 @@ function ncRunJob ( job_token,meta )  {
   let taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
   let jobDir       = path.dirname ( taskDataPath );
   let task         = utils.readClass ( taskDataPath );
+
+  jobEntry.task_id = task.id;
+  writeNCJobRegister();
 
   function getJobName()  {
     //return 'cofe_' + ncJobRegister.launch_count;
@@ -1911,6 +1923,10 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
         function(rc){
           if (rc)
             log.error ( 17,'remote pull failed, job_token=' + post_data_obj.job_token );
+          else
+            log.standard ( 105,'task ' + jobEntry.task_id + ' fetched back by FE, token:' +
+                               post_data_obj.job_token );
+
           // // if (!rc)  // no errors
           // //   ncJobRegister.removeJob ( post_data_obj.job_token );
           // Jobs are deleted by a separate command from FE, after checking on

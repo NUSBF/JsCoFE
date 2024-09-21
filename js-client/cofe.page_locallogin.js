@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,6 +77,9 @@ function LocalLoginPage ( sceneId )  {
 
       let row = 0;
 
+      let selected_tasks = '';
+      if (__local_setup==1)
+        selected_tasks = ' selected tasks and';
       panel.setLabel ( text +
         'Projects and data stored on your machine:<br>' +
         // '<i style="font-size:85%">path(s): </i>' +
@@ -86,7 +89,8 @@ function LocalLoginPage ( sceneId )  {
         '<i style="font-size:85%">(use project export/import for manual syncing)</i>' +
         '</li><li style="padding-bottom:8px;">' +
         'Jobs run on your machine<br>' +
-        '<i style="font-size:85%">(except when 3rd party web-services are used)</i>' +
+        '<i style="font-size:85%">(except' + 
+        selected_tasks + ' when 3rd party web-services are used)</i>' +
         '</li><li>' +
         'You have ' + dfree + 'GB free disk space & ' + rData.cpus.length + 
         ' cores @ ' + speed + ' GHz' +

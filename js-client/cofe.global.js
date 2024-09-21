@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -70,7 +70,7 @@ var __current_folder  = {
   type      : folder_type.user,
   folders   : []
 };
-var __local_setup     = false;
+var __local_setup     = 0;
 var __title_page      = true;   // whether to show title page in local/desktop mode
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
