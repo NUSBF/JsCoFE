@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,26 +44,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   // set background image
   if (getClientCode()==client_code.ccp4)  {
-
-    // if (pageType!='LoginPage')
-    //   replaceStylesheets ( 'css/cofe.theme.','css/cofe.theme.dark.css' )
-
     $('#'+sceneId).addClass('main-scene');
-
-    /*
-    if (pageType=='LoginPage')  {
-      let css = {
-        "background-image"    : "url('" + image_path('background_remote') + "')",
-        "background-repeat"   : "no-repeat",
-        "background-size"     : "cover",
-        "background-position" : "center center"
-      };
-      if (__local_setup)
-        css['background-image'] = "url('" + image_path('background_local') + "')"
-      $('#'+sceneId).css ( css );
-    }
-    */
-
   } else
     $('#'+sceneId).css({
         "background-image"    : "url('" + image_path('ccpem_background') + "')",
@@ -141,47 +122,6 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 }
 
-/*
-BasePage.prototype.makeSetupNamePanel = function()  {
-// This panel appears on login, account, authorisation reply, forgotten password
-// and new registration pages
-  let setupPanel = new Grid ( '' );
-
-  function _make_panel ( name,icon )  {
-    setupPanel.setImage ( icon,'30px','30px', 0,1,1,1 );
-    setupPanel.setLabel ( name, 0,2,1,1 )
-              .setFont  ( 'times','150%',true,true ).setNoWrap();
-    setupPanel.setCellSize ( '40%','',0,0 );
-    setupPanel.setCellSize ( '10%','',0,1 );
-    setupPanel.setCellSize ( '10%','',0,2 );
-    setupPanel.setCellSize ( '40%','',0,3 );
-    setupPanel.setVerticalAlignment ( 0,1,'bottom' );
-    setupPanel.setVerticalAlignment ( 0,2,'bottom' );
-  }
-
-  if (__setup_desc)  {
-    _make_panel ( __setup_desc.name,__setup_desc.icon );
-  } else if (__local_setup)  {
-    _make_panel ( 'Home setup',image_path('setup_home') );
-  } else  {
-    _make_panel ( 'Unnamed setup',image_path('setup_unknown') );
-  }
-
-  if (__fe_url != document.location.protocol + '//' +
-                  document.location.host     +
-                  document.location.pathname)  {
-    setupPanel.setLabel ( __fe_url, 1,0,1,4 )
-              .setFontSize ( '100%' ).setFontItalic(true).setNoWrap();
-    setupPanel.setCellSize ( '','20pt',1,0 );
-    setupPanel.setVerticalAlignment   ( 1,0,'bottom' );
-    setupPanel.setHorizontalAlignment ( 1,0,'center' );
-  }
-
-  return setupPanel;
-
-}
-*/
-
 BasePage.prototype.makeSetupNamePanel = function()  {
 // This panel appears on login, account, authorisation reply, forgotten password
 // and new registration pages
@@ -192,22 +132,9 @@ BasePage.prototype.makeSetupNamePanel = function()  {
   else if (__local_setup)  text += 'Home';
                      else  text += 'Unnamed setup';
 
-  // let setupPanel = new Grid ( '' );
-  // setupPanel.setLabel ( text, 0,1,1,1 )
-  //           .setFont  ( 'times','150%',true,true ).setNoWrap();
-  // setupPanel.setCellSize ( '40%','',0,0 );
-  // setupPanel.setCellSize ( '10%','',0,1 );
-  // setupPanel.setCellSize ( '40%','',0,3 );
-
   return new Label(text+'</center>').setFont('times','125%',true,true ).setNoWrap();
 
 }
-
-
-//let __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
-//let __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
-//let __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
-//let __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 // This panel runs at the bottom of all pages
@@ -322,29 +249,21 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
 let icon_path = '';
-// let tooltip    = 'You are working with ' + appName() + ' Setup';
 let tooltip   = '<i>' + appName();
 let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
 let iwidth    = '26px';
 
-  // if (__local_setup)
-  //   tooltip += ', running locally on your machine at ' + __fe_url + '.<br>&nbsp;';
-  // else if (__setup_desc)
-  //   tooltip += '<center>"' + __setup_desc.name + '"<br>at ' + __fe_url + '</center>'; 
-
-  // tooltip += '<br><i>' + appName();
-
   if (__local_setup)  {
     icon_path = image_path ( 'ccp4cloud_desktop'  );
-    // if (__local_user)
-    //       tooltip += ' is in <b>desktop</b> mode:</i>';
-    // else  tooltip += ' is in <b>local</b> mode:</i>';
-    tooltip += ' is in <b>local</b> mode:</i>';
-    tooltip += ul_style + '<li>projects and data are stored on your system</li>';
+    tooltip  += ' is in <b>local</b> mode:</i>';
+    tooltip  += ul_style + '<li>projects and data are stored on your system</li>';
+    let exceptions = '';
+    if (__local_setup==1)
+      exceptions = ' (exceptions apply)'
     if (__local_service)
-          tooltip += '<li>computation done on your computer</li>';
-    else  tooltip += '<li>non-interactive tasks run on your computer</li>'   +
-                     '<li><b>interactive tasks are not available</b>' +
+          tooltip += '<li>computation done on your computer' + exceptions + '</li>';
+    else  tooltip += '<li>non-interactive tasks run on your computer' + exceptions +
+                     '</li><li><b>interactive tasks are not available</b>' +
                      '<br><i>(' + appName() + ' Client not used)</i></li>';
   } else  {
     icon_path = image_path ( 'ccp4cloud_remote' );
@@ -355,8 +274,6 @@ let iwidth    = '26px';
           tooltip += '<li>interactive tasks run on your computer</li>';
     else  tooltip += '<li><b>interactive tasks are not available</b>' +
                      '<br><i>(' + appName() + ' Client not used)</i></li>';
-    // if (__setup_desc)
-    //   tooltip += '<li>setup name: <b>' + __setup_desc.name + '</b></li>';
     iwidth = '20px';
   }
 

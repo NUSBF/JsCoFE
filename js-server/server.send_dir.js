@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -17,8 +17,8 @@
  *     function zipfile    ()
  *     function packDir    ( dirPath, fileSelection, dest_path, 
  *                           onReady_func )
- *     function sendDir    ( dirPath, fileSelection, serverURL, command, 
- *                           metaData, onReady_func, onErr_func )
+ *     function sendDir    ( dirPath, fileSelection, serverURL, server_fsmount,
+                             command, metaData, onReady_func, onErr_func )
  *     function unpackDir  ( dirPath,cleanTmpDir, onReady_func )
  *     function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )
  * 
@@ -128,8 +128,8 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
 // ==========================================================================
 
-function sendDir ( dirPath, fileSelection, serverURL, command, metaData,
-                   onReady_func, onErr_func )  {
+function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
+                   metaData, onReady_func, onErr_func )  {
 let sender_cfg = conf.getServerConfig();
 
   function pushToServer ( formData,jobballPath )  {
@@ -139,15 +139,6 @@ let sender_cfg = conf.getServerConfig();
       formData : formData,
       rejectUnauthorized : sender_cfg.rejectUnauthorized
     };
-    /*
-    //if (serverURL.startsWith('https:'))  {
-    //  post_options.agentOptions = {};
-    //  post_options.agentOptions.key  = fs.readFileSync ( path.join('certificates','key.pem'   ) );
-    //  post_options.agentOptions.cert = fs.readFileSync ( path.join('certificates','cert.pem'  ) );
-    //  if (sender_cfg.useRootCA)
-    //    post_options.agentOptions.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
-    //}
-    */
 
     request.post ( post_options,function(err,httpResponse,response) {
 
@@ -180,10 +171,11 @@ let sender_cfg = conf.getServerConfig();
   }
 
 
-  if (sender_cfg.fsmount)  {
+  if (sender_cfg.fsmount && server_fsmount)  {
 
     let formData = {};
     formData['sender' ] = sender_cfg.externalURL;
+    formData['fsmount'] = sender_cfg.fsmount;
     formData['dirpath'] = path.resolve ( dirPath );  // convert to absolute path
     if (metaData)  // pass in form of simple key-value pairs
       for (let key in metaData)

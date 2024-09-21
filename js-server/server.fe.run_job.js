@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.09.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -374,7 +374,7 @@ let nc_servers = conf.getNCConfigs();
                 // make a counter here to avoid infinite looping
                 log.error ( 1,'unpack errors, code=' + code + 
                               ', filesize='  + jobballSize  +
-                              ', job_token=' + job_token );
+                              ', job_token=' + jobEntry.job_token );
               } else  {
                 feJobRegister.removeJob ( jobEntry.job_token );
                 writeFEJobRegister();
@@ -823,7 +823,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
         }
       }
 
-      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
+      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,meta,
 
         function ( retdata,jobballSize ){  // send successful
 
@@ -880,6 +880,10 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 }
 
 
+function newJobToken()  {
+  return 'fe-' + crypto.randomBytes(20).toString('hex');
+}
+
 function runJob ( loginData,data, callback_func )  {
 
   let rdata = {};  // response data structure
@@ -927,7 +931,7 @@ function runJob ( loginData,data, callback_func )  {
   let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
 
   task.state      = task_t.job_code.running;
-  let job_token   = crypto.randomBytes(20).toString('hex');
+  let job_token   = newJobToken();
   if ((task.nc_type=='client') || task.nc_type.startsWith('browser'))
     task.job_dialog_data.job_token = job_token;
   task.start_time = Date.now();
@@ -1124,7 +1128,7 @@ function replayJob ( loginData,data, callback_func )  {
                       'Job is running on client machine. Full report will ' +
                       'become available after job finishes.',true );
 
-          let job_token = crypto.randomBytes(20).toString('hex');
+          let job_token = newJobToken();
           feJobRegister.addJob ( job_token,nc_number,loginData,
                                  task.project,task.id,[],null,'YES' );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -1148,11 +1152,13 @@ function replayJob ( loginData,data, callback_func )  {
     } else  {
 
       // job for ordinary NC, pack and send all job directory to number cruncher
-      let nc_url = conf.getNCConfig(nc_number).externalURL;
+      let nc_cfg = conf.getNCConfig(nc_number);
+      let nc_url = nc_cfg.externalURL;
       let meta   = {};
       meta.setup_id = conf.getSetupID();
       meta.user_id  = loginData.login;
-      send_dir.sendDir ( jobDir,'*',nc_url,cmd.nc_command.runJob,meta,
+
+      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,meta,
 
         function ( rdata,jobballSize ){  // send successful
 
@@ -1615,7 +1621,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
               // Run the job
-              let job_token = crypto.randomBytes(20).toString('hex');
+              let job_token = newJobToken();
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
                           function(jtoken){} );
@@ -2036,7 +2042,7 @@ function cloudRun ( server_request,server_response )  {
         // 2. Check that user exists and make loginData structure
 
         let localSetup = conf.isLocalSetup();
-        if (localSetup)
+        if (localSetup>0)
           meta.user = ud.__local_user_id;
         let loginData = { login : meta.user, volume : null };
 
@@ -2197,7 +2203,7 @@ function cloudRun ( server_request,server_response )  {
                           let pnode_json = JSON.stringify ( pnode );
 
                           let cnode = JSON.parse ( pnode_json );
-                          cnode.id       = pnode.id + '_' + crypto.randomBytes(20).toString('hex'); //key;
+                          cnode.id       = pnode.id + '_' + newJobToken(); //key;
                           cnode.parentId = pnode.id;
                           cnode.dataId   = task.id;
                           cnode.icon     = cmd.image_path ( task.icon() );
@@ -2211,7 +2217,7 @@ function cloudRun ( server_request,server_response )  {
                           prj.writeProjectData ( loginData,pData,true );
 
                           // Run the job
-                          let job_token = crypto.randomBytes(20).toString('hex');
+                          let job_token = newJobToken();
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],

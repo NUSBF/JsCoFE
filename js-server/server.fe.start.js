@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,9 +84,10 @@ function start ( callback_func )  {
           (ncConfigs[nc_number].exeType!='CLIENT') &&
           ((ncConfigs[nc_number].stoppable || (command!=cmd.nc_command.stop))  {
       */
-      if (((ncConfigs[nc_number].type!='FEProxy') &&
-           (ncConfigs[nc_number].exeType!='CLIENT')) ||
-          feConfig.localSetup) {
+      if (ncConfigs[nc_number].in_use && ncConfigs[nc_number].stoppable &&
+          (((ncConfigs[nc_number].type!='FEProxy') &&
+            (ncConfigs[nc_number].exeType!='CLIENT')) ||
+           feConfig.localSetup)) {
         request.post({
           url  : ncConfigs[nc_number].url() + '/' + command,
           body : {},

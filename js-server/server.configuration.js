@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.24   <--  Date of Last Modification.
+ *    21.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1372,10 +1372,20 @@ let isClient   = false;
 
 
 function isLocalSetup()  {
-// Returns true if all servers are running on localhost.
-let isLocal = fe_server.localSetup;
-  for (let i=0;(i<nc_servers.length) && isLocal;i++)
-    isLocal = nc_servers[i].localSetup;
+// Returns:  2 if all servers are running on localhost
+//           1 if all servers are local and 'REMOTE'
+//           0 if all servers are remote
+let isLocal = 0;
+  if (fe_server.localSetup)  {
+    isLocal = 2;
+    for (let i=0;(i<nc_servers.length) && (isLocal>0);i++)
+      if (nc_servers[i].in_use)  {
+        if (nc_servers[i].exeType=='REMOTE') 
+          isLocal = 1;
+        else if (!nc_servers[i].localSetup)
+          isLocal = 0;
+      }
+  }
   return isLocal;
 }
 
