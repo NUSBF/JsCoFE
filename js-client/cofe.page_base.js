@@ -433,7 +433,7 @@ BasePage.prototype.addMenuSeparator = function()  {
 
 BasePage.prototype.addGlobusLinkToMenu = function()  {
   this.addMenuSeparator();
-  if (__globus_id)  {
+  if (__globus_id || __local_user)  {
     this.addMenuItem ( 'Start Globus','globus_app',function(){
       window.open ( 'https://app.globus.org/file-manager?two_pane=true',
                     'Globus File Transfer',
