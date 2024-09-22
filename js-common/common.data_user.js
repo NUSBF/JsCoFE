@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.05.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -42,6 +42,7 @@ const userdata_action = {
 
 const role_code = {
   user      : 'user',
+  localuser : 'localuser',
   admin     : 'admin',
   developer : 'developer'
 };
@@ -154,11 +155,15 @@ let msg = '';
 
   if (uData.hasOwnProperty('admin'))  {
     if (!uData.hasOwnProperty('role'))  {
-      if (uData.admin)  uData.role = role_code.admin;
-                  else  uData.role = role_code.user;
+      if (uData.admin)                        uData.role = role_code.admin;
+      else if (uData.login==__local_user_id)  uData.role = role_code.localuser;
+                                        else  uData.role = role_code.user;
     }
     delete uData.admin;
   }
+
+  if (uData.login==__local_user_id)
+    uData.role = role_code.localuser;
 
   return msg;
 
