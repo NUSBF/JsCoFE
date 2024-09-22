@@ -126,11 +126,16 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 // This panel appears on login, account, authorisation reply, forgotten password
 // and new registration pages
 
-  let text = '<center>' + appName() + ' @ ';
+  let text = '<center>' + appName();
 
-  if (__setup_desc)        text += __setup_desc.name;
-  else if (__local_setup)  text += 'Home';
-                     else  text += 'Unnamed setup';
+  if (__user_role==role_code.localuser)  {
+    text += ' Local';
+  } else  {
+    text += ' @ ';
+    if (__setup_desc)        text += __setup_desc.name;
+    else if (__local_setup)  text += 'Home';
+                      else  text += 'Unnamed setup';
+  }
 
   return new Label(text+'</center>').setFont('times','125%',true,true ).setNoWrap();
 
