@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.08.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1210,6 +1210,10 @@ function ProjectListPage ( sceneId )  {
 
   if (__user_role==role_code.admin)
     this.addMenuItem ( 'Admin Page',role_code.admin,function(){
+      saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
+    });
+  else if (__user_role==role_code.localuser)
+    this.addMenuItem ( 'System info','system_info',function(){
       saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
     });
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.09.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -145,20 +145,28 @@ function ProjectPage ( sceneId,pspecs=null )  {
     });
   });
 
-  if (!__local_user)  {
-    if (__user_role==role_code.admin)
-      this.addMenuItem ( 'Admin Page',role_code.admin,function(){
-        self.confirmLeaving ( function(do_leave){
-          if (do_leave)  {
-            if (self.jobTree && self.jobTree.projectData)
-              self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-                makeAdminPage ( sceneId );
-              });
-            else
+  let admLbl  = '';
+  let admIcon = '';
+  if (__user_role==role_code.admin)  {
+    admLbl  = 'Admin Page';
+    admIcon = role_code.admin;
+  } else if (__user_role==role_code.localuser)  {
+    admLbl  = 'System info';
+    admIcon = 'system_info';
+  }
+  if (admLbl)  {
+    this.addMenuItem ( admLbl,admIcon,function(){
+      self.confirmLeaving ( function(do_leave){
+        if (do_leave)  {
+          if (self.jobTree && self.jobTree.projectData)
+            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
               makeAdminPage ( sceneId );
-          }
-        });
+            });
+          else
+            makeAdminPage ( sceneId );
+        }
       });
+    });
   }
 
   this.addMenuSeparator();

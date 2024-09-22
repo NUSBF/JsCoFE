@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.05.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,7 +30,9 @@ function LogoutPage ( sceneId,reason_key )  {
   //if (__login_user)   __login_user .empty();
   __login_token = '';
   __login_user  = '';
-  __user_role   = role_code.user;
+  if (__local_user)
+        __user_role   = role_code.localuser;
+  else  __user_role   = role_code.user;
 //  __admin       = false;
 
   // prepare the scene and make top-level grid

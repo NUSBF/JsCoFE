@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,8 +35,10 @@ function AdminPage ( sceneId )  {
   }
 
   this.makeHeader ( 3,null );
-  let title_lbl = this.headerPanel.setLabel ( appName() + 
-                                          ' Administration Facility',0,3,1,1 );
+  let page_title = appName() + ' Administration Facility';
+  if (__local_user)
+    page_title = 'System information';
+  let title_lbl = this.headerPanel.setLabel ( page_title,0,3,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
@@ -60,7 +62,9 @@ function AdminPage ( sceneId )  {
   // this.tabs.setVisible ( false );
   this.usersTab = this.tabs.addTab ( 'Users'  ,true  );
   this.nodesTab = this.tabs.addTab ( 'Nodes'  ,false );
-  this.anlTab   = this.tabs.addTab ( 'Monitor',false );
+  this.anlTab   = null;
+  if (__user_role==role_code.admin)
+    this.anlTab = this.tabs.addTab ( 'Monitor',false );
   this.usageTab = this.tabs.addTab ( 'Usage'  ,false );
   this.jobsTab  = this.tabs.addTab ( 'Jobs'   ,false );
   // this.tabs.setVisible ( true );
@@ -89,21 +93,29 @@ function AdminPage ( sceneId )  {
 
   this.uaPanel.setLabel    ( '   ',0,0,1,1 );
   this.uaPanel.setCellSize ( '95%','32px',0,0 );
-  col = 1;
-  let newuser_btn   = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
-                                  .setSize('30px','30px')
-                                  .setTooltip('Make new user');
-  let dormant_btn   = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
-                                  .setSize('30px','30px')
-                                  .setTooltip('Identify and mark dormant users');
-  let announce_btn  = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
-                                  .setSize('30px','30px')
-                                  .setTooltip('Post announcement');
-  let sendtoall_btn = this.uaPanel.setButton ( '',image_path('sendtoall'),0,col++,1,1 )
-                                  .setSize('30px','30px')
-                                  .setTooltip('Send e-mail to all users');
-  for (let i=1;i<col;i++)
-    this.uaPanel.setCellSize ( 'auto','32px',0,i );
+
+  let newuser_btn   = null;
+  let dormant_btn   = null;
+  let announce_btn  = null;
+  let sendtoall_btn = null;
+
+  if (__user_role==role_code.admin)  {
+    col = 1;
+    newuser_btn   = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
+                                .setSize('30px','30px')
+                                .setTooltip('Make new user');
+    dormant_btn   = this.uaPanel.setButton ( '',image_path('dormant'),0,col++,1,1 )
+                                .setSize('30px','30px')
+                                .setTooltip('Identify and mark dormant users');
+    announce_btn  = this.uaPanel.setButton ( '',image_path('announce'),0,col++,1,1 )
+                                .setSize('30px','30px')
+                                .setTooltip('Post announcement');
+    sendtoall_btn = this.uaPanel.setButton ( '',image_path('sendtoall'),0,col++,1,1 )
+                                .setSize('30px','30px')
+                                .setTooltip('Send e-mail to all users');
+    for (let i=1;i<col;i++)
+      this.uaPanel.setCellSize ( 'auto','32px',0,i );
+  }
 
   this.usageStats = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
                                       .setFramePosition ( '0px','50px','100%','92%' );
@@ -129,7 +141,9 @@ function AdminPage ( sceneId )  {
   let zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
                                .setSize('30px','30px')
                                .setTooltip('Wake up zombies');
-  let update_btn = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
+  let update_btn = null;
+  if (__user_role==role_code.admin)
+    update_btn   = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
                                .setSize('30px','30px')
                                .setTooltip('Update and restart');
   for (let i=1;i<col;i++)
@@ -139,18 +153,6 @@ function AdminPage ( sceneId )  {
 
   let self = this;
   // (function(self){
-
-    self.tabs.setTabChangeListener ( function(ui){
-      self.loadUsageStats();
-    });
-
-    newuser_btn.addOnClickListener ( function(){
-      makeRegisterPage ( sceneId );
-    });
-
-    dormant_btn.addOnClickListener ( function(){
-      new DormantUsersDialog ( function(){ refresh_btn.click(); });
-    });
 
     zombie_btn.addOnClickListener ( function(){
       // stopSessionChecks();
@@ -170,54 +172,67 @@ function AdminPage ( sceneId )  {
                     );
     });
 
-    update_btn.addOnClickListener ( function(){
+    if (__user_role==role_code.admin)  {
 
-      new QuestionBox ( appName() + ' update',
-        '<div style="width:400px"><h2>' + appName() + ' update</h2>' +
-        appName() + ' will be shut down, updated and restarted. This is ' +
-        'administrative action, which will work only if ' + appName() + 
-        ' is appropriately configured. Use this only if you know what you ' +
-        'are doing.' +
-        '<p>Are you sure?',[
-        { name    : 'Yes, update and restart',
-          onclick : function(){
-                      stopSessionChecks();
-                      serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
-                                      function(data){
-                        window.setTimeout ( function(){
-                          reloadBrowser();
-                          // window.location = window.location; // reload
-                        },60000 );
-                        logout ( self.element.id,10 );
-                      },null,function(){} );
-                    }
-        },{
-          name    : 'No, cancel',
-          onclick : function(){}
-        }],'msg_confirm' );
+      update_btn.addOnClickListener ( function(){
 
-    });
+        new QuestionBox ( appName() + ' update',
+          '<div style="width:400px"><h2>' + appName() + ' update</h2>' +
+          appName() + ' will be shut down, updated and restarted. This is ' +
+          'administrative action, which will work only if ' + appName() + 
+          ' is appropriately configured. Use this only if you know what you ' +
+          'are doing.' +
+          '<p>Are you sure?',[
+          { name    : 'Yes, update and restart',
+            onclick : function(){
+                        stopSessionChecks();
+                        serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
+                                        function(data){
+                          window.setTimeout ( function(){
+                            reloadBrowser();
+                            // window.location = window.location; // reload
+                          },60000 );
+                          logout ( self.element.id,10 );
+                        },null,function(){} );
+                      }
+          },{
+            name    : 'No, cancel',
+            onclick : function(){}
+          }],'msg_confirm' );
 
-    announce_btn.addOnClickListener ( function(){
-      new AnnouncementDialog();
-    });
+      });
 
-    sendtoall_btn.addOnClickListener ( function(){
-      new SendToAllDialog();
-    });
+      newuser_btn.addOnClickListener ( function(){
+        makeRegisterPage ( sceneId );
+      });
 
-    refresh_btn.addOnClickListener ( function(){
-      self.refresh();
-    });
+      dormant_btn.addOnClickListener ( function(){
+        new DormantUsersDialog ( function(){ refresh_btn.click(); });
+      });
+
+      announce_btn.addOnClickListener ( function(){
+        new AnnouncementDialog();
+      });
+
+      sendtoall_btn.addOnClickListener ( function(){
+        new SendToAllDialog();
+      });
+
+    }
+
+  refresh_btn.addOnClickListener ( function(){
+    self.refresh();
+  });
+
+  self.tabs.setTabChangeListener ( function(ui){
+    self.loadUsageStats();
+  });
 
   // }(this))
 
   refresh_btn.click();
 
 }
-
-// AdminPage.prototype = Object.create ( BasePage.prototype );
-// AdminPage.prototype.constructor = AdminPage;
 
 registerClass ( 'AdminPage',AdminPage,BasePage.prototype );
 
@@ -229,7 +244,10 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 */
 
 AdminPage.prototype.loadUsageStats = function()  {
-  if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==3))  {
+  let usageTabNo = 3;
+  if (!this.anlTab)
+    usageTabNo = 2;
+  if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==usageTabNo))  {
     this.usageStats.loadPage ( this.usageStats._url );
     this.usageStats._loaded = true;
   }
@@ -237,7 +255,8 @@ AdminPage.prototype.loadUsageStats = function()  {
 
 AdminPage.prototype.refresh = function()  {
 
-  this.loadAnalytics();
+  if (this.anlTab)
+    this.loadAnalytics();
 
   (function(self){
 
@@ -350,7 +369,8 @@ AdminPage.prototype.onResize = function ( width,height )  {
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
   this.tabs.refresh();
   let inner_height = (height-180)+'px';
-  $(this.anlTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
+  if (this.anlTab)
+    $(this.anlTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usageTab.element).css({'height':inner_height,'overflow-y':'scroll'});
@@ -626,12 +646,14 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
     trow.uDesc = uDesc;
   }
 
-  (function(self){
-    self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
-      //alert ( 'trow='+JSON.stringify(trow.uDesc) );
-      new ManageUserDialog ( trow.uDesc,FEconfig,function(){ self.refresh(); } );
-    });
-  }(this))
+  if (__user_role==role_code.admin)  {
+    (function(self){
+      self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
+        //alert ( 'trow='+JSON.stringify(trow.uDesc) );
+        new ManageUserDialog ( trow.uDesc,FEconfig,function(){ self.refresh(); } );
+      });
+    }(this))
+  }
 
   this.userListTable.createTable ( null );
 
