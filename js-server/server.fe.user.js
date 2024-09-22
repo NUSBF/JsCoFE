@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,8 +123,9 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   userData.helpTopics = [];
 
-  if (userData.login=='admin') userData.role = ud.role_code.admin;
-                         else  userData.role = ud.role_code.user;
+  if (userData.login=='admin')                  userData.role = ud.role_code.admin;
+  else if (userData.login==ud.__local_user_id)  userData.role = ud.role_code.localuser;
+                                          else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
   userData.lastSeen   = Date.now();
 
@@ -540,7 +541,7 @@ function readUserLoginHash()  {
     userData.login   = ud.__local_user_id;
     userData.pwd     = ud.__local_user_id;
     userData.licence = 'academic';
-    userData.role    = ud.role_code.user;
+    userData.role    = ud.role_code.localuser;
     makeNewUser ( userData,function(response){} );
     __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
                                 'login'  : ud.__local_user_id,
@@ -1889,7 +1890,7 @@ function getLocalInfo ( inData,callback_func )  {
     let rData = { code : 'ok' };
     if ('localuser' in fe_server)  {
 
-      let uLoginData = { login:'localuser', volume:null };
+      let uLoginData = { login : ud.__local_user_id, volume : null };
       rData.userData = readUserData ( uLoginData );
 
       rData.project_paths = [];

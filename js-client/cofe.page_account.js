@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,10 +44,14 @@ function AccountPage ( sceneId )  {
   this.addMenuItem ( 'Back to Projects','list',function(){
     makeProjectListPage ( sceneId );
   });
-//  if (__admin)
+
   if (__user_role==role_code.admin)
     this.addMenuItem ( 'Admin Page',role_code.admin,function(){
       makeAdminPage ( sceneId );
+    });
+  else if (__user_role==role_code.localuser)
+    this.addMenuItem ( 'System info','system_info',function(){
+      saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
     });
   this.addLogoutToMenu ( function(){ logout(sceneId,0); } );
 
