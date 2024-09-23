@@ -16,6 +16,9 @@ class Client {
   size_total = 0;
   size_uploaded = 0;
 
+  // used for drain event to resume read stream
+  in_stream = null;
+
   constructor(app_client = false) {
     this.app_client = app_client;
 
@@ -291,6 +294,11 @@ class Client {
         reject(`${err.message}`);
       });
 
+      // if the drain event is emitted resume the current read stream
+      req.on('drain', () => {
+        this.in_stream.resume();
+      });
+
       if (body) {
         req.write(body);
       }
@@ -406,6 +414,7 @@ class Client {
       }
 
       const in_s = fs.createReadStream(file);
+      this.in_stream = in_s;
 
       const filename = path.relative(rel_dir, file);
 
@@ -418,7 +427,11 @@ class Client {
           this.size_uploaded += data.length;
           this.outputProgress(file);
         }
-        req.write(data);
+
+        // if the writable stream buffer is full then pause the input stream
+        if (! req.write(data)) {
+          in_s.pause();
+        }
       });
 
       in_s.on('open', () => {
