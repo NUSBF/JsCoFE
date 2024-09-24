@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    23.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR PHASER MR TASK
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel 2024
 #
 # ============================================================================
 #
@@ -48,14 +48,14 @@ def makeVerdictMessage ( options ):
     verdict_message += "</b>"
 
     notes = []
-    if options["fllg"]<60.0:
-        notes.append ( "<i>LLG</i> is critically low" )
-    elif options["fllg"]<120.0:
-        notes.append ( "<i>LLG</i> is lower than optimal" )
-    if options["ftfz"]<8.0:
-        notes.append ( "<i>TFZ</i> is critically low" )
-    elif options["ftfz"]<9.0:
-        notes.append ( "<i>TFZ</i> is lower than optimal" )
+    # if options["fllg"]<60.0:
+    #     notes.append ( "<i>LLG</i> is critically low" )
+    # elif options["fllg"]<120.0:
+    #     notes.append ( "<i>LLG</i> is lower than optimal" )
+    # if options["ftfz"]<8.0:
+    #     notes.append ( "<i>TFZ</i> is critically low" )
+    # elif options["ftfz"]<9.0:
+    #     notes.append ( "<i>TFZ</i> is lower than optimal" )
     if options["rfree"]>0.48:
         notes.append ( "<i>R<sub>free</sub></i> is higher than optimal" )
     elif options["rfree"]>0.55:
@@ -110,16 +110,16 @@ def makeVerdictBottomLine ( options ):
 def putVerdictWidget ( base,verdict_meta,verdict_row ):
 
     verdict_meta["score"] = verdict.calcVerdictScore ({
-        "TFZ" :   { "value"  : verdict_meta["ftfz"],
-                    "weight" : 2.0,
-                    "good"   : [8.0,10.0,12.0,50.0],
-                    "bad"    : [8.0,7.0,6.0,0.0]
-                  },
-        "LLG" :   { "value"  : verdict_meta["fllg"],
-                    "weight" : 2.0,
-                    "good"   : [90.0,120.0,240.0,5000.0],
-                    "bad"    : [90.0,60.0,40.0,0.0]
-                  },
+        # "TFZ" :   { "value"  : verdict_meta["ftfz"],
+        #             "weight" : 2.0,
+        #             "good"   : [8.0,10.0,12.0,50.0],
+        #             "bad"    : [8.0,7.0,6.0,0.0]
+        #           },
+        # "LLG" :   { "value"  : verdict_meta["fllg"],
+        #             "weight" : 2.0,
+        #             "good"   : [90.0,120.0,240.0,5000.0],
+        #             "bad"    : [90.0,60.0,40.0,0.0]
+        #           },
         "Rfree" : { "value"  : verdict_meta["rfree"],
                     "weight" : 1.0,
                     "good"   : [0.5,0.46,0.4,0.1],
@@ -131,10 +131,10 @@ def putVerdictWidget ( base,verdict_meta,verdict_row ):
         "title": "Phasing summary",
         "state": 0, "class": "table-blue", "css": "text-align:right;",
         "rows" : [
-            { "header": { "label": "LLG", "tooltip": "Log-Likelihood Gain score"},
-              "data"  : [ str(verdict_meta["fllg"]) ]},
-            { "header": { "label": "TFZ", "tooltip": "Translation Function Z-score"},
-              "data"  : [ str(verdict_meta["ftfz"]) ]},
+            # { "header": { "label": "LLG", "tooltip": "Log-Likelihood Gain score"},
+            #   "data"  : [ str(verdict_meta["fllg"]) ]},
+            # { "header": { "label": "TFZ", "tooltip": "Translation Function Z-score"},
+            #   "data"  : [ str(verdict_meta["ftfz"]) ]},
             { "header": { "label": "R<sub>free</sub>", "tooltip": "Free R-factor"},
               "data"  : [ str(verdict_meta["rfree"]) ]},
             { "header": { "label"  : "Found copies",
