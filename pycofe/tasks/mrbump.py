@@ -243,17 +243,37 @@ class MrBump(basic.TaskDriver):
                     self.registerRevision      ( revision  )
                     have_results = True
 
+                    llg = 0.0
+                    tfz = 0.0
+                    key = 0
+                    self.flush()
+                    self.file_stdout.close()
+                    with (open(self.file_stdout_path(),'r')) as fstd:
+                        for line in fstd:
+                            if key==2:
+                                words = line.split()
+                                llg = float ( words[len(words)-5] )
+                                tfz = float ( words[len(words)-6] )
+                                key = 3
+                            elif (key==1) and ("RFZ   TFZ     LLG" in line):
+                                key = 2
+                            elif "Final MR solution from Phaser..." in line:
+                                key = 1
+      
+                    self.file_stdout = open ( self.file_stdout_path(),'a' )
+    
                     rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
                     rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
 
                     # Verdict section
 
                     verdict_meta = {
-                        # "nfitted0" : nfitted0,
                         "nfitted"  : structure.getNofPolymers(),
                         "nasu"     : revision.getNofASUMonomers(),
+                        "fllg"     : llg,
+                        "ftfz"     : tfz,
                         "rfree"    : rfree,
-                        "rfactor"  : rfactor
+                        "rfactor"  : rfactor,
                     }
                     verdict_mrbump.putVerdictWidget ( self,verdict_meta,row0 )
 
@@ -265,8 +285,8 @@ class MrBump(basic.TaskDriver):
                                     "hkl"      : [sol_hkl]
                                 },
                                 "scores" :  {
-                                    "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                                    "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                                    "Rfactor"  : rfactor,
+                                    "Rfree"    : rfree
                                 }
                         })
                         # self.putMessage ( "<h3>Workflow started</hr>" )

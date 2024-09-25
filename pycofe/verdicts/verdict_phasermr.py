@@ -1,23 +1,21 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    18.05.20   <--  Date of Last Modification.
+#    25.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR PHASER MR TASK
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
 
-import os
-import math
+# import os
+# import math
 
 from pycofe.proc import verdict
 
@@ -92,8 +90,8 @@ def makeVerdictBottomLine ( options ):
                       "building.</i><p>"
     elif options["nfitted"]==options["nasu"]:
         bottomline += "<i>Assumed total number of monomeric units in ASU " +\
-                      "has been reached, you may need to proceed to  " +\
-                      "model building."
+                      "has been reached, you may proceed to the next step  " +\
+                      "(model building, ligand fitting and refinement)."
         if options["score"]<34.0:
             bottomline += " Bear in mind that phasing quality looks " +\
                           "doubtful. Model building may be difficult or " +\
@@ -139,6 +137,8 @@ def putVerdictWidget ( base,verdict_meta,verdict_row ):
               "data"  : [ str(verdict_meta["ftfz"]) ]},
             { "header": { "label": "R<sub>free</sub>", "tooltip": "Free R-factor"},
               "data"  : [ str(verdict_meta["rfree"]) ]},
+            { "header": { "label": "R<sub>factor</sub>", "tooltip": "R-factor"},
+              "data"  : [ str(verdict_meta["rfactor"]) ]},
             { "header": { "label"  : "Found copies",
                           "tooltip": "Number of found copies / total copies in ASU" },
               "data"  : [ str(verdict_meta["nfitted"]) + "/" + str(verdict_meta["nasu"]) ]},
