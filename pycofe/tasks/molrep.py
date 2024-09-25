@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    24.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import uuid
 #  application imports
 from . import basic
 from   pycofe.auto     import auto, auto_workflow
+from   pycofe.verdicts import verdict_molrep
 # from   pycofe.dtypes import dtype_template
 
 
@@ -168,6 +169,8 @@ class Molrep(basic.TaskDriver):
 
         have_results = False
 
+        row0 = self.rvrow + 1
+
         self.putMessage ( '&nbsp;' )
 
         libPath = None
@@ -176,7 +179,7 @@ class Molrep(basic.TaskDriver):
 
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
                                 hkl,libPath,[],0,leadKey=1, # openState="hidden",
-                                title="Positioned Structure" )
+                                title="Positioned Structure",reserveRows=3 )
 
         if structure:
             # update structure revision
@@ -188,6 +191,22 @@ class Molrep(basic.TaskDriver):
             if istruct:
                 nfitted0 = istruct.getNofPolymers()
 
+            rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+            rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
+            # Verdict section
+
+            verdict_meta = {
+                "nfitted0" : nfitted0,
+                "nfitted"  : structure.getNofPolymers(),
+                "nasu"     : revision.getNofASUMonomers(),
+                # "fllg"     : float ( llg ),
+                # "ftfz"     : float ( tfz ),
+                "rfree"    : rfree,
+                "rfactor"  : rfactor
+            }
+            verdict_molrep.putVerdictWidget ( self,verdict_meta,row0 )
+
             if self.task.autoRunName.startswith("@"):
                 # scripted workflow framework
                 auto_workflow.nextTask ( self,{
@@ -195,8 +214,8 @@ class Molrep(basic.TaskDriver):
                         "revision"  : [revision]
                     },
                     "scores" :  {
-                        "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                        "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"]),
+                        "Rfactor"  : rfactor,
+                        "Rfree"    : rfree,
                         "nfitted0" : nfitted0,                  # number of polymers before run
                         "nfitted"  : structure.getNofPolymers() # number of polymers after run
                     }
@@ -205,7 +224,7 @@ class Molrep(basic.TaskDriver):
             else:  # pre-coded workflow framework
                 auto.makeNextTask(self, {
                     "revision" : revision,
-                    "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                    "Rfree"    : rfree,
                     "nfitted0" : nfitted0,                    # number of polymers before run
                     "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
                     "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
