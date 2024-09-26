@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.24   <--  Date of Last Modification.
+#    24.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -44,8 +44,9 @@ import shutil
 
 #  application imports
 from . import basic
-from   pycofe.proc  import xyzmeta
-from   pycofe.auto  import auto,auto_workflow
+from   pycofe.proc     import xyzmeta
+from   pycofe.verdicts import verdict_morda
+from   pycofe.auto     import auto,auto_workflow
 
 # ============================================================================
 # Make Morda driver
@@ -190,9 +191,11 @@ class Morda(basic.TaskDriver):
             # ================================================================
             # make output structure and register it
 
+            row0 = self.rvrow + 1
+
             structure = self.finaliseStructure ( final_pdb,self.outputFName,
                                                  sol_hkl,None,seq,0,
-                                                 leadKey=1 ) #,openState="closed" )
+                                                 leadKey=1,reserveRows=3 ) #,openState="closed" )
             if structure:
                 # update structure revision
                 revision = self.makeClass  ( self.input_data.data.revision[0] )
@@ -201,12 +204,20 @@ class Morda(basic.TaskDriver):
                 self.registerRevision      ( revision  )
                 have_results = True
 
-                # auto.makeNextTask ( self,{
-                #     "revision" : revision,
-                #     "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                #     "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                # })
- 
+                rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+                rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
+                # Verdict section
+
+                verdict_meta = {
+                    # "nfitted0" : nfitted0,
+                    "nfitted"  : structure.getNofPolymers(),
+                    "nasu"     : revision.getNofASUMonomers(),
+                    "rfree"    : rfree,
+                    "rfactor"  : rfactor
+                }
+                verdict_morda.putVerdictWidget ( self,verdict_meta,row0 )
+
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
                     auto_workflow.nextTask ( self,{
@@ -214,8 +225,8 @@ class Morda(basic.TaskDriver):
                                 "revision" : [revision]
                             },
                             "scores" :  {
-                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                                "Rfactor"  : rfactor,
+                                "Rfree"    : rfree
                             }
                     })
 

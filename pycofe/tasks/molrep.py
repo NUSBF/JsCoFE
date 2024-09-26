@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.09.24   <--  Date of Last Modification.
+#    24.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,7 +161,7 @@ class Molrep(basic.TaskDriver):
         self.setMolrepLogParser ( self.getWidgetId(self.molrep_report()) )
 
         # Run molrep
-        self.runApp (
+        rc = self.runApp (
             "molrep",
             ["-i","-ps",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex)],
             logType="Main"
@@ -169,64 +169,91 @@ class Molrep(basic.TaskDriver):
 
         have_results = False
 
-        row0 = self.rvrow + 1
+        if rc.msg:
+            
+            self.putTitle ( "No output generated" )
 
-        self.putMessage ( '&nbsp;' )
+        else:
 
-        libPath = None
-        if ligands:
-            libPath = ligands.getLibFilePath ( self.inputDir() )
+          row0 = self.rvrow + 1
 
-        structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-                                hkl,libPath,[],0,leadKey=1, # openState="hidden",
-                                title="Positioned Structure",reserveRows=3 )
+          self.putMessage ( '&nbsp;' )
 
-        if structure:
-            # update structure revision
-            revision.setStructureData ( structure )
-            self.registerRevision     ( revision  )
-            have_results = True
+          libPath = None
+          if ligands:
+              libPath = ligands.getLibFilePath ( self.inputDir() )
 
-            nfitted0 = 0
-            if istruct:
-                nfitted0 = istruct.getNofPolymers()
+          structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
+                                  hkl,libPath,[],0,leadKey=1, # openState="hidden",
+                                  title="Positioned Structure",reserveRows=3 )
 
-            rfree = float ( self.generic_parser_summary["refmac"]["R_free"] )
+          if structure:
+              # update structure revision
+              revision.setStructureData ( structure )
+              self.registerRevision     ( revision  )
+              have_results = True
 
-            # Verdict section
+              TF_sig       = 0.0
+              Final_CC     = 0.0
+              Packing_Coef = 0.0
+              self.flush()
+              self.file_stdout.close()
+              with (open(self.file_stdout_path(),'r')) as fstd:
+                  for line in fstd:
+                      words = line.split()
+                      if len(words)>=3:
+                          if words[0]=="TF/sig": 
+                              TF_sig = words[2]
+                          elif words[0]=="Final" and words[1]=="CC":
+                              Final_CC = words[3]
+                          elif words[0]=="Packing_Coef":
+                              Packing_Coef = words[2]
 
-            verdict_meta = {
-                "nfitted0" : nfitted0,
-                "nfitted"  : structure.getNofPolymers(),
-                "nasu"     : revision.getNofASUMonomers(),
-                # "fllg"     : float ( llg ),
-                # "ftfz"     : float ( tfz ),
-                "rfree"    : rfree
-            }
-            verdict_molrep.putVerdictWidget ( self,verdict_meta,row0 )
+              self.file_stdout  = open ( self.file_stdout_path(),'a' )
 
-            if self.task.autoRunName.startswith("@"):
-                # scripted workflow framework
-                auto_workflow.nextTask ( self,{
-                    "data" : {
-                        "revision"  : [revision]
-                    },
-                    "scores" :  {
-                        "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                        "Rfree"    : rfree,
-                        "nfitted0" : nfitted0,                  # number of polymers before run
-                        "nfitted"  : structure.getNofPolymers() # number of polymers after run
-                    }
-                })
+              nfitted0 = 0
+              if istruct:
+                  nfitted0 = istruct.getNofPolymers()
 
-            else:  # pre-coded workflow framework
-                auto.makeNextTask(self, {
-                    "revision" : revision,
-                    "Rfree"    : rfree,
-                    "nfitted0" : nfitted0,                    # number of polymers before run
-                    "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
-                    "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
-                }, log=self.file_stderr)
+              rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+              rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
+              # Verdict section
+
+              verdict_meta = {
+                  "nfitted0"     : nfitted0,
+                  "nfitted"      : structure.getNofPolymers(),
+                  "nasu"         : revision.getNofASUMonomers(),
+                  "TF_sig"       : float ( TF_sig       ),
+                  "Final_CC"     : float ( Final_CC     ),
+                  "Packing_Coef" : float ( Packing_Coef ),
+                  "rfree"        : rfree,
+                  "rfactor"      : rfactor
+              }
+              verdict_molrep.putVerdictWidget ( self,verdict_meta,row0 )
+
+              if self.task.autoRunName.startswith("@"):
+                  # scripted workflow framework
+                  auto_workflow.nextTask ( self,{
+                      "data" : {
+                          "revision"  : [revision]
+                      },
+                      "scores" :  {
+                          "Rfactor"  : rfactor,
+                          "Rfree"    : rfree,
+                          "nfitted0" : nfitted0,                  # number of polymers before run
+                          "nfitted"  : structure.getNofPolymers() # number of polymers after run
+                      }
+                  })
+
+              else:  # pre-coded workflow framework
+                  auto.makeNextTask(self, {
+                      "revision" : revision,
+                      "Rfree"    : rfree,
+                      "nfitted0" : nfitted0,                    # number of polymers before run
+                      "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
+                      "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
+                  }, log=self.file_stderr)
 
         # close execution logs and quit
         self.success ( have_results )
