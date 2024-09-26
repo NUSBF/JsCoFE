@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.09.24   <--  Date of Last Modification.
+#    26.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ import shutil
 #  application imports
 from . import basic
 from   pycofe.proc     import xyzmeta
-from   pycofe.verdicts import verdict_mrbump
+from   pycofe.verdicts import verdict_phasermr
 from   pycofe.auto     import auto, auto_workflow
 
 # ============================================================================
@@ -268,6 +268,7 @@ class MrBump(basic.TaskDriver):
                     # Verdict section
 
                     verdict_meta = {
+                        "nfitted0" : 0,
                         "nfitted"  : structure.getNofPolymers(),
                         "nasu"     : revision.getNofASUMonomers(),
                         "fllg"     : llg,
@@ -275,7 +276,7 @@ class MrBump(basic.TaskDriver):
                         "rfree"    : rfree,
                         "rfactor"  : rfactor,
                     }
-                    verdict_mrbump.putVerdictWidget ( self,verdict_meta,row0 )
+                    verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
                     if self.task.autoRunName.startswith("@"):
                         # scripted workflow framework
