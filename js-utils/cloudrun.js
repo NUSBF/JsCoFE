@@ -331,7 +331,7 @@ function printTemplate ( task )  {
     '# =================================================\n' +
     '# CloudRun template command file for ' + task + ' task.\n' +
     '# =================================================\n' +
-    '# CCP4 Cloud v.' + appVersion() + '\n' +
+    '# CCP4 Cloud v.' + cmd.appVersion() + '\n' +
     '#\n' +
     msg.join('\n')
   );
