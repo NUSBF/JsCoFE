@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.10.23   <--  Date of Last Modification.
+#    26.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -126,7 +126,7 @@ class Ensembler(basic.TaskDriver):
 
                     if align_meta["status"]=="ok":
                         ensemble.meta["seqId"] = align_meta["id_avg"]
-                    ensemble.seqId = ensemble.meta["seqId"]
+                    ensemble.seqId = float(ensemble.meta["seqId"]) *100
                     ensemble.rmsd  = ensemble.meta["rmsd" ]
 
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),

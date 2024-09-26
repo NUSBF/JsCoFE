@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    26.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -79,14 +79,16 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
                 body.file_stdout1.write ( line )
                 if line.startswith(" Q-score          |"):
                     meta["qscore"] = line.split('|')[1].strip()
-                elif line.startswith(" RMSD             |"):
-                    meta["rmsd"]  = line.split('|')[1].strip()
+                elif "RMSD" in line:
+                    meta["rmsd"] = float(line.split()[-1])
                     ensemble.rmsd = meta["rmsd"]
-                elif line.startswith(" Aligned residues |"):
-                    meta["nalign"] = line.split('|')[1].strip()
-                elif line.startswith(" Sequence Id      |"):
-                    meta["seqId"] = line.split(' ')[1].strip()
-                elif line.startswith("   quality Q:"):
+                elif "Aligned residues" in line:
+                    meta["nalign"] = float(line.split()[-1])
+                    ensemble.nalign = meta["nalign"]
+                elif "Sequence Id" in line:
+                    meta["seqId"] = float(line.split()[-1])
+                    ensemble.seqId = meta["seqId"]
+                elif "quality Q" in line:
                     meta["qscore"] = line[14:].split()[0]
                 elif line.startswith("     r.m.s.d:"):
                     try:
