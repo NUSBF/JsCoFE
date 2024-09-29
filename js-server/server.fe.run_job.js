@@ -701,7 +701,7 @@ let nc_number0     = -1;  // NC with maximal capacity
   if (nc_number0>=0)  {
     if (cores.length<=0)  {
       // all cores are busy, choose NC with maximal residual capacity
-      return ft_nc_number0;
+      return nc_number0;
     }
     // free cores are found, choose NC randomly with respect to residual capacities
     return cores [ Math.floor(Math.random()*cores.length) ];
