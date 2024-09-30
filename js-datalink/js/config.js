@@ -5,6 +5,7 @@ const log = require('./log.js');
 const def_config = {
   "server": {
     "host": "localhost",
+    "request_timeout_secs": 1800,
     "port": 8100
   },
   "storage": {
