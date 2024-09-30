@@ -836,23 +836,37 @@ function getUserData ( loginData )  {
 function topupUserRation ( loginData,callback_func )  {
   let uRation = ration.getUserRation ( loginData );
   let rData   = { code : 'ok', message : '', ration : uRation };
+
+  // console.log ( ' >>>> storage      = ' + uRation.storage );
+  // console.log ( ' >>>> storage_used = ' + uRation.storage_used );
+
   if (!uRation)  {
+  
     rData.code    = 'errors';
     rData.message = 'user ration file not found';
     log.error ( 80,'User ration file not found, login ' + loginData.login );
-  } else if (uRation.storage_used>=uRation.storage)  {
+  
+  } else if ((uRation.storage>0) && (uRation.storage_max>0) &&
+             (uRation.storage_used>=uRation.storage))  {
+  
     let uData = null;
     let userFilePath = getUserDataFName ( loginData );
+  
     if (utils.fileExists(userFilePath))
       uData = utils.readObject ( userFilePath );
+  
     if (!uData)  {
+  
       rData.code    = 'errors';
       rData.message = 'user data file not found';
       log.error ( 81,'User data file not found, login ' + loginData.login );
+  
     } else  {
+  
       let feconf = conf.getFEConfig();
       // find new storage and topup requirement
-      let storage1 = uRation.storage;
+      let storage1 = uRation.storage;  // current allocation
+  
       if (uRation.storage_max>0)  {
         while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
           storage1 += feconf.ration.storage_step;
@@ -861,7 +875,10 @@ function topupUserRation ( loginData,callback_func )  {
         while (storage1<uRation.storage_used)
           storage1 += feconf.ration.storage_step;
       }
-      if (storage1>uRation.storage_used)  {
+
+      // console.log ( ' >>>> storage1     = ' + storage1 );
+
+      if (storage1>uRation.storage_used)  {  // otherwise limited by uRation.storage_max
         let vconf  = feconf.projectsPath[uData.volume];  // volumes configuration
         let fspath = path.resolve ( vconf.path );
         rData.code = 'requesting';
