@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    26.09.24   <--  Date of Last Modification.
+ *    30.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.002 [26.09.2024]';   // for update
+const jsCoFE_version = '1.8.002 [30.09.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -63,8 +63,9 @@ function compareVersions ( version1,version2 )  {
 
 const localhost_name = 'localhost';
 const projectFileExt = '.ccp4cloud';
-const endJobFName    = '__end_job';    // signal file name to end job gracefully
-const endJobFName1   = 'stop_file';    // signal file name to end job gracefully
+const endJobFName    = '__end_job';      // signal file name to end job gracefully
+const endJobFName1   = 'stop_file';      // signal file name to end job gracefully
+const ncMetaFileName = '__nc_meta.json'; // communicated by 'REMOTE' NC
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -354,6 +355,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.projectFileExt       = projectFileExt;
   module.exports.endJobFName          = endJobFName;
   module.exports.endJobFName1         = endJobFName1;
+  module.exports.ncMetaFileName       = ncMetaFileName;
   module.exports.Response             = Response;
   module.exports.sendResponse         = sendResponse;
   module.exports.sendResponseMessage  = sendResponseMessage;

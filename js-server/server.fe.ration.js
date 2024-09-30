@@ -106,7 +106,9 @@ let cfg   = conf.getFEConfig();
       r.cpu_day      = 0.0;  // hours  (0: unlimited)
       r.cpu_month    = 0.0;  // hours  (0: unlimited)
       r.cloudrun_day = 100;  // cloudruns (0: unlimited)
+      // r.cloudrun_day = 0;    // cloudruns (0: unlimited)
       r.archive_year = 2;    // maximum number of project archived (0: unlimited)
+      // r.archive_year = 0;    // maximum number of project archived (0: unlimited)
     }
 
     let msg_list = [];

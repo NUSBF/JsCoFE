@@ -940,18 +940,25 @@ let cfg = conf.getServerConfig();
 
   }
 
-  if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull request from FE
 
-    // Send directory back to FE. This operation is asynchronous but we DO NOT
-    // stop the job checking loop for it. The job is marked as 'exiting' in job
-    // registry entry, which prevents interference with the job check loop.
+  calcCapacity ( function(current_capacity){
 
-    //   Results are being sent together with the remaining capcity estimations,
-    // which are calculated differently in SHELL and SGE modes
+    log.standard ( 104,'NC current capacity: ' + current_capacity );
 
-    calcCapacity ( function(current_capacity){
+    let nc_meta = {
+      'capacity'         : cfg.capacity,
+      'current_capacity' : current_capacity,
+      'tokens'           : ncJobRegister.getListOfTokens()
+    };
 
-      log.standard ( 104,'NC current capacity: ' + current_capacity );
+    if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull request from FE
+
+      // Send directory back to FE. This operation is asynchronous but we DO NOT
+      // stop the job checking loop for it. The job is marked as 'exiting' in job
+      // registry entry, which prevents interference with the job check loop.
+
+      //   Results are being sent together with the remaining capcity estimations,
+      // which are calculated differently in SHELL and SGE modes
 
       // get original front-end url
       let feURL      = jobEntry.feURL;
@@ -978,11 +985,8 @@ let cfg = conf.getServerConfig();
 
       send_dir.sendDir ( jobEntry.jobDir,'*',
                          feURL,fe_fsmount,
-                         cmd.fe_command.jobFinished + job_token, {
-                            'capacity'         : cfg.capacity,
-                            'current_capacity' : current_capacity,
-                            'tokens'           : ncJobRegister.getListOfTokens()
-                         },
+                         cmd.fe_command.jobFinished + job_token,
+                         nc_meta,
 
         function(rdata)  {  // send was successful
 
@@ -1031,18 +1035,21 @@ let cfg = conf.getServerConfig();
 
         });
 
+    } else  {
+
+      jobEntry.sendTrials = -10;
+      utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
+      send_dir.packDir ( jobEntry.jobDir,'*',null,function(errs,jobbal_size){
+        if (jobbal_size>0)  {
+          jobEntry.sendTrials = 0;
+        } // else  {
+          // errors
+          // }
       });
 
-  } else  {
-    jobEntry.sendTrials = -10;
-    send_dir.packDir ( jobEntry.jobDir,'*',null,function(errs,jobbal_size){
-      if (jobbal_size>0)  {
-        jobEntry.sendTrials = 0;
-      } // else  {
-        // errors
-        // }
-    });
-  }
+    }
+
+  });
 
 }
 
