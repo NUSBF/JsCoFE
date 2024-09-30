@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.24   <--  Date of Last Modification.
+#    30.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -160,25 +160,40 @@ class ModelCraft(basic.TaskDriver):
             "carbs"   : [],
             "ligands" : [],
             "buffers" : []
-        }
-
-        if self.getCheckbox(sec1.SELEN_CBX):
-            contents["modifications"]=["M->MSE"]
+                            }
         mres = 0
-        for s in seq:
-            s1     = self.makeClass ( s )
-            seqstr = s1.getSequence(self.inputDir())
-            mres  += s1.ncopies* len(seqstr)
-            item   = {
-                "sequence"      : seqstr,
-                "stoichiometry" : s1.ncopies
-            }
-            if s1.isProtein() and build_sel in ["all","protein"]:
-                contents["proteins"].append(item)
-            elif s1.isDNA() and build_sel in ["all","dna"]:
-                contents["dnas"].append(item)
-            elif s1.isRNA() and build_sel in ["all","rna"]:
-                contents["rnas"].append(item)
+        if self.getCheckbox(sec1.SELEN_CBX):
+            for s in seq:
+                s1     = self.makeClass ( s )
+                seqstr = s1.getSequence(self.inputDir())
+                mres  += s1.ncopies* len(seqstr)
+                item   = {
+                    "sequence"      : seqstr,
+                    "stoichiometry" : s1.ncopies,
+                    "modifications" : ["M->MSE"]
+                }
+                if s1.isProtein() and build_sel in ["all","protein"]:
+                    contents["proteins"].append(item)
+                elif s1.isDNA() and build_sel in ["all","dna"]:
+                    contents["dnas"].append(item)
+                elif s1.isRNA() and build_sel in ["all","rna"]:
+                    contents["rnas"].append(item)
+
+        else:
+            for s in seq:
+                s1     = self.makeClass ( s )
+                seqstr = s1.getSequence(self.inputDir())
+                mres  += s1.ncopies* len(seqstr)
+                item   = {
+                    "sequence"      : seqstr,
+                    "stoichiometry" : s1.ncopies
+                }
+                if s1.isProtein() and build_sel in ["all","protein"]:
+                    contents["proteins"].append(item)
+                elif s1.isDNA() and build_sel in ["all","dna"]:
+                    contents["dnas"].append(item)
+                elif s1.isRNA() and build_sel in ["all","rna"]:
+                    contents["rnas"].append(item)
 
         
 
