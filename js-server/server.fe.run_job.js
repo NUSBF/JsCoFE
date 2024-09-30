@@ -327,68 +327,76 @@ let nc_servers = conf.getNCConfigs();
       } else if (jobEntry && (!check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
-        let ncCfg    = nc_servers[check_jobs[index].nc_number];
-        let nc_url   = ncCfg.externalURL;
-        let filePath = path.join ( conf.getFETmpDir(),jobEntry.job_token + '.zip' );
-        let file     = fs.createWriteStream ( filePath );
-        
-        request({
-            uri     : cmd.nc_command.getJobResults,
-            baseUrl : nc_url,
-            method  : 'POST',
-            body    : { job_token : jobEntry.job_token },
-            json    : true,
-            rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-          }
-        )
-        .pipe(file)
-        .on('finish',function()  {
+        (function(server_no,job_entry){
+          let ncCfg    = nc_servers[check_jobs[server_no].nc_number];
+          let nc_url   = ncCfg.externalURL;
+          let filePath = path.join ( conf.getFETmpDir(),job_entry.job_token + '.zip' );
+          let file     = fs.createWriteStream ( filePath );
+          request({
+              uri     : cmd.nc_command.getJobResults,
+              baseUrl : nc_url,
+              method  : 'POST',
+              body    : { job_token : job_entry.job_token },
+              json    : true,
+              rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+            }
+          )
+          .pipe(file)
+          .on('finish',function()  {
 
-          // Check whether this is a signal response or a possible zip file
-          // this is redundant in view of preliminary checks, but we leave
-          // this code for safety
-          if (utils.fileSize(filePath)<1000)  {  // likely a signal
-            let rdata = utils.readObject ( filePath );
-            if (rdata)  {
-              // if job is still running, just ignore received file till next round
-              if (rdata.status==cmd.nc_retcode.jobIsRunning)
-                return;
-              // the other signal is job not found on NC
-              if (rdata.status==cmd.nc_retcode.jobNotFound)  {
-                log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
-                                '" job_token=' + job_token + ' -- removed' );
-                feJobRegister.removeJob ( jobEntry.job_token );
-                writeFEJobRegister();
-                check_jobs[index].status = task_t.job_code.remove;
-                were_changes = true;
-                return;
+            // Check whether this is a signal response or a possible zip file
+            // this is redundant in view of preliminary checks, but we leave
+            // this code for safety
+            if (utils.fileSize(filePath)<1000)  {  // likely a signal
+              let rdata = utils.readObject ( filePath );
+              if (rdata)  {
+                // if job is still running, just ignore received file till next round
+                if (rdata.status==cmd.nc_retcode.jobIsRunning)
+                  return;
+                // the other signal is job not found on NC
+                if (rdata.status==cmd.nc_retcode.jobNotFound)  {
+                  log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
+                                  '" job_token=' + job_entry.job_token + ' -- removed' );
+                  feJobRegister.removeJob ( job_entry.job_token );
+                  writeFEJobRegister();
+                  check_jobs[server_no].status = task_t.job_code.remove;
+                  were_changes = true;
+                  return;
+                }
               }
             }
-          }
 
-          let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
-                                           jobEntry.jobId );
-          send_dir.unpackDir1 ( jobDir,filePath,null,true,
-            function(code,jobballSize){
-              if (code)  {
-                // make a counter here to avoid infinite looping
-                log.error ( 1,'unpack errors, code=' + code + 
-                              ', filesize='  + jobballSize  +
-                              ', job_token=' + jobEntry.job_token );
-              } else  {
-                feJobRegister.removeJob ( jobEntry.job_token );
-                writeFEJobRegister();
-                check_jobs[index].status = task_t.job_code.remove;
-                checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
-              }
-            });
+            let jobDir = prj.getJobDirPath ( job_entry.loginData,job_entry.project,
+                                             job_entry.jobId );
+            send_dir.unpackDir1 ( jobDir,filePath,null,true,
+              function(code,jobballSize){
+                if (code)  {
+                  // make a counter here to avoid infinite looping
+                  log.error ( 1,'unpack errors, code=' + code + 
+                                ', filesize='  + jobballSize  +
+                                ', job_token=' + job_entry.job_token );
+                } else  {
+                  let meta = utils.readObject ( path.join(jobDir,cmd.ncMetaFileName) );
+                  if (meta)
+                    _place_job_results ( job_entry.job_token,code,'',meta,null );
+                  else  {  // legacy only!
+                    feJobRegister.removeJob ( jobEntry.job_token );
+                    writeFEJobRegister();
+                  }
+                  check_jobs[server_no].status = task_t.job_code.remove;
+                  checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
+                }
+              });
 
-        })
-        .on('error', (err) => {
-          // make a counter here to avoid infinite looping
-          utils.removeFile ( filePath ); // Remove file on error
-          log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
-        });            
+          })
+          .on('error', (err) => {
+            // make a counter here to avoid infinite looping
+            utils.removeFile ( filePath ); // Remove file on error
+            log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
+          });
+
+        }(index,jobEntry))
+      
       }
 
     }
@@ -1707,8 +1715,11 @@ function _place_job_results ( job_token,code,errs,meta,server_response )  {
     feJobRegister.removeJob ( job_token );
     feJobRegister.n_jobs++;
     writeFEJobRegister();
-    cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
 
+    if (server_response)  // does not exist for 'REMOTE' NC
+      cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
+
+  // error codes are handled by 'REMOTE' NC separately
   } else if (code=='err_rename')  { // file renaming errors
     log.error ( 20,'cannot accept job from NC due to file rename errors' );
     cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
