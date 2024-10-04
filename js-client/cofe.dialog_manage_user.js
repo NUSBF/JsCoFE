@@ -39,7 +39,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
 
   this.diskNames = [];
   if (isObject(FEconfig.projectsPath))
-    for (var diskName in FEconfig.projectsPath)
+    for (let diskName in FEconfig.projectsPath)
       this.diskNames.push ( diskName );
   if (this.diskNames.indexOf(userData.volume)<0)
     this.diskNames.push ( userData.volume );
@@ -70,7 +70,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 dlg.userData.dormant = Date.now();
             } else
               dlg.userData.dormant = 0;
-            var volume  = dlg.diskNames[dlg.volume.getValue()];
+            let volume = dlg.diskNames[dlg.volume.getValue()];
             dlg.userData.ration.storage      = dlg.storage     .getValue();
             dlg.userData.ration.storage_max  = dlg.storage_max .getValue();
             dlg.userData.ration.cpu_day      = dlg.cpu_day     .getValue();
@@ -78,7 +78,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             dlg.userData.ration.cloudrun_day = dlg.cloudrun_day.getValue();
             dlg.userData.ration.archive_year = dlg.archive_year.getValue();
 
-            var msgv = '';
+            let msgv = '';
             if (volume!=dlg.userData.volume)
               msgv =
                 '<p><b>NOTE:</b> storage disk for user\'s projects ' +
@@ -200,9 +200,9 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
           text : "Retire User",
           click: function() {
 
-            var inputBox = new InputBox ( 'Retire user' );
+            let inputBox = new InputBox ( 'Retire user' );
             inputBox.setText ( '','user_leaving' );
-            var ibx_grid = inputBox.grid;
+            let ibx_grid = inputBox.grid;
             ibx_grid.setLabel    ( '<div style="width:350px"><h2>Retire user "' +
                                    dlg.userData.login +
                                    '"</h2>User\'s projects will be moved to the ' +
@@ -213,7 +213,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                    '</i></span></div>',
                                    0,2,2,3 );
             ibx_grid.setLabel    ( 'Successor:&nbsp;',2,2,1,1 );
-            var name_inp  = ibx_grid.setInputText ( '',2,3,1,1 )
+            let name_inp  = ibx_grid.setInputText ( '',2,3,1,1 )
                   .setStyle      ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                    'login name of successor','' )
                   .setFontItalic ( true )
@@ -222,7 +222,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             ibx_grid.setVerticalAlignment ( 2,3,'middle' );
             inputBox.addWidget   ( ibx_grid );
             inputBox.launch ( 'Retire now',function(){
-              var succName = name_inp.getValue();
+              let succName = name_inp.getValue();
               if (succName.length<=0)  {
                 new MessageBox ( 'No login name',
                          '<h2>Successor login name not given</h2>' +
@@ -241,7 +241,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                 userData  : dlg.userData,
                                 successor : succName
                               },'Retire User', function(response){
-                var stop_reason = '';
+                let stop_reason = '';
                 switch (response.code)  {
                   case 'duplicate_users': stop_reason = 'Unsuitable successor name';
                                           break;
@@ -323,8 +323,8 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
   if (key==7)
         this.grid.setLabel ( label,row,0,1,3 ).setWidth_px(300).setFontBold(true).setNoWrap();
   else  this.grid.setLabel ( label,row,0,1,1 ).setWidth_px(200).setFontBold(true).setNoWrap();
-  var w  = null;
-  var lw = '&nbsp;allocated';
+  let w  = null;
+  let lw = '&nbsp;allocated';
 
   switch (key)  {
 
@@ -337,7 +337,7 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
 
     case 2 :  w = new Dropdown();
               this.grid.setWidget ( w,row,1,1,4 );
-              for (var i=0;i<value.length-1;i++)
+              for (let i=0;i<value.length-1;i++)
                 w.addItem ( value[i],'',i,(value[i]==value[value.length-1]) );
               w.make();
             break;
@@ -396,7 +396,7 @@ ManageUserDialog.prototype.makeLayout = function()  {
 
   this.grid.setLabel ( '<h2>User Data</h2>',0,0,1,4 );
 
-  var row = 1;
+  let row = 1;
   this.putLine ( 'Name:'  ,this.userData.name ,0,row++,0 );
   this.putLine ( 'Login:' ,this.userData.login,0,row++,0 );
   this.putLine ( 'E-mail:',this.userData.email,0,row++,0 );
@@ -407,8 +407,8 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.licence = this.putLine ( 'Licence:',[
                                   'academic','commercial',this.userData.licence
                                 ], 0,row++,2 );
-  var dormant_lbl = 'dormant';
-  var dormant_sel = 'active';
+  let dormant_lbl = 'dormant';
+  let dormant_sel = 'active';
   if (this.userData.dormant)  {
     dormant_lbl += ' since ' + new Date(this.userData.dormant).toISOString().slice(0,10);
     dormant_sel  = dormant_lbl;
