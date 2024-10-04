@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.08.24   <--  Date of Last Modification.
+ *    04.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,6 +12,50 @@
  *       ~~~~~~~~~
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
+ *
+ *        function fileExists       ( fpath )
+ *        function isSymbolicLink   ( fpath )
+ *        function dirExists        ( fpath )
+ *        function fileSize         ( fpath )
+ *        function removeFile       ( fpath ) 
+ *        function readString       ( fpath )  
+ *        function makeSymLink      ( pathToTarget,pathToOrigin )  
+ *        function readObject       ( fpath )  
+ *        function readClass        ( fpath )
+ *        function writeString      ( fpath,data_string )  
+ *        function appendString     ( fpath,data_string )  
+ *        function writeObject      ( fpath,dataObject )  
+ *        function copyFile         ( old_path,new_path )  
+ *        function moveFile         ( old_path,new_path )  
+ *        function copyDirAsync     ( old_path,new_path,overwrite_bool,
+ *                                    callback_func )  
+ *        function mkDir_check      ( dirPath )  
+ *        function mkDir_anchor     ( dirPath )  
+ *        function mkPath           ( dirPath )  
+ *        function removePath       ( dir_path )  
+ *        function moveDir          ( old_path,new_path,overwrite_bool )  
+ *        function moveDirAsync     ( old_path,new_path,overwrite_bool,
+ *                                    callback_func )  
+ *        function cleanDir         ( dir_path ) 
+ *        function cleanDirExt      ( dir_path,fext )  
+ *        function removeSymLinks   ( dir_path )  
+ *        function getDirectorySize ( dir_path )  
+ *        function searchTree       ( dir_path,filename,matchKey ) 
+ *        function removeFiles      ( dir_path,extList ) 
+ *        function killProcess      ( pid )  
+ *        function writeJobReportMessage ( jobDirPath, message, updating_bool )  
+ *        function jobSignalExists  ( jobDir ) 
+ *        function removeJobSignal  ( jobDir ) 
+ *        function writeJobSignal   ( jobDir,signal_name,signal_message,signal_code )  
+ *        function getJobSignalCode ( jobDir )  
+ *        function clearRVAPIreport ( jobDirPath,taskFileName )  
+ *        function getMIMEType      ( path )  
+ *        function capData          ( data,n )  
+ *        function send_file        ( fpath,server_response,mimeType,
+ *                                    deleteOnDone,capSize,persistance,
+ *                                    nofile_callback,onDone_callback=null )  
+ *        function spawn            ( exeName,args,options )  
+ *        function padDigits        ( number,digits ) 
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
