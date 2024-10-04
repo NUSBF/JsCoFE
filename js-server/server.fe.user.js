@@ -2054,6 +2054,7 @@ function authResponse ( server_request,server_response )  {
 // ==========================================================================
 // export for use in node
 module.exports.__announcementFile   = __announcementFile;
+module.exports.__userDataExt        = __userDataExt;
 module.exports.userLogin            = userLogin;
 module.exports.checkSession         = checkSession;
 module.exports.userLogout           = userLogout;
