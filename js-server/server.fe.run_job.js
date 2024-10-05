@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    05.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -800,10 +800,6 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
     } else  {
 
-      log.standard ( 6,'sending job ' + task.id + ' to ' +
-                       conf.getNCConfig(nc_number).name + ', token:' +
-                       job_token );
-
       utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
 
       // prepare input data
@@ -831,9 +827,18 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
         }
       }
 
-      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,meta,
+      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
+                         meta,{compression:nc_cfg.compression},
 
-        function ( retdata,jobballSize ){  // send successful
+        function ( retdata,stats ){  // send successful
+
+          log.standard ( 6,'job ' + task.id + ' sent to ' +
+                          conf.getNCConfig(nc_number).name + ', job token:' +
+                          job_token );
+          log.standard ( 6,'compression: '  + nc_cfg.compression +
+                           ', zip time: '   + stats.zip_time.toFixed(3) +
+                           's, send time: ' + stats.send_time.toFixed(3) + 
+                           's, size: '      + stats.size.toFixed(3) + ' MB' );
 
           // The number cruncher will start dealing with the job automatically.
           // On FE end, register job as engaged for further communication with
@@ -849,6 +854,10 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
             callback_func ( retdata.job_token );
 
         },function(stageNo,code){  // send failed
+
+          log.standard ( 6,'sending job ' + task.id + ' to ' +
+                           conf.getNCConfig(nc_number).name + ' FAILED, job token:' +
+                           job_token );
 
           switch (stageNo)  {
 
@@ -964,7 +973,7 @@ function runJob ( loginData,data, callback_func )  {
     // prepare input data
     task.makeInputData ( loginData,jobDir );
 
-    send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
+    send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
 
       if (!code)  {
 
@@ -1128,7 +1137,7 @@ function replayJob ( loginData,data, callback_func )  {
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
 
-      send_dir.packDir ( jobDir,'*',null, function(code,jobballSize){
+      send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
 
         if (!code)  {
 
@@ -1166,9 +1175,10 @@ function replayJob ( loginData,data, callback_func )  {
       meta.setup_id = conf.getSetupID();
       meta.user_id  = loginData.login;
 
-      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,meta,
+      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
+                         meta,{compression:nc_cfg.compression},
 
-        function ( rdata,jobballSize ){  // send successful
+        function ( rdata,stats ){  // send successful
 
           // The number cruncher will start dealing with the job automatically.
           // On FE end, register job as engaged for further communication with

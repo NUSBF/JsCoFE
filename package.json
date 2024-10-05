@@ -22,6 +22,7 @@
         "uglify-js": "^3.13.10",
         "url": "*",
         "util": "^0.12.4",
-        "zip-lib": "^0.7.2"
+        "archiver": "*",
+        "unzipper": "*"
     }
 }

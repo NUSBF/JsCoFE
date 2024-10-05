@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.08.24   <--  Date of Last Modification.
+ *    05.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -963,7 +963,7 @@ function prepareProjectExport ( loginData,projectList )  {
           (jmetas[i].meta.state==task_t.job_code.exiting)))
       nrunning++;
 
-  send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
+  send_dir.packDir ( projectDirPath,'*',null,null,function(code,jobballSize){
     let pData = readProjectData ( loginData,projectList.current );
     pData.desc.share = share;
     if (!writeProjectData(loginData,pData,true))
@@ -1024,7 +1024,7 @@ function prepareJobExport ( loginData,task )  {
   let exportFilePath = exp_names[2];
   utils.removeFile ( exportFilePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',null,function(code,jobballSize){
+  send_dir.packDir ( jobDirPath,'*',null,null,function(code,jobballSize){
     let jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
@@ -1086,7 +1086,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
     let exportFilePath = exp_names[2];
     utils.removeFile ( exportFilePath );  // just in case
 
-    send_dir.packDir ( jobDirPath,'*',exportFilePath,function(code,jobballSize){
+    send_dir.packDir ( jobDirPath,'*',exportFilePath,null,function(code,jobballSize){
       if (code)  {
         log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
         utils.removeFile ( exportFilePath );  // export will never get ready!

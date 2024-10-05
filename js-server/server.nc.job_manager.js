@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    05.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -986,15 +986,19 @@ let cfg = conf.getServerConfig();
       send_dir.sendDir ( jobEntry.jobDir,'*',
                          feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token,
-                         nc_meta,
+                         nc_meta,{compression:cfg.compression},
 
-        function(rdata)  {  // send was successful
+        function(rdata,stats)  {  // send was successful
 
           // just remove the job; do it in a separate thread and delayed,
           // which is useful for debugging etc.
 
-          log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
+          log.standard ( 103,'task ' + task.id + ' sent back to FE, job token:' +
                              job_token );
+          log.standard ( 103,'compression: '  + cfg.compression +
+                             ',zip time: '    + stats.zip_time.toFixed(3)  +
+                             's, send time: ' + stats.send_time.toFixed(3) + 
+                             's, size: '      + stats.size.toFixed(3) + ' MB' );
           removeJobDelayed ( job_token,task_t.job_code.finished );
 
         },function(stageNo,errcode)  {  // send failed
@@ -1037,15 +1041,17 @@ let cfg = conf.getServerConfig();
 
     } else  {
 
+      // just prepare jobball for fetching by FE
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
-      send_dir.packDir ( jobEntry.jobDir,'*',null,function(errs,jobbal_size){
-        if (jobbal_size>0)  {
-          jobEntry.sendTrials = 0;
-        } // else  {
+      send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
+        function(errs,jobbal_size){
+          if (jobbal_size>0)  {
+            jobEntry.sendTrials = 0;  // indicate that it's ready
+          } // else  {
           // errors
           // }
-      });
+        });
 
     }
 
