@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    06.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1347,7 +1347,7 @@ if (!dbx)  {
       for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])  {
           ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
-          if (ddn.ddndata[j][3])
+          if (ddndata[j][3])
             ddn.disableItem ( ddndata[j][1],true );
         }
       return;
@@ -1509,7 +1509,7 @@ if (!dbx)  {
         // acquire currently selected data, corresponding to current data id,
         // from the task; this list is empty (zero-length) at first creation
         // of the interface
-        let inp_data = this.input_data.getData ( inp_item.inputId );
+        // let inp_data = this.input_data.getData ( inp_item.inputId );
 
         let layCustom = '';
         if (inp_item.hasOwnProperty('customInput'))
@@ -1599,6 +1599,21 @@ if (!dbx)  {
               ndisabled++;
           }
 
+          // sort by decreasing data Id 
+          for (let j=0;j<ddndata.length;j++)  {
+            for (let k=j+1;k<ddndata.length;k++)
+              if (ddndata[j][0]<ddndata[k][0])  {
+                let item   = ddndata[j];
+                ddndata[j] = ddndata[k];
+                ddndata[k] = item;
+                let ino    = dn[j];
+                dn[j]      = dn[k];
+                dn[k]      = ino;
+              }
+            ddndata[j][1] = dn[j];
+            ddndata[j][2] = sel && (j==n);
+          }
+
           ddn.ddndata = ddndata;
 
           if (ndisabled>0)  versionMatch = false;
@@ -1611,7 +1626,6 @@ if (!dbx)  {
           grid.setCellSize ( '10%','',r,3 );
           grid.setLabel    ( ' ',r,4, 1,1 );
           grid.setCellSize ( '84%','',r,4 );
-//          ddn.sortItems ( true );
           ddn.make();
 
           r++;
