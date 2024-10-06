@@ -1342,12 +1342,25 @@ if (!dbx)  {
   // Sets dropdown controls for input data from 'dataBox' in grid 'grid'
   // starting from row 'row'
 
+    // function _sort_dropdown ( ddn )  {
+    //   let ddndata = ddn.ddndata;
+    //   for (let i=0;i<ddndata.length;i++)
+    //     for (let j=i+1;j<ddndata.length;j++)
+    //       if (ddndata[i][0]<ddndata[j][0])  {
+    //         let item   = ddndata[i];
+    //         ddndata[i] = ddndata[j];
+    //         ddndata[j] = item;
+    //       }
+    //   return ddndata;
+    // }
+
     function _fill_dropdown ( ddn )  {
+      // let ddndata = _sort_dropdown ( ddn );
       let ddndata = ddn.ddndata;
       for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])  {
           ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
-          if (ddn.ddndata[j][3])
+          if (ddndata[j][3])
             ddn.disableItem ( ddndata[j][1],true );
         }
       return;
@@ -1362,6 +1375,7 @@ if (!dbx)  {
 
     function _fill_optimized ( ddn,selItemId )  {
       let ddndata = ddn.ddndata;
+      // let ddndata = _sort_dropdown ( ddn );
 
       for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])
@@ -1482,9 +1496,28 @@ if (!dbx)  {
 
       }
 
+// console.log ( ' >>>> dn='+ JSON.stringify(dn))
+// console.log ( ' >>>> dt='+ JSON.stringify(dt[0]))
+
+      // for (let j=0;j<dt.length;j++)
+      //   for (let k=j+1;k<dt.length;k++)
+      //     if (dt[j].dataId<dt[k].dataId)  {
+      //       // let n = dn[j];
+      //       // dn[j] = dn[k];
+      //       // dn[k] = n;
+      //       let dset = dt[j];
+      //       dt[j] = dt[k];
+      //       dt[k] = dset;
+      //     }
       dsn.push ( dn );
       ddt.push ( dt );
       ddf.push ( df );
+
+      let did = [];
+      for (let j=0;j<dt.length;j++)
+        did.push ( dt[j].dataId)
+      console.log ( ' >>>> did=' + JSON.stringify(did))
+
       dropdown.push ( [] );
 
     }
@@ -1509,7 +1542,7 @@ if (!dbx)  {
         // acquire currently selected data, corresponding to current data id,
         // from the task; this list is empty (zero-length) at first creation
         // of the interface
-        let inp_data = this.input_data.getData ( inp_item.inputId );
+        // let inp_data = this.input_data.getData ( inp_item.inputId );
 
         let layCustom = '';
         if (inp_item.hasOwnProperty('customInput'))
@@ -1611,7 +1644,7 @@ if (!dbx)  {
           grid.setCellSize ( '10%','',r,3 );
           grid.setLabel    ( ' ',r,4, 1,1 );
           grid.setCellSize ( '84%','',r,4 );
-//          ddn.sortItems ( true );
+          // ddn.sortItems ( false );
           ddn.make();
 
           r++;

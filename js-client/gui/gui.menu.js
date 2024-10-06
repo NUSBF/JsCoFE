@@ -349,6 +349,36 @@ let item = new Widget ( 'option' );
 }
 
 
+Dropdown.prototype.sortItems = function ( descending_bool )  {
+
+  // console.log ( ' >>>> ' + descending_bool )
+  // console.log ( ' >>>> ' + this.select.child.length )
+
+  let reordered = false;
+
+  for (let i=0;i<this.select.child.length;i++)
+    for (let j=i+1;j<this.select.child.length;j++)  {
+      let text_i = this.select.child[i].innerHTML;
+      let text_j = this.select.child[j].innerHTML;
+      // console.log ( ' >>>> ' + text_i + ' | ' + text_j)
+      if ((descending_bool && (text_i<text_j)) ||
+          ((!descending_bool) && (text_i>text_j)))  {
+        let item = this.select.child[i];
+        this.select.child[i] = this.select.child[j];
+        this.select.child[j] = item;
+        reordered = true;
+      }
+    }
+
+  if (reordered)  {
+    this.element.replaceChildren();
+    for (let i=0;i<this.select.child.length;i++)
+      this.element.appendChild(this.select.child[i].element);
+  }
+
+}
+
+
 Dropdown.prototype.addItemGroup = function ( dropdownItemGroup )  {
   this.select.addWidget ( dropdownItemGroup );
   for (let j=0;j<dropdownItemGroup.child.length;j++)
