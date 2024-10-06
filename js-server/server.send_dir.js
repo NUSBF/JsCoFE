@@ -160,8 +160,8 @@ function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
   archive.pipe ( output );
 
   // Append the entire directory to the archive
-  // archive.directory ( dirPath,false );
-  __add_dir ( archive, dirPath );
+  archive.directory ( dirPath,false );
+  // __add_dir ( archive, dirPath );
 
   // Finalize the archive (tell it you are done appending)
   archive.finalize();
