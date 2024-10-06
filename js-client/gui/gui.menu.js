@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.24   <--  Date of Last Modification.
+ *    06.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -350,9 +350,6 @@ let item = new Widget ( 'option' );
 
 
 Dropdown.prototype.sortItems = function ( descending_bool )  {
-
-  // console.log ( ' >>>> ' + descending_bool )
-  // console.log ( ' >>>> ' + this.select.child.length )
 
   let reordered = false;
 

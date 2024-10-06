@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    06.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1342,20 +1342,7 @@ if (!dbx)  {
   // Sets dropdown controls for input data from 'dataBox' in grid 'grid'
   // starting from row 'row'
 
-    // function _sort_dropdown ( ddn )  {
-    //   let ddndata = ddn.ddndata;
-    //   for (let i=0;i<ddndata.length;i++)
-    //     for (let j=i+1;j<ddndata.length;j++)
-    //       if (ddndata[i][0]<ddndata[j][0])  {
-    //         let item   = ddndata[i];
-    //         ddndata[i] = ddndata[j];
-    //         ddndata[j] = item;
-    //       }
-    //   return ddndata;
-    // }
-
     function _fill_dropdown ( ddn )  {
-      // let ddndata = _sort_dropdown ( ddn );
       let ddndata = ddn.ddndata;
       for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])  {
@@ -1375,7 +1362,6 @@ if (!dbx)  {
 
     function _fill_optimized ( ddn,selItemId )  {
       let ddndata = ddn.ddndata;
-      // let ddndata = _sort_dropdown ( ddn );
 
       for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])
@@ -1496,28 +1482,9 @@ if (!dbx)  {
 
       }
 
-// console.log ( ' >>>> dn='+ JSON.stringify(dn))
-// console.log ( ' >>>> dt='+ JSON.stringify(dt[0]))
-
-      // for (let j=0;j<dt.length;j++)
-      //   for (let k=j+1;k<dt.length;k++)
-      //     if (dt[j].dataId<dt[k].dataId)  {
-      //       // let n = dn[j];
-      //       // dn[j] = dn[k];
-      //       // dn[k] = n;
-      //       let dset = dt[j];
-      //       dt[j] = dt[k];
-      //       dt[k] = dset;
-      //     }
       dsn.push ( dn );
       ddt.push ( dt );
       ddf.push ( df );
-
-      let did = [];
-      for (let j=0;j<dt.length;j++)
-        did.push ( dt[j].dataId)
-      console.log ( ' >>>> did=' + JSON.stringify(did))
-
       dropdown.push ( [] );
 
     }
@@ -1632,6 +1599,21 @@ if (!dbx)  {
               ndisabled++;
           }
 
+          // sort by decreasing data Id 
+          for (let j=0;j<ddndata.length;j++)  {
+            for (let k=j+1;k<ddndata.length;k++)
+              if (ddndata[j][0]<ddndata[k][0])  {
+                let item   = ddndata[j];
+                ddndata[j] = ddndata[k];
+                ddndata[k] = item;
+                let ino    = dn[j];
+                dn[j]      = dn[k];
+                dn[k]      = ino;
+              }
+            ddndata[j][1] = dn[j];
+            ddndata[j][2] = sel && (j==n);
+          }
+
           ddn.ddndata = ddndata;
 
           if (ndisabled>0)  versionMatch = false;
@@ -1644,7 +1626,6 @@ if (!dbx)  {
           grid.setCellSize ( '10%','',r,3 );
           grid.setLabel    ( ' ',r,4, 1,1 );
           grid.setCellSize ( '84%','',r,4 );
-          // ddn.sortItems ( false );
           ddn.make();
 
           r++;
