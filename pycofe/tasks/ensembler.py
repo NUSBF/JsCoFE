@@ -127,7 +127,9 @@ class Ensembler(basic.TaskDriver):
                     if align_meta["status"]=="ok":
                         ensemble.meta["seqId"] = align_meta["id_avg"]
                     ensemble.seqId = float(ensemble.meta["seqId"]) *100
-                    ensemble.rmsd  = ensemble.meta["rmsd" ]
+
+                    if "rmsd" in ensemble.meta:
+                        ensemble.rmsd  = ensemble.meta["rmsd"]
 
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Coordinates",ensemble )
