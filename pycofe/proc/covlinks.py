@@ -22,6 +22,9 @@ class CovLinks(object):
     assert len(self.struct) == 1
     for cra in self.struct[0].all():
       cra.residue.segment = ''
+    for conn in self.struct.connections:
+      conn.partner1.atom_name = conn.partner1.atom_name.strip()
+      conn.partner2.atom_name = conn.partner2.atom_name.strip()
     self.indices1 = []
     self.indices2 = []
     self.libin = libin
@@ -128,7 +131,7 @@ class CovLinks(object):
     len1 = len(self.indices1)
     return msg_list[:len1], msg_list[len1:]
 
-  def update(self, xyzout = None, mode = -1):
+  def update(self, xyzout = None, mode = -1, stdo = None):
     if mode < 0:
       mode = 3 if xyzout else 0
 
@@ -142,17 +145,23 @@ class CovLinks(object):
         self.struct.connections.pop()
       del self.indices2[:]
 
-    self.delete_atoms()
+    self._delete_atoms()
 
+    if stdo:
+      stdo.write("CovLinks.update output:" + str(xyzout) + "\n")
     if xyzout:
       indices = self.indices1 + self.indices2
       if indices or mode & 4:
         if xyzout.endswith('.pdb'):
+          if stdo:
+            stdo.write("CovLinks.update output: PDB\n")
           self.struct.write_pdb(xyzout, use_linkr = True)
         else:
+          if stdo:
+            stdo.write("CovLinks.update output: MMCIF\n")
           self.struct.make_mmcif_document().write_file(xyzout)
 
-  def delete_atoms(self):
+  def _delete_atoms(self):
     ciflib = gemmi.cif.read_file(self.libin)
     del_dict = {}
     none_list = None, False, True, '', '.', '?'
@@ -160,23 +169,23 @@ class CovLinks(object):
       kvv = ciflib['mod_' + mod_id].get_mmcif_category('_chem_mod_atom.')
       vv = zip(kvv['function'], kvv['atom_id'], kvv['new_atom_id'])
       atom_list = []
-      cou = 0
+      err_cou = 0
       for fun, ao, an in vv:
         fun = fun.lower()
         if fun == 'add':
           ## better to keep refs to comp_atom
           if not (ao in none_list or ao.startswith('H')):
-            cou += 1
+            err_cou += 1
         elif fun == 'change':
           ## change charge or energy type is OK
           ## change of atom symbol needs refs to comp_atom
           if not (an in none_list or an == ao):
-            cou += 1
+            err_cou += 1
         elif fun == 'delete':
           atom_list.append(ao)
         else:
-          cou += 1
-      if cou > 0:
+          err_cou += 1
+      if err_cou > 0:
         atom_list = None
       del_dict[mod_id] = tuple(atom_list)
 
