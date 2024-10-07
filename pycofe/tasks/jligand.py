@@ -56,9 +56,8 @@ class JLigand(basic.TaskDriver):
     def run(self):
         lockfl_1 = "_str_ligands.txt"
         lockfl = None
-        pdbfl_1 = "jligand1.pdb"
-        pdbfl_2 = "jligand2.pdb"
-        pdbfl = None
+        xyzfl_2 = "jligand2.mmcif"
+        xyzfl = None
         libin = None
         istruct = None
         if 'revision' in vars(self.input_data.data):
@@ -66,13 +65,13 @@ class JLigand(basic.TaskDriver):
             if revision.Structure:
                 istruct = self.makeClass ( revision.Structure )
                 libin = istruct.getLibFilePath ( self.inputDir() )
-                pdbfl = istruct.getXYZFilePath ( self.inputDir() )
+                xyzfl = istruct.getMMCIFFilePath ( self.inputDir() )
                 if not (libin and os.path.isfile(libin)):
                     libin = None
-                if not (pdbfl and os.path.isfile(pdbfl)):
-                    pdbfl = None
-                if libin and pdbfl:
-                    cl = covlinks.CovLinks(libin, pdbfl)
+                if not (xyzfl and os.path.isfile(xyzfl)):
+                    xyzfl = None
+                if libin and xyzfl:
+                    cl = covlinks.CovLinks(libin, xyzfl)
                     cl.prep_lists()
                     cl.usage(lockfl_1)
                     if os.path.isfile(lockfl_1):
@@ -249,17 +248,16 @@ class JLigand(basic.TaskDriver):
             if istruct and have_results and cifreg:
                 cl = None
                 msg_llist = None
-                if pdbfl:
-                    cl = covlinks.CovLinks(cifreg, pdbfl)
+                if xyzfl:
+                    cl = covlinks.CovLinks(cifreg, xyzfl)
                     msg_llist = cl.suggest_changes()
-                    cl.update(mode = 3, xyzout = pdbfl_2)
-                    if os.path.isfile(pdbfl_2):
-                        pdbfl = pdbfl_2
+                    cl.update(mode = 1, xyzout = xyzfl_2)
+                    if os.path.isfile(xyzfl_2):
+                        xyzfl = xyzfl_2
 
-                struct = self.registerStructure ( None,pdbfl,
+                struct = self.registerStructure ( xyzfl,None,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
-                            None,None,
                             libPath=cifreg,
                             leadKey=istruct.leadKey,
                             refiner=istruct.refiner )
@@ -277,8 +275,6 @@ class JLigand(basic.TaskDriver):
                         struct.ligands     = counts['comps_usr']
                         struct.refmacLinks = counts['links_usr']
                         struct.links       = counts['links_std'] + counts['links_unk']
-
-#                   self.putTitle ( "Output Structure" )
 
                     msg_list = cl.ambiguous_links()
                     if msg_list:
@@ -319,22 +315,28 @@ class JLigand(basic.TaskDriver):
                             self.rvrow)
                         self.rvrow += 1
 
-            if struct:
-                self.putMessage1(
-                    self.report_page_id(),
-                    '''<i><b>N.B.</b></i>This library is a part of the revision corresponding to
-                    the current job. The revision will be selected automatically in the subsequent
-                    Coot job, while this library will not be exposed explicitly in any of the input
-                    menus. After <i><b>Coot</b></i> starts, ligands will be available through
-                    <i><b>File &gt; Get Monomer</b></i>. To apply links: <i><b>Refmac</b></i> with
-                    <i><b>Restraints &gt; Covalent/metal link identification = Yes</b></i>. To see
-                    the library contents in subsequent jobs: button <i><b>Inspect</b></i> > tab
-                    <i><b>Structure</b></i>.''',
-                    self.rvrow)
-                self.rvrow += 1
-                # update structure revision
-                revision.setStructureData ( struct )
-                self.registerRevision ( revision )
+                    self.putMessage1(
+                        self.report_page_id(),
+                        '''<i><b>N.B.</b></i>This library is a part of the revision corresponding to
+                        the current job. The revision will be selected automatically in the subsequent
+                        Coot job, while this library will not be exposed explicitly in any of the input
+                        menus. After <i><b>Coot</b></i> starts, ligands will be available through
+                        <i><b>File &gt; Get Monomer</b></i>. To apply links: <i><b>Refmac</b></i> with
+                        <i><b>Restraints &gt; Covalent/metal link identification = Yes</b></i>. To see
+                        the library contents in subsequent jobs: button <i><b>Inspect</b></i> > tab
+                        <i><b>Structure</b></i>.''',
+                        self.rvrow)
+                    self.rvrow += 1
+
+                    show_struct = True # duplicates download of library button
+                    if show_struct:
+                        # create output data widget in the report page
+                        self.putTitle ( "Output Structure" )
+                        self.putStructureWidget ( "structure_btn","Output Structure",struct )
+
+                    # update structure revision
+                    revision.setStructureData ( struct )
+                    self.registerRevision ( revision )
 
         self.generic_parser_summary["jligand"] = {
             "summary_line" : summary_line

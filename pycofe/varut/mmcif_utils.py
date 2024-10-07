@@ -74,7 +74,10 @@ def convert_to_pdb ( mmcif_file_path,gemmi_st=None ):
             return (None,pdb_nogood)
         else:
             pdb_file_path = os.path.splitext(mmcif_file_path)[0] + ".pdb"
-            st.write_pdb ( pdb_file_path )
+            pwo = gemmi.PdbWriteOptions()
+            pwo.link_records = True
+            pwo.use_linkr = True
+            st.write_pdb ( pdb_file_path,pwo )
     return (pdb_file_path,"")
 
 
