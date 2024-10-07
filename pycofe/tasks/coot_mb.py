@@ -35,7 +35,7 @@ import gemmi
 #  application imports
 from . import coot_ce
 from   pycofe.varut   import  signal
-from   pycofe.proc    import  covlinks #, mergeone
+from   pycofe.proc    import  covlinks, concorr
 try:
     if sys.platform.startswith("win"):
         os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
@@ -154,6 +154,7 @@ class Coot(coot_ce.CootCE):
 
         # make command line arguments
         args = []
+        xyz_data_list = []
         xyzpath = istruct.getXYZFilePath ( self.inputDir() )
         # if not xyzpath:
         #     xyzpath = istruct.getPDBFilePath ( self.inputDir() )    
@@ -161,6 +162,7 @@ class Coot(coot_ce.CootCE):
             xyzpath = istruct.getSubFilePath ( self.inputDir() )
         if xyzpath:
             args += ["--pdb",xyzpath]
+            xyz_data_list.append(xyzpath)
         mtzpath = istruct.getMTZFilePath ( self.inputDir() )
         if mtzpath:
             args += ["--auto",mtzpath]
@@ -171,6 +173,7 @@ class Coot(coot_ce.CootCE):
                 xyzpath = istruct2.getSubFilePath ( self.inputDir() )
             if xyzpath and xyzpath not in args:
                 args += ["--pdb",xyzpath]
+                xyz_data_list.append(xyzpath)
             mtzpath = istruct2.getMTZFilePath ( self.inputDir() )
             if mtzpath and mtzpath not in args:
                 args += ["--auto",mtzpath]
@@ -179,10 +182,12 @@ class Coot(coot_ce.CootCE):
             xyzpath = s.getXYZFilePath ( self.inputDir() )
             if xyzpath and xyzpath not in args:
                 args += ["--pdb",xyzpath]
+                xyz_data_list.append(xyzpath)
             if s._type=="DataStructure":
                 xyzpath = s.getSubFilePath ( self.inputDir() )
                 if xyzpath and xyzpath not in args:
                     args += ["--pdb",xyzpath]
+                    xyz_data_list.append(xyzpath)
                 mtzpath = s.getMTZFilePath ( self.inputDir() )
                 if mtzpath and mtzpath not in args:
                     args += ["--auto",mtzpath]
@@ -193,11 +198,13 @@ class Coot(coot_ce.CootCE):
                 xyzpath = s.getPDBFilePath(self.inputDir())
                 if xyzpath not in args:
                     args += ["--pdb",xyzpath]
+                    xyz_data_list.append(xyzpath)
             if s._type=="DataStructure":
                 if s.getSubFileName():
                     xyzpath = s.getSubFilePath(self.inputDir())
                     if xyzpath not in args:
                         args += ["--pdb",xyzpath]
+                        xyz_data_list.append(xyzpath)
                 mtzpath = s.getMTZFilePath(self.inputDir())
                 if mtzpath not in args:
                     args += ["--auto",mtzpath]
@@ -255,6 +262,11 @@ class Coot(coot_ce.CootCE):
 
         #args += ["--python",coot_scr,"--no-guano"]
         args += ["--script",coot_scr]
+
+        try:
+            concorr.conn_script(xyz_data_list[0], coot_scr)
+        except:
+            self.file_stderr.write("# concorr.conn_script failed")
 
         # Run coot
         if sys.platform.startswith("win"):
@@ -396,9 +408,42 @@ class Coot(coot_ce.CootCE):
             shutil.copy2 ( mtzfile,coot_mtz )
 
             try:
+                concorr.conn_correct(xyz_data_list[0], coot_xyz, '_tmp_coot.cif')
+                os.rename('_tmp_coot.cif', coot_xyz)
+            except:
+                self.file_stderr.write("# concorr.conn_correct failed")
+
+            try:
+                mode = 1
                 cvl = covlinks.CovLinks(libPath, coot_xyz)
+                msg_llist = cvl.suggest_changes()
+                # combined mode would be better:
+                # - the same chain: 3
+                # - different chains: 2
+                cvl.update(mode = mode,
+                    xyzout = coot_xyz, stdo = self.file_stdout)
+                self.file_stdout.write(str(msg_llist))
+                lines = []
+                vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
+                msg_len = len(msg_llist[0])
+                if msg_len and (mode & 1):
+                    lines.append("<b>Replaced LINK record" +
+                       ("s" if msg_len > 1 else "") + " with LINKR:</b>")
+                    lines.extend(msg_llist[0])
+                msg_len = len(msg_llist[1])
+                if msg_len and (mode & 2):
+                    lines.append("<b>Added new LINKR record" +
+                       ("s" if msg_len > 1 else "") + ":</b>")
+                    lines.extend(msg_llist[1])
+                if lines:
+                    self.putMessage1(
+                        self.report_page_id(),
+                        '<br>'.join(lines) + vspace,
+                        self.rvrow)
+                    self.rvrow += 1
                 cvl.prep_lists()
                 link_counts = dict(cvl.counts(self.file_stdout))
+                del mode, cvl, msg_llist, lines, vspace, msg_len
             except:
                 link_counts = None
 
