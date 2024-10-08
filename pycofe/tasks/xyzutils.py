@@ -27,7 +27,6 @@
 #  python native imports
 import os
 import json
-import time
 
 import gemmi
 
@@ -538,8 +537,6 @@ class XyzUtils(basic.TaskDriver):
             self.generic_parser_summary["xyzutils"] = {
                 "summary_line" : ", ".join(log)
             }
-
-        time.sleep ( 1 )
 
         # close execution logs and quit
         self.success ( have_results )
