@@ -950,7 +950,7 @@ let cfg = conf.getServerConfig();
       'current_capacity' : current_capacity,
       'tokens'           : ncJobRegister.getListOfTokens()
     };
-
+ 
     if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull request from FE
 
       // Send directory back to FE. This operation is asynchronous but we DO NOT
@@ -1136,7 +1136,7 @@ function ncRunJob ( job_token,meta )  {
       default       :
       case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
       case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
-      case 'SHELL'  : log.standard ( 5,'starting... ' );
+      case 'SHELL'  : log.standard ( 5,'starting...' );
                       command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );

@@ -346,31 +346,40 @@ let stat = fileExists(dir_path);
   if (stat && stat.isSymbolicLink())  {
     fs.unlinkSync ( dir_path );
   } else if (stat)  {
-    fs.readdirSync(dir_path).forEach(function(file,index){
-      let curPath = path.join ( dir_path,file );
-      let curstat = fileExists ( curPath );
-      if (!curstat)  {
-        log.error ( 82,'cannot stat path ' + curPath );
-        rc = false;
-      } else if (curstat.isDirectory()) { // recurse
-        removePath ( curPath );
-      } else { // delete file
-        try {
-          fs.unlinkSync ( curPath );
-        } catch (e)  {
-          log.error ( 83,'cannot remove file ' + curPath +
-                         ' error: ' + JSON.stringify(e) );
-          rc = false;
-        }
-      }
-    });
-    try {
-      fs.rmdirSync ( dir_path );
-    } catch (e)  {
+
+    if (fs.existsSync(dir_path)) {
+      fs.rmSync ( dir_path, { recursive: true, force: true });
+    } else {
       log.error ( 9,'cannot remove directory ' + dir_path +
                     ' error: ' + JSON.stringify(e) );
       rc = false;
     }
+
+  //   fs.readdirSync(dir_path).forEach(function(file,index){
+  //     let curPath = path.join ( dir_path,file );
+  //     let curstat = fileExists ( curPath );
+  //     if (!curstat)  {
+  //       log.error ( 82,'cannot stat path ' + curPath );
+  //       rc = false;
+  //     } else if (curstat.isDirectory()) { // recurse
+  //       removePath ( curPath );
+  //     } else { // delete file
+  //       try {
+  //         fs.unlinkSync ( curPath );
+  //       } catch (e)  {
+  //         log.error ( 83,'cannot remove file ' + curPath +
+  //                        ' error: ' + JSON.stringify(e) );
+  //         rc = false;
+  //       }
+  //     }
+  //   });
+  //   try {
+  //     fs.rmdirSync ( dir_path );
+  //   } catch (e)  {
+  //     log.error ( 9,'cannot remove directory ' + dir_path +
+  //                   ' error: ' + JSON.stringify(e) );
+  //     rc = false;
+  //   }
   }
 
   return rc;  // false if there were errors
@@ -429,25 +438,27 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   });
 }
 
-function cleanDir ( dir_path ) {
+function cleanDir ( dir_path,exclude=[] ) {
   // removes everything in the directory, but does not remove it
   let rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      let curPath = path.join ( dir_path,file );
-      let curstat = fileExists ( curPath );
-      if (!curstat)  {
-        log.error ( 84,'cannot stat path ' + curPath );
-        rc = false;
-      } else if (curstat.isDirectory()) { // recurse
-        removePath ( curPath );
-      } else { // delete file
-        try {
-          fs.unlinkSync ( curPath );
-        } catch (e)  {
-          log.error ( 81,'cannot remove file ' + curPath +
-                         ' error: ' + JSON.stringify(e) );
+      if (!exclude.includes(file))  {
+        let curPath = path.join ( dir_path,file );
+        let curstat = fileExists ( curPath );
+        if (!curstat)  {
+          log.error ( 84,'cannot stat path ' + curPath );
           rc = false;
+        } else if (curstat.isDirectory()) { // recurse
+          removePath ( curPath );
+        } else { // delete file
+          try {
+            fs.unlinkSync ( curPath );
+          } catch (e)  {
+            log.error ( 81,'cannot remove file ' + curPath +
+                          ' error: ' + JSON.stringify(e) );
+            rc = false;
+          }
         }
       }
     });
