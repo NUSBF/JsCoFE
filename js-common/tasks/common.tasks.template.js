@@ -3516,21 +3516,21 @@ if (!dbx)  {
   // default post-job cleanup to save disk space
   TaskTemplate.prototype.cleanJobDir = function ( jobDir )  {
     // leave input metadata just in case
-    let inputDir = path.join ( jobDir  ,'input'        );
-    let dboxPath = path.join ( inputDir,'databox.meta' );
-    let dbox     = utils.readString ( dboxPath );
-    utils.removePath   ( inputDir );
-    utils.mkDir_anchor ( inputDir );
-    utils.writeString  ( dboxPath,dbox );
-    utils.removeFiles  ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
-                                 '.seq.txt','.fasta.txt','.pir.txt',
-                                 '.cif','.mmcif','.ent','.pdbx',
-                                 'rvapi_document'] );
-    utils.removePath   ( 'search_a'      );  // old MrBump's sins
-    utils.removePath   ( 'coot-backup'   );  // old Coot's sins
-    utils.removePath   ( 'coot-download' );  // old Coot's sins
+    // let inputDir = path.join ( jobDir  ,'input'        );
+    // let dboxPath = path.join ( inputDir,'databox.meta' );
+    // let dbox     = utils.readString ( dboxPath );
+    // utils.removePath   ( inputDir );
+    // utils.mkDir_anchor ( inputDir );
+    // utils.writeString  ( dboxPath,dbox );
+    utils.cleanDir    ( path.join(jobDir,'input'),['databox.meta','__anchor__'] );
+    utils.removeFiles ( jobDir,['.mtz','.map','.pdb','.seq','.fasta','.pir',
+                                '.seq.txt','.fasta.txt','.pir.txt',
+                                '.cif','.mmcif','.ent','.pdbx',
+                                'rvapi_document'] );
+    utils.removePath  ( path.join(jobDir,'search_a')      );  // old MrBump's sins
+    utils.removePath  ( path.join(jobDir,'coot-backup')   );  // old Coot's sins
+    utils.removePath  ( path.join(jobDir,'coot-download') );  // old Coot's sins
   }
-
 
   // -------------------------------------------------------------------------
 

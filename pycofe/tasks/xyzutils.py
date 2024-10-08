@@ -539,7 +539,7 @@ class XyzUtils(basic.TaskDriver):
                 "summary_line" : ", ".join(log)
             }
 
-        time.sleep ( 2 )
+        # time.sleep ( 2 )
 
         # close execution logs and quit
         self.success ( have_results )

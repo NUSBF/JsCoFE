@@ -290,6 +290,12 @@ let version = 2;
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskXyzUtils.prototype.cleanJobDir = function ( jobDir )  {
+  // Bizzare bug appear if this function is commented: report directory
+  // is wiped out, reasons not found suspect Node's problem. This bug
+  // does not show up in other tasks.
+}
+
 TaskXyzUtils.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox', 'pdbset'] );
@@ -360,7 +366,7 @@ if (!__template)  {
 } else  {
   // server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskXyzUtils.prototype.makeInputData = function ( loginData,jobDir )  {
 
