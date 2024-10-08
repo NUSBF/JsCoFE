@@ -1181,9 +1181,8 @@ function ncRunJob ( job_token,meta )  {
 //                          if ((code!=0) && (code!=203) && (code!=204))
                           if (code && (code!=203) && (code!=204) && (code!=205))
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
-                          // to monitor: results should be picked on timer
-                          // if (jobEntry.jobStatus!=task_t.job_code.exiting)
-                          //   ncJobFinished ( job_token,code );
+                          if (jobEntry.jobStatus!=task_t.job_code.exiting)
+                            ncJobFinished ( job_token,code );
                         }
 
                       });
