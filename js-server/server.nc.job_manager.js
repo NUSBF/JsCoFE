@@ -1125,7 +1125,7 @@ function ncRunJob ( job_token,meta )  {
     let command = task.getCommandLine ( ncConfig.jobManager,jobDir );
     // command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
     let exeData = ncConfig.exeData;
-    if (task.usesGPU && ('exeData_GPU' in ncConfig))
+    if (task.usesGPU() && ('exeData_GPU' in ncConfig))
       exeData = ncConfig.exeData_GPU;
 
     command.push ( 'jscofe_version=' + cmd.appVersion() );
