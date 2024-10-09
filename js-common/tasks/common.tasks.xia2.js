@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.10.24   <--  Date of Last Modification.
+ *    09.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -850,7 +850,7 @@ if (!__template)  {
   //        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
   //        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
         msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
-              'underscores,<br>dashes and dots, and must start with a letter</i></b>';
+               'underscores,<br>dashes and dots, and must start with a letter</i></b>';
 
       if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
         // check XDS availability
@@ -860,10 +860,17 @@ if (!__template)  {
   //      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
         if (!this.compareEnvironment(['CCP4','XDS_home'],env))
           msg += '|<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
-                'however, it was not found installed</i></b>';
+                 'however, it was not found installed</i></b>';
       }
 
     }
+
+    if (this.parameters.sec1.contains.CRYSTAL &&
+        this.parameters.sec1.contains.CRYSTAL.value && // if works in TaskXDS
+        (!(/^[A-Za-z_][A-Za-z0-9_]*$/.test(this.parameters.sec1.contains.CRYSTAL.value))))
+        msg += '|<b><i>Crystal name must consist only of alphanumeric ' +
+               'characters and underscores. The first character must be ' +
+               'a non-digit character</i></b>';
 
     return  msg;
 
