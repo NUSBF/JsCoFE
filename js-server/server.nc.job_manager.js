@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.24   <--  Date of Last Modification.
+ *    09.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -58,7 +58,7 @@ const request       = require('request');
 
 //  load application modules
 const conf          = require('./server.configuration');
-const send_dir      = require('./server.send_dir');
+const send_dir      = require('./server.send_dir.js');
 const utils         = require('./server.utils');
 const task_t        = require('../js-common/tasks/common.tasks.template');
 const data_t        = require('../js-common/dtypes/common.dtypes.template');
@@ -979,7 +979,8 @@ let cfg = conf.getServerConfig();
 
       // if (code==1001)  {
       if (code)  {
-        log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
+        log.standard ( 101,'removing symlinks after stopped task (code ' + code + 
+                           '), job_token=' + job_token );
         utils.removeSymLinks ( jobEntry.jobDir );
       }
 
@@ -1009,7 +1010,8 @@ let cfg = conf.getServerConfig();
             if (stageNo==1)  {
               // hypothesize that the failure is because of symlinks and try 
               // replace them with files
-              log.standard ( 102,'removing symlinks after packing errors, job_token=' + job_token );
+              log.standard ( 102,'removing symlinks after packing errors (' + errcode + 
+                                 '), job_token=' + job_token );
               utils.removeSymLinks ( jobEntry.jobDir );
             }
 
@@ -1751,10 +1753,15 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
         utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
 
         ncRunJob ( job_token,{
-          'sender'   : '',
-          'setup_id' : '',
-          'nc_name'  : 'client-rvapi',
-          'user_id'  : ''
+          'sender'     : '',
+          'setup_id'   : '',
+          'nc_name'    : 'client-rvapi',
+          'user_id'    : '',
+          'fe_fsmount' : null,
+          'feedback'   : ud.feedback_code.decline,
+          'user_name'  : 'localuser',
+          'email'      : '[email not given]',
+          'push_back'  : 'NO'
         });
 
         // signal 'ok' to client
@@ -1965,6 +1972,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
   readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
+
   let jobDir = ncGetJobDir ( ncJobRegister.launch_count );
   // make new entry in job registry
   let job_token = ncJobRegister.addJob1 ( jobDir,post_data_obj.job_token );
@@ -2035,11 +2043,17 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
       send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
         if (!code)  {
           ncRunJob ( job_token,{
-            'sender'   : post_data_obj.feURL,
-            'setup_id' : '',
-            'nc_name'  : 'client',
-            'user_id'  : ''
+            'sender'     : post_data_obj.feURL,
+            'setup_id'   : '',
+            'nc_name'    : 'client',
+            'user_id'    : '',
+            'fe_fsmount' : null,
+            'feedback'   : ud.feedback_code.decline,
+            'user_name'  : 'localuser',
+            'email'      : '[email not given]',
+            'push_back'  : 'YES'
           });
+
           // signal 'ok' to client
           callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
                                              {job_token:job_token} ) );
