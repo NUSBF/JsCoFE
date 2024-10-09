@@ -31,7 +31,7 @@ const conf     = require('./server.configuration');
 const cmd      = require('../js-common/common.commands');
 const user     = require('./server.fe.user');
 const prj      = require('./server.fe.projects');
-const send_dir = require('./server.send_dir');
+const send_dir = require('./server.send_dir.js');
 const utils    = require('./server.utils');
 
 //  prepare log

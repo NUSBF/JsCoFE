@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.10.24   <--  Date of Last Modification.
+ *    09.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -64,7 +64,7 @@ const utils     = require('./server.utils');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const conf      = require('./server.configuration');
-const send_dir  = require('./server.send_dir');
+const send_dir  = require('./server.send_dir.js');
 const ration    = require('./server.fe.ration');
 const ustats    = require('./server.fe.usagestats');
 const class_map = require('./server.class_map');

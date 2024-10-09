@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.24   <--  Date of Last Modification.
+ *    09.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ const path       = require('path'      );
 const fs         = require('fs-extra'  );
 const crypto     = require('crypto'    );
 const archiver   = require('archiver'  );
-const unzipper   = require('unzipper'  );
+const zl         = require('zip-lib'   );
 
 //  load application modules
 const conf  = require('./server.configuration'      );
@@ -46,7 +46,7 @@ const cmd   = require('../js-common/common.commands');
 const utils = require('./server.utils'              );
 
 //  prepare log
-const log = require('./server.log').newLog(13);
+const log   = require('./server.log').newLog(13);
 
 // ==========================================================================
 
@@ -66,6 +66,24 @@ function zipfile()  {
 }
 
 // -------------------------------------------------------------------------
+
+function printFilePaths(dir) {
+  // Read all items in the directory
+  const items = fs.readdirSync(dir);
+  items.forEach(item => {
+    // Get full path of the item
+    const fullPath = path.join(dir, item);    
+    // Get stats to check if it's a file or directory
+    const stats = fs.lstatSync(fullPath);
+    if (stats.isDirectory()) {
+      // If it's a directory, recursively call printFilePaths
+      printFilePaths(fullPath);
+    } else if (stats.isFile()) {
+      // If it's a file, print the full path
+      console.log(String(stats['size']).padStart(10,' ') + ' ' + fullPath);
+    }
+  });
+}
 
 // Function to add directories and follow symlinks
 function __add_dir ( archive, dirPath, baseDir = '' )  {
@@ -96,6 +114,7 @@ function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
 
   tmpFile = path.resolve ( tmpFile + '.zip' );
   let jobballPath = getJobballPath ( dirPath );
+  utils.removeFile ( jobballPath );  // precaution
 
   // zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
   //   .then(function() {
@@ -293,8 +312,12 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
     // replace should be done within this thread and, therefore, safe
     // for concurrent access from client
     if (utils.fileExists(dirPath))  {
-      utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
-      utils.removePath   ( tmpDir );
+      // utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
+      // utils.removePath   ( tmpDir );
+      utils.moveDirAsync ( unpack_dir,dirPath,true,function(e){
+        callback_func    ( e );
+        utils.removePath ( tmpDir );
+      });
     } else  {
       log.error ( 8,'expected directory "' + dirPath + '" not found' );
       callback_func ( 1111 );
@@ -319,53 +342,22 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
 
   let jobballSize = utils.fileSize ( jobballPath );
 
-  // zl.extract ( jobballPath,unpack_dir )
-  //   .then(function() {
-  //     setTimeout ( function(){  // dedicated thread required on Windows
-  //       __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-  //                       cleanTmpDir,remove_jobball_bool,function(e){
-  //         onReady_func ( 0,jobballSize );
-  //       });
-  //     },0 );
-  //   }, function (err) {
-  //     setTimeout ( function(){  // dedicated thread required on Windows
-  //       __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-  //                       cleanTmpDir,remove_jobball_bool,function(e){
-  //         onReady_func ( err,jobballSize );
-  //       });
-  //     },0 );
-  //   });
-
-  const unzipStream = fs.createReadStream(jobballPath)
-                        .pipe(unzipper.Extract({ path: unpack_dir }));
-
-  let errors = 0;
-
-  unzipStream.on('close', () => {
-    if (errors>0)  {
-      setTimeout ( function(){  // dedicated thread required on Windows
-        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool,function(e){
-          onReady_func ( 'unpack errors',jobballSize );
-        });
-      },0 );
-    } else  {
-      // console.log('Extraction complete');
-      // callback(null); // No error, successful extraction
+  zl.extract ( jobballPath,unpack_dir )
+    .then(function() {
       setTimeout ( function(){  // dedicated thread required on Windows
         __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
                         cleanTmpDir,remove_jobball_bool,function(e){
           onReady_func ( 0,jobballSize );
         });
       },0 );
-    }
-  });
-
-  unzipStream.on('error', (err) => {
-    errors++;
-    // console.error('Error during extraction', err);
-    // callback(err); // Pass error to callback
-  });
+    }, function (err) {
+      setTimeout ( function(){  // dedicated thread required on Windows
+        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+                        cleanTmpDir,remove_jobball_bool,function(e){
+          onReady_func ( err,jobballSize );
+        });
+      },0 );
+    });
 
 }
 
@@ -455,9 +447,10 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
         } else  {
 
           // restore original file names
-          for (let key in upload_meta.files)
+          for (let key in upload_meta.files)  {
             if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
               errs = 'file move error';
+          }
 
           if (errs=='')  {
 
@@ -468,7 +461,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               if (!code)
-                log.detailed (  6,'directory contents has been received in ' + jobDir );
+                log.standard (  6,'directory contents has been received in ' + jobDir );
               else  {
                 log.standard (  2,'directory contents has been received in ' + jobDir +
                                   ' with errors: ' + code +
