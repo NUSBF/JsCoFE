@@ -123,7 +123,7 @@ function packDir ( dirPath,options, onReady_func )  {
   packFile = path.resolve ( packFile + '.zip' );
 
   if (options && ('destination' in options))
-    packFile = path.join ( options.destination,jobballName );
+    packFile = options.destination;
 
   // let packPath = getPackPath ( dirPath );
   // utils.removeFile ( packPath );  // precaution
