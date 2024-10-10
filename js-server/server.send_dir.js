@@ -482,7 +482,6 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
           // // restore original file names
           // for (let key in upload_meta.files)  {
-          //   console.log ( ' >>>>>> file=' + key );
           //   if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
           //     errs = 'file move error';
           // }
@@ -498,10 +497,7 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
             // unpack all service jobballs (their names start with double underscore)
             // and clean them out
-// console.log ( ' >>>>> unpacking into jobDir=' + jobDir )
-// console.log ( ' >>>>>                tmpDir=' + tmpDir )
             // unpackDir ( jobDir,tmpDir, function(code,packSize){
-console.log ( ' >>>>>> file=' + packPath );
             unpackDir ( packPath,jobDir,true, function(code,packSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
