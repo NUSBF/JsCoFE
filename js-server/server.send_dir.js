@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,11 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *     function getJobballPath ( dirPath )
+ *     function getPackPath ( dirPath )
  *     function zipfile    ()
  *     function packDir    ( dirPath, fileSelection, dest_path, 
  *                           onReady_func )
- *     function sendDir    ( dirPath, fileSelection, serverURL, server_fsmount,
+ *     function sendDir    ( dirPath, serverURL, server_fsmount,
                              command, metaData, onReady_func, onErr_func )
  *     function unpackDir  ( dirPath,cleanTmpDir, onReady_func )
  *     function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )
@@ -55,7 +55,7 @@ const jobballName = '__dir.zip';
 
 // ==========================================================================
 
-function getJobballPath ( dirPath )  {
+function getPackPath ( dirPath )  {
   return path.join ( dirPath,jobballName );
 }
 
@@ -86,42 +86,47 @@ function printFilePaths(dir) {
 }
 
 // Function to add directories and follow symlinks
-function __add_dir ( archive, dirPath, baseDir = '' )  {
-  const files = fs.readdirSync(dirPath);
-  files.forEach ( (file) => {
-    const fullPath = path.join(dirPath, file);
-    const stat = fs.lstatSync ( fullPath ); // lstat to check for symbolic links
-    if (stat.isSymbolicLink()) {
-      const realPath = fs.readlinkSync(fullPath); // Follow symbolic link
-      archive.file ( realPath, { name: path.join(baseDir, file) });
-    } else if (stat.isDirectory()) {
-      __add_dir ( archive, fullPath, path.join(baseDir, file) ); // Recurse into directories
-    } else {
-      archive.file ( fullPath, { name: path.join(baseDir, file) }); // Regular file
-    }
-  });
-}
+// function __add_dir ( archive, dirPath, baseDir = '' )  {
+//   const files = fs.readdirSync(dirPath);
+//   files.forEach ( (file) => {
+//     const fullPath = path.join(dirPath, file);
+//     const stat = fs.lstatSync ( fullPath ); // lstat to check for symbolic links
+//     if (stat.isSymbolicLink()) {
+//       const realPath = fs.readlinkSync(fullPath); // Follow symbolic link
+//       archive.file ( realPath, { name: path.join(baseDir, file) });
+//     } else if (stat.isDirectory()) {
+//       __add_dir ( archive, fullPath, path.join(baseDir, file) ); // Recurse into directories
+//     } else {
+//       archive.file ( fullPath, { name: path.join(baseDir, file) }); // Regular file
+//     }
+//   });
+// }
 
-function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
+// function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
+function packDir ( dirPath,options, onReady_func )  {
 // Pack files, assume zip
+//  onReady_func ( code,packFile,packSize )
 
-  let tmpFile = conf.getTmpFile();
-  if (!tmpFile)  {
+  let packFile = conf.getTmpFileName();
+  if (!packFile)  {
     log.error ( 1,'temporary directory not found, encountered at zipping ' + dirPath );
     onReady_func ( -2,-1 );
     return;
   }
+  packFile = path.resolve ( packFile + '.zip' );
 
-  tmpFile = path.resolve ( tmpFile + '.zip' );
-  let jobballPath = getJobballPath ( dirPath );
-  utils.removeFile ( jobballPath );  // precaution
+  if (options && ('destination' in options))
+    packFile = path.join ( options.destination,jobballName );
+
+  // let packPath = getPackPath ( dirPath );
+  // utils.removeFile ( packPath );  // precaution
 
   // zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
   //   .then(function() {
   //     if (dest_path)
   //           utils.moveFile ( tmpFile,dest_path   );
-  //     else  utils.moveFile ( tmpFile,jobballPath );
-  //     onReady_func ( 0,utils.fileSize(jobballPath) );
+  //     else  utils.moveFile ( tmpFile,packPath );
+  //     onReady_func ( 0,utils.fileSize(packPath) );
   //   }, function(err) {
   //     log.error ( 2,'zip packing error: ' + err + ', encountered in ' + dirPath );
   //     utils.removeFile ( tmpFile );
@@ -132,7 +137,7 @@ function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
   if (options && ('compression' in options))
     compression = options.compression;
 
-  const output  = fs.createWriteStream ( tmpFile ); // Create output file stream
+  const output  = fs.createWriteStream ( packFile ); // Create output file stream
   const archive = archiver ( 'zip', {
      zlib : { 
       level : compression
@@ -149,13 +154,13 @@ function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
     if (errors+warnings>0)  {
       let err = errors + ' errors, ' + warnings + ' warnings at packing ' + dirPath;
       log.error ( 2,err );
-      utils.removeFile ( tmpFile );
-      onReady_func ( err,0 );
+      utils.removeFile ( packFile );
+      onReady_func ( err,null,0 );
     } else  {
-      if (dest_path)
-            utils.moveFile ( tmpFile,dest_path   );
-      else  utils.moveFile ( tmpFile,jobballPath );
-      onReady_func ( 0,utils.fileSize(jobballPath) );
+      // if (dest_path)
+      //       utils.moveFile ( packFile,dest_path   );
+      // else  utils.moveFile ( packFile,packPath );
+      onReady_func ( 0,packFile,utils.fileSize(packFile) );
     }
   });
 
@@ -190,7 +195,7 @@ function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
 
 // ==========================================================================
 
-function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
+function sendDir ( dirPath, serverURL, server_fsmount, command,
                    metaData, options, onReady_func, onErr_func )  {
   let sender_cfg = conf.getServerConfig();
   let stats = {
@@ -199,7 +204,7 @@ function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
     size      : 0   // jobball size, MB
   };
 
-  function pushToServer ( formData,jobballPath )  {
+  function pushToServer ( formData,packPath )  {
 
     let post_options = {
       url      : serverURL + '/' + command,
@@ -213,9 +218,9 @@ function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
 
       stats.send_time = (performance.now()-stats.send_time)/1000.0
 
-      if (jobballPath)  {
-        if (!utils.removeFile(jobballPath))
-          log.error ( 3,'cannot remove jobball at ' + jobballPath );
+      if (packPath)  {
+        if (!utils.removeFile(packPath))
+          log.error ( 3,'cannot remove package at ' + packPath );
       }
 
       if (err) {
@@ -263,10 +268,11 @@ function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
     // 1. Pack files, assume tar
 
     stats.zip_time = performance.now();
-    packDir ( dirPath, fileSelection, null,options, function(code,jobballSize){
+    // packDir ( dirPath, fileSelection, null,options, function(code,packSize){
+    packDir ( dirPath,options, function(code,packPath,packSize){
 
       stats.zip_time = (performance.now()-stats.zip_time)/1000.0;
-      stats.size     = jobballSize/1024.0/1024.0;
+      stats.size     = packSize/1024.0/1024.0;
 
       if (!code)  {
 
@@ -279,10 +285,10 @@ function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
           for (let key in metaData)
             formData[key] = metaData[key];
 
-        let jobballPath  = path.join(dirPath,jobballName);
-        formData['file'] = fs.createReadStream ( jobballPath );
+        // let packPath  = path.join(dirPath,jobballName);
+        formData['file'] = fs.createReadStream ( packPath );
 
-        pushToServer ( formData,jobballPath );
+        pushToServer ( formData,packPath );
 
         log.detailed ( 2,'directory ' + dirPath +
                          ' has been packed and is being sent to ' + serverURL );
@@ -302,10 +308,11 @@ function sendDir ( dirPath, fileSelection, serverURL, server_fsmount, command,
 
 // ==========================================================================
 
-function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
+/*
+function __after_unzip ( unpack_dir,dirPath,tmpDir,packPath,
                          cleanTmpDir,remove_jobball_bool,callback_func )  {
   if (remove_jobball_bool)
-    utils.removeFile ( jobballPath )
+    utils.removeFile ( packPath )
   if (cleanTmpDir)  {
     // replace destination with temporary directory used for unpacking;
     // as all directories are on the same device (see above), the
@@ -314,11 +321,11 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
     if (utils.fileExists(dirPath))  {
       // utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
       // utils.removePath   ( tmpDir );
-console.log ( ' >>>>> move from unpack_dir=' + unpack_dir )
-console.log ( ' >>>>>         into dirPath=' + dirPath )
+// console.log ( ' >>>>> move from unpack_dir=' + unpack_dir )
+// console.log ( ' >>>>>         into dirPath=' + dirPath )
       utils.moveDirAsync ( unpack_dir,dirPath,true,function(e){
         callback_func    ( e );
-console.log ( ' >>>>>        remove tmpDir=' + tmpDir )
+// console.log ( ' >>>>>        remove tmpDir=' + tmpDir )
         utils.removePath ( tmpDir );
       });
     } else  {
@@ -328,61 +335,79 @@ console.log ( ' >>>>>        remove tmpDir=' + tmpDir )
   } else
     callback_func ( 2222 );
 }
+*/
 
-function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onReady_func )  {
-// unpack all service jobballs (their names start with double underscore)
-// and clean them out if remove_jobball_bool is true
+// function unpackDir1 ( dirPath,packPath,cleanTmpDir,remove_jobball_bool,onReady_func )  {
+function unpackDir ( packPath,dirPath,remove_pack_bool,onReady_func )  {
+// unpacks package at packPath and removes it remove_pack_bool is true
 
-  let unpack_dir = dirPath;
-  let tmpDir     = '';
-  if (cleanTmpDir)  {
-    do {
-      unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
-    } while (utils.fileExists(unpack_dir));
-    utils.mkDir ( unpack_dir );
-    tmpDir = unpack_dir + '_JOBDIRCOPY';
-  }
+  // let unpack_dir = dirPath;
+  // let tmpDir     = '';
+  // if (cleanTmpDir)  {
+  //   do {
+  //     unpack_dir = path.join ( cleanTmpDir,'tmp_'+crypto.randomBytes(20).toString('hex') );
+  //   } while (utils.fileExists(unpack_dir));
+  //   utils.mkDir ( unpack_dir );
+  //   tmpDir = unpack_dir + '_JOBDIRCOPY';
+  // }
 
-  let jobballSize = utils.fileSize ( jobballPath );
+  let packSize = utils.fileSize ( packPath );
 
-console.log ( ' >>>>> extraction from  jobballPath=' + jobballPath )
-console.log ( ' >>>>>             into  unpack_dir=' + unpack_dir )
+// console.log ( ' >>>>> extraction from  packPath=' + packPath )
+// console.log ( ' >>>>>             into  unpack_dir=' + unpack_dir )
 
-  zl.extract ( jobballPath,unpack_dir )
+  zl.extract ( packPath,dirPath )
     .then(function() {
       setTimeout ( function(){  // dedicated thread required on Windows
-        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool,function(e){
-          onReady_func ( 0,jobballSize );
-        });
+        if (remove_pack_bool)
+          utils.removeFile ( packPath );
+        onReady_func ( 0,packSize );
       },0 );
     }, function (err) {
       setTimeout ( function(){  // dedicated thread required on Windows
-        __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
-                        cleanTmpDir,remove_jobball_bool,function(e){
-          onReady_func ( err,jobballSize );
-        });
+        if (remove_pack_bool)
+          utils.removeFile ( packPath );
+        onReady_func ( err,packSize );
       },0 );
     });
 
+  // zl.extract ( packPath,unpack_dir )
+  //   .then(function() {
+  //     setTimeout ( function(){  // dedicated thread required on Windows
+  //       __after_unzip ( unpack_dir,dirPath,tmpDir,packPath,
+  //                       cleanTmpDir,remove_pack_bool,function(e){
+  //         onReady_func ( 0,packSize );
+  //       });
+  //     },0 );
+  //   }, function (err) {
+  //     setTimeout ( function(){  // dedicated thread required on Windows
+  //       __after_unzip ( unpack_dir,dirPath,tmpDir,packPath,
+  //                       cleanTmpDir,remove_pack_bool,function(e){
+  //         onReady_func ( err,packSize );
+  //       });
+  //     },0 );
+  //   });
+
 }
 
 
-function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-// unpack all service jobballs (their names start with double underscore)
-// and clean them out
-  let jobballPath = getJobballPath ( dirPath );
-  unpackDir1 ( dirPath,jobballPath,cleanTmpDir,true,onReady_func );
-}
+// function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
+// // unpack all service jobballs (their names start with double underscore)
+// // and clean them out
+//   let packPath = getPackPath ( dirPath );
+//   unpackDir1 ( dirPath,packPath,cleanTmpDir,true,onReady_func );
+// }
 
 
 // ==========================================================================
 
-function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
+// function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
+function receiveDir ( jobDir,server_request,onFinish_func )  {
 
   // make structure to keep download metadata
-  let upload_meta   = {};
-  upload_meta.files = {};
+  let upload_meta = {
+    files : {}
+  };
 
   // create an incoming form object
   let form = new formidable.IncomingForm();
@@ -391,15 +416,18 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
   // specify that we want to allow the user to upload multiple files in a single request
   form.multiples = true;
 
+  // let tmpDir = conf.getFETmpDir();
+  let tmpDir = conf.getTmpFileName();
+
   // store all uploads in the /uploads directory
-  if (!utils.fileExists(tmpDir))  {
+  // if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
       if (onFinish_func)
         onFinish_func ( 'err_dirnotexist','err_makedir',upload_meta );  // file renaming errors
       log.error ( 9,'upload directory ' + tmpDir + ' cannot be created' );
       return;
     }
-  }
+  // }
 
   // store all uploads in job directory
 
@@ -452,19 +480,29 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
         } else  {
 
-          // restore original file names
-          for (let key in upload_meta.files)  {
-            if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
-              errs = 'file move error';
-          }
+          // // restore original file names
+          // for (let key in upload_meta.files)  {
+          //   console.log ( ' >>>>>> file=' + key );
+          //   if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
+          //     errs = 'file move error';
+          // }
+
+          // expect only one file in this case, which is packed directory
+          let packPath = null;
+          for (let key in upload_meta.files)
+            packPath = key;
+          if (!packPath)
+              errs = 'file transfer error';
 
           if (errs=='')  {
 
             // unpack all service jobballs (their names start with double underscore)
             // and clean them out
-console.log ( ' >>>>> unpacking into jobDir=' + jobDir )
-console.log ( ' >>>>>                tmpDir=' + tmpDir )
-            unpackDir ( jobDir,tmpDir, function(code,jobballSize){
+// console.log ( ' >>>>> unpacking into jobDir=' + jobDir )
+// console.log ( ' >>>>>                tmpDir=' + tmpDir )
+            // unpackDir ( jobDir,tmpDir, function(code,packSize){
+console.log ( ' >>>>>> file=' + packPath );
+            unpackDir ( packPath,jobDir,true, function(code,packSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               if (!code)
@@ -472,10 +510,10 @@ console.log ( ' >>>>>                tmpDir=' + tmpDir )
               else  {
                 log.standard (  2,'directory contents has been received in ' + jobDir +
                                   ' with errors: ' + code +
-                                  ', filesize=' + jobballSize );
+                                  ', filesize=' + packSize );
                 log.error    ( 16,'directory contents has been received in ' + jobDir +
                                   ' with errors: ' + code +
-                                  ', filesize=' + jobballSize );
+                                  ', filesize=' + packSize );
               }
             });
 
@@ -545,9 +583,9 @@ console.log ( ' >>>>>                tmpDir=' + tmpDir )
 // export for use in node
 module.exports.jobballName    = jobballName;
 module.exports.packDir        = packDir;
-module.exports.unpackDir1     = unpackDir1;
+// module.exports.unpackDir1     = unpackDir1;
 module.exports.unpackDir      = unpackDir;
-module.exports.getJobballPath = getJobballPath;
+module.exports.getPackPath    = getPackPath;
 module.exports.sendDir        = sendDir;
 module.exports.receiveDir     = receiveDir;
 // module.exports.returnDir      = returnDir;
