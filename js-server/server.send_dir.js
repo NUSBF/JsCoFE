@@ -105,7 +105,14 @@ function printFilePaths(dir) {
 // function packDir ( dirPath, fileSelection, dest_path, options, onReady_func )  {
 function packDir ( dirPath,options, onReady_func )  {
 // Pack files, assume zip
+//
+// options = {
+//   compression : 5,             // optional, 0-9
+//   destination : pathToZipFile  // optional
+// }
+//
 //  onReady_func ( code,packFile,packSize )
+//
 
   let packFile = conf.getTmpFileName();
   if (!packFile)  {

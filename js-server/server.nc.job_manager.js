@@ -951,7 +951,8 @@ let cfg = conf.getServerConfig();
       'tokens'           : ncJobRegister.getListOfTokens()
     };
  
-    if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull request from FE
+    if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull 
+                                       // request from FE ('REMOTE' NC)
 
       // Send directory back to FE. This operation is asynchronous but we DO NOT
       // stop the job checking loop for it. The job is marked as 'exiting' in job
@@ -1046,7 +1047,10 @@ let cfg = conf.getServerConfig();
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
       // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
-      send_dir.packDir  ( jobEntry.jobDir,{ compression : 5 },
+      send_dir.packDir  ( jobEntry.jobDir, { 
+          compression : 5,
+          destination : send_dir.getPackPath ( jobEntry.jobDir )
+        },
         function(errs,jobballPath,jobballSize){
           if (jobballSize>0)  {
             jobEntry.sendTrials = 0;  // indicate that it's ready
@@ -1937,7 +1941,7 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   
   } else  {
 
-    let jobballPath = send_dir.getJobballPath(jobEntry.jobDir);
+    let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
     // console.log ( 'jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
