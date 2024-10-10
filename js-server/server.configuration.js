@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1484,7 +1484,7 @@ function getTmpDir()  {
                            else  return getFETmpDir();
 }
 
-function getTmpFile()  {
+function getTmpFileName()  {
   let tmpDir = getTmpDir();
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
@@ -1599,7 +1599,7 @@ module.exports.getFETmpDir          = getFETmpDir;
 module.exports.getFETmpDir1         = getFETmpDir1;
 module.exports.getNCTmpDir          = getNCTmpDir;
 module.exports.getTmpDir            = getTmpDir;
-module.exports.getTmpFile           = getTmpFile;
+module.exports.getTmpFileName       = getTmpFileName;
 module.exports.cleanFETmpDir        = cleanFETmpDir;
 module.exports.cleanFETmpDir1       = cleanFETmpDir1;
 module.exports.cleanNCTmpDir        = cleanNCTmpDir;

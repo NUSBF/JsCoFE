@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -963,12 +963,13 @@ function prepareProjectExport ( loginData,projectList )  {
           (jmetas[i].meta.state==task_t.job_code.exiting)))
       nrunning++;
 
-  send_dir.packDir ( projectDirPath,'*',null,null,function(code,jobballSize){
+  // send_dir.packDir ( projectDirPath,'*',null,null,function(code,jobballSize){
+  send_dir.packDir ( projectDirPath,null,function(code,jobballPath,jobballSize){
     let pData = readProjectData ( loginData,projectList.current );
     pData.desc.share = share;
     if (!writeProjectData(loginData,pData,true))
       log.error ( 11,'errors after packing at ' + projectDirPath + ' for export' );
-    let jobballPath = send_dir.getJobballPath ( projectDirPath );
+    // let jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
       log.error ( 12,'errors at packing ' + projectDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -1024,8 +1025,9 @@ function prepareJobExport ( loginData,task )  {
   let exportFilePath = exp_names[2];
   utils.removeFile ( exportFilePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',null,null,function(code,jobballSize){
-    let jobballPath = send_dir.getJobballPath ( jobDirPath );
+  // send_dir.packDir ( jobDirPath,'*',null,null,function(code,jobballSize){
+  send_dir.packDir ( jobDirPath,null,function(code,jobballPath,jobballSize){
+    // let jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -1086,12 +1088,15 @@ function prepareFailedJobExport ( loginData,fjdata )  {
     let exportFilePath = exp_names[2];
     utils.removeFile ( exportFilePath );  // just in case
 
-    send_dir.packDir ( jobDirPath,'*',exportFilePath,null,function(code,jobballSize){
-      if (code)  {
-        log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
-        utils.removeFile ( exportFilePath );  // export will never get ready!
-      }
-    });
+    // send_dir.packDir ( jobDirPath,'*',exportFilePath,null,
+    send_dir.packDir ( jobDirPath,null,
+      function(code,jobballPath,jobballSize){
+        if (code)  {
+          log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+          utils.removeFile ( jobballPath );  // export will never get ready!
+        } else
+          utils.moveFile   ( jobballPath,exportFilePath );
+      });
 
     return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
 
@@ -2448,11 +2453,19 @@ function importProject ( loginData,upload_meta )  {
     // we run this loop although expect only one file on upload
     for (let key in upload_meta.files)  {
 
+      // send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
+      send_dir.unpackDir ( key,tempdir,true,function(code,jobballSize){
+        if (code)
+          log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
+        // _import_project ( loginData,tempdir,null,'',false );
+        _import_project ( loginData,tempdir,null,'',2 );  // '2' means 'rename if needed'
+      });
+
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
       //if (utils.moveFile(key,path.join(tempdir,'__dir.tar.gz')))  {
+      /*
       if (utils.moveFile(key,path.join(tempdir,send_dir.jobballName)))  {
-
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
           if (code)
@@ -2460,10 +2473,10 @@ function importProject ( loginData,upload_meta )  {
           // _import_project ( loginData,tempdir,null,'',false );
           _import_project ( loginData,tempdir,null,'',2 );  // '2' means 'rename if needed'
         });
-
       } else  {
         errs = 'file move error';
       }
+      */
 
       break;  // only one file to be processed
 
@@ -2521,7 +2534,8 @@ let duplicate = 0;
 
     if (demoProjectPath)  {
       if (utils.fileExists(demoProjectPath))  {
-        send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,
+        // send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,
+        send_dir.unpackDir ( demoProjectPath,tempdir,false,
           function(code,jobballSize){
             if (code)
               log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
