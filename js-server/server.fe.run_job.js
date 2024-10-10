@@ -284,9 +284,9 @@ function getEFJobEntry ( loginData,project,jobId )  {
 // back to FE. Typically, this is the case when jobs are sent to remote NC from 
 // local (desktop) Cloud configuration. 'REMOTE' NCs are configured as any ordinary 
 // NC, but on FE side, they should contain 'REMOTE' value for 'exeType':
-
+//
 //        exeType : 'REMOTE'
-
+//
 // On NC side, the configuration should specify the relevant NC typeof, such as
 // 'SLURM', 'SGE' etc. When jobs are sent to 'REMOTE' NC, the results are pulled 
 // back by FE, rather than pushed from NC. This is a less efficient model, which 
