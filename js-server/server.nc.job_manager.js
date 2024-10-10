@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -984,8 +984,7 @@ let cfg = conf.getServerConfig();
         utils.removeSymLinks ( jobEntry.jobDir );
       }
 
-      send_dir.sendDir ( jobEntry.jobDir,'*',
-                         feURL,fe_fsmount,
+      send_dir.sendDir ( jobEntry.jobDir,feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token,
                          nc_meta,{compression:cfg.compression},
 
@@ -1046,9 +1045,10 @@ let cfg = conf.getServerConfig();
       // just prepare jobball for fetching by FE
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
-      send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
-        function(errs,jobbal_size){
-          if (jobbal_size>0)  {
+      // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
+      send_dir.packDir  ( jobEntry.jobDir,{ compression : 5 },
+        function(errs,jobballPath,jobballSize){
+          if (jobballSize>0)  {
             jobEntry.sendTrials = 0;  // indicate that it's ready
           } // else  {
           // errors
@@ -1405,7 +1405,8 @@ function ncMakeJob ( server_request,server_response )  {
   // loop because it looks only at jobs marked as 'running', while the new one
   // is marked as 'new'.
 
-  send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
+  // send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
+  send_dir.receiveDir ( jobDir,server_request,
     function(code,errs,meta){
       //if (code==0)  {
       if (!code)  {
@@ -2005,6 +2006,8 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
   //if (conf.getServerConfig().useRootCA)
   //  get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
 
+  let jobballPath = conf.getTmpFileName();  // may be in fast area
+
   request  // issue the download request
     .get ( get_options )
     .on('error', function(err) {
@@ -2021,7 +2024,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
         callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
                                       '[00117] Download errors: ' + err,{} ) );
     })
-    .pipe(fs.createWriteStream(path.join(jobDir,send_dir.jobballName)))
+    .pipe(fs.createWriteStream(jobballPath))  // path.join(jobDir,send_dir.jobballName)))
     .on('error', function(err) {
       log.error ( 23,'Download errors from ' + dnlURL + ', attempt #' + attemptNo );
       log.error ( 23,'Error: ' + err );
@@ -2040,39 +2043,42 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
       // successful download, unpack and start the job
 
       //function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-      send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
-        if (!code)  {
-          ncRunJob ( job_token,{
-            'sender'     : post_data_obj.feURL,
-            'setup_id'   : '',
-            'nc_name'    : 'client',
-            'user_id'    : '',
-            'fe_fsmount' : null,
-            'feedback'   : ud.feedback_code.decline,
-            'user_name'  : 'localuser',
-            'email'      : '[email not given]',
-            'push_back'  : 'YES'
-          });
 
-          // signal 'ok' to client
-          callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
-                                             {job_token:job_token} ) );
-          log.detailed ( 21,'directory contents has been received in ' + jobDir );
-        } else  {
-          // unpacking errors, remove job
-          log.error ( 24,'unpack errors, attempt #' + attemptNo +
-                         ', code=' + code + ', filesize=' + jobballSize );
-          ncJobRegister.removeJob ( job_token );
-          writeNCJobRegister      ();
-          if (attemptNo>0)  {
-            setTimeout ( function(){
-              ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
-            },10);
-          } else
-            callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
-                             '[00119] Unpack errors (code=' + code + ')',{} ) );
-        }
-      });
+      // send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
+      send_dir.unpackDir ( jobballPath,jobDir,true,
+        function(code,jobballSize){
+          if (!code)  {
+            ncRunJob ( job_token,{
+              'sender'     : post_data_obj.feURL,
+              'setup_id'   : '',
+              'nc_name'    : 'client',
+              'user_id'    : '',
+              'fe_fsmount' : null,
+              'feedback'   : ud.feedback_code.decline,
+              'user_name'  : 'localuser',
+              'email'      : '[email not given]',
+              'push_back'  : 'YES'
+            });
+
+            // signal 'ok' to client
+            callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
+                                              {job_token:job_token} ) );
+            log.detailed ( 21,'directory contents has been received in ' + jobDir );
+          } else  {
+            // unpacking errors, remove job
+            log.error ( 24,'unpack errors, attempt #' + attemptNo +
+                          ', code=' + code + ', filesize=' + jobballSize );
+            ncJobRegister.removeJob ( job_token );
+            writeNCJobRegister      ();
+            if (attemptNo>0)  {
+              setTimeout ( function(){
+                ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
+              },10);
+            } else
+              callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
+                              '[00119] Unpack errors (code=' + code + ')',{} ) );
+          }
+        });
 
     });
 
