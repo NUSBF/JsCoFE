@@ -314,8 +314,11 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
     if (utils.fileExists(dirPath))  {
       // utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
       // utils.removePath   ( tmpDir );
+console.log ( ' >>>>> move from unpack_dir=' + unpack_dir )
+console.log ( ' >>>>>         into dirPath=' + dirPath )
       utils.moveDirAsync ( unpack_dir,dirPath,true,function(e){
         callback_func    ( e );
+console.log ( ' >>>>>        remove tmpDir=' + tmpDir )
         utils.removePath ( tmpDir );
       });
     } else  {
@@ -341,6 +344,9 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
   }
 
   let jobballSize = utils.fileSize ( jobballPath );
+
+console.log ( ' >>>>> extraction from  jobballPath=' + jobballPath )
+console.log ( ' >>>>>             into  unpack_dir=' + unpack_dir )
 
   zl.extract ( jobballPath,unpack_dir )
     .then(function() {
@@ -456,7 +462,8 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
             // unpack all service jobballs (their names start with double underscore)
             // and clean them out
-
+console.log ( ' >>>>> unpacking into jobDir=' + jobDir )
+console.log ( ' >>>>>                tmpDir=' + tmpDir )
             unpackDir ( jobDir,tmpDir, function(code,jobballSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
