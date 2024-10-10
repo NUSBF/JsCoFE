@@ -975,7 +975,9 @@ function runJob ( loginData,data, callback_func )  {
     task.makeInputData ( loginData,jobDir );
 
     // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
-    send_dir.packDir ( jobDir,{ destination : jobDir },
+    send_dir.packDir ( jobDir,{ 
+        destination : send_dir.getPackPath ( jobDir ) 
+      },
       function(code,jobballPath,jobballSize){
         if (!code)  {
 
@@ -1141,7 +1143,9 @@ function replayJob ( loginData,data, callback_func )  {
       // job for client NC, just pack the job directory and inform client
 
       // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
-      send_dir.packDir ( jobDir,{ destination : jobDir },
+      send_dir.packDir ( jobDir,{ 
+          destination : send_dir.getPackPath ( jobDir ) 
+        },
         function(code,jobballPath,jobballSize){
           if (!code)  {
 
