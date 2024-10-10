@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.10.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -368,7 +368,8 @@ let nc_servers = conf.getNCConfigs();
 
             let jobDir = prj.getJobDirPath ( job_entry.loginData,job_entry.project,
                                              job_entry.jobId );
-            send_dir.unpackDir1 ( jobDir,filePath,null,true,
+            // send_dir.unpackDir1 ( jobDir,filePath,null,true,
+            send_dir.unpackDir ( filePath,jobDir,true,
               function(code,jobballSize){
                 if (code)  {
                   // make a counter here to avoid infinite looping
@@ -827,14 +828,14 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
         }
       }
 
-      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
+      send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
                          meta,{compression:nc_cfg.compression},
 
         function ( retdata,stats ){  // send successful
 
           log.standard ( 6,'job ' + task.id + ' sent to ' +
-                          conf.getNCConfig(nc_number).name + ', job token:' +
-                          job_token );
+                           conf.getNCConfig(nc_number).name + ', job token:' +
+                           job_token );
           log.standard ( 6,'compression: '  + nc_cfg.compression +
                            ', zip time: '   + stats.zip_time.toFixed(3) +
                            's, send time: ' + stats.send_time.toFixed(3) + 
@@ -973,32 +974,34 @@ function runJob ( loginData,data, callback_func )  {
     // prepare input data
     task.makeInputData ( loginData,jobDir );
 
-    send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
+    // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
+    send_dir.packDir ( jobDir,{ destination : jobDir },
+      function(code,jobballPath,jobballSize){
+        if (!code)  {
 
-      if (!code)  {
+          utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
+                      'Job is running on client machine. Full report will ' +
+                      'become available after job finishes.',true );
 
-        utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
-                    'Job is running on client machine. Full report will ' +
-                    'become available after job finishes.',true );
+          feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+                                task.project,task.id,shared_logins,
+                                null,'YES' );  // no notifications for client jobs
+          feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
+          writeFEJobRegister();
 
-        feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
-                               task.project,task.id,shared_logins,
-                               null,'YES' );  // no notifications for client jobs
-        feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
-        writeFEJobRegister();
+          rdata.job_token   = job_token;
+          // rdata.jobballName = send_dir.jobballName;
+          rdata.jobballName = path.basename(jobballPath);
 
-        rdata.job_token   = job_token;
-        rdata.jobballName = send_dir.jobballName;
+          callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
+          log.standard ( 11,'created jobball for client in ' + jobballPath + 
+                            ', size=' + jobballSize );
 
-        callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
-        log.standard ( 11,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
-
-      } else  {
-        callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
-                        '[00001] Jobball creation errors',rdata) );
-      }
-
-    });
+        } else  {
+          callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
+                          '[00001] Jobball creation errors',rdata) );
+        }
+      });
 
     // NOTE: we do not count client jobs against user rations (quotas)
 
@@ -1137,32 +1140,37 @@ function replayJob ( loginData,data, callback_func )  {
     if (task.nc_type=='client')  {
       // job for client NC, just pack the job directory and inform client
 
-      send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
+      // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
+      send_dir.packDir ( jobDir,{ destination : jobDir },
+        function(code,jobballPath,jobballSize){
+          if (!code)  {
 
-        if (!code)  {
+            utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
+                        'Job is running on client machine. Full report will ' +
+                        'become available after job finishes.',true );
 
-          utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
-                      'Job is running on client machine. Full report will ' +
-                      'become available after job finishes.',true );
+            let job_token = newJobToken();
+            feJobRegister.addJob ( job_token,nc_number,loginData,
+                                  task.project,task.id,[],null,'YES' );
+            feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
+            writeFEJobRegister();
 
-          let job_token = newJobToken();
-          feJobRegister.addJob ( job_token,nc_number,loginData,
-                                 task.project,task.id,[],null,'YES' );
-          feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
-          writeFEJobRegister();
+            rdata = {};
+            rdata.job_token   = job_token;
+            rdata.jobballName = send_dir.jobballName;
+            // rdata.jobballName = path.basename ( jobballPath );
+            console.log ( ' >>>>>>> jobballPath=' + jobballPath )
 
-          rdata = {};
-          rdata.job_token   = job_token;
-          rdata.jobballName = send_dir.jobballName;
-          callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
-          log.standard ( 13,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
+            callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
+            log.standard ( 13,'created jobball for client, dir=' + jobDir + 
+                              ', size=' + jobballSize );
 
-        } else  {
-          callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
-                          '[00006] Jobball creation errors',{}) );
-        }
+          } else  {
+            callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
+                            '[00006] Jobball creation errors',{}) );
+          }
 
-      });
+        });
 
       // NOTE: we do not count client jobs against user rations (quotas)
 
@@ -1175,7 +1183,7 @@ function replayJob ( loginData,data, callback_func )  {
       meta.setup_id = conf.getSetupID();
       meta.user_id  = loginData.login;
 
-      send_dir.sendDir ( jobDir,'*',nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
+      send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
                          meta,{compression:nc_cfg.compression},
 
         function ( rdata,stats ){  // send successful
@@ -1769,15 +1777,16 @@ function getJobResults ( job_token,server_request,server_response )  {
                                      jobEntry.jobId );
 //    utils.setLock ( jobDir,100 );
 
-    send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
+    // send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
+    send_dir.receiveDir ( jobDir,server_request,
       function(code,errs,meta){
 
         // In case of client job, original jobball remains in job directory
         // (because client fetches it by pulling). Delete it now.
 
-        let jobball_path = send_dir.getJobballPath ( jobDir );
-        if (utils.fileExists(jobball_path))
-          utils.removeFile ( jobball_path );
+        // let jobball_path = send_dir.getJobballPath ( jobDir );
+        // if (utils.fileExists(jobball_path))
+        //   utils.removeFile ( jobball_path );
 
         _place_job_results ( job_token,code,errs,meta,server_response );
 
@@ -2025,26 +2034,28 @@ function cloudRun ( server_request,server_response )  {
 
   // 1. Receive data and metadata
 
-  let tmpDir    = conf.getTmpFile();
-  let tmpJobDir = conf.getTmpFile();
+  // let tmpDir    = conf.getTmpFileName();
+  let tmpJobDir = conf.getTmpFileName();
 
-  if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
+  // if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
+  if (!utils.mkDir(tmpJobDir))  {
     log.error ( 28,'cannot make temporary directory for cloud run' );
-    utils.removePath ( tmpDir    );
+    // utils.removePath ( tmpDir    );
     utils.removePath ( tmpJobDir );
     cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
                       'cannot make temporary directory to receive files','' );
     return;
   }
 
-  send_dir.receiveDir ( tmpJobDir,tmpDir,server_request,
+  // send_dir.receiveDir ( tmpJobDir,tmpDir,server_request,
+  send_dir.receiveDir ( tmpJobDir,server_request,
     function(code,errs,meta){
 
       let response = null;
       let message  = '';
 
       // remove temporary directory
-      utils.removePath ( tmpDir );
+      // utils.removePath ( tmpDir );
 
       if (code)  {
         // upload errors, directory with data was not received
