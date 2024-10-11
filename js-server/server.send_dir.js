@@ -147,7 +147,7 @@ function packDir ( dirPath,options, onReady_func )  {
   const output  = fs.createWriteStream ( packFile ); // Create output file stream
   const archive = archiver ( 'zip', {
      zlib : { 
-      level : compression
+       level : compression
      } 
   });
 

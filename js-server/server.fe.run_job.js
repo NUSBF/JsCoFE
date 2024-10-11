@@ -975,15 +975,21 @@ function runJob ( loginData,data, callback_func )  {
     task.makeInputData ( loginData,jobDir );
 
     // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
-    send_dir.packDir ( jobDir,{ 
-        destination : send_dir.getPackPath ( jobDir ) 
-      },
-      function(code,jobballPath,jobballSize){
+
+    // this will pack into a file in temporary (fast) disk area; packing
+    // directly into job directory causes an anfinished pack being part of
+    // the final pack, which breaks olde client versions
+    send_dir.packDir ( jobDir,null,
+      function(code,packPath,packSize){
         if (!code)  {
 
           utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
                       'Job is running on client machine. Full report will ' +
                       'become available after job finishes.',true );
+
+          // move pack back into job directory
+          let jobballPath = send_dir.getPackPath(jobDir);
+          utils.moveFile ( packPath,jobballPath );
 
           feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
                                 task.project,task.id,shared_logins,
@@ -997,7 +1003,7 @@ function runJob ( loginData,data, callback_func )  {
 
           callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
           log.standard ( 11,'created jobball for client in ' + jobballPath + 
-                            ', size=' + jobballSize );
+                            ', size=' + packSize );
 
         } else  {
           callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
@@ -1163,7 +1169,6 @@ function replayJob ( loginData,data, callback_func )  {
             rdata.job_token   = job_token;
             rdata.jobballName = send_dir.jobballName;
             // rdata.jobballName = path.basename ( jobballPath );
-            console.log ( ' >>>>>>> jobballPath=' + jobballPath )
 
             callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
             log.standard ( 13,'created jobball for client, dir=' + jobDir + 
