@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.10.24   <--  Date of Last Modification.
+ *    11.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1599,10 +1599,15 @@ if (!dbx)  {
               ndisabled++;
           }
 
-          // sort by decreasing data Id 
+          // sort by decreasing data Id and increasing serial nubers
           for (let j=0;j<ddndata.length;j++)  {
-            for (let k=j+1;k<ddndata.length;k++)
-              if (ddndata[j][0]<ddndata[k][0])  {
+            for (let k=j+1;k<ddndata.length;k++)  {
+              // names start with data id like [0002-03]
+              let namej = ddndata[j][0].split('-');
+              let namek = ddndata[k][0].split('-');
+              // if (ddndata[j][0]<ddndata[k][0])  {
+              if ((namej[0]<namek[0]) || 
+                  ((namej[0]==namek[0]) && (namej[1]>namek[1]))) {
                 let item   = ddndata[j];
                 ddndata[j] = ddndata[k];
                 ddndata[k] = item;
@@ -1610,6 +1615,7 @@ if (!dbx)  {
                 dn[j]      = dn[k];
                 dn[k]      = ino;
               }
+            }
             ddndata[j][1] = dn[j];
             ddndata[j][2] = sel && (j==n);
           }
