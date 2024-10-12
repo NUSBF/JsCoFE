@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    12.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -261,6 +261,8 @@ AdminPage.prototype.__load_time = function()  {
 }
 
 AdminPage.prototype.refresh = function()  {
+
+  this.load_start_time = performance.now();
 
   if (this.anlTab)
     this.loadAnalytics();
