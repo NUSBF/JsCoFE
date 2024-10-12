@@ -286,12 +286,11 @@ Response.prototype.send = function ( server_response )  {
     'Access-Control-Allow-Origin'  : '*'
   });
   if ('measure_time_label' in this)  {
-    const startTime = process.hrtime();
+    const startTime = performance.now();
     server_response.end ( JSON.stringify(this), () => {
-      const endTime  = process.hrtime(startTime);
-      const duration = endTime[0] * 1000 + endTime[1] / 1e6; // Convert to milliseconds
+      const duration = (performance.now() - startTime)/1000.0; // Convert to milliseconds
       console.log ( ' ... response for "' + this.measure_time_label +
-                    '" sent in ' + duration.toFixed(3) + ' ms' );
+                    '" sent in ' + duration.toFixed(3) + 's' );
     });
   } else
     server_response.end ( JSON.stringify(this) );
@@ -309,12 +308,11 @@ function sendResponseMessage ( server_response,message,mimeType,measure_time_lab
     'Access-Control-Allow-Origin'  : '*'
   });
   if (measure_time_label)  {
-    const startTime = process.hrtime();
+    const startTime = performance.now();
     server_response.end ( message, () => {
-      const endTime  = process.hrtime(startTime);
-      const duration = endTime[0] * 1000 + endTime[1] / 1e6; // Convert to milliseconds
-      console.log ( ' ... response for "' + this.measure_time_label +
-                    '" sent in ' + duration.toFixed(3) + ' ms' );
+      const duration = (performance.now() - startTime)/1000.0; // Convert to milliseconds
+      console.log ( ' ... response for "' + measure_time_label +
+                    '" sent in ' + duration.toFixed(3) + 's' );
     });
   } else
     server_response.end ( message );
