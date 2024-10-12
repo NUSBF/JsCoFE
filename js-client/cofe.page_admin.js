@@ -34,6 +34,8 @@ function AdminPage ( sceneId )  {
     return;
   }
 
+  this.load_start_time = performance.now();
+
   this.makeHeader ( 3,null );
   let page_title = appName() + ' Administration Facility';
   if (__local_user)
@@ -253,6 +255,11 @@ AdminPage.prototype.loadUsageStats = function()  {
   }
 }
 
+AdminPage.prototype.__load_time = function()  {
+  let dt = (performance.now()-this.load_start_time)/1000.0;
+  return dt.toFixed(3) + 's';
+}
+
 AdminPage.prototype.refresh = function()  {
 
   if (this.anlTab)
@@ -261,6 +268,9 @@ AdminPage.prototype.refresh = function()  {
   (function(self){
 
     serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+
+      if (__user_role==role_code.admin)
+        console.log ( '... getAdminData response ' + self.__load_time() );
 
       if (!data.served)  {
 
@@ -311,7 +321,8 @@ AdminPage.prototype.refresh = function()  {
               self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
                                       usersToday.length + ' users\n' +
                                       lines.reverse().join('\n') + '</pre>' );
-
+              if (__user_role==role_code.admin)
+                console.log ( '... Jobs Tab complete in ' + self.__load_time() );
             },10);
 
           },10);
@@ -423,6 +434,9 @@ AdminPage.prototype.loadAnalytics = function()  {
   (function(self){
 
     serverRequest ( fe_reqtype.getAnalytics,0,'Admin Page',function(anldata){
+
+      if (__user_role==role_code.admin)
+        console.log ( '... loadAnalytics response ' + self.__load_time() );
 
       // let row = 1;
 
@@ -678,6 +692,9 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
 //  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
+  if (__user_role==role_code.admin)
+    console.log ( '... Users Tab complete in ' + this.__load_time() );
+
 }
 
 
@@ -815,6 +832,9 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     'vertical-align' : 'middle',
     'white-space'    : 'nowrap'
   },1,1 );
+
+  if (__user_role==role_code.admin)
+    console.log ( '... Nodes Tab complete in ' + this.__load_time() );
 
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
