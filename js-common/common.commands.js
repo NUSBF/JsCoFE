@@ -308,7 +308,6 @@ function sendResponseMessage ( server_response,message,mimeType,measure_time_lab
     // 'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
-  server_response.end ( message );
   if (measure_time_label)  {
     const startTime = process.hrtime();
     server_response.end ( message, () => {
