@@ -288,9 +288,9 @@ Response.prototype.send = function ( server_response )  {
   if ('measure_time_label' in this)  {
     const startTime = performance.now();
     server_response.end ( JSON.stringify(this), () => {
-      const duration = (performance.now() - startTime)/1000.0; // Convert to milliseconds
+      const duration = performance.now() - startTime; // Convert to milliseconds
       console.log ( ' ... response for "' + this.measure_time_label +
-                    '" sent in ' + duration.toFixed(3) + 's' );
+                    '" sent in ' + duration.toFixed(3) + 'ms' );
     });
   } else
     server_response.end ( JSON.stringify(this) );
@@ -310,9 +310,9 @@ function sendResponseMessage ( server_response,message,mimeType,measure_time_lab
   if (measure_time_label)  {
     const startTime = performance.now();
     server_response.end ( message, () => {
-      const duration = (performance.now() - startTime)/1000.0; // Convert to milliseconds
+      const duration = performance.now() - startTime; // Convert to milliseconds
       console.log ( ' ... response for "' + measure_time_label +
-                    '" sent in ' + duration.toFixed(3) + 's' );
+                    '" sent in ' + duration.toFixed(3) + 'ms' );
     });
   } else
     server_response.end ( message );
