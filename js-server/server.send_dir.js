@@ -223,7 +223,7 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
 
     request.post ( post_options,function(err,httpResponse,response) {
 
-      stats.send_time = (performance.now()-stats.send_time)/1000.0
+      stats.send_time = (performance.now()-stats.send_time)/1000.0;
 
       if (packPath)  {
         if (!utils.removeFile(packPath))
