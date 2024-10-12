@@ -122,8 +122,11 @@ function getNCData ( ncInfo,callback_func )  {
 }
 
 function getAdminData ( loginData,data,callback_func )  {
+// the 'data' parameter must be where it is
 
+  let t0 = performance.now()
   let adminData = {};
+
   adminData.served    = false;
   adminData.jobsStat  = '';
   adminData.usersInfo = [];
@@ -144,7 +147,9 @@ function getAdminData ( loginData,data,callback_func )  {
     adminData.usersInfo = user.readUsersData();
     adminData.nodesInfo.FEconfig = conf.getFEConfig();
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData) );
+      let dt = (performance.now()-t0)/1000.0;
+      log.standard ( 3,'admin data collected in ' + dt.toFixed(3) + ' ms' );
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData,'getAdminData') );
     });
     //_getNCData ( adminData,callback_func );
     return null;

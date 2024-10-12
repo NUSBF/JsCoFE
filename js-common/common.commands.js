@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    11.10.24   <--  Date of Last Modification.
+ *    12.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.002 [11.10.2024]';   // for update
+const jsCoFE_version = '1.8.002 [12.10.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -268,12 +268,14 @@ const __special_url_tag    = 'xxJsCoFExx';
 const __special_fjsafe_tag = 'xxFJSafexx';
 const __special_client_tag = 'xxClientxx';
 
-function Response ( status,message,data )  {
+function Response ( status,message,data,measure_time_label=null )  {
   this._type   = 'Response';
   this.version = appVersion();
   this.status  = status;
   this.message = message;
   this.data    = data;
+  if (measure_time_label)
+    this.measure_time_label = measure_time_label;
 }
 
 
@@ -283,21 +285,40 @@ Response.prototype.send = function ( server_response )  {
     // 'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
-  server_response.end ( JSON.stringify(this) );
+  if ('measure_time_label' in this)  {
+    const startTime = process.hrtime();
+    server_response.end ( JSON.stringify(this), () => {
+      const endTime  = process.hrtime(startTime);
+      const duration = endTime[0] * 1000 + endTime[1] / 1e6; // Convert to milliseconds
+      console.log ( ' ... response for "' + this.measure_time_label +
+                    '" sent in ' + duration.toFixed(3) + ' ms' );
+    });
+  } else
+    server_response.end ( JSON.stringify(this) );
 }
 
-function sendResponse ( server_response, status,message,data )  {
-  let resp = new Response ( status,message,data );
+function sendResponse ( server_response, status,message,data,measure_time_label=null )  {
+  let resp = new Response ( status,message,data,measure_time_label );
   resp.send ( server_response );
 }
 
-function sendResponseMessage ( server_response,message,mimeType )  {
+function sendResponseMessage ( server_response,message,mimeType,measure_time_label=null )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : mimeType,
     // 'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
   server_response.end ( message );
+  if (measure_time_label)  {
+    const startTime = process.hrtime();
+    server_response.end ( message, () => {
+      const endTime  = process.hrtime(startTime);
+      const duration = endTime[0] * 1000 + endTime[1] / 1e6; // Convert to milliseconds
+      console.log ( ' ... response for "' + this.measure_time_label +
+                    '" sent in ' + duration.toFixed(3) + ' ms' );
+    });
+  } else
+    server_response.end ( message );
 }
 
 function Request ( request,token,data )  {
