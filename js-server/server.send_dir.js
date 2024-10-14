@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    14.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -416,6 +416,8 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
     files : {}
   };
 
+  let startTime = performance.now();
+
   // create an incoming form object
   let form = new formidable.IncomingForm();
   form.maxFileSize = 100 * 1024 * 1024 * 1024;  // 100 Gb
@@ -508,9 +510,11 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
             unpackDir ( packPath,jobDir,true, function(code,packSize){
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
-              if (!code)
-                log.standard (  6,'directory contents has been received in ' + jobDir );
-              else  {
+              if (!code)  {
+                let dt = (performance.now()-startTime)/1000.0;
+                log.standard (  6,'directory contents has been received in ' + jobDir +
+                                  ', receive time ' + dt.toFixed(3) + 's' );
+              } else  {
                 log.standard (  2,'directory contents has been received in ' + jobDir +
                                   ' with errors: ' + code +
                                   ', filesize=' + packSize );
