@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.10.24   <--  Date of Last Modification.
+ *    14.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -511,7 +511,8 @@ function removeSymLinks ( dir_path )  {
         try {
           let fpath = fs.readlinkSync( curPath );
           fs.unlinkSync ( curPath );
-          fs.copyFileSync ( fpath, curPath );
+          if (fs.existsSync(fpath))
+            fs.copyFileSync ( fpath, curPath );
         } catch (e)  {
           log.error ( 88,'cannot remove symlink ' + curPath +
                          ' error: ' + JSON.stringify(e) );
