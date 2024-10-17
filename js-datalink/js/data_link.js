@@ -56,14 +56,6 @@ class dataLink {
     });
   }
 
-  abortAllJobs() {
-    for (const job_ids of Object.values(this.jobs)) {
-      for (const job of Object.values(job_ids)) {
-        job.controller.abort();
-      }
-    }
-  }
-
   loadAllUserCatalogs() {
     log.info(`Loading local catalogs`);
     const users = tools.getSubDirs(tools.getDataDir());
