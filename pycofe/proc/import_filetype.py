@@ -39,6 +39,7 @@ def ftype_Ligand       ():  return "ligand"
 def ftype_Sequence     ():  return "sequence"
 def ftype_Alignment    ():  return "alignment"
 def ftype_Borges       ():  return "borges"
+def ftype_MolGraph     ():  return "molgraph"
 def ftype_HTML         ():  return "html"
 def ftype_PDF          ():  return "pdf"
 def ftype_TEXT         ():  return "text"
@@ -84,6 +85,9 @@ def getFileType ( fname,importDir,file_stdout ):
                 if block.find_values("_chem_mod_atom.new_type_energy"):
                     ftype = ftype_Ligand()
                     break
+                if block.find_values("_chem_comp.three_letter_code"):
+                    ftype = ftype_Ligand()
+                    break
             ### ftype_Ligand() is later converted to ftype_Library() if necessary
             ### continue because xyz-type cif-file may contain ligand descriptions
             for block in doc:
@@ -106,6 +110,7 @@ def getFileType ( fname,importDir,file_stdout ):
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
     if fext=='.hhr'   :                   return ftype_Alignment()
     if fext=='.borges':                   return ftype_Borges()
+    if fext in ('.sdf','.mol2','.sml'):   return ftype_MolGraph()
     if fext=='.wscript':                  return ftype_WScript()
 
     if fext=='.txt' :
