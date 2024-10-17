@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    15.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,19 +28,22 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ===========================================================================
 
 const file_key = {
-  'xyz'    : 'xyz',     // atomic coordinates
-  'mmcif'  : 'mmcif',   // atomic coordinates in mmCIF format
-  'sol'    : 'sol',     // phaser's sol file
-  'sub'    : 'sub',     // heavy atom (substructure) coordinates
-  'seq'    : 'seq',     // sequence file
-  'mtz'    : 'mtz',     // .mtz file with hkl and/or phases
-  'map'    : 'map',     // map file
-  'dmap'   : 'dmap',    // difference map file
-  'lib'    : 'lib',     // ligand dictionary
-  'coot'   : 'coot',    // Coot python script
-  'molp'   : 'molp',    // molprobity_probe.txt file
-  'hhr'    : 'hhr',     // hhpred alignment file
-  'borges' : 'borges'   // borges library file
+  xyz    : 'xyz',     // atomic coordinates
+  mmcif  : 'mmcif',   // atomic coordinates in mmCIF format
+  sol    : 'sol',     // phaser's sol file
+  sub    : 'sub',     // heavy atom (substructure) coordinates
+  seq    : 'seq',     // sequence file
+  mtz    : 'mtz',     // .mtz file with hkl and/or phases
+  map    : 'map',     // map file
+  dmap   : 'dmap',    // difference map file
+  lib    : 'lib',     // ligand dictionary
+  coot   : 'coot',    // Coot python script
+  molp   : 'molp',    // molprobity_probe.txt file
+  hhr    : 'hhr',     // hhpred alignment file
+  borges : 'borges',  // borges library file
+  sdf    : 'sdf',     // molecular graph in SDF format
+  mol2   : 'mol2',    // molecular graph in MOL2 format
+  sml    : 'sml'      // molecular graph SMILES
 };
 
 // ===========================================================================
