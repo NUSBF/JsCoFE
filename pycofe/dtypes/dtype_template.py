@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    03.03.23   <--  Date of Last Modification.
+#    15.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2024
 #
 # ============================================================================
 #
@@ -60,7 +60,10 @@ file_key = {
     'coot'       : 'coot',       # Coot python script
     'molp'       : 'molp',       # molprobity_probe.txt file
     'hhr'        : 'hhr',        # hhpred alignment file
-    'borges'     : 'borges'      # library file for arcimboldo-borges
+    'borges'     : 'borges',     # library file for arcimboldo-borges
+    'sdf'        : 'sdf',        # molecular graph in SDF format
+    'mol2'       : 'mol2',       # molecular graph in MOL2 format
+    'sml'        : 'sml'         # molecular graph SMILES
 }
 
 
