@@ -98,41 +98,13 @@ class dataSource {
   }
 
   dataError(entry, err) {
-    this.removeJob(entry);
+    this.jobs.remove(entry);
     this.errorCallback(entry, err);
   }
 
   dataComplete(entry) {
-    this.removeJob(entry);
+    this.jobs.remove(entry);
     this.completeCallback(entry);
-  }
-
-  getJobKey(entry) {
-    return entry.user + '/' + entry.id;
-  }
-
-  getJob(entry) {
-    return this.jobs[this.getJobKey(entry)];
-  }
-
-  addJob(entry, controller, status) {
-    const key = this.getJobKey(entry);
-    this.jobs[key] = { controller: controller, status: status }
-  }
-
-  removeJob(entry) {
-    this.abortJob(entry);
-    const key = this.getJobKey(entry);
-    if (this.jobs[key]) {
-      delete this.jobs[key];
-    }
-  }
-
-  abortJob(entry) {
-    const job = this.getJob(entry);
-    if (job && job.controller) {
-      job.controller.abort();
-    }
   }
 
   async fetchDataHttp(urls, entry) {
@@ -199,7 +171,7 @@ class dataSource {
       try {
         await tools.httpRequest(url, options, dest_file,
         (controller) => {
-          this.addJob(entry, controller, `Fetching ${url} to ${entry.dir}`);
+          this.jobs.add(entry, controller, `Fetching ${url} to ${entry.dir}`);
         },
         (data) => {
           entry.size += data.length;
@@ -216,7 +188,7 @@ class dataSource {
         const msg = `${this.name}/fetchDataHttp - Unpacking ${file} to ${entry.dir}`
         log.info(msg);
         await tools.unpack(dest_file, data_dest, null, null, (controller) => {
-          this.addJob(entry, controller, msg);
+          this.jobs.add(entry, controller, msg);
         });
 
         await this.unpackDirectory(entry, data_dest);
@@ -237,7 +209,7 @@ class dataSource {
           const msg = `unpackDirectory - Unpacking ${file}`;
           log.info(msg);
           await tools.unpack(file, dest_dir, cmd, args, (controller) => {
-            this.addJob(entry, controller, msg);
+            this.jobs.add(entry, controller, msg);
           });
         } catch (err) {
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
@@ -295,7 +267,7 @@ class dataSource {
           log.error(stderr.toString());
         },
         (controller) => {
-          this.addJob(entry, controller, `Fetching (rsync) ${url}/${entry.id} to ${entry.dir}`);
+          this.jobs.add(entry, controller, `Fetching (rsync) ${url}/${entry.id} to ${entry.dir}`);
         });
 
       await this.unpackDirectory(entry, data_dest);
