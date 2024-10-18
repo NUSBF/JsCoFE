@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.24   <--  Date of Last Modification.
+ *    17.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,70 +42,68 @@ const user   = require('../../js-server/server.fe.user');
 const prj    = require('../js-server//server.fe.projects');
 
 //  prepare log
-const log = require('../js-server/server.log').newLog(28);
+const log    = require('../js-server/server.log').newLog(28);
 
 // ==========================================================================
 
 function move_disk ( disk1,disk2 )  {
+
   let fe_config = conf.getFEConfig();
   let udir_path = fe_config.userDataPath;
 
+  // loop over all user records
   fs.readdirSync(udir_path).forEach(function(file,index){
     if (file.endsWith(user.__userDataExt))  {
-      let uDataFPath = path.join    ( udir_path,file );
-      let uData      = utils.readObject ( uDataFPath );
 
-      if (uData && (ud.volume==disk1))  {
-        ud.checkUserData ( uData );
+      let uDataFPath = path.join    ( udir_path,file );
+      let uData      = utils.readObject ( uDataFPath );  // read the record
+
+      if (uData && (ud.volume==disk1))  {  // check if projects are placed on "disk1"
+        
+        ud.checkUserData ( uData );  // add missing items in old records
+        
         let old_path = prj.getUserProjectsDirPath ( uData );
-        uData.volume = disk2;
+        uData.volume = disk2;  // change location to "disk2"
         let new_path = prj.getUserProjectsDirPath ( uData );
-        if (!utils.dirExists(old_path))  {
+
+        let stat_old = utils.fileExists ( old_path );
+        let stat_new = utils.fileExists ( new_path );
+
+        if ((!stat_old) || (!stat_old.isDirectory()))  {
           log.error ( 6,'project directory does not exist for user "' + uData.login +
                         '" -- operation skipped; please investigate!' );
-        } else if (utils.fileExists(new_path))  {
+        } else if (stat_new)  {
           log.error ( 7,'project directory already exists for user "' + uData.login +
                         '" in new destination -- operation skipped; please investigate!' );
-        }
-
-        if (old_path==new_path)  {
+        } else if (old_path==new_path)  {
           log.warning ( 8,'source and destination project directories coincide for user "' + 
                           uData.login + '" -- only disk name will be updated' );
+          utils.writeObject ( uDataFPath,uData );  // commit
+        } else if (stat_old.dev===stat_new.dev)  {
+          // same file system, just move the directory
+          if (utils.moveDir(old_path,new_path,false))  { // sync version, no overwrite
+            utils.writeObject ( uDataFPath,uData );  // commit
+            log.standard ( 5,'User ' + uData.login + ' moved from disk ' + disk1 +
+                             ' to ' + disk2 )
+          } else  {
+            log.error ( 9,'failed to move directory "' + old_path +
+                          '" to "' + new_path + '" possible data loss, investigate!' );
+          }
+        } else if (utils.copyDirSync(old_path,new_path))  {
+          utils.removePath  ( old_path );
+          utils.writeObject ( uDataFPath,uData );  // commit
+          log.standard ( 6,'User ' + uData.login + ' moved from disk ' + disk1 +
+                           ' to ' + disk2 )
         } else  {
-          utils.copyDirAsync ( old_path,new_path,true,function(err){
-            if (err)  {
-              log.error ( 96,'moving user projects failed:' );
-              log.error ( 96,'  from: ' + old_path );
-              log.error ( 96,'    to: ' + new_path );
-              console.error ( err );
-            } else  {
-              log.standard ( 91,'user ' + userData.login +
-                                ' is relocated to disk ' + userData.volume +
-                                ' by admin, login: ' + loginData.login );
-              uData.volume = userData.volume;
-              utils.removePath ( old_path );
-            }
-            if (uData.login.startsWith(__suspend_prefix))   // release
-              uData.login = uData.login.substring(__suspend_prefix.length);
-            utils.writeObject ( userFilePath,uData );       // commit
-          });
+          log.error ( 10,'failed to copy directory "' + old_path +
+                        '" to "' + new_path + '" perform recovery, investigate!' );
+          utils.removePath ( new_path );
         }
-
       }
 
     }
 
   });
-
-            // a) calculate project directory paths
-
-            // b) log user out and suspend their account
-            __userLoginHash.removeUser ( uData.login );     // logout
-            uData.login = __suspend_prefix + uData.login;   // suspend
-            utils.writeObject ( userFilePath,uData );       // commit
-
-            // c) copy user's projects to new volume
-
 
 }
 
@@ -138,10 +136,10 @@ function confirm_action ( disk1,disk2 )  {
       return 1;
     } else  {
       if (result.confirm.toUpperCase().startsWith('Y'))  {
-        console.log ( 'You have been warned, you said YES\n' );
+        console.log ( 'You have been asked, you said YES\n' );
         move_disk ( disk1,disk2 );
       } else
-        console.log ( 'Good bye.' );
+        log.standard ( 7,'Good bye.' );
       return 0;
     }
   });

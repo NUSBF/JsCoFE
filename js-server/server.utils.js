@@ -29,6 +29,7 @@
  *        function moveFile         ( old_path,new_path )  
  *        function copyDirAsync     ( old_path,new_path,overwrite_bool,
  *                                    callback_func )  
+ *        function copyDirSync      ( source,destination )
  *        function mkDir_check      ( dirPath )  
  *        function mkDir_anchor     ( dirPath )  
  *        function mkPath           ( dirPath )  
@@ -280,6 +281,41 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   }, callback_func );
 }
 
+
+function copyDirSync ( source,destination )  {
+
+  // Check if the source exists and is a directory
+  if (!fs.existsSync(source) || !fs.statSync(source).isDirectory()) {
+    // source directory does not exist or is not a directory
+    return false;
+  }
+
+  // Create the destination directory if it does not exist
+  if (!fs.existsSync(destination))
+    fs.mkdirSync(destination, { recursive: true });
+
+  // Read the contents of the source directory
+  const items = fs.readdirSync(source);
+
+  items.forEach(item => {
+    const sourceItem = path.join(source, item);
+    const destinationItem = path.join(destination, item);
+    const stat = fs.statSync(sourceItem);
+    // If the item is a directory, recursively copy it
+    if (stat.isDirectory()) {
+      copyDirSync(sourceItem, destinationItem);
+    } else {
+      // If the item is a file, copy it
+      fs.copyFileSync(sourceItem, destinationItem);
+    }
+
+  });
+
+  return true;
+
+}
+
+
 function mkDir ( dirPath )  {
   try {
     fs.mkdirSync ( dirPath );
@@ -388,6 +424,7 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
     log.error ( 50,'cannot remove directory ' + new_path );
     log.error ( 50,'error: ' + JSON.stringify(e) );
     console.error(e);
+    // continue nevrtheless in desperation
   }
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
@@ -924,6 +961,7 @@ module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.moveDirAsync          = moveDirAsync;
 module.exports.copyDirAsync          = copyDirAsync;
+module.exports.copyDirSync           = copyDirSync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_check           = mkDir_check;
 module.exports.mkDir_anchor          = mkDir_anchor;
