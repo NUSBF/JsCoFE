@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const data_catalog = require('./data_catalog.js');
+const jobs = require('./jobs.js');
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
@@ -20,14 +21,13 @@ const DATA_SOURCES = [
 
 const GB = 1000000000;
 const MB = 1000000;
-const DAY_TO_MS = 24 * 60 * 60 * 1000;
 
 class dataLink {
 
   constructor(server_mode = true) {
     this.server_mode = server_mode;
     this.ds = {};
-    this.jobs = {};
+    this.jobs = new jobs();
 
     this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'), config.get('storage.meta_dir'));
 
@@ -39,8 +39,7 @@ class dataLink {
     for (let name of DATA_SOURCES) {
       if (config.get('data_sources.' + name + '.enabled')) {
         let source = require(path.join(SOURCES_DIR, name));
-        this.jobs[name] = {};
-        this.ds[name] = new source(tools.getDataDir(), tools.getCatalogDir(), this.jobs[name]);
+        this.ds[name] = new source(tools.getDataDir(), tools.getCatalogDir(), this.jobs);
       }
     }
 
@@ -48,30 +47,13 @@ class dataLink {
 
     this.loadSourceCatalogs();
 
-    // if we are running in server mode set up the data pruning and catalog update jobs
-    if (this.server_mode) {
-      this.dataPruneInit(config.get('storage.data_prune_mins'));
-      let update_days = config.get('storage.catalog_update_days');
-      if (update_days > 0) {
-        if (update_days > 24) {
-          update_days = 24;
-        }
-        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * DAY_TO_MS);
-      }
-    }
+    // configure timer based jobs such as data pruning and catalog updating
+    this.setupTimers();
 
     process.on('error', (err) => {
       log.error(err);
       log.error(err.stack);
     });
-  }
-
-  abortAllJobs() {
-    for (const job_ids of Object.values(this.jobs)) {
-      for (const job of Object.values(job_ids)) {
-        job.controller.abort();
-      }
-    }
   }
 
   loadAllUserCatalogs() {
@@ -120,13 +102,21 @@ class dataLink {
     }
   }
 
-  dataPruneInit(mins) {
-    // prune manage and unmanaged datalink data
+  setupTimers() {
+    // only setup timers when in client/server mode
+    if (! this.server_mode) {
+      return;
+    }
+
+    // timer for updating data source catalogs
+    this.jobs.addDayTimer(this.updateAllSourceCatalogs.bind(this), config.get('storage.catalog_update_days'));
+
+    // timer for data pruning and catalog update jobs
+    const mins = config.get('storage.data_prune_mins');
+
     if (mins > 0) {
       log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
-      setInterval(this.catalog.pruneData.bind(this.catalog), mins * 1000 * 60, this.data_free_gb, this.data_max_days);
-      // run inital data prune
-      this.catalog.pruneData(this.data_free_gb, this.data_max_days);
+      this.jobs.addMinTimer(this.catalog.pruneData.bind(this.catalog, this.data_free_gb, this.data_max_days), mins, true);
     } else {
       log.info(`Configured to not prune old data`);
     }
@@ -490,7 +480,7 @@ class dataLink {
       log.info(`removeData - Aborting ${user}/${source}/${id}`);
       // if the data source has jobs then abort/remove all jobs
       if (this.ds[source]) {
-        this.ds[source].removeJob(entry);
+        this.jobs.remove(entry);
         this.catalog.updateEntry(entry, { status: status.failed });
       }
     }
