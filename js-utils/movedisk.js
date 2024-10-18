@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.10.24   <--  Date of Last Modification.
+ *    18.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,17 +28,21 @@
  * where disk1 and disk2 are disk names as specified in FE configuration
  * file config.json. All projects from disk1 will be moved to disk2 and
  * user accounts will be upated accordingly.
+ *    Note that this operation will break links between shared projects,
+ * therefore, the will need to be restored using js-utils/reshare.js.
  *
  */
 
 //  load system modules
 const prompt = require('prompt');
+const fs     = require('fs-extra');
+const path   = require('path');
 
 //  load application modules
 const conf   = require('../js-server/server.configuration');
 const ud     = require('../js-common/common.data_user');
 const utils  = require('../js-server//server.utils');
-const user   = require('../../js-server/server.fe.user');
+const user   = require('../js-server/server.fe.user');
 const prj    = require('../js-server//server.fe.projects');
 
 //  prepare log
@@ -54,39 +58,47 @@ function move_disk ( disk1,disk2 )  {
   // loop over all user records
   fs.readdirSync(udir_path).forEach(function(file,index){
     if (file.endsWith(user.__userDataExt))  {
+    console.log ( ' >>> ' + file )
 
       let uDataFPath = path.join    ( udir_path,file );
       let uData      = utils.readObject ( uDataFPath );  // read the record
 
-      if (uData && (ud.volume==disk1))  {  // check if projects are placed on "disk1"
+      if (uData && (uData.volume==disk1))  {  // check if projects are placed on "disk1"
         
         ud.checkUserData ( uData );  // add missing items in old records
         
         let old_path = prj.getUserProjectsDirPath ( uData );
+        let old_vdir = fe_config.getVolumeDir     ( uData );
+
         uData.volume = disk2;  // change location to "disk2"
+
         let new_path = prj.getUserProjectsDirPath ( uData );
+        let new_vdir = fe_config.getVolumeDir     ( uData );
 
-        let stat_old = utils.fileExists ( old_path );
-        let stat_new = utils.fileExists ( new_path );
-
-        if ((!stat_old) || (!stat_old.isDirectory()))  {
-          log.error ( 6,'project directory does not exist for user "' + uData.login +
+        if (!utils.dirExists(old_vdir))  {
+          log.error ( 6,'volume "' + disk1 + 
+                        '" does not exists -- operation skipped; please investigate!' );
+        } else if (!utils.dirExists(new_vdir))  {
+          log.error ( 7,'volume "' + disk2 + 
+                        '" does not exists -- operation skipped; please investigate!' );
+        } else if (!utils.dirExists(old_path))  {
+          log.error ( 8,'project directory does not exist for user "' + uData.login +
                         '" -- operation skipped; please investigate!' );
-        } else if (stat_new)  {
-          log.error ( 7,'project directory already exists for user "' + uData.login +
+        } else if (utils.fileExists(new_path))  {
+          log.error ( 9,'project directory already exists for user "' + uData.login +
                         '" in new destination -- operation skipped; please investigate!' );
         } else if (old_path==new_path)  {
-          log.warning ( 8,'source and destination project directories coincide for user "' + 
+          log.warning ( 10,'source and destination project directories coincide for user "' + 
                           uData.login + '" -- only disk name will be updated' );
           utils.writeObject ( uDataFPath,uData );  // commit
-        } else if (stat_old.dev===stat_new.dev)  {
+        } else if (utils.fileExists(old_vdir).dev===utils.fileExists(new_vdir).dev)  {
           // same file system, just move the directory
           if (utils.moveDir(old_path,new_path,false))  { // sync version, no overwrite
             utils.writeObject ( uDataFPath,uData );  // commit
             log.standard ( 5,'User ' + uData.login + ' moved from disk ' + disk1 +
                              ' to ' + disk2 )
           } else  {
-            log.error ( 9,'failed to move directory "' + old_path +
+            log.error ( 11,'failed to move directory "' + old_path +
                           '" to "' + new_path + '" possible data loss, investigate!' );
           }
         } else if (utils.copyDirSync(old_path,new_path))  {
@@ -95,7 +107,7 @@ function move_disk ( disk1,disk2 )  {
           log.standard ( 6,'User ' + uData.login + ' moved from disk ' + disk1 +
                            ' to ' + disk2 )
         } else  {
-          log.error ( 10,'failed to copy directory "' + old_path +
+          log.error ( 12,'failed to copy directory "' + old_path +
                         '" to "' + new_path + '" perform recovery, investigate!' );
           utils.removePath ( new_path );
         }
@@ -113,7 +125,8 @@ function confirm_action ( disk1,disk2 )  {
   console.log ( ' \n' +
     '---------------------------------------------------------------------\n' +
     'This routine must be used ONLY when jsCoFE (CCP4 Cloud) is taken down\n' +
-    'or else user data may be lost.\n' +
+    'and no jobs are running or pending in the queue, or else user data\n'    +
+    'may be lost.\n' +
     '---------------------------------------------------------------------\n'
   );
 
@@ -124,7 +137,8 @@ function confirm_action ( disk1,disk2 )  {
   const properties = [
     {
       name     : 'confirm',
-      message  : 'Is jsCoFE (CCP4 Cloud) down now (Yes/No)?',
+      message  : 'Are all jsCoFE servers taken down and no jobs are running or\n' +
+                 'pending in the queue (Yes/No)?',
       validator: /^(?:Yes\b|No\b|Y\b|N\b|yes\b|no\b|YES\b|NO\b|y\b|n\b)/,
       warning  : 'Yes or No please'
     }
@@ -136,10 +150,10 @@ function confirm_action ( disk1,disk2 )  {
       return 1;
     } else  {
       if (result.confirm.toUpperCase().startsWith('Y'))  {
-        console.log ( 'You have been asked, you said YES\n' );
-        move_disk ( disk1,disk2 );
+        console.log ( '\nYou were asked, you said YES\n' );
+        move_disk   ( disk1,disk2 );
       } else
-        log.standard ( 7,'Good bye.' );
+        console.log ( '\nGood bye.\n' );
       return 0;
     }
   });
@@ -156,12 +170,15 @@ if (process.argv.length!=5)  {
     'where disk1 and disk2 are disk names as specified in FE configuration\n' +
     'file config.json. All projects from disk1 will be moved to disk2 and\n'  +
     'user accounts will be upated accordingly.\n\n' +
-    'Note: use this utility ONLY when jsCoFE is taken down for maintenance.\n'
+    'Note: use this utility ONLY when jsCoFE is taken down for maintenance\n' +
+    'and no jobs are running or pending in the queue.\n'
   );
   process.exit();
 }
 
 conf.set_python_check ( false );
+
+console.log ( '\n Reading configuration file\n' );
 
 var cfgfpath = process.argv[4];
 var msg = conf.readConfiguration ( cfgfpath,'FE' );
