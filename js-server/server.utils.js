@@ -282,7 +282,7 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 }
 
 
-function copyDirSync ( source,destination )  {
+function copyDirSync ( source,destination,copyLinks )  {
 
   // Check if the source exists and is a directory
   if (!fs.existsSync(source) || !fs.statSync(source).isDirectory()) {
@@ -298,15 +298,35 @@ function copyDirSync ( source,destination )  {
   const items = fs.readdirSync(source);
 
   items.forEach(item => {
-    const sourceItem = path.join(source, item);
-    const destinationItem = path.join(destination, item);
-    const stat = fs.statSync(sourceItem);
-    // If the item is a directory, recursively copy it
-    if (stat.isDirectory()) {
-      copyDirSync(sourceItem, destinationItem);
-    } else {
+    const sourceItem      = path.join ( source,      item );
+    const destinationItem = path.join ( destination, item );
+    const stat            = fs.statSync ( sourceItem );
+    if (stat.isSymbolicLink() && copyLinks)  {
+      let fpath = fs.readlinkSync ( sourceItem );
+      let fstat = fs.statSync ( fpath );
+      if (fstat && (!fstat.isSymbolicLink()))  {
+        if (copyLinks=='copy')  {
+          fs.symlinkSync ( fpath, destinationItem );
+        } else if (copyLinks=='dereference')  {
+          if (fstat.isDirectory())
+            copyDirSync ( fpath, destinationItem,copyLinks );
+          else
+            fs.copyFileSync ( fpath, destinationItem );
+        }
+      }
+    } else if (stat.isDirectory())  {
+      // If the item is a directory, recursively copy it
+      copyDirSync ( sourceItem, destinationItem,copyLinks );
+    } else if (stat.isSymbolicLink() && copyLinks)  {
+      let fpath = fs.readlinkSync ( sourceItem );
+      fs.copyFileSync ( fpath, curPath );
+      if (copyLinks=='copy')  {
+      } else if (copyLinks=='dereference')  {
+        fs.copyFileSync ( sourceItem, fpath );
+      }
+    } else  {
       // If the item is a file, copy it
-      fs.copyFileSync(sourceItem, destinationItem);
+      fs.copyFileSync ( sourceItem, destinationItem );
     }
 
   });
@@ -535,7 +555,7 @@ function removeSymLinks ( dir_path )  {
         removeSymLinks ( curPath );
       } else if (curstat.isSymbolicLink())
         try {
-          let fpath = fs.readlinkSync( curPath );
+          let fpath = fs.readlinkSync ( curPath );
           fs.unlinkSync ( curPath );
           fs.copyFileSync ( fpath, curPath );
         } catch (e)  {
