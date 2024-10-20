@@ -408,7 +408,10 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
 function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )  {
 
-let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
+// let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
+
+  let msg = '\n\n ********************************************************\n\n' +
+            '  Job Driver Failure\n\n' + 'Failure code: ' + code;
 
   if (stdout)
     msg += '<p>Catched stdout:<pre>' + stdout + '</pre>';
@@ -422,7 +425,9 @@ let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
          'message <b>together with</b> input data <b>and task description</b> ' +
          'to ' + conf.getEmailerConfig().maintainerEmail;
 
-  utils.writeJobReportMessage ( jobDir,msg,false );
+  utils.appendString ( path.join(jobDir,'_stderr.log'),msg );
+
+  // utils.writeJobReportMessage ( jobDir,msg,false );
 
 }
 
