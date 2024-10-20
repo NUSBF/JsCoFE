@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.05.24   <--  Date of Last Modification.
+#    20.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,11 +35,12 @@ import gemmi
 
 #  application imports
 from . import basic
-from   pycofe.varut   import  signal
-try:
-    from pycofe.varut import messagebox
-except:
-    messagebox = None
+
+# from   pycofe.varut   import  signal
+# try:
+#     from pycofe.varut import messagebox
+# except:
+#     messagebox = None
 
 
 # ============================================================================
@@ -246,17 +247,19 @@ class CootCE(basic.TaskDriver):
         # ============================================================================
         # close execution logs and quit
 
-        if rc.msg == "":
-            self.success ( have_results )
-        else:
-            self.file_stdout.close()
-            self.file_stderr.close()
-            if messagebox:
-                messagebox.displayMessage ( "Failed to launch",
-                  "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
-                  "<p>This may indicate a problem with software setup." )
+        self.success ( have_results )
 
-            raise signal.JobFailure ( rc.msg )
+        # if rc.msg == "":
+        #     self.success ( have_results )
+        # else:
+        #     self.file_stdout.close()
+        #     self.file_stderr.close()
+        #     if messagebox:
+        #         messagebox.displayMessage ( "Failed to launch",
+        #           "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
+        #           "<p>This may indicate a problem with software setup." )
+
+        #     raise signal.JobFailure ( rc.msg )
 
 # ============================================================================
 

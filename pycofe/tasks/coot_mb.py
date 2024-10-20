@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.05.24   <--  Date of Last Modification.
+#    20.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,18 +30,17 @@ import os
 import sys
 import shutil
 
-import gemmi
-
 #  application imports
 from . import coot_ce
-from   pycofe.varut   import  signal
 from   pycofe.proc    import  covlinks, concorr
-try:
-    if sys.platform.startswith("win"):
-        os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
-    from pycofe.varut import messagebox
-except:
-    messagebox = None
+
+# from   pycofe.varut   import  signal
+# try:
+#     if sys.platform.startswith("win"):
+#         os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
+#     from pycofe.varut import messagebox
+# except:
+#     messagebox = None
 
 # ============================================================================
 # Make Coot driver
@@ -531,19 +530,23 @@ class Coot(coot_ce.CootCE):
             "summary_line" : summary_line
         }
 
-        if rc.msg == "":
-            if not have_results and hasattr(self.task,"hot_launch") and self.task.hot_launch:
-                self.task.task_chain = ["delete_job"]
-            self.success ( have_results )
-        else:
-            self.file_stdout.close()
-            self.file_stderr.close()
-            if messagebox:
-                messagebox.displayMessage ( "Failed to launch",
-                  "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
-                  "<p>This may indicate a problem with software setup." )
+        if (rc.msg == "") and (not have_results) and hasattr(self.task,"hot_launch") and self.task.hot_launch:
+            self.task.task_chain = ["delete_job"]
+        self.success ( have_results )
 
-            raise signal.JobFailure ( rc.msg )
+        # if rc.msg == "":
+        #     if not have_results and hasattr(self.task,"hot_launch") and self.task.hot_launch:
+        #         self.task.task_chain = ["delete_job"]
+        #     self.success ( have_results )
+        # else:
+        #     self.file_stdout.close()
+        #     self.file_stderr.close()
+        #     if messagebox:
+        #         messagebox.displayMessage ( "Failed to launch",
+        #           "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
+        #           "<p>This may indicate a problem with software setup." )
+
+        #     raise signal.JobFailure ( rc.msg )
 
         return
 

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    10.08.23   <--  Date of Last Modification.
+#    20.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  APPLICATION CALL ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -34,17 +34,18 @@ class comrc():
         self.utime = 0
         self.stime = 0
         self.umem  = 0
+        self.returncode = "0"
         if retcode:
-            returncode = retcode[1]
+            self.returncode = retcode[1]
             if len(retcode)>2:
                 self.utime = retcode[2].ru_utime
                 self.stime = retcode[2].ru_stime
                 self.umem  = retcode[2].ru_maxrss/104448.0
             elif utime:
                 self.utime = utime
-            if returncode:
-                self.msg = "Error in command.call\n"
-                self.msg += "Return code: " + str(returncode) + "\n"
+            if self.returncode:
+                self.msg  = "Error in command.call\n"
+                self.msg += "Return code: " + str(self.returncode) + "\n"
         return
 
 sys_time  = 0
