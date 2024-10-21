@@ -110,7 +110,7 @@ let version = 0;
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-// TaskCootMB.prototype.cleanJobDir = function ( keywords )  {}
+TaskCootMB.prototype.cleanJobDir = function ( keywords )  {}
 
 function CootMBHotButton()  {
   return {
