@@ -444,9 +444,9 @@ class Coot(coot_ce.CootCE):
             #     shutil.copy2 ( fname,coot_pdb )
             #     coot_xyz = coot_pdb
 
-            coot_pdb   = None
+            # coot_pdb   = None
             coot_mmcif = self.getMMCIFOFName()
-            coot_xyz   = coot_mmcif
+            # coot_xyz   = coot_mmcif
             if fext.upper()!=".PDB":
                 # coot_mmcif = self.getMMCIFOFName()
                 shutil.copy2 ( fname,coot_mmcif )
@@ -458,20 +458,23 @@ class Coot(coot_ce.CootCE):
             shutil.copy2 ( mtzfile,coot_mtz )
 
             try:
-                concorr.conn_correct(xyz_data_list[0], coot_xyz, '_tmp_coot.cif')
-                os.rename('_tmp_coot.cif', coot_xyz)
+                # concorr.conn_correct(xyz_data_list[0], coot_xyz, '_tmp_coot.cif')
+                # os.rename('_tmp_coot.cif', coot_xyz)
+                concorr.conn_correct(xyz_data_list[0], coot_mmcif, '_tmp_coot.cif')
+                os.rename('_tmp_coot.cif', coot_mmcif )
             except:
                 self.file_stderr.write("# concorr.conn_correct failed")
 
             try:
                 mode = 1
-                cvl = covlinks.CovLinks(libPath, coot_xyz)
+                # cvl = covlinks.CovLinks(libPath, coot_xyz)
+                cvl = covlinks.CovLinks(libPath, coot_mmcif )
                 msg_llist = cvl.suggest_changes()
                 # combined mode would be better:
                 # - the same chain: 3
                 # - different chains: 2
-                cvl.update(mode = mode,
-                    xyzout = coot_xyz, stdo = self.file_stdout)
+                # cvl.update(mode = mode, xyzout = coot_xyz, stdo = self.file_stdout)
+                cvl.update(mode = mode, xyzout = coot_mmcif, stdo = self.file_stdout)
                 self.file_stdout.write(str(msg_llist))
                 lines = []
                 vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
@@ -516,7 +519,7 @@ class Coot(coot_ce.CootCE):
 
             struct = self.registerStructure ( 
                             coot_mmcif,
-                            coot_pdb,
+                            None, # coot_pdb,
                             None,
                             coot_mtz,
                             libPath = libPath,
