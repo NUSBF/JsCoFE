@@ -33,6 +33,7 @@ import shutil
 #  application imports
 from . import coot_ce
 from   pycofe.proc    import  covlinks, concorr
+from   pycofe.varut   import  messagebox, selectfile
 
 # from   pycofe.varut   import  signal
 # try:
@@ -122,6 +123,18 @@ class Coot(coot_ce.CootCE):
 
         coot_backup_dir = self.makeBackupDirectory()
 
+        recover_fpath = None
+        if hasattr(self.task,"recover_from") and self.task.recover_from>=0:
+            self.stdoutln ( " >>>>> recover_from = " + str(self.task.recover_from) )
+            # messagebox.displayMessage ( "Recover Coot session","Choose files" )
+            # selectfile.select ( "title",["All files (*)"],startDir=".",saveSettings=False )
+            coot_recover_dir = coot_backup_dir.replace (
+                self.task.project + "_" + str(self.task.id),
+                self.task.project + "_" + str(self.task.recover_from),
+            )
+            if os.path.exists(coot_recover_dir):
+                recover_fpath = self.getLastBackupFile ( coot_recover_dir )
+
         # fetch input data
         revision  = self.makeClass ( self.input_data.data.revision[0] )
         istruct   = self.makeClass ( self.input_data.data.istruct [0] )
@@ -155,6 +168,9 @@ class Coot(coot_ce.CootCE):
         args = []
         xyz_data_list = []
         xyzpath = istruct.getXYZFilePath ( self.inputDir() )
+        if recover_fpath:
+            xyzpath = recover_fpath
+
         # if not xyzpath:
         #     xyzpath = istruct.getPDBFilePath ( self.inputDir() )    
         if not xyzpath:

@@ -72,7 +72,6 @@ class CootCE(basic.TaskDriver):
                         shutil.rmtree ( fp, ignore_errors=True, onerror=None )
 
         #  make new backup directory
-
         coot_backup_dir = os.path.join ( coot_backups_dir,
                                   self.task.project + "_" + str(self.task.id) )
         if not os.path.exists(coot_backup_dir):
@@ -86,18 +85,19 @@ class CootCE(basic.TaskDriver):
 
     def getLastBackupFile ( self,backup_dir ):
         files = os.listdir ( backup_dir )
-        mtime = 0
+        # mtime = 0
         fpath = None
         fname = None
         for f in files:
             if f.lower().endswith(".pdb.gz") or f.lower().endswith(".cif.gz"):
                 fp = os.path.join ( backup_dir,f )
-                mt = os.path.getmtime(fp)
-                if mt > mtime:
-                    mtime = mt
+                # mt = os.path.getmtime(fp)
+                # if mt > mtime:
+                #     # mtime = mt
+                if (not fpath) or (fp>fpath):
                     fpath = fp
         if fpath:
-            fname = "__backup_restore.pdb"
+            fname = os.path.basename(fpath)[:-3].replace(":","-")
             with open(fname,'wb') as f_out, gzip.open(fpath,'rb') as f_in:
                 shutil.copyfileobj ( f_in,f_out )
             self.putMessage (
