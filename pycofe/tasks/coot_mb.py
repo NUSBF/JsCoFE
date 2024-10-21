@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.10.24   <--  Date of Last Modification.
+#    21.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,6 +29,8 @@
 import os
 import sys
 import shutil
+
+import gemmi
 
 #  application imports
 from . import coot_ce
@@ -122,18 +124,7 @@ class Coot(coot_ce.CootCE):
         #self.flush
 
         coot_backup_dir = self.makeBackupDirectory()
-
-        recover_fpath = None
-        if hasattr(self.task,"recover_from") and self.task.recover_from>=0:
-            self.stdoutln ( " >>>>> recover_from = " + str(self.task.recover_from) )
-            # messagebox.displayMessage ( "Recover Coot session","Choose files" )
-            # selectfile.select ( "title",["All files (*)"],startDir=".",saveSettings=False )
-            coot_recover_dir = coot_backup_dir.replace (
-                self.task.project + "_" + str(self.task.id),
-                self.task.project + "_" + str(self.task.recover_from),
-            )
-            if os.path.exists(coot_recover_dir):
-                recover_fpath = self.getLastBackupFile ( coot_recover_dir )
+        recover_fpath   = self.fetchRecoveryFile  ( coot_backup_dir )
 
         # fetch input data
         revision  = self.makeClass ( self.input_data.data.revision[0] )
@@ -170,6 +161,12 @@ class Coot(coot_ce.CootCE):
         xyzpath = istruct.getXYZFilePath ( self.inputDir() )
         if recover_fpath:
             xyzpath = recover_fpath
+            self.putMessage (
+                "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                "Input structure was restored from last backup in job " +\
+                str(self.task.recover_from) + ".</b></span><br>&nbsp;" 
+            )
+            self.flush()
 
         # if not xyzpath:
         #     xyzpath = istruct.getPDBFilePath ( self.inputDir() )    
@@ -389,23 +386,53 @@ class Coot(coot_ce.CootCE):
         if not fname:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             restored = fname is not None
+            self.stdoutln ( " >>>>>0 RESTORED" )
 
         if fname:
+            
+            # check format because Coot is buggy!
+            # fname1  = fname
+            # fn,fext = os.path.splitext ( fname )
+            # try:
+            #     cif = gemmi.cif.read ( fname )
+            #     if fext.lower()==".pdb":
+            #         fname1 = fn + ".cif"
+            #     self.stdoutln ( " >>>>>1 " + fname1 )
+            # except:
+            #     #  assume PDB
+            #     if fext.lower()!=".pdb":
+            #         fname1 = fn + ".pdb"
+            #     self.stdoutln ( " >>>>>2 " + fname1 )
+            # if fname1!=fname:
+            #     os.rename ( fname,fname1 )
+            #     fname = fname1
+
+            self.stdoutln ( " >>>>>3 " + fname )
 
             if newLigCode:
                 self.replace_ligand_code ( fname,"LIG",newLigCode,rename=False )
 
-            f = istruct.getMMCIFFileName()
-            if not f:
-                f = istruct.getPDBFileName()
-            if not f:
-                f = istruct.getSubFileName()
-            fnprefix = f[:f.find("_")]
+            # f = istruct.getMMCIFFileName()
+            # if not f:
+            #     f = istruct.getPDBFileName()
+            # if not f:
+            #     f = istruct.getSubFileName()
+            # fnprefix = f[:f.find("_")]
 
-            if fname.startswith(fnprefix):
-                fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
-            else:
-                fn,fext = os.path.splitext ( f )
+            # self.stdoutln ( " >>>>>4 " + f )
+            # self.stdoutln ( " >>>>>5 " + fnprefix )
+
+            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+
+            # if fname.startswith(fnprefix):
+            #     fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            # else:
+            #     fn,fext = os.path.splitext ( f )
+
+            self.stdoutln ( " >>>>>6 " + fn + "  " + fext )
+
+            shutil.copy2 ( fname,"inspect.txt" )
+
 
             # coot_xyz = self.getOFName ( fext )
             coot_xyz   = None
@@ -479,15 +506,20 @@ class Coot(coot_ce.CootCE):
             if library:
                 libPath = library.getLibFilePath(self.outputDir())
 
-            struct = self.registerStructure ( 
-                            coot_mmcif,
-                            coot_pdb,
-                            None,
-                            coot_mtz,
-                            libPath = libPath,
-                            leadKey = lead_key,
-                            refiner = istruct.refiner 
-                        )
+            self.stdoutln ( " >>>>>7 " + str(coot_mmcif) )
+            self.stdoutln ( " >>>>>8 " + str(coot_pdb) )
+
+
+            # struct = self.registerStructure ( 
+            #                 coot_mmcif,
+            #                 coot_pdb,
+            #                 None,
+            #                 coot_mtz,
+            #                 libPath = libPath,
+            #                 leadKey = lead_key,
+            #                 refiner = istruct.refiner 
+            #             )
+            struct = None
 
             if struct and library:
                 assert libPath == struct.getLibFilePath(self.outputDir())
