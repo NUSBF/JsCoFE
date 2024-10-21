@@ -35,7 +35,7 @@ import gemmi
 #  application imports
 from . import coot_ce
 from   pycofe.proc    import  covlinks, concorr
-from   pycofe.varut   import  messagebox, selectfile
+from   pycofe.varut   import  mmcif_utils # messagebox, selectfile
 
 # from   pycofe.varut   import  signal
 # try:
@@ -386,10 +386,14 @@ class Coot(coot_ce.CootCE):
         if not fname:  # try to get the latest backup file
             fname = self.getLastBackupFile ( coot_backup_dir )
             restored = fname is not None
-            self.stdoutln ( " >>>>>0 RESTORED" )
 
         if fname:
-            
+
+            # convert to CIF if necessary            
+            # fn,fext = os.path.splitext ( fname )
+            # if fext.lower()==".pdb":
+            #     fname = mmcif_utils.convert_to_mmcif ( fname )
+
             # check format because Coot is buggy!
             # fname1  = fname
             # fn,fext = os.path.splitext ( fname )
@@ -407,8 +411,6 @@ class Coot(coot_ce.CootCE):
             #     os.rename ( fname,fname1 )
             #     fname = fname1
 
-            self.stdoutln ( " >>>>>3 " + fname )
-
             if newLigCode:
                 self.replace_ligand_code ( fname,"LIG",newLigCode,rename=False )
 
@@ -419,33 +421,39 @@ class Coot(coot_ce.CootCE):
             #     f = istruct.getSubFileName()
             # fnprefix = f[:f.find("_")]
 
-            # self.stdoutln ( " >>>>>4 " + f )
-            # self.stdoutln ( " >>>>>5 " + fnprefix )
-
-            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
-
             # if fname.startswith(fnprefix):
             #     fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             # else:
             #     fn,fext = os.path.splitext ( f )
 
-            self.stdoutln ( " >>>>>6 " + fn + "  " + fext )
+            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
 
-            shutil.copy2 ( fname,"inspect.txt" )
+            # shutil.copy2 ( fname,"inspect.txt" )
 
 
             # coot_xyz = self.getOFName ( fext )
-            coot_xyz   = None
+            # coot_xyz   = None
+            # coot_pdb   = None
+            # coot_mmcif = None
+            # if fext.upper()!=".PDB":
+            #     coot_mmcif = self.getMMCIFOFName()
+            #     shutil.copy2 ( fname,coot_mmcif )
+            #     coot_xyz   = coot_mmcif
+            # else:
+            #     coot_pdb = self.getXYZOFName() #  .pdb
+            #     shutil.copy2 ( fname,coot_pdb )
+            #     coot_xyz = coot_pdb
+
             coot_pdb   = None
-            coot_mmcif = None
+            coot_mmcif = self.getMMCIFOFName()
+            coot_xyz   = coot_mmcif
             if fext.upper()!=".PDB":
-                coot_mmcif = self.getMMCIFOFName()
+                # coot_mmcif = self.getMMCIFOFName()
                 shutil.copy2 ( fname,coot_mmcif )
-                coot_xyz   = coot_mmcif
             else:
-                coot_pdb = self.getXYZOFName() #  .pdb
-                shutil.copy2 ( fname,coot_pdb )
-                coot_xyz = coot_pdb
+                # coot_pdb = self.getXYZOFName() #  .pdb
+                shutil.copy2 ( mmcif_utils.convert_to_mmcif(fname),coot_mmcif )
+
             coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( mtzfile,coot_mtz )
 
@@ -506,20 +514,15 @@ class Coot(coot_ce.CootCE):
             if library:
                 libPath = library.getLibFilePath(self.outputDir())
 
-            self.stdoutln ( " >>>>>7 " + str(coot_mmcif) )
-            self.stdoutln ( " >>>>>8 " + str(coot_pdb) )
-
-
-            # struct = self.registerStructure ( 
-            #                 coot_mmcif,
-            #                 coot_pdb,
-            #                 None,
-            #                 coot_mtz,
-            #                 libPath = libPath,
-            #                 leadKey = lead_key,
-            #                 refiner = istruct.refiner 
-            #             )
-            struct = None
+            struct = self.registerStructure ( 
+                            coot_mmcif,
+                            coot_pdb,
+                            None,
+                            coot_mtz,
+                            libPath = libPath,
+                            leadKey = lead_key,
+                            refiner = istruct.refiner 
+                        )
 
             if struct and library:
                 assert libPath == struct.getLibFilePath(self.outputDir())
