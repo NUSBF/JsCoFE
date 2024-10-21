@@ -22,6 +22,7 @@
 
 import sys
 import os
+os.environ['PATH'] = os.environ['PATH'].replace('WinCoot', '___Coot')
 from   PyQt5 import QtWidgets
 from   PyQt5 import QtCore
 
