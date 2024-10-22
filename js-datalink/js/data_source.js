@@ -16,9 +16,10 @@ class dataSource {
   catalog_size = 0;
   catalog_status = null;
 
-  constructor(data_dir, jobs) {
+  constructor(data_dir, catalog_dir, jobs) {
     this.data_dir = data_dir;
     this.jobs = jobs;
+    this.catalog_file = path.join(catalog_dir, this.name + '.json');;
   }
 
   getEntry(id) {
@@ -32,49 +33,60 @@ class dataSource {
     log.info(`${this.name} - Added catalog: ${this.catalog_size} entries`);
   }
 
-  saveCatalog(catalog_file, catalog) {
-    log.info(`${this.name} - Saving catalog to ${catalog_file}`);
+  saveCatalog(catalog) {
+    log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
     this.addCatalog(catalog);
     let json = JSON.stringify(catalog);
     try {
-      fs.mkdirSync(path.dirname(catalog_file), { recursive: true });
+      fs.mkdirSync(path.dirname(this.catalog_file), { recursive: true });
     } catch (err) {
       log.info(`${this.name} - Unable to create ${tools.getCatalogDir()} - ${err}`);
     }
-    let file = fs.writeFile(catalog_file, json, (err) => {
+    let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {
-        log.error(`${this.name} - Unable to save ${catalog_file} - ${err.message}`);
-      } else {
-        this.catalog_status = status.completed;
+        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err.message}`);
       }
     });
   }
 
-  async loadCatalog(catalog_file) {
-    if (! fs.existsSync(catalog_file)) {
-      log.info(`${this.name} - Fetching Catalog`);
-      const catalog = await this.fetchCatalog();
-      if (catalog) {
-        this.saveCatalog(catalog_file, catalog);
-      } else {
-        log.error(`loadCatalog - Unable to load catalog for ${this.name}`);
-      }
+  loadCatalog() {
+    if (! fs.existsSync(this.catalog_file)) {
+      this.updateCatalog(this.catalog_file);
       return;
     }
 
-    fs.readFile(catalog_file, (err, data) => {
+    fs.readFile(this.catalog_file, (err, data) => {
       if (err) {
-        log.error(`${this.name} - Unable to load ${catalog_file} - ${err.message}`);
+        log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
       } else {
         try {
-          log.info(`${this.name} - Loading catalog ${catalog_file}`);
+          log.info(`${this.name} - Loading catalog ${this.catalog_file}`);
           const catalog = JSON.parse(data);
           this.addCatalog(catalog);
         } catch (err) {
-          log.error(`${this.name} - Unable to parse ${catalog_file} - ${err.message}`);
+          log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
         }
       }
     });
+  }
+
+  async updateCatalog() {
+    if (this.catalog_status === status.inProgress) {
+      log.info(`${this.name} - Fetch already in progress`);
+      return;
+    }
+    this.catalog_status = status.inProgress
+    log.info(`${this.name} - Fetching Catalog`);
+    const catalog = await this.fetchCatalog();
+    if (catalog) {
+      this.saveCatalog(catalog);
+    } else {
+      // if there is no current catalog and the fetch mark the current catalog as failed
+      if (this.catalog_size == 0) {
+        this.catalog_status = status.failed;
+      }
+      log.error(`${this.name} - Error fetching catalog`);
+    }
   }
 
   setErrorCallback(callback) {
@@ -123,14 +135,46 @@ class dataSource {
     }
   }
 
-  async fetchDataHttp(url, entry) {
-    // get content-size from http headers
-    let headers = await tools.httpGetHeaders(url);
-    if (headers['content-length']) {
-      entry.size_s = parseInt(headers['content-length'], 10);
+  async fetchDataHttp(urls, entry) {
+    if (typeof urls == 'string') {
+      urls = [ { 'url': urls, 'file': path.basename(urls) } ];
     }
 
-    let file = path.basename(url);
+    // clear existing entry size for when we are resuming.
+    entry.size = 0
+
+    let update_size = true
+    // if the data source has a size set, don't update the size in _fetchDataHttp
+    if (entry.size_s > 0) {
+      update_size = false;
+    }
+
+    for (const url of urls) {
+      // return on failure or abort/remove
+      if (entry.status === status.failed) {
+        return;
+      }
+      try {
+        await this._fetchDataHttp(url.url, url.file, entry, update_size);
+      } catch (err) {
+        this.dataError(entry, `${this.name}/fetchDataHttp - ${err}`);
+        return;
+      }
+    }
+    this.dataComplete(entry)
+  }
+
+  async _fetchDataHttp(url, file, entry, update_size = true) {
+    // get content-size from http headers
+    let headers = await tools.httpGetHeaders(url);
+    let remote_size = 0;
+    if (headers['content-length']) {
+      remote_size = parseInt(headers['content-length'], 10);
+      if (update_size) {
+        entry.size_s += remote_size;
+      }
+    }
+
     let data_dest = path.join(this.data_dir, entry.dir);
     let dest_file = path.join(data_dest, file);
 
@@ -138,19 +182,20 @@ class dataSource {
     let file_size = 0;
 
     try {
+      // if the file already exists and is not complete, try and continue
       if (fs.existsSync(dest_file)) {
         file_size = fs.statSync(dest_file).size;
-        entry.size = file_size;
-        if (file_size < entry.size_s && headers['accept-ranges'] === 'bytes') {
+        entry.size += file_size;
+
+        if (file_size < remote_size && headers['accept-ranges'] === 'bytes') {
           options.headers = { 'range': `bytes=${file_size}-${entry.size_s}`}
         }
       }
     } catch (err) {
-      this.dataError(entry, `${this.name}/fetchDataHttp - ${err.message}`);
-      return;
+      throw err;
     }
 
-    if (file_size < entry.size_s) {
+    if (file_size < remote_size) {
       try {
         await tools.httpRequest(url, options, dest_file,
         (controller) => {
@@ -160,36 +205,32 @@ class dataSource {
           entry.size += data.length;
         });
       } catch (err) {
-        this.dataError(entry, `${this.name}/fetchDataHttp - ${err}`);
-        return;
+        throw err;
       };
     }
 
-    // unpack the archive
-    try {
-      const msg = `${this.name}/fetchDataHttp - Unpacking ${file} to ${entry.dir}`
-      log.info(msg);
-      await tools.unpack(dest_file, data_dest, null, null, (controller) => {
-        this.addJob(entry, controller, msg);
-      });
-    } catch (err) {
-      this.dataError(entry, err);
-      return;
+    const {cmd, args} = tools.getUnpackCmd(dest_file, data_dest);
+    // if the file is an archive, unpack it
+    if (cmd) {
+      try {
+        const msg = `${this.name}/fetchDataHttp - Unpacking ${file} to ${entry.dir}`
+        log.info(msg);
+        await tools.unpack(dest_file, data_dest, null, null, (controller) => {
+          this.addJob(entry, controller, msg);
+        });
+
+        await this.unpackDirectory(entry, data_dest);
+      } catch (err) {
+        throw err;
+      }
     }
 
-    let ret = await this.unpackDirectory(entry, data_dest);
-
-    if (! ret) {
-      this.dataError(entry);
-      return;
-    }
-    this.dataComplete(entry);
   }
 
   async unpackDirectory(entry, dest_dir) {
     // go through the contents of the archive and unpack any additional files
     // this is required as some data source images are gzipped/bzipped individually
-    return await tools.fileCallback(dest_dir, false, async (file) => {
+    return await tools.fileCallback(dest_dir, async (file) => {
       const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
       if (cmd) {
         try {
@@ -199,15 +240,16 @@ class dataSource {
             this.addJob(entry, controller, msg);
           });
         } catch (err) {
-          log.error(`unpackDirectory - ${err}`);
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
           if (err.code == 'ABORT_ERR') {
-            this.dataError(entry, `unpackDirectory - The operation was aborted`);
-            return 0;
+            throw err;
+          } else {
+            // log the error and continue
+            log.error(`unpackDirectory - ${err}`);
           }
         }
       }
-      return 1;
+      return true;
     });
   }
 
@@ -255,15 +297,10 @@ class dataSource {
         (controller) => {
           this.addJob(entry, controller, `Fetching (rsync) ${url}/${entry.id} to ${entry.dir}`);
         });
+
+      await this.unpackDirectory(entry, data_dest);
     } catch (err) {
       this.dataError(entry, err);
-      return;
-    }
-
-    let ret = await this.unpackDirectory(entry, data_dest);
-
-    if (! ret) {
-      this.dataError(entry);
       return;
     }
 

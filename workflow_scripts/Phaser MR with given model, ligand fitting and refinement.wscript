@@ -73,7 +73,6 @@ let cnt = cnt + 1
 continue @MOLECULAR_REPLACEMENT[cnt]  while  nfitted0<nfitted and nfitted<nasu and cnt<=nasu
 
 @REBUILD
-    # RUN       Buccaneer
     RUN       ModelCraft
 
 # Make ligand if ligand description was provided

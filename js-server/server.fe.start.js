@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -125,6 +125,7 @@ function start ( callback_func )  {
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
     // server_response.setHeader ( 'Content-Encoding','deflate, compress, gzip' );
+    // server_response.setHeader ( 'Content-Security-Policy',"script-src 'self'" );
 
     try {
 
@@ -189,7 +190,7 @@ function start ( callback_func )  {
 
         case cmd.fe_command.checkAnnouncement :
             let rdata = {
-              message : utils.readString ( path.join('message_templates','announcement.html') ),
+              message : utils.readString ( path.join(feConfig.storage,user.__announcementFile) ),
               tips    : utils.readObject ( path.join('manuals','tips.json') )
             }
             if (rdata.tips)

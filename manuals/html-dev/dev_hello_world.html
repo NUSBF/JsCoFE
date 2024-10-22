@@ -105,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -241,7 +241,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -355,7 +355,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#dev-hello-world--page-root" class="md-nav__link">9. CCP4 Cloud Task Development: Hello World!</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -429,98 +429,98 @@ must follow conventions as described below.</p>
 <p>In CCP4 Cloud, task classes must be named as <code class="docutils literal notranslate"><span class="pre">TaskClassName</span></code> and be placed in
 file named <code class="docutils literal notranslate"><span class="pre">js-common/tasks/common.tasks.classname.js</span></code>. The absolute minimal
 class should be defined as follows:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="w">  </span><span class="cm">/*  ------------------------------------------------------------------------</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>  <span class="cm">/*  ------------------------------------------------------------------------</span>
 <span class="linenos"> 2</span><span class="cm">   *  file js-common/tasks/common.tasks.helloworld.js</span>
 <span class="linenos"> 3</span><span class="cm">   *  ------------------------------------------------------------------------</span>
 <span class="linenos"> 4</span><span class="cm">   */</span>
 <span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="w">  </span><span class="kd">var</span><span class="w"> </span><span class="nx">__template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span><span class="w">   </span><span class="c1">// null __template indicates that the code runs in</span>
-<span class="linenos"> 7</span><span class="w">                           </span><span class="c1">// client browser</span>
+<span class="linenos"> 6</span>  <span class="kd">var</span> <span class="nx">__template</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>   <span class="c1">// null __template indicates that the code runs in</span>
+<span class="linenos"> 7</span>                           <span class="c1">// client browser</span>
 <span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="w">  </span><span class="c1">// otherwise, the code runs on a server, in which case __template references</span>
-<span class="linenos">10</span><span class="w">  </span><span class="c1">// a module with Task Template Class:</span>
+<span class="linenos"> 9</span>  <span class="c1">// otherwise, the code runs on a server, in which case __template references</span>
+<span class="linenos">10</span>  <span class="c1">// a module with Task Template Class:</span>
 <span class="linenos">11</span>
-<span class="linenos">12</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="ow">typeof</span><span class="w"> </span><span class="nx">module</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'undefined'</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="ow">typeof</span><span class="w"> </span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s1">'undefined'</span><span class="p">)</span>
-<span class="linenos">13</span><span class="w">    </span><span class="nx">__template</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">'./common.tasks.template'</span><span class="w"> </span><span class="p">);</span>
+<span class="linenos">12</span>  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">module</span> <span class="o">!==</span> <span class="s1">'undefined'</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">!==</span> <span class="s1">'undefined'</span><span class="p">)</span>
+<span class="linenos">13</span>    <span class="nx">__template</span> <span class="o">=</span> <span class="nx">require</span> <span class="p">(</span> <span class="s1">'./common.tasks.template'</span> <span class="p">);</span>
 <span class="linenos">14</span>
-<span class="linenos">15</span><span class="w">  </span><span class="c1">// ===========================================================================</span>
+<span class="linenos">15</span>  <span class="c1">// ===========================================================================</span>
 <span class="linenos">16</span>
-<span class="linenos">17</span><span class="w">  </span><span class="c1">// 1. Define task constructor</span>
+<span class="linenos">17</span>  <span class="c1">// 1. Define task constructor</span>
 <span class="linenos">18</span>
-<span class="linenos">19</span><span class="w">  </span><span class="kd">function</span><span class="w"> </span><span class="nx">TaskHelloWorld</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w">   </span><span class="c1">// must start with Task...</span>
+<span class="linenos">19</span>  <span class="kd">function</span> <span class="nx">TaskHelloWorld</span><span class="p">()</span>  <span class="p">{</span>   <span class="c1">// must start with Task...</span>
 <span class="linenos">20</span>
-<span class="linenos">21</span><span class="w">    </span><span class="c1">// invoke the template class constructor:</span>
-<span class="linenos">22</span><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">__template</span><span class="p">)</span><span class="w">  </span><span class="nx">__template</span><span class="p">.</span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">call</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="p">);</span>
-<span class="linenos">23</span><span class="w">               </span><span class="k">else</span><span class="w">  </span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">call</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="p">);</span>
+<span class="linenos">21</span>    <span class="c1">// invoke the template class constructor:</span>
+<span class="linenos">22</span>    <span class="k">if</span> <span class="p">(</span><span class="nx">__template</span><span class="p">)</span>  <span class="nx">__template</span><span class="p">.</span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">call</span> <span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
+<span class="linenos">23</span>               <span class="k">else</span>  <span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">call</span> <span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
 <span class="linenos">24</span>
-<span class="linenos">25</span><span class="w">    </span><span class="c1">// define fields important for |jsCoFE| framework</span>
+<span class="linenos">25</span>    <span class="c1">// define fields important for |jsCoFE| framework</span>
 <span class="linenos">26</span>
-<span class="linenos">27</span><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">_type</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s1">'TaskHelloWorld'</span><span class="p">;</span><span class="w">  </span><span class="c1">// must give name of the class</span>
-<span class="linenos">28</span><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">name</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s1">'Hello World!'</span><span class="p">;</span><span class="w">    </span><span class="c1">// default name to be shown in Job Tree</span>
-<span class="linenos">29</span><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">oname</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s1">'*'</span><span class="p">;</span><span class="w">               </span><span class="c1">// default output file name template;</span>
-<span class="linenos">30</span><span class="w">                                      </span><span class="c1">// asterisk means do not use</span>
-<span class="linenos">31</span><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">title</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="s1">'Hello World! First Example'</span><span class="p">;</span><span class="w">         </span><span class="c1">// title for job dialog</span>
-<span class="linenos">32</span><span class="w">    </span><span class="k">this</span><span class="p">.</span><span class="nx">helpURL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'./html/jscofe_task_helloworld.html'</span><span class="p">;</span><span class="w"> </span><span class="c1">// documentation link,</span>
-<span class="linenos">33</span><span class="w">                                          </span><span class="c1">// please follow file name convention</span>
+<span class="linenos">27</span>    <span class="k">this</span><span class="p">.</span><span class="nx">_type</span>   <span class="o">=</span> <span class="s1">'TaskHelloWorld'</span><span class="p">;</span>  <span class="c1">// must give name of the class</span>
+<span class="linenos">28</span>    <span class="k">this</span><span class="p">.</span><span class="nx">name</span>    <span class="o">=</span> <span class="s1">'Hello World!'</span><span class="p">;</span>    <span class="c1">// default name to be shown in Job Tree</span>
+<span class="linenos">29</span>    <span class="k">this</span><span class="p">.</span><span class="nx">oname</span>   <span class="o">=</span> <span class="s1">'*'</span><span class="p">;</span>               <span class="c1">// default output file name template;</span>
+<span class="linenos">30</span>                                      <span class="c1">// asterisk means do not use</span>
+<span class="linenos">31</span>    <span class="k">this</span><span class="p">.</span><span class="nx">title</span>   <span class="o">=</span> <span class="s1">'Hello World! First Example'</span><span class="p">;</span>         <span class="c1">// title for job dialog</span>
+<span class="linenos">32</span>    <span class="k">this</span><span class="p">.</span><span class="nx">helpURL</span> <span class="o">=</span> <span class="s1">'./html/jscofe_task_helloworld.html'</span><span class="p">;</span> <span class="c1">// documentation link,</span>
+<span class="linenos">33</span>                                          <span class="c1">// please follow file name convention</span>
 <span class="linenos">34</span>
-<span class="linenos">35</span><span class="w">  </span><span class="p">}</span>
+<span class="linenos">35</span>  <span class="p">}</span>
 <span class="linenos">36</span>
-<span class="linenos">37</span><span class="w">  </span><span class="c1">// finish constructor definition</span>
+<span class="linenos">37</span>  <span class="c1">// finish constructor definition</span>
 <span class="linenos">38</span>
-<span class="linenos">39</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">__template</span><span class="p">)</span>
-<span class="linenos">40</span><span class="w">        </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">__template</span><span class="p">.</span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">prototype</span><span class="w"> </span><span class="p">);</span>
-<span class="linenos">41</span><span class="w">  </span><span class="k">else</span><span class="w">  </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">prototype</span><span class="w"> </span><span class="p">);</span>
-<span class="linenos">42</span><span class="w">  </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="kr">constructor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">TaskHelloWorld</span><span class="p">;</span>
+<span class="linenos">39</span>  <span class="k">if</span> <span class="p">(</span><span class="nx">__template</span><span class="p">)</span>
+<span class="linenos">40</span>        <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="p">(</span> <span class="nx">__template</span><span class="p">.</span><span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">prototype</span> <span class="p">);</span>
+<span class="linenos">41</span>  <span class="k">else</span>  <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="p">(</span> <span class="nx">TaskTemplate</span><span class="p">.</span><span class="nx">prototype</span> <span class="p">);</span>
+<span class="linenos">42</span>  <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">TaskHelloWorld</span><span class="p">;</span>
 <span class="linenos">43</span>
-<span class="linenos">44</span><span class="w">  </span><span class="c1">// ===========================================================================</span>
+<span class="linenos">44</span>  <span class="c1">// ===========================================================================</span>
 <span class="linenos">45</span>
-<span class="linenos">46</span><span class="w">  </span><span class="c1">// 2. Define task icons. Any graphics formats (*.svg, *.png, *.jpg) may be used,</span>
-<span class="linenos">47</span><span class="w">  </span><span class="c1">//    but please follow file name convention as below. Small 20x20px icon is</span>
-<span class="linenos">48</span><span class="w">  </span><span class="c1">//    used in Job Tree, and the large icon is used in Job Dialog and documentation.</span>
+<span class="linenos">46</span>  <span class="c1">// 2. Define task icons. Any graphics formats (*.svg, *.png, *.jpg) may be used,</span>
+<span class="linenos">47</span>  <span class="c1">//    but please follow file name convention as below. Small 20x20px icon is</span>
+<span class="linenos">48</span>  <span class="c1">//    used in Job Tree, and the large icon is used in Job Dialog and documentation.</span>
 <span class="linenos">49</span>
-<span class="linenos">50</span><span class="w">  </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">icon_small</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w">  </span><span class="p">{</span>
-<span class="linenos">51</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">'./images/task_helloworld_20x20.png'</span><span class="p">;</span>
-<span class="linenos">52</span><span class="w">  </span><span class="p">}</span>
+<span class="linenos">50</span>  <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">icon_small</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span>  <span class="p">{</span>
+<span class="linenos">51</span>    <span class="k">return</span> <span class="s1">'./images/task_helloworld_20x20.png'</span><span class="p">;</span>
+<span class="linenos">52</span>  <span class="p">}</span>
 <span class="linenos">53</span>
-<span class="linenos">54</span><span class="w">  </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">icon_large</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w">  </span><span class="p">{</span>
-<span class="linenos">55</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s1">'./images/task_helloworld.png'</span><span class="p">;</span>
-<span class="linenos">56</span><span class="w">  </span><span class="p">}</span>
+<span class="linenos">54</span>  <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">icon_large</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span>  <span class="p">{</span>
+<span class="linenos">55</span>    <span class="k">return</span> <span class="s1">'./images/task_helloworld.png'</span><span class="p">;</span>
+<span class="linenos">56</span>  <span class="p">}</span>
 <span class="linenos">57</span>
-<span class="linenos">58</span><span class="w">  </span><span class="c1">// 3. Define task version. Whenever task changes (e.g. receives new input</span>
-<span class="linenos">59</span><span class="w">  </span><span class="c1">//    parameters or data), the version number must be advanced. |jsCoFE| framework</span>
-<span class="linenos">60</span><span class="w">  </span><span class="c1">//    forbids cloning jobs with version numbers lower than specified here.</span>
+<span class="linenos">58</span>  <span class="c1">// 3. Define task version. Whenever task changes (e.g. receives new input</span>
+<span class="linenos">59</span>  <span class="c1">//    parameters or data), the version number must be advanced. |jsCoFE| framework</span>
+<span class="linenos">60</span>  <span class="c1">//    forbids cloning jobs with version numbers lower than specified here.</span>
 <span class="linenos">61</span>
-<span class="linenos">62</span><span class="w">  </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">currentVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="linenos">62</span>  <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">currentVersion</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span>  <span class="p">{</span> <span class="k">return</span> <span class="mf">0</span><span class="p">;</span> <span class="p">}</span>
 <span class="linenos">63</span>
-<span class="linenos">64</span><span class="w">  </span><span class="c1">// ===========================================================================</span>
+<span class="linenos">64</span>  <span class="c1">// ===========================================================================</span>
 <span class="linenos">65</span>
-<span class="linenos">66</span><span class="w">  </span><span class="c1">//  4. Add server-side code</span>
+<span class="linenos">66</span>  <span class="c1">//  4. Add server-side code</span>
 <span class="linenos">67</span>
-<span class="linenos">68</span><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">__template</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w">  </span><span class="c1">//  will run only on server side</span>
+<span class="linenos">68</span>  <span class="k">if</span> <span class="p">(</span><span class="nx">__template</span><span class="p">)</span>  <span class="p">{</span>  <span class="c1">//  will run only on server side</span>
 <span class="linenos">69</span>
-<span class="linenos">70</span><span class="w">    </span><span class="c1">// acquire configuration module</span>
-<span class="linenos">71</span><span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">'../../js-server/server.configuration'</span><span class="p">);</span>
+<span class="linenos">70</span>    <span class="c1">// acquire configuration module</span>
+<span class="linenos">71</span>    <span class="kd">var</span> <span class="nx">conf</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'../../js-server/server.configuration'</span><span class="p">);</span>
 <span class="linenos">72</span>
-<span class="linenos">73</span><span class="w">    </span><span class="c1">// form command line for server's node js to start task's python driver;</span>
-<span class="linenos">74</span><span class="w">    </span><span class="c1">// note that last 3 parameters are optional and task driver will not use</span>
-<span class="linenos">75</span><span class="w">    </span><span class="c1">// them in most cases.</span>
+<span class="linenos">73</span>    <span class="c1">// form command line for server's node js to start task's python driver;</span>
+<span class="linenos">74</span>    <span class="c1">// note that last 3 parameters are optional and task driver will not use</span>
+<span class="linenos">75</span>    <span class="c1">// them in most cases.</span>
 <span class="linenos">76</span>
-<span class="linenos">77</span><span class="w">    </span><span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getCommandLine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nx">exeType</span><span class="p">,</span><span class="nx">jobDir</span><span class="w"> </span><span class="p">)</span><span class="w">  </span><span class="p">{</span>
-<span class="linenos">78</span><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="nx">conf</span><span class="p">.</span><span class="nx">pythonName</span><span class="p">(),</span><span class="w">         </span><span class="c1">// will use python from configuration</span>
-<span class="linenos">79</span><span class="w">               </span><span class="s1">'-m'</span><span class="p">,</span><span class="w">                      </span><span class="c1">// will run task as a python module</span>
-<span class="linenos">80</span><span class="w">               </span><span class="s1">'pycofe.tasks.helloworld'</span><span class="p">,</span><span class="w"> </span><span class="c1">// path to python driver</span>
-<span class="linenos">81</span><span class="w">                </span><span class="nx">exeType</span><span class="p">,</span><span class="w">                  </span><span class="c1">// framework's type of run: 'SHELL' or 'SGE'</span>
-<span class="linenos">82</span><span class="w">                </span><span class="nx">jobDir</span><span class="p">,</span><span class="w">                   </span><span class="c1">// path to job directory given by framework</span>
-<span class="linenos">83</span><span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="w">                   </span><span class="c1">// task id (assigned by the framework)</span>
-<span class="linenos">84</span><span class="w">              </span><span class="p">];</span>
-<span class="linenos">85</span><span class="w">    </span><span class="p">}</span>
+<span class="linenos">77</span>    <span class="nx">TaskHelloWorld</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getCommandLine</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">exeType</span><span class="p">,</span><span class="nx">jobDir</span> <span class="p">)</span>  <span class="p">{</span>
+<span class="linenos">78</span>      <span class="k">return</span> <span class="p">[</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">pythonName</span><span class="p">(),</span>         <span class="c1">// will use python from configuration</span>
+<span class="linenos">79</span>               <span class="s1">'-m'</span><span class="p">,</span>                      <span class="c1">// will run task as a python module</span>
+<span class="linenos">80</span>               <span class="s1">'pycofe.tasks.helloworld'</span><span class="p">,</span> <span class="c1">// path to python driver</span>
+<span class="linenos">81</span>                <span class="nx">exeType</span><span class="p">,</span>                  <span class="c1">// framework's type of run: 'SHELL' or 'SGE'</span>
+<span class="linenos">82</span>                <span class="nx">jobDir</span><span class="p">,</span>                   <span class="c1">// path to job directory given by framework</span>
+<span class="linenos">83</span>                <span class="k">this</span><span class="p">.</span><span class="nx">id</span>                   <span class="c1">// task id (assigned by the framework)</span>
+<span class="linenos">84</span>              <span class="p">];</span>
+<span class="linenos">85</span>    <span class="p">}</span>
 <span class="linenos">86</span>
-<span class="linenos">87</span><span class="w">    </span><span class="c1">// -------------------------------------------------------------------------</span>
-<span class="linenos">88</span><span class="w">    </span><span class="c1">// export such that it could be used in server's node js</span>
+<span class="linenos">87</span>    <span class="c1">// -------------------------------------------------------------------------</span>
+<span class="linenos">88</span>    <span class="c1">// export such that it could be used in server's node js</span>
 <span class="linenos">89</span>
-<span class="linenos">90</span><span class="w">    </span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">TaskHelloWorld</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">TaskHelloWorld</span><span class="p">;</span>
+<span class="linenos">90</span>    <span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">TaskHelloWorld</span> <span class="o">=</span> <span class="nx">TaskHelloWorld</span><span class="p">;</span>
 <span class="linenos">91</span>
-<span class="linenos">92</span><span class="w">  </span><span class="p">}</span>
+<span class="linenos">92</span>  <span class="p">}</span>
 </pre></div>
 </div>
 <p>Obviously, the significance of various statements in this code cannot be clear
@@ -562,15 +562,15 @@ style, use template downloadable from
 <span class="linenos">17</span><span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">"width:100%;height:auto;overflow:auto;"</span><span class="p">&gt;</span>
 <span class="linenos">18</span>
 <span class="linenos">19</span><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
-<span class="linenos">20</span><span class="nx">makeHeader</span><span class="w"> </span><span class="p">([</span>
-<span class="linenos">21</span><span class="w">  </span><span class="p">[</span><span class="s1">'Contents'</span><span class="p">,</span><span class="s1">'index.html'</span><span class="p">],</span>
-<span class="linenos">22</span><span class="w">  </span><span class="p">[</span><span class="s1">'Tasks'</span><span class="p">,</span><span class="s1">'jscofe_tasks.html'</span><span class="p">],</span>
-<span class="linenos">23</span><span class="w">  </span><span class="p">[</span><span class="s1">'Hello World'</span><span class="p">,</span><span class="s1">'jscofe_task_helloworld.html'</span><span class="p">]</span>
+<span class="linenos">20</span><span class="nx">makeHeader</span> <span class="p">([</span>
+<span class="linenos">21</span>  <span class="p">[</span><span class="s1">'Contents'</span><span class="p">,</span><span class="s1">'index.html'</span><span class="p">],</span>
+<span class="linenos">22</span>  <span class="p">[</span><span class="s1">'Tasks'</span><span class="p">,</span><span class="s1">'jscofe_tasks.html'</span><span class="p">],</span>
+<span class="linenos">23</span>  <span class="p">[</span><span class="s1">'Hello World'</span><span class="p">,</span><span class="s1">'jscofe_task_helloworld.html'</span><span class="p">]</span>
 <span class="linenos">24</span><span class="p">]);</span>
-<span class="linenos">25</span><span class="nx">makeTaskTitle</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">'task_helloworld.png'</span><span class="p">,</span><span class="s1">'Hello World!'</span><span class="p">,</span>
-<span class="linenos">26</span><span class="w">                </span><span class="s1">'Example of the simplest task in |jsCoFE| framework.'</span><span class="p">,</span>
-<span class="linenos">27</span><span class="w">                </span><span class="s1">'task_helloworld.png'</span>
-<span class="linenos">28</span><span class="w">              </span><span class="p">);</span>
+<span class="linenos">25</span><span class="nx">makeTaskTitle</span> <span class="p">(</span> <span class="s1">'task_helloworld.png'</span><span class="p">,</span><span class="s1">'Hello World!'</span><span class="p">,</span>
+<span class="linenos">26</span>                <span class="s1">'Example of the simplest task in |jsCoFE| framework.'</span><span class="p">,</span>
+<span class="linenos">27</span>                <span class="s1">'task_helloworld.png'</span>
+<span class="linenos">28</span>              <span class="p">);</span>
 <span class="linenos">29</span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="linenos">30</span>
 <span class="linenos">31</span>to be written
@@ -701,7 +701,7 @@ standard output and standard error streams.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">8. </span>Task Interface Description </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">8. </span>Task Interface Description </span>
               </div>
             </a>
           
@@ -711,7 +711,7 @@ standard output and standard error streams.</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10. </span>Software testing in CCP4 </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">10. </span>Software testing in CCP4 </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -725,7 +725,7 @@ standard output and standard error streams.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

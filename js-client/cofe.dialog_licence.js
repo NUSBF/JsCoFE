@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    06.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Licence Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -33,7 +33,7 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
   this.element.setAttribute ( 'title','Licence' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  let grid = new Grid('');
   this.addWidget ( grid );
   grid.setLabel ( '<h3>Choose your licence type</h3>',0,0,1,3 );
 
@@ -44,8 +44,8 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
                     '?Subject=License%20enquiry">' + __maintainerEmail +
                   '</a>.<br>&nbsp;',1,0,1,3 );
 
-  var academic_btn   = new RadioButton ( 'Academic'  ,false );
-  var commercial_btn = new RadioButton ( 'Commercial',false );
+  let academic_btn   = new RadioButton ( 'Academic'  ,false );
+  let commercial_btn = new RadioButton ( 'Commercial',false );
 
 //  academic_btn  .setWidth ( '100%' );
 //  commercial_btn.setWidth ( '90%' );
@@ -85,7 +85,8 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
 
   grid.setCellSize ( '100%','',2,2 );
 
-  var w = 3*$(window).width()/5 + 'px';
+  let w = 3*$(window).width()/5 + 'px';
+  let choose_id = 'choose_btn_' + __id_cnt++;
 
   $(this.element).dialog({
     resizable : false,
@@ -93,44 +94,45 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
     maxHeight : 500,
     width     : w,
     modal     : true,
+    create    : function (e, ui) {
+      if (current_licence==licence_code.academic)
+        academic_btn.setValue ( true );
+      else if (current_licence==licence_code.commercial)
+        commercial_btn.setValue ( true );
+      else
+        $('#'+choose_id).button ( 'disable' );
+    },
     buttons: [
       {
-        id   : "choose_btn",
-        text : "Choose",
+        id   : choose_id,
+        text : 'Choose',
         click: function() {
           if (academic_btn.getValue())
                 onclose_fnc ( licence_code.academic   );
           else  onclose_fnc ( licence_code.commercial );
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       },
       {
-        id   : "cancel_btn",
-        text : "Cancel",
+        id   : 'cancel_btn',
+        text : 'Cancel',
         click: function() {
           onclose_fnc ( current_licence );
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       }
     ]
   });
 
-  if (current_licence==licence_code.academic)
-    academic_btn.setValue ( true );
-  else if (current_licence==licence_code.commercial)
-    commercial_btn.setValue ( true );
-  else
-    $('#choose_btn').button ( 'disable' );
-
   academic_btn.setWidth_px ( $(commercial_btn.element).width() );
 
   $(academic_btn.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
+    $('#'+choose_id).button ( 'enable' );
     commercial_btn.setValue ( false );
   });
 
   $(commercial_btn.element).click ( function(){
-    $('#choose_btn').button ( 'enable' );
+    $('#'+choose_id).button ( 'enable' );
     academic_btn.setValue ( false );
   });
 

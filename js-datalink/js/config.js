@@ -11,10 +11,12 @@ const def_config = {
     "data_dir": "data",
     "user_dir": "users",
     "catalog_dir": "catalogs",
+    "meta_dir": "meta",
     "catalogs_with_data": false,
     "data_free_gb": 100,
     "data_max_days": 60,
-    "data_prune_mins": 30
+    "data_prune_mins": 30,
+    "catalog_update_days": 10
   },
   "data_sources": {
     "pdbj": {

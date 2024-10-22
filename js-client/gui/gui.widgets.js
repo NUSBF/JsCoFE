@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    13.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -314,10 +314,10 @@ Widget.prototype.setFontLineHeight = function ( lineHeight ) {
 Widget.prototype.setFont = function ( family,size,bold,italic ) {
   this.element.style.fontFamily = family;
   this.element.style.fontSize = size;
-  if (bold) this.element.style.fontWeight = 'bold';
-  else this.element.style.fontWeight = 'normal';
-  if (italic) this.element.style.fontStyle = 'italic';
-  else this.element.style.fontStyle = 'normal';
+  if (bold)   this.element.style.fontWeight = 'bold';
+       else   this.element.style.fontWeight = 'normal';
+  if (italic) this.element.style.fontStyle  = 'italic';
+         else this.element.style.fontStyle  = 'normal';
   return this;
 }
 
@@ -331,17 +331,17 @@ Widget.prototype.setPaddings = function ( left,top,right,bottom ) {
   return this;
 }
 
-Widget.prototype.setMargins = function (left, top, right, bottom) {
+Widget.prototype.setMargins = function ( left, top, right, bottom ) {
   let css = {};
-  if (left) css['margin-left'] = left;
-  if (top) css['margin-top'] = top;
-  if (right) css['margin-right'] = right;
+  if (left)   css['margin-left'  ] = left;
+  if (top)    css['margin-top'   ] = top;
+  if (right)  css['margin-right' ] = right;
   if (bottom) css['margin-bottom'] = bottom;
   $(this.element).css(css);
   return this;
 }
 
-Widget.prototype.setScrollable = function (onx_value, ony_value) {
+Widget.prototype.setScrollable = function ( onx_value, ony_value ) {
   if (onx_value.length > 0)
     $(this.element).css({ 'overflow-x': onx_value });
   if (ony_value.length > 0)
@@ -353,7 +353,7 @@ Widget.prototype.getScrollPosition = function () {
   return [this.element.scrollLeft, this.element.scrollTop];
 }
 
-Widget.prototype.setScrollPosition = function (scrollPos) {
+Widget.prototype.setScrollPosition = function ( scrollPos ) {
   this.element.scrollLeft = scrollPos[0];
   this.element.scrollTop = scrollPos[1];
 }
@@ -572,7 +572,7 @@ Widget.prototype.click = function () {
 // -------------------------------------------------------------------------
 // Grid class
 
-function Grid(style) {
+function Grid ( style ) {
   Widget.call(this, 'table');
   if (style != 'None')
     this.element.setAttribute('class', 'grid-layout' + style);
@@ -586,19 +586,19 @@ Grid.prototype.clear = function () {
   this.element.innerHTML = ' ';  // Safari 14 fix
 }
 
-Grid.prototype.setStyle = function (style ) {
+Grid.prototype.setStyle = function ( style ) {
   if (style != 'None')
     this.element.setAttribute('class', 'grid-layout' + style);
 }
 
-Grid.prototype.insertRows = function (rowBefore, nRows) {
+Grid.prototype.insertRows = function ( rowBefore, nRows ) {
   while (this.element.rows.length <= rowBefore)
     this.element.insertRow(-1); // this adds a row
   for (let i = 0; i < nRows; i++)
     this.element.insertRow(rowBefore);
 }
 
-Grid.prototype.hideRow = function (row) {
+Grid.prototype.hideRow = function ( row ) {
   while (this.element.rows.length <= row) {
     this.element.insertRow(-1); // this adds a row
   }
@@ -606,14 +606,14 @@ Grid.prototype.hideRow = function (row) {
   this.element.rows[row]._was_hidden = true;
 }
 
-Grid.prototype.showRow = function (row) {
+Grid.prototype.showRow = function ( row ) {
   while (this.element.rows.length <= row)
     this.element.insertRow(-1); // this adds a row
   $(this.element.rows[row]).show();
   this.element.rows[row]._was_hidden = false;
 }
 
-Grid.prototype.wasRowHidden = function (row) {
+Grid.prototype.wasRowHidden = function ( row )  {
   if (row >= this.element.rows.length)
     return false;
   if ('_was_hidden' in this.element.rows[row])
@@ -621,12 +621,12 @@ Grid.prototype.wasRowHidden = function (row) {
   return false;
 }
 
-Grid.prototype.setRowVisible = function (row, visible_bool) {
+Grid.prototype.setRowVisible = function ( row, visible_bool ) {
   if (visible_bool) this.showRow(row);
   else this.hideRow(row);
 }
 
-Grid.prototype.getCell = function (row, col) {
+Grid.prototype.getCell = function ( row, col ) {
   let r = this.element.rows.length;
   while (this.element.rows.length <= row) {
     this.element.insertRow(-1); // this adds a row
@@ -643,7 +643,7 @@ Grid.prototype.getCell = function (row, col) {
   }
 }
 
-Grid.prototype.insertCell = function (row, col) {
+Grid.prototype.insertCell = function ( row, col ) {
   // make sure that cell [row,col] is there
   this.getCell(row, col);
   let gridRow = this.element.rows[row];
@@ -655,13 +655,13 @@ Grid.prototype.getNRows = function () {
   return this.element.rows.length;
 }
 
-Grid.prototype.truncateRows = function (row) {
+Grid.prototype.truncateRows = function ( row ) {
   while (this.element.rows.length > row + 1)
     this.element.deleteRow(-1);  // deletes last row
   return this.element.rows.length;
 }
 
-Grid.prototype.deleteRow = function (row) {
+Grid.prototype.deleteRow = function ( row ) {
   this.element.deleteRow(row);
   return this.element.rows.length;
 }
@@ -673,7 +673,7 @@ Grid.prototype.getNCols = function () {
   return ncols;
 }
 
-Grid.prototype.setWidget = function (widget, row, col, rowSpan, colSpan) {
+Grid.prototype.setWidget = function ( widget, row, col, rowSpan, colSpan ) {
   let cell = this.getCell(row, col);
   $(cell).empty();
   cell.rowSpan = rowSpan;
@@ -685,7 +685,7 @@ Grid.prototype.setWidget = function (widget, row, col, rowSpan, colSpan) {
   return cell;
 }
 
-Grid.prototype.addWidget = function (widget, row, col, rowSpan, colSpan) {
+Grid.prototype.addWidget = function ( widget, row, col, rowSpan, colSpan ) {
   let cell = this.getCell(row, col);
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
@@ -1227,19 +1227,23 @@ ACEditor.prototype.getText = function () {
 // -------------------------------------------------------------------------
 // TextArea class
 
-function TextArea(text, placeholder, nrows, ncols) {
-  Widget.call(this, 'textarea');
-  this.element.setAttribute('rows', nrows);
-  this.element.setAttribute('cols', ncols);
-  this.element.setAttribute('placeholder', placeholder);
+function TextArea ( text, placeholder, nrows, ncols ) {
+  Widget.call ( this,'textarea' );
+  this.element.setAttribute ( 'rows', nrows );
+  this.element.setAttribute ( 'cols', ncols );
+  this.element.setAttribute ( 'placeholder', placeholder );
   this.element.value = text;
 }
 
 TextArea.prototype = Object.create(Widget.prototype);
 TextArea.prototype.constructor = TextArea;
 
-TextArea.prototype.getValue = function () {
+TextArea.prototype.getValue = function() {
   return this.element.value;
+}
+
+TextArea.prototype.setValue = function ( text ) {
+  return this.element.value = text;
 }
 
 

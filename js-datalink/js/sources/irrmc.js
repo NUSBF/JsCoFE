@@ -1,4 +1,4 @@
-// pdbj data source
+// irrmc data source
 
 'use strict';
 

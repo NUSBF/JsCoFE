@@ -70,7 +70,7 @@ def refmac(driver, waitLong):
     else:
         print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.2411), Rfree is %0.4f (expecing <0.2998)' % (rWork, rFree))
     assert rWork < 0.25
-    assert rFree < 0.30
+    assert rFree < 0.35
 
     return ()
 

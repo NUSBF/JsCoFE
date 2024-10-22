@@ -26,6 +26,12 @@
           "description" : "Digital Research Infrastructure STFC UK",
           "thanks"      : "Computing infrastructure",
           "url"         : "https://www.iris.ac.uk"
+        },
+        { "alc"         : "ALC",
+          "logo"        : "./images_png/logo-alc.png",
+          "description" : "Ada Lovelace Centre",
+          "thanks"      : "Faciilities Data Link",
+          "url"         : "https://adalovelacecentre.ac.uk/"
         }
       ]
     },

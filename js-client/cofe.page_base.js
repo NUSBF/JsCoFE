@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -505,11 +505,40 @@ BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
   return this;
 }
 
+BasePage.prototype.setMenuSpacing = function ( spacing )  {
+  this.headerPanel.menu.setMenuSpacing ( spacing );
+}
+
 BasePage.prototype.addMenuSeparator = function()  {
   this.headerPanel.menu.addSeparator();
   return this;
 }
 
+BasePage.prototype.addGlobusLinkToMenu = function()  {
+  this.addMenuSeparator();
+  if (__globus_id)  {
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      window.open ( 'https://app.globus.org/file-manager?two_pane=true',
+                    'Globus File Transfer',
+                    'modal=yes' );
+    });
+  } else  {
+    this.addMenuItem ( 'Start Globus','globus_app',function(){
+      new MessageBox ( 'Globus ID not provided',
+          '<div style="width:360px"><h2>Globus ID not provided</h2>' +
+          'To enable Data Link via Globus, provide your Primary Globus ID in ' +
+          'your ' + appName() + ' account settings.' +
+          '<p>Additional information:<p>' +
+          '<a href="https://www.globusid.org/" target="_blank">' +
+          '<span style="color:blue">Create Globus ID</span></a><br>' +
+          '<a href="javascript:launchHelpBox1(\'Using Globus in ' + appName() + 
+          '\',\'' + __user_guide_base_url + 'jscofe_globus.html\',null,10)">' +
+          '<span style="color:blue">Using Globus in ' + appName() +'</span></a><br>' +
+          '<a href="https://www.globus.org/" target="_blank">' +
+          '<span style="color:blue">Globus web-site</span></a>','msg_stop');
+    });
+  }
+}
 
 BasePage.prototype.addFullscreenToMenu = function()  {
   if (this.headerPanel.menu.n_items>0)
@@ -756,7 +785,8 @@ function setHistoryListener ( sceneId )  {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
       makePage ( function(){
-        eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ); 
+        makeNewInstance ( event.originalEvent.state,sceneId );
+        // eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ); 
       });
     } else if (__current_page)  {
       if ((__current_page._type!='LoginPage') && (__current_page._type!='LogoutPage'))

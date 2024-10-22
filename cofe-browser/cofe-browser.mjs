@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    25.06.24   <--  Date of Last Modification.
+ *    31.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -23,6 +23,7 @@ import path  from 'path';
 import { app, BrowserWindow, Menu, clipboard, MenuItem, ipcMain, dialog, session } from 'electron';
 import Store from 'electron-store';
 import { fileURLToPath } from 'url';
+import CryptoJS from 'crypto-js';
 
 
 // ===========================================================================
@@ -38,6 +39,41 @@ const store = new Store();
 let mainWindow;
 let secondaryWindows = [];
 let ccp4cloud_version = 'xxx.xxx.xxx';
+
+// ===========================================================================
+
+// Define a secret key for encryption (in a real app, use a more secure method to manage this key)
+const SECRET_KEY = 'CoFE-Browser-secret-key';
+
+// Function to encrypt data
+const encrypt = (text) => {
+  return CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
+};
+
+// Function to decrypt data
+const decrypt = (cipherText) => {
+  const bytes = CryptoJS.AES.decrypt(cipherText, SECRET_KEY);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
+
+const get_loc_name = ( location,name ) => {
+  return location + '-' + name;
+}
+
+// Function to save login credentials
+const saveCredentials = (location,username, password) => {
+  store.set ( get_loc_name(location,'username'), encrypt(username) );
+  store.set ( get_loc_name(location,'password'), encrypt(password) );
+};
+
+// Function to get login credentials
+const getCredentials = ( location ) => {
+  const uname = get_loc_name(location,'username');
+  const upwd  = get_loc_name(location,'password');
+  const username = store.get(uname) ? decrypt(store.get(uname)) : null;
+  const password = store.get(upwd)  ? decrypt(store.get(upwd))  : null;
+  return { 'username' : username, 'password' : password };
+};
 
 // ===========================================================================
 
@@ -166,7 +202,7 @@ function createWindow ( url ) {
         ),
         { type: 'separator'  },
         {
-          label       : 'Quit CCP4 Cloud Local',
+          label       : 'Quit',
           accelerator : 'CmdOrCtrl+Q',
           click() {
             sendStopSignal ( url );
@@ -242,6 +278,20 @@ function createWindow ( url ) {
               focusedWindow.webContents.toggleDevTools();
             }
           }
+        },
+        {
+          label: 'Clear Cache',
+          click () {
+            // mainWindow.webContents.send('clear-cache');
+            session.defaultSession.clearCache().then(() => {
+              console.log('Cache successfully cleared');
+              // Optionally, notify the user with a dialog or other means
+              // mainWindow.webContents.send('cache-cleared');
+            }).catch((error) => {
+              console.error(`Failed to clear cache: ${error}`);
+              // mainWindow.webContents.send('cache-clear-failed', error);
+            });
+           }
         }
       ]
     }, {
@@ -299,11 +349,18 @@ function updateMenu() {
 function createSecondaryWindow ( url,features ) {
 
   const secondaryWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+    width  : 800,
+    height : 600,
+    // webPreferences: {
+    //   nodeIntegration: true,
+    //   contextIsolation: false,
+    // }
+    webPreferences : {
+      nodeIntegration    : false,
+      sandbox            : false,
+      contextIsolation   : true,
+      webSecurity        : true,
+      enableRemoteModule : false
     }
   });
 
@@ -461,3 +518,12 @@ ipcMain.on('stop-search', () => {
   mainWindow.webContents.stopFindInPage ( 'clearSelection' );
 });
 
+ipcMain.on('save-credentials', ( event, location,username, password ) => {
+  saveCredentials(location,username, password);
+  event.sender.send('save-credentials-response', 'Credentials saved securely.');
+});
+
+ipcMain.on('get-credentials', ( event, location ) => {
+  let credentials = getCredentials ( location );
+  event.sender.send('get-credentials-response', credentials);
+});

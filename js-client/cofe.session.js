@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    05.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -211,6 +211,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               bindToBrowserColorMode ( true ); 
               __user_role          = userData.role;
               __user_licence       = userData.licence;
+              __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 
@@ -338,8 +339,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     'carry on working with ' + appName() + ' as usual.' +
                     '<p>Contact server\'s maintainer at ' +
                     '<a href="mailto:' + __maintainerEmail +
-                      '?Subject=' + appName() + '%20Account re-activation">' +
-                       __maintainerEmail +
+                      '?Subject=' + encodeURIComponent(appName()+' Account re-activation') +
+                      '">' + __maintainerEmail +
                     '</a> if you have any questions.',
                     'msg_ok'
                   );
@@ -365,8 +366,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     'In order to re-activate your account, please send an e-mail<br>' +
                     'request to server\'s maintainer at<p>' +
                     '<a href="mailto:' + __maintainerEmail +
-                      '?Subject=' + appName() + '%20Account re-activation">' +
-                       __maintainerEmail +
+                      '?Subject=' + encodeURIComponent(appName()+' Account re-activation') + 
+                      '">' + __maintainerEmail +
                     '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
                     'msg_mail'
                   );

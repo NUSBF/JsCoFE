@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    28.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,7 +92,7 @@ class Arcimboldo(basic.TaskDriver):
                 "setup.bor"  # auxiliar .bor file with the grid information.
             )
 
-        self.number_of_cpus = 3
+        self.number_of_cpus = self.max_cpus
 
         self.number_of_component = 1  # integer
         self.molecular_weight = float(self.revision.ASU.molWeight)  # float
@@ -265,7 +265,7 @@ class Arcimboldo(basic.TaskDriver):
             self.stdoutln(
                 "===========================================================\n "
             )
-            shutil.rmtree("_tmp")
+            shutil.rmtree("_tmp",ignore_errors=True)
         else:
             borges_library = self.getParameter(self.sec1.LIBRARY_SEL)
             # HELI_lib_uu: helices uu
@@ -442,6 +442,8 @@ class Arcimboldo(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def run(self):
+
+        self.max_cpus = int ( self.getCommandLineParameter("ncores") )
 
         # Prepare arcimboldo job
 
@@ -657,7 +659,7 @@ class Arcimboldo(basic.TaskDriver):
         for dname in dlist:
             fpath = os.path.join ( self.arcimboldoDir(),dname )
             if os.path.isdir(fpath):
-                shutil.rmtree(fpath)
+                shutil.rmtree(fpath,ignore_errors=True)
             elif os.path.islink(fpath):
                 lfpath = os.readlink(fpath)
                 os.unlink(fpath)

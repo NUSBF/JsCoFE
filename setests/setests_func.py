@@ -173,14 +173,14 @@ def makeTestProject(driver, testProjectID, testProjectName):
     projectInputs[1].send_keys(testProjectName)
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert'):
-        time.sleep(1)
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Standard')
-    time.sleep(1)
+    # if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Expert'):
+    #     time.sleep(1)
+    #     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Standard')
+    # time.sleep(1)
 
 
     # Now there are two 'Add' buttons and we want to click second one
-    addButtons = driver.find_elements_by_xpath("//button[contains(text(),'Add')]")
+    addButtons = driver.find_elements_by_xpath("//button[contains(text(),'Add Project')]")
     addButtons[-1].click()
 
     return()
@@ -1079,15 +1079,16 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     return()
 
 def exitProject(driver):
-    print('exiting test project')
+    print('!!!!exiting test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
+    #Back to Projects
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
-
-
-    time.sleep(3)
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
+    
+    time.sleep(1)
+    return()
 
 
 
@@ -1097,7 +1098,7 @@ def cloneProject(driver, testName):
     menuButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
 
     time.sleep(1)
 
@@ -1132,28 +1133,29 @@ def renameProject(driver, testName):
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
-
-    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
-    if not clickResult:
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
-    time.sleep(3)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-    time.sleep(3)
-
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
-    time.sleep(3)
-
-    # Shall return list of two elements for project creation
-    projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
-    projectInput[-1].click()
-    projectInput[-1].clear()
-    projectInput[-1].send_keys('Successfull - %s' % testName)
-
-
-    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
-    textEls[-1].click()
+    
+    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Back to Projects')
     time.sleep(1)
+
+    if not clickResult:
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    time.sleep(1)
+
+    # clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    # time.sleep(3)
+
+    # clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
+    # time.sleep(3)
+
+    # # Shall return list of two elements for project creation
+    # projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
+    # projectInput[-1].click()
+    # projectInput[-1].clear()
+    # projectInput[-1].send_keys('Successfull - %s' % testName)
+
+    # textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
+    # textEls[-1].click()
+    # time.sleep(1)
 
     return ()
 

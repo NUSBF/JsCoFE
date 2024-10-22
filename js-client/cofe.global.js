@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -30,8 +30,8 @@ var __maintainerEmail = 'ccp4@ccp4.ac.uk';
 // session identification
 
 var __login_token     = '';
-var __login_id        = '';
-var __login_user      = '';
+var __login_id        = '';   // login name 
+var __login_user      = '';   // user name
 var __user_settings   = {
   color_modes : {
     preferred_mode : 'light',  // light|dark|system; make 'system' in final version
@@ -57,6 +57,7 @@ var __user_settings   = {
 };
 var __user_role       = role_code.user;
 var __user_licence    = '';
+var __globus_id       = '';
 var __dormant         = 0;
 var __ccp4_version    = '';     // undefined
 
@@ -80,7 +81,11 @@ var __jobs_safe       = false;  // true if FE supports failed jobs safe
 var __has_datalink    = false;  // true if datalink server is configured
 var __strict_dormancy = false;  // true if dormancy includes deactivation of user account
 var __treat_private   = ['none']; // list of data not to be sent out
-var __fe_url          = '';     // front-end url as returned by the server (not proxy)
+var __fe_url          =         // front-end url as returned by the server (not proxy)
+                        document.location.protocol + '//' +  // just the initial value
+                        document.location.host     +
+                        document.location.pathname;
+
 var __auth_software   = null;   // software authorisation data
 var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
@@ -427,7 +432,6 @@ function __object_to_instance ( key,value ) {
   if (!value.hasOwnProperty('_type'))
     return value;
 
-  // var obj= eval('new '+value._type+'()');
   let obj= makeNewInstance ( value._type );
   if (!obj)
     alert ( ' unknown class? ' + value._type );
@@ -484,6 +488,42 @@ function replaceStylesheets ( href_pattern,href )  {
     if (this.href.startsWith(href_p) && (this.href!=href_n))
       this.href = href_n;
   });
+}
+
+function copyToClipboard ( text )  {
+  
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    
+    navigator.clipboard.writeText(text).then(function(){},
+      function(err) {
+        console.error('Could not copy text: ', err);
+      });
+
+  } else {
+
+    let textArea = document.createElement('textarea');
+    textArea.value = text;
+
+    // Avoid scrolling to bottom
+    textArea.style.top  = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      let successful = document.execCommand('copy');
+      let msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+  }
+
 }
 
 // ===========================================================================

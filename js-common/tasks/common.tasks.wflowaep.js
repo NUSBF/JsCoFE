@@ -99,6 +99,17 @@ function TaskWFlowAEP()  {
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
+    },
+    {  // input data types
+      data_type : {'DataRevision':[]}, // data type(s) and subtype(s)
+      label     : 'Structure revision',     // label for input dialog
+      inputId   : 'revision', // input Id for referencing input fields
+      version   : 0,          // minimum data version allowed
+      force     : 1,          // meaning choose, by default, 1 hkl dataset if
+                              // available; otherwise, 0 (== do not use) will
+                              // be selected
+      min       : 0,          // minimum acceptable number of data instances
+      max       : 0           // maximum acceptable number of data instances
     }
   ];
 

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    13.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -447,9 +447,9 @@ class FitWaters(basic.TaskDriver):
                                 "revision"  : [revision]
                             },
                             "scores" :  {
-                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
-                                "Nwaters"  : str(nwaters)
+                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"]),
+                                "Nwaters"  : nwaters
                             }
                     })
                     # self.putMessage ( "<h3>Workflow started</hr>" )

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    01.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -24,7 +24,18 @@
 // ---------------------------------------------------------------------------
 // projects page class
 
-function ProjectPage ( sceneId )  {
+function ProjectPage ( sceneId,pspecs=null )  {
+
+// The pspecs parameter works only when project is new and empty. It sets up project
+// plan and starts first task from the plan's workflow. The object is created in
+// cofe.dialog_add_project.js and has the following structure: 
+
+// pspecs = {
+//   id        : project_name,        // e.g. 'mdm2
+//   title     : project_title,       // e.g. 'MDM2 Protein bound to Nutlin'
+//   plan_code : project_plan_code,   // one from common.data_project.js:project_type
+//   plan_task : task_to_run          // e.g. 'TaskWFlowAFMR'
+// }
 
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','ProjectPage' );
@@ -73,6 +84,7 @@ function ProjectPage ( sceneId )  {
   // let setButtonState_timer = null;
 
   // -------------------------------------------------------------------------
+  // Make page header
 
   this.makeHeader0 ( 3 );
   if (self.logout_btn)
@@ -100,89 +112,91 @@ function ProjectPage ( sceneId )  {
   this.makeDock();
   this.dock.loadDockData();
 
+  // -------------------------------------------------------------------------
   // Make Main Menu
 
-  // (function(self){
-
-    self.addMenuItem ( 'Project folder','list',function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              makeProjectListPage ( sceneId );
-            });
-          else
+  // this.setMenuSpacing ( 10 );
+  this.addMenuItem ( 'Back to Projects','list',function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
             makeProjectListPage ( sceneId );
-        }
-      });
-    });
-
-    let accLbl = 'My Account';
-    if (__local_user)
-      accLbl = 'Settings';
-    self.addMenuItem ( accLbl,'settings',function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              makeAccountPage ( sceneId );
-            });
-          else
-            makeAccountPage ( sceneId );
-        }
-      });
-    });
-  
-    if (!__local_user)  {
-      if (__user_role==role_code.admin)
-        self.addMenuItem ( 'Admin Page',role_code.admin,function(){
-          self.confirmLeaving ( function(do_leave){
-            if (do_leave)  {
-              if (self.jobTree && self.jobTree.projectData)
-                self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-                  makeAdminPage ( sceneId );
-                });
-              else
-                makeAdminPage ( sceneId );
-            }
           });
-        });
-    }
-
-    self.addMenuSeparator();
-
-    if (!__local_user)  {
-      self.addMenuItem ( 'Work team & sharing','workteam',function(){
-        if (self.jobTree)
-          new WorkTeamDialog ( self.jobTree.projectData.desc,self.jobTree );
         else
-          new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
-                           'Please call later','msg_error' );
-      });
-    }
-
-    self.addMenuItem ( 'Project settings','project_settings',function(){
-      if (self.jobTree && self.jobTree.projectData)
-            new ProjectSettingsDialog ( self.jobTree,function(){
-              self.jobTree.saveProjectData ( [],[],true, null );
-            });
-      else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
+          makeProjectListPage ( sceneId );
+      }
     });
+  });
 
-    self.addLogoutToMenu ( function(){
-      self.confirmLeaving ( function(do_leave){
-        if (do_leave)  {
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              logout ( sceneId,0 );
-            });
-          else
+  let accLbl = 'My Account';
+  if (__local_user)
+    accLbl = 'Settings';
+  this.addMenuItem ( accLbl,'settings',function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+            makeAccountPage ( sceneId );
+          });
+        else
+          makeAccountPage ( sceneId );
+      }
+    });
+  });
+
+  if (!__local_user)  {
+    if (__user_role==role_code.admin)
+      this.addMenuItem ( 'Admin Page',role_code.admin,function(){
+        self.confirmLeaving ( function(do_leave){
+          if (do_leave)  {
+            if (self.jobTree && self.jobTree.projectData)
+              self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+                makeAdminPage ( sceneId );
+              });
+            else
+              makeAdminPage ( sceneId );
+          }
+        });
+      });
+  }
+
+  this.addMenuSeparator();
+
+  if (!__local_user)  {
+    this.addMenuItem ( 'Work team & sharing','workteam',function(){
+      if (self.jobTree)
+        new WorkTeamDialog ( self.jobTree.projectData.desc,self.jobTree );
+      else
+        new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
+                          'Please call later','msg_error' );
+    });
+  }
+
+  this.addMenuItem ( 'Project settings','project_settings',function(){
+    if (self.jobTree && self.jobTree.projectData)
+          new ProjectSettingsDialog ( self.jobTree,function(){
+            self.jobTree.saveProjectData ( [],[],true, null );
+          });
+    else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
+  });
+
+  this.addGlobusLinkToMenu();
+
+  this.addLogoutToMenu ( function(){
+    self.confirmLeaving ( function(do_leave){
+      if (do_leave)  {
+        if (self.jobTree && self.jobTree.projectData)
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
             logout ( sceneId,0 );
-        }
-      });
+          });
+        else
+          logout ( sceneId,0 );
+      }
     });
+  });
 
-  // }(this))
+  // -------------------------------------------------------------------------
 
   // make central panel and the toolbar
   const toolbutton_size = '38px';
@@ -361,7 +375,7 @@ function ProjectPage ( sceneId )  {
   // takes project name from projectList.current
   self.jobTree.readProjectData ( 'Project',true,-1,
     function(){
-      if (self.onTreeLoaded(false,self.jobTree))  {
+      if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
         // self.dock.loadDockData();
         // add button listeners
         self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
@@ -597,40 +611,6 @@ ProjectPage.prototype.pasteJobFromClipboard = function() {
     self.addTaskToSelected ( task,image_path(task.icon()),task.title );
   });
 }
-
-// ProjectPage.prototype.copyJobToClipboard = function() {
-// let crTask = this.jobTree.getSelectedTask();
-//   if (crTask)  {
-//     let reftask = eval ( 'new ' + crTask._type + '()' );
-//     if (crTask.version<reftask.currentVersion())  {
-//       new MessageBox ( 'Cannot copy',
-//         '<div style="width:400px"><h2>This job cannot be copied.</h2><p>' +
-//         'The job was created with a lower version of ' + appName() + 
-//         ' and cannot be copied to clipboard.<p>Please create the job ' +
-//         'as a new one, using "<i>Add Job</i>" button from the control ' +
-//         'bar.</div>','msg_stop' );
-//     } else
-//       __clipboard.task = crTask;
-//   } else
-//     new MessageBox ( 'No task copied',
-//       '<div style="width:300px;"><h2>No task copied</h2>' +
-//       'Task could not be copied to Clipboard.',
-//       'msg_error' );
-// }
-
-// ProjectPage.prototype.pasteJobFromClipboard = function() {
-//   if (__clipboard.task)  {
-//     let task = eval ( 'new ' + __clipboard.task._type + '()' );
-//     task.uname      = __clipboard.task.uname;
-//     task.uoname     = __clipboard.task.uoname;
-//     task.parameters = $.extend ( true,{},__clipboard.task.parameters );
-//     this.addTaskToSelected ( task,image_path(task.icon()),task.title );
-//   } else
-//     new MessageBox ( 'Empty clipboard',
-//       '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
-//       'No task found in Clipboard.',
-//       'msg_error' );
-// }
 
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))  {
@@ -1167,7 +1147,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
 }
 
 
-ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
+ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree,pspecs )  {
 
   // these go first in all cases
   this.refresh_btn.setDisabled ( false );
@@ -1228,6 +1208,21 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
     __current_page = this;
     self.can_reload = true;   // tree reload semaphore
     // enter empty project: first task to run or choose
+    if (pspecs && (pspecs.plan_code!=plan_type.no_plan))  {
+      if (self.start_action('add_job'))  {
+        self.can_reload = true;
+        let task = makeNewInstance ( pspecs.plan_task );
+        task.inputMode = input_mode.root;
+        self.jobTree.addTask ( task,false,false,self,
+          function(key,avail_key,dataSummary){
+            self._set_del_button_state();
+            self.end_action();
+          });
+      }
+    } else  {
+      self.addJob();
+    }
+    /*
     switch (job_tree.projectData.desc.startmode)  {
       case start_mode.auto    :
               self.addJob();
@@ -1246,6 +1241,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       case start_mode.expert   :  // legacy
       default :  self.addJob();
     }
+    */
+    // self.addJob();
   }
   
   this.updateUserRationDisplay ( job_tree.projectData.desc );
@@ -1260,6 +1257,9 @@ ProjectPage.prototype.onTreeItemSelect = function()  {
 
 ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   // blink==true will force page blinking, for purely aesthatic reasons
+  // blink mode causes exception if there are minimised job dialogs before 
+  // blinking. Therefore, commented out as below. The blink is still
+  // noticeable in the tree widget and the toolbar.
 
   if (this.jobTree && this.jobTree.parent && this.can_reload)  {
 
@@ -1271,7 +1271,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
     let jobTree1  = this.makeJobTree();
     let timestamp = this.jobTree.projectData.desc.timestamp;
     if (blink)  {
-      this.jobTree.closeAllJobDialogs();
+      // this.jobTree.closeAllJobDialogs();
       this.jobTree.hide();
       timestamp = -1; // force reload
     } else  {
@@ -1294,7 +1294,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           }
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
-            if (self.onTreeLoaded(true,job_tree_1))  {
+            if (self.onTreeLoaded(true,job_tree_1,null))  {
               let selTasks = self.jobTree.getSelectedTasks();
               let dlg_map  = self.jobTree.dlg_map;
               self.jobTree.delete();
@@ -1302,11 +1302,11 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               self.jobTree.selectTasks ( selTasks );
               self.jobTree.show ();
               self.jobTree.parent.setScrollPosition ( scrollPos );
-              if (!blink)  {
+              // if (!blink)  {
                 self.jobTree.relinkJobDialogs ( dlg_map,self );
-              } else  {
-                self.jobTree.openJobs ( dlg_task_parameters,self );
-              }
+              // } else  {
+              //   self.jobTree.openJobs ( dlg_task_parameters,self );
+              // }
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );
                 if ('completed_map' in rdata)
@@ -1484,7 +1484,6 @@ ProjectPage.prototype.makeDock = function()  {
 
     function(taskType,title,icon_uri){  // left click: add task to tree
       if (!$(self.add_btn.element).button('option','disabled'))  {
-        // let task = eval ( 'new ' + taskType + '()' );
         let task = makeNewInstance ( taskType );
         self.addTaskToSelected ( task,icon_uri,title );
       }
@@ -1631,7 +1630,7 @@ function rvapi_runHotButtonJob ( jobId,task_name,options )  {
 
 // =========================================================================
 
-function makeProjectPage ( sceneId )  {
-  makePage ( function(){ new ProjectPage(sceneId); } );
+function makeProjectPage ( sceneId,pspecs=null )  {
+  makePage ( function(){ new ProjectPage(sceneId,pspecs); } );
   setHistoryState ( 'ProjectPage' );
 }

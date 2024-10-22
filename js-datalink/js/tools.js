@@ -1,6 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const pfs = fs.promises;
+
 const path = require('path');
 const https = require('https');
 const process = require('child_process');
@@ -11,6 +13,17 @@ const log = require('./log.js');
 const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
 const CATALOG_DIR = config.get('storage.catalog_dir');
+
+// maximum number of http redirects
+const HTTP_REDIRECTS = 5;
+
+// maximum number of http retries (eg for 429 reponses)
+const HTTP_RETRIES = 5;
+// retry backoff delays (HTTP_DELAY_INT * HTTP_DELAY_EXP^RETRY_NUM)
+// backoff interval in ms
+const HTTP_DELAY_INT = 1000;
+// backoff exponential
+const HTTP_DELAY_EXP = 3;
 
 const status = {
   completed: 'completed',
@@ -55,28 +68,18 @@ class tools {
     return size;
 }
 
-  // callback should return 0 on failure (to abort) and 1 on success or for a directory it can return 2 to skip to next entry.
-  static async fileCallback(dir, include_dirs = false, callback) {
+  // for files the callback should return true on success and false on failure (to abort).
+  static async fileCallback(dir, callback) {
     let files;
     try {
-      files = fs.readdirSync(dir, { withFileTypes: true });
+      files = await pfs.readdir(dir, { withFileTypes: true });
     } catch (err) {
       log.error(`fileCallback - ${err}`);
       return true;
     }
     for (const file of files) {
       if (file.isDirectory() && ! file.isSymbolicLink() ) {
-        // if we want to call our callback on directories
-        if (include_dirs) {
-          let ret = await callback(`${dir}/${file.name}`);
-          if (ret == 0) {
-            return false;
-          }
-          if (ret == 2) {
-            continue;
-          }
-        }
-        if (! await this.fileCallback(`${dir}/${file.name}`, include_dirs, callback)) {
+        if (! await this.fileCallback(`${dir}/${file.name}`, callback)) {
           return false;
         }
       } else {
@@ -86,6 +89,40 @@ class tools {
       }
     }
     return true;
+  }
+
+  static async removeEmptySubDirs(dir, depth = 0) {
+    const msg = 'removeEmptySubDirs';
+
+    try {
+      const stat = await pfs.lstat(dir);
+      if (! stat.isDirectory()) {
+        return;
+      }
+    } catch (err) {
+      log.error(`${msg} - ${err}`);
+      return;
+    }
+
+    let files = await pfs.readdir(dir);
+    if (files.length > 0) {
+      const map = files.map(
+        (file) => this.removeEmptySubDirs(path.join(dir, file), depth + 1)
+      );
+      // wait on all promises to complete
+      await Promise.all(map);
+
+      // re-check after deleting subdir as parent may be empty
+      files = await pfs.readdir(dir);
+    }
+
+    if (depth > 0 && files.length == 0) {
+      try {
+        await pfs.rmdir(dir);
+      } catch (err) {
+        log.error(`${msg} - ${err}`);
+      }
+    }
   }
 
   static getCatalogDir() {
@@ -221,9 +258,68 @@ class tools {
       const controller = new AbortController();
       options.signal = controller.signal;
       let req = https.request(url, options, (res) => {
-        if (! [200, 206].includes(res.statusCode)) {
+
+        let err_msg;
+        switch (res.statusCode) {
+          // http redirect
+          case 301:
+          case 302:
+            // if no redirect counter set, set it in options
+            if (! options.dl_redirects) {
+              options.dl_redirects = 0;
+            }
+            if (options.dl_redirects < HTTP_REDIRECTS && res.headers.location) {
+              options.dl_redirects += 1;
+              log.debug(`httpRequest - redirecting to ${res.headers.location} (try ${options.dl_redirects})`);
+              return this.httpRequest(res.headers.location, options, dest, signalCallback, writeCallback)
+              .then((ret) => {
+                resolve(ret);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+            } else {
+              err_msg = `httpRequest - Too many redirects for ${url}`;
+              return;
+            }
+            break;
+          case 200:
+          case 206:
+            break;
+          case 404:
+            err_msg = `httpRequest - 404 not found: ${url}`;
+            break;
+          // too many requests - so we will back off and retry
+          case 429:
+            if (! options.dl_retries) {
+              options.dl_retries = 0;
+            }
+            if (options.dl_retries < HTTP_RETRIES) {
+              options.dl_retries += 1;
+              let delay = HTTP_DELAY_INT * (HTTP_DELAY_EXP ** options.dl_retries);
+              log.debug(`httpRequest - 429 too many requests - Delaying ${delay} ms before retry (try ${options.dl_redirects})`);
+              // retry the request after a delay - note the return is important to stop further processing
+              return setTimeout(() => {
+                this.httpRequest(url, options, dest, signalCallback, writeCallback)
+                .then((ret) => {
+                  resolve(ret);
+                })
+                .catch((err) => {
+                  reject(err);
+                });
+              }, delay);
+            } else {
+              err_msg = `httpRequest - 429 too many requests - Retry count ${HTTP_RETRIES} exceeded`;
+            }
+            break;
+          default:
+            err_msg = `httpRequest - unsupported statusCode ${res.statusCode}`;
+            break;
+        }
+
+        if (err_msg) {
           res.resume();
-          reject(`httpRequest - unsupported statusCode ${res.statusCode}`);
+          reject(err_msg);
           return;
         }
 
@@ -243,8 +339,9 @@ class tools {
           res.on('data', (data) => {
             // workaround for node v16 lacking AbortController support for http(s) requests
             // if the AbortController was aborted, destroy the request and trigger an error
-            if (options.signal && options.signal.aborted) {
+            if (options.signal.aborted) {
               req.destroy(new Error('AbortError: The operation was aborted (compat)'));
+              return;
             }
 
             file.write(data);
@@ -253,10 +350,21 @@ class tools {
             }
           });
 
+          // end the stream if the response is finished
           res.on('close', () => {
-            file.close();
+            file.end();
+          });
+
+          // resolve when the write stream has closed
+          // on node v18+ it's enough to resolve after file.end above, but this works on older node
+          file.on('close', () => {
             resolve();
           });
+
+          file.on('error', (err) => {
+            reject(err);
+          });
+
         } else {
           let out = '';
 
@@ -270,7 +378,7 @@ class tools {
         }
       });
       req.on('error', (err) => {
-        reject(`${err.message}`);
+        reject(err);
       });
       req.end();
     });

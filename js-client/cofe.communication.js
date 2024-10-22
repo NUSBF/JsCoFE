@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.07.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,6 +182,7 @@ function checkVersionMatch ( response,localServer_bool )  {
     return true;  // may need a better solution
 
   if (response.version!='*')  {  // else ignore (useful for debugging)
+    /*
     if ((v0!=v1) && (rs[rs.length-1]=='client'))  {
       // this works when client version is different from server version
       if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
@@ -196,27 +197,62 @@ function checkVersionMatch ( response,localServer_bool )  {
             ' ' + rs[1] + '</b>,<br>which is not compatible with version <b>' +
             appVersion() + '</b>, running<br>on the server.<p>' + whattodo +
             '.<p>You may use ' + appName() + ' by using the direct web-link, ' +
-            'however,<br><i>Coot</i> and other graphical applications will ' +
+            'however,<br><i>Coot</i> and some other graphical applications will ' +
             'not be available.', 'msg_excl'
         );
         return false;
       }
     } else if (v0<v1)  {
-      // this works if server is updated in the midst of user's session
-      new MessageBoxF ( appName() + ' update',
-          '<center>' + appName() + ' has advanced to version' +
-          '<br><center><sup>&nbsp;</sup><b><i>' +
-          response.version + '</i></b><sub>&nbsp;</sub></center>' +
-          'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
-          + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
-          '<hr/>' + appName() + ' will now update in your browser, which will ' +
-          'end the current login<br>' +
-          'session. Please login again after update; your projects and data should<br>' +
-          'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
-          'Update', function(){
-            location.reload();
-          },true,  'msg_excl' );
-      return false;
+    */
+
+    if ((rs.length>2) && (rs[2]=='client') && response.data.fe_url)
+      __fe_url = response.data.fe_url;
+
+    if (v0<v1)  {
+      if ((rs.length>2) && (rs[2]=='client'))  {
+        new MessageBoxF ( appName() + ' client',
+            '<center>'  + appName() + ' Client has advanced to version' +
+            '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
+            '</i></b><sub>&nbsp;</sub></center>' +
+            'which is higher than version<br><center><sup>&nbsp;</sup><b><i>'
+            + appVersion() + '</b></i><sub>&nbsp;</sub></center>the ' + appName() +
+            ' server is currently using.<br>'  +
+            '<hr/><p>The ' + appName() + ' client will be now disabled, which means<br>' +
+            'that you cannot run Coot and other local applications.<p>Contact your ' + 
+            appName() + ' server maintainer.' +
+            '<hr/></center>',
+            'Continue', function(){
+              window.location = response.data.fe_url;
+            },true,  'msg_excl' );
+        // console.log ( ' response 3 ' + rs );
+        // new MessageBox ( appName() + ' client',
+        //     '<center>' + appName() + ' Client has advanced to version' +
+        //     '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
+        //     '</i></b><sub>&nbsp;</sub></center>' +
+        //     'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
+        //     + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+        //     '<hr/>The ' + appName() + ' client will be now disabled, which means that ' +
+        //     'you cannot run Coot<br>' +
+        //     'and similar applications. Contact your ' + appName() + ' server maintainer.' +
+        //     '<hr/></center>','msg_excl' );
+        return false;
+      } else if (rs.length<=2) {
+        // this works if server is updated in the midst of user's session
+        new MessageBoxF ( appName() + ' update',
+            '<center>' + appName() + ' has advanced to version' +
+            '<br><center><sup>&nbsp;</sup><b><i>' +
+            response.version + '</i></b><sub>&nbsp;</sub></center>' +
+            'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
+            + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
+            '<hr/>' + appName() + ' will now update in your browser, which will ' +
+            'end the current login<br>' +
+            'session. Please login again after update; your projects and data should<br>' +
+            'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
+            'Update', function(){
+              location.reload();
+            },true,  'msg_excl' );
+        return false;
+      }
     }
   }
 
@@ -340,9 +376,6 @@ function processServerQueue()  {
                           __server_queue = [];
                           __process_network_indicators();
                           makePage ( function(){
-                            // eval (
-                            //   'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                            // );
                             makeNewInstance ( __current_page._type,__current_page.sceneId );
                           });
                           makeSessionCheck ( __current_page.sceneId );
@@ -1010,6 +1043,10 @@ function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
+  // function _correct_name ( fname )  {  // because Moorhen makes it funny
+  //   return fname.split(' ').join('_').split('#').join('');
+  // }
+
   let edata = event.data;
 
   if (edata.command=='saveFiles')  {
@@ -1026,10 +1063,12 @@ function onWindowMessage ( event ) {
           edata1.files.push ( edata.files[i] );
         } else  {
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.pdb',
             fpath : edata.files[i].molName + '.pdb',
             data  : edata.files[i].pdbData
           });
           edata1.files.push ({
+            // fpath : _correct_name(edata.files[i].molName) + '.mmcif',
             fpath : edata.files[i].molName + '.mmcif',
             data  : edata.files[i].mmcifData
           });

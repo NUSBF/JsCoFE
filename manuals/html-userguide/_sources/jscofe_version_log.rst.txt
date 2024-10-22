@@ -2,6 +2,91 @@
 CCP4 Cloud Version Log
 ======================
 
+
+**Version 1.8.002** 
+
+    *Released with CCP4 v.9.0.004*
+
+    #. Fixed bug preventing deleting job directories on MS Windows in rare circumstances
+
+    #. CCP4 programs can now use all available CPU cores in local/desktop mode
+
+    #. Default packing criterion in Phaser task adjusted
+
+    #. Corrected data requirements for automatic workflows
+
+    #. Introduced pre-defdined pland for project development, project creation dialog changed accordingly
+
+    #. Moorhen updated to latest version available
+
+    #. WScript added with advanced branching options and possibility to run tasks in parallel
+
+    #. Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised
+
+
+**Version 1.8.001** 
+
+    *Released with CCP4 v.9.0.003*
+
+    #. Sanity checks in ``Crank2`` task added
+
+    #. Node.js integration disabled in secondary windows in Electron
+
+    #. Last login data now persists in Electron browser
+
+
+**Version 1.8.000** 
+
+    *Released with CCP4 v.9.0.002*
+
+    #. ``Push`` task added for pushing image data from client machine to Cloud
+
+    #. ``Structure Prediction`` task does not recaulate pLLDT to B-factors now
+
+    #. Nexus ``.nxs`` master files are now recognised in H5 input to xia-2
+
+    #. Fixed a bug in calculation of available NC cores
+
+    #. NC configuration may be shortened in FE configuration files
+
+    #. Login page announcement are now manageable from *Administration Page* 
+
+
+**Version 1.7.022** 
+
+    *Released with CCP4 v.9.0.001*
+
+    #. Datalink facility for data exchange with synchrotrons released
+
+    #. Globus link for file transfer added
+
+    #. ``Fetch`` task added for fetching image data from public repositories
+
+    #. A bug in ``Moorhen`` task fixed that caused task interruptions on final stages
+
+    #. ``Buccaneer`` task removed from Custom Workflow Creator
+
+    #. A bug fixed that caused *Logout Page* to appear when user gives wrong login data
+
+    #. Task documentation links added to *Task List*
+
+    #. A bug in stoichiometry calculation fixed in ``ASU Definition`` task 
+
+    #. A bug fixed in Custom Workflows that caused loss of structural revision
+       when a non-revision task is executed 
+
+    #. Many changes in *Cofe-Browser*: menu items, extended navigation,
+       secondary window management, copy-paste allowed
+
+    #. Fixed bug in the generation of SLURM instructions
+
+    #. Information on used CPU cores and spawn processes is now conveyed to
+       SLURM for more efficient queue management
+
+    #. Fixed bug causing checking quotas of job submitter rather than project 
+       owner (who are different in shared projects)
+
+
 **Version 1.7.021** 
 
     *Released with CCP4 v.9.0.001*

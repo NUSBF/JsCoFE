@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    04.07.24   <--  Date of Last Modification.
+ *    09.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,8 +25,8 @@
 
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
-// const jsCoFE_version = '1.7.019 [16.02.2024]';   // for the main server
-const jsCoFE_version = '1.7.022 [04.07.2024]';   // for update
+// const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
+const jsCoFE_version = '1.8.002 [09.09.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -158,7 +158,8 @@ const fe_reqtype = {
   getJobFile          : '-getJobFile',        // request to download a job's file
   getAdminData        : '-getAdminData',      // request to serve data for admin page
   getAnalytics        : '-getAnalytics',      // request to serve analytics data
-  sendAnnouncement    : '-sendAnnouncement',  // request to send announcement to users
+  sendMailToAllUsers  : '-sendMailToAllUsers', // request to send e-mail to users
+  makeAnnouncement    : '-makeAnnouncememt',  // request to make announcement on login page
   manageDormancy      : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata

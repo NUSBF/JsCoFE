@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.24   <--  Date of Last Modification.
+ *    04.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -180,8 +180,8 @@ function ProjectListPage ( sceneId )  {
   }
 
   // function to open selected Project
-  let openProject = function() {
-    saveProjectList ( function(data){ makeProjectPage(sceneId); },null );
+  let openProject = function ( pspecs=null ) {
+    saveProjectList ( function(data){ makeProjectPage(sceneId,pspecs); },null );
   }
 
   this._open_project = function ( prjName )  {
@@ -191,19 +191,11 @@ function ProjectListPage ( sceneId )  {
   let _add_project = function() {
     new AddProjectDialog ( projectList,function(pspecs){
       if (pspecs)  {
-        if (projectList.addProject(pspecs.id,pspecs.title,
-                                   pspecs.startmode,getDateString()))  {
+        if (projectList.addProject(pspecs.id,pspecs.title,getDateString()))  {
           projectList.current   = pspecs.id;
-          projectList.startmode = pspecs.startmode;
+          // projectList.startmode = pspecs.startmode;
           makeProjectListTable();
-          openProject();
-          /* -- this part for not opening the project automatically
-          saveProjectList ( function(data){
-            projectList.current = pspecs.id;
-            makeProjectListTable   ();
-            welcome_lbl.setVisible ( (projectList.projects.length<1) );
-          },null );
-          */
+          openProject ( pspecs );
           return true;  // close dialog
         } else  {
           new MessageBox ( 'Duplicate Project ID',
@@ -1231,6 +1223,8 @@ function ProjectListPage ( sceneId )  {
       new HelpBox ( '',__dev_reference_base_url + 'index.html',null )
     });
   }
+
+  this.addGlobusLinkToMenu();
 
   this.addLogoutToMenu ( function(){
     saveProjectList ( function(data){ logout(sceneId,0); },null );

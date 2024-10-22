@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    07.07.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,7 @@ function MenuItem ( text,icon_uri,spacing=-1 )  {
     });
     if (icon_uri.length>0)
       $(this.text_div.element).css({
-        'margin-left' : '1.5em'
+        'margin-left'  : '1.5em'
       });
     this.addWidget ( this.text_div );
   } else
@@ -200,6 +200,10 @@ Menu.prototype.setMaxHeight = function ( height_str )  {
   this.dropdown.element.style.maxHeight = height_str;
 }
 
+Menu.prototype.setMenuSpacing = function ( spacing )  {
+  this.spacing = spacing;
+}
+
 Menu.prototype.addItem = function ( text,icon_uri )  {
 let mi = new MenuItem ( text,icon_uri,this.spacing );
   this.dropdown.addWidget ( mi );
@@ -208,7 +212,7 @@ let mi = new MenuItem ( text,icon_uri,this.spacing );
 }
 
 Menu.prototype.addSeparator = function ()  {
-let mi = new MenuItem ( '<hr/>','',this.spacing );
+let mi = new MenuItem ( '<hr/>','',2 );
   this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;

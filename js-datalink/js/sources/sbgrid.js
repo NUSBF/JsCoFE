@@ -1,4 +1,4 @@
-// pdbj data source
+// sbgrid data source
 
 'use strict';
 

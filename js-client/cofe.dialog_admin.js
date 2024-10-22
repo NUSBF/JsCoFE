@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    05.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,11 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Announcement Dialog
- *       ~~~~~~~~~  Dorman Users Dialog
+ *  **** Content :  Send To All Dialog
+ *       ~~~~~~~~~  Announcement Dialog
+ *                  Dormant Users Dialog
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -25,51 +26,41 @@
 'use strict';
 
 // -------------------------------------------------------------------------
-// User announcement dialog class
+// Send mail to all users dialog class
 
-function AnnounceDialog()  {
+function SendToAllDialog()  {
 
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Announcement' );
+  this.element.setAttribute ( 'title','Send to all' );
   document.body.appendChild ( this.element );
 
-  // var grid = new Grid('');
-  // this.addWidget ( grid );
-  // grid.setLabel ( '<h2>Announcement for all users</h2>',0,0,1,3 );
-
-  var grid = new Grid ( '' );
-  var row  = 0;
-  var col  = 2;
+  let grid = new Grid ( '' );
+  let row  = 0;
+  let col  = 2;
   this.addWidget   ( grid );
   grid.setLabel    ( ' ',row,0,1,1 );
   grid.setCellSize ( '','6px', row,0 );
   grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',row,1,2,1 );
-  grid.setLabel    ( '<h2>Announcement for all users</h2>',row,col,2,3 );
-  // grid.setVerticalAlignment ( row,col,'middle' );
+  grid.setLabel    ( '<h2>Send message to all users</h2>',row,col,2,3 );
   grid.setAlignment ( row++,col,'middle','left' );
-  grid.setImage    ( image_path('announce'),'48px','48px', row++,0,1,1 );
+  grid.setImage    ( image_path('sendtoall'),'48px','48px', row++,0,1,1 );
 
-  var header = grid.setLabel ( 'Dear &lt;User Name&gt;,<p>' +
+  let header = grid.setLabel ( 'Dear &lt;User Name&gt;,<p>' +
                   'You receive this e-mail bacause you are registered as a ' +
                   appName() + ' user.',row++,col,1,3 );
 
-  var textarea = grid.setTextArea ( '','Place text of the announcement here',
+  let textarea = grid.setTextArea ( '','Place text of the e-mail here',
                    5,72, row++,col,1,3 );
 
-  // grid.setLabel ( '&nbsp;',row++,col,1,3 );
-
-  var footer = grid.setLabel ( 'This e-mail was sent from unmanned ' +
+  let footer = grid.setLabel ( 'This e-mail was sent from unmanned ' +
                   'mailbox, please do not reply as replies cannot be ' +
                   'received. For any questions, please contact ' + appName() +
                   ' maintainer at ' +
                   '<a href="mailto:' + __maintainerEmail +
-                    '?Subject=' + encodeURI(appName()) + '%20Question">' +
-                     __maintainerEmail +
+                    '?Subject=' + encodeURIComponent(appName()+' Question') + 
+                    '">' + __maintainerEmail +
                   '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
                   row++,col,1,3 );
-
-
-  //w = 3*$(window).width()/5 + 'px';
 
   $(this.element).dialog({
     resizable : false,
@@ -82,10 +73,10 @@ function AnnounceDialog()  {
         id   : "send_btn",
         text : "Send",
         click: function() {
-          var message = header  .getText () + '<p>' +
+          let message = header  .getText () + '<p>' +
                         textarea.getValue() + '<p>' +
                         footer  .getText ();
-          serverRequest ( fe_reqtype.sendAnnouncement,message,'Admin Page',
+          serverRequest ( fe_reqtype.sendMailToAllUsers,message,'Admin Page',
                           function(data){},null,'persist' );
           $(this).dialog("close");
         }
@@ -100,13 +91,92 @@ function AnnounceDialog()  {
     ]
   });
 
-//  $('#choose_btn').button ( 'disable' );
+}
 
+SendToAllDialog.prototype = Object.create ( Widget.prototype );
+SendToAllDialog.prototype.constructor = SendToAllDialog;
+
+
+// -------------------------------------------------------------------------
+// User announcement dialog class
+
+function AnnouncementDialog()  {
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title','Announcement' );
+  document.body.appendChild ( this.element );
+
+  // let grid = new Grid('');
+  // this.addWidget ( grid );
+  // grid.setLabel ( '<h2>Announcement for all users</h2>',0,0,1,3 );
+
+  let grid = new Grid ( '' );
+  let row  = 0;
+  let col  = 2;
+  this.addWidget   ( grid );
+  grid.setLabel    ( ' ',row,0,1,1 );
+  grid.setCellSize ( '','6px', row,0 );
+  grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',row,1,2,1 );
+  grid.setLabel    ( '<h2>Announcement</h2>',row,col,2,3 );
+  // grid.setVerticalAlignment ( row,col,'middle' );
+  grid.setAlignment ( row++,col,'middle','left' );
+  grid.setImage    ( image_path('announce'),'48px','48px', row++,0,1,1 );
+
+  grid.setLabel ( '<span style="font-size:90%"><i>' +
+                  'Put text of the announcement in HTML format below. ' +
+                  'It will appear as a pop-up message in login page.' +
+                  '</i></span>',
+                  row++,col,1,3 );
+
+  let announcement = grid.setTextArea ( '','Place text of the announcement here',
+                                        15,80, row++,col,1,3 );
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    // maxHeight : 600,
+    width     : 'auto',
+    modal     : true,
+    buttons: [
+      {
+        id   : "on_btn",
+        text : "Put up",
+        click: function() {
+          serverRequest ( fe_reqtype.makeAnnouncement,{
+                            action : 'on',
+                            text   : announcement.getValue()
+                          },'Admin Page',
+                          function(data){},null,'persist' );
+          $(this).dialog("close");
+        }
+      },
+      {
+        id   : "off_btn",
+        text : "Take down",
+        click: function() {
+          serverRequest ( fe_reqtype.makeAnnouncement,{
+                            action : 'off',
+                            text   : announcement.getValue()
+                          },'Admin Page',
+                          function(data){},null,'persist' );
+          $(this).dialog("close");
+        }
+      }
+    ]
+  });
+
+  serverRequest ( fe_reqtype.makeAnnouncement,{
+                    action : 'read',
+                    text   : '***'
+                  },'Admin Page',
+                  function(data){
+                    announcement.setValue ( data.text )
+                  },null,'persist' );
 
 }
 
-AnnounceDialog.prototype = Object.create ( Widget.prototype );
-AnnounceDialog.prototype.constructor = AnnounceDialog;
+AnnouncementDialog.prototype = Object.create ( Widget.prototype );
+AnnouncementDialog.prototype.constructor = AnnouncementDialog;
 
 
 
@@ -116,7 +186,7 @@ AnnounceDialog.prototype.constructor = AnnounceDialog;
 function DormantUsersDialog ( callback_func )  {
 
   function getInteger ( param_inp )  {
-  var text = param_inp.getValue().trim();
+  let text = param_inp.getValue().trim();
     if ((text.length>0) && (isInteger(text)))
       return parseInt ( text );
     return 'NaN';
@@ -126,11 +196,11 @@ function DormantUsersDialog ( callback_func )  {
   this.element.setAttribute ( 'title','Dormant Users' );
   document.body.appendChild ( this.element );
 
-  // var grid = new Grid('-compact');
+  // let grid = new Grid('-compact');
 
-  var grid = new Grid ( '' );
-  var row  = 0;
-  var col  = 2;
+  let grid = new Grid ( '' );
+  let row  = 0;
+  let col  = 2;
   this.addWidget   ( grid );
   grid.setLabel    ( ' ',row,0,1,1 );
   grid.setCellSize ( '','6px', row,0 );
@@ -148,7 +218,7 @@ function DormantUsersDialog ( callback_func )  {
   // grid.setAlignment ( row++,0,'middle','left' );
   grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;user is inactive during last&nbsp;',row,col,1,1 );
   grid.setAlignment ( row,col,'middle','right' );
-  var period1_inp = grid.setInputText ( '730', row,col+1,1,1 )
+  let period1_inp = grid.setInputText ( '730', row,col+1,1,1 )
                         .setStyle ( 'text','integer','365',
                                     'Inactivity period for making a user dormant' )
                         .setWidth_px ( 60 );
@@ -156,13 +226,13 @@ function DormantUsersDialog ( callback_func )  {
   grid.setAlignment ( row++,col+2,'middle','left' );
   grid.setLabel     ( 'has run fewer than&nbsp;',row,col,1,1 );
   grid.setAlignment ( row,col,'middle','right' );
-  var njobs_inp = grid.setInputText ( '5', row,col+1,1,1 )
+  let njobs_inp = grid.setInputText ( '5', row,col+1,1,1 )
                       .setStyle ( 'text','integer','5',
                                   'Maximum number of jobs for making a user dormant' )
                       .setWidth_px ( 60 );
   grid.setLabel     ( '&nbsp;jobs <b><i>and</i></b> is inactive during last&nbsp;',row,col+2,1,1 );
   grid.setAlignment ( row,col+2,'middle','left' );
-  var period2_inp = grid.setInputText ( '730', row,col+3,1,1 )
+  let period2_inp = grid.setInputText ( '730', row,col+3,1,1 )
                         .setStyle ( 'text','integer','90',
                                     'Inactivity period for making a user dormant' )
                         .setWidth_px ( 60 );
@@ -175,7 +245,7 @@ function DormantUsersDialog ( callback_func )  {
   grid.setAlignment ( row++,col,'middle','left' );
   grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;it remains dormant during&nbsp;',row,col,1,1 );
   grid.setAlignment ( row  ,col,'middle','right' );
-  var period3_inp = grid.setInputText ( '365000', row,col+1,1,1 )
+  let period3_inp = grid.setInputText ( '365000', row,col+1,1,1 )
                         .setStyle ( 'text','integer','90',
                                     'Inactivity period for deleting a dormant account' )
                         .setWidth_px ( 60 );
@@ -199,7 +269,7 @@ function DormantUsersDialog ( callback_func )  {
           text : "Apply",
           click: function() {
 
-            var _params = {
+            let _params = {
               'period1'   : getInteger(period1_inp),
               'period2'   : getInteger(period2_inp),
               'njobs'     : getInteger(njobs_inp),

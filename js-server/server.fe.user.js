@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    07.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,8 @@
  *    function suspendUser      ( loginData,suspend_bool,message )
  *    function retireUser_admin ( loginData,meta )
  *    function resetUser_admin  ( loginData,userData )
- *    function sendAnnouncement ( loginData,message )
+ *    function sendMailToAllUsers ( loginData,message )
+ *    function makeAnnouncement ( loginData,params )
  *    function manageDormancy   ( loginData,params )
  *    function saveMyWorkflows  ( loginData,params )
  *    function getInfo          ( inData,callback_func )
@@ -81,6 +82,7 @@ const log = require('./server.log').newLog(10);
 const __userDataExt       = '.user';
 const __workflowsDataExt  = '.workflows';
 const __userLoginHashFile = 'login.hash';
+const __announcementFile  = 'announcement.html';
 
 const day_ms              = 86400000;  // milliseconds in a day
 
@@ -653,14 +655,19 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         if (!rData.my_workflows)
           rData.my_workflows = [];
 
-        adm.getNCData ( [],function(ncInfo){
-          rData.environ_server = [];
-          for (let i=0;i<ncInfo.length;i++)
-            if (ncInfo[i] && ('environ' in ncInfo[i]))  {
-              for (let j=0;j<ncInfo[i].environ.length;j++)
-                if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
-                  rData.environ_server.push ( ncInfo[i].environ[j] );
-            }
+        // adm.getNCData ( [],function(ncInfo){
+        //   rData.environ_server = [];
+        //   for (let i=0;i<ncInfo.length;i++)
+        //     if (ncInfo[i] && ('environ' in ncInfo[i]))  {
+        //       for (let j=0;j<ncInfo[i].environ.length;j++)
+        //         if (rData.environ_server.indexOf(ncInfo[i].environ[j])<0)
+        //           rData.environ_server.push ( ncInfo[i].environ[j] );
+        //     }
+        //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+        // });
+
+        conf.getServerEnvironment ( function(environ_server){
+          rData.environ_server = environ_server;
           callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
         });
 
@@ -898,13 +905,19 @@ function topupUserRation ( loginData,callback_func )  {
 
 
 function getUserRation ( loginData,data,callback_func )  {
-  if (data.topup && (loginData.login!=ud.__local_user_id))  {
-    topupUserRation ( loginData,callback_func );
+  let userLoginData = loginData;
+  let login_id      = loginData.login;
+  if ('user' in data)
+    login_id = data.user;
+  if (login_id!=loginData.login)
+    userLoginData = getUserLoginData ( login_id );
+  if (data.topup && (login_id!=ud.__local_user_id))  {
+    topupUserRation ( userLoginData,callback_func );
   } else  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
         code    : 'ok',
         message : '',
-        ration  : ration.getUserRation(loginData)
+        ration  : ration.getUserRation ( userLoginData )
       })
     );
   }
@@ -1576,28 +1589,28 @@ function resetUser_admin ( loginData,userData )  {
 
 // ===========================================================================
 
-function _send_announcement ( subject,message,user_list,count )  {
+function _send_mail_to_all_users ( subject,message,user_list,count )  {
   if (count<user_list.length)  {
 
     //if (user_list[count].email!='ccp4_cloud@listserv.stfc.ac.uk')  {
     //  setTimeout ( function(){
-    //    _send_announcement ( subject,message,user_list,count+1 );
+    //    _send_mail_to_all_users ( subject,message,user_list,count+1 );
     //  },1);
     //  return;
     //}
 
     emailer.send ( user_list[count].email,subject,
                    message.replace('&lt;User Name&gt;',user_list[count].name) );
-    log.standard ( 12,'Announcement sent to ' + user_list[count].name + ' at ' +
+    log.standard ( 12,'Message sent to ' + user_list[count].name + ' at ' +
                      user_list[count].email );
     if (count<user_list.length-1)
       setTimeout ( function(){
-        _send_announcement ( subject,message,user_list,count+1 );
+        _send_mail_to_all_users ( subject,message,user_list,count+1 );
       },2000);
   }
 }
 
-function sendAnnouncement ( loginData,message )  {
+function sendMailToAllUsers ( loginData,message )  {
 
   // Check that we're having a new login name
   let userFilePath = getUserDataFName ( loginData );
@@ -1619,7 +1632,7 @@ function sendAnnouncement ( loginData,message )  {
         //  log.standard ( 12,'Announcement sent to ' + users[i].name + ' at ' +
         //                   users[i].email );
         //}
-        _send_announcement ( cmd.appName() + ' Announcement',message,users,0 );
+        _send_mail_to_all_users ( cmd.appName() + ' Announcement',message,users,0 );
 
       } else
         log.error ( 121,'Attempt to broadcast from a non-admin login -- stop.' );
@@ -1636,6 +1649,42 @@ function sendAnnouncement ( loginData,message )  {
 
 }
 
+function makeAnnouncement ( loginData,params )  {
+  let rdata     = {};
+  let fe_server = conf.getFEConfig();
+  let afpath    = path.join ( fe_server.storage,__announcementFile );
+
+  switch (params.action)  {
+
+    default     :
+    case 'read' : rdata.text = utils.readString ( afpath );
+                  if (!rdata.text)
+                    rdata.text = '<h2>Maintenance Notice</h2>\n\n' +
+                                 'Please note that CCP4 Cloud will be unavailable between\n\n' +
+                                 '<p><b>31 Mar 2023 17:00 UK time and ' +
+                                 '03 Apr 2023 10:00 UK time</b>\n\n' +
+                                 '<p>due to maintenance works on site.\n\n' +
+                                 '<p>Apologies for any inconvenience.\n';
+                  else if (rdata.text.startsWith('!#'))
+                    rdata.text = rdata.text.split('\n').slice(2).join('\n');
+                  break;
+
+    case 'on'   : utils.writeString ( afpath,
+                    '!#on  <-  change this for !#off in order to remove the announcement\n\n' +
+                    params.text
+                  );
+                  break;
+
+    case 'off'   : utils.writeString ( afpath,
+                    '!#off  <-  change this for !#on in order to release the announcement\n\n' +
+                    params.text
+                  );
+
+  }
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+}
 
 // ===========================================================================
 
@@ -1986,6 +2035,7 @@ function authResponse ( server_request,server_response )  {
 
 // ==========================================================================
 // export for use in node
+module.exports.__announcementFile   = __announcementFile;
 module.exports.userLogin            = userLogin;
 module.exports.checkSession         = checkSession;
 module.exports.userLogout           = userLogout;
@@ -2009,7 +2059,8 @@ module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
 module.exports.retireUser_admin     = retireUser_admin;
 module.exports.resetUser_admin      = resetUser_admin;
-module.exports.sendAnnouncement     = sendAnnouncement;
+module.exports.sendMailToAllUsers   = sendMailToAllUsers;
+module.exports.makeAnnouncement     = makeAnnouncement;
 module.exports.manageDormancy       = manageDormancy;
 module.exports.saveMyWorkflows      = saveMyWorkflows;
 module.exports.getInfo              = getInfo;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    01.08.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -625,7 +625,6 @@ JobDialog.prototype.makeToolBar = function()  {
     let dBox     = null;
 //    let branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
     for (let i=0;i<hot_list.length;i++)  {
-      // let task_obj  = eval ( 'new ' + hot_list[i].task_name + '()' );
       let task_obj  = makeNewInstance ( hot_list[i].task_name );
       let avail_key = task_obj.isTaskAvailable();
       if (avail_key[0]=='ok')  {
@@ -766,11 +765,9 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.close_btn   = null;
 
     this.addWidget ( this.outputPanel );
-    // (function(dlg){
-      $(dlg.outputPanel.element).on ( 'load',function(){
-        dlg.onDlgResize();
-      });
-    // }(this));
+    $(this.outputPanel.element).on ( 'load',function(){
+      dlg.onDlgResize();
+    });
 
   }
 
@@ -782,94 +779,106 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.inputPanel.setVisible ( this.task.job_dialog_data.panel=='input' );
   this.outputPanel.setVisible ( this.task.job_dialog_data.panel=='output' );
 
-  // (function(dlg){
+  // Listen for input event, emitted when input data changes
+  if (this.run_btn && this.inputPanel)
+    this.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
+      //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
+      // console.log ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
+        
+      if (!dlg.dlg_active)  {
+        dlg.run_btn  .setEnabled ( false );
+        dlg.close_btn.setEnabled ( true  );
+      } else if (e.detail.length<=0)  {
+        dlg.run_btn.setEnabled ( dlg.dlg_active );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
+        dlg.close_btn.setEnabled ( true );
+      } else if (e.detail=='hide_run_button')  {
+        dlg.run_btn.setEnabled ( false );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( false );
+        dlg.close_btn.setEnabled ( true  );
+      } else if (e.detail=='show_run_button')  {
+        dlg.run_btn.setEnabled ( true );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( true );
+        dlg.close_btn.setEnabled ( true  );
+      } else if (e.detail=='upload_started')  {
+        dlg.run_btn.setEnabled ( false );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( false );
+        dlg.close_btn.setEnabled ( false );
+      } else if (e.detail=='upload_finished')  {
+        dlg.run_btn.setEnabled ( dlg.dlg_active );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
+        dlg.close_btn.setEnabled ( true );
+      } else  {
+        dlg.run_btn.setEnabled ( false );
+        if (dlg.autorun_cbx)
+          dlg.autorun_cbx.setEnabled ( false );
+        dlg.close_btn.setEnabled ( true  );
+      }
+    },false );
 
-    // Listen for input event, emitted when input data changes
-    if (dlg.run_btn && dlg.inputPanel)
-      dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
-        //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
-// console.log ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
-          
-        if (!dlg.dlg_active)  {
-          dlg.run_btn  .setEnabled ( false );
-          dlg.close_btn.setEnabled ( true  );
-        } else if (e.detail.length<=0)  {
-          dlg.run_btn.setEnabled ( dlg.dlg_active );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
-          dlg.close_btn.setEnabled ( true );
-        } else if (e.detail=='hide_run_button')  {
-          dlg.run_btn.setEnabled ( false );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( false );
-          dlg.close_btn.setEnabled ( true  );
-        } else if (e.detail=='show_run_button')  {
-          dlg.run_btn.setEnabled ( true );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( true );
-          dlg.close_btn.setEnabled ( true  );
-        } else if (e.detail=='upload_started')  {
-          dlg.run_btn.setEnabled ( false );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( false );
-          dlg.close_btn.setEnabled ( false );
-        } else if (e.detail=='upload_finished')  {
-          dlg.run_btn.setEnabled ( dlg.dlg_active );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
-          dlg.close_btn.setEnabled ( true );
-        } else  {
-          dlg.run_btn.setEnabled ( false );
-          if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( false );
-          dlg.close_btn.setEnabled ( true  );
-        }
-      },false );
+  $(this.element).on ( 'dialogresize', function(event,ui){
+    dlg.onWindowResize();
+  });
 
-    $(dlg.element).on ( 'dialogresize', function(event,ui){
-      dlg.onWindowResize();
-      // dlg.task.job_dialog_data.width  = dlg.width_px();
-      // if (!__any_mobile_device)  {
-      //   dlg.task.job_dialog_data.height = dlg.height_px();
-      //   dlg.onDlgResize();
-      // }
-    });
+  if (this.run_btn)  {
 
-    if (dlg.run_btn)  {
+    this.run_btn.addOnClickListener ( function(){
 
-      dlg.run_btn.addOnClickListener ( function(){
+      let avail_key = dlg.task.isTaskAvailable();
+      if (avail_key[0]!='ok')  {
 
-        let avail_key = dlg.task.isTaskAvailable();
-        if (avail_key[0]!='ok')  {
+        new MessageBox ( 'The task cannot be run',avail_key[2], 'msg_warning' );
 
-          new MessageBox ( 'The task cannot be run',avail_key[2], 'msg_warning' );
+      } else  {
 
-        } else  {
+        // alert ( ' >>> ' + __login_id + '\n ' + __login_user + '\n ' + dlg.tree.projectData.desc.owner.login );
 
-          dlg.close_btn.setDisabled ( true );
-          serverRequest ( fe_reqtype.getUserRation,{ topup : true },'User Ration',
-            function(rdata){   // on success
+        let projectOwner = dlg.tree.projectData.desc.owner.login;
+        dlg.close_btn.setDisabled ( true );
+        serverRequest ( fe_reqtype.getUserRation,{ 
+                          topup : true,
+                          user  : projectOwner
+                        },'User Ration',
+          function(rdata){   // on success
 
-              let pdesc  = dlg.parent_page.ration.pdesc;
-              let ration = rdata.ration;
+            let pdesc  = dlg.parent_page.ration.pdesc;
+            let ration = rdata.ration;
+            if (projectOwner==__login_id)  {
               dlg.parent_page.ration = ration;
               dlg.parent_page.displayUserRation ( pdesc );
-              // console.log ( ration.storage );
+            }
+            // console.log ( ration.storage );
 
-              // dlg.parent_page.ration = ration;
-              // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
+            // dlg.parent_page.ration = ration;
+            // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
 
-              let tiplink = ' <a href="javascript:launchHelpBox1(\'Project storage\',' +
-                            '\'' + __user_guide_base_url + 
-                            'jscofe_tips.store_completed_projects.html\',null,10)">' +
-                            '<span style="color:blue">here</span>.';
+            let tiplink = ' <a href="javascript:launchHelpBox1(\'Project storage\',' +
+                          '\'' + __user_guide_base_url + 
+                          'jscofe_tips.store_completed_projects.html\',null,10)">' +
+                          '<span style="color:blue">here</span>.';
 
-              if (ration && (!__local_setup))  {
-                if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
+            if (ration && (!__local_setup))  {
+              if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
+                if (projectOwner!=__login_id)  {
+                  new MessageBox ( 'Disk Quota Exceeded',
+                      '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>'  +
+                      'The job cannot be run because <b>project owner\'s</b> '  +
+                      'disk quota is up and cannot be automatically increased.' +
+                      '<p>Contact project\'s owner (' + __login_user + 
+                      '), who can free up disk space in their account by deleting ' + 
+                      'jobs and projects.' +
+                      '<p><i>Read about disk space and project management in ' +
+                      appName() + tiplink + '</i></div>', 'msg_excl' );
+                } else  {
                   new MessageBox ( 'Disk Quota Exceeded',
                       '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>' +
-                      'The job cannot be run because disk quota is up and cannot ' +
-                      'be automatically increased. Your account currently uses<p>' +
+                      'The job cannot be run because your disk quota is up and ' +
+                      'cannot be automatically increased. Your account currently uses<p>' +
                       '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                       '&nbsp;&nbsp;&nbsp;&nbsp;' + round(ration.storage_used,1) + 
                       ' MBytes at ' + round(ration.storage,1) + ' MBytes allocated.</b><p>' +
@@ -881,10 +890,21 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'project later using the file exported.' +
                       '<p><i>Read about disk space and project management in ' +
                       appName() + tiplink + '</i></div>', 'msg_excl' );
-                  dlg.enableCloseButton ( false );
-                  return;
                 }
-                if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
+                dlg.enableCloseButton ( false );
+                return;
+              }
+              if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
+                if (projectOwner!=__login_id)  {
+                  new MessageBox ( '24-hour CPU Quota Exceeded',
+                      '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
+                      'The job cannot be run because <b>project owner\'s</b> 24-hour ' +
+                      'CPU quota is up.<p>' +
+                      'Try running the job later or ask your project owner (' + 
+                      __login_user + ') to contact ' + appName() + 
+                      ' maintainer to increase <b>their</b> 24-hour CPU quota.</div>', 
+                      'msg_excl' );
+                } else  {
                   new MessageBox ( '24-hour CPU Quota Exceeded',
                       '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
                       'The job cannot be run because your 24-hour CPU quota is up. ' +
@@ -897,246 +917,250 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'You may need to push the <i>"Reload"</i> button in the ' +
                       'toolbar after periods of inactivity to get updated readings.<p>' +
                       '<i><b>Recommended action:</b></i> run the job later or ask ' +
-                      appName() + ' maintainer to increase your 24-hour CPU quota.', 
+                      appName() + ' maintainer to increase your 24-hour CPU quota.</div>', 
                       'msg_excl' );
-                  dlg.enableCloseButton ( false );
-                  return;
                 }
-                if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
+                dlg.enableCloseButton ( false );
+                return;
+              }
+              if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
+                if (projectOwner!=__login_id)  {
                   new MessageBox ( '30-day CPU Quota Exceeded',
-                      '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
-                      'The job cannot be run because your 30-day CPU quota is up. ' +
-                      'In last 30 days, you have used<p>' +
-                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                      round(ration.cpu_month_used,3) + ' CPU hours at ' + 
-                      round(ration.cpu_month,3) + ' CPU hours allocated.</b><p>' +
-                      '<i><b>Hint:</b></i> resource usage can be monitored using ' +
-                      'disk and CPU widgets in the top-right corner of the screen. ' +
-                      'You may need to push the <i>"Reload"</i> button in the ' +
-                      'toolbar after periods of inactivity to get updated readings.<p>' +
-                      '<i><b>Recommended action:</b></i> run the job later or ask ' +
-                      appName() + ' maintainer to increase your 30-day CPU quota.', 
-                      'msg_excl');
-                  dlg.enableCloseButton ( false );
-                  return;
+                    '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
+                    'The job cannot be run because <b>project owner\'s</b> 30-day ' +
+                    'CPU quota is up.<p>' +
+                      'Try running the job later or ask your project owner (' + 
+                      __login_user + ') to contact ' + appName() + 
+                      ' maintainer to increase <b>their</b> 30-day CPU quota.</div>', 
+                    'msg_excl');
+                } else  {
+                  new MessageBox ( '30-day CPU Quota Exceeded',
+                    '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
+                    'The job cannot be run because your 30-day CPU quota is up. ' +
+                    'In last 30 days, you have used<p>' +
+                    '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    round(ration.cpu_month_used,3) + ' CPU hours at ' + 
+                    round(ration.cpu_month,3) + ' CPU hours allocated.</b><p>' +
+                    '<i><b>Hint:</b></i> resource usage can be monitored using ' +
+                    'disk and CPU widgets in the top-right corner of the screen. ' +
+                    'You may need to push the <i>"Reload"</i> button in the ' +
+                    'toolbar after periods of inactivity to get updated readings.<p>' +
+                    '<i><b>Recommended action:</b></i> run the job later or ask ' +
+                    appName() + ' maintainer to increase your 30-day CPU quota.</div>', 
+                    'msg_excl');
                 }
+                dlg.enableCloseButton ( false );
+                return;
               }
+            }
 
-              if (rdata.code=='topup')  {
-                dlg.parent_page.ration = ration;
-                dlg.parent_page.makeUserRationIndicator();        
-                window.setTimeout ( function(){
-                  new MessageBox ( 'Disk Quota Increased',
-                      '<div style="width:400px;"><h2>Disk quota increased</h2>' +
-                      'Your disk quota was automatically increased to<p>' +
-                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;' +
-                      '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
-                      '&nbsp;&nbsp;&nbsp;' + round(ration.storage,1) +
-                      ' MBytes</b><p>Enjoy! Just push "Ok" to proceed.' + 
-                      '<p><i><b>Important:</b> cleaning your ' + appName() + 
-                      ' disk space will be necessary at some point. Read about ' +
-                      'disk space and project management' + tiplink + '</i></div>',
-                      'msg_information' );  
-                },500);
-              }
+            if ((rdata.code=='topup') && (projectOwner==__login_id))  {
+              dlg.parent_page.ration = ration;
+              dlg.parent_page.makeUserRationIndicator();        
+              window.setTimeout ( function(){
+                new MessageBox ( 'Disk Quota Increased',
+                    '<div style="width:400px;"><h2>Disk quota increased</h2>' +
+                    'Your disk quota was automatically increased to<p>' +
+                    '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                    '&nbsp;&nbsp;&nbsp;' + round(ration.storage,1) +
+                    ' MBytes</b><p>Enjoy! Just push "Ok" to proceed.' + 
+                    '<p><i><b>Important:</b> cleaning your ' + appName() + 
+                    ' disk space will be necessary at some point. Read about ' +
+                    'disk space and project management' + tiplink + '</i></div>',
+                    'msg_information' );  
+              },500);
+            }
 
-              if (dlg.collectTaskData(false))  {
+            if (dlg.collectTaskData(false))  {
 
-                if (dlg.task.autoRunId)
-                  dlg.tree.projectData.desc.autorun = true;
-                  // dlg.parent_page.job_tree.projectData.desc.autorun = true;
+              if (dlg.task.autoRunId)
+                dlg.tree.projectData.desc.autorun = true;
+                // dlg.parent_page.job_tree.projectData.desc.autorun = true;
 
-                // dlg.close_btn.setDisabled ( false );
-                dlg.task.doRun ( dlg.inputPanel,function(){
+              // dlg.close_btn.setDisabled ( false );
+              dlg.task.doRun ( dlg.inputPanel,function(){
 
-                  // dlg.close_btn.setDisabled ( true );
-                  dlg.task.job_dialog_data.panel = 'output';
-                  dlg.task.state = job_code.running;
-                  dlg.outputPanel.clear();
-                  dlg.setDlgState();
+                // dlg.close_btn.setDisabled ( true );
+                dlg.task.job_dialog_data.panel = 'output';
+                dlg.task.state = job_code.running;
+                dlg.outputPanel.clear();
+                dlg.setDlgState();
 
-                  dlg.requestServer ( fe_reqtype.runJob,function(rdata){
+                dlg.requestServer ( fe_reqtype.runJob,function(rdata){
 
-                    addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
-                    dlg.tree.projectData.desc.timestamp = rdata.timestamp;
+                  addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
+                  dlg.tree.projectData.desc.timestamp = rdata.timestamp;
 
-                    if (dlg.task.nc_type=='client')  {
+                  if (dlg.task.nc_type=='client')  {
 
-                      dlg.task.job_dialog_data.job_token = rdata.job_token;
-                      let data_obj       = {};
-                      data_obj.job_token = rdata.job_token;
-                      data_obj.feURL     = getFEURL();
-                      data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
-                      localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
-                        function(response){
-                          dlg.task.postSubmit();
-                          if (!response)  {
-                            dlg.close_btn.setDisabled ( false );
-                            return false;  // issue standard AJAX failure message
-                          }
-                          if (response.status!=nc_retcode.ok)  {
-                            new MessageBox ( 'Run Client Job',
-                              '<p>Launching local application ' + dlg.task.name +
-                              ' failed due to:<p><i>' + response.message +
-                              ' (code="' + response.status + '")</i><p>' +
-                              'Please report this as possible bug to <a href="mailto:' +
-                              __maintainerEmail + '">' + __maintainerEmail + '</a>' );
-                          } else  {
-                            dlg.loadReport();
-                            dlg.radioSet.selectButton ( 'output' );
-                            onRun_func ( dlg );
-                            dlg.enableCloseButton ( true );
-                          }
-                          return true;
-                        });
-
-                    } else if (dlg.nc_browser)  {
-
-                      dlg.task.job_dialog_data.job_token = rdata.job_token;
-
-                      // dlg.enableCloseButton ( false );
-                      dlg.close_btn.setDisabled ( true );
-
-                      dlg.task.launchWebApp ( function(was_output,jobName){
-                        if (was_output)  {
-                          dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
-                            dlg.show();
-                            // dlg.setVisible ( true );
-                            // dlg.task.postSubmit();
-                            // dlg.loadReport();
-                            // dlg.radioSet.selectButton ( 'output' );
-                            // onRun_func ( dlg );
-                            dlg.enableCloseButton ( true );    
-                          });
-                        } else  {
-                          dlg.task.state = job_code.finished;
-                          dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
-                          dlg.tree.deleteJob    ( true,function(){
-                            new MessageBox ( 'Job deleted',
-                              '<div style="350px"><h2>Job deleted</h2>' +
-                              jobName + ' produced no results, job deleted automatically',
-                              'msg_ok'
-                            );
-                          });
+                    dlg.task.job_dialog_data.job_token = rdata.job_token;
+                    let data_obj       = {};
+                    data_obj.job_token = rdata.job_token;
+                    data_obj.feURL     = getFEURL();
+                    data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
+                    localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
+                      function(response){
+                        dlg.task.postSubmit();
+                        if (!response)  {
+                          dlg.close_btn.setDisabled ( false );
+                          return false;  // issue standard AJAX failure message
                         }
+                        if (response.status!=nc_retcode.ok)  {
+                          new MessageBox ( 'Run Client Job',
+                            '<p>Launching local application ' + dlg.task.name +
+                            ' failed due to:<p><i>' + response.message +
+                            ' (code="' + response.status + '")</i><p>' +
+                            'Please report this as possible bug to <a href="mailto:' +
+                            __maintainerEmail + '">' + __maintainerEmail + '</a>' );
+                        } else  {
+                          dlg.loadReport();
+                          dlg.radioSet.selectButton ( 'output' );
+                          onRun_func ( dlg );
+                          dlg.enableCloseButton ( true );
+                        }
+                        return true;
                       });
 
-                      dlg.loadReport();
-                      dlg.radioSet.selectButton ( 'output' );
-                      onRun_func ( dlg );
-                      if (dlg.stop_btn)
-                        dlg.stop_btn.setVisible ( false );
-                      // dlg.setVisible ( false );
-                      dlg.hide();
+                  } else if (dlg.nc_browser)  {
 
-                    } else  {
-                      dlg.task.postSubmit();
-                      dlg.loadReport();
-                      dlg.radioSet.selectButton ( 'output' );
-                      onRun_func ( dlg );
-                      dlg.enableCloseButton ( true );
-                    }
+                    dlg.task.job_dialog_data.job_token = rdata.job_token;
 
-                  });
+                    dlg.close_btn.setDisabled ( true );
+
+                    dlg.task.launchWebApp ( function(was_output,jobName){
+                      if (was_output)  {
+                        dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
+                          dlg.task.state = job_code.exiting;
+                          dlg.show();
+                          dlg.enableCloseButton ( true );    
+                        });
+                      } else  {
+                        dlg.task.state = job_code.finished;
+                        dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
+                        dlg.tree.deleteJob    ( true,function(){
+                          new MessageBox ( 'Job deleted',
+                            '<div style="350px"><h2>Job deleted</h2>' +
+                            jobName + ' produced no results, job deleted automatically',
+                            'msg_ok'
+                          );
+                        });
+                      }
+                    });
+
+                    dlg.loadReport();
+                    dlg.radioSet.selectButton ( 'output' );
+                    onRun_func ( dlg );
+                    if (dlg.stop_btn)
+                      dlg.stop_btn.setVisible ( false );
+                    dlg.hide();
+
+                  } else  {
+                    dlg.task.postSubmit();
+                    dlg.loadReport();
+                    dlg.radioSet.selectButton ( 'output' );
+                    onRun_func ( dlg );
+                    dlg.enableCloseButton ( true );
+                  }
 
                 });
 
-              } else  // collectTaskData() did not succeed, data is not complete/ready
-                dlg.close_btn.setDisabled ( false );
+              });
 
-            },
-            null,    // always (nothing)
-            function(){   // on failure/errors
+            } else  // collectTaskData() did not succeed, data is not complete/ready
               dlg.close_btn.setDisabled ( false );
-            });
 
-        }
+          },
+          null,    // always (nothing)
+          function(){   // on failure/errors
+            dlg.close_btn.setDisabled ( false );
+          });
 
-      });
+      }
 
-    }
+    });
 
-    if (dlg.stop_btn)
-      dlg.stop_btn.addOnClickListener ( function(){
-        dlg.onDlgSignal_func ( dlg,job_dialog_reason.stop_job,null );
-      });
+  }
 
-    if (dlg.end_btn)
-      dlg.end_btn.addOnClickListener ( function(){
-        dlg.onDlgSignal_func ( dlg,job_dialog_reason.end_job,null );
-      });
+  if (this.stop_btn)
+    this.stop_btn.addOnClickListener ( function(){
+      dlg.onDlgSignal_func ( dlg,job_dialog_reason.stop_job,null );
+    });
 
-    if (dlg.newtab_btn)
-      dlg.newtab_btn.addOnClickListener ( function(){
-        //if (dlg.outputPanel)
-        //  window.open ( dlg.outputPanel.getURL(),'_blank',
-        //                'location=no,menubar=no,titlebar=no,toolbar=no' );
-        if (dlg.outputPanel)  {
-          let iframe =
-            '<!DOCTYPE html>\n<html><head>' +
-            '<style>body, html {' +
-                   'width: 100%; height: 100%; margin: 0; padding: 0}' +
-            '</style>' +
-            '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
-                         '] ' + dlg.task.title +
-            '</title>' +
-            '<script>let __user_settings=' + JSON.stringify(__user_settings) +
-            ';</script>' +
-            '</head><body>' +
-            '<iframe src="' + dlg.outputPanel.getURL() +
-                '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
-            '</iframe></body></html>';
-          let win = window.open ( "",'' );
+  if (this.end_btn)
+    this.end_btn.addOnClickListener ( function(){
+      dlg.onDlgSignal_func ( dlg,job_dialog_reason.end_job,null );
+    });
+
+  if (this.newtab_btn)
+    this.newtab_btn.addOnClickListener ( function(){
+      //if (dlg.outputPanel)
+      //  window.open ( dlg.outputPanel.getURL(),'_blank',
+      //                'location=no,menubar=no,titlebar=no,toolbar=no' );
+      if (dlg.outputPanel)  {
+        let iframe =
+          '<!DOCTYPE html>\n<html><head>' +
+          '<style>body, html {' +
+                  'width: 100%; height: 100%; margin: 0; padding: 0}' +
+          '</style>' +
+          '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
+                        '] ' + dlg.task.title +
+          '</title>' +
+          '<script>let __user_settings=' + JSON.stringify(__user_settings) +
+          ';</script>' +
+          '</head><body>' +
+          '<iframe src="' + dlg.outputPanel.getURL() +
+              '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
+          '</iframe></body></html>';
+        let win = window.open ( "",'' );
 //                            "toolbar=no,menubar=no,resizable=yes,location=no" );
-          win.document.write ( iframe );
-        }
-      });
+        win.document.write ( iframe );
+      }
+    });
 
-    if (dlg.export_btn)
-      dlg.export_btn.addOnClickListener ( function(){
-        new ExportJobDialog ( dlg.task );
-      });
+  if (this.export_btn)
+    this.export_btn.addOnClickListener ( function(){
+      new ExportJobDialog ( dlg.task );
+    });
 
-    if (dlg.task.getHelpURL() && dlg.ref_btn)
-      dlg.ref_btn.addOnClickListener ( function(){
-        new HelpBox ( '',dlg.task.getHelpURL(),null );
-      });
+  if (this.task.getHelpURL() && dlg.ref_btn)
+    this.ref_btn.addOnClickListener ( function(){
+      new HelpBox ( '',dlg.task.getHelpURL(),null );
+    });
 
-    if (dlg.help_btn)
-      dlg.help_btn.addOnClickListener ( function(){
-        new HelpBox ( '',__user_guide_base_url + 'jscofe_jobdialog.html',null );
-      });
+  if (this.help_btn)
+    this.help_btn.addOnClickListener ( function(){
+      new HelpBox ( '',__user_guide_base_url + 'jscofe_jobdialog.html',null );
+    });
 
-    if (dlg.close_btn)
-      dlg.close_btn.addOnClickListener ( function(){
-        if ((dlg.task.state!=job_code.running) &&
-            (dlg.task.state!=job_code.ending)  &&
-            (dlg.task.state!=job_code.exiting) &&
-            (!dlg.tree.view_only))  {
-          dlg.collectTaskData ( true );
-          dlg.saveJobData();
-          // dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
-          //   if (rdata.project_missing)  {
-          //     new MessageBoxF ( 'Project not found',
-          //         '<h3>Project "' + dlg.tree.projectData.desc.name +
-          //            '" is not found on server</h3>' +
-          //         'Project "' + dlg.tree.projectData.desc.name +
-          //            '" was shared with you, please check<br>' +
-          //         'whether it was deleted by project owner.',
-          //         'Ok',function(){
-          //             dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
-          //         },false,'msg_error'
-          //     );
-          //   }
-          // });
-        }
-        dlg.task.onJobDialogClose(dlg,function(close_bool){
-          if (close_bool)
-            dlg.close();
-            // $(dlg.element).dialog ( "close" );
-        });
+  if (this.close_btn)
+    this.close_btn.addOnClickListener ( function(){
+      if ((dlg.task.state!=job_code.running) &&
+          (dlg.task.state!=job_code.ending)  &&
+          (dlg.task.state!=job_code.exiting) &&
+          (!dlg.tree.view_only))  {
+        dlg.collectTaskData ( true );
+        dlg.saveJobData();
+        // dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
+        //   if (rdata.project_missing)  {
+        //     new MessageBoxF ( 'Project not found',
+        //         '<h3>Project "' + dlg.tree.projectData.desc.name +
+        //            '" is not found on server</h3>' +
+        //         'Project "' + dlg.tree.projectData.desc.name +
+        //            '" was shared with you, please check<br>' +
+        //         'whether it was deleted by project owner.',
+        //         'Ok',function(){
+        //             dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
+        //         },false,'msg_error'
+        //     );
+        //   }
+        // });
+      }
+      dlg.task.onJobDialogClose(dlg,function(close_bool){
+        if (close_bool)
+          dlg.close();
+          // $(dlg.element).dialog ( "close" );
       });
-
-  // }(this));
+    });
 
 }

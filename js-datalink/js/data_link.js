@@ -19,32 +19,45 @@ const DATA_SOURCES = [
 
 const GB = 1000000000;
 const MB = 1000000;
+const DAY_TO_MS = 24 * 60 * 60 * 1000;
 
 class dataLink {
 
-  constructor() {
-    this.standalone = false;
+  constructor(server_mode = true) {
+    this.server_mode = server_mode;
     this.ds = {};
     this.jobs = {};
 
-    this.catalog = new data_catalog(tools.getDataDir(),
-      config.get('storage.catalogs_with_data'),
-      config.get('storage.data_free_gb'),
-      config.get('storage.data_max_days'),
-      config.get('storage.data_prune_mins'));
+    this.catalog = new data_catalog(tools.getDataDir(), config.get('storage.catalogs_with_data'), config.get('storage.meta_dir'));
+
+    // data pruning config
+    this.data_free_gb = config.get('storage.data_free_gb');
+    this.data_max_days = config.get('storage.data_max_days');
 
     // load data source classes
     for (let name of DATA_SOURCES) {
       if (config.get('data_sources.' + name + '.enabled')) {
         let source = require(path.join(SOURCES_DIR, name));
         this.jobs[name] = {};
-        this.ds[name] = new source(tools.getDataDir(), this.jobs[name]);
+        this.ds[name] = new source(tools.getDataDir(), tools.getCatalogDir(), this.jobs[name]);
       }
     }
 
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
+
+    // if we are running in server mode set up the data pruning and catalog update jobs
+    if (this.server_mode) {
+      this.dataPruneInit(config.get('storage.data_prune_mins'));
+      let update_days = config.get('storage.catalog_update_days');
+      if (update_days > 0) {
+        if (update_days > 24) {
+          update_days = 24;
+        }
+        setInterval(this.updateAllSourceCatalogs.bind(this), update_days * DAY_TO_MS);
+      }
+    }
 
     process.on('error', (err) => {
       log.error(err);
@@ -102,7 +115,19 @@ class dataLink {
 
   loadSourceCatalogs() {
     for (let name in this.ds) {
-      this.ds[name].loadCatalog(path.join(tools.getCatalogDir(), name + '.json'));
+      this.ds[name].loadCatalog();
+    }
+  }
+
+  dataPruneInit(mins) {
+    // prune manage and unmanaged datalink data
+    if (mins > 0) {
+      log.info(`Configured to prune data older than ${this.data_max_days} day(s) every ${mins} min(s) and when free space is less than ${this.data_free_gb}GB`);
+      setInterval(this.catalog.pruneData.bind(this.catalog), mins * 1000 * 60, this.data_free_gb, this.data_max_days);
+      // run inital data prune
+      this.catalog.pruneData(this.data_free_gb, this.data_max_days);
+    } else {
+      log.info(`Configured to not prune old data`);
     }
   }
 
@@ -158,7 +183,12 @@ class dataLink {
       f.pdb = ds.pdb;
       f.name = ds.name;
       f.doi = ds.doi;
-      f.size_s = ds.size;
+      // if there is no size in the data source, set size_s to 0 in user data entry
+      if (ds.size) {
+        f.size_s = ds.size;
+      } else {
+        f.size_s = 0;
+      }
     }
     f.status = st;
     return this.catalog.addEntry(user, source, id, f);
@@ -231,13 +261,7 @@ class dataLink {
       return result;
     }
 
-    if (this.ds[name].status === status.inProgress) {
-      return tools.successMsg(`${name} - Catalog update already in progress`);
-    }
-
-    log.info(`${this.name} - Fetching Catalog`);
-    this.ds[name].status = status.inProgress;
-    this.ds[name].fetchCatalog();
+    this.ds[name].updateCatalog();
 
     return tools.successMsg(`${name} - Updating catalog`);
   }
@@ -245,11 +269,8 @@ class dataLink {
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.ds)) {
-      if (source.status !== status.inProgress) {
-        if (source.fetchCatalog()) {
-          sources.push(name);
-        }
-      }
+      source.updateCatalog();
+      sources.push(name);
     }
     return tools.successMsg(`Updating catalog(s): ${sources.join(', ')}`);
   }
@@ -286,8 +307,8 @@ class dataLink {
     }
   }
 
-  fetchData(user, source, id, force = this.standalone) {
-    if (! tools.validUserName(user) && ! this.standalone) {
+  fetchData(user, source, id, force = ! this.server_mode) {
+    if (! tools.validUserName(user) && ! this.server_mode) {
       return tools.errorMsg(`Invalid user name`, 400);
     }
 
@@ -530,7 +551,7 @@ class dataLink {
     data_stats.size_gb = (data_stats.size / GB).toFixed(2);
 
     let free = tools.getFreeSpace(tools.getDataDir(), '1');
-    let data_free = config.get('storage.data_free_gb') * GB;
+    let data_free = this.data_free_gb * GB;
 
     // get free disk space
     data_stats.free_space = free;

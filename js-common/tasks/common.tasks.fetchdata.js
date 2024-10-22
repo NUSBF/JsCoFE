@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    09.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,18 +52,17 @@ function TaskFetchData()  {
         },
     LABEL1 : {
           type     : 'label',
-          label    : `
-            <p>This task can fetch raw X-ray diffraction data from the following sites:</p>
-            <ul>
-            <li><a href="https://data.sbgrid.org/" target="_new">https://data.sbgrid.org/</a></li>
-            <li><a href="https://proteindiffraction.org/" target="_new">https://proteindiffraction.org/</a></li>
-            <li><a href="https://xrda.pdbj.org/" target="_new">https://xrda.pdbj.org/</a></li>
-            </ul>
-            <p>
-            You can enter a 4 character PDB identifier or a Digital Object Identifier (DOI) from <br />
-            the sites above to fetch the corresponding data into CCP4 Cloud.
-            </p>
-            `,
+          label    : 
+            '<p>This task can fetch raw X-ray diffraction data from the following sites:</p>' +
+            '<ul>' +
+            '<li><a href="https://data.sbgrid.org/" target="_new">https://data.sbgrid.org/</a></li>' +
+            '<li><a href="https://proteindiffraction.org/" target="_new">https://proteindiffraction.org/</a></li>' +
+            '<li><a href="https://xrda.pdbj.org/" target="_new">https://xrda.pdbj.org/</a></li>' +
+            '</ul>' +
+            '<p>' +
+            'You can enter a 4 character PDB identifier or a Digital Object Identifier (DOI) from <br />' +
+            'the sites above to fetch the corresponding data into CCP4 Cloud.' +
+            '</p>',
           position : [1,0,1,4]
         }
   };
@@ -84,7 +83,7 @@ TaskFetchData.prototype.clipboard_name = function()  { return '"Fetch-data"';   
 
 TaskFetchData.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return 'finds diffraction images for given PDB code and fetcheds them';
+  return 'finds diffraction images for given PDB code and fetches them';
 };
 
 TaskFetchData.prototype.currentVersion = function()  {
@@ -99,22 +98,27 @@ TaskFetchData.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['fetch','diffraction','images'] );
 }
 
-TaskFetchData.prototype.isTaskAvailable = function()  {
+if (!__template)  {
 
-  if (__has_datalink)
-    return TaskTemplate.prototype.isTaskAvailable.call ( this );
-  else
-    return ['environment-server',
-            'task software is not configured on ' + appName() + ' server',
-            '<h3>Task software is not configured on server</h3>' +
-            'Software, needed to run the task, is not configured on ' +
-            appName() + ' server, which you use.<br>Contact server ' +
-            'maintainer for further details.'];
+  TaskFetchData.prototype.isTaskAvailable = function()  {
 
-}
+    if (__has_datalink)
+      return TaskTemplate.prototype.isTaskAvailable.call ( this );
+    else if (__local_setup)
+      return ['environment-server',
+              'task software is not installed on your machine',
+              '<h3>Task software is not installed</h3>' +
+              'Fetch framework is not installed on your machine.'];
+    else
+      return ['environment-server',
+              'task software is not installed on ' + appName() + ' server',
+              '<div style="width:400px;"><h3>Task software is not installed</h3>' +
+              'Data fetch framework is not installed on ' +  appName() + 
+              ' server.<p>Contact server maintainer for further details.</div>'];
 
+  }
 
-if (__template)  {
+} else  {
   //  for server side
 
   const path  = require('path');

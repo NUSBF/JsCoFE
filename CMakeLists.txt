@@ -36,12 +36,14 @@ add_custom_target(
 )
 
 install(DIRECTORY
+    archive
     bootstrap
     cofe-browser
     css
     html
     images_com
     images_png
+    js-datalink
     js-client
     js-common
     js-lib

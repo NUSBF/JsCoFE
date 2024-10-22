@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.12.23   <--  Date of Last Modification.
+#    10.08.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2024
 #
 # ============================================================================
 #
@@ -27,6 +27,7 @@
 #  python native imports
 import os
 # import shutil
+import json
 
 #  application imports
 from   pycofe.tasks   import import_task
@@ -213,13 +214,33 @@ class Workflow(import_task.Import):
         have_results = (len(ilist)>0)
 
         variables = {
-            "True"  : True,
-            "False" : False
+            "True"       : True,
+            "False"      : False,
+            "N_unmerged" : 0,
+            "N_hkl"      : 0,
+            "N_hkl_anom" : 0,
+            "N_seq"      : 0,
+            "N_xyz"      : 0,
+            "N_lig"      : 0,
+            "N_ligdesc"  : 0,
+            "N_lib"      : 0
         }
+
         if self.unm:
-            variables["reso_high"] = self.unm[0].getHighResolution(raw=True)
+            variables["reso_high" ] = self.unm[0].getHighResolution(raw=True)
+            variables["N_unmerged"] = len(self.unm)
         elif self.hkl:
-            variables["reso_high"] = self.hkl[0].getHighResolution(raw=True)
+            variables["reso_high" ] = self.hkl[0].getHighResolution(raw=True)
+            variables["N_hkl"     ] = len(self.hkl)
+            for i in range(len(self.hkl)):
+                if self.hkl[i].isAnomalous():
+                    variables["N_hkl_anom"] += 1
+        
+        if self.seq:     variables["N_seq"]     = len(self.seq)
+        if self.xyz:     variables["N_xyz"]     = len(self.xyz)
+        if self.lig:     variables["N_lig"]     = len(self.lig)
+        if self.ligdesc: variables["N_ligdesc"] = len(self.ligdesc)
+        if self.lib:     variables["N_lib"]     = len(self.lib)
 
         if hasattr(self.task.parameters,"sec1"):
             sec1 = self.task.parameters.sec1.contains
@@ -230,11 +251,17 @@ class Workflow(import_task.Import):
                     variables[key] = item.value
             # self.stderrln ( " variables="+str(variables) )
 
+        # put variables describing status of tasks queried with "checkTask(name)"
+        with open("__checked_tasks.json","r") as f:
+            checked_tasks = json.loads ( f.read() )
+            for key in checked_tasks:
+                variables[key+"_available"] = checked_tasks[key]
+
         if have_results:
             self.task.autoRunName = "@ROOT"   # step identifier
             # self.stdoutln ( " >>>> into workflow " + str(len(self.ligdesc)) )
             self.flush()
-            if auto_workflow.nextTask ( self,{
+            rc = auto_workflow.nextTask ( self,{
                     "data" : {
                         "unmerged" : self.unm,
                         "hkl"      : self.hkl,
@@ -245,12 +272,13 @@ class Workflow(import_task.Import):
                         "ligdesc"  : self.ligdesc
                     },
                     "variables" : variables
-               }):
-                summary_line += "workflow started"
-                self.putMessage ( "<h3>Workflow started</h3>" )
-            else:
+                 })
+            if rc.startswith("error"):
                 summary_line += "workflow start failed"
                 self.putMessage ( "<h3><i>Workflow start failed</i></h3>" )
+            elif rc=="ok":
+                summary_line += "workflow started"
+                self.putMessage ( "<h3>Workflow started</h3>" )
         else:
             summary_line += "insufficient input"
 
