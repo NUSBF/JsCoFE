@@ -3533,9 +3533,12 @@ if (!dbx)  {
                                 '.seq.txt','.fasta.txt','.pir.txt',
                                 '.cif','.mmcif','.ent','.pdbx',
                                 'rvapi_document'] );
-    utils.removePath  ( path.join(jobDir,'search_a')      );  // old MrBump's sins
-    utils.removePath  ( path.join(jobDir,'coot-backup')   );  // old Coot's sins
-    utils.removePath  ( path.join(jobDir,'coot-download') );  // old Coot's sins
+    // specify separate temporary directory to avoid interference between 
+    // asynchronous deletion and sending back to FE
+    let dir_tmp = path.join ( jobDir,'..' );
+    utils.removePathAsync ( path.join(jobDir,'search_a')     ,dir_tmp );  // old MrBump's sins
+    utils.removePathAsync ( path.join(jobDir,'coot-backup')  ,dir_tmp );  // old Coot's sins
+    utils.removePathAsync ( path.join(jobDir,'coot-download'),dir_tmp );  // old Coot's sins
   }
 
   // -------------------------------------------------------------------------

@@ -293,7 +293,7 @@ if (!__template)  {
             (!file.endsWith('.script')))  {
           let curPath = path.join ( jobDir,file );
           if (fs.lstatSync(curPath).isDirectory()) {
-            utils.removePath ( curPath );
+            utils.removePathAsync ( curPath,path.join(jobDir,'..') );
           } else { // delete file
             try {
               fs.unlinkSync ( curPath );
@@ -311,7 +311,7 @@ if (!__template)  {
       if (utils.fileExists(badDirPath))  {
         console.log ( ' +++ remove stray directory ' + badDirPath +
                       ' from MrBump job' );
-        utils.removePath ( badDirPath );
+        utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
       }
     }
 

@@ -161,7 +161,7 @@ if (__template)  {
     if (utils.fileExists(badDirPath))  {
       console.log ( ' +++ remove stray directory ' + badDirPath +
                     ' from TaskEnsemblePrepMG job' );
-      utils.removePath ( badDirPath );
+      utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
     }
 
   }

@@ -396,7 +396,7 @@ function mkPath ( dirPath )  {
 }
 
 
-function removePathAsync ( dir_path )  {
+function removePathAsync ( dir_path,tmp_dir='' )  {
 let rc   = true;
 let stat = fileExists(dir_path);
 
@@ -406,11 +406,15 @@ let stat = fileExists(dir_path);
         fs.unlinkSync ( dir_path );
       } else  {
         let mod  = '_' + performance.now()
-        let dir_path_tmp = dir_path + '_' + mod;
+        let dir_name   = path.basename ( dir_path );
+        let dir_path_0 = path.join ( dir_path,'..' );
+        if (tmp_dir)
+          dir_path_0 = tmp_dir
+        let dir_path_tmp = path.join ( dir_path_0,dir_name + '_' + mod );
         let ntry = 0;
         while (fileExists(dir_path_tmp) && (ntry<100)) {
           ntry++;
-          dir_path_tmp = dir_path + '_' + mod + '-' + ntry;
+          dir_path_tmp = path.join ( dir_path_0,dir_name + '_' + mod + ntry );
         }
         if (ntry>=100)  {
           log.error ( 110,'cannot remove directory ' + dir_path +
