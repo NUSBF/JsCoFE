@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -183,7 +183,7 @@ NCJobRegister.prototype.removeJob = function ( job_token )  {
   if (job_token in this.job_map)  {
     (function(jobDir,jobRemoveTimeout){
       setTimeout ( function(){
-        utils.removePath(jobDir);
+        utils.removePathAsync(jobDir);
       },jobRemoveTimeout );
     }(this.job_map[job_token].jobDir,
       conf.getServerConfig().jobRemoveTimeout));
@@ -339,7 +339,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
           dir_found = true;
       if (!dir_found)  {
         // job registry does not contain references to the directory, so delete it
-        utils.removePath ( curPath );
+        utils.removePathAsync ( curPath );
         n++;
         log.standard ( 32,'removed abandoned job directory: ' + file );
       }
@@ -799,7 +799,7 @@ function copyToSafe ( task,jobEntry )  {
                 dpaths[i] = dname;
               }
           for (let i=Math.max(0,jobsSafe.capacity-1);i<dpaths.length;i++)
-            utils.removePath ( dpaths[i] );
+            utils.removePathAsync ( dpaths[i] );
         }
 
       }

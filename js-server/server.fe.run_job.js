@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -2050,7 +2050,7 @@ function cloudRun ( server_request,server_response )  {
   if (!utils.mkDir(tmpJobDir))  {
     log.error ( 28,'cannot make temporary directory for cloud run' );
     // utils.removePath ( tmpDir    );
-    utils.removePath ( tmpJobDir );
+    utils.removePathAsync ( tmpJobDir );
     cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
                       'cannot make temporary directory to receive files','' );
     return;
@@ -2220,7 +2220,7 @@ function cloudRun ( server_request,server_response )  {
 
                         if (!utils.writeObject(jobDataPath,task))  {
                           log.error ( 33,'cannot write job metadata at ' + jobDataPath );
-                          utils.removePath ( jobDirPath );
+                          utils.removePathAsync ( jobDirPath );
                           response = new cmd.Response ( cmd.fe_retcode.ok,
                                 'cloudRun task failed because of error in writing ' +
                                 'job metadata area after upload.',{} );
@@ -2287,7 +2287,7 @@ function cloudRun ( server_request,server_response )  {
                       }
 
                       if (response)  {
-                        utils.removePath ( jobDirPath );
+                        utils.removePathAsync ( jobDirPath );
                         response.send ( server_response );
                       }
 
@@ -2303,7 +2303,7 @@ function cloudRun ( server_request,server_response )  {
 
             if (response)  {
               //  cloudRun did not start, clean up and respond
-              utils.removePath ( tmpJobDir );
+              utils.removePathAsync ( tmpJobDir );
               response.send ( server_response );
             }
 
@@ -2315,7 +2315,7 @@ function cloudRun ( server_request,server_response )  {
 
       if (response)  {
         //  cloudRun did not start, clean up and respond
-        utils.removePath ( tmpJobDir );
+        utils.removePathAsync ( tmpJobDir );
         response.send ( server_response );
       }
 

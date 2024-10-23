@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -139,16 +139,16 @@ TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {
   //  for server side
 
-  var path  = require('path');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  const path  = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
 
   TaskEnsemblePrepSeq.prototype.cleanJobDir = function ( jobDir )  {
 
     __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
 
     // paranoid piece of code, ugly
-    var badDirPath = path.join ( jobDir,'search_a' );
+    let badDirPath = path.join ( jobDir,'search_a' );
     if (utils.fileExists(badDirPath))  {
       console.log ( ' +++ remove stray directory ' + badDirPath +
                     ' from TaskEnsemblePrepSeq job' );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -130,7 +130,7 @@ TaskEnsemblePrepMG.prototype.desc_title     = function()  {
 TaskEnsemblePrepMG.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskEnsemblePrepMG.prototype.currentVersion = function()  {
-var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -148,16 +148,16 @@ TaskEnsemblePrepMG.prototype.checkKeywords = function ( keywords )  {
 if (__template)  {
   //  for server side
 
-  var path  = require('path');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  const path  = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
 
   TaskEnsemblePrepMG.prototype.cleanJobDir = function ( jobDir )  {
 
     __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
 
     // paranoid piece of code, ugly
-    var badDirPath = path.join ( jobDir,'mrbump_dir' );
+    let badDirPath = path.join ( jobDir,'mrbump_dir' );
     if (utils.fileExists(badDirPath))  {
       console.log ( ' +++ remove stray directory ' + badDirPath +
                     ' from TaskEnsemblePrepMG job' );
