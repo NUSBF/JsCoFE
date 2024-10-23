@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.10.24   <--  Date of Last Modification.
+#    23.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -204,23 +204,23 @@ class Coot(coot_ce.CootCE):
                 if mtzpath and mtzpath not in args:
                     args += ["--auto",mtzpath]
 
-        """
-        for s in data_list:
-            if s.getPDBFileName():
-                xyzpath = s.getPDBFilePath(self.inputDir())
-                if xyzpath not in args:
-                    args += ["--pdb",xyzpath]
-                    xyz_data_list.append(xyzpath)
-            if s._type=="DataStructure":
-                if s.getSubFileName():
-                    xyzpath = s.getSubFilePath(self.inputDir())
-                    if xyzpath not in args:
-                        args += ["--pdb",xyzpath]
-                        xyz_data_list.append(xyzpath)
-                mtzpath = s.getMTZFilePath(self.inputDir())
-                if mtzpath not in args:
-                    args += ["--auto",mtzpath]
-        """
+        # """
+        # for s in data_list:
+        #     if s.getPDBFileName():
+        #         xyzpath = s.getPDBFilePath(self.inputDir())
+        #         if xyzpath not in args:
+        #             args += ["--pdb",xyzpath]
+        #             xyz_data_list.append(xyzpath)
+        #     if s._type=="DataStructure":
+        #         if s.getSubFileName():
+        #             xyzpath = s.getSubFilePath(self.inputDir())
+        #             if xyzpath not in args:
+        #                 args += ["--pdb",xyzpath]
+        #                 xyz_data_list.append(xyzpath)
+        #         mtzpath = s.getMTZFilePath(self.inputDir())
+        #         if mtzpath not in args:
+        #             args += ["--auto",mtzpath]
+        # """
 
         if libPath:
             args += ["--dictionary",libPath]
@@ -231,22 +231,23 @@ class Coot(coot_ce.CootCE):
         coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
                                   "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
-        """
-        if coot_scr or ligand:
-            f = open ( coot_mod,"r" )
-            coot_mod_content = f.read()
-            f.close()
-            if not coot_scr:
-                coot_scr = "__coot_script.py"
-            f = open ( coot_scr,"a" )
-            f.write  ( coot_mod_content )
-            #f.write  ( "\n    set_nomenclature_errors_on_read(\"ignore\")\n" )
-            if ligand:
-                f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
-            f.close()
-        else:
-            coot_scr = coot_mod
-        """
+
+        # """
+        # if coot_scr or ligand:
+        #     f = open ( coot_mod,"r" )
+        #     coot_mod_content = f.read()
+        #     f.close()
+        #     if not coot_scr:
+        #         coot_scr = "__coot_script.py"
+        #     f = open ( coot_scr,"a" )
+        #     f.write  ( coot_mod_content )
+        #     #f.write  ( "\n    set_nomenclature_errors_on_read(\"ignore\")\n" )
+        #     if ligand:
+        #         f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
+        #     f.close()
+        # else:
+        #     coot_scr = coot_mod
+        # """
 
         f = open ( coot_mod,"r" )
         coot_mod_content = f.read() \
@@ -293,6 +294,9 @@ class Coot(coot_ce.CootCE):
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
+        if recover_fpath:
+            os.remove ( recover_fpath )
+
         self.putMessage (
             "<i>Just in case: learn about recovering results from crashed Coot jobs " +\
                 self.hotDocLink ( "here","jscofe_tips.coot_crash",
@@ -326,12 +330,12 @@ class Coot(coot_ce.CootCE):
                 if fu.endswith(".CIF"):
 
                     exclude_list = []
-                    '''
-                    if hasattr(self.input_data.data,"void1"):
-                        ligands = self.input_data.data.void1
-                        for i in range(len(ligands)):
-                            exclude_list.append ( ligands[i].code )
-                    '''
+                    # '''
+                    # if hasattr(self.input_data.data,"void1"):
+                    #     ligands = self.input_data.data.void1
+                    #     for i in range(len(ligands)):
+                    #         exclude_list.append ( ligands[i].code )
+                    # '''
                     if istruct.ligands:
                         sep = '('
                         exclude_list = [(tt + sep).split(sep)[0] for tt in istruct.ligands]

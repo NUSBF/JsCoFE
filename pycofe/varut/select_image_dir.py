@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    07.06.22   <--  Date of Last Modification.
+#    23.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  QT SELECT DIRCTORY DIALOG FOR CLIENT-SIDE WRAPPERS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -18,6 +18,7 @@ import sys
 import os
 import re
 import json
+os.environ['PATH'] = os.environ['PATH'].replace('WinCoot', '___Coot')
 from   PyQt5 import QtWidgets
 from   PyQt5 import QtCore
 
