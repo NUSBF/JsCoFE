@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.10.24   <--  Date of Last Modification.
+#    23.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -172,6 +172,12 @@ class CootCE(basic.TaskDriver):
             ixyz[i] = self.makeClass ( ixyz[i] )
             if (i==0) and recover_fpath:
                 xyzpath = recover_fpath
+                self.putMessage (
+                    "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                    "Input model was restored from last backup in job " +\
+                    str(self.task.recover_from) + ".</b></span><br>&nbsp;" 
+                )
+                self.flush()
             else:
                 xyzpath = ixyz[i].getXYZFilePath(self.inputDir())
             if xyzpath and (xyzpath not in args):
@@ -194,6 +200,9 @@ class CootCE(basic.TaskDriver):
                 self.stderrln ( " *** backup copy failed " + coot_backup_dir )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
+
+        if recover_fpath:
+            os.remove ( recover_fpath )
 
         self.putMessage (
             "<i>Just in case: learn about recovering results from crashed Coot jobs " +\
