@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1163,7 +1163,7 @@ function updateUserData_admin ( loginData,userData )  {
                                   ' is relocated to disk ' + userData.volume +
                                   ' by admin, login: ' + loginData.login );
                 uData.volume = userData.volume;
-                utils.removePath ( old_path );
+                utils.removePathAsync ( old_path );
               }
               if (uData.login.startsWith(__suspend_prefix))   // release
                 uData.login = uData.login.substring(__suspend_prefix.length);
@@ -1230,7 +1230,7 @@ function deleteUser ( loginData,userData )  {
           log.error ( 101,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
         let userProjectsDir = prj.getUserProjectsDirPath ( loginData );
-        if (!utils.removePath(userProjectsDir))
+        if (!utils.removePathAsync(userProjectsDir))
           log.error ( 102,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
         if (utils.removeFile(userFilePath))  {
@@ -1292,7 +1292,7 @@ function deleteUser_admin ( loginData,userData )  {
             log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
           let userProjectsDir = prj.getUserProjectsDirPath ( userData );
-          if (!utils.removePath(userProjectsDir))
+          if (!utils.removePathAsync(userProjectsDir))
             log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
           if (utils.removeFile(userFilePath))  {

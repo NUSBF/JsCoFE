@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -288,7 +288,7 @@ TaskSimbad.prototype.desc_title     = function()  {
 }
 
 TaskSimbad.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -308,7 +308,7 @@ if (!__template)  {
   TaskSimbad.prototype.changeTitle = function ( newTitle,inpParamRef )  {
     if (newTitle!=this.title)  {
       this.title = newTitle;
-      var inputPanel = inpParamRef.grid.parent.parent;
+      let inputPanel = inpParamRef.grid.parent.parent;
       inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
       this.updateInputPanel ( inputPanel );
     }
@@ -334,8 +334,8 @@ if (!__template)  {
 
     if (emitterId=='idata')  {
 
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var hkl        = this.getInputData ( inpDataRef,'idata' );
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let hkl        = this.getInputData ( inpDataRef,'idata' );
       if (hkl && (hkl.length>0))  {
         if (hkl[0]._type=='DataHKL')
           this.searchSelTitle ( inpParamRef.parameters['SEARCH_SEL'].input.getValue(),
@@ -355,11 +355,11 @@ if (!__template)  {
 
   TaskSimbad.prototype.collectInput = function ( inputPanel )  {
 
-    var msg   = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    var idata = this.input_data.getData ( 'idata' );
+    let msg   = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let idata = this.input_data.getData ( 'idata' );
     if (idata.length>0)  {
       msg = '';  // manual input of cell parameters is not used
-      var hkl = idata[0];
+      let hkl = idata[0];
       if (idata[0]._type=='DataRevision')
         hkl = idata[0].HKL;
       if (hkl._type!='DataHKL')  {
@@ -376,7 +376,7 @@ if (!__template)  {
 
   TaskSimbad.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+      let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
       });
       inputPanel.element.dispatchEvent(event);
@@ -409,7 +409,7 @@ if (!__template)  {
 
     if (('idata' in this.input_data.data) &&
         (this.input_data.data['idata'][0]._type=='DataRevision'))  {
-      // var revision = this.input_data.data['idata'][0];
+      // let revision = this.input_data.data['idata'][0];
       this.input_data.data['hkl'] = [this.input_data.data['idata'][0].HKL];
       // this.input_data.data['seq'] = revision.ASU.seq;
     }
@@ -433,7 +433,7 @@ if (!__template)  {
                'references.bib', '_job.stde', '_job.stdo' ].indexOf(file)<0) &&
             (!file.endsWith('.log')) && (!file.endsWith('.meta')) &&
             (!file.endsWith('.script')))  {
-          var curPath = path.join ( jobDir,file );
+          let curPath = path.join ( jobDir,file );
           if (fs.lstatSync(curPath).isDirectory()) {
             utils.removePath ( curPath );
           } else { // delete file

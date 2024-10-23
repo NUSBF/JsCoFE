@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -743,14 +743,14 @@ function delete_project ( loginData,projectName,disk_space,projectDirPath )  {
   // subtract project disck space from user's ration
   ration.updateProjectStats ( loginData,projectName,0.0,-disk_space,0,true );
 
-  utils.removePath ( projectDirPath );
+  utils.removePathAsync ( projectDirPath );
 
   ration.maskProject ( loginData,projectName );
 
   if (utils.fileExists(projectDirPath))
     erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
               'CCP4 Clooud Remove Project Directory Fails',
-              'Detected removePath failure at deleting project directory, ' +
+              'Detected removePathAsync() failure at deleting project directory, ' +
               'please investigate.' );
 
   // clearJobs() only to decrease the amount of transmitted data
@@ -1181,7 +1181,7 @@ function getProjectData ( loginData,data )  {
           d.tasks_add.push ( task );
         } else  {
           d.message = '[00021] Job metadata cannot be read.';
-          utils.removePath ( path.join ( projectDirPath,file ) );
+          utils.removePathAsync ( path.join ( projectDirPath,file ) );
         }
       }
     });
@@ -1464,7 +1464,7 @@ let projectName = projectDesc.name;
     if (rdata.reload>1)  {  // no way, client must update the project
       for (let i=0;i<jobDirs.length;i++)
         if (jobDirs[i][0])
-          utils.removePath ( jobDirs[i][0] );
+          utils.removePathAsync ( jobDirs[i][0] );
       if (response)
         return response;
       return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -1554,7 +1554,7 @@ let projectName = projectDesc.name;
       // remove job directories from the 'delete' list
       for (let i=0;i<data.tasks_del.length;i++)  {
         rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
-        utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
+        utils.removePathAsync ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
       }
 
       response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -2093,7 +2093,7 @@ let pData    = readProjectData ( loginData,data.name );
             log.error ( 96,'  from: ' + projectDirPath );
             log.error ( 96,'    to: ' + newPrjDirPath );
             console.error ( err );
-            utils.removePath ( newPrjDirPath );
+            utils.removePathAsync ( newPrjDirPath );
           } else  {
             // change code id in all files and rename project directory
             for (let i=0;i<jmeta.length;i++)  {
@@ -2427,7 +2427,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
 
   tempdir = path.join ( tempdir,loginData.login+'_project_import' );
   if (make_clean)  {
-    utils.removePath ( tempdir );  // just in case
+    utils.removePathAsync ( tempdir );  // just in case
     if (!utils.mkDir(tempdir))  {
       log.error ( 41,'cannot create temporary directory at ' + tempdir );
       tempdir = null;
@@ -2634,7 +2634,7 @@ function checkProjectImport ( loginData,data )  {
 
 function finishProjectImport ( loginData,data )  {
   let tempdir = getProjectTmpDir(loginData,false);
-  utils.removePath ( tempdir );
+  utils.removePathAsync ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
 
