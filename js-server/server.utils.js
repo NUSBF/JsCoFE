@@ -29,6 +29,7 @@
  *        function moveFile         ( old_path,new_path )  
  *        function copyDirAsync     ( old_path,new_path,overwrite_bool,
  *                                    callback_func )  
+ *        function copyDirSync      ( source,destination )
  *        function mkDir_check      ( dirPath )  
  *        function mkDir_anchor     ( dirPath )  
  *        function mkPath           ( dirPath )  
@@ -281,6 +282,61 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   }, callback_func );
 }
 
+
+function copyDirSync ( source,destination,copyLinks )  {
+
+  // Check if the source exists and is a directory
+  if (!fs.existsSync(source) || !fs.statSync(source).isDirectory()) {
+    // source directory does not exist or is not a directory
+    return false;
+  }
+
+  // Create the destination directory if it does not exist
+  if (!fs.existsSync(destination))
+    fs.mkdirSync(destination, { recursive: true });
+
+  // Read the contents of the source directory
+  const items = fs.readdirSync(source);
+
+  items.forEach(item => {
+    const sourceItem      = path.join ( source,      item );
+    const destinationItem = path.join ( destination, item );
+    const stat            = fs.statSync ( sourceItem );
+    if (stat.isSymbolicLink() && copyLinks)  {
+      let fpath = fs.readlinkSync ( sourceItem );
+      let fstat = fs.statSync ( fpath );
+      if (fstat && (!fstat.isSymbolicLink()))  {
+        if (copyLinks=='copy')  {
+          fs.symlinkSync ( fpath, destinationItem );
+        } else if (copyLinks=='dereference')  {
+          if (fstat.isDirectory())
+            copyDirSync ( fpath, destinationItem,copyLinks );
+          else
+            fs.copyFileSync ( fpath, destinationItem );
+        }
+      }
+    } else if (stat.isDirectory())  {
+      // If the item is a directory, recursively copy it
+      copyDirSync ( sourceItem, destinationItem,copyLinks );
+    } else if (stat.isSymbolicLink() && copyLinks)  {
+      let fpath = fs.readlinkSync ( sourceItem );
+      fs.copyFileSync ( fpath, curPath );
+      if (copyLinks=='copy')  {
+      } else if (copyLinks=='dereference')  {
+        fs.copyFileSync ( sourceItem, fpath );
+      }
+    } else  {
+      // If the item is a file, copy it
+      fs.copyFileSync ( sourceItem, destinationItem );
+    }
+
+  });
+
+  return true;
+
+}
+
+
 function mkDir ( dirPath )  {
   try {
     fs.mkdirSync ( dirPath );
@@ -439,6 +495,7 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
     log.error ( 120,'cannot remove directory ' + new_path );
     log.error ( 120,'error: ' + JSON.stringify(e) );
     console.error(e);
+    // continue nevrtheless in desperation
   }
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':overwrite_bool} );
@@ -551,7 +608,7 @@ function removeSymLinks ( dir_path )  {
         removeSymLinks ( curPath );
       } else if (curstat.isSymbolicLink())
         try {
-          let fpath = fs.readlinkSync( curPath );
+          let fpath = fs.readlinkSync ( curPath );
           fs.unlinkSync ( curPath );
           if (fs.existsSync(fpath))
             fs.copyFileSync ( fpath, curPath );
@@ -978,6 +1035,7 @@ module.exports.moveFile              = moveFile;
 module.exports.moveDir               = moveDir;
 module.exports.moveDirAsync          = moveDirAsync;
 module.exports.copyDirAsync          = copyDirAsync;
+module.exports.copyDirSync           = copyDirSync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_check           = mkDir_check;
 module.exports.mkDir_anchor          = mkDir_anchor;
