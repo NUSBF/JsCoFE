@@ -886,6 +886,11 @@ TaskPhaserMR.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['phaser', 'molecular','replacement','mr'] );
 }
 
+TaskPhaserMR.prototype.getNCores = function ( ncores_available )  {
+  return Math.min(4,ncores_available);
+}
+
+
 if (!__template)  {
 
   TaskPhaserMR.prototype.getHelpURL = function()  {
