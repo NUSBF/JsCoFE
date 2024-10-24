@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.24   <--  Date of Last Modification.
+#    30.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -160,10 +160,9 @@ class ModelCraft(basic.TaskDriver):
             "carbs"   : [],
             "ligands" : [],
             "buffers" : []
-        }
+                            }
+               
 
-        if self.getCheckbox(sec1.SELEN_CBX):
-            contents["modifications"]=["M->MSE"]
         mres = 0
         for s in seq:
             s1     = self.makeClass ( s )
@@ -173,6 +172,10 @@ class ModelCraft(basic.TaskDriver):
                 "sequence"      : seqstr,
                 "stoichiometry" : s1.ncopies
             }
+            # add methionine (MET) as selenomethionine (MSE)modifications if SELEN_CBX is checked
+            if self.getCheckbox(sec1.SELEN_CBX):
+                item["modifications"] = ["M->MSE"]
+
             if s1.isProtein() and build_sel in ["all","protein"]:
                 contents["proteins"].append(item)
             elif s1.isDNA() and build_sel in ["all","dna"]:
@@ -186,7 +189,7 @@ class ModelCraft(basic.TaskDriver):
             json.dump ( contents,contfile )
 
         self.stdoutln ( "CONTENTS FILE:\n\n" +\
-                        json.dumps(contents,sort_keys=True,indent=4) )
+                        json.dumps(contents,sort_keys=False,indent=4) )
 
         # make command-line parameters
         cmd = [ "xray","--contents",self.contents_json(),"--data",input_mtz ]

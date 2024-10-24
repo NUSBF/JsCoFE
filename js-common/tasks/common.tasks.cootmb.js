@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -110,7 +110,7 @@ let version = 0;
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-// TaskCootMB.prototype.cleanJobDir = function ( keywords )  {}
+TaskCootMB.prototype.cleanJobDir = function ( keywords )  {}
 
 function CootMBHotButton()  {
   return {
@@ -123,6 +123,15 @@ TaskCootMB.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,['coot','model', 'building', 'manual-mb', 'mb', 
                                            'coordinate', 'editor'] );
+}
+
+// This function is called at cloning jobs and should do copying of all
+// custom class fields not found in the Template class
+TaskCootMB.prototype.customDataClone = function ( cloneMode,task )  {
+  if (task.state=='failed')
+        this.recover_from = task.id;
+  else  this.recover_from = -1;
+  return;
 }
 
 if (!__template)  {

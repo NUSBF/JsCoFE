@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.08.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -104,7 +104,7 @@ const path      = require('path');
 const emailer   = require('./server.emailer');
 const conf      = require('./server.configuration');
 const utils     = require('./server.utils');
-const send_dir  = require('./server.send_dir');
+const send_dir  = require('./server.send_dir.js');
 const ration    = require('./server.fe.ration');
 const storage   = require('./server.fe.storage');
 const user      = require('./server.fe.user');
@@ -743,14 +743,14 @@ function delete_project ( loginData,projectName,disk_space,projectDirPath )  {
   // subtract project disck space from user's ration
   ration.updateProjectStats ( loginData,projectName,0.0,-disk_space,0,true );
 
-  utils.removePath ( projectDirPath );
+  utils.removePathAsync ( projectDirPath );
 
   ration.maskProject ( loginData,projectName );
 
   if (utils.fileExists(projectDirPath))
     erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
               'CCP4 Clooud Remove Project Directory Fails',
-              'Detected removePath failure at deleting project directory, ' +
+              'Detected removePathAsync() failure at deleting project directory, ' +
               'please investigate.' );
 
   // clearJobs() only to decrease the amount of transmitted data
@@ -963,12 +963,13 @@ function prepareProjectExport ( loginData,projectList )  {
           (jmetas[i].meta.state==task_t.job_code.exiting)))
       nrunning++;
 
-  send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
+  // send_dir.packDir ( projectDirPath,'*',null,null,function(code,jobballSize){
+  send_dir.packDir ( projectDirPath,null,function(code,jobballPath,jobballSize){
     let pData = readProjectData ( loginData,projectList.current );
     pData.desc.share = share;
     if (!writeProjectData(loginData,pData,true))
       log.error ( 11,'errors after packing at ' + projectDirPath + ' for export' );
-    let jobballPath = send_dir.getJobballPath ( projectDirPath );
+    // let jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
       log.error ( 12,'errors at packing ' + projectDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -1024,8 +1025,9 @@ function prepareJobExport ( loginData,task )  {
   let exportFilePath = exp_names[2];
   utils.removeFile ( exportFilePath );  // just in case
 
-  send_dir.packDir ( jobDirPath,'*',null,function(code,jobballSize){
-    let jobballPath = send_dir.getJobballPath ( jobDirPath );
+  // send_dir.packDir ( jobDirPath,'*',null,null,function(code,jobballSize){
+  send_dir.packDir ( jobDirPath,null,function(code,jobballPath,jobballSize){
+    // let jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -1086,12 +1088,15 @@ function prepareFailedJobExport ( loginData,fjdata )  {
     let exportFilePath = exp_names[2];
     utils.removeFile ( exportFilePath );  // just in case
 
-    send_dir.packDir ( jobDirPath,'*',exportFilePath,function(code,jobballSize){
-      if (code)  {
-        log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
-        utils.removeFile ( exportFilePath );  // export will never get ready!
-      }
-    });
+    // send_dir.packDir ( jobDirPath,'*',exportFilePath,null,
+    send_dir.packDir ( jobDirPath,null,
+      function(code,jobballPath,jobballSize){
+        if (code)  {
+          log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
+          utils.removeFile ( jobballPath );  // export will never get ready!
+        } else
+          utils.moveFile   ( jobballPath,exportFilePath );
+      });
 
     return new cmd.Response ( cmd.fe_retcode.ok,'',exp_names[3] );
 
@@ -1176,7 +1181,7 @@ function getProjectData ( loginData,data )  {
           d.tasks_add.push ( task );
         } else  {
           d.message = '[00021] Job metadata cannot be read.';
-          utils.removePath ( path.join ( projectDirPath,file ) );
+          utils.removePathAsync ( path.join ( projectDirPath,file ) );
         }
       }
     });
@@ -1459,7 +1464,7 @@ let projectName = projectDesc.name;
     if (rdata.reload>1)  {  // no way, client must update the project
       for (let i=0;i<jobDirs.length;i++)
         if (jobDirs[i][0])
-          utils.removePath ( jobDirs[i][0] );
+          utils.removePathAsync ( jobDirs[i][0] );
       if (response)
         return response;
       return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -1549,7 +1554,7 @@ let projectName = projectDesc.name;
       // remove job directories from the 'delete' list
       for (let i=0;i<data.tasks_del.length;i++)  {
         rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
-        utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
+        utils.removePathAsync ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
       }
 
       response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -2088,7 +2093,7 @@ let pData    = readProjectData ( loginData,data.name );
             log.error ( 96,'  from: ' + projectDirPath );
             log.error ( 96,'    to: ' + newPrjDirPath );
             console.error ( err );
-            utils.removePath ( newPrjDirPath );
+            utils.removePathAsync ( newPrjDirPath );
           } else  {
             // change code id in all files and rename project directory
             for (let i=0;i<jmeta.length;i++)  {
@@ -2422,7 +2427,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
 
   tempdir = path.join ( tempdir,loginData.login+'_project_import' );
   if (make_clean)  {
-    utils.removePath ( tempdir );  // just in case
+    utils.removePathAsync ( tempdir );  // just in case
     if (!utils.mkDir(tempdir))  {
       log.error ( 41,'cannot create temporary directory at ' + tempdir );
       tempdir = null;
@@ -2448,11 +2453,19 @@ function importProject ( loginData,upload_meta )  {
     // we run this loop although expect only one file on upload
     for (let key in upload_meta.files)  {
 
+      // send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
+      send_dir.unpackDir ( key,tempdir,true,function(code,jobballSize){
+        if (code)
+          log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
+        // _import_project ( loginData,tempdir,null,'',false );
+        _import_project ( loginData,tempdir,null,'',2 );  // '2' means 'rename if needed'
+      });
+
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
       //if (utils.moveFile(key,path.join(tempdir,'__dir.tar.gz')))  {
+      /*
       if (utils.moveFile(key,path.join(tempdir,send_dir.jobballName)))  {
-
         // unpack project tarball
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
           if (code)
@@ -2460,10 +2473,10 @@ function importProject ( loginData,upload_meta )  {
           // _import_project ( loginData,tempdir,null,'',false );
           _import_project ( loginData,tempdir,null,'',2 );  // '2' means 'rename if needed'
         });
-
       } else  {
         errs = 'file move error';
       }
+      */
 
       break;  // only one file to be processed
 
@@ -2521,7 +2534,8 @@ let duplicate = 0;
 
     if (demoProjectPath)  {
       if (utils.fileExists(demoProjectPath))  {
-        send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,
+        // send_dir.unpackDir1 ( tempdir,demoProjectPath,null,false,
+        send_dir.unpackDir ( demoProjectPath,tempdir,false,
           function(code,jobballSize){
             if (code)
               log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
@@ -2620,7 +2634,7 @@ function checkProjectImport ( loginData,data )  {
 
 function finishProjectImport ( loginData,data )  {
   let tempdir = getProjectTmpDir(loginData,false);
-  utils.removePath ( tempdir );
+  utils.removePathAsync ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
 

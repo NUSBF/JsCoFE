@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.08.24   <--  Date of Last Modification.
+#    16.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,15 +33,17 @@ import pyrvapi
 
 #  application imports
 from .            import basic
-from proc         import (import_xrayimages, import_unmerged, import_merged,
-                          import_xyz, import_ligand, import_sequence, import_doc,
-                          import_alignment,import_borges,import_wscript)
+from proc         import (import_xrayimages, import_unmerged,  import_merged,
+                          import_xyz,        import_ligand,    import_sequence,
+                          import_doc,        import_alignment, import_borges,
+                          import_wscript,    import_molgraph)
 from proc         import import_pdb, import_seqcp
 from pycofe.auto  import auto_workflow
 
 importers = [import_xrayimages, import_unmerged, import_merged,
-             import_xyz, import_sequence, import_doc,
-             import_alignment,import_borges,import_wscript]
+             import_xyz,        import_sequence, import_doc,
+             import_alignment,  import_borges,   import_wscript,
+             import_molgraph]
 
 #
 # LEFTOVER CODE FROM CCPEM SCOPE. LEAVE IT IN FOR NOW

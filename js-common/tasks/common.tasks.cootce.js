@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -105,9 +105,19 @@ TaskCootCE.prototype.currentVersion = function()  {
 }
 
 TaskCootCE.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['coot','model', 'coordinate', 'editor'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['coot','model', 'coordinate', 'editor'] );
+}
+
+// This function is called at cloning jobs and should do copying of all
+// custom class fields not found in the Template class
+TaskCootCE.prototype.customDataClone = function ( cloneMode,task )  {
+  if (task.state=='failed')
+        this.recover_from = task.id;
+  else  this.recover_from = -1;
+  return;
+}
+
 
 if (__template)  {
   //  for server side

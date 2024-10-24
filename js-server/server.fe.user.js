@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.08.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,8 +123,9 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   userData.helpTopics = [];
 
-  if (userData.login=='admin') userData.role = ud.role_code.admin;
-                         else  userData.role = ud.role_code.user;
+  if (userData.login=='admin')                  userData.role = ud.role_code.admin;
+  else if (userData.login==ud.__local_user_id)  userData.role = ud.role_code.localuser;
+                                          else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
   userData.lastSeen   = Date.now();
 
@@ -540,7 +541,7 @@ function readUserLoginHash()  {
     userData.login   = ud.__local_user_id;
     userData.pwd     = ud.__local_user_id;
     userData.licence = 'academic';
-    userData.role    = ud.role_code.user;
+    userData.role    = ud.role_code.localuser;
     makeNewUser ( userData,function(response){} );
     __userLoginHash.addUser ( 'e58e28a556d2b4884cb16ba8a37775f0',{
                                 'login'  : ud.__local_user_id,
@@ -835,23 +836,37 @@ function getUserData ( loginData )  {
 function topupUserRation ( loginData,callback_func )  {
   let uRation = ration.getUserRation ( loginData );
   let rData   = { code : 'ok', message : '', ration : uRation };
+
+  // console.log ( ' >>>> storage      = ' + uRation.storage );
+  // console.log ( ' >>>> storage_used = ' + uRation.storage_used );
+
   if (!uRation)  {
+  
     rData.code    = 'errors';
     rData.message = 'user ration file not found';
     log.error ( 80,'User ration file not found, login ' + loginData.login );
-  } else if (uRation.storage_used>=uRation.storage)  {
+  
+  } else if ((uRation.storage>0) && (uRation.storage_max>0) &&
+             (uRation.storage_used>=uRation.storage))  {
+  
     let uData = null;
     let userFilePath = getUserDataFName ( loginData );
+  
     if (utils.fileExists(userFilePath))
       uData = utils.readObject ( userFilePath );
+  
     if (!uData)  {
+  
       rData.code    = 'errors';
       rData.message = 'user data file not found';
       log.error ( 81,'User data file not found, login ' + loginData.login );
+  
     } else  {
+  
       let feconf = conf.getFEConfig();
       // find new storage and topup requirement
-      let storage1 = uRation.storage;
+      let storage1 = uRation.storage;  // current allocation
+  
       if (uRation.storage_max>0)  {
         while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
           storage1 += feconf.ration.storage_step;
@@ -860,7 +875,10 @@ function topupUserRation ( loginData,callback_func )  {
         while (storage1<uRation.storage_used)
           storage1 += feconf.ration.storage_step;
       }
-      if (storage1>uRation.storage_used)  {
+
+      // console.log ( ' >>>> storage1     = ' + storage1 );
+
+      if (storage1>uRation.storage_used)  {  // otherwise limited by uRation.storage_max
         let vconf  = feconf.projectsPath[uData.volume];  // volumes configuration
         let fspath = path.resolve ( vconf.path );
         rData.code = 'requesting';
@@ -1145,7 +1163,7 @@ function updateUserData_admin ( loginData,userData )  {
                                   ' is relocated to disk ' + userData.volume +
                                   ' by admin, login: ' + loginData.login );
                 uData.volume = userData.volume;
-                utils.removePath ( old_path );
+                utils.removePathAsync ( old_path );
               }
               if (uData.login.startsWith(__suspend_prefix))   // release
                 uData.login = uData.login.substring(__suspend_prefix.length);
@@ -1212,7 +1230,7 @@ function deleteUser ( loginData,userData )  {
           log.error ( 101,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
         let userProjectsDir = prj.getUserProjectsDirPath ( loginData );
-        if (!utils.removePath(userProjectsDir))
+        if (!utils.removePathAsync(userProjectsDir))
           log.error ( 102,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
         if (utils.removeFile(userFilePath))  {
@@ -1274,7 +1292,7 @@ function deleteUser_admin ( loginData,userData )  {
             log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
 
           let userProjectsDir = prj.getUserProjectsDirPath ( userData );
-          if (!utils.removePath(userProjectsDir))
+          if (!utils.removePathAsync(userProjectsDir))
             log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
 
           if (utils.removeFile(userFilePath))  {
@@ -1889,7 +1907,7 @@ function getLocalInfo ( inData,callback_func )  {
     let rData = { code : 'ok' };
     if ('localuser' in fe_server)  {
 
-      let uLoginData = { login:'localuser', volume:null };
+      let uLoginData = { login : ud.__local_user_id, volume : null };
       rData.userData = readUserData ( uLoginData );
 
       rData.project_paths = [];
@@ -2036,6 +2054,7 @@ function authResponse ( server_request,server_response )  {
 // ==========================================================================
 // export for use in node
 module.exports.__announcementFile   = __announcementFile;
+module.exports.__userDataExt        = __userDataExt;
 module.exports.userLogin            = userLogin;
 module.exports.checkSession         = checkSession;
 module.exports.userLogout           = userLogout;

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.05.24   <--  Date of Last Modification.
+#    23.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,11 +35,12 @@ import gemmi
 
 #  application imports
 from . import basic
-from   pycofe.varut   import  signal
-try:
-    from pycofe.varut import messagebox
-except:
-    messagebox = None
+
+# from   pycofe.varut   import  signal
+# try:
+#     from pycofe.varut import messagebox
+# except:
+#     messagebox = None
 
 
 # ============================================================================
@@ -71,7 +72,6 @@ class CootCE(basic.TaskDriver):
                         shutil.rmtree ( fp, ignore_errors=True, onerror=None )
 
         #  make new backup directory
-
         coot_backup_dir = os.path.join ( coot_backups_dir,
                                   self.task.project + "_" + str(self.task.id) )
         if not os.path.exists(coot_backup_dir):
@@ -83,32 +83,72 @@ class CootCE(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def getLastBackupFile ( self,backup_dir ):
+    def getLastBackupFile ( self,backup_dir,make_restore_message=True ):
         files = os.listdir ( backup_dir )
-        mtime = 0
+        # mtime = 0
         fpath = None
         fname = None
         for f in files:
             if f.lower().endswith(".pdb.gz") or f.lower().endswith(".cif.gz"):
                 fp = os.path.join ( backup_dir,f )
-                mt = os.path.getmtime(fp)
-                if mt > mtime:
-                    mtime = mt
+                # mt = os.path.getmtime(fp)
+                # if mt > mtime:
+                #     # mtime = mt
+                if (not fpath) or (fp>fpath):
                     fpath = fp
         if fpath:
-            fname = "__backup_restore.pdb"
+            fname = os.path.basename(fpath)[:-3].replace(":","-")
             with open(fname,'wb') as f_out, gzip.open(fpath,'rb') as f_in:
                 shutil.copyfileobj ( f_in,f_out )
-            self.putMessage (
-                "<span style=\"font-size:112%;color:maroon;\"><b>" +\
-                "Coordinates are restored from last Coot backup.</b></span>" +\
-                "<span style=\"font-size:100%;color:maroon;\"><p>" +\
-                "Next time, save coordinates before ending Coot session, " +\
-                "using Coot's <i>\"File/Save coordinates ...\"</i> menu " +\
-                "item, without changing the file name and output directory " +
-                "offered.</span>"
+            if make_restore_message:
+                self.putMessage (
+                    "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                    "Results were restored from last Coot backup.</b></span>" +\
+                    "<span style=\"font-size:100%;color:maroon;\"><p>" +\
+                    "Next time, save coordinates before ending Coot session, " +\
+                    "using Coot's <i>\"File/Save coordinates ...\"</i> menu " +\
+                    "item, without changing the file name and output directory " +
+                    "offered.</span>"
             )
         return fname
+
+
+    def fetchRecoveryFile ( self,coot_backup_dir ):
+        
+        recover_fpath = None
+        
+        if hasattr(self.task,"recover_from") and self.task.recover_from>=0:
+            # messagebox.displayMessage ( "Recover Coot session","Choose files" )
+            # selectfile.select ( "title",["All files (*)"],startDir=".",saveSettings=False )
+            coot_recover_dir = coot_backup_dir.replace (
+                self.task.project + "_" + str(self.task.id),
+                self.task.project + "_" + str(self.task.recover_from),
+            )
+            if os.path.exists(coot_recover_dir):
+                recover_fpath = self.getLastBackupFile ( coot_recover_dir,
+                                                         make_restore_message=False )
+                if not recover_fpath:
+                    self.putMessage (
+                        "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                        "Recovery from job " +\
+                        str(self.task.recover_from) + " failed because no " +\
+                        "backup files were found.</b></span><br>&nbsp;" 
+                    )
+                    self.flush()
+            else:
+                self.putMessage (
+                    "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                    "Recovery from job " +\
+                    str(self.task.recover_from) + " failed because no " +\
+                    "backup directory was found.</b></span>" +\
+                    "<span style=\"font-size:100%;color:maroon;\"><p>" +\
+                    "<i>Note that Coot backups are pruned after 30 days.<i>" +\
+                    "</span><br>&nbsp;" 
+                )
+                self.flush()
+
+        return recover_fpath
+
 
     # ------------------------------------------------------------------------
 
@@ -123,13 +163,23 @@ class CootCE(basic.TaskDriver):
         # fetch input data
 
         coot_backup_dir = self.makeBackupDirectory()
+        recover_fpath   = self.fetchRecoveryFile  ( coot_backup_dir )
 
         # make command line arguments
         args = []
         ixyz = self.input_data.data.ixyz
         for i in range(len(ixyz)):
             ixyz[i] = self.makeClass ( ixyz[i] )
-            xyzpath = ixyz[i].getXYZFilePath(self.inputDir())
+            if (i==0) and recover_fpath:
+                xyzpath = recover_fpath
+                self.putMessage (
+                    "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                    "Input model was restored from last backup in job " +\
+                    str(self.task.recover_from) + ".</b></span><br>&nbsp;" 
+                )
+                self.flush()
+            else:
+                xyzpath = ixyz[i].getXYZFilePath(self.inputDir())
             if xyzpath and (xyzpath not in args):
                 args += ["--pdb",xyzpath]
 
@@ -150,6 +200,9 @@ class CootCE(basic.TaskDriver):
                 self.stderrln ( " *** backup copy failed " + coot_backup_dir )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
+
+        if recover_fpath:
+            os.remove ( recover_fpath )
 
         self.putMessage (
             "<i>Just in case: learn about recovering results from crashed Coot jobs " +\
@@ -246,17 +299,19 @@ class CootCE(basic.TaskDriver):
         # ============================================================================
         # close execution logs and quit
 
-        if rc.msg == "":
-            self.success ( have_results )
-        else:
-            self.file_stdout.close()
-            self.file_stderr.close()
-            if messagebox:
-                messagebox.displayMessage ( "Failed to launch",
-                  "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
-                  "<p>This may indicate a problem with software setup." )
+        self.success ( have_results )
 
-            raise signal.JobFailure ( rc.msg )
+        # if rc.msg == "":
+        #     self.success ( have_results )
+        # else:
+        #     self.file_stdout.close()
+        #     self.file_stderr.close()
+        #     if messagebox:
+        #         messagebox.displayMessage ( "Failed to launch",
+        #           "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
+        #           "<p>This may indicate a problem with software setup." )
+
+        #     raise signal.JobFailure ( rc.msg )
 
 # ============================================================================
 

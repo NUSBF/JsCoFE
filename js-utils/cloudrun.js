@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    21.05.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,6 +112,7 @@ function printInstructions()  {
     '========',
     'CloudRun',
     '========',
+    'CCP4 Cloud v.' + cmd.appVersion(),
     '',
     'CCP4 Cloud project initiation, data upload and running task from command prompt.',
     '',
@@ -330,6 +331,7 @@ function printTemplate ( task )  {
     '# =================================================\n' +
     '# CloudRun template command file for ' + task + ' task.\n' +
     '# =================================================\n' +
+    '# CCP4 Cloud v.' + cmd.appVersion() + '\n' +
     '#\n' +
     msg.join('\n')
   );
@@ -525,7 +527,16 @@ let commands  = input.trim().split('\n');
 let ok        = true;
 let fnames    = [];
 let auth_file = '';
-console.log ( ' ========== COMMANDS:' );
+
+console.log (
+  '\n' +
+  '========\n' +
+  'CloudRun\n' +
+  '========\n' +
+  'CCP4 Cloud v.' + cmd.appVersion() + '\n \n' +
+  '------------- COMMANDS:'
+);
+
 for (let i=0;i<commands.length;i++)  {
   console.log ( ' \$ ' + commands[i] );
   let command = commands[i].split('#')[0].trim();

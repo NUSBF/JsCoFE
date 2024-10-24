@@ -100,11 +100,11 @@ class Slice(basic.TaskDriver):
                         # if not afmodels[i]["seq_ident"]:
                         #     afmodels[i]["seq_ident"] = "0.0"
                         model.meta  = {
-                            "rmsd"    : "1.2",
+                            "rmsd"    : "1",
                             "seqId"   : "100.0"
                         }
                         model.seqId = "100.0"
-                        model.rmsd  = "1.2"
+                        model.rmsd  = "1"
                         self.add_seqid_remark ( model,["100.0"] )
                         self.putModelWidget ( self.getWidgetId("model_btn"),
                                               "Coordinates:&nbsp;",model )

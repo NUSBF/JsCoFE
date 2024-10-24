@@ -37,8 +37,6 @@ class appClient extends client {
     }
 
     this.arg_info.user.def = '@local';
-
-    this.setupSignals();
   }
 
   async doCall(action, ...args) {
@@ -49,19 +47,6 @@ class appClient extends client {
     // need to use call and assign this.datalink as the given this
     let res = func.call(this.datalink, ...args);
     return res;
-  }
-
-  setupSignals() {
-    let called = false;
-    process.on('SIGINT', async () => {
-      if (! called) {
-        called = true;
-        console.log("\nCaught interrupt signal");
-        this.datalink.abortAllJobs();
-        await tools.sleep(500);
-        process.exit(1);
-      }
-    });
   }
 
   async waitForCatalogs() {

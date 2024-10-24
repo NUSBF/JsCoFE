@@ -245,13 +245,18 @@ class server {
       this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));
     });
 
-    app.listen( port, host, function(err) {
+    let server = app.listen(port, host, function(err) {
       if (err) {
         log.error(err)
       } else {
         log.info(`Data Link Server - Running on ${host}:${port}`);
       }
     });
+
+    // set requestTimeout - sets the timeout value in milliseconds for receiving the entire request from the client.
+    // https://nodejs.org/api/http.html#serverrequesttimeout
+    server.requestTimeout = config.get('server.request_timeout_secs') * 1000;
+    log.debug(`Server requestTimeout set to ${server.requestTimeout} ms`);
   }
 
   stop() {

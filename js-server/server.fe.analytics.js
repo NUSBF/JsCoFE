@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    12.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Analytics
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2024
  *
  *  ==========================================================================
  *
@@ -325,8 +325,8 @@ function FEAnalytics()  {
 FEAnalytics.prototype.userLogin = function ( userData )  {
   if (!(userData.login in this.activity))
     this.activity[userData.login] = {};
-  var dlist = userData.email.toLowerCase().split('@')[1].split('.');
-  var n = Math.min(2,dlist.length);
+  let dlist = userData.email.toLowerCase().split('@')[1].split('.');
+  let n = Math.min(2,dlist.length);
   if ((dlist.length>2) && (dlist[dlist.length-2]=='ac'))
     n = 3;
   this.activity[userData.login].domain    = dlist.slice(dlist.length-n).join('.');
@@ -340,7 +340,7 @@ FEAnalytics.prototype.logPresence = function ( ulogin,t )  {
 }
 
 FEAnalytics.prototype.logDocument = function ( fpath )  {
-var fname = path.parse(fpath).base;
+let fname = path.parse(fpath).base;
   // if (!(fname in this.doclog))  this.doclog[fname] = 1;
   //                         else  this.doclog[fname]++;
   if (!(fpath in this.doclog))  {  //code to repair existing stats
@@ -365,30 +365,30 @@ function add_to_uhash ( country,domain,uhash )  {
 }
 
 function uhash_to_geography ( uhash )  {
-var geography = [];
-var country   = 1;
+let geography = [];
+let country   = 1;
   while (country) {
     country = null;
-    var cnt = 0;
-    for (var c in uhash)
+    let cnt = 0;
+    for (let c in uhash)
       if (uhash[c].ucount>cnt)  {
         country = c;
         cnt     = uhash[c].ucount;
       }
     if (country)  {
-      var item = {};
+      let item = {};
       item.country = getCountry ( country );
       item.ucount  = uhash[country].ucount;
       item.domains = [];
-      for (var d in uhash[country].domains)
+      for (let d in uhash[country].domains)
         item.domains.push({
           'domain' : d,
           'count'  : uhash[country].domains[d]
         });
-      for (var i=0;i<item.domains.length-1;i++)
-        for (var j=i+1;j<item.domains.length;j++)
+      for (let i=0;i<item.domains.length-1;i++)
+        for (let j=i+1;j<item.domains.length;j++)
           if (item.domains[j].count>item.domains[i].count)  {
-            var di = item.domains[i];
+            let di = item.domains[i];
             item.domains[i] = item.domains[j];
             item.domains[j] = di;
           }
@@ -401,22 +401,22 @@ var country   = 1;
 
 
 FEAnalytics.prototype.getReport = function()  {
-var users_current  = [];
-var users_per_week = [];  // cumulative unique users per week
-var doc_stats      = [];  // web page hits
-var uhash_recent   = {};
-var uhash_year     = {};
-var t0             = Date.now();
-var t_current      = t0 - twindow_current;
-var t_recent       = t0 - twindow_recent;
-var tweek          = 3600000*24*7;    // milliseconds in a week
-var t_year         = t0 - 3600000*24*365;  // milliseconds in an year
-var tw0            = Math.ceil(t0/tweek)*tweek;
+let users_current  = [];
+let users_per_week = [];  // cumulative unique users per week
+let doc_stats      = [];  // web page hits
+let uhash_recent   = {};
+let uhash_year     = {};
+let t0             = Date.now();
+let t_current      = t0 - twindow_current;
+let t_recent       = t0 - twindow_recent;
+let tweek          = 3600000*24*7;    // milliseconds in a week
+let t_year         = t0 - 3600000*24*365;  // milliseconds in an year
+let tw0            = Math.ceil(t0/tweek)*tweek;
 
-  for (var login in this.activity)  {
+  for (let login in this.activity)  {
     if (this.activity[login].lastSeen>=t_year)  {
-      var domain  = this.activity[login].domain;
-      var country = domain.split('.').pop();
+      let domain  = this.activity[login].domain;
+      let country = domain.split('.').pop();
       add_to_uhash ( country,domain,uhash_year );
       if (this.activity[login].lastSeen>=t_recent)
         add_to_uhash ( country,domain,uhash_recent );
@@ -427,17 +427,17 @@ var tw0            = Math.ceil(t0/tweek)*tweek;
           country : getCountry(country)
         });
     }
-    var nweek = Math.floor ( (tw0-this.activity[login].lastSeen)/tweek );
+    let nweek = Math.floor ( (tw0-this.activity[login].lastSeen)/tweek );
     while (users_per_week.length<=nweek)
       users_per_week.push ( 0 );
     users_per_week[nweek]++;
   }
 
-  // for (var i=1;i<users_per_week.length;i++)
+  // for (let i=1;i<users_per_week.length;i++)
   //   users_per_week[i] += users_per_week[i-1];
 
-  var total = 0;
-  for (var doc in this.doclog)  {
+  let total = 0;
+  for (let doc in this.doclog)  {
     doc_stats.push ({
       'name'  : doc,
       'count' : this.doclog[doc]
@@ -445,10 +445,10 @@ var tw0            = Math.ceil(t0/tweek)*tweek;
     total += this.doclog[doc];
   }
 
-  for (var i=0;i<doc_stats.length;i++)  {
-    for (var j=i+1;j<doc_stats.length;j++)
+  for (let i=0;i<doc_stats.length;i++)  {
+    for (let j=i+1;j<doc_stats.length;j++)
       if (doc_stats[j].count>doc_stats[i].count)  {
-        var dsi = doc_stats[i];
+        let dsi = doc_stats[i];
         doc_stats[i] = doc_stats[j];
         doc_stats[j] = dsi;
       }
@@ -474,11 +474,11 @@ function getAnalyticsFPath()  {
 
 function readFEAnalytics()  {
   if (!feAnalytics)  {
-    var fpath = getAnalyticsFPath();
-    var obj   = utils.readObject ( fpath );
+    let fpath = getAnalyticsFPath();
+    let obj   = utils.readObject ( fpath );
     if (obj)  {
       feAnalytics = new FEAnalytics();
-      for (var key in obj)
+      for (let key in obj)
         feAnalytics[key] = obj[key];
       lastSaved = Date.now();
     } else
@@ -487,7 +487,7 @@ function readFEAnalytics()  {
 }
 
 function writeFEAnalytics()  {
-var fpath = getAnalyticsFPath();
+let fpath = getAnalyticsFPath();
   if (!feAnalytics)
     feAnalytics = new FEAnalytics();
   utils.writeObject ( fpath,feAnalytics );
@@ -499,7 +499,7 @@ function getFEAnalytics()  {
 }
 
 function logPresence ( ulogin )  {
-  var t = Date.now();
+  let t = Date.now();
   feAnalytics.logPresence ( ulogin,t );
   if (t-lastSaved>3600000)  // 1 hour
     writeFEAnalytics();

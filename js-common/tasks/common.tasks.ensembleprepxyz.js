@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -376,7 +376,7 @@ TaskEnsemblePrepXYZ.prototype.checkKeywords = function ( keywords )  {
 }
 
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -388,18 +388,18 @@ if (!__template)  {
 
   TaskEnsemblePrepXYZ.prototype.collectInput = function ( inputPanel )  {
 
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     if (msg.length<=0)  {
-      var seq       = this.input_data.getData ( 'seq' );
-      var xyz       = this.input_data.getData ( 'xyz' );
-      var nProteins = 0;
-      var nDNAs     = 0;
-      var nRNAs     = 0;
-      var isProtein = false;
-      var isDNA     = false;
-      var isRNA     = false;
-      var modSel    = null;
+      let seq       = this.input_data.getData ( 'seq' );
+      let xyz       = this.input_data.getData ( 'xyz' );
+      let nProteins = 0;
+      let nDNAs     = 0;
+      let nRNAs     = 0;
+      let isProtein = false;
+      let isDNA     = false;
+      let isRNA     = false;
+      let modSel    = null;
 
       if (seq && (seq.length>0))  {
         isProtein = (seq[0].subtype.indexOf('protein')>=0);
@@ -409,13 +409,13 @@ if (!__template)  {
       } else
         modSel = this.parameters.sec1.contains.MODNOSEQ_SEL.value;
 
-      for (var i=0;i<xyz.length;i++)  {
+      for (let i=0;i<xyz.length;i++)  {
         if (xyz[i].subtype.indexOf('protein')>=0)  nProteins++;
         if (xyz[i].subtype.indexOf('dna')>=0)      nDNAs++;
         if (xyz[i].subtype.indexOf('rna')>=0)      nRNAs++;
       }
 
-      var msg_list = [];
+      let msg_list = [];
 
       if ((['U','D'].indexOf(modSel)<0) && ((nDNAs+nRNAs>0) || isDNA || isRNA))
         msg_list.push ( this.invalidParamMessage (
@@ -455,20 +455,20 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var path  = require('path');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  const path  = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
 
   TaskEnsemblePrepXYZ.prototype.cleanJobDir = function ( jobDir )  {
 
     __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
 
     // paranoid piece of code, ugly
-    var badDirPath = path.join ( jobDir,'search_a' );
+    let badDirPath = path.join ( jobDir,'search_a' );
     if (utils.fileExists(badDirPath))  {
       console.log ( ' +++ remove stray directory ' + badDirPath +
                     ' from TaskEnsemblePrepXYZ job' );
-      utils.removePath ( badDirPath );
+      utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
     }
 
   }
