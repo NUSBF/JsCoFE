@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.03.24   <--  Date of Last Modification.
+#    07.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -87,7 +87,6 @@ class MakeLigand(basic.TaskDriver):
                 lig_path = os.path.join ( os.environ["CCP4"],"lib","data","monomers",
                                           code[0].lower(),code + ".cif" )
             xyzPath  = code + ".pdb"
-            cifPath  = code + ".cif"
 
             if os.path.isfile(lig_path):
                 # make AceDrg command line
@@ -134,7 +133,6 @@ class MakeLigand(basic.TaskDriver):
                     code  = "LIG"
 
                 xyzPath = code + ".pdb"
-                cifPath = code + ".cif"
 
                 f = open ( self.smiles_file_path(),'w' )
                 f.write  ( smiles + '\n' )
@@ -154,6 +152,7 @@ class MakeLigand(basic.TaskDriver):
             cmd += ["-j",self.getParameter(sec2.NUMINITCONFORMERS)]
 
         summary_line = "no ligand created (errors)"
+
         if code:  # can continue
 
             if self.outputFName == "":
@@ -166,6 +165,9 @@ class MakeLigand(basic.TaskDriver):
                 else:
                     self.runApp ( "acedrg",cmd,logType="Main" )
                 if not os.path.exists(xyzPath):
+                    cifPath  = code + ".cif"
+                    if not os.path.exists(cifPath):
+                        cifPath = code + "_final.cif"
                     cif = gemmi.cif.read_file ( cifPath )
                     st  = gemmi.make_structure_from_chemcomp_block ( cif["comp_" + code] )
                     while len(st)>1:  # because of gemmi bug

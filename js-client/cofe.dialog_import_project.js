@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.24   <--  Date of Last Modification.
+ *    08.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,9 +80,9 @@ function ImportProjectDialog ( onSuccess_func )  {
                 let v1 = data.ccp4cloud_version.split(' ')[0];
                 if (v0<v1)
                   vers_text = '<p><b>Note:</b> The project was made with a newer '   +
-                              'version (1.7.020) of ' + appName() + ' than what '    +
-                              'you have (1.7.019). If you cannot access it, update ' +
-                              'your CCP4 to the latest version.';
+                              'version (' + v1 + ') of ' + appName() + ' than what ' +
+                              'you are using (' + v0 + '). If you cannot open the '  +
+                              'project, update your CCP4 setup to the latest version.';
               }
               let msg_text = '<div style="width:450px;">Project "<i>';
               if (pnames.length<2)  msg_text += pnames[0];

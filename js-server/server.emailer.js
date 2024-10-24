@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    30.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  E-mail Support
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -38,10 +38,10 @@ const log = require('./server.log').newLog(4);
 
 
 function send_nodemailer ( to,subject,message )  {
-var emailer     = conf.getEmailerConfig();
-var transporter = nodemailer.createTransport ( emailer );
+let emailer     = conf.getEmailerConfig();
+let transporter = nodemailer.createTransport ( emailer );
 
-  var emailData = {
+  let emailData = {
     from   : emailer.emailFrom,
     to     : to,
     subject: subject,
@@ -51,6 +51,10 @@ var transporter = nodemailer.createTransport ( emailer );
 
   transporter.sendMail ( emailData, function(error,response) {
     if (error) {
+      log.error ( 1,'Attempt to send an e-mail:' );
+      log.error ( 1,'To: ' + to );
+      log.error ( 1,'Subject: ' + subject );
+      // log.error ( 1,'Message: ' + message );
       log.error ( 1,'Emailer error: ' + error );
 //    } else  {
 //      console.log ( "Message sent: " + response.message );
@@ -63,8 +67,8 @@ var transporter = nodemailer.createTransport ( emailer );
 /*
 function send_telnet ( to,subject,message )  {
   try {
-    var emailer = conf.getEmailerConfig();
-    var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
+    let emailer = conf.getEmailerConfig();
+    let telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
       if (telnet)  {
 
@@ -72,7 +76,7 @@ function send_telnet ( to,subject,message )  {
 
         (function(t){
 
-          var finish = false;
+          let finish = false;
           t.on ( 'exit',function(code){
             finish = true;
           });
@@ -82,11 +86,11 @@ function send_telnet ( to,subject,message )  {
             log.error ( e.stack || e );
           });
 
-          var stage = 0;
+          let stage = 0;
 
           t.stdout.on ( 'data', function(data){
             if ((!finish) && (stage>0))  {
-              var msg = '';
+              let msg = '';
               switch (stage)  {
                 case 1  : msg = 'HELO '         + emailer.host;             break;
                 case 2  : msg = 'MAIL FROM: <'  + emailer.emailFrom + '>';  break;
@@ -135,28 +139,31 @@ function send_telnet ( to,subject,message )  {
 
 function send_telnet ( to,subject,message )  {
   try {
-    var emailer = conf.getEmailerConfig();
-    var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
+    let emailer = conf.getEmailerConfig();
+    let telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
     if (telnet)  {
 
       telnet.stdin.setEncoding ( 'utf-8' );
 
-      var finish = false;
+      let finish = false;
       telnet.on ( 'exit',function(code){
         finish = true;
       });
 
       telnet.on ( 'error',function(e){
+        log.error ( 2,'Attempt to send an e-mail:' );
+        log.error ( 2,'To: ' + to );
+        log.error ( 2,'Subject: ' + subject );
         log.error ( 2,'Emailer error: cannot send e-mail' );
         log.error ( e.stack || e );
       });
 
-      var stage = 0;
+      let stage = 0;
 
       telnet.stdout.on ( 'data', function(data){
         if ((!finish) && (stage>0))  {
-          var msg = '';
+          let msg = '';
           switch (stage)  {
             case 1  : msg = 'HELO '         + emailer.host;             break;
             case 2  : msg = 'MAIL FROM: <'  + emailer.emailFrom + '>';  break;
@@ -179,6 +186,9 @@ function send_telnet ( to,subject,message )  {
             try {
               telnet.stdin.write ( msg + '\n' );
             } catch (e)  {
+              log.error ( 3,'Attempt to send an e-mail:' );
+              log.error ( 3,'To: ' + to );
+              log.error ( 3,'Subject: ' + subject );
               log.error ( 3,'Emailer error: cannot send e-mail' );
               log.error ( e.stack || e );
               finish = false;
@@ -203,8 +213,8 @@ function send_telnet ( to,subject,message )  {
 
 function send_sendmail ( to,subject,message )  {
   try {
-    var emailer  = conf.getEmailerConfig();
-    var sendmail = utils.spawn ( 'sendmail',[to],{} );
+    let emailer  = conf.getEmailerConfig();
+    let sendmail = utils.spawn ( 'sendmail',[to],{} );
       if (sendmail)  {
         sendmail.stdin.setEncoding('utf-8');
         // sendmail.stdout.pipe(process.stdout);
@@ -221,6 +231,9 @@ function send_sendmail ( to,subject,message )  {
       } else
         log.warning ( 5,'sendmail not found, e-mailer will not work' );
   } catch(e)  {
+    log.error ( 5,'Attempt to send an e-mail:' );
+    log.error ( 5,'To: ' + to );
+    log.error ( 5,'Subject: ' + subject );
     log.error ( 5,'exception while using sendmail' );
   }
 }
@@ -228,7 +241,7 @@ function send_sendmail ( to,subject,message )  {
 
 function send ( to,subject,message )  {
   if (message)  {
-    var emailer_type = conf.getEmailerConfig().type;
+    let emailer_type = conf.getEmailerConfig().type;
     if (emailer_type=='nodemailer')  {
       send_nodemailer ( to,subject,message );
     } else if (emailer_type=='telnet')  {
@@ -250,12 +263,12 @@ function send ( to,subject,message )  {
 
 
 function sendTemplateMessage ( userData,subject,template_name,subs_dict )  {
-var message = utils.readString ( path.join('message_templates',template_name+'.html') );
+let message = utils.readString ( path.join('message_templates',template_name+'.html') );
   if (message)  {
-    var userStatus = 'active';
+    let userStatus = 'active';
     if (userData.dormant)
       userStatus = 'dormant since ' + (new Date(userData.dormant).toISOString().slice(0,10));
-    var user_dict = {
+    let user_dict = {
       'userName'        : userData.name,
       'userLogin'       : userData.login,
       'userEMail'       : userData.email,
@@ -268,9 +281,9 @@ var message = utils.readString ( path.join('message_templates',template_name+'.h
       'app_url'         : conf.getFEConfig().reportURL,
       'maintainerEmail' : conf.getEmailerConfig().maintainerEmail
     };
-    for (var key in user_dict)
+    for (let key in user_dict)
       message = com_utils.replaceAll ( message,'$'+key,user_dict[key] );
-    for (var key in subs_dict)
+    for (let key in subs_dict)
       message = com_utils.replaceAll ( message,'$'+key,subs_dict[key] );
   }
   return send ( userData.email,subject,message );

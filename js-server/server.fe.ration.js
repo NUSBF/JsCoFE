@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.03.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -44,6 +44,7 @@ const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const utils     = require('./server.utils');
 const emailer   = require('./server.emailer');
+const ud        = require('../js-common/common.data_user');
 const urat      = require('../js-common/common.userration');
 const cmd       = require('../js-common/common.commands');
 
@@ -97,7 +98,7 @@ let cfg   = conf.getFEConfig();
       modified = true;
     }
   
-    if (loginData.login=='localuser')  {
+    if (loginData.login==ud.__local_user_id)  {
       modified = (r.storage>0.0)   || (r.storage_max>0.0) || (r.cpu_day>0.0) ||
                  (r.cpu_month>0.0) || (r.cloudrun_day>0)  || (r.archive_year>0);
       r.storage      = 0.0;  // committed MBytes (0: unlimited)
@@ -105,7 +106,9 @@ let cfg   = conf.getFEConfig();
       r.cpu_day      = 0.0;  // hours  (0: unlimited)
       r.cpu_month    = 0.0;  // hours  (0: unlimited)
       r.cloudrun_day = 100;  // cloudruns (0: unlimited)
+      // r.cloudrun_day = 0;    // cloudruns (0: unlimited)
       r.archive_year = 2;    // maximum number of project archived (0: unlimited)
+      // r.archive_year = 0;    // maximum number of project archived (0: unlimited)
     }
 
     let msg_list = [];

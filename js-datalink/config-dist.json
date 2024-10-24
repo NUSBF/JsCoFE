@@ -3,6 +3,7 @@
   "server": {
     "host": "localhost",
     "port": 8100,
+    "request_timeout_secs": 1800
     "admin_key": ""
   },
   // locations for storage
@@ -35,6 +36,9 @@
       "rsync_size": true
     },
     "irrmc": {
+      "enabled": true
+    },
+    "zenodo": {
       "enabled": true
     },
     // used for user uploaded data

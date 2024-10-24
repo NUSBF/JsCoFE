@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    26.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1488,7 +1488,11 @@ class TaskDriver(object):
         # file.write  ( fcnt )
         file.close  ()
         model.seqrem  = True
-        model.simtype = "cardon"
+        if model.meta["rmsd"]=='':
+            model.simtype = "cardon"
+        else:
+            model.simtype = "rmsd"
+  
         if len(seqid_lst)==1:
             model.meta["seqId"] = seqid_lst[0]
         return

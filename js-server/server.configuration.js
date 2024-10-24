@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.08.24   <--  Date of Last Modification.
+ *    10.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,8 @@ const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
 
 //  prepare log
-const log       = require('./server.log').newLog(3);
+const log_mod   = require('./server.log');
+const log       = log_mod.newLog(3);
 
 
 // ===========================================================================
@@ -68,32 +69,38 @@ function listWindowsDrives ( callback_func )  {
   }
 }
 
+const env_log_verbosity = 'JSCOFE_LOG_VERBOSITY';
 
 // ===========================================================================
 // ServerConfig class template
 
 function ServerConfig ( type )  {
-  this.type           = type;
-  this.protocol       = 'http';
-  this.host           = 'localhost';
-  this.isLocalHost    = true;
-  this.port           = 'port';
-  this.externalURL    = '';
-  this.exclude_tasks  = [];   // tasks that should not run on given FE or NC server
-  this.excluded_tasks = null; // takes exclusion in NC configs into account
-  this.licensed_tasks = [];   // tasks for which FE has 3rd party license ("TaskArpWarp")
-  this.only_tasks     = [];   // tasks that NC server can only run
-  this.storage        = null;
-  this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
+  this.type            = type;
+  this.protocol        = 'http';
+  this.host            = 'localhost';
+  this.isLocalHost     = true;
+  this.port            = 'port';
+  this.externalURL     = '';
+  this.exclude_tasks   = [];   // tasks that should not run on given FE or NC server
+  this.excluded_tasks  = null; // takes exclusion in NC configs into account
+  this.licensed_tasks  = [];   // tasks for which FE has 3rd party license ("TaskArpWarp")
+  this.only_tasks      = [];   // tasks that NC server can only run
+  this.storage         = null;
+  this.tmp_dir         = null;
+  this.compression     = 5;    // zip compression for FE<->NC communication
+  this.update_rcode    = 0;    // can be be detected by launcher script to do the needful
   this.rejectUnauthorized = true; // should be true by default
-  if (type=='FEProxy')
+  // if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
-  else  this.state = 'active';  // server state: 'active', 'inactive'
+  // else  this.state = 'active';  // server state: 'active', 'inactive'
   this.startDate     = new Date(Date.now()).toUTCString();
   this.logflow       = {};
   this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
   this.logflow.log_file     = '';    // full path less of '.log' and '.err' extensions
   this.allowedPaths  = [];
+  this.log_verbosity = 0;   // verbosity level for output logs
+  if (process.env[env_log_verbosity])
+    this.log_verbosity = process.env[env_log_verbosity];
 }
 
 ServerConfig.prototype.url = function()  {
@@ -548,6 +555,9 @@ function CCP4DirName()  {
     "update_notifications" : false,  // optional notification on CCP4 updates
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
+    "tmp_dir"          : null, // optional; when null then storage/tmp is used
+    "compression"      : 5,    // optional; 0-9 zip compression for FE<->NC communication;
+                               // 0: no compression
     "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be
                                              // omitted. Although functional, do not use
                                              // this in new setups
@@ -626,8 +636,9 @@ function CCP4DirName()  {
         "after"  : 180      // accounts become dormant automatically after 180 days
                       // of inactivity; 0 means no auto-dormancy
     },
-    "cache_max_age"    : 31536000,  // (optional) 1 year in ms; max age for caching icons on clients  
-    "sessionCheckPeriod" : 2000,
+    "cache_max_age"    : 31536000, // (optional) 1 year in ms; max age for caching icons on clients  
+    "sessionCheckPeriod" : 2000,   // (optional) in ms
+    "jobsPullPeriod"   : 4000,     // (optional, in ms) period for checking jobs on 'REMOTE' NCs  
     "ration"           : {
         "storage"      : 5000,     // currently comitted storage
         "storage_max"  : 20000,    // maximum possible allocation
@@ -648,7 +659,8 @@ function CCP4DirName()  {
     "logflow" : {   // optional item
       "chunk_length" : 10000,     // number of jobs to advance log file counters
       "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
-    }
+    },
+    "log_verbosity"    : 0 // optional; 0-4 with "0" standard
   },
 
   "FEProxy" : {  // optional proxy configuration
@@ -659,10 +671,11 @@ function CCP4DirName()  {
     "exclusive"        : true,
     "stoppable"        : false,
     "rejectUnauthorized" : true, // optional; use only for debugging, see docs
-    "localisation"     : 1  // 0: all files are taken from remote server
+    "localisation"     : 1, // 0: all files are taken from remote server
                             // 1: images are taken from local setup
                             // 2: images and js libraries are taken from local setup
                             // 3: images and all js codes are taken from local setup
+    "log_verbosity"    : 0 // optional; 0-4 with "0" standard
   },
 
   "NumberCrunchers" : [
@@ -687,6 +700,9 @@ function CCP4DirName()  {
       "only_tasks"       : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-nc-storage",
+      "tmp_dir"          : null, // optional; when null then storage/tmp is used
+      "compression"      : 5,    // optional; 0-9 zip compression for FE<->NC communication;
+                                 // 0: no compression
       "jobs_safe"        : {
           "path"     : "./cofe-nc-storage/jobs_safe",
           "capacity" : 10
@@ -708,7 +724,8 @@ function CCP4DirName()  {
       "logflow" : {   // optional item
         "chunk_length" : 10000,     // number of jobs to advance log file counters
         "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
-      }
+      },
+      "log_verbosity"    : 0 // optional; 0-4 with "0" standard
     },
     {
       "serNo"            : 1,
@@ -728,8 +745,11 @@ function CCP4DirName()  {
       "only_tasks"       : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-client-storage",
+      "tmp_dir"          : null, // optional; when null then storage/tmp is used
+      "compression"      : 5,    // optional; 0-9 zip compression for FE<->NC communication;
+                                 // 0: no compression
       "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
-      "exeType"          : "CLIENT",
+      "exeType"          : "CLIENT", // can be also "REMOTE"
       "exeData"          : "",       // mandatory
       "exeData_GPU"      : "",       // optional queue for GPU-based tasks
       "jobCheckPeriod"   : 2000,
@@ -745,7 +765,8 @@ function CCP4DirName()  {
       "logflow" : {   // optional item
         "chunk_length" : 10000,     // number of jobs to advance log file counters
         "log_file" : "/path/to/node_fe"    // full path less of '.log' and '.err' extensions
-      }
+      },
+      "log_verbosity"    : 0 // optional; 0-4 with "0" standard
     }
   ],
 
@@ -840,9 +861,10 @@ function readConfiguration ( confFilePath,serverType )  {
       after  : 180      // accounts become dormant automatically after 180 days
                         // of inactivity; 0 means no auto-dormancy
     };
-    fe_server.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
+    fe_server.cache_max_age      = 31536000;  // 1 year in ms; max age for caching icons on clients  
     fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
-
+    fe_server.sessionCheckPeriod = 2000; // (optional) in ms
+    fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
 
     // read configuration file
     for (let key in confObj.FrontEnd)
@@ -964,6 +986,10 @@ function readConfiguration ( confFilePath,serverType )  {
 
     fe_server._checkLocalStatus();
 
+    if (process.env[env_log_verbosity])
+      fe_server.log_verbosity = process.env[env_log_verbosity];
+    log_mod.setVerbosity ( fe_server.log_verbosity );
+
   } else if ((serverType=='FE') || (serverType=='FE-PROXY'))
     return 'front-end configuration is missing in file ' + confFilePath;
 
@@ -1072,6 +1098,9 @@ function readConfiguration ( confFilePath,serverType )  {
 
 function setServerConfig ( server_config )  {
   work_server = server_config;
+  if (process.env[env_log_verbosity])
+    server_config.log_verbosity = process.env[env_log_verbosity];
+  log_mod.setVerbosity ( server_config.log_verbosity );
 }
 
 
@@ -1370,10 +1399,20 @@ let isClient   = false;
 
 
 function isLocalSetup()  {
-// Returns true if all servers are running on localhost.
-let isLocal = fe_server.localSetup;
-  for (let i=0;(i<nc_servers.length) && isLocal;i++)
-    isLocal = nc_servers[i].localSetup;
+// Returns:  2 if all servers are running on localhost
+//           1 if all servers are local and 'REMOTE'
+//           0 if all servers are remote
+let isLocal = 0;
+  if (fe_server.localSetup)  {
+    isLocal = 2;
+    for (let i=0;(i<nc_servers.length) && (isLocal>0);i++)
+      if (nc_servers[i].in_use)  {
+        if (nc_servers[i].exeType=='REMOTE') 
+          isLocal = 1;
+        else if (!nc_servers[i].localSetup)
+          isLocal = 0;
+      }
+  }
   return isLocal;
 }
 
@@ -1403,7 +1442,10 @@ function isArchive()  {
 }
   
 function getFETmpDir()  {
-  return path.join ( getFEConfig().storage,'tmp' );
+  let cfg = getFEConfig();
+  if (cfg.tmp_dir)
+    return cfg.tmp_dir;
+  return path.join ( cfg.storage,'tmp' );
 }
 
 function cleanFETmpDir()  {
@@ -1427,7 +1469,10 @@ function getSetupID()  {
 }
 
 function getNCTmpDir()  {
-  return path.join ( getServerConfig().storage,'tmp' );
+  let cfg = getServerConfig();
+  if (cfg.tmp_dir)
+    return cfg.tmp_dir;
+  return path.join ( cfg.storage,'tmp' );
 }
 
 function cleanNCTmpDir()  {
@@ -1439,7 +1484,7 @@ function getTmpDir()  {
                            else  return getFETmpDir();
 }
 
-function getTmpFile()  {
+function getTmpFileName()  {
   let tmpDir = getTmpDir();
   if (!utils.fileExists(tmpDir))  {
     if (!utils.mkDir(tmpDir))  {
@@ -1554,7 +1599,7 @@ module.exports.getFETmpDir          = getFETmpDir;
 module.exports.getFETmpDir1         = getFETmpDir1;
 module.exports.getNCTmpDir          = getNCTmpDir;
 module.exports.getTmpDir            = getTmpDir;
-module.exports.getTmpFile           = getTmpFile;
+module.exports.getTmpFileName       = getTmpFileName;
 module.exports.cleanFETmpDir        = cleanFETmpDir;
 module.exports.cleanFETmpDir1       = cleanFETmpDir1;
 module.exports.cleanNCTmpDir        = cleanNCTmpDir;

@@ -49,20 +49,20 @@ class irrmc extends dataSource {
 
       if (page == 1) {
         // extract the page number and break out if we are on the last page
-        pages = dom('.pager').html().match(/Page \d+ of (\d+)/)[1];
+        pages = dom('.page-custom').html().match(/Page \d+ of (\d+)/)[1];
       }
 
       // loop through each entry
-      let group = dom('.panel-group');
+      let group = dom('div[class=""] > div.card');
 
       group.each((i, elem) => {
         let found, id, pdb, path, doi;
 
         // get entry name/description
-        let name = dom(elem).find('.panel-heading small').text();
+        let name = dom(elem).find('.card-header small').text();
 
         // find the links
-        let links = dom(elem).find('.panel-body .col-md-4 a');
+        let links = dom(elem).find('.card-body .col-xl-4 a');
         for (let j = 0; j < links.length; j++) {
           let link = links[j].attribs.href;
 

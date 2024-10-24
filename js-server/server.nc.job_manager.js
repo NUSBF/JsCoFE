@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,7 @@
  *    function make_local_job    ( files,base_url,destDir,job_token,callback_func )
  *    function ncRunRVAPIApp     ( post_data_obj,callback_func )
  *    function ncSendJobResults  ( post_data_obj,callback_func )
+ *    function ncGetJobResults   ( post_data_obj,callback_func,server_response )
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
@@ -57,7 +58,7 @@ const request       = require('request');
 
 //  load application modules
 const conf          = require('./server.configuration');
-const send_dir      = require('./server.send_dir');
+const send_dir      = require('./server.send_dir.js');
 const utils         = require('./server.utils');
 const task_t        = require('../js-common/tasks/common.tasks.template');
 const data_t        = require('../js-common/dtypes/common.dtypes.template');
@@ -104,18 +105,22 @@ function NCJobRegister()  {
 
 
 NCJobRegister.prototype.addJob = function ( jobDir )  {
-let job_token     = crypto.randomBytes(20).toString('hex');
-let maxSendTrials = conf.getServerConfig().maxSendTrials;
+let ncCfg         = conf.getServerConfig();
+let job_token     = ncCfg.name + '-' + crypto.randomBytes(20).toString('hex');
+let maxSendTrials = ncCfg.maxSendTrials;
 let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
+    fe_fsmount    : null,
     jobDir        : jobDir,
     jobStatus     : task_t.job_code.new,
+    task_id       : '',
     return_data   : true,
     sendTrials    : maxSendTrials,
     startTime     : crTime,
     startTime_iso : new Date(crTime).toISOString(),
     endTime       : null,
+    push_back     : 'YES',
     progress      : 0,      // progress measure
     lastAlive     : crTime, // last time when job was alive
     exeType       : '',     // SHELL, SGE or SCRIPT
@@ -130,13 +135,16 @@ let maxSendTrials = conf.getServerConfig().maxSendTrials;
 let crTime        = Date.now();
   this.job_map[job_token] = {
     feURL         : '',
+    fe_fsmount    : null,
     jobDir        : jobDir,
     jobStatus     : task_t.job_code.new,
+    task_id       : '',
     return_data   : true,
     sendTrials    : maxSendTrials,
     startTime     : crTime,
     startTime_iso : new Date(crTime).toISOString(),
     endTime       : null,
+    push_back     : 'YES',
     progress      : 0,      // progress measure
     lastAlive     : crTime, // last time when job was alive
     exeType       : '',     // SHELL or SGE
@@ -155,24 +163,17 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     let jobEntry = this.job_map[job_token];
-    let crTime   = Date.now();
-    // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
-    // if (jobEntry && jobEntry.endTime &&
-    //      ((jobEntry.jobStatus==task_t.job_code.exiting) ||
-    //       (([task_t.job_code.finished,task_t.job_code.failed,task_t.job_code.stopped]
-    //         .indexOf(jobEntry.jobStatus)>=0) &&
-    //        ((crTime-jobEntry.endTime)>86400)
-    //       )
-    //      )
-    //    )  {
-    if (jobEntry && jobEntry.endTime &&
-         ((jobEntry.jobStatus==task_t.job_code.exiting) || 
-          (crTime-jobEntry.endTime>__day_ms)))  {
-      // (jobEntry.sendTrials<=0))  {
-      jobEntry.jobStatus  = task_t.job_code.running;
-      jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
-      jobEntry.awakening  = true;
-      return true;
+    if (jobEntry.push_back=='YES')  {
+      let crTime   = Date.now();
+      if (jobEntry && jobEntry.endTime &&
+          ((jobEntry.jobStatus==task_t.job_code.exiting) || 
+            (crTime-jobEntry.endTime>__day_ms)))  {
+        // (jobEntry.sendTrials<=0))  {
+        jobEntry.jobStatus  = task_t.job_code.running;
+        jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
+        jobEntry.awakening  = true;
+        return true;
+      }
     }
   }
   return false;
@@ -182,7 +183,7 @@ NCJobRegister.prototype.removeJob = function ( job_token )  {
   if (job_token in this.job_map)  {
     (function(jobDir,jobRemoveTimeout){
       setTimeout ( function(){
-        utils.removePath(jobDir);
+        utils.removePathAsync(jobDir);
       },jobRemoveTimeout );
     }(this.job_map[job_token].jobDir,
       conf.getServerConfig().jobRemoveTimeout));
@@ -238,14 +239,18 @@ function readNCJobRegister ( readKey )  {
             if (ncJobRegister.job_map[job_token].jobStatus==task_t.job_code.exiting) {
               ncJobRegister.job_map[job_token].jobStatus  = task_t.job_code.running;
               ncJobRegister.job_map[job_token].sendTrials = maxSendTrials;
-              let saveRegister = true;
+              saveRegister = true;
             }
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('endTime'))
-              ncJobRegister.job_map[job_token].endTime = null;
+              ncJobRegister.job_map[job_token].endTime   = null;
             if (!ncJobRegister.job_map[job_token].hasOwnProperty('progress'))  {
               ncJobRegister.job_map[job_token].progress  = 0;
               ncJobRegister.job_map[job_token].lastAlive = null;
             }
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('push_back'))
+              ncJobRegister.job_map[job_token].push_back  = 'YES';
+            if (!ncJobRegister.job_map[job_token].hasOwnProperty('fe_fsmount'))
+              ncJobRegister.job_map[job_token].fe_fsmount = null;
           }
       }
 
@@ -313,7 +318,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
       mask[job_token] = true;
     } else  {
       n++;
-      log.standard ( 30,'removed unassigned job token: ' + job_token );
+      log.standard ( 30,'removed unassigned job token:' + job_token );
     }
   // delete job registry entries with tokens that were not masked
   ncJobRegister.job_map = comut.mapMaskIn ( ncJobRegister.job_map,mask );
@@ -334,7 +339,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
           dir_found = true;
       if (!dir_found)  {
         // job registry does not contain references to the directory, so delete it
-        utils.removePath ( curPath );
+        utils.removePathAsync ( curPath );
         n++;
         log.standard ( 32,'removed abandoned job directory: ' + file );
       }
@@ -346,19 +351,21 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   if (cleanDeadJobs_bool)  {
     // let _day = __day_ms; // 86400000.0;
-    let srvConfig = conf.getServerConfig();
+    let srvConfig    = conf.getServerConfig();
     let _false_start = srvConfig.jobFalseStart;   // days; should come from config
     let _timeout     = srvConfig.jobTimeout;      // days; should come from config
     let _zombie_life = srvConfig.zombieLifeTime;  // days
-    let t = Date.now()/__day_ms;
-    let n = 0;
-    let nzombies = 0;
+    let t            = Date.now()/__day_ms;
+    let n            = 0;
+    let nzombies     = 0;
+    let npulls       = 0;
     for (let job_token in ncJobRegister.job_map)  {
       let jobEntry = ncJobRegister.job_map[job_token];
       let endTime  = ncJobRegister.job_map[job_token].endTime;
       if (endTime)  {
         endTime /= __day_ms;
-        nzombies++;
+        if (jobEntry.push_back=='YES')  nzombies++;
+                                  else  npulls++;
       }
       let startTime = t;
       if ('startTime' in jobEntry)
@@ -384,8 +391,9 @@ function cleanNC ( cleanDeadJobs_bool )  {
         }
       }
     }
-    log.standard ( 37,'total dead/zombie/timeout jobs scheduled for deletion: ' + n );
-    log.standard ( 38,'total zombie jobs: ' + nzombies );
+    log.standard ( 37,'total dead/zombie/pull/timeout jobs scheduled for deletion: ' + n );
+    log.standard ( 38,'total zombie jobs: '       + nzombies );
+    log.standard ( 38,'total pull waiting jobs: ' + npulls   );
   }
 
   // start job check loop
@@ -400,7 +408,10 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
 function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )  {
 
-let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
+// let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
+
+  let msg = '\n\n ********************************************************\n\n' +
+            '  Job Driver Failure\n\n' + 'Failure code: ' + code;
 
   if (stdout)
     msg += '<p>Catched stdout:<pre>' + stdout + '</pre>';
@@ -414,7 +425,9 @@ let msg = '<h1><i>Job Driver Failure</i></h1>' + 'Failure code: ' + code;
          'message <b>together with</b> input data <b>and task description</b> ' +
          'to ' + conf.getEmailerConfig().maintainerEmail;
 
-  utils.writeJobReportMessage ( jobDir,msg,false );
+  utils.appendString ( path.join(jobDir,'_stderr.log'),msg );
+
+  // utils.writeJobReportMessage ( jobDir,msg,false );
 
 }
 
@@ -654,7 +667,8 @@ let nRegJobs = 0;  // number of jobs listed as active in registry
   switch (ncConfig.exeType)  {
 
     default       :
-    case 'CLIENT' :
+    case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+    case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
     case 'SHELL'  : //capacity -= Math.max(Object.keys(ncJobRegister.job_map).length-1,0);
                     capacity -= nRegJobs;
                     onFinish_func ( capacity );
@@ -733,6 +747,19 @@ let nRegJobs = 0;  // number of jobs listed as active in registry
 
 // ===========================================================================
 
+function getFormattedDateForFilename() {
+  const date    = new Date();
+  const year    = date.getFullYear();
+  const month   = String(date.getMonth()+1).padStart(2,'0'); // Months are zero-based, so add 1
+  const day     = String(date.getDate()   ).padStart(2,'0');
+  const hours   = String(date.getHours()  ).padStart(2,'0');
+  const minutes = String(date.getMinutes()).padStart(2,'0');
+  const seconds = String(date.getSeconds()).padStart(2,'0');
+  // Combine components into a single string formatted as YYYY-MM-DD_HH-MM-SS
+  return formattedDate = `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+}
+
+
 function copyToSafe ( task,jobEntry )  {
 
   if ([ud.feedback_code.agree1,ud.feedback_code.agree2].indexOf(jobEntry.feedback)>=0)  {
@@ -772,12 +799,12 @@ function copyToSafe ( task,jobEntry )  {
                 dpaths[i] = dname;
               }
           for (let i=Math.max(0,jobsSafe.capacity-1);i<dpaths.length;i++)
-            utils.removePath ( dpaths[i] );
+            utils.removePathAsync ( dpaths[i] );
         }
 
       }
 
-      safeDirPath = path.join ( safeDirPath,'job_' + Date.now() );
+      safeDirPath = path.join ( safeDirPath,'job_' + getFormattedDateForFilename() );
       utils.removeSymLinks ( jobEntry.jobDir );
       fs.copySync ( jobEntry.jobDir,safeDirPath,{
         dereference : true
@@ -832,6 +859,11 @@ let cfg = conf.getServerConfig();
     jobEntry.endTime     = Date.now();
     jobEntry.endTime_iso = new Date(jobEntry.endTime).toISOString();
   }
+  
+  if ((jobEntry.push_back=='NO') && (jobEntry.sendTrials<=0))  {
+    // all wrap-up actions are already done, wait for pull request from FE
+    return;
+  }
 
   if (!('logflow' in ncJobRegister))  {
     ncJobRegister.logflow = {};
@@ -861,7 +893,7 @@ let cfg = conf.getServerConfig();
   task.job_dialog_data.viewed = false;
 
   if ((!task.informFE) || (!jobEntry.return_data))  {
-    // FE need not to be informed of job status (RVAPI application or kill),
+    // FE need not be informed of job status (RVAPI application or hard kill),
     // just remove the job and quit
     ncJobRegister.removeJob ( job_token );
     writeNCJobRegister      ();
@@ -913,91 +945,126 @@ let cfg = conf.getServerConfig();
 
   }
 
-  // Send directory back to FE. This operation is asynchronous but we DO NOT
-  // stop the job checking loop for it. The job is marked as 'exiting' in job
-  // registry entry, which prevents interference with the job check loop.
-
-  //   Results are being sent together with the remaining capcity estimations,
-  // which are calculated differently in SHELL and SGE modes
 
   calcCapacity ( function(current_capacity){
 
     log.standard ( 104,'NC current capacity: ' + current_capacity );
 
-    // get original front-end url
-    let feURL = jobEntry.feURL;
+    let nc_meta = {
+      'capacity'         : cfg.capacity,
+      'current_capacity' : current_capacity,
+      'tokens'           : ncJobRegister.getListOfTokens()
+    };
+ 
+    if (jobEntry.push_back=='YES')  {  // otherwise, simply wait for pull 
+                                       // request from FE ('REMOTE' NC)
 
-    // but, if FE is configured, take it from configuration
-    let fe_config = conf.getFEConfig();
-    if (fe_config && fe_config.localSetup)
-      feURL = fe_config.externalURL;
+      // Send directory back to FE. This operation is asynchronous but we DO NOT
+      // stop the job checking loop for it. The job is marked as 'exiting' in job
+      // registry entry, which prevents interference with the job check loop.
 
-    if (feURL.endsWith('/'))
-      feURL = feURL.substr(0,feURL.length-1);
+      //   Results are being sent together with the remaining capcity estimations,
+      // which are calculated differently in SHELL and SGE modes
 
-// *** for debugging
-//if (__use_fake_fe_url) feURL = 'http://localhost:54321';
+      // get original front-end url
+      let feURL      = jobEntry.feURL;
+      let fe_fsmount = jobEntry.fe_fsmount;
 
-    // if (code==1001)  {
-    if (code)  {
-      log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
-      utils.removeSymLinks ( jobEntry.jobDir );
-    }
+      // but, if FE is configured, take it from configuration
+      let fe_config = conf.getFEConfig();
+      if (fe_config && fe_config.localSetup)  {
+        feURL      = fe_config.externalURL;
+        fe_fsmount = fe_config.fsmount;
+      }
 
-    send_dir.sendDir ( jobEntry.jobDir,'*',
-                       feURL,
-                       cmd.fe_command.jobFinished + job_token, {
-                          'capacity'         : cfg.capacity,
-                          'current_capacity' : current_capacity,
-                          'tokens'           : ncJobRegister.getListOfTokens()
-                       },
+      if (feURL.endsWith('/'))
+        feURL = feURL.substr(0,feURL.length-1);
 
-      function(rdata)  {  // send was successful
+  // *** for debugging
+  //if (__use_fake_fe_url) feURL = 'http://localhost:54321';
 
-        // just remove the job; do it in a separate thread and delayed,
-        // which is useful for debugging etc.
+      // if (code==1001)  {
+      if (code)  {
+        log.standard ( 101,'removing symlinks after stopped task (code ' + code + 
+                           '), job_token=' + job_token );
+        utils.removeSymLinks ( jobEntry.jobDir );
+      }
 
-        log.standard ( 103,'task ' + task.id + ' sent back to FE, token:' +
-                           job_token );
-        removeJobDelayed ( job_token,task_t.job_code.finished );
+      send_dir.sendDir ( jobEntry.jobDir,feURL,fe_fsmount,
+                         cmd.fe_command.jobFinished + job_token,
+                         nc_meta,{compression:cfg.compression},
 
-      },function(stageNo,errcode)  {  // send failed
+        function(rdata,stats)  {  // send was successful
 
-        if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
-            ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
+          // just remove the job; do it in a separate thread and delayed,
+          // which is useful for debugging etc.
 
-          if (stageNo==1)  {
-            // hypothesize that the failure is because of symlinks and try 
-            // replace them with files
-            log.standard ( 102,'removing symlinks after packing errors, job_token=' + job_token );
-            utils.removeSymLinks ( jobEntry.jobDir );
-          }
-
-          jobEntry.sendTrials--;
-          log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
-                          job_token + ' back to FE due to FE/transmission errors (stage' +
-                          stageNo + ', code [' + JSON.stringify(errcode) + '])' );
-          setTimeout ( function(){ ncJobFinished(job_token,code); },
-                       conf.getServerConfig().sendDataWaitTime );
-
-        } else if (comut.isObject(errcode) &&
-                   ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
-                    (errcode.status==cmd.nc_retcode.fileErrors)))  {
-          // the job cannot be accepted by FE, e.g., if task was deleted by user.
-
+          log.standard ( 103,'task ' + task.id + ' sent back to FE, job token:' +
+                             job_token );
+          log.standard ( 103,'compression: '  + cfg.compression +
+                             ',zip time: '    + stats.zip_time.toFixed(3)  +
+                             's, send time: ' + stats.send_time.toFixed(3) + 
+                             's, size: '      + stats.size.toFixed(3) + ' MB' );
           removeJobDelayed ( job_token,task_t.job_code.finished );
-          log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
-                        '). TASK DELETED.' );
 
-        } else  {
+        },function(stageNo,errcode)  {  // send failed
 
-          log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
-                         job_token );
+          if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
+              ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
 
-        }
-        writeNCJobRegister();
+            if (stageNo==1)  {
+              // hypothesize that the failure is because of symlinks and try 
+              // replace them with files
+              log.standard ( 102,'removing symlinks after packing errors (' + errcode + 
+                                 '), job_token=' + job_token );
+              utils.removeSymLinks ( jobEntry.jobDir );
+            }
 
-      });
+            jobEntry.sendTrials--;
+            log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
+                            job_token + ' back to FE due to FE/transmission errors (stage' +
+                            stageNo + ', code [' + JSON.stringify(errcode) + '])' );
+            setTimeout ( function(){ ncJobFinished(job_token,code); },
+                        conf.getServerConfig().sendDataWaitTime );
+
+          } else if (comut.isObject(errcode) &&
+                    ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
+                      (errcode.status==cmd.nc_retcode.fileErrors)))  {
+            // the job cannot be accepted by FE, e.g., if task was deleted by user.
+
+            removeJobDelayed ( job_token,task_t.job_code.finished );
+            log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
+                          '). TASK DELETED.' );
+
+          } else  {
+
+            log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
+                          job_token );
+
+          }
+          writeNCJobRegister();
+
+        });
+
+    } else  {
+
+      // just prepare jobball for fetching by FE
+      jobEntry.sendTrials = -10;
+      utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
+      // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
+      send_dir.packDir  ( jobEntry.jobDir, { 
+          compression : 5,
+          destination : send_dir.getPackPath ( jobEntry.jobDir )
+        },
+        function(errs,jobballPath,jobballSize){
+          if (jobballSize>0)  {
+            jobEntry.sendTrials = 0;  // indicate that it's ready
+          } // else  {
+          // errors
+          // }
+        });
+
+    }
 
   });
 
@@ -1012,10 +1079,11 @@ function ncRunJob ( job_token,meta )  {
   // acquire the corresponding job entry
   let jobEntry = ncJobRegister.getJobEntry ( job_token );
   jobEntry.feURL     = meta.sender;
+  jobEntry.fe_fsmount= meta.fsmount;
   jobEntry.feedback  = meta.feedback;
   jobEntry.user_name = meta.user_name;
   jobEntry.email     = meta.email;
-  writeNCJobRegister();
+  jobEntry.push_back = meta.push_back;
 
   // get number cruncher configuration object
   let ncConfig = conf.getServerConfig();
@@ -1033,6 +1101,9 @@ function ncRunJob ( job_token,meta )  {
   let taskDataPath = path.join ( jobEntry.jobDir,task_t.jobDataFName );
   let jobDir       = path.dirname ( taskDataPath );
   let task         = utils.readClass ( taskDataPath );
+
+  jobEntry.task_id = task.id;
+  writeNCJobRegister();
 
   function getJobName()  {
     //return 'cofe_' + ncJobRegister.launch_count;
@@ -1065,7 +1136,7 @@ function ncRunJob ( job_token,meta )  {
     let command = task.getCommandLine ( ncConfig.jobManager,jobDir );
     // command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
     let exeData = ncConfig.exeData;
-    if (task.usesGPU && ('exeData_GPU' in ncConfig))
+    if (task.usesGPU() && ('exeData_GPU' in ncConfig))
       exeData = ncConfig.exeData_GPU;
 
     command.push ( 'jscofe_version=' + cmd.appVersion() );
@@ -1073,9 +1144,10 @@ function ncRunJob ( job_token,meta )  {
 
     switch (jobEntry.exeType)  {
 
-      default      :
-      case 'CLIENT':
-      case 'SHELL' :  log.standard ( 5,'starting... ' );
+      default       :
+      case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+      case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
+      case 'SHELL'  : log.standard ( 5,'starting...' );
                       command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );
@@ -1342,7 +1414,8 @@ function ncMakeJob ( server_request,server_response )  {
   // loop because it looks only at jobs marked as 'running', while the new one
   // is marked as 'new'.
 
-  send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
+  // send_dir.receiveDir ( jobDir,conf.getNCTmpDir(),server_request,
+  send_dir.receiveDir ( jobDir,server_request,
     function(code,errs,meta){
       //if (code==0)  {
       if (!code)  {
@@ -1354,7 +1427,7 @@ function ncMakeJob ( server_request,server_response )  {
       } else if (code=='err_rename')  { // file renaming errors
         sendErrResponse ( cmd.nc_retcode.fileErrors,
                           '[00105] File rename errors' );
-      } else if (code=='err_dirnoexist')  { // work directory deleted
+      } else if (code=='err_dirnotexist')  { // work directory deleted
         sendErrResponse ( cmd.nc_retcode.fileErrors,
                           '[00106] Recepient directory does not exist (job deleted?)'
                         );
@@ -1397,7 +1470,8 @@ function _stop_job ( jobEntry )  {
     switch (jobEntry.exeType)  {
 
       default       :
-      case 'CLIENT' :
+      case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
+      case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
       case 'SHELL'  : //let isWindows = /^win/.test(process.platform);
                       if(!conf.isWindows()) {
                         psTree ( jobEntry.pid, function (err,children){
@@ -1469,6 +1543,8 @@ let response = null;
 
         log.standard ( 60,'attempt to gracefully end the job ' +
                           post_data_obj.job_token + ' pid=' + jobEntry.pid );
+        // write signal files, which are supposed to be read by tasks supporting
+        // graceful exiting
         utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
         utils.writeString (  path.join(jobEntry.jobDir,'report',cmd.endJobFName1),'end' );
         response = new cmd.Response ( cmd.nc_retcode.ok,
@@ -1480,13 +1556,13 @@ let response = null;
         if (jobEntry.pid>0)  {
 
           if (jobEntry.return_data)  {
-            log.standard ( 61,'attempt to stop job ' +
+            log.standard ( 63,'attempt to stop job ' +
                                post_data_obj.job_token + ' pid=' + jobEntry.pid );
             response = new cmd.Response ( cmd.nc_retcode.ok,
                 '[00110] Job scheduled for stopping, token=' + post_data_obj.job_token,
                 {} );
           } else  {
-            log.standard ( 62,'attempt to kill job ' +
+            log.standard ( 64,'attempt to kill job ' +
                                post_data_obj.job_token + ' pid=' + jobEntry.pid );
             response = new cmd.Response ( cmd.nc_retcode.ok,
                 '[00111] Job scheduled for stopping, token=' + post_data_obj.job_token,
@@ -1628,83 +1704,6 @@ function make_local_job ( files,base_url,destDir,job_token,callback_func )  {
 }
 
 
-/*
-function make_local_job ( args,exts,base_url,jobDir,job_token,callback_func )  {
-
-  function prepare_job ( ix )  {
-
-    if (ix<args.length)  {  // process ixth argument
-
-      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
-
-      if (ip>=0)  {
-
-        let ext = args[ix].substring(ip).toLowerCase();
-
-        if (exts.indexOf(ext)>=0)  {  // file extension is recognised
-
-          // compute full download url
-          let url   = base_url + '/' + args[ix];
-          // compute full local path to accept the download
-          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
-
-          let get_options = {
-            url                : url,
-            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
-          };
-
-          request  // issue the download request
-            .get ( get_options )
-            .on('error', function(err) {
-              log.error ( 17,'Download errors from ' + url );
-              log.error ( 17,'Error: ' + err );
-              // remove job
-              if (job_token)  {
-                ncJobRegister.removeJob ( job_token );
-                writeNCJobRegister      ();
-              }
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00115] Download errors: ' + err,{} ) );
-            })
-            .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
-            .on('error', function(err) {
-              log.error ( 22,'Download errors from ' + url );
-              log.error ( 22,'Error: ' + err );
-              // remove job
-              if (job_token)  {
-                ncJobRegister.removeJob ( job_token );
-                writeNCJobRegister      ();
-              }
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00120] Download errors: ' + err,{} ) );
-            })
-            .on('close',function(){   // finish,end,
-              // successful download, note file path and move to next argument
-              args[ix] = fpath;
-              prepare_job ( ix+1 );
-            });
-
-        } else  // extension is not recognised, just move to next argument
-          prepare_job ( ix+1 );
-
-      } else // no extension, just move to next argument
-        prepare_job ( ix+1 );
-
-    } else  {
-      // all argument list is processed, data files downloaded in subdirectory
-      // 'input' of the job directory; prepare job metadata and start the
-      // job
-      callback_func();
-    }
-
-  }
-
-  // invoke preparation recursion
-  prepare_job ( 0 );
-
-}
-*/
-
 function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
   // 1. Get new job directory and create an entry in job registry
@@ -1764,10 +1763,15 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
         utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
 
         ncRunJob ( job_token,{
-          'sender'   : '',
-          'setup_id' : '',
-          'nc_name'  : 'client-rvapi',
-          'user_id'  : ''
+          'sender'     : '',
+          'setup_id'   : '',
+          'nc_name'    : 'client-rvapi',
+          'user_id'    : '',
+          'fe_fsmount' : null,
+          'feedback'   : ud.feedback_code.decline,
+          'user_name'  : 'localuser',
+          'email'      : '[email not given]',
+          'push_back'  : 'NO'
         });
 
         // signal 'ok' to client
@@ -1776,93 +1780,6 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
       }
   
   });
-
-
-  /*
-  function prepare_job ( ix )  {
-
-    if (ix<args.length)  {  // process ixth argument
-
-      let ip = args[ix].lastIndexOf('.');  // is there a file extension?
-
-      if (ip>=0)  {
-
-        let ext = args[ix].substring(ip).toLowerCase();
-
-        if (exts.indexOf(ext)>=0)  {  // file extension is recognised
-
-          // compute full download url
-          let url   = post_data_obj.base_url + '/' + args[ix];
-          // compute full local path to accept the download
-          let fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
-
-          let get_options = {
-            url: url,
-            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
-          };
-
-          request  // issue the download request
-            .get ( get_options )
-            .on('error', function(err) {
-              log.error ( 17,'Download errors from ' + url );
-              log.error ( 17,'Error: ' + err );
-              // remove job
-              ncJobRegister.removeJob ( job_token );
-              writeNCJobRegister      ();
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00115] Download errors: ' + err,{} ) );
-            })
-            .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
-            .on('error', function(err) {
-              log.error ( 22,'Download errors from ' + url );
-              log.error ( 22,'Error: ' + err );
-              // remove job
-              ncJobRegister.removeJob ( job_token );
-              writeNCJobRegister      ();
-              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
-                                     '[00120] Download errors: ' + err,{} ) );
-            })
-            .on('close',function(){   // finish,end,
-              // successful download, note file path and move to next argument
-              args[ix] = fpath;
-              prepare_job ( ix+1 );
-            });
-
-        } else  // extension is not recognised, just move to next argument
-          prepare_job ( ix+1 );
-
-      } else // no extension, just move to next argument
-        prepare_job ( ix+1 );
-
-    } else  {
-      // all argument list is processed, data files downloaded in subdirectory
-      // 'input' of the job directory; prepare job metadata and start the
-      // job
-
-      let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
-      taskRVAPIApp.id            = ncJobRegister.launch_count;
-      taskRVAPIApp.rvapi_command = post_data_obj.command;
-      taskRVAPIApp.rvapi_args    = args;
-      utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
-
-      ncRunJob ( job_token,{
-        'sender'   : '',
-        'setup_id' : '',
-        'nc_name'  : 'client-rvapi',
-        'user_id'  : ''
-      });
-
-      // signal 'ok' to client
-      callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
-
-    }
-
-  }
-
-  // invoke preparation recursion
-  prepare_job ( 0 );
-
-  */
 
 }
 
@@ -1971,6 +1888,89 @@ let data_obj    = [];
 
 // ===========================================================================
 
+function ncCheckJobResults ( post_data_obj,callback_func,server_response )  {
+// Returns status of jobs identified by job tokens
+//     post_data_obj = {
+//       index1 : { job_token : job_token, nc_number : nc_number, status : status },
+//       index2 : { job_token : job_token, nc_number : nc_number, status : status },
+//       ............
+//     }
+
+  let wreg = false;
+  for (let index in post_data_obj)  {
+    let jobEntry = ncJobRegister.getJobEntry ( post_data_obj[index].job_token );
+    if (!post_data_obj[index].status) {
+      if (jobEntry)
+        post_data_obj[index].status = jobEntry.jobStatus;
+    } else if (post_data_obj[index].status==task_t.job_code.remove)  {
+      if (jobEntry && (jobEntry.jobStatus==task_t.job_code.running))  {
+        _stop_job ( jobEntry );
+      } else  {
+        ncJobRegister.removeJob ( post_data_obj[index].job_token );
+        wreg = true;
+      }
+    }
+  }
+
+  if (wreg)
+    writeNCJobRegister();
+
+  callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'',post_data_obj ) );
+
+}
+
+function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
+// Response to pull request from FE for job resuilts for 'REMOTE' NCs 
+//     post_data_obj = {
+//       job_token: job_token
+//     }
+  
+  let response = null;
+
+  // log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
+
+  let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
+
+  if (!jobEntry)  {
+
+    log.error ( 16,'remote fetch failed no token found: ' + post_data_obj.job_token );
+    response = new cmd.Response ( cmd.nc_retcode.jobNotFound,
+                    '[00123] Job not found token=' + post_data_obj.job_token,
+                    {} );
+    callback_func ( response );
+  
+  } else if (jobEntry.jobStatus==task_t.job_code.running)  {
+  
+    response = new cmd.Response ( cmd.nc_retcode.jobIsRunning,post_data_obj.job_token,{} );
+    callback_func ( response );
+  
+  } else  {
+
+    let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
+    // console.log ( 'jobballPath=' + jobballPath );
+    if (utils.fileExists(jobballPath))  {
+      utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
+        function(rc){
+          if (rc)
+            log.error ( 17,'remote pull failed, job_token=' + post_data_obj.job_token );
+          else
+            log.standard ( 105,'task ' + jobEntry.task_id + ' fetched back by FE, token:' +
+                               post_data_obj.job_token );
+
+          // // if (!rc)  // no errors
+          // //   ncJobRegister.removeJob ( post_data_obj.job_token );
+          // Jobs are deleted by a separate command from FE, after checking on
+          // transmission and unoacking errors
+        }
+      );
+    }
+
+  }
+
+}
+
+// ===========================================================================
+
 function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 // This function creates a new job and job directory, receives jobball from FE,
 // unpacks it and starts the job. Although the jobball is received in
@@ -1981,6 +1981,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 
   readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
+
 
   let jobDir = ncGetJobDir ( ncJobRegister.launch_count );
   // make new entry in job registry
@@ -2014,6 +2015,8 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
   //if (conf.getServerConfig().useRootCA)
   //  get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
 
+  let jobballPath = conf.getTmpFileName();  // may be in fast area
+
   request  // issue the download request
     .get ( get_options )
     .on('error', function(err) {
@@ -2030,7 +2033,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
         callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
                                       '[00117] Download errors: ' + err,{} ) );
     })
-    .pipe(fs.createWriteStream(path.join(jobDir,send_dir.jobballName)))
+    .pipe(fs.createWriteStream(jobballPath))  // path.join(jobDir,send_dir.jobballName)))
     .on('error', function(err) {
       log.error ( 23,'Download errors from ' + dnlURL + ', attempt #' + attemptNo );
       log.error ( 23,'Error: ' + err );
@@ -2049,33 +2052,42 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
       // successful download, unpack and start the job
 
       //function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
-      send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
-        if (!code)  {
-          ncRunJob ( job_token,{
-            'sender'   : post_data_obj.feURL,
-            'setup_id' : '',
-            'nc_name'  : 'client',
-            'user_id'  : ''
-          });
-          // signal 'ok' to client
-          callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
-                                             {job_token:job_token} ) );
-          log.detailed ( 21,'directory contents has been received in ' + jobDir );
-        } else  {
-          // unpacking errors, remove job
-          log.error ( 24,'unpack errors, attempt #' + attemptNo +
-                         ', code=' + code + ', filesize=' + jobballSize );
-          ncJobRegister.removeJob ( job_token );
-          writeNCJobRegister      ();
-          if (attemptNo>0)  {
-            setTimeout ( function(){
-              ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
-            },10);
-          } else
-            callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
-                             '[00119] Unpack errors (code=' + code + ')',{} ) );
-        }
-      });
+
+      // send_dir.unpackDir ( jobDir,null, function(code,jobballSize){
+      send_dir.unpackDir ( jobballPath,jobDir,true,
+        function(code,jobballSize){
+          if (!code)  {
+            ncRunJob ( job_token,{
+              'sender'     : post_data_obj.feURL,
+              'setup_id'   : '',
+              'nc_name'    : 'client',
+              'user_id'    : '',
+              'fe_fsmount' : null,
+              'feedback'   : ud.feedback_code.decline,
+              'user_name'  : 'localuser',
+              'email'      : '[email not given]',
+              'push_back'  : 'YES'
+            });
+
+            // signal 'ok' to client
+            callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00118] Job started',
+                                              {job_token:job_token} ) );
+            log.detailed ( 21,'directory contents has been received in ' + jobDir );
+          } else  {
+            // unpacking errors, remove job
+            log.error ( 24,'unpack errors, attempt #' + attemptNo +
+                          ', code=' + code + ', filesize=' + jobballSize );
+            ncJobRegister.removeJob ( job_token );
+            writeNCJobRegister      ();
+            if (attemptNo>0)  {
+              setTimeout ( function(){
+                ncRunClientJob1 ( post_data_obj,callback_func,attemptNo-1 );
+              },10);
+            } else
+              callback_func ( new cmd.Response ( cmd.nc_retcode.unpackErrors,
+                              '[00119] Unpack errors (code=' + code + ')',{} ) );
+          }
+        });
 
     });
 
@@ -2097,6 +2109,8 @@ module.exports.ncStopJob          = ncStopJob;
 module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncSendJobResults   = ncSendJobResults;
+module.exports.ncCheckJobResults  = ncCheckJobResults;
+module.exports.ncGetJobResults    = ncGetJobResults;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;
 module.exports.readNCJobRegister  = readNCJobRegister;
