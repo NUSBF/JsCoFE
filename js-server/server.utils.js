@@ -146,7 +146,12 @@ function removeFile ( fpath ) {
 
 function readString ( fpath )  {
   try {
-    return fs.readFileSync(fpath).toString();
+    let json_str = cache.getItem ( fpath );
+    if (!json_str)  {
+      json_str = fs.readFileSync(fpath).toString();
+      cache.putItem ( fpath,json_str );
+    }
+    return json_str;
   } catch (e)  {
     return null;
   }
@@ -167,12 +172,12 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 function readObject ( fpath )  {
   try {
-    let obj = cache.getItem ( fpath );
-    if (!obj)  {
-      obj = JSON.parse ( fs.readFileSync(fpath).toString() );
-      cache.putItem ( fpath,obj );
-    }
-    return obj;
+    let json_str = cache.getItem ( fpath );
+    if (!json_str)  {
+      json_str = fs.readFileSync(fpath).toString();
+      cache.putItem ( fpath,json_str );
+    } 
+    return JSON.parse(json_str);
   } catch (e)  {
     if (e.code !== 'ENOENT')
       log.error ( 10, e.message + ' when loading ' + fpath );
@@ -183,12 +188,12 @@ function readObject ( fpath )  {
 
 function readClass ( fpath ) {  // same as object but with class functions
   try {
-    let obj = cache.getItem ( fpath );
-    if (!obj)  {
-      obj = JSON.parse ( fs.readFileSync(fpath).toString() );
-      cache.putItem ( fpath,obj );
+    let json_str = cache.getItem ( fpath );
+    if (!json_str)  {
+      json_str = fs.readFileSync(fpath).toString();
+      cache.putItem ( fpath,json_str );
     }
-    return class_map.getClassInstance ( obj );
+    return class_map.getClassInstance ( json_str );
   } catch (e)  {
     return null;
   }
@@ -197,10 +202,20 @@ function readClass ( fpath ) {  // same as object but with class functions
 
 function writeString ( fpath,data_string )  {
   try {
-    fs.writeFileSync ( fpath,data_string );
+    if (cache.putItem(fpath,data_string))  {
+      // was put into cache, use asynchronous write
+      fs.writeFile ( fpath,data_string,function(err){
+        if (err)  {
+          log.error ( 20,'cannot write file ' + fpath );
+          console.error(err);
+        }
+      });
+    } else  {
+      fs.writeFileSync ( fpath,data_string );
+    }
     return true;
   } catch (e)  {
-    log.error ( 20,'cannot write file ' + fpath +
+    log.error ( 21,'cannot write file ' + fpath +
                    ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
@@ -235,11 +250,11 @@ function writeObject ( fpath,dataObject )  {
   }
 
   try {
-    if (cache.putItem(fpath,dataObject))  {
+    if (cache.putItem(fpath,json_str))  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,json_str,function(err){
         if (err)  {
-          log.error ( 42,'cannot write file ' + fpath );
+          log.error ( 41,'cannot write file ' + fpath );
           console.error(err);
         }
       });
