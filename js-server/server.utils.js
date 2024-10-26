@@ -73,6 +73,7 @@ const child_process = require('child_process');
 
 const class_map     = require('./server.class_map');
 const task_t        = require('../js-common/tasks/common.tasks.template');
+const cache         = require('./server.cache');
 // const com_utils     = require('../js-common/common.utils');
 
 //  prepare log
@@ -83,6 +84,18 @@ const _is_windows = /^win/.test(process.platform);
 // ==========================================================================
 
 function fileExists ( fpath )  {
+  try {
+    switch (cache.itemExists(fpath))  {
+      case 0 :  return false;
+      case 1 :  return true;
+      default:  return fs.lstatSync(fpath); // || fs.lstatSync(path);
+    }
+  } catch (e)  {
+    return null;
+  }
+}
+
+function fileStat ( fpath )  {
   try {
     return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
@@ -124,6 +137,7 @@ function fileSize ( fpath ) {
 
 function removeFile ( fpath ) {
   try {
+    cache.removeItem ( fpath );
     fs.unlinkSync ( fpath );
     return true;
   } catch (e)  {
@@ -155,7 +169,12 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 function readObject ( fpath )  {
   try {
-    return JSON.parse ( fs.readFileSync(fpath).toString() );
+    let obj = cache.getItem ( fpath );
+    if (!obj)  {
+      obj = JSON.parse ( fs.readFileSync(fpath).toString() );
+      cache.putItem ( fpath,obj );
+    }
+    return obj;
   } catch (e)  {
     if (e.code !== 'ENOENT')
       log.error ( 10, e.message + ' when loading ' + fpath );
@@ -166,7 +185,12 @@ function readObject ( fpath )  {
 
 function readClass ( fpath ) {  // same as object but with class functions
   try {
-    return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
+    let obj = cache.getItem ( fpath );
+    if (!obj)  {
+      obj = JSON.parse ( fs.readFileSync(fpath).toString() );
+      cache.putItem ( fpath,obj );
+    }
+    return class_map.getClassInstance ( obj );
   } catch (e)  {
     return null;
   }
@@ -213,10 +237,20 @@ function writeObject ( fpath,dataObject )  {
   }
 
   try {
-    fs.writeFileSync ( fpath,json_str );
+    if (cache.putItem(fpath,dataObject))  {
+      // was put into cache, use asynchronous write
+      fs.writeFile ( fpath,json_str,function(err){
+        if (err)  {
+          log.error ( 42,'cannot write file ' + fpath );
+          console.error(err);
+        }
+      });
+    } else  {
+      fs.writeFileSync ( fpath,json_str );
+    }
     return true;
   } catch (e)  {
-    log.error ( 41,'cannot write file ' + fpath );
+    log.error ( 42,'cannot write file ' + fpath );
     console.error(e);
     return false;
   }
@@ -1023,6 +1057,7 @@ function padDigits ( number,digits ) {
 // ==========================================================================
 // export for use in node
 module.exports.fileExists            = fileExists;
+module.exports.fileStat              = fileStat;
 module.exports.isSymbolicLink        = isSymbolicLink;
 module.exports.dirExists             = dirExists;
 module.exports.fileSize              = fileSize;

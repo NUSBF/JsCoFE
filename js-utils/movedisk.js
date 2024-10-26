@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.24   <--  Date of Last Modification.
+ *    26.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -91,7 +91,7 @@ function move_disk ( disk1,disk2 )  {
           log.warning ( 10,'source and destination project directories coincide for user "' + 
                           uData.login + '" -- only disk name will be updated' );
           utils.writeObject ( uDataFPath,uData );  // commit
-        } else if (utils.fileExists(old_vdir).dev===utils.fileExists(new_vdir).dev)  {
+        } else if (utils.fileStat(old_vdir).dev===utils.fileStat(new_vdir).dev)  {
           // same file system, just move the directory
           if (utils.moveDir(old_path,new_path,false))  { // sync version, no overwrite
             utils.writeObject ( uDataFPath,uData );  // commit
