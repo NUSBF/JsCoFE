@@ -85,11 +85,9 @@ const _is_windows = /^win/.test(process.platform);
 
 function fileExists ( fpath )  {
   try {
-    switch (cache.itemExists(fpath))  {
-      case 0 :  return false;
-      case 1 :  return true;
-      default:  return fs.lstatSync(fpath); // || fs.lstatSync(path);
-    }
+    if (cache.itemExists(fpath)>0)
+      return true;
+    return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
     return null;
   }
