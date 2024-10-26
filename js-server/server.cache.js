@@ -36,10 +36,6 @@ const path  = require('path');
 
 // ==========================================================================
 
-// const __userDataExt = '.user';
-
-// ==========================================================================
-
 function Cache ( maxItems=0 )  {
   this.cache = {};
   this.maxItems = maxItems;  // maximum number of items, "0" means unlimited
@@ -117,31 +113,67 @@ Cache.prototype.getObject = function ( key,file_path )  {
 
 // --------------------------------------------------------------------------
 
-var userCache = new Cache();
+// const __userDataExt   = '.user';
+// const __rationFileExt = '.ration';
 
-const __userDataExt = '.user';
+const cache_list = {
+  '.user'   : new Cache(0),
+  '.ration' : new Cache(100)
+};
+
+var cache_enabled = true;
+
+function setCacheEnabled ( enabled_bool )  {
+  cache_enabled = enabled_bool;
+}
+
+function selectCache ( fpath )  {
+  let r = {
+    cache : null,
+    key   : ''
+  };
+  let ext = path.extname ( fpath );
+  if (ext in cache_list)  {
+    r.cache = cache_list[ext];
+    r.key   = path.basename ( fpath,ext );
+  }
+  return r;
+}
+
 
 function itemExists ( fpath )  {
-  if (fpath.endsWith(__userDataExt))
-    return userCache.itemExists ( path.basename(fpath,__userDataExt) );
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      return r.cache.itemExists ( r.key );
+  }
   return -1; // file operation is required
 }
 
 function removeItem ( fpath )  {
-  if (fpath.endsWith(__userDataExt))
-    return userCache.removeItem ( path.basename(fpath,__userDataExt) );
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      r.cache.removeItem ( r.key );
+  }
 }
 
 function getItem ( fpath )  {
-  if (fpath.endsWith(__userDataExt))
-    return userCache.getItem ( path.basename(fpath,__userDataExt) );
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      return r.cache.getItem ( r.key );
+  }
   return null; // file operation is required
 }
 
 function putItem ( fpath,item )  {
-  if (fpath.endsWith(__userDataExt))  {
-    userCache.putItem ( path.basename(fpath,__userDataExt),item );
-    return true;
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)  {
+      r.cache.putItem ( r.key );
+      return true;
+    }
   }
   return false;
 }
@@ -200,8 +232,8 @@ UserCache.prototype.deleteUserData = function ( login_name )  {
 
 // ==========================================================================
 // export for use in node
-// module.exports.Cache      = Cache;
-module.exports.itemExists = itemExists;
-module.exports.removeItem = removeItem;
-module.exports.getItem    = getItem;
-module.exports.putItem    = putItem;
+module.exports.setCacheEnabled = setCacheEnabled;
+module.exports.itemExists      = itemExists;
+module.exports.removeItem      = removeItem;
+module.exports.getItem         = getItem;
+module.exports.putItem         = putItem;
