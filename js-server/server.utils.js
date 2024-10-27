@@ -81,11 +81,17 @@ const log = require('./server.log').newLog(14);
 
 const _is_windows = /^win/.test(process.platform);
 
+var cache_enabled = false;
+
 // ==========================================================================
+
+function setCacheEnabled ( enabled_bool )  {
+  cache_enabled = enabled_bool;
+}
 
 function fileExists ( fpath )  {
   try {
-    if (cache.itemExists(fpath)>0)
+    if (cache_enabled && cache.itemExists(fpath)>0)
       return true;
     return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
@@ -135,7 +141,8 @@ function fileSize ( fpath ) {
 
 function removeFile ( fpath ) {
   try {
-    cache.removeItem ( fpath );
+    if (cache_enabled) 
+      cache.removeItem ( fpath );
     fs.unlinkSync ( fpath );
     return true;
   } catch (e)  {
@@ -146,12 +153,15 @@ function removeFile ( fpath ) {
 
 function readString ( fpath )  {
   try {
-    let json_str = cache.getItem ( fpath );
-    if (!json_str)  {
-      json_str = fs.readFileSync(fpath).toString();
-      cache.putItem ( fpath,json_str );
+    if (cache_enabled)  {
+      let json_str = cache.getItem ( fpath );
+      if (!json_str)  {
+        json_str = fs.readFileSync(fpath).toString();
+        cache.putItem ( fpath,json_str );
+      }
+      return json_str;
     }
-    return json_str;
+    return fs.readFileSync(fpath).toString();
   } catch (e)  {
     return null;
   }
@@ -172,12 +182,15 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 function readObject ( fpath )  {
   try {
-    let json_str = cache.getItem ( fpath );
-    if (!json_str)  {
-      json_str = fs.readFileSync(fpath).toString();
-      cache.putItem ( fpath,json_str );
-    } 
-    return JSON.parse(json_str);
+    if (cache_enabled)  {
+      let json_str = cache.getItem ( fpath );
+      if (!json_str)  {
+        json_str = fs.readFileSync(fpath).toString();
+        cache.putItem ( fpath,json_str );
+      } 
+      return JSON.parse ( json_str );
+    }
+    return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     if (e.code !== 'ENOENT')
       log.error ( 10, e.message + ' when loading ' + fpath );
@@ -188,12 +201,15 @@ function readObject ( fpath )  {
 
 function readClass ( fpath ) {  // same as object but with class functions
   try {
-    let json_str = cache.getItem ( fpath );
-    if (!json_str)  {
-      json_str = fs.readFileSync(fpath).toString();
-      cache.putItem ( fpath,json_str );
+    if (cache_enabled)  {
+      let json_str = cache.getItem ( fpath );
+      if (!json_str)  {
+        json_str = fs.readFileSync(fpath).toString();
+        cache.putItem ( fpath,json_str );
+      }
+      return class_map.getClassInstance ( json_str );
     }
-    return class_map.getClassInstance ( json_str );
+    return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     return null;
   }
@@ -202,7 +218,7 @@ function readClass ( fpath ) {  // same as object but with class functions
 
 function writeString ( fpath,data_string )  {
   try {
-    if (cache.putItem(fpath,data_string))  {
+    if (cache_enabled && cache.putItem(fpath,data_string))  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,data_string,function(err){
         if (err)  {
@@ -250,7 +266,7 @@ function writeObject ( fpath,dataObject )  {
   }
 
   try {
-    if (cache.putItem(fpath,json_str))  {
+    if (cache_enabled && cache.putItem(fpath,json_str))  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,json_str,function(err){
         if (err)  {
@@ -1069,6 +1085,7 @@ function padDigits ( number,digits ) {
 
 // ==========================================================================
 // export for use in node
+module.exports.setCacheEnabled       = setCacheEnabled;
 module.exports.fileExists            = fileExists;
 module.exports.fileStat              = fileStat;
 module.exports.isSymbolicLink        = isSymbolicLink;
