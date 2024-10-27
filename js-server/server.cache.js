@@ -121,12 +121,6 @@ const cache_list = {
   '.ration' : new Cache(100)
 };
 
-var cache_enabled = true;
-
-function setCacheEnabled ( enabled_bool )  {
-  cache_enabled = enabled_bool;
-}
-
 function selectCache ( fpath )  {
   let r = {
     cache : null,
@@ -142,38 +136,30 @@ function selectCache ( fpath )  {
 
 
 function itemExists ( fpath )  {
-  if (cache_enabled)  {
-    let r = selectCache ( fpath );
-    if (r.cache)
-      return r.cache.itemExists ( r.key );
-  }
+  let r = selectCache ( fpath );
+  if (r.cache)
+    return r.cache.itemExists ( r.key );
   return -1; // file operation is required
 }
 
 function removeItem ( fpath )  {
-  if (cache_enabled)  {
-    let r = selectCache ( fpath );
-    if (r.cache)
-      r.cache.removeItem ( r.key );
-  }
+  let r = selectCache ( fpath );
+  if (r.cache)
+    r.cache.removeItem ( r.key );
 }
 
 function getItem ( fpath )  {
-  if (cache_enabled)  {
-    let r = selectCache ( fpath );
-    if (r.cache)
-      return r.cache.getItem ( r.key );
-  }
+  let r = selectCache ( fpath );
+  if (r.cache)
+    return r.cache.getItem ( r.key );
   return null; // file operation is required
 }
 
 function putItem ( fpath,item )  {
-  if (cache_enabled)  {
-    let r = selectCache ( fpath );
-    if (r.cache)  {
-      r.cache.putItem ( r.key );
-      return true;
-    }
+  let r = selectCache ( fpath );
+  if (r.cache)  {
+    r.cache.putItem ( r.key );
+    return true;
   }
   return false;
 }
@@ -232,8 +218,7 @@ UserCache.prototype.deleteUserData = function ( login_name )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.setCacheEnabled = setCacheEnabled;
-module.exports.itemExists      = itemExists;
-module.exports.removeItem      = removeItem;
-module.exports.getItem         = getItem;
-module.exports.putItem         = putItem;
+module.exports.itemExists = itemExists;
+module.exports.removeItem = removeItem;
+module.exports.getItem    = getItem;
+module.exports.putItem    = putItem;
