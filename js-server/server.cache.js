@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.24   <--  Date of Last Modification.
+ *    28.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,7 +21,7 @@
 
 'use strict';
 
-// const fs    = require('fs-extra');
+const fs    = require('fs-extra');
 const path  = require('path');
 
 // const conf  = require('./server.configuration');
@@ -48,6 +48,10 @@ Cache.prototype.reset = function()  {
 Cache.prototype.setMaxSize = function ( maxItems )  {
   this.maxItems = maxItems;  // maximum number of items, "0" means unlimited
   this.trim();
+}
+
+Cache.prototype.size = function()  {
+  return Object.keys(this.cache).length;
 }
 
 Cache.prototype.trim = function()  {
@@ -111,14 +115,36 @@ Cache.prototype.getObject = function ( key,file_path )  {
 }
 */
 
+const projectExt      = '.prj';
+const userProjectsExt = '.projects';
+
+function getFileKey ( fpath )  {
+  let index = fpath.lastIndexOf ( projectExt );
+  let dpath = fpath.substring ( 0,index );
+  let key   = path.basename ( dpath );
+  dpath     = path.dirname  ( dpath );
+  if (!dpath.endsWith(userProjectsExt))
+    return null;
+  try {
+    let stat = fs.lstatSync ( dpath );
+    if (stat.isSymbolicLink())
+      dpath = fs.readlinkSync ( dpath )
+    return path.basename(dpath,userProjectsExt) + ':' + key;
+  } catch(e)  {
+    return null;
+  }
+}
+
 // --------------------------------------------------------------------------
 
 // const __userDataExt   = '.user';
 // const __rationFileExt = '.ration';
 
 const cache_list = {
-  '.user'   : new Cache(0),
-  '.ration' : new Cache(100)
+  '.user'        : new Cache(0),
+  '.ration'      : new Cache(100),
+  'project.desc' : new Cache(2000),
+  'project.meta' : new Cache(2000)
 };
 
 function selectCache ( fpath )  {
@@ -128,9 +154,20 @@ function selectCache ( fpath )  {
   };
   let ext = path.extname ( fpath );
   if (ext in cache_list)  {
+    r.key = path.basename ( fpath,ext );
     r.cache = cache_list[ext];
-    r.key   = path.basename ( fpath,ext );
+  } else  {
+    let fname = path.basename ( fpath );
+    if (fname in cache_list)  {
+      r.key = getFileKey ( fpath );
+      if (r.key)
+        r.cache = cache_list[fname];
+    }
   }
+  // console.log ( ' ..... cache: ' + cache_list['.user'].size()   + ' ' +
+  //                                  cache_list['.ration'].size() + ' ' +
+  //                                  cache_list['project.desc'].size() + ' ' +
+  //                                  cache_list['project.meta'].size() );
   return r;
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    28.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,7 +81,7 @@ const log = require('./server.log').newLog(14);
 
 const _is_windows = /^win/.test(process.platform);
 
-var cache_enabled = false;
+var cache_enabled = true;
 
 // ==========================================================================
 
