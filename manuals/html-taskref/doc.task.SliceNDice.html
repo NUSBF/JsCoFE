@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>MR with model splitting using Slice-n-Dice &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>MR with model splitting using Slice-n-Dice &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> MR with model splitting using Slice-n-Dice </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
           <li class="md-tabs__item"><a href="Automated_Molecular_Replacement.html" class="md-tabs__link">Automated Molecular Replacement</a></li>
       </ul>
     </div>
@@ -164,13 +163,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -247,7 +246,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-slicendice--page-root" class="md-nav__link">MR with model splitting using Slice-n-Dice</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -374,7 +373,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-slicendice--page-root" class="md-nav__link">MR with model splitting using Slice-n-Dice</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -393,18 +392,18 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-slicendice--page-root">MR with model splitting using Slice-n-Dice<a class="headerlink" href="#doc-task-slicendice--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="mr-with-model-splitting-using-slice-n-dice">
+<h1 id="doc-task-slicendice--page-root">MR with model splitting using Slice-n-Dice<a class="headerlink" href="#doc-task-slicendice--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Slice-n-Dice is an automated MR pipeline designed to pre-process AlphaFold2 and RosettaFold  models by removing low confidence regions and converting confidence scores into predicted B-factors. It also slices predicted models into distinct structural units then automatically placing the slices using Phaser. The slicing step can use AlphaFold2’s predicted aligned error (PAE), or can operate via a variety of Cɑ atom clustering algorithms, extending applicability to structures of any origin.</p>
 <p>Slice-n-Dice helps to deals with inaccuracy in domain-domain orientations of predicted models.</p>
-
-<h2 id="slice">Slice<a class="headerlink" href="#slice" title="Permalink to this headline">¶</a></h2>
+<section id="slice">
+<h2 id="slice">Slice<a class="headerlink" href="#slice" title="Permalink to this heading">¶</a></h2>
 <p>Slice option in CCP4 cloud uses <a class="reference external" href="https://scikit-learn.org/stable/modules/clustering.html#birch" rel="noopener noreferrer" target="_blank">Birch clustering algorithm</a> based on the coordinates of the Cɑ atoms.</p>
 <p>The <strong>number of splits</strong> (clusters) can be specified. The large target protein needs to be modeled in several chunks. An increasing number of splits allows slice and dice to test a range of different splits.</p>
 <p>The default <strong>pLDDT threshold</strong> for AlphaFold2 models is <strong>70</strong> and the default <strong>RMS threshold</strong> for RosettaFold models is <strong>1.75</strong>.</p>
-
-
-<h2 id="dice">Dice<a class="headerlink" href="#dice" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dice">
+<h2 id="dice">Dice<a class="headerlink" href="#dice" title="Permalink to this heading">¶</a></h2>
 <p>Dice method performs molecular replacement on the individual slices produced by Slice by <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a>. Phaser automatically place as many slices as possible.</p>
 <p><a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> <a class="reference external" href="http://journals.iucr.org/d/issues/2010/01/00/dz5175/" rel="noopener noreferrer" target="_blank">Phased Translation Function (PTF) mode</a> is used to try and place the slices that could not be positioned in the initial Phaser job. After each MOLREP job, <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">REFMAC5</span></a> is used to assess if the placed slice has improved the solution.</p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
@@ -414,8 +413,8 @@
 <p><a class="reference external" href="http://journals.iucr.org/d/issues/2010/01/00/dz5175/" rel="noopener noreferrer" target="_blank">Vagin, A. &amp; Teplyakov, A. (2010). Molecular replacement with MOLREP, pp. 22-25, Acta Cryst. D66</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911001314" rel="noopener noreferrer" target="_blank">Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367;</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889807021206" rel="noopener noreferrer" target="_blank">McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674;</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -436,7 +435,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Balbes </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Balbes </span>
               </div>
             </a>
           
@@ -446,7 +445,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Simbad </span>
+                class="md-footer-nav__direction"> "Next" </span> Simbad </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -460,7 +459,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
