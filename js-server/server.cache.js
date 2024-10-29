@@ -195,7 +195,7 @@ function getItem ( fpath )  {
 function putItem ( fpath,item )  {
   let r = selectCache ( fpath );
   if (r.cache)  {
-    r.cache.putItem ( r.key );
+    r.cache.putItem ( r.key,item );
     return true;
   }
   return false;
