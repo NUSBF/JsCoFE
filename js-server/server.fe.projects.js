@@ -264,7 +264,7 @@ function getJobDataPath ( loginData,projectName,jobId )  {
 
 // ===========================================================================
 
-function writeProjectData ( loginData,projectData,putTimeStamp )  {
+function writeProjectData ( loginData,projectData,putTimeStamp,force_sync=false )  {
   if (!projectData)
     return false;
   if (putTimeStamp)  {
@@ -273,12 +273,12 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
   }
   projectData.desc.ccp4cloud_version = cmd.appVersion();  // CCP4 Cloud version
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
-                      projectData.desc );
+                      projectData.desc,force_sync );
 
 // pd.printProjectTree ( ' >>>write_project_data',projectData );
 
   return utils.writeObject ( getProjectDataPath(loginData,projectData.desc.name),
-                             projectData );
+                             projectData,force_sync );
 }
 
 function checkProjectDescData ( projectDesc,loginData )  {
@@ -705,11 +705,11 @@ let response = null;  // must become a cmd.Response object to return
 
     let projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
-    if (writeProjectData(loginData,projectData,true))  {
+    if (writeProjectData(loginData,projectData,true,true))  {
       if (utils.mkDir(path.join(projectDirPath,replayDir))) {
         let pname = projectData.desc.name;
         projectData.desc.name = projectData.desc.name + ':' + replayDir;
-        if (writeProjectData(loginData,projectData,true))
+        if (writeProjectData(loginData,projectData,true,true))
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
         projectData.desc.name = pname;
       }

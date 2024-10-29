@@ -252,7 +252,7 @@ function appendString ( fpath,data_string )  {
 }
 
 
-function writeObject ( fpath,dataObject )  {
+function writeObject ( fpath,dataObject,force_sync=false )  {
 
   let json_str = '';
   try {
@@ -266,7 +266,7 @@ function writeObject ( fpath,dataObject )  {
   }
 
   try {
-    if (cache_enabled && cache.putItem(fpath,json_str))  {
+    if ((!force_sync) && cache_enabled && cache.putItem(fpath,json_str))  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,json_str,function(err){
         if (err)  {
