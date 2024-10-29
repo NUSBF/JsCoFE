@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>Symmetry Match to Reference Structure with CSymMatch &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Symmetry Match to Reference Structure with CSymMatch &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -81,7 +80,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -93,7 +92,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> Symmetry Match to Reference Structure with CSymMatch </span>
         </div>
       </div>
@@ -104,7 +103,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -150,7 +149,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
           <li class="md-tabs__item"><a href="Toolbox.html" class="md-tabs__link">Toolbox</a></li>
       </ul>
     </div>
@@ -163,13 +162,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -374,23 +373,23 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-symmatch--page-root">Symmetry Match to Reference Structure with CSymMatch<a class="headerlink" href="#doc-task-symmatch--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="symmetry-match-to-reference-structure-with-csymmatch">
+<h1 id="doc-task-symmatch--page-root">Symmetry Match to Reference Structure with CSymMatch<a class="headerlink" href="#doc-task-symmatch--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>CSymMatch</strong> is a tool for comparison and rearrangement of atomic models. It uses the crystal symmetry to move chains, ligands, and waters of a newly created atomic model to place them in the same part of the unit cell as a reference model. CSymMatch can optionally be used to change the origin on which the model is defined, for example for comparing different molecular replacement results.</p>
 <p>The task requires atomic models as input. The first atomic model (<strong>Structure revision</strong>) is the model to be moved. This model will be broken up into connected fragments. Each fragment will be moved using the crystal symmetry operations and allowed origin shifts to overlap best with the second model. The second atomic model (<strong>Reference structure</strong>) is the model to be matched to. This is fixed model (not moved or altered in any way).</p>
 <p>It is recommended to <strong>try all possible origin shifts and hands</strong>. Although, the change of hand is meaningless for most biological structures, but is useful when comparing heavy atom substructures which are typically subject to hand ambiguity.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">the origin shift is not restricted by symmetry constraints</p>
+<p class="admonition-title">Note</p>
+<p>the origin shift is not restricted by symmetry constraints</p>
 </div>
 <p><strong>Stiching radius</strong> is used to determine which fragments form a contiguous unit, to be moved together (<em>default 2.0Å</em>). The model normally moves a chain at a time, however if monomers within the same chain are separated by more than the connectivity distance they are moved separately. This allows complete chains to remain intact while moving solvent molecules and ligands individually.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Separate chains are always moved separately. Monomers within a chain which do not have close contiguity to their neighbours - e.g. waters, broken chains - are also moved separately.</p>
+<p class="admonition-title">Note</p>
+<p>Separate chains are always moved separately. Monomers within a chain which do not have close contiguity to their neighbours - e.g. waters, broken chains - are also moved separately.</p>
 </div>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0907444910045749" rel="noopener noreferrer" target="_blank">Collaborative Computational Project, Number 4 (2011) Overview of the CCP4 suite and current developments. Acta Cryst. D67: 235-242;</a></p>
-
+</section>
 
 
           </article>
@@ -411,7 +410,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Sequence Alignment with ClustalW </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Sequence Alignment with ClustalW </span>
               </div>
             </a>
           
@@ -424,7 +423,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

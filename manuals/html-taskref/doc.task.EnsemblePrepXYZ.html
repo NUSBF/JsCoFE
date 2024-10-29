@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>Prepare MR Ensemble from Coordinate Data &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Prepare MR Ensemble from Coordinate Data &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> Prepare MR Ensemble from Coordinate Data </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
           <li class="md-tabs__item"><a href="Molecular_Replacement.html" class="md-tabs__link">Molecular Replacement</a></li>
           <li class="md-tabs__item"><a href="doc.task.MR_model_preparation.html" class="md-tabs__link">Molecular Replacement Models and Ensembles</a></li>
       </ul>
@@ -165,13 +164,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -404,25 +403,25 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-ensembleprepxyz--page-root">Prepare MR Ensemble from Coordinate Data<a class="headerlink" href="#doc-task-ensembleprepxyz--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="prepare-mr-ensemble-from-coordinate-data">
+<h1 id="doc-task-ensembleprepxyz--page-root">Prepare MR Ensemble from Coordinate Data<a class="headerlink" href="#doc-task-ensembleprepxyz--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>MR Ensembles</strong> are superposed sets of sufficiently similar MR models, corresponding to the same target sequence. Using ensembles instead of singe models often increases chances of successful Molecular Replacement. This task uses <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a> software to make MR Ensemble from given structural homologs. The process is completely automatic and includes pruning structures according to the modification protocol and target sequence given, and bringing them in best superposition.</p>
 <p>Pruning structures in MR Ensembles is done in order to remove parts that do not correspond to the target sequence; usually, this increases chances of successful Molecular Replacement. A few modification protocols are available in the task:</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>Unmodified</strong>: atomic coordinates are not altered in any way</li>
-<li><strong>Clip</strong>: water molecules and ligands are removed</li>
-<li><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
-<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></li>
-<li><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</li>
-<li><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></li>
-<li><strong>Polyalanine</strong>: all residues are replaced with polyalanines</li>
+<li><p><strong>Unmodified</strong>: atomic coordinates are not altered in any way</p></li>
+<li><p><strong>Clip</strong>: water molecules and ligands are removed</p></li>
+<li><p><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></p></li>
+<li><p><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</p></li>
+<li><p><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></p></li>
+<li><p><strong>Polyalanine</strong>: all residues are replaced with polyalanines</p></li>
 </ul>
 </div></blockquote>
 <p>The resulting ensemble can be used in both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> tasks, but the outcome may be different, especially in difficult cases.</p>
-
+</section>
 
 
           </article>
@@ -443,7 +442,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Prepare MR Ensemble from Sequence </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Prepare MR Ensemble from Sequence </span>
               </div>
             </a>
           
@@ -453,7 +452,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Prepare MR Ensemble with CCP4mg </span>
+                class="md-footer-nav__direction"> "Next" </span> Prepare MR Ensemble with CCP4mg </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -467,7 +466,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
