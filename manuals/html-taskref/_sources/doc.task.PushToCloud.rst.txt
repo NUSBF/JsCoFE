@@ -1,0 +1,21 @@
+==================
+Push Data to Cloud
+==================
+
+This task transfers X-ray diffraction image directories from your device to the
+``My Cloud Storage`` area in CCP4 Cloud. Instead of sending individual files,
+it uploads entire directories, with support for up to 10 directories per task.
+
+In the task interface, you can choose a custom name for the destination folder,
+or allow an auto-generated name. The full path to the destination folder will be
+displayed on the task’s *Report Page* upon completion.
+
+Once the transfer is complete, the data can be processed using the 
+:doc:`Automatic Image Processing with Xia-2 <doc.task.Xia2>` task.
+Be sure to set the file location selector in the :doc:`Xia-2 <doc.task.Xia2>` 
+task to ``cloud storage``.
+
+.. note:: Each user has access only to their personal area in ``My Cloud Storage``.
+.. note:: Multiple source directories will be merged into a single destination 
+          folder in ``My Cloud Storage``.
+.. note:: This task is unavailable in the CCP4 Cloud Local version.
