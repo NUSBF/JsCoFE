@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> 11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -163,13 +162,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -255,7 +254,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-003--page-root" class="md-nav__link">11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -317,7 +316,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-003--page-root" class="md-nav__link">11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -336,87 +335,86 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t4-003--page-root"><span class="section-number">11. </span>Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement<a class="headerlink" href="#doc-tutorial-t4-003--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="refinement-using-refmac5-part-3-ligand-dictionary-generation-fitting-refinement">
+<h1 id="doc-tutorial-t4-003--page-root"><span class="section-number">11. </span>Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement<a class="headerlink" href="#doc-tutorial-t4-003--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Written by: Rob Nicholls</p>
-
-<h2 id="preliminary-notes"><span class="section-number">11.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this headline">¶</a></h2>
+<section id="preliminary-notes">
+<h2 id="preliminary-notes"><span class="section-number">11.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
-<li>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</li>
+<li><p>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</p></li>
 </ul>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha">
-<li>The structure is already phased and built</li>
-<li>Protein sequence is not imported (and not needed)</li>
-<li>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</li>
+<li><dl class="simple">
+<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha simple">
+<li><p>The structure is already phased and built</p></li>
+<li><p>Protein sequence is not imported (and not needed)</p></li>
+<li><p>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</p></li>
 </ol>
 </dd>
 </dl>
 </li>
 </ul>
 <p>In this example, there is a ligand present in the density, but it has not yet been built into the model. Since this ligand is present in the CCP4 monomer library (with code: C8M), we don’t actually need to create a new dictionary for this ligand. However, for the purposes of this tutorial, we will create a new ligand dictionary using the latest version of AceDRG, fit the ligand into the map using Coot, then refine the model using REFMAC5. A chemical description of the ligand is available as a SMILES string below in the next section.</p>
-
-
-<h2 id="tutorial"><span class="section-number">11.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="tutorial">
+<h2 id="tutorial"><span class="section-number">11.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span> <span class="pre">Reflection</span> <span class="pre">data</span> <span class="pre">(lyase.mtz),</span> <span class="pre">Phases</span> <span class="pre">(lyase.mtz),</span> <span class="pre">Atomic</span> <span class="pre">coordinates</span> <span class="pre">(lyase.pdb)</span> <span class="pre">are</span> <span class="pre">already</span> <span class="pre">imported</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">project</span></code></p>
 <p>You wil also need the SMILES string corresponding to the ligand C8M, which is:</p>
 <p><em>CN(CCC([N@H])=O)C[C@H]1O[C@H]([C@H](O)[C@@H]1O)n1c(C)nc2c(N)ncnc12</em></p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span> <span class="pre">Make</span> <span class="pre">a</span> <span class="pre">ligand</span> <span class="pre">dictionary</span> <span class="pre">using</span> <span class="pre">AceDRG</span></code></p>
 <ul class="simple">
-<li>Click the green <strong>+</strong> button in order to add a follow-on job.</li>
-<li>Select the <strong>Make Ligand with Acedrg</strong> task, which is found in the <strong>Ligands</strong> section in the <strong>All tasks</strong> tab.</li>
-<li>Copy the SMILES string from above, and paste it into the <strong>SMILES string</strong> field in the interface.</li>
-<li>Change the <strong>Ligand Code</strong> to <strong>C8M</strong>, and run the job.</li>
+<li><p>Click the green <strong>+</strong> button in order to add a follow-on job.</p></li>
+<li><p>Select the <strong>Make Ligand with Acedrg</strong> task, which is found in the <strong>Ligands</strong> section in the <strong>All tasks</strong> tab.</p></li>
+<li><p>Copy the SMILES string from above, and paste it into the <strong>SMILES string</strong> field in the interface.</p></li>
+<li><p>Change the <strong>Ligand Code</strong> to <strong>C8M</strong>, and run the job.</p></li>
 </ul>
 <blockquote>
-<div>AceDRG will infer chemistry from the SMILES string - information about atomic connectivity and bond orders. It will then consult the AceDRG tables in order to generate a full ligand description, including the restraints for the bonds, angles, etc. It then performs conformer generation using RDKit, followed by final optimisation using REFMAC5.</div></blockquote>
+<div><p>AceDRG will infer chemistry from the SMILES string - information about atomic connectivity and bond orders. It will then consult the AceDRG tables in order to generate a full ligand description, including the restraints for the bonds, angles, etc. It then performs conformer generation using RDKit, followed by final optimisation using REFMAC5.</p>
+</div></blockquote>
 <p>When the job is finished, you can click on the <strong>UglyMol</strong> button if you want to view the coordinates corresponding to the low-energy conformer that was generated.</p>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span> <span class="pre">Load</span> <span class="pre">the</span> <span class="pre">protein</span> <span class="pre">model</span> <span class="pre">and</span> <span class="pre">ligand</span> <span class="pre">conformer</span> <span class="pre">into</span> <span class="pre">Coot</span></code></p>
 <ul class="simple">
-<li>Click the green <strong>+</strong> button in order to add a follow-on job. Choose <strong>Model Building with Coot</strong>, which is found in the <strong>Coot</strong> section of the <strong>All tasks</strong> tab.</li>
-<li>In the <strong>Ligand data</strong> field, select the <strong>make ligand</strong> job that you ran earlier, and run the job.</li>
+<li><p>Click the green <strong>+</strong> button in order to add a follow-on job. Choose <strong>Model Building with Coot</strong>, which is found in the <strong>Coot</strong> section of the <strong>All tasks</strong> tab.</p></li>
+<li><p>In the <strong>Ligand data</strong> field, select the <strong>make ligand</strong> job that you ran earlier, and run the job.</p></li>
 </ul>
 <p>Both the protein coordinates and the ligand coordinates will now be loaded into Coot, but the ligand will not be located in the correct position. We must now fit the ligand.</p>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span> <span class="pre">Find</span> <span class="pre">the</span> <span class="pre">ligand</span> <span class="pre">position</span></code></p>
 <p>We can find the position of the ligand by using Coot’s <strong>Unmodelled blobs</strong> feature in the <strong>Validate</strong> menu.</p>
 <ul class="simple">
-<li>Make sure that the protein model is selected - not the ligand coordinates - and then click <strong>Find Blobs</strong>.</li>
-<li>Coot should find one blob - click the button to centre on the blob.</li>
+<li><p>Make sure that the protein model is selected - not the ligand coordinates - and then click <strong>Find Blobs</strong>.</p></li>
+<li><p>Coot should find one blob - click the button to centre on the blob.</p></li>
 </ul>
 <blockquote>
-<div>If it finds many blobs then something has gone wrong… perhaps the map was masked using the ligand coordinates instead of the protein coordinates?</div></blockquote>
+<div><p>If it finds many blobs then something has gone wrong… perhaps the map was masked using the ligand coordinates instead of the protein coordinates?</p>
+</div></blockquote>
 <ul class="simple">
-<li>Zoom in (keyword: <strong>m</strong>) and you should see green difference density corresponding to the ligand.</li>
+<li><p>Zoom in (keyword: <strong>m</strong>) and you should see green difference density corresponding to the ligand.</p></li>
 </ul>
 <p>Now we must fit our ligand coordinates into the blob, whilst ensuring chemical sense using the AceDRG restraint dictionary.</p>
 <p><code class="docutils literal notranslate"><span class="pre">5.</span> <span class="pre">Fit</span> <span class="pre">the</span> <span class="pre">ligand</span></code></p>
 <ul>
-<li><p class="first">Go to the <strong>Ligand</strong> menu, and select <strong>Find Ligands</strong> <em>(this tool used to be found in “Other Modelling Tools” in the “Calculate” menu)</em>.</p>
-</li>
-<li><p class="first">Select the coordinates for the ligand (<strong>C8M_from_dict</strong>), and tick the box to do flexible fitting.</p>
+<li><p>Go to the <strong>Ligand</strong> menu, and select <strong>Find Ligands</strong> <em>(this tool used to be found in “Other Modelling Tools” in the “Calculate” menu)</em>.</p></li>
+<li><p>Select the coordinates for the ligand (<strong>C8M_from_dict</strong>), and tick the box to do flexible fitting.</p>
 <blockquote>
 <div><p>This will result in Coot trialling multiple conformers by sampling different rotatable bond angles – since this ligand has rotatable bonds, we try generating many conformers in the hope that one of them matches our blob sufficiently well.</p>
 </div></blockquote>
 </li>
-<li><p class="first">Ensure that the protein model is selected in the <strong>Select Protein</strong> section.</p>
-</li>
-<li><p class="first">Under <strong>Where to Search?</strong> select <strong>Right here</strong>.</p>
-</li>
-<li><p class="first">Leave everything else at the default values, and click <strong>Find ligands</strong>.</p>
-</li>
+<li><p>Ensure that the protein model is selected in the <strong>Select Protein</strong> section.</p></li>
+<li><p>Under <strong>Where to Search?</strong> select <strong>Right here</strong>.</p></li>
+<li><p>Leave everything else at the default values, and click <strong>Find ligands</strong>.</p></li>
 </ul>
 <p>Hopefully it will find one ligand - select this ligand. If the ligand is not found, then repeat the process again, perhaps increasing the number of conformers to trial.
 The ligand should have been placed in roughly the correct place, but it is unlikely to be in exactly the correct conformation. Manual intervention is required in order to correctly position the ligand.</p>
 <ul class="simple">
-<li>Try real space refinement (keyword: <strong>r</strong>), and manually drag atoms until the ligand is in a reasonable position.</li>
-<li>When you are happy, merge this ligand into the protein model:<ul>
-<li>In the <strong>Edit</strong> menu, select <strong>Merge Molecules</strong>.</li>
-<li>Select to insert the <strong>Fitted Ligand</strong> into the protein model (e.g. <strong>input/000#-01_lyase.pdb</strong>).</li>
-<li>Click <strong>Merge</strong>, and the ligand will change colour to match the surrounding protein model.</li>
+<li><p>Try real space refinement (keyword: <strong>r</strong>), and manually drag atoms until the ligand is in a reasonable position.</p></li>
+<li><p>When you are happy, merge this ligand into the protein model:</p>
+<ul>
+<li><p>In the <strong>Edit</strong> menu, select <strong>Merge Molecules</strong>.</p></li>
+<li><p>Select to insert the <strong>Fitted Ligand</strong> into the protein model (e.g. <strong>input/000#-01_lyase.pdb</strong>).</p></li>
+<li><p>Click <strong>Merge</strong>, and the ligand will change colour to match the surrounding protein model.</p></li>
 </ul>
 </li>
-<li>Finally, save the model back to CCP4 Cloud by selecting: <strong>File</strong> =&gt; <strong>Save Coordinates</strong> =&gt; <strong>Select Filename</strong> =&gt; <strong>Save</strong>. Then close Coot, and your model will be saved as the output of the <strong>Model Building with Coot</strong> job.</li>
+<li><p>Finally, save the model back to CCP4 Cloud by selecting: <strong>File</strong> =&gt; <strong>Save Coordinates</strong> =&gt; <strong>Select Filename</strong> =&gt; <strong>Save</strong>. Then close Coot, and your model will be saved as the output of the <strong>Model Building with Coot</strong> job.</p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">6.</span> <span class="pre">Re-refine</span> <span class="pre">the</span> <span class="pre">protein-ligand</span> <span class="pre">complex</span></code></p>
 <p>Go back to the main job tree in CCP4 Cloud. Ensure that your <strong>Model Building with Coot</strong> job is selected, and click the green <strong>+</strong> button in order to add a follow-on job. Choose <strong>Refinement with Refmac</strong>.</p>
@@ -426,14 +424,14 @@ The ligand should have been placed in roughly the correct place, but it is unlik
 <p>Within Coot, click the <strong>Go to (next) ligand</strong> button in order to bring focus to the ligand. Cycle through the ligands until you find the correct one. Green and red difference density should help inform whether the current conformation of the ligand is reasonable, or if further (manual) changes are required in order to model the ligand correctly.</p>
 <p>In addition to looking at the fit-to-density, it is recommended to utilise Coot’s ligand validation tools in order to gain further insight regarding the quality of the ligand in the structural context of macromolecular complex:</p>
 <ul class="simple">
-<li>Select <strong>Environment Distances</strong> from the <strong>Measures</strong> menu, and enable <strong>Show Residue Environment</strong> in order to analyse interactions between the protein and ligand. This helps to analyse the hydrogen-bonding network.</li>
-<li>Select <strong>Contact Dots for Ligand</strong> from the <strong>Ligand</strong> menu. This helps to identify any atoms that clash.</li>
-<li>Select <strong>Display Ligand Distortions</strong> from the <strong>Ligand</strong> menu. This assesses the geometry (bonds, angles, etc.) of the ligand, in order to compare the current conformation against the “ideal” values listed in the dictionary.</li>
+<li><p>Select <strong>Environment Distances</strong> from the <strong>Measures</strong> menu, and enable <strong>Show Residue Environment</strong> in order to analyse interactions between the protein and ligand. This helps to analyse the hydrogen-bonding network.</p></li>
+<li><p>Select <strong>Contact Dots for Ligand</strong> from the <strong>Ligand</strong> menu. This helps to identify any atoms that clash.</p></li>
+<li><p>Select <strong>Display Ligand Distortions</strong> from the <strong>Ligand</strong> menu. This assesses the geometry (bonds, angles, etc.) of the ligand, in order to compare the current conformation against the “ideal” values listed in the dictionary.</p></li>
 </ul>
 <p>To further analyse the ligand’s environment, you can use Coot’s Flatland Ligand Environment View. Select <strong>FLEV this residue</strong> from the Ligands menu. The Lidia ligand builder will open - click the <strong>Env. Residues</strong> button to analyse the ligand’s structural environment in 2D. Clicking the <strong>Key</strong> button will display a legend below the image.</p>
 <p>If the ligand requires further intervention in order to produce an optimal model then: fix the model in Coot, re-refine the model using REFMAC5, and inspect/validate the model in Coot. In practice, further rounds of manual and full-model refinement would be performed by iterating the above procedure.</p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -454,7 +452,7 @@ The ligand should have been placed in roughly the correct place, but it is unlik
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement </span>
               </div>
             </a>
           
@@ -464,7 +462,7 @@ The ligand should have been placed in roughly the correct place, but it is unlik
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">12. </span>Paired refinement with PAIREF in CCP4Cloud </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">12. </span>Paired refinement with PAIREF in CCP4Cloud </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -478,7 +476,7 @@ The ligand should have been placed in roughly the correct place, but it is unlik
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

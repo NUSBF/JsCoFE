@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>Prepare data for deposition &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Prepare data for deposition &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> Prepare data for deposition </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
           <li class="md-tabs__item"><a href="Validation_Analysis_and_Deposition.html" class="md-tabs__link">Validation, Analysis and Deposition</a></li>
       </ul>
     </div>
@@ -164,13 +163,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -375,30 +374,30 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-deposition--page-root">Prepare data for deposition<a class="headerlink" href="#doc-task-deposition--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="prepare-data-for-deposition">
+<h1 id="doc-task-deposition--page-root">Prepare data for deposition<a class="headerlink" href="#doc-task-deposition--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The final stage of the crystallographic structure solution is the deposition of the final structure model, sequence, ligand data, and observations in the <a class="reference external" href="https://www.wwpdb.org/" rel="noopener noreferrer" target="_blank">Protein Data Bank (PDB)</a>. The deposition is done by means of two <a class="reference external" href="https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner%E2%80%99s-guide-to-pdb-structures-and-the-pdbx-mmcif-format" rel="noopener noreferrer" target="_blank">mmCIF</a> -formatted files: one containing atomic coordinates, sequence(s) and ligand descriptions, and one containing the observations (<em>i.e.</em>, reflection dataset(s)). Both files are prepared by the Deposition task. The task examines the current project branch, finds the needful data and puts them in the resulting mmCIF files.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The task does not actually deposit data in the PDB. It only prepares mmCIF files for deposition and acquires the PDB Validation report from wwPDB servers.</p>
+<p class="admonition-title">Note</p>
+<p>The task does not actually deposit data in the PDB. It only prepares mmCIF files for deposition and acquires the PDB Validation report from wwPDB servers.</p>
 </div>
 <p>After Deposition task finishes, inspect the <a class="reference external" href="https://www.wwpdb.org/validation/validation-reports" rel="noopener noreferrer" target="_blank">PDB Validation Report</a>, delivered by task. If you find that the structure is worth deposition, then:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Download the <a class="reference external" href="https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner%E2%80%99s-guide-to-pdb-structures-and-the-pdbx-mmcif-format" rel="noopener noreferrer" target="_blank">mmCIF</a> files with final model (which also contains sequence(s) and ligand descriptions) and reflection data, using <strong>Download buttons</strong> in the task output page.</li>
-<li>Start new deposition session at <a class="reference external" href="https://deposit.wwpdb.org/" rel="noopener noreferrer" target="_blank">wwPDB Deposition Site</a> (<a class="reference external" href="https://www.youtube.com/watch?v=yFMG_cFebTA" rel="noopener noreferrer" target="_blank">X-ray Deposition tutorial</a>).</li>
+<li><p>Download the <a class="reference external" href="https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner%E2%80%99s-guide-to-pdb-structures-and-the-pdbx-mmcif-format" rel="noopener noreferrer" target="_blank">mmCIF</a> files with final model (which also contains sequence(s) and ligand descriptions) and reflection data, using <strong>Download buttons</strong> in the task output page.</p></li>
+<li><p>Start new deposition session at <a class="reference external" href="https://deposit.wwpdb.org/" rel="noopener noreferrer" target="_blank">wwPDB Deposition Site</a> (<a class="reference external" href="https://www.youtube.com/watch?v=yFMG_cFebTA" rel="noopener noreferrer" target="_blank">X-ray Deposition tutorial</a>).</p></li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The PDB accepts both merged (mandatory) and scaled unmerged (optional) reflection data. In CCP4 Cloud, scaled unmerged dataset is created by the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html" rel="noopener noreferrer" target="_blank">Merging and Scaling with Aimless</a> task. If this task was run in the current project branch, the scaled unmerged dataset will be found by the Deposition task automatically. In such case, the task produces mmCIF files for both the merged, and combined merged and scaled unmerged datasets. Of those, only one should be chosen for deposition at user’s discretion. Deposition of scaled unmerged data is encouraged in all cases.</p>
+<p class="admonition-title">Note</p>
+<p>The PDB accepts both merged (mandatory) and scaled unmerged (optional) reflection data. In CCP4 Cloud, scaled unmerged dataset is created by the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html" rel="noopener noreferrer" target="_blank">Merging and Scaling with Aimless</a> task. If this task was run in the current project branch, the scaled unmerged dataset will be found by the Deposition task automatically. In such case, the task produces mmCIF files for both the merged, and combined merged and scaled unmerged datasets. Of those, only one should be chosen for deposition at user’s discretion. Deposition of scaled unmerged data is encouraged in all cases.</p>
 </div>
 <p><strong>Useful links</strong></p>
 <p><a class="reference external" href="https://www.wwpdb.org/" rel="noopener noreferrer" target="_blank">https://www.wwpdb.org/</a></p>
 <p><a class="reference external" href="https://www.wwpdb.org/deposition/tutorial#coordinate-deposition" rel="noopener noreferrer" target="_blank">wwPDB OneDep System Coordinate Deposition</a></p>
 <p><a class="reference external" href="https://www.wwpdb.org/deposition/faq#start" rel="noopener noreferrer" target="_blank">FAQ: Starting a deposition session</a></p>
 <p><a class="reference external" href="https://cdn.rcsb.org/wwpdb/docs/deposition/one-dep-brochure-letter.pdf" rel="noopener noreferrer" target="_blank">5 Easy Steps to PDB Deposition with OneDep guide</a></p>
-
+</section>
 
 
           </article>
@@ -419,7 +418,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> SC </span>
+                      class="md-footer-nav__direction"> "Previous" </span> SC </span>
               </div>
             </a>
           
@@ -429,7 +428,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Contact calculations </span>
+                class="md-footer-nav__direction"> "Next" </span> Contact calculations </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -443,7 +442,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
