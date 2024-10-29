@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>Find and prepare MR models with MrParse &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Find and prepare MR models with MrParse &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> Find and prepare MR models with MrParse </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
           <li class="md-tabs__item"><a href="Molecular_Replacement.html" class="md-tabs__link">Molecular Replacement</a></li>
           <li class="md-tabs__item"><a href="doc.task.MR_model_preparation.html" class="md-tabs__link">Molecular Replacement Models and Ensembles</a></li>
       </ul>
@@ -165,13 +164,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -404,8 +403,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-mrparse--page-root">Find and prepare MR models with MrParse<a class="headerlink" href="#doc-task-mrparse--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="find-and-prepare-mr-models-with-mrparse">
+<h1 id="doc-task-mrparse--page-root">Find and prepare MR models with MrParse<a class="headerlink" href="#doc-task-mrparse--page-root" title="Permalink to this heading">¶</a></h1>
 <p>MrParse identifies structural homologs based on a target sequence, suitable for making MR search models. It searches both the PDB and AFDB (EBI AlphaFold Data Base) for hits. In addition, for sequences of of less than 350 residues, it will make use of the <a class="reference external" href="https://esmatlas.com/" rel="noopener noreferrer" target="_blank">ESMFold</a> API  to generate a prediction. Relevant structures are selected on the basis of sequence alignment with <a class="reference external" href="http://hmmer.org/" rel="noopener noreferrer" target="_blank">PHMMER</a> software. PHMMER implements methods using probabilistic models called profile hidden Markov Models, and is considered to be one of the most sensitive sequence-comparison software.</p>
 <p>Found structure homologs are then trimmed to maximise their resemblance to the target sequence and increase the chance of success in Molecular Replacement. If reflection data set is provided (recommended), MrParse uses the Phaser software to calculate eLLG scores for MR models found <a class="reference external" href="https://doi.org/10.1107/S2059798318004357" rel="noopener noreferrer" target="_blank">[Oeffner, 2018]</a>. MR models with higher eLLG are almost certainly better for Molecular Replacement than models with lower eLLG scores and should be tried first.</p>
 <p>MR search models, prepared by the MrParse task, may be used in Molecular Replacement tasks (Phaser-MR or Molrep) directly, or assembled in  <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensembles</span></a> before phasing, which may increase chances for success.</p>
@@ -414,7 +413,7 @@
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/15531603" rel="noopener noreferrer" target="_blank">Söding J. (2005) Protein homology detection by HMM-HMM comparison. Bioinformatics 21: 951-960. PMID: 15531603</a></p>
 <p><a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0022283617305879" rel="noopener noreferrer" target="_blank">Zimmermann L, Stephens A, Nam SZ, Rau D, Kübler J, Lozajic M, Gabler F, Söding J, Lupas AN. (2018) A Completely Reimplemented MPI Bioinformatics Toolkit with a New HHpred Server at its Core. Alva V. J Mol Biol. S0022-2836(17)30587-9.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798318004357" rel="noopener noreferrer" target="_blank">Oeffner, R. D., Afonine, P. V., Millán, C., Sammito, M., Usón, I., Read, R. J., &amp; McCoy, A. J. (2018). On the application of the expected log-likelihood gain to decision making in molecular replacement. Acta crystallographica. Section D, Structural biology, 74(Pt 4), 245–255.</a></p>
-
+</section>
 
 
           </article>
@@ -435,7 +434,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Molecular Replacement Models and Ensembles </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Molecular Replacement Models and Ensembles </span>
               </div>
             </a>
           
@@ -445,7 +444,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Prepare MR Model(s) from Coordinate data </span>
+                class="md-footer-nav__direction"> "Next" </span> Prepare MR Model(s) from Coordinate data </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -459,7 +458,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

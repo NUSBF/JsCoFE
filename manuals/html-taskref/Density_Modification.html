@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>Density Modification &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Density Modification &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +93,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> Density Modification </span>
         </div>
       </div>
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -151,7 +150,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -163,13 +162,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -339,20 +338,20 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="density-modification--page-root">Density Modification<a class="headerlink" href="#density-modification--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="density-modification">
+<h1 id="density-modification--page-root">Density Modification<a class="headerlink" href="#density-modification--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The electron density map is generally calculated from amplitudes measured experimentally and obtained phases. Density modification (DM) methods is necessary to improve the phases in order to obtain an interpretable map. DM has the effect of selecting the correct phase from the two phase possibilities. Thus, in the case of SAD and SIR the improvements in the map can be very dramatic. It may also be applied after molecular replacement to reduce bias towards the search model. Phase improvement is performed using solvent flattening, histogram matching, and optionally non-crystallographic symmetry averaging.</p>
 <p>There are two families of approaches to density modification: <code class="docutils literal notranslate"><span class="pre">classical</span></code> methods and <code class="docutils literal notranslate"><span class="pre">statistical</span></code> methods.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Classical</span> <span class="pre">method</span></code> includes two major steps:</p>
 <ul class="simple">
-<li>density modification to impose a physical constraint in real space</li>
-<li>structure factor merging to combine the resulting information with the experimental data in reciprocal space.</li>
+<li><p>density modification to impose a physical constraint in real space</p></li>
+<li><p>structure factor merging to combine the resulting information with the experimental data in reciprocal space.</p></li>
 </ul>
 <p>The result of these iterations can be used to redetermine input parameters, such as heavy atom positions, molecular envelopes, and noncrystallography symmetry operators. These parameters will then lead to a new set of initial phases, which in tum are improved by density modification, defming a larger cycle ofiterations.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Statistical</span> <span class="pre">methods</span></code> provide a more sound theoretical basis to the problem of phase improvement and as a result reduce the problems of bias associated with classical density-modification methods. This improvement is achieved by:</p>
 <ul class="simple">
-<li>the expression of the additional information to be introduced to the electron-density map in terms of probability distributions and then carrying those distributions into reciprocal space, rather than working with a single map representing a single sample from the phase probability distributions.</li>
-<li>weakening the link between the additional information to be introduced and the initial phases, thus reducing the bias introduced in a single cycle of phase improvement. The phase probability distributions from which the centroid map is derived are not directly included in the new phase information incorporated during a single density-modification cycle. The only way in which the current phases are used is in the classification of the asymmetric unit into regions of different density types, e.g. solvent and protein.</li>
+<li><p>the expression of the additional information to be introduced to the electron-density map in terms of probability distributions and then carrying those distributions into reciprocal space, rather than working with a single map representing a single sample from the phase probability distributions.</p></li>
+<li><p>weakening the link between the additional information to be introduced and the initial phases, thus reducing the bias introduced in a single cycle of phase improvement. The phase probability distributions from which the centroid map is derived are not directly included in the new phase information incorporated during a single density-modification cycle. The only way in which the current phases are used is in the classification of the asymmetric unit into regions of different density types, e.g. solvent and protein.</p></li>
 </ul>
 <div class="toctree-wrapper compound">
 <ul>
@@ -376,7 +375,7 @@
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744490903947X" rel="noopener noreferrer" target="_blank">Cowtan, K. (2010) Recent developments in classical density modification. Acta Cryst. D66: 470-478;</a></p>
 <p><a class="reference external" href="https://link.springer.com/protocol/10.1385%2F0-89603-259-0%3A205" rel="noopener noreferrer" target="_blank">Podjarny, A.D., Rees, B., Urzhumtsev, A.G.(1996) Density modification in X-ray crystallography. Methods in Molecular Biology, Crystallographic Methods and Protocols. P. 205-226. (Methods in Molecular Biology, Vol. 56.)</a></p>
-
+</section>
 
 
           </article>
@@ -397,7 +396,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> SHELXCD </span>
+                      class="md-footer-nav__direction"> "Previous" </span> SHELXCD </span>
               </div>
             </a>
           
@@ -407,7 +406,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Density Modification with Parrot </span>
+                class="md-footer-nav__direction"> "Next" </span> Density Modification with Parrot </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -421,7 +420,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
