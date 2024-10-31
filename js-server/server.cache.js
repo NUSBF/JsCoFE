@@ -73,6 +73,14 @@ Cache.prototype.removeItem = function ( key )  {
     delete this.cache[key];
 }
 
+Cache.prototype.removeItems = function ( key_prefix )  {
+  let keys = Object.keys(this.cache);
+  for (let i=0;i<keys.length;i++)
+    if (keys[i].startsWith(key_prefix))
+      delete this.cache[keys[i]];
+}
+
+
 Cache.prototype.getItem = function ( key )  {
   if (key in this.cache)
     return this.cache[key];
@@ -118,10 +126,10 @@ Cache.prototype.getObject = function ( key,file_path )  {
 const projectExt      = '.prj';
 const userProjectsExt = '.projects';
 
-function getFileKey ( fpath )  {
+function getProjectKey ( fpath )  {
   let index = fpath.lastIndexOf ( projectExt );
   let dpath = fpath.substring ( 0,index );
-  let key   = path.basename ( dpath );
+  let key   = path.basename ( dpath );  // project name
   dpath     = path.dirname  ( dpath );
   if (!dpath.endsWith(userProjectsExt))
     return null;
@@ -129,11 +137,26 @@ function getFileKey ( fpath )  {
     let stat = fs.lstatSync ( dpath );
     if (stat.isSymbolicLink())
       dpath = fs.readlinkSync ( dpath )
-    return path.basename(dpath,userProjectsExt) + ':' + key;
+    return path.basename(dpath,userProjectsExt) + ':' + key;  // user:project
   } catch(e)  {
     return null;
   }
 }
+
+function getDirKey ( fpath )  {
+  if (fpath.endsWith(userProjectsExt))
+    return path.basename ( fpath,userProjectsExt );  // user name
+  if (fpath.endsWith(projectExt))  {
+    let index = fpath.lastIndexOf ( projectExt );
+    let dpath = fpath.substring ( 0,index );
+    let key   = path.basename ( dpath );  // project name
+    dpath     = path.dirname  ( dpath );
+    if (dpath.endsWith(userProjectsExt))
+      return path.basename(dpath,userProjectsExt) + ':' + key;  // user:project
+  }
+  return null;
+}
+
 
 // --------------------------------------------------------------------------
 
@@ -159,7 +182,7 @@ function selectCache ( fpath )  {
   } else  {
     let fname = path.basename ( fpath );
     if (fname in cache_list)  {
-      r.key = getFileKey ( fpath );
+      r.key = getProjectKey ( fpath );
       if (r.key)
         r.cache = cache_list[fname];
     }
@@ -184,6 +207,14 @@ function removeItem ( fpath )  {
   if (r.cache)
     r.cache.removeItem ( r.key );
 }
+
+function removeItems ( dirpath )  {
+  // to be used when a directory is removed
+  let key_prefix = getDirKey ( dirpath );
+  for (let c in cache_list)
+    c.removeItems ( key_prefix );
+}
+
 
 function getItem ( fpath )  {
   let r = selectCache ( fpath );
