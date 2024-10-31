@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.10.24   <--  Date of Last Modification.
+ *    31.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -240,6 +240,8 @@ function writeString ( fpath,data_string )  {
 
 
 function appendString ( fpath,data_string )  {
+  if (cache_enabled) 
+    cache.removeItem ( fpath );
   try {
     fs.appendFileSync ( fpath,data_string );
     return true;
@@ -252,7 +254,7 @@ function appendString ( fpath,data_string )  {
 }
 
 
-function writeObject ( fpath,dataObject,force_sync=false )  {
+function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
 
   let json_str = '';
   try {
@@ -266,13 +268,16 @@ function writeObject ( fpath,dataObject,force_sync=false )  {
   }
 
   try {
-    if ((!force_sync) && cache_enabled && cache.putItem(fpath,json_str))  {
+    if (((!force_sync) && cache_enabled && cache.putItem(fpath,json_str)) ||
+        callback_func)  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,json_str,function(err){
         if (err)  {
           log.error ( 41,'cannot write file ' + fpath );
           console.error(err);
         }
+        if (callback_func)
+          callback_func ( err );
       });
     } else  {
       fs.writeFileSync ( fpath,json_str );
@@ -310,6 +315,10 @@ function moveFile ( old_path,new_path )  {
   // this function should be used in asynchronous code; use in synchronous code
   // must be limited only when source and destination are known to be in
   // the same partition
+
+  if (cache_enabled) 
+    cache.removeItem ( fpath );
+
   try {
     if (_is_windows && fileExists(new_path))
       fs.unlinkSync ( new_path );
@@ -318,6 +327,7 @@ function moveFile ( old_path,new_path )  {
     log.error ( 60,'error: ' + JSON.stringify(e) );
     console.error(e);
   }
+
   try {
     fs.moveSync ( old_path,new_path,{'overwrite':true} );
 //    fs.renameSync ( old_path,new_path );
@@ -332,6 +342,7 @@ function moveFile ( old_path,new_path )  {
     log.error ( 61,'error: ' + JSON.stringify(e) );
     return false;
   }
+
 }
 
 
@@ -410,6 +421,7 @@ function mkDir ( dirPath )  {
   }
 }
 
+
 function mkDir_check ( dirPath )  {
 // attempts to create directory and returns:
 //     0 : if directory was created 
@@ -459,9 +471,17 @@ function mkPath ( dirPath )  {
 }
 
 
+function flushDirCache ( dir_path )  {
+  if (cache_enabled) 
+      cache.removeItems ( dir_path );
+}
+
 function removePathAsync ( dir_path,tmp_dir='' )  {
-let rc   = true;
-let stat = fileExists(dir_path);
+let rc = true;
+
+  flushDirCache ( dir_path );
+  
+  let stat = fileStat ( dir_path );
 
   if (stat)  {
     try {
@@ -505,9 +525,11 @@ let stat = fileExists(dir_path);
 
 
 function removePath ( dir_path )  {
-let rc   = true;
-let stat = fileExists(dir_path);
+let rc = true;
 
+  flushDirCache ( dir_path );
+
+  let stat = fileStat ( dir_path );
   if (stat && stat.isSymbolicLink())  {
     fs.unlinkSync ( dir_path );
   } else if (stat)  {
@@ -520,31 +542,6 @@ let stat = fileExists(dir_path);
       rc = false;
     }
 
-  //   fs.readdirSync(dir_path).forEach(function(file,index){
-  //     let curPath = path.join ( dir_path,file );
-  //     let curstat = fileExists ( curPath );
-  //     if (!curstat)  {
-  //       log.error ( 82,'cannot stat path ' + curPath );
-  //       rc = false;
-  //     } else if (curstat.isDirectory()) { // recurse
-  //       removePath ( curPath );
-  //     } else { // delete file
-  //       try {
-  //         fs.unlinkSync ( curPath );
-  //       } catch (e)  {
-  //         log.error ( 83,'cannot remove file ' + curPath +
-  //                        ' error: ' + JSON.stringify(e) );
-  //         rc = false;
-  //       }
-  //     }
-  //   });
-  //   try {
-  //     fs.rmdirSync ( dir_path );
-  //   } catch (e)  {
-  //     log.error ( 9,'cannot remove directory ' + dir_path +
-  //                   ' error: ' + JSON.stringify(e) );
-  //     rc = false;
-  //   }
   }
 
   return rc;  // false if there were errors
@@ -555,6 +552,9 @@ let stat = fileExists(dir_path);
 function moveDir ( old_path,new_path,overwrite_bool )  {
   // uses sync mode, which is Ok for source/destinations being on the same
   // file systems; use not-synced version when moving across devices
+
+  flushDirCache ( old_path );
+
   try {
     if (_is_windows && overwrite_bool && fileExists(new_path))
       removePathAsync ( new_path );
@@ -580,7 +580,11 @@ function moveDir ( old_path,new_path,overwrite_bool )  {
   }
 }
 
+
 function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
+
+  flushDirCache ( old_path );
+
   try {
     if (_is_windows && overwrite_bool && fileExists(new_path))
       removePathAsync ( new_path );
@@ -589,6 +593,7 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
     log.error ( 130,'error: ' + JSON.stringify(e) );
     console.error(e);
   }
+
   fs.move ( old_path,new_path,{'overwrite':overwrite_bool},function(err){
     if (err)  {
       let old_exist = '(non-existing)';
@@ -602,16 +607,21 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
     }
     callback_func(err);
   });
+
 }
+
 
 function cleanDir ( dir_path,exclude=[] ) {
   // removes everything in the directory, but does not remove it
+
+  flushDirCache ( dir_path );
+
   let rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       if (!exclude.includes(file))  {
         let curPath = path.join ( dir_path,file );
-        let curstat = fileExists ( curPath );
+        let curstat = fileStat  ( curPath );
         if (!curstat)  {
           log.error ( 140,'cannot stat path ' + curPath );
           rc = false;
@@ -637,10 +647,13 @@ function cleanDirExt ( dir_path,fext )  {
   // removes all files with given extension recursively in the directory,
   // but does not remove any directories, even if they are empty
   let rc = true;
+
+  flushDirCache ( dir_path );
+
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       let curPath = path.join ( dir_path,file );
-      let curstat = fileExists ( curPath );
+      let curstat = fileStat  ( curPath );
       if (!curstat)  {
         log.error ( 150,'cannot stat path ' + curPath );
         rc = false;
@@ -657,17 +670,23 @@ function cleanDirExt ( dir_path,fext )  {
       }
     });
   }
+
   return rc;  // false if there were errors
+
 }
 
 
 function removeSymLinks ( dir_path )  {
 // removes all symbolic links recursively in the directory
   let rc = true;
+
+  if (cache_enabled) 
+    cache.removeItem ( dir_path );
+
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
       let curPath = path.join ( dir_path,file );
-      let curstat = fileExists ( curPath );
+      let curstat = fileStat  ( curPath );
       if (!curstat)  {
         log.error ( 160,'cannot stat path ' + curPath );
         rc = false;
@@ -686,7 +705,9 @@ function removeSymLinks ( dir_path )  {
         }
     });
   }
+
   return rc;  // false if there were errors
+
 }
 
 
@@ -696,7 +717,7 @@ function getDirectorySize ( dir_path )  {
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
         let curPath = path.join ( dir_path,file );
-        let curstat = fileExists ( curPath );
+        let curstat = fileStat ( curPath );
         if (curstat)  {
           if (curstat.isDirectory())  { // recurse
             size += getDirectorySize ( curPath );
@@ -725,7 +746,7 @@ function searchTree ( dir_path,filename,matchKey ) {
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
         let curPath = path.join ( dir_path,file );
-        let curstat = fileExists ( curPath );
+        let curstat = fileStat  ( curPath );
         if (curstat && curstat.isDirectory()) { // recurse
           filepaths = filepaths.concat ( searchTree(curPath,filename,matchKey) );
         } else if (((matchKey==0) && (file==filename)) ||
@@ -765,6 +786,9 @@ function removeFiles ( dir_path,extList ) {
 let rc = true;
 
   if (fileExists(dir_path))  {
+
+    flushDirCache ( dir_path );
+
     fs.readdirSync(dir_path).forEach(function(file,index){
       let dlt = false;
       let fl  = file.toLowerCase();
@@ -772,7 +796,7 @@ let rc = true;
         dlt = fl.endsWith(extList[i]);
       if (dlt)  {
         let curPath = path.join ( dir_path,file );
-        let curstat = fileExists ( curPath );
+        let curstat = fileStat  ( curPath );
         if (!curstat)  {
           log.error ( 190,'cannot stat path ' + curPath );
           rc = false;
@@ -788,6 +812,7 @@ let rc = true;
         }
       }
     });
+
   }
 
   return rc;  // false if there were errors
@@ -834,13 +859,16 @@ let html  = '<!DOCTYPE html>\n<html><link rel="stylesheet" type="text/css" ' +
 
 const signal_file_name = 'signal';  // signal file of job termination status
 
+
 function jobSignalExists ( jobDir ) {
   return fileExists ( path.join(jobDir,signal_file_name) );
 }
 
+
 function removeJobSignal ( jobDir ) {
   removeFile ( path.join(jobDir,signal_file_name) );
 }
+
 
 function writeJobSignal ( jobDir,signal_name,signal_message,signal_code )  {
   let line = signal_name;
@@ -848,6 +876,7 @@ function writeJobSignal ( jobDir,signal_name,signal_message,signal_code )  {
     line += ' ' + signal_message;
   writeString ( path.join(jobDir,signal_file_name),line + '\n' + signal_code );
 }
+
 
 function getJobSignalCode ( jobDir )  {
 let code   = 0;
@@ -1101,6 +1130,7 @@ module.exports.appendString          = appendString;
 module.exports.writeObject           = writeObject;
 module.exports.copyFile              = copyFile;
 module.exports.moveFile              = moveFile;
+module.exports.flushDirCache         = flushDirCache;
 module.exports.moveDir               = moveDir;
 module.exports.moveDirAsync          = moveDirAsync;
 module.exports.copyDirAsync          = copyDirAsync;

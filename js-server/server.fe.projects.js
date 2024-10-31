@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    31.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1888,6 +1888,8 @@ let rcode = 'ok';
   
   } else  {
 
+    utils.flushDirCache ( projectDirPath );
+
     let files = fs.readdirSync ( projectDirPath );
     for (let i=0;(i<files.length) && (rcode=='ok');i++)
       if (files[i].startsWith(jobDirPrefix))  {
@@ -1973,86 +1975,6 @@ let pData    = readProjectData ( loginData,data.name );
   return response;
 
 }
-
-/*
-function renameProject ( loginData,data )  {  // data must contain new title
-let response = null;
-let pData    = readProjectData ( loginData,data.name );
-
-  if (pData)  {
-    let rdata = { 'code' : 'ok' };
-    pData.desc.title = data.title;
-    if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
-      // project ID to be changed: serious
-      // make sure that the project is not shared and that no jobs are running
-      if (Object.keys(pData.desc.share).length>0)  {
-        rdata.code = 'Not possible to change ID of a shared project';
-      } else  {
-        // Get users' projects directory name
-        let projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-        let newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
-        if (utils.fileExists(newPrjDirPath))  {
-          rdata.code = 'Project with requested ID (' + data.new_name +
-                       ') already exists (check all folders)';
-        } else  {
-          let jmeta = [];
-          if (utils.dirExists(projectDirPath))  {
-            let files = fs.readdirSync ( projectDirPath );
-            for (let i=0;(i<files.length) && (rdata.code=='ok');i++)  {
-              let jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
-              let jm     = utils.readObject ( jmpath );
-              if (jm)  {
-                if ((jm.state==task_t.job_code.running) ||
-                    (jm.state==task_t.job_code.exiting))
-                  rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
-                else
-                  jmeta.push ( [jmpath,jm] );
-              }
-            }
-          } else
-            rdata.code = 'Project directory does not exist -- possible data corruption.';
-          if (rdata.code=='ok')  {
-            // change code id in all files and rename project directory
-            for (let i=0;i<jmeta.length;i++)  {
-              jmeta[i][1].project = data.new_name;
-              utils.writeObject ( jmeta[i][0],jmeta[i][1] );
-            }
-            pData.desc.name = data.new_name;
-            utils.moveDir ( projectDirPath,newPrjDirPath,false );
-            if (!writeProjectData(loginData,pData,true))  {
-              utils.moveDir ( newPrjDirPath,projectDirPath,false );
-              response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00032] Project metadata cannot be written (1).','' );
-            } else  {
-              rdata.meta = pData;
-              response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-            }
-          }
-        }
-      }
-
-      if (!response)
-        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-
-    } else  {
-      if (!writeProjectData(loginData,pData,true))  {
-        response = new cmd.Response ( cmd.fe_retcode.writeError,
-                             '[00032] Project metadata cannot be written (2).','' );
-      } else  {
-        rdata.meta = pData;
-        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-      }
-    }
-
-  } else  {
-    response = new cmd.Response ( cmd.fe_retcode.readError,
-                             '[00033] Project metadata cannot be read.','' );
-  }
-
-  return response;
-
-}
-*/
 
 
 // ===========================================================================
@@ -2153,6 +2075,7 @@ let newPrjDirPath = getProjectDirPath ( loginData,projectName );
     rdata.code = 'fail';
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
+
 
 // ===========================================================================
 
