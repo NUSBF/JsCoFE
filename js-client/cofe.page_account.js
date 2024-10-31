@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    31.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -558,7 +558,7 @@ function AccountPage ( sceneId )  {
       pswd_inp.setStyle    ( 'password','','Your password','' );
       pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
       inputBox.setText ( '','msg_confirm' );
-      ibx_grid  = inputBox.grid;
+      let ibx_grid  = inputBox.grid;
       ibx_grid .setWidget  ( new Label(
         '<h2>Delete My Account</h2>' +
         'Your account will be deleted, are you sure?<p>' +

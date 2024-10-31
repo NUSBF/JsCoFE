@@ -212,7 +212,7 @@ function removeItems ( dirpath )  {
   // to be used when a directory is removed
   let key_prefix = getDirKey ( dirpath );
   for (let c in cache_list)
-    c.removeItems ( key_prefix );
+    cache_list[c].removeItems ( key_prefix );
 }
 
 
@@ -286,7 +286,8 @@ UserCache.prototype.deleteUserData = function ( login_name )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.itemExists = itemExists;
-module.exports.removeItem = removeItem;
-module.exports.getItem    = getItem;
-module.exports.putItem    = putItem;
+module.exports.itemExists  = itemExists;
+module.exports.removeItem  = removeItem;
+module.exports.removeItems = removeItems;
+module.exports.getItem     = getItem;
+module.exports.putItem     = putItem;

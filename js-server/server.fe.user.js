@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    31.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -374,6 +374,7 @@ function recoverUserLogin ( userData,callback_func )  {  // gets UserData object
 
 function UserLoginHash()  {
   this._type       = 'UserLoginHash';  // do not change
+  // this.cached      = false;
   this.loggedUsers = {
     '340cef239bd34b777f3ece094ffb1ec5' : {
       'login'  : 'devel',
@@ -390,10 +391,22 @@ UserLoginHash.prototype.save = function()  {
                           'CCP4 Login Hash Write Fails',
                           'Detected file read failure at user login hash write, ' +
                           'please investigate.' );
+  // utils.writeObject ( userHashPath,this,false,function(err){
+  //   if (err)
+  //     emailer.send ( conf.getEmailerConfig().maintainerEmail,
+  //                    'CCP4 Login Hash Write Fails',
+  //                    'Detected file read failure at user login hash write, ' +
+  //                    'please investigate.' );
+  // });
+  // this.cached = true;
   return '';
 }
 
 UserLoginHash.prototype.read = function()  {
+
+  // if (this.cached)
+  //   return true;
+
   let userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
   let hash = utils.readObject ( userHashPath);
   if (hash)  {
@@ -415,9 +428,12 @@ UserLoginHash.prototype.read = function()  {
         if (!('signal' in this.loggedUsers[token]))
           this.loggedUsers[token].signal = '';
     }
+    // this.cached = true;
     return true;
   }
+
   return false;
+
 }
 
 // UserLoginHash.prototype.read = function()  {
