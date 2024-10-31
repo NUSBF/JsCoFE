@@ -163,6 +163,9 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   } else  {
 
+    log.error ( 11,'file write error at user registration (' + userData.login +
+                   ') ' + userFilePath );
+
     response = new cmd.Response ( cmd.fe_retcode.writeError,
                       'Cannot write user data',
                       emailer.send ( conf.getEmailerConfig().maintainerEmail,
