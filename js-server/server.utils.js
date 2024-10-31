@@ -91,7 +91,7 @@ function setCacheEnabled ( enabled_bool )  {
 
 function fileExists ( fpath )  {
   try {
-    if (cache_enabled && cache.itemExists(fpath)>0)
+    if (cache_enabled && (cache.itemExists(fpath)>0))
       return true;
     return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
