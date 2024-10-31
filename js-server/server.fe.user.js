@@ -170,8 +170,8 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
                       'Cannot write user data',
                       emailer.send ( conf.getEmailerConfig().maintainerEmail,
                         'CCP4 Registration Write Fails',
-                        'Detected write failure at new user registration, ' +
-                        'please investigate.'
+                        'Detected write failure at new user registration (' +
+                        userData.login + '), please investigate.'
                       )
     );
 
