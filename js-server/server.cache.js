@@ -165,7 +165,7 @@ function getDirKey ( fpath )  {
 
 const cache_list = {
   '.user'        : new Cache(0),
-  '.ration'      : new Cache(100),
+  '.ration'      : new Cache(0),
   'project.desc' : new Cache(2000),
   'project.meta' : new Cache(2000)
 };
