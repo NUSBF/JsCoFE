@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.24   <--  Date of Last Modification.
+ *    01.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -174,7 +174,7 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
           fs.symlinkSync ( pathToOrigin,pathToTarget,'junction' );
     else  fs.symlinkSync ( pathToOrigin,pathToTarget );
   } catch (e)  {
-    return null;
+    return false;
   }
   return true;
 }
@@ -192,8 +192,10 @@ function readObject ( fpath )  {
     }
     return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
-    if (e.code !== 'ENOENT')
+    if (e.code !== 'ENOENT')  {
       log.error ( 10, e.message + ' when loading ' + fpath );
+      console.error ( e );
+    }
     return null;
   }
 }
@@ -317,7 +319,7 @@ function moveFile ( old_path,new_path )  {
   // the same partition
 
   if (cache_enabled) 
-    cache.removeItem ( fpath );
+    cache.removeItem ( old_path );
 
   try {
     if (_is_windows && fileExists(new_path))

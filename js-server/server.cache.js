@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.10.24   <--  Date of Last Modification.
+ *    01.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -127,32 +127,37 @@ const projectExt      = '.prj';
 const userProjectsExt = '.projects';
 
 function getProjectKey ( fpath )  {
+  // This key is used for caching project metadata. We check on symbolic link 
+  // because of possible shared projects. This is a point of inefficiency
   let index = fpath.lastIndexOf ( projectExt );
-  let dpath = fpath.substring ( 0,index );
-  let key   = path.basename ( dpath );  // project name
-  dpath     = path.dirname  ( dpath );
-  if (!dpath.endsWith(userProjectsExt))
-    return null;
-  try {
-    let stat = fs.lstatSync ( dpath );
-    if (stat.isSymbolicLink())
-      dpath = fs.readlinkSync ( dpath )
-    return path.basename(dpath,userProjectsExt) + ':' + key;  // user:project
-  } catch(e)  {
-    return null;
+  if (index>0)  {
+    let dpath = fpath.substring ( 0,index ) + projectExt;
+    let stat  = fs.lstatSync ( dpath );
+    if (stat)  {
+      if (stat.isSymbolicLink())
+        dpath = fs.readlinkSync ( dpath )
+      let upath = path.dirname  ( dpath );  // user projects
+      if (upath.endsWith(userProjectsExt))
+        return  path.basename(upath,userProjectsExt) + ':' +
+                path.basename(dpath,projectExt);
+    }
   }
+  return null;
 }
 
 function getDirKey ( fpath )  {
+  // This key is used at deleting directories. In this case, we do not check on
+  // symbolic link because we do not want to flush original items from the cache,
+  // even though that would be harmless
   if (fpath.endsWith(userProjectsExt))
     return path.basename ( fpath,userProjectsExt );  // user name
   if (fpath.endsWith(projectExt))  {
     let index = fpath.lastIndexOf ( projectExt );
     let dpath = fpath.substring ( 0,index );
-    let key   = path.basename ( dpath );  // project name
-    dpath     = path.dirname  ( dpath );
-    if (dpath.endsWith(userProjectsExt))
-      return path.basename(dpath,userProjectsExt) + ':' + key;  // user:project
+    let upath = path.dirname  ( dpath );
+    if (upath.endsWith(userProjectsExt))
+      return path.basename(upath,userProjectsExt) + ':' + 
+             path.basename(dpath);  // user:project
   }
   return null;
 }
@@ -211,8 +216,9 @@ function removeItem ( fpath )  {
 function removeItems ( dirpath )  {
   // to be used when a directory is removed
   let key_prefix = getDirKey ( dirpath );
-  for (let c in cache_list)
-    cache_list[c].removeItems ( key_prefix );
+  if (key_prefix)
+    for (let c in cache_list)
+      cache_list[c].removeItems ( key_prefix );
 }
 
 
