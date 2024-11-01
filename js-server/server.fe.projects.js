@@ -2490,7 +2490,7 @@ function startSharedImport ( loginData,meta )  {
   let rc_msg  = 'success';
   let tempdir = getProjectTmpDir ( loginData,true );
 
-  let import_as_link = true;  // development switch
+  let import_as_link = true;  // development switch, should be true in production
 
   if (tempdir)  {
 
