@@ -765,13 +765,12 @@ function readUsersData()  {
     if ((!fe_config.dormancy_control.strict) && fe_config.dormancy_control.after)
       after_ms = crTime - day_ms*fe_config.dormancy_control.after;
 
-let t0 = performance.now();
-let xx = fs.readdirSync(udir_path);
-let dt = performance.now() - t0;
-console.log ( ' >>>>> dircetory read in ' + dt );
+// let t0 = performance.now();
+// let xx = fs.readdirSync(udir_path);
+// let dt = performance.now() - t0;
+// console.log ( ' >>>>> dircetory read in ' + dt );
 
-    // fs.readdirSync(udir_path).forEach(function(file,index){
-    xx.forEach(function(file,index){
+    fs.readdirSync(udir_path).forEach(function(file,index){
       if (file.endsWith(__userDataExt))  {
 
         let uDataFPath = path.join    ( udir_path,file );
