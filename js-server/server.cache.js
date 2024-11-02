@@ -168,11 +168,16 @@ function getDirKey ( fpath )  {
 // const __userDataExt   = '.user';
 // const __rationFileExt = '.ration';
 
+// Assume 50 projects/user on average; this is important only for repeat
+// loading of project lists, which is rather rare. At all other times, 
+// user works with just a single project
+const nprj_per_user = 50;
+
 const cache_list = {
   '.user'        : new Cache(0),
   '.ration'      : new Cache(0),
-  'project.desc' : new Cache(2000),
-  'project.meta' : new Cache(2000)
+  'project.desc' : new Cache(2500),
+  'project.meta' : new Cache(2500)
 };
 
 var cache_enabled = false;
@@ -182,8 +187,8 @@ function configureCache ( ncache )  {
   cache_enabled = (ncache>0);
   if (cache_enabled)  {
     log.standard ( 1,'metadata cache is turned on' );
-    cache_list['project.desc'].setMaxSize ( 20*ncache );
-    cache_list['project.meta'].setMaxSize ( 20*ncache );
+    cache_list['project.desc'].setMaxSize ( nprj_per_user*ncache );
+    cache_list['project.meta'].setMaxSize ( nprj_per_user*ncache );
   } else
     log.standard ( 2,'metadata cache is turned off' );
 }
