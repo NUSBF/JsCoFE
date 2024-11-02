@@ -187,6 +187,10 @@ function configureCache ( ncache )  {
     log.standard ( 2,'metadata cache is turned off' );
 }
 
+function isCacheEnabled()  {
+  return cache_enabled;
+}
+
 function selectCache ( fpath )  {
   let r = {
     cache : null,
@@ -305,7 +309,7 @@ UserCache.prototype.deleteUserData = function ( login_name )  {
 // ==========================================================================
 // export for use in node
 
-module.exports.cache_enabled  = cache_enabled;
+module.exports.isCacheEnabled = isCacheEnabled;
 module.exports.configureCache = configureCache;
 module.exports.itemExists     = itemExists;
 module.exports.removeItem     = removeItem;
