@@ -137,18 +137,14 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo.ccp4_version   = conf.CCP4Version();
   adminData.nodesInfo.jscofe_version = cmd.appVersion();
 
-let t1 = performance.now();  let dt1 = t1-t0;  console.log ( ' >>>>>> dt1=' + dt1 );  
   let uData = user.readUserData ( loginData );
-let t2 = performance.now();  let dt2 = t2-t1;  console.log ( ' >>>>>> dt2=' + dt2 );  
   if ((uData.role!=ud.role_code.admin) && (uData.role!=ud.role_code.localuser))  {
     adminData.jobsStat  = 'Data available only in account with administrative privileges.';
     return new cmd.Response ( cmd.fe_retcode.ok,'',adminData );
   } else  {
     adminData.served    = true;
     adminData.jobsStat  = rj.readJobStats();
-let t3 = performance.now();  let dt3 = t3-t2;  console.log ( ' >>>>>> dt3=' + dt3 );  
     adminData.usersInfo = user.readUsersData();
-let t4 = performance.now();  let dt4 = t4-t3;  console.log ( ' >>>>>> dt4=' + dt4 );  
     adminData.nodesInfo.FEconfig = conf.getFEConfig();
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
       let dt = performance.now()-t0;

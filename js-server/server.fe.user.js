@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.24   <--  Date of Last Modification.
+ *    02.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -765,11 +765,7 @@ function readUsersData()  {
     if ((!fe_config.dormancy_control.strict) && fe_config.dormancy_control.after)
       after_ms = crTime - day_ms*fe_config.dormancy_control.after;
 
-// let t0 = performance.now();
-// let xx = fs.readdirSync(udir_path);
-// let dt = performance.now() - t0;
-// console.log ( ' >>>>> dircetory read in ' + dt );
-
+    // reading directory with 5K users takes ~8ms on NFS
     fs.readdirSync(udir_path).forEach(function(file,index){
       if (file.endsWith(__userDataExt))  {
 
