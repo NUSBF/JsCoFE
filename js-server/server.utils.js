@@ -187,7 +187,7 @@ if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>
 else if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1.1 read ' + fpath )
       return JSON.parse ( json_str );
     }
-if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.1 read ' + fpath )
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.1 read ' + cache.cache_enabled + '  ' + fpath )
     return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     if (e.code !== 'ENOENT')  {
