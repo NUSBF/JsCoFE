@@ -31,7 +31,7 @@ const path  = require('path');
 
 
 //  prepare log
-// const log = require('./server.log').newLog(29);
+const log = require('./server.log').newLog(29);
 
 
 // ==========================================================================
@@ -175,6 +175,18 @@ const cache_list = {
   'project.meta' : new Cache(2000)
 };
 
+var cache_enabled = false;
+
+function configureCache ( ncache )  {
+  cache_enabled = (ncache>0);
+  if (cache_enabled)  {
+    log.standard ( 1,'metadata cache is turned on' );
+    cache_list['project.desc'].setMaxSize ( 20*ncache );
+    cache_list['project.meta'].setMaxSize ( 20*ncache );
+  } else
+    log.standard ( 2,'metadata cache is turned off' );
+}
+
 function selectCache ( fpath )  {
   let r = {
     cache : null,
@@ -292,8 +304,11 @@ UserCache.prototype.deleteUserData = function ( login_name )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.itemExists  = itemExists;
-module.exports.removeItem  = removeItem;
-module.exports.removeItems = removeItems;
-module.exports.getItem     = getItem;
-module.exports.putItem     = putItem;
+
+module.exports.cache_enabled  = cache_enabled;
+module.exports.configureCache = configureCache;
+module.exports.itemExists     = itemExists;
+module.exports.removeItem     = removeItem;
+module.exports.removeItems    = removeItems;
+module.exports.getItem        = getItem;
+module.exports.putItem        = putItem;
