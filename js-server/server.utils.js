@@ -180,12 +180,14 @@ function readObject ( fpath )  {
     if (cache.cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
-if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>>1 read ' + fpath )
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1 read ' + fpath )
         json_str = fs.readFileSync(fpath).toString();
         cache.putItem ( fpath,json_str );
       } 
+else if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1.1 read ' + fpath )
       return JSON.parse ( json_str );
     }
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.1 read ' + fpath )
     return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     if (e.code !== 'ENOENT')  {
@@ -202,12 +204,14 @@ function readClass ( fpath ) {  // same as object but with class functions
     if (cache.cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
-if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>>2 read ' + fpath )
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 2 read ' + fpath )
         json_str = fs.readFileSync(fpath).toString();
         cache.putItem ( fpath,json_str );
       }
+else if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 2.1 read ' + fpath )
       return class_map.getClassInstance ( json_str );
     }
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.2 read ' + fpath )
     return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     return null;
@@ -270,6 +274,7 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
     if (((!force_sync) && cache.cache_enabled && cache.putItem(fpath,json_str)) ||
         callback_func)  {
       // was put into cache, use asynchronous write
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1 write ' + fpath )
       fs.writeFile ( fpath,json_str,function(err){
         if (err)  {
           log.error ( 41,'cannot write file ' + fpath );
@@ -279,7 +284,7 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
           callback_func ( err );
       });
     } else  {
-if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> write ' + fpath )
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 2  ' + fpath )
       fs.writeFileSync ( fpath,json_str );
     }
     return true;
