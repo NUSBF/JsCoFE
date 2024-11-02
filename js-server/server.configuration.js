@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    02.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,10 +31,11 @@ const request   = require('request');
 const child     = require('child_process');
 
 //  load application modules
-const utils     = require('./server.utils');
-const adm       = require('./server.fe.admin');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
+const cache     = require('./server.cache');
+const utils     = require('./server.utils');
+const adm       = require('./server.fe.admin');
 
 //  prepare log
 const log_mod   = require('./server.log');
@@ -865,12 +866,14 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
     fe_server.sessionCheckPeriod = 2000; // (optional) in ms
     fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
+    fe_server.cache              = 0;    // expected number of simultaneous users to cache
 
     // read configuration file
     for (let key in confObj.FrontEnd)
       fe_server[key] = confObj.FrontEnd[key];
 
     // complete configuration
+    cache.configureCache ( fe_server.cache );
 
     if (!fe_server.hasOwnProperty('description'))
       fe_server.description = {
