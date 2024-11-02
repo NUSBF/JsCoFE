@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.24   <--  Date of Last Modification.
+ *    02.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -178,6 +178,7 @@ const cache_list = {
 var cache_enabled = false;
 
 function configureCache ( ncache )  {
+  // ncache is estimated number of users working simultaneously in the system
   cache_enabled = (ncache>0);
   if (cache_enabled)  {
     log.standard ( 1,'metadata cache is turned on' );

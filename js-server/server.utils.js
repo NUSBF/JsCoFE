@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.24   <--  Date of Last Modification.
+ *    02.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,6 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
+ *        function configureCache   ( ncache )
  *        function fileExists       ( fpath )
  *        function isSymbolicLink   ( fpath )
  *        function dirExists        ( fpath )
@@ -84,9 +85,17 @@ const _is_windows = /^win/.test(process.platform);
 
 // ==========================================================================
 
+var cache_enabled = false;
+
+function configureCache ( ncache )  {
+// ncache is estimated number of users working simultaneously in the system
+  cache.configureCache ( ncache );
+  cache_enabled = cache.isCacheEnabled();
+}
+
 function fileExists ( fpath )  {
   try {
-    if (cache.isCacheEnabled() && (cache.itemExists(fpath)>0))
+    if (cache_enabled && (cache.itemExists(fpath)>0))
       return true;
     return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
@@ -136,7 +145,7 @@ function fileSize ( fpath ) {
 
 function removeFile ( fpath ) {
   try {
-    if (cache.isCacheEnabled()) 
+    if (cache_enabled) 
       cache.removeItem ( fpath );
     fs.unlinkSync ( fpath );
     return true;
@@ -148,7 +157,7 @@ function removeFile ( fpath ) {
 
 function readString ( fpath )  {
   try {
-    if (cache.isCacheEnabled())  {
+    if (cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
         json_str = fs.readFileSync(fpath).toString();
@@ -177,7 +186,7 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 function readObject ( fpath )  {
   try {
-    if (cache.isCacheEnabled())  {
+    if (cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
 if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1 read ' + fpath )
@@ -187,7 +196,7 @@ if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>
 else if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1.1 read ' + fpath )
       return JSON.parse ( json_str );
     }
-if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.1 read ' + cache.isCacheEnabled() + '  ' + fpath )
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 0.1 read ' + cache_enabled + '  ' + fpath )
     return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     if (e.code !== 'ENOENT')  {
@@ -201,7 +210,7 @@ if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>
 
 function readClass ( fpath ) {  // same as object but with class functions
   try {
-    if (cache.isCacheEnabled())  {
+    if (cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
 if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 2 read ' + fpath )
@@ -221,7 +230,7 @@ if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>
 
 function writeString ( fpath,data_string )  {
   try {
-    if (cache.isCacheEnabled() && cache.putItem(fpath,data_string))  {
+    if (cache_enabled && cache.putItem(fpath,data_string))  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,data_string,function(err){
         if (err)  {
@@ -243,7 +252,7 @@ function writeString ( fpath,data_string )  {
 
 
 function appendString ( fpath,data_string )  {
-  if (cache.isCacheEnabled()) 
+  if (cache_enabled) 
     cache.removeItem ( fpath );
   try {
     fs.appendFileSync ( fpath,data_string );
@@ -271,7 +280,7 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
   }
 
   try {
-    if (((!force_sync) && cache.isCacheEnabled() && cache.putItem(fpath,json_str)) ||
+    if (((!force_sync) && cache_enabled && cache.putItem(fpath,json_str)) ||
         callback_func)  {
       // was put into cache, use asynchronous write
 if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> 1 write ' + fpath )
@@ -321,7 +330,7 @@ function moveFile ( old_path,new_path )  {
   // must be limited only when source and destination are known to be in
   // the same partition
 
-  if (cache.isCacheEnabled()) 
+  if (cache_enabled) 
     cache.removeItem ( old_path );
 
   try {
@@ -477,7 +486,7 @@ function mkPath ( dirPath )  {
 
 
 function flushDirCache ( dir_path )  {
-  if (cache.isCacheEnabled()) 
+  if (cache_enabled) 
       cache.removeItems ( dir_path );
 }
 
@@ -685,7 +694,7 @@ function removeSymLinks ( dir_path )  {
 // removes all symbolic links recursively in the directory
   let rc = true;
 
-  if (cache.isCacheEnabled()) 
+  if (cache_enabled) 
     cache.removeItem ( dir_path );
 
   if (fileExists(dir_path))  {
@@ -1119,6 +1128,7 @@ function padDigits ( number,digits ) {
 
 // ==========================================================================
 // export for use in node
+module.exports.configureCache        = configureCache;
 module.exports.fileExists            = fileExists;
 module.exports.fileStat              = fileStat;
 module.exports.isSymbolicLink        = isSymbolicLink;

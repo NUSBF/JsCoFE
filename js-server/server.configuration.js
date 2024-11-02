@@ -33,7 +33,6 @@ const child     = require('child_process');
 //  load application modules
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
-const cache     = require('./server.cache');
 const utils     = require('./server.utils');
 const adm       = require('./server.fe.admin');
 
@@ -873,7 +872,7 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server[key] = confObj.FrontEnd[key];
 
     // complete configuration
-    cache.configureCache ( fe_server.cache );
+    utils.configureCache ( fe_server.cache );
 
     if (!fe_server.hasOwnProperty('description'))
       fe_server.description = {
