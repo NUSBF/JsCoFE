@@ -180,6 +180,7 @@ function readObject ( fpath )  {
     if (cache.cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>>1 read ' + fpath )
         json_str = fs.readFileSync(fpath).toString();
         cache.putItem ( fpath,json_str );
       } 
@@ -201,6 +202,7 @@ function readClass ( fpath ) {  // same as object but with class functions
     if (cache.cache_enabled)  {
       let json_str = cache.getItem ( fpath );
       if (!json_str)  {
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>>2 read ' + fpath )
         json_str = fs.readFileSync(fpath).toString();
         cache.putItem ( fpath,json_str );
       }
@@ -277,6 +279,7 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
           callback_func ( err );
       });
     } else  {
+if (fpath.endsWith('.user') || fpath.endsWith('.ration'))  console.log ( ' >>>>>> write ' + fpath )
       fs.writeFileSync ( fpath,json_str );
     }
     return true;
