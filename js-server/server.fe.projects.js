@@ -1126,15 +1126,23 @@ function finishFailedJobExport ( loginData,fjdata )  {
 
 function getProjectData ( loginData,data )  {
 
-  let response = getProjectList ( loginData );
-  if (response.status!=cmd.fe_retcode.ok)
-    return response;
+  let t0 = performance.now();
 
-  log.detailed ( 11,'get current project data (' + response.data.current +
-                    '), login ' + loginData.login );
+  let userProjectsListPath = getUserProjectListPath ( loginData );
+  let projectList = utils.readObject ( userProjectsListPath );
+
+  let response = null;
+  if (!projectList)  {
+    response = getProjectList ( loginData );
+    if (response.status!=cmd.fe_retcode.ok)
+      return response;
+    projectList = response.data;
+    log.warning ( 11,'get current project data (' + response.data.current +
+                     '), login ' + loginData.login );
+  }
 
   // Get users' projects list file name
-  let projectList    = response.data;
+  // let projectList    = response.data;
   let projectName    = projectList.current;  // projectID or archiveID
   let archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
                        (projectList.currentFolder.type==pd.folder_type.cloud_archive);
@@ -1195,6 +1203,9 @@ function getProjectData ( loginData,data )  {
                             '[00023] Project metadata file does not exist.','' );
     }
   }
+
+  t0 = performance.now() - t0;
+  console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
 
   return response;
 

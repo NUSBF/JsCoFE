@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -61,6 +61,7 @@ const request   = require('request');
 //  load application modules
 const emailer   = require('./server.emailer');
 const utils     = require('./server.utils');
+const cache     = require('./server.cache');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const conf      = require('./server.configuration');
@@ -1785,6 +1786,9 @@ function getJobResults ( job_token,server_request,server_response )  {
     let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
 //    utils.setLock ( jobDir,100 );
+
+    if (cache.isCacheEnabled())
+      cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
 
     // send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
     send_dir.receiveDir ( jobDir,server_request,

@@ -479,7 +479,7 @@ function mkPath ( dirPath )  {
 
 function flushDirCache ( dir_path )  {
   if (cache_enabled) 
-      cache.removeItems ( dir_path );
+      cache.removeDirItems ( dir_path );
 }
 
 function removePathAsync ( dir_path,tmp_dir='' )  {
@@ -702,6 +702,8 @@ function removeSymLinks ( dir_path )  {
         try {
           let fpath = fs.readlinkSync ( curPath );
           fs.unlinkSync ( curPath );
+          if (cache_enabled) 
+            cache.removePathItem ( curPath );
           if (fs.existsSync(fpath))
             fs.copyFileSync ( fpath, curPath );
         } catch (e)  {
