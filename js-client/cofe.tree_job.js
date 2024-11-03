@@ -2070,10 +2070,10 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        '<div style="width:400px;"><h2>This job cannot be cloned.</h2>' +
         'The job was created with a lower version of ' + appName() + 
-        '<br>and cannot be cloned.<p>Please create the job as ' +
-        'a new one, using "<i>Add Job</i>"<br>button from the ' +
+        ' and cannot be cloned.<p>Please create the job as ' +
+        'a new one, using "<i>Add Job</i>" button from the ' +
         'control bar.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
@@ -2081,7 +2081,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     } else if (task.state==job_code.retired)  {
 
       new MessageBox ( 'Cannot clone',
-        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        '<div style="width:400px;"><h2>This job cannot be cloned.</h2>' +
         'Task "<i>' + task.title + '</i>" was retired. Please use ' +
         'alternative task.</div>','msg_stop' );
       if (onAdd_func)
