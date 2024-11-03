@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.10.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -337,6 +337,11 @@ FEAnalytics.prototype.userLogin = function ( userData )  {
 FEAnalytics.prototype.logPresence = function ( ulogin,t )  {
   if (ulogin in this.activity)
     this.activity[ulogin].lastSeen = t;
+}
+
+FEAnalytics.prototype.lastSeen = function ( ulogin )  {
+  if (ulogin in this.activity)
+    return this.activity[ulogin].lastSeen;
 }
 
 FEAnalytics.prototype.logDocument = function ( fpath )  {
