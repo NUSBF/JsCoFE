@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,6 +21,7 @@
 
 'use strict';
 
+const os    = require('os');
 const fs    = require('fs-extra');
 const path  = require('path');
 
@@ -92,54 +93,91 @@ Cache.prototype.putItem = function ( key,item )  {
   this.trim();
 }
 
+// --------------------------------------------------------------------------
 
-/*
+// these constants duplicate definitions in other files -- keep in sync
 
-Cache.prototype.putItem = function ( key,item )  {
-  this.cache[key] = item;
-  this.trim();
+const __userDataExt    = '.user';
+const __rationFileExt  = '.ration';
+const projectDataFName = 'project.meta';
+const projectDescFName = 'project.desc';
+const projectListFName = 'projects.list';
+const jobDataFName     = 'job.meta';
+const jobDirPrefix     = 'job_';
+
+const projectExt       = '.prj';
+const userProjectsExt  = '.projects';
+
+
+// Assume 50 projects/user on average; this is important only for repeat
+// loading of project lists, which is rather rare. At all other times, 
+// user works with just a single project
+const nprj_per_user = 50;
+
+// Assume 400 jobs per project on average; only one project is open for every 
+// user at a time
+const njobs_per_prj = 400;
+
+const path_cache = new Cache(2500);
+
+const cache_list = {
+  [__userDataExt]    : new Cache(0),
+  [__rationFileExt]  : new Cache(0),
+  [projectListFName] : new Cache(50),
+  [projectDescFName] : new Cache(2500),
+  [projectDataFName] : new Cache(2500),
+  [jobDataFName]     : new Cache(20000)
+};
+
+var cache_enabled = false;
+
+function configureCache ( ncache )  {
+  // ncache is an estimated number of users working simultaneously in the system
+  cache_enabled = (ncache>0);
+  if (cache_enabled)  {
+    log.standard ( 1,'metadata cache is turned on' );
+    cache_list[projectDescFName].setMaxSize ( nprj_per_user*ncache );
+    cache_list[projectDataFName].setMaxSize ( nprj_per_user*ncache );
+    cache_list[jobDataFName]    .setMaxSize ( njobs_per_prj*ncache );
+    path_cache.setMaxSize ( nprj_per_user*ncache );
+  } else
+    log.standard ( 2,'metadata cache is turned off' );
 }
 
-Cache.prototype.getItem = function ( key )  {
-  if (key in this.cache)
-    return this.cache[key];
-  return null;
+function isCacheEnabled()  {
+  return cache_enabled;
 }
 
-Cache.prototype.putObjectSync = function ( obj,key,file_path )  {
-  this.putItem ( key,obj );
-  return utils.writeObject ( file_path,obj,false,null );  // asynchronous
-}
 
-Cache.prototype.putObjectAsync = function ( obj,key,file_path,callback_func=null )  {
-  this.putItem ( key,obj );
-  return utils.writeObject ( file_path,obj,true,callback_func );  // asynchronous
-}
-
-Cache.prototype.getObject = function ( key,file_path )  {
-  if (key in this.cache)
-    return this.cache[key];
-  return utils.readObject ( file_path );
-}
-*/
-
-const projectExt      = '.prj';
-const userProjectsExt = '.projects';
-
-function getProjectKey ( fpath )  {
-  // This key is used for caching project metadata. We check on symbolic link 
-  // because of possible shared projects. This is a point of inefficiency
+function getFileKey ( fpath )  {
+  // This key is used for caching project or job metadata. We check on symbolic
+  // link because of possible shared projects. This is a point of inefficiency
+  if (fpath.endsWith(projectListFName))
+    return path.parse ( path.dirname(projectListFName) ).name;
+  let job_spec = '';
+  if (fpath.endsWith(jobDataFName))  {
+    let jdname = path.basename ( path.dirname(fpath) );
+    if (jdname.startsWith(jobDirPrefix))
+      job_spec = ':' + jdname.substring ( jobDirPrefix.length );
+  }
   let index = fpath.lastIndexOf ( projectExt );
   if (index>0)  {
-    let dpath = fpath.substring ( 0,index ) + projectExt;
-    let stat  = fs.lstatSync ( dpath );
-    if (stat)  {
-      if (stat.isSymbolicLink())
-        dpath = fs.readlinkSync ( dpath )
-      let upath = path.dirname  ( dpath );  // user projects
+    let dpath  = fpath.substring ( 0,index ) + projectExt;
+    let dpath1 = path_cache.getItem ( dpath );
+    if (!dpath1)  {
+      let stat  = fs.lstatSync ( dpath );
+      if (stat)  {
+        if (stat.isSymbolicLink())
+              dpath1 = fs.readlinkSync ( dpath )
+        else  dpath1 = dpath;
+        path_cache.putItem ( dpath,dpath1 );
+      }
+    }
+    if (dpath1)  {    
+      let upath = path.dirname ( dpath1 );  // user projects
       if (upath.endsWith(userProjectsExt))
         return  path.basename(upath,userProjectsExt) + ':' +
-                path.basename(dpath,projectExt);
+                path.basename(dpath1,projectExt) + job_spec;
     }
   }
   return null;
@@ -163,40 +201,6 @@ function getDirKey ( fpath )  {
 }
 
 
-// --------------------------------------------------------------------------
-
-// const __userDataExt   = '.user';
-// const __rationFileExt = '.ration';
-
-// Assume 50 projects/user on average; this is important only for repeat
-// loading of project lists, which is rather rare. At all other times, 
-// user works with just a single project
-const nprj_per_user = 50;
-
-const cache_list = {
-  '.user'        : new Cache(0),
-  '.ration'      : new Cache(0),
-  'project.desc' : new Cache(2500),
-  'project.meta' : new Cache(2500)
-};
-
-var cache_enabled = false;
-
-function configureCache ( ncache )  {
-  // ncache is estimated number of users working simultaneously in the system
-  cache_enabled = (ncache>0);
-  if (cache_enabled)  {
-    log.standard ( 1,'metadata cache is turned on' );
-    cache_list['project.desc'].setMaxSize ( nprj_per_user*ncache );
-    cache_list['project.meta'].setMaxSize ( nprj_per_user*ncache );
-  } else
-    log.standard ( 2,'metadata cache is turned off' );
-}
-
-function isCacheEnabled()  {
-  return cache_enabled;
-}
-
 function selectCache ( fpath )  {
   let r = {
     cache : null,
@@ -209,15 +213,15 @@ function selectCache ( fpath )  {
   } else  {
     let fname = path.basename ( fpath );
     if (fname in cache_list)  {
-      r.key = getProjectKey ( fpath );
+      r.key = getFileKey ( fpath );
       if (r.key)
         r.cache = cache_list[fname];
     }
   }
   // console.log ( ' ..... cache: ' + cache_list['.user'].size()   + ' ' +
   //                                  cache_list['.ration'].size() + ' ' +
-  //                                  cache_list['project.desc'].size() + ' ' +
-  //                                  cache_list['project.meta'].size() );
+  //                                  cache_list[projectDescFName'].size() + ' ' +
+  //                                  cache_list[projectDataFName].size() );
   return r;
 }
 
@@ -229,18 +233,30 @@ function itemExists ( fpath )  {
   return -1; // file operation is required
 }
 
+function removePathItem ( fpath )  {
+  if (fpath.endsWith(projectExt))  {
+    let bname = path.basename ( fpath );
+    let keys = Object.keys(path_cache.cache);
+    for (let i=0;i<keys.length;i++)
+      if (path.basename(keys[i])==bname)
+        delete path_cache.cache[keys[i]];
+  }
+}
+
 function removeItem ( fpath )  {
   let r = selectCache ( fpath );
   if (r.cache)
     r.cache.removeItem ( r.key );
+  removePathItem ( fpath );
 }
 
-function removeItems ( dirpath )  {
+function removeDirItems ( dirpath )  {
   // to be used when a directory is removed
   let key_prefix = getDirKey ( dirpath );
   if (key_prefix)
     for (let c in cache_list)
       cache_list[c].removeItems ( key_prefix );
+  removePathItem ( dirpath );
 }
 
 
@@ -261,64 +277,68 @@ function putItem ( fpath,item )  {
 }
 
 
-// --------------------------------------------------------------------------
-/*
-function UserCache ( maxItems=0 )  {
-  Cache.call ( this,maxItems );
-  this.userDirPath    = conf.getFEConfig().userDataPath;
-  this.userDataExt    = '.user';
-  this.suspend_prefix = '**suspended**';
+function memoryReport()  {
+
+  const memoryUsage = process.memoryUsage();
+  const mbyte = 1024*1024;
+
+  return {
+
+    usedRAM            : memoryUsage.heapUsed  / mbyte,  // MB
+    totalHeap          : memoryUsage.heapTotal / mbyte,  // MB
+    externalRAM        : memoryUsage.external  / mbyte,  // MB
+    totalRAM           : os.totalmem()         / mbyte,  // MB
+    freeRAM            : os.freemem()          / mbyte,  // MB
+
+    user_cache         : [cache_list[__userDataExt].size(),
+                          cache_list[__userDataExt].maxItems],
+    user_ration_cache  : [cache_list[__rationFileExt].size(),
+                          cache_list[__rationFileExt].maxItems],
+    project_list_cache : [cache_list[projectListFName].size(),
+                          cache_list[projectListFName].maxItems],
+    project_desc_cache : [cache_list[projectDescFName].size(),
+                          cache_list[projectDescFName].maxItems],
+    project_meta_cache : [cache_list[projectDataFName].size(),
+                          cache_list[projectDataFName].maxItems],
+    job_meta_cache     : [cache_list[jobDataFName].size(),
+                          cache_list[jobDataFName].maxItems],
+    file_path_cache    : [path_cache.size(),path_cache.maxItems]
+  };
+
 }
 
-UserCache.prototype = Object.create ( Cache.prototype );
-UserCache.prototype.constructor = UserCache;
 
-UserCache.prototype.userDataPath = function ( login_name )  {
-  return path.join ( this.userDirPath,login_name + this.userDataExt ); 
+function printMemoryReport()  {
+  let mr = memoryReport();
+  log.standard ( 3,'memory usage:' );
+  console.log ( ' --- RAM:' );
+  console.log ( '          used : ' + mr.usedRAM.toFixed(1)     + ' MB' );
+  console.log ( '         total : ' + mr.totalRAM.toFixed(1)    + ' MB' );
+  console.log ( '          free : ' + mr.freeRAM.toFixed(1)     + ' MB' );
+  console.log ( ' --- Heap:' );
+  console.log ( '         total : ' + mr.totalHeap.toFixed(1)   + ' MB' );
+  console.log ( '      external : ' + mr.externalRAM.toFixed(1) + ' MB' );
+  console.log ( ' --- Cache:' );
+  console.log ( '          user : ' + mr.user_cache[0]         + '/' + mr.user_cache[1]         );
+  console.log ( '        ration : ' + mr.user_ration_cache[0]  + '/' + mr.user_ration_cache[1]  );
+  console.log ( '  project list : ' + mr.project_list_cache[0] + '/' + mr.project_list_cache[1] );
+  console.log ( '  project desc : ' + mr.project_desc_cache[0] + '/' + mr.project_desc_cache[1] );
+  console.log ( '  project meta : ' + mr.project_meta_cache[0] + '/' + mr.project_meta_cache[1] );
+  console.log ( '      job meta : ' + mr.job_meta_cache[0]     + '/' + mr.job_meta_cache[1]     );
+  console.log ( '     file path : ' + mr.file_path_cache[0]    + '/' + mr.file_path_cache[1]    );
 }
 
-UserCache.prototype.userExists = function ( login_name )  {
-  return this.itemExists ( login_name,this.userDataPath(login_name) );
-}
-
-UserCache.prototype.suspendUser = function ( userData )  {
-  let ulogin     = userData.login;
-  userData.login = this.suspend_prefix + userData.login;  // suspend
-  this.updateUserDataSync ( userData );                // commit
-  userData.login = ulogin;
-}
-
-UserCache.prototype.updateUserDataSync = function ( userData )  {
-  return this.putObjectSync ( userData,userData.login,this.userDataPath(login_name) );
-}
-
-UserCache.prototype.updateUserDataAsync = function ( userData )  {
-  return this.putObjectAsync ( userData,userData.login,this.userDataPath(login_name) );
-}
-
-UserCache.prototype.getUserData = function ( userFilePath )  {
-  return this.getObject ( path.basename(userFilePath,path.extname(userFilePath)),
-                                         userFilePath );
-}
-
-UserCache.prototype.getUserDataByLogin = function ( login_name )  {
-  return this.getObject ( login_name,this.userDataPath(login_name) );
-}
-
-UserCache.prototype.deleteUserData = function ( login_name )  {
-  if (login_name in this.cache)
-    delete this.cache[login_name];
-  return utils.removeFile ( this.userDataPath(login_name) );
-}
-*/
 
 // ==========================================================================
 // export for use in node
 
-module.exports.isCacheEnabled = isCacheEnabled;
-module.exports.configureCache = configureCache;
-module.exports.itemExists     = itemExists;
-module.exports.removeItem     = removeItem;
-module.exports.removeItems    = removeItems;
-module.exports.getItem        = getItem;
-module.exports.putItem        = putItem;
+module.exports.isCacheEnabled    = isCacheEnabled;
+module.exports.configureCache    = configureCache;
+module.exports.itemExists        = itemExists;
+module.exports.removePathItem    = removePathItem;
+module.exports.removeItem        = removeItem;
+module.exports.removeDirItems    = removeDirItems;
+module.exports.getItem           = getItem;
+module.exports.putItem           = putItem;
+module.exports.memoryReport      = memoryReport;
+module.exports.printMemoryReport = printMemoryReport;

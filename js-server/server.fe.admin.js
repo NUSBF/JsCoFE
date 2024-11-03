@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ const user    = require('./server.fe.user');
 const rj      = require('./server.fe.run_job');
 const ustats  = require('./server.fe.usagestats')
 // const utils   = require('./server.utils');
+const cache   = require('./server.cache');
 const cmd     = require('../js-common/common.commands');
 const ud      = require('../js-common/common.data_user');
 
@@ -124,6 +125,8 @@ function getNCData ( ncInfo,callback_func )  {
 function getAdminData ( loginData,data,callback_func )  {
 // the 'data' parameter must be where it is
 
+  cache.printMemoryReport();
+
   let t0 = performance.now()
   let adminData = {};
 
@@ -133,6 +136,7 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo = {};
   adminData.nodesInfo.FEconfig = {};
   adminData.nodesInfo.ncInfo   = [];
+  adminData.memoryReport       = cache.memoryReport(); 
   adminData.usageReportURL     = ustats.getUsageReportURL();
   adminData.nodesInfo.ccp4_version   = conf.CCP4Version();
   adminData.nodesInfo.jscofe_version = cmd.appVersion();
