@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -514,6 +514,21 @@ UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
     }
 }
 
+UserLoginHash.prototype.logoutExpire = function()  {
+  const dt = 86400000;  // 24 hours login expire
+  let loggedUsers = {};
+  let t = Date.now();
+  let activity = anl.getFEAnalytics().activity;
+  for (let key in this.loggedUsers)  {
+    let ulogin = this.loggedUsers[key].login;
+    if ((['devel',ud.__local_user_id].indexOf(ulogin)<0) ||
+        ((ulogin in activity) && ((t-activity[ulogin].lastSeen)<dt)))
+      loggedUsers[key] = this.loggedUsers[key];
+  }
+  this.loggedUsers = loggedUsers;
+  this.save();
+}
+
 
 var __userLoginHash = new UserLoginHash();
 
@@ -611,6 +626,8 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
 
       ud.checkUserData ( uData );
 
+      __userLoginHash.logoutExpire();
+
       if (uData.login.startsWith(__suspend_prefix))  {
         // for example, user's data is being moved to different disk
 
@@ -635,6 +652,7 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         if (uData.login=='devel')
               token = '340cef239bd34b777f3ece094ffb1ec5';
         else  token = crypto.randomBytes(20).toString('hex');
+
         __userLoginHash.addUser ( token,{
           'login'  : uData.login,
           'volume' : uData.volume
