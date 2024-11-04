@@ -168,16 +168,6 @@ if (!__template)  {
 
     __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
 
-    // paranoid piece of code, but just in case
-    ['tmp_local','morda'].forEach((suspect) => {
-      let badDirPath = path.join ( jobDir,suspect );
-      if (utils.fileExists(badDirPath))  {
-        console.log ( ' +++ remove stray directory ' + badDirPath +
-                      ' from MoRDa job' );
-        utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
-      }
-    });
-
   }
 
   TaskMorda.prototype.makeInputData = function ( loginData,jobDir )  {
