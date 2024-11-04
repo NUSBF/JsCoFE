@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,11 +51,14 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fragment-Based Molecular Replacement" href="Fragment-Based_Molecular_Replacement.html" />
+    <link rel="prev" title="Molrep" href="doc.task.Molrep.html" />
   
    
 
@@ -102,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -149,6 +152,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
+          <li class="md-tabs__item"><a href="Molecular_Replacement.html" class="md-tabs__link">Molecular Replacement</a></li>
       </ul>
     </div>
   </nav>
@@ -218,7 +222,44 @@
     
     
       <a href="Molecular_Replacement.html" class="md-nav__link">Molecular Replacement</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.MR_model_preparation.html" class="md-nav__link">Molecular Replacement Models and Ensembles</a>
       
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.Phaser.html" class="md-nav__link">Phaser</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.Molrep.html" class="md-nav__link">Molrep</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Dimple </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Dimple</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+      
+    
+    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -299,18 +340,17 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="dimple">
-<h1 id="doc-task-dimplemr--page-root">Dimple<a class="headerlink" href="#doc-task-dimplemr--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-dimplemr--page-root">Dimple<a class="headerlink" href="#doc-task-dimplemr--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://journals.iucr.org/a/issues/2013/a1/00/a50958/a50958.pdf" rel="noopener noreferrer" target="_blank">DIMPLE</a> (DIfference Map PipeLinE)Automated difference map generation pipeline to allow for quick assessment of crystal data to see if a ligand has bound to the structure. It is a joint development by the CCP4 software group and the Diamond light source. It is an automated software pipeline for rapidly processing crystals that contain a known protein and possibly a ligand bound to this protein.</p>
 <p><strong>DIMPLE</strong> takes the already known “apo” structure for the target protein and compares it with the electron density map for the same, crystallised structure (and possibly bound ligand) interpreted from the X-ray diffraction images. It then presents the user with a set of snapshot images illustrating the regions where there are large areas of electron density unaccounted for by the protein structure model. Within a few seconds, an experienced user can decipher from these images if any of this unaccounted for density indicates a bound ligand. A positive result can mean that the rest of the batch of crystals for this particular ligand can be discarded allowing for a more efficient use of the beam time and saving the user from lots of potentially unnecessary processing.</p>
 <p>The main goal is to present a user with a quick answer to the question of whether or not they have a bound ligand or drug candidate in their crystal.</p>
 <blockquote>
-<div><p><strong>DIMPLE</strong> can work only with reflection datasets that include mean intensities.</p>
-</div></blockquote>
+<div><strong>DIMPLE</strong> can work only with reflection datasets that include mean intensities.</div></blockquote>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0108767313097419" rel="noopener noreferrer" target="_blank">Wojdyr, M., Keegan, R., Winter, G., Ashton, A. (2013) DIMPLE - a pipeline for the rapid generation of difference maps from protein crystals with putatively bound ligands. Acta Cryst. A69: s299</a></p>
 <p>Please visit the <a class="reference external" href="http://ccp4.github.io/dimple/" rel="noopener noreferrer" target="_blank">official site</a> to get more information.</p>
-</section>
+
 
 
           </article>
@@ -322,6 +362,30 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
+            <a href="doc.task.Molrep.html" title="Molrep"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Molrep </span>
+              </div>
+            </a>
+          
+          
+            <a href="Fragment-Based_Molecular_Replacement.html" title="Fragment-Based Molecular Replacement"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Fragment-Based Molecular Replacement </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
           
         </a>
         
@@ -331,7 +395,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -338,19 +339,19 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="experimental-phasing">
-<h1 id="experimental-phasing--page-root">Experimental Phasing<a class="headerlink" href="#experimental-phasing--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="experimental-phasing--page-root">Experimental Phasing<a class="headerlink" href="#experimental-phasing--page-root" title="Permalink to this headline">¶</a></h1>
 <p>electron density in a crystal can be obtained by calculating the Fourier summation:</p>
 <a class="reference internal image-reference" href="_images/Fourier_transform.PNG"><img alt="_images/Fourier_transform.PNG" class="align-center" src="_images/Fourier_transform.PNG" style="width: 625.5px; height: 69.0px;"/></a>
 <p>in which <strong>|F(h k l)|</strong> is the structure factor amplitude of reflection (h k l), including the temperature factor, and <strong>α(h k l)</strong> is the phase angle. <strong>x</strong>, <strong>y</strong>, and <strong>z</strong> are coordinates in the unit cell.</p>
 <p>From the diffraction pattern, the values of <strong>I (h k l)</strong> are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| <sup>2</sup>, then amplitudes <strong>|F(h k l)|</strong> can be found.</p>
 <p>In principle, five techniques exist for solving the phase problem in protein X-ray crystallography:</p>
 <ol class="arabic simple">
-<li><p>The isomorphous replacement method, which requires the attachment of heavy atoms (atoms with high atomic number) to the protein molecules in the crystal.</p></li>
-<li><p>The multiple wavelength anomalous diffraction method. It depends on the presence of sufficiently strong anomalously scattering atoms in the protein structure itself. Anomalous scattering occurs if the electrons in an atom cannot be regarded as free electrons.</p></li>
-<li><p>The single-wavelength anomalous diffraction method</p></li>
-<li><p>The molecular replacement method, for which the similarity of the unknown structure to an already known structure is a prerequisite.</p></li>
-<li><p>Direct methods. In the context of macromolecular crystallography, this approach is used in substructure determination, and at very high resolution (beyond 1.2 Å)</p></li>
+<li>The isomorphous replacement method, which requires the attachment of heavy atoms (atoms with high atomic number) to the protein molecules in the crystal.</li>
+<li>The multiple wavelength anomalous diffraction method. It depends on the presence of sufficiently strong anomalously scattering atoms in the protein structure itself. Anomalous scattering occurs if the electrons in an atom cannot be regarded as free electrons.</li>
+<li>The single-wavelength anomalous diffraction method</li>
+<li>The molecular replacement method, for which the similarity of the unknown structure to an already known structure is a prerequisite.</li>
+<li>Direct methods. In the context of macromolecular crystallography, this approach is used in substructure determination, and at very high resolution (beyond 1.2 Å)</li>
 </ol>
 <p>The multiple- and single-wavelength diffraction methods do not necessarily depend on the attachment of a heavy-atom-containing reagent to the protein, but they do require the presence of an anomalously scattering atom and this can be a heavy atom inherent to the protein.</p>
 <p>Use <a class="reference external" href="https://www.ccp4.ac.uk/fprime/" rel="noopener noreferrer" target="_blank">fprime</a> to calculates anomalous scattering factors (f’ and f”) using the <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?S0567739481000600" rel="noopener noreferrer" target="_blank">Cromer-Liberman</a> algorithm with corrections from <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?S0108767389010718" rel="noopener noreferrer" target="_blank">Kissel and Pratt</a>.</p>
@@ -369,7 +370,7 @@
 <li class="toctree-l1"><a class="reference internal" href="doc.task.SHELX.html#shelxe">SHELXE</a></li>
 </ul>
 </div>
-</section>
+
 
 
           </article>
@@ -390,7 +391,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Arcimboldo Shredder </span>
+                      class="md-footer-nav__direction"> Previous </span> Arcimboldo Shredder </span>
               </div>
             </a>
           
@@ -400,7 +401,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Crank-2 </span>
+                class="md-footer-nav__direction"> Next </span> Crank-2 </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -414,7 +415,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -4,7 +4,7 @@ Push Data to Cloud
 
 This task transfers X-ray diffraction image directories from your device to the
 ``My Cloud Storage`` area in CCP4 Cloud. Instead of sending individual files,
-it uploads entire directories, with support for up to 10 directories per task.
+it uploads entire directories, supporting up to 10 directories per task.
 
 In the task interface, you can choose a custom name for the destination folder,
 or allow an auto-generated name. The full path to the destination folder will be

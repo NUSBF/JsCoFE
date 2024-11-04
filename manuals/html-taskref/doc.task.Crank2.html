@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -246,7 +247,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-crank2--page-root" class="md-nav__link">Crank-2</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -370,7 +371,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-crank2--page-root" class="md-nav__link">Crank-2</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -393,12 +394,12 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="crank-2">
-<span id="crank-doc"></span><h1 id="doc-task-crank2--page-root">Crank-2<a class="headerlink" href="#doc-task-crank2--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<span id="crank-doc"></span><h1 id="doc-task-crank2--page-root">Crank-2<a class="headerlink" href="#doc-task-crank2--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2018/02/00/jt5023/" rel="noopener noreferrer" target="_blank">CRANK2</a> is a program designed for automatic X-ray structure solution of proteins using experimental phasing.
 Currently, CCP4 Cloud provides a CRANK2 interface for structure solution using SAD, SIRAS, MAD and MR-SAD.</p>
-<section id="the-basics-input-and-output">
-<h2 id="the-basics-input-and-output">The basics - input and output<a class="headerlink" href="#the-basics-input-and-output" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="the-basics-input-and-output">The basics - input and output<a class="headerlink" href="#the-basics-input-and-output" title="Permalink to this headline">¶</a></h2>
 <p>To run CRANK2, it is necessary to input at least one X-ray dataset with anomalous diffraction (single anomalous diffraction - <strong>SAD</strong>).
 If an initial partial model is available (e.g. from molecular replacement - MR; or from a previous CRANK2 job etc) then it can be input together with the anomalous data for <strong>MR-SAD</strong> model rebuilding.
 Multiple anomalous diffraction (<strong>MAD</strong>) requires an input of multiple datasets from the same crystal (or from an isomorphic crystal) collected at different wavelengths.
@@ -410,9 +411,9 @@ The anomalous scattering coefficients can be either calculated automatically fro
 Furthermore, it is recommended to input the sequence of the protein.</p>
 <p>If CRANK2 was able to solve the structure from the input provided then the main output is a refined protein model along the with electron density map.
 If CRANK2 could not solve the structure then the report providing information about the structure solution process can be used to assess the reasons of the failure.</p>
-</section>
-<section id="stages-of-structure-solution-using-crank2">
-<h2 id="stages-of-structure-solution-using-crank2">Stages of structure solution using CRANK2<a class="headerlink" href="#stages-of-structure-solution-using-crank2" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="stages-of-structure-solution-using-crank2">Stages of structure solution using CRANK2<a class="headerlink" href="#stages-of-structure-solution-using-crank2" title="Permalink to this headline">¶</a></h2>
 <p>Different experiments and pipelines consist of different steps.  For a SAD, SIRAS or MAD experiment, the structure solution process consists of two major steps:
 1) determination of the anomalous scatterers (anomalous substructure), 2) phasing and model building of the protein.  For the MR-SAD rebuilding, the anomalous
 substructure can be typically taken from the inputted initial model and improved, followed by the phased model rebuilding of the protein.  Below, the typical stages
@@ -441,9 +442,9 @@ of the hands is large, the hand with the larger score is selected for model buil
 <p><strong>Model building</strong></p>
 <p>In case of SAD data, the <a class="reference external" href="https://www.nature.com/articles/ncomms3777" rel="noopener noreferrer" target="_blank">combined model building</a> is used for phased model building and refinement starting from the electron density map
 from density modification.  For SIRAS and MAD datasets, an MLHL based reiteration of model building and refinement is used.</p>
-</section>
-<section id="was-my-structure-solved">
-<h2 id="was-my-structure-solved">Was my structure solved?<a class="headerlink" href="#was-my-structure-solved" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="was-my-structure-solved">Was my structure solved?<a class="headerlink" href="#was-my-structure-solved" title="Permalink to this headline">¶</a></h2>
 <p>The report from the CRANK2 job indicates whether the structure was solved.  If it was not, it is worthwhile to analyze the information from the steps
 of the structure solution as provided by the report.</p>
 <p>If you see <strong>no</strong> distinct clusters on the plot from substucture determination, low values of FOM from
@@ -451,23 +452,20 @@ phasing and density modification and a bad discrimination between the hands then
 <code class="docutils literal notranslate"><span class="pre">please</span> <span class="pre">follow</span> <span class="pre">the</span> <span class="pre">tips</span> <span class="pre">on</span> <span class="pre">substructure</span> <span class="pre">determination</span> <span class="pre">parameters</span> <span class="pre">changes</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">Substructure</span> <span class="pre">determination</span> <span class="pre">section.</span></code></p>
 <p>If it seems that the substructure was determined but still no or bad protein model was built, it may help to rerun the Crank2 job with differing
 solvent content parameter (its estimation may be wrong).  If a partial model was built then it is suggested to input it to another CRANK2 job for model rebuilding.</p>
-</section>
-<section id="crank-2-glossary">
-<h2 id="crank-2-glossary">Crank-2 Glossary<a class="headerlink" href="#crank-2-glossary" title="Permalink to this heading">¶</a></h2>
-<dl class="glossary">
-<dt id="term-What-is-CFOM-in-the-SHELXD-output">What is CFOM in the SHELXD output?<a class="headerlink" href="#term-What-is-CFOM-in-the-SHELXD-output" title="Permalink to this term">¶</a></dt><dd><p>CFOM reported by SHELXD is sum of two correlation coefficients: CC+CCweak where CC is correlation coefficient between
+
+
+<h2 id="crank-2-glossary">Crank-2 Glossary<a class="headerlink" href="#crank-2-glossary" title="Permalink to this headline">¶</a></h2>
+<dl class="glossary docutils">
+<dt id="term-What-is-CFOM-in-the-SHELXD-output">What is CFOM in the SHELXD output?<a class="headerlink" href="#term-What-is-CFOM-in-the-SHELXD-output" title="Permalink to this term">¶</a></dt><dd>CFOM reported by SHELXD is sum of two correlation coefficients: CC+CCweak where CC is correlation coefficient between
 the observed ΔF’s and the F’s calculated from the determined substructure model and CCweek is CC of the weaker
-reflections only. Please consult the SHELXD webpage for more information.</p>
-</dd>
-<dt id="term-What-is-CCrange-in-the-PRASA-output">What is CC<sub>range</sub> in the PRASA output?<a class="headerlink" href="#term-What-is-CCrange-in-the-PRASA-output" title="Permalink to this term">¶</a></dt><dd><p>CC<sub>range</sub> reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF’s and
+reflections only. Please consult the SHELXD webpage for more information.</dd>
+<dt id="term-What-is-CCrange-in-the-PRASA-output">What is CC<sub>range</sub> in the PRASA output?<a class="headerlink" href="#term-What-is-CCrange-in-the-PRASA-output" title="Permalink to this term">¶</a></dt><dd>CC<sub>range</sub> reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF’s and
 the F’s calculated from the determined substructure model at various resolution cutoffs. The correlation coefficients
 at different cutoffs are not directly comparable but CC<sub>range</sub> allows for a rough comparison of solutions obtained
-at different resolution cutoffs.</p>
-</dd>
-<dt id="term-What-does-the-threshold-in-substructure-determination-mean">What does the threshold in substructure determination mean?<a class="headerlink" href="#term-What-does-the-threshold-in-substructure-determination-mean" title="Permalink to this term">¶</a></dt><dd><p>Substructure determination stops either by finishing the specified number of iterations or by reaching the specified
+at different resolution cutoffs.</dd>
+<dt id="term-What-does-the-threshold-in-substructure-determination-mean">What does the threshold in substructure determination mean?<a class="headerlink" href="#term-What-does-the-threshold-in-substructure-determination-mean" title="Permalink to this term">¶</a></dt><dd>Substructure determination stops either by finishing the specified number of iterations or by reaching the specified
 score threshold (CFOM). The score threshold is automatically set rather conservatively to make sure that the procedure
-only stops preliminary if the score is quite convincing that the solution was found.</p>
-</dd>
+only stops preliminary if the score is quite convincing that the solution was found.</dd>
 <dt id="term-What-is-FOM">What is FOM?<a class="headerlink" href="#term-What-is-FOM" title="Permalink to this term">¶</a></dt><dd><p>Figure of merit (FOM) is an estimator of quality of the phases. In CRANK2, it is calculated as mean value of cosine of
 difference from the estimated phase &lt;cos(ΔΦ)&gt; by integrating the likelihood probability distribution over the entire
 range &lt;0,2pi π&gt;. Generally, the values of FOM close to 0 mean that the phases are close to random and values close
@@ -478,24 +476,22 @@ are likely good while less than 0.15 indicates weak phases or an incorrect subst
 density modification with bias reduction, good phases are indicated by values of above 0.5 while very weak or wrong
 phases by values below 0.35. After model building and refinement, the FOM of a reasonable model should be above 0.6.</p>
 </dd>
-<dt id="term-What-is-the-parameter-in-density-modification">What is the β parameter in density modification?<a class="headerlink" href="#term-What-is-the-parameter-in-density-modification" title="Permalink to this term">¶</a></dt><dd><p>Density modification is known to lead to highly biased (overestimated) figures of merit. CRANK2 implements a bias
+<dt id="term-What-is-the-parameter-in-density-modification">What is the β parameter in density modification?<a class="headerlink" href="#term-What-is-the-parameter-in-density-modification" title="Permalink to this term">¶</a></dt><dd>Density modification is known to lead to highly biased (overestimated) figures of merit. CRANK2 implements a bias
 reduction method to suppress the bias and keep the figures of merit a sensible measure of quality of the phases
 (the procedure often helps to slightly improve the quality of the maps from density modification as well).
 The β parameter is an estimator of the bias: values close to 1 estimate there is (almost) no bias and values below
 0.5 mean a very large bias. The β parameter is applied to the covariance matrix of the likelihood function that
-CRANK2 uses for phase combination in density modification. Please consult this paper for more information.</p>
-</dd>
-<dt id="term-What-is-the-CLD-value-reported-in-hand-determination">What is the CLD value reported in hand determination?<a class="headerlink" href="#term-What-is-the-CLD-value-reported-in-hand-determination" title="Permalink to this term">¶</a></dt><dd><p>The CLD stands for correlation with local deviation and it is a statistical measure closely related to the skewness
+CRANK2 uses for phase combination in density modification. Please consult this paper for more information.</dd>
+<dt id="term-What-is-the-CLD-value-reported-in-hand-determination">What is the CLD value reported in hand determination?<a class="headerlink" href="#term-What-is-the-CLD-value-reported-in-hand-determination" title="Permalink to this term">¶</a></dt><dd>The CLD stands for correlation with local deviation and it is a statistical measure closely related to the skewness
 of the map before density modification. A larger value of CLD (around and above 2) for one hand and a value close
-to 0 (or negative) for the other hand is a good sign indicating that there is a discrimination between the hands.</p>
-</dd>
+to 0 (or negative) for the other hand is a good sign indicating that there is a discrimination between the hands.</dd>
 </dl>
 <hr class="docutils"/>
 <p><strong>Documentation written by:</strong></p>
 <p><strong>Pavol Skubak</strong>, Leiden University Medical Centre, Leiden, The Nethrelands</p>
 <p>Developer of Crank-2</p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -516,7 +512,7 @@ to 0 (or negative) for the other hand is a good sign indicating that there is a 
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Experimental Phasing </span>
+                      class="md-footer-nav__direction"> Previous </span> Experimental Phasing </span>
               </div>
             </a>
           
@@ -526,7 +522,7 @@ to 0 (or negative) for the other hand is a good sign indicating that there is a 
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> SHELXCD </span>
+                class="md-footer-nav__direction"> Next </span> SHELXCD </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -540,7 +536,7 @@ to 0 (or negative) for the other hand is a good sign indicating that there is a 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

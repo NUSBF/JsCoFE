@@ -11,4 +11,6 @@ Data Import
     doc.task.CloudImport
     doc.task.ImportReplace
     doc.task.Migrate
+    doc.task.FetchData
+    doc.task.PushToCloud
    

@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -232,7 +233,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-aimless--page-root" class="md-nav__link">Merging and Scaling with Aimless</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -438,7 +439,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-aimless--page-root" class="md-nav__link">Merging and Scaling with Aimless</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -473,82 +474,85 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="merging-and-scaling-with-aimless">
-<h1 id="doc-task-aimless--page-root">Merging and Scaling with Aimless<a class="headerlink" href="#doc-task-aimless--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-aimless--page-root">Merging and Scaling with Aimless<a class="headerlink" href="#doc-task-aimless--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html" rel="noopener noreferrer" target="_blank">Aimless</a> puts all the measurements on a common scale, averages measurements of symmetry-related reflections (using the symmetry determined previously) and produces many statistics that provide the first important measures of data quality.</p>
 <p>Aimless is used immediately after the program POINTLESS <a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">[Evans_2011]</a> , which determines the likely point group and possible space group, as well as optionally combining data from multiple files each containing a “sweep” of data and putting them on a common indexing system if necessary.</p>
-<section id="basic-options">
-<h2 id="basic-options">Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this heading">¶</a></h2>
-<section id="scaling">
-<h3 id="scaling">Scaling<a class="headerlink" href="#scaling" title="Permalink to this heading">¶</a></h3>
+
+<h2 id="basic-options">Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h2>
+
+<h3 id="scaling">Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p><strong>determine scale factors for the reflections, so that symmetry equivalent reflections have the best agreement - least deviation from a weighted average for the group.</strong></p>
-</div></blockquote>
+<div><strong>determine scale factors for the reflections, so that symmetry equivalent reflections have the best agreement - least deviation from a weighted average for the group.</strong></div></blockquote>
 <p>Scaling tries to make symmetry-related and duplicate measurements of a reflection equal, by modelling the diffraction experiment, principally as a function of the incident and diffracted beam directions in the crystal. This makes the data internally consistent (not necessarily correct). <strong>The scale model should reflect the data collection strategy</strong>.</p>
 <p><strong>Three component model used in Aimless:</strong></p>
 <ul class="simple">
-<li><p><strong>Smoothly varying scale factor</strong></p></li>
-<li><p><strong>Smoothly varying isotropic B-factor</strong>  e(B(t)/ 2d <sup>2</sup> )</p></li>
-<li><dl class="simple">
-<dt>Absorption correction (relative)</dt><dd><p>Correct for relative variations in absorption in different directions in space - based on incoming and outgoing scattering vectors. Typically small for MX (~1%), unless at long wavelength/absorption edge.</p>
-</dd>
+<li><strong>Smoothly varying scale factor</strong></li>
+<li><strong>Smoothly varying isotropic B-factor</strong>  e(B(t)/ 2d <sup>2</sup> )</li>
+<li><dl class="first docutils">
+<dt>Absorption correction (relative)</dt><dd>Correct for relative variations in absorption in different directions in space - based on incoming and outgoing scattering vectors. Typically small for MX (~1%), unless at long wavelength/absorption edge.</dd>
 </dl>
 </li>
 </ul>
 <p>Ideally have constant scaling factor <strong>(Mn(k) &amp; 0k (theta=0) v. batch)</strong> of 1; except if crystals have an irregular shape.</p>
-</section>
-<section id="merging">
-<h3 id="merging">Merging<a class="headerlink" href="#merging" title="Permalink to this heading">¶</a></h3>
+
+
+<h3 id="merging">Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h3>
 <p>One way of improving weak or incomplete data is to merge data from different crystals, provided that they are isomorphous. Model quality depends on data quality and merging many data sets usually improves the signal-to-noise ratio in the data. However, it is not clear how to merge data when there is severe non-isomorphism or radiation damage. Blindly merging data may do more harm than good. It is necessary to analyse the joint distribution of all data sets and to merge using this distribution.</p>
-</section>
-</section>
-<section id="symmetry-analysis">
-<h2 id="symmetry-analysis">Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Permalink to this heading">¶</a></h2>
+
+
+
+<h2 id="symmetry-analysis">Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The maximum lattice symmetry (diffraction pattern symmetry) consistent with the unit cell dimensions  is determined, within an angular tolerance of 2 degrees  (by default) or that given on the <strong>Tolerance for comparing lattices</strong> collum.</p>
 <p>Half-dataset correlation coefficient: <strong>CC1/2</strong> represents split observations for each reflection randomly into 2 halves, and calculate the correlation coefficient between them (or equivalent calculation). Not dependent on σ(I). <strong>CC1/2</strong> = 1 is perfect, <strong>CC1/2</strong> = 0 is no correlation. <code class="docutils literal notranslate"><span class="pre">Common</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">cutoff</span> <span class="pre">is</span> <span class="pre">0.3</span> <span class="pre">or</span> <span class="pre">0.5.</span></code></p>
 <p>Signal/noise estimates: <strong>I/sig(I)</strong>  it relies on σ(I), which is not entirely reliable. Cut resolution at &lt;I/σ(I)&gt; after averaging Mn(I/sd) = 1 – 2</p>
-</section>
-<section id="observations-used">
-<h2 id="observations-used">Observations Used<a class="headerlink" href="#observations-used" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="observations-used">Observations Used<a class="headerlink" href="#observations-used" title="Permalink to this headline">¶</a></h2>
 <p>If both summation and profile-fitted intensities are available, you can use:</p>
 <ol class="arabic simple">
-<li><p><strong>Combined intensives</strong> (Default). Use weighted mean of profile-fitted &amp; integrated intensity, profile-fitted for weak data, summation integration value for strong.</p></li>
-<li><p><strong>Profile-fitted intensity</strong> (for weak data)</p></li>
-<li><p><strong>Summation intensity</strong> (for strong data)</p></li>
+<li><strong>Combined intensives</strong> (Default). Use weighted mean of profile-fitted &amp; integrated intensity, profile-fitted for weak data, summation integration value for strong.</li>
+<li><strong>Profile-fitted intensity</strong> (for weak data)</li>
+<li><strong>Summation intensity</strong> (for strong data)</li>
 </ol>
 <p>If you integrate to the corners of the detector, you may have low completeness at high resolution.</p>
-</section>
-<section id="sd-correction">
-<h2 id="sd-correction">SD Correction<a class="headerlink" href="#sd-correction" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="sd-correction">SD Correction<a class="headerlink" href="#sd-correction" title="Permalink to this headline">¶</a></h2>
 <p><strong>sdB parameter</strong> has no obvious physical meaning and ideally should be close to 0. So <strong>tie to zero</strong> restrain SdB to target value 0. <strong>fix to zero</strong> command fixes sdB parameter in the refinement (but it seems best to let it <strong>refine</strong>).</p>
-</section>
-<section id="outlier-rejection">
-<h2 id="outlier-rejection">Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="outlier-rejection">Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Permalink to this headline">¶</a></h2>
 <p>The merging algorithm analyses the data for outliers, and gives detailed analyses. It generates a weighted mean of the observations of the same reflection, after rejecting the outliers.</p>
 <p>If you get too many E ( normalised | F | ) rejects, you can switch the test off by set limit to 0.</p>
-</section>
-<section id="scaling-protocols">
-<h2 id="scaling-protocols">Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="scaling-protocols">Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Permalink to this headline">¶</a></h2>
 <p><strong>Scales on rotation axis</strong> are used by default.</p>
 <p>Only use the <strong>Scale by batch</strong> option <strong>if every image is different from every other one</strong> , i.e. off-line detectors (including film), or rapidly or discontinuously changing incident beam flux. <strong>This is rarely the case for synchrotron data</strong>, but is <strong>appropriate for serial data</strong> (eg XFEL). This mode may be VERY slow if there are many batches.</p>
 <p>The <strong>relative B-factor is a correction</strong> for radiation damage (hence it is a function of time), but it also includes some other corrections eg absorption. Do <strong>NOT</strong> use <strong>B-factor correction</strong> if you have very <strong>low-resolution</strong> data.</p>
 <p>The <strong>secondary beam correction</strong> is recommended and is the default: this provides a correction for absorption. It should always be restrained with a <strong>Tile scaling for CCD detectors</strong> command (this is the default).</p>
-</section>
-<section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p><strong>CC1/2</strong> Clear interpretation of values &amp; known statistical properties. Not dependent on σ(I). Common value for cutoff is 0.3 or 0.5.</p></li>
-<li><p><strong>R-factors (Rmerge, Rpim, Rmeas)</strong> Shouldn’t be used to determine resolution cutoffs. Historically used, so useful to compare to previous practises.</p>
+<li><p class="first"><strong>CC1/2</strong> Clear interpretation of values &amp; known statistical properties. Not dependent on σ(I). Common value for cutoff is 0.3 or 0.5.</p>
+</li>
+<li><p class="first"><strong>R-factors (Rmerge, Rpim, Rmeas)</strong> Shouldn’t be used to determine resolution cutoffs. Historically used, so useful to compare to previous practises.</p>
 <blockquote>
 <div><p><strong>Rmerge</strong> : traditional overall measures of quality, but increases with multiplicity although the data improves (tends to infinity as data gets weaker). Should be relatively stable <strong>Rmerge</strong> across all batches. <strong>Rmerge</strong> is always large for small intensities. <code class="docutils literal notranslate"><span class="pre">For</span> <span class="pre">large</span> <span class="pre">intensities</span> <span class="pre">it</span> <span class="pre">should</span> <span class="pre">be</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">range</span> <span class="pre">0.01</span> <span class="pre">to</span> <span class="pre">0.04</span> <span class="pre">for</span> <span class="pre">good</span> <span class="pre">data</span></code> . Larger values suggest that there are systematic errors.</p>
 <p><strong>Rpim</strong> : “Precision-indicating R-factor” gets better (smaller) with increasing multiplicity, ie it estimates the precision of the merged &lt;I&gt;.</p>
 <p><strong>Rmeas</strong> Multiplicity-weighted, better (but larger).</p>
 </div></blockquote>
 </li>
-<li><p><strong>&lt;I/σ(I)&gt;</strong> Shouldn’t be used to determine resolution cutoffs. Relies on σ(I) which may be inaccurate. Useful indicator of quality of low resolution data</p></li>
-<li><p>Drop in <strong>B factor</strong> below -10 indicates <strong>radiation damage</strong></p></li>
-<li><p>Ideally have constant scaling factor <strong>(Mn(k) &amp; 0k (theta=0) v. batch)</strong> of 1 (except if crystals have an irregular shape).</p></li>
-<li><p><strong>Data analysis (CTruncate)</strong> =&gt; <strong>Acentric Moments of I</strong> =&gt; <strong>2nd moment of I</strong> if 2 probably not twinned, if 1.5 probably twinned.</p></li>
+<li><p class="first"><strong>&lt;I/σ(I)&gt;</strong> Shouldn’t be used to determine resolution cutoffs. Relies on σ(I) which may be inaccurate. Useful indicator of quality of low resolution data</p>
+</li>
+<li><p class="first">Drop in <strong>B factor</strong> below -10 indicates <strong>radiation damage</strong></p>
+</li>
+<li><p class="first">Ideally have constant scaling factor <strong>(Mn(k) &amp; 0k (theta=0) v. batch)</strong> of 1 (except if crystals have an irregular shape).</p>
+</li>
+<li><p class="first"><strong>Data analysis (CTruncate)</strong> =&gt; <strong>Acentric Moments of I</strong> =&gt; <strong>2nd moment of I</strong> if 2 probably not twinned, if 1.5 probably twinned.</p>
+</li>
 </ul>
 <p>Common indicators of data precision and their recommended usage you can find <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/table/T1/?report=objectonly" rel="noopener noreferrer" target="_blank">here</a></p>
 <p>More about Aimlees you can find <a class="reference external" href="http://www.ccp4.ac.uk/html/aimless.html" rel="noopener noreferrer" target="_blank">here</a></p>
@@ -559,8 +563,8 @@
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/" rel="noopener noreferrer" target="_blank">Karplus, A. and Diederichs, K. (2015) Curr Opin Struct Biol. 34, 60–68.</a></p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
 <p>This article uses materials from Phil Evans lecture and program <a class="reference external" href="http://www.ccp4.ac.uk/html/aimless.html" rel="noopener noreferrer" target="_blank">description</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -581,7 +585,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Interactive Image Processing with iMosflm </span>
+                      class="md-footer-nav__direction"> Previous </span> Interactive Image Processing with iMosflm </span>
               </div>
             </a>
           
@@ -591,7 +595,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Change Dataset Space Group </span>
+                class="md-footer-nav__direction"> Next </span> Change Dataset Space Group </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -605,7 +609,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
