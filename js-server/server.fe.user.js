@@ -374,14 +374,23 @@ function recoverUserLogin ( userData,callback_func )  {  // gets UserData object
 
 function UserLoginHash()  {
   this._type       = 'UserLoginHash';  // do not change
-  // this.cached      = false;
   this.loggedUsers = {
     '340cef239bd34b777f3ece094ffb1ec5' : {
-      'login'  : 'devel',
-      'volume' : '*storage*',
-      'signal' : ''
+      login    : 'devel',
+      volume   : '*storage*',
+      signal   : '',
+      lastSeen : Date.now()
     }
   };
+  this.umap = {
+    'devel' : '340cef239bd34b777f3ece094ffb1ec5'
+  }
+}
+
+UserLoginHash.prototype.map_users = function()  {
+  this.umap = {};
+  for (let token in this.loggedUsers)
+    this.umap[this.loggedUsers[token].login] = token;
 }
 
 UserLoginHash.prototype.save = function()  {
@@ -415,9 +424,10 @@ UserLoginHash.prototype.read = function()  {
       let loggedUsers = {};
       for (let token in hash)  {
         loggedUsers[token] = {
-          'login'  : hash[token],
-          'volume' : '***',
-          'signal' : ''
+          login    : hash[token],
+          volume   : '***',
+          signal   : '',
+          lastSeen : Date.now()
         };
       }
       this.loggedUsers = loggedUsers;
@@ -428,7 +438,7 @@ UserLoginHash.prototype.read = function()  {
         if (!('signal' in this.loggedUsers[token]))
           this.loggedUsers[token].signal = '';
     }
-    // this.cached = true;
+    this.map_users;
     return true;
   }
 
@@ -460,14 +470,17 @@ UserLoginHash.prototype.read = function()  {
 
 UserLoginHash.prototype.addUser = function ( token,login_data )  {
 
-  let logUsers = {};
+  // let logUsers = {};
 
-  for (let key in this.loggedUsers)
-    if (this.loggedUsers[key].login!=login_data.login)
-      logUsers[key] = this.loggedUsers[key];
+  // for (let key in this.loggedUsers)
+  //   if (this.loggedUsers[key].login!=login_data.login)
+  //     logUsers[key] = this.loggedUsers[key];
 
-  logUsers[token]  = login_data;
-  this.loggedUsers = logUsers;
+  // this.loggedUsers         = logUsers;
+
+  this.loggedUsers[token]          = JSON.parse ( JSON.stringify(login_data) );
+  this.loggedUsers[token].lastSeen = Date.now();
+  this.umap[login_data.login]      = token;
 
   this.save();
 
@@ -482,11 +495,13 @@ UserLoginHash.prototype.removeUser = function ( token )  {
 */
 
 UserLoginHash.prototype.removeUser = function ( login_name )  {
-  let loggedUsers = {};
-  for (let key in this.loggedUsers)
-    if (this.loggedUsers[key].login!=login_name)
-      loggedUsers[key] = this.loggedUsers[key];
-  this.loggedUsers = loggedUsers;
+  // let loggedUsers = {};
+  // for (let key in this.loggedUsers)
+  //   if (this.loggedUsers[key].login!=login_name)
+  //     loggedUsers[key] = this.loggedUsers[key];
+  // this.loggedUsers = loggedUsers;
+  delete this.loggedUsers[this.umap[login_name]];
+  delete this.umap[login_name];
   this.save();
 }
 
@@ -497,36 +512,60 @@ UserLoginHash.prototype.getLoginEntry = function ( token )  {
 }
 
 UserLoginHash.prototype.getToken = function ( login_name )  {
-  let token = null;
-  for (let key in this.loggedUsers)
-    if (this.loggedUsers[key].login==login_name)  {
-      token = key;
-      break;
-    }
-  return token;
+  // let token = null;
+  // for (let key in this.loggedUsers)
+  //   if (this.loggedUsers[key].login==login_name)  {
+  //     token = key;
+  //     break;
+  //   }
+  // return token;
+  if (login_name in this.umap)
+    return this.umap[login_name];
+  return null;
 }
 
 UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
-  for (let key in this.loggedUsers)
-    if (this.loggedUsers[key].login==login_name)  {
-      this.loggedUsers[key].signal = signal;
-      break;
-    }
+  // for (let key in this.loggedUsers)
+  //   if (this.loggedUsers[key].login==login_name)  {
+  //     this.loggedUsers[key].signal = signal;
+  //     break;
+  //   }
+  if (login_name in this.umap)
+    this.loggedUsers[this.umap[login_name]].signal = signal;
+}
+
+UserLoginHash.prototype.logPresence = function ( token )  {
+  if (token in this.loggedUsers)
+    this.loggedUsers[token].lastSeen = Date.now();
 }
 
 const __day_ms = 86400000;  // 24 hours login expire
 
 UserLoginHash.prototype.loginExpire = function()  {
-  let loggedUsers = {};
+  // let loggedUsers = {};
+  // let t = Date.now();
+  // let activity = anl.getFEAnalytics().activity;
+  // for (let key in this.loggedUsers)  {
+  //   let ulogin = this.loggedUsers[key].login;
+  //   console.log ( ' >>>> ' + ulogin + '  ' + activity[ulogin].lastSeen + ' ' + t );
+  //   if ((['devel',ud.__local_user_id].indexOf(ulogin)>=0) ||
+  //       ((ulogin in activity) && ((t-activity[ulogin].lastSeen)<__day_ms)))
+  //     loggedUsers[key] = this.loggedUsers[key];
+  // }
+  // this.loggedUsers = loggedUsers;
   let t = Date.now();
-  let activity = anl.getFEAnalytics().activity;
-  for (let key in this.loggedUsers)  {
-    let ulogin = this.loggedUsers[key].login;
+  let tokens = Object.keys(this.loggedUsers);
+  for (let i=0;i<tokens.length;i++)  {
+    let token  = tokens[i]
+    let ulogin = this.loggedUsers[token].login;
+    // console.log ( ' >>>> ' + ulogin + '  ' + activity[ulogin].lastSeen + ' ' + t );
     if ((['devel',ud.__local_user_id].indexOf(ulogin)<0) &&
-        (ulogin in activity) && ((t-activity[ulogin].lastSeen)<__day_ms))
-      loggedUsers[key] = this.loggedUsers[key];
+        ((!('lastSeen' in this.loggedUsers[token])) || 
+         ((t-this.loggedUsers[token].lastSeen)>__day_ms)))  {
+      delete this.loggedUsers[token];
+      delete this.umap[ulogin];
+    }
   }
-  this.loggedUsers = loggedUsers;
   this.save();
 }
 
@@ -733,8 +772,9 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
   let retcode   = cmd.fe_retcode.wrongSession;
-  let uLogEntry = __userLoginHash.getLoginEntry(userData.login_token);
+  let uLogEntry = __userLoginHash.getLoginEntry ( userData.login_token );
   let signal    = '';
+  __userLoginHash.logPresence ( userData.login_token );
   if (uLogEntry.login)  {
     anl.logPresence ( uLogEntry.login );
     signal  = uLogEntry.signal;
