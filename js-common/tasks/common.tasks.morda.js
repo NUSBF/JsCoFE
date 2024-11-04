@@ -138,6 +138,9 @@ TaskMorda.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['morda', 'molecular','replacement','mr', 'auto-mr'] );
 }
 
+TaskMorda.prototype.getNCores = function ( ncores_available )  {
+  return Math.min(4,ncores_available);
+}
 
 if (!__template)  {
   //  for client side
