@@ -262,6 +262,9 @@ function appendString ( fpath,data_string )  {
 
 function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
 
+if (fpath.endsWith('projects.list'))
+  console.log ( ' >>>>> write project list' );
+
   let json_str = '';
   try {
     // json_str = JSON.stringify ( dataObject );
@@ -278,6 +281,8 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
         callback_func)  {
       // was put into cache, use asynchronous write
       fs.writeFile ( fpath,json_str,function(err){
+    // if (fpath.endsWith('projects.list'))
+    //   console.log ( ' >>>>>\n' + json_str );
         if (err)  {
           log.error ( 41,'cannot write file ' + fpath );
           console.error(err);

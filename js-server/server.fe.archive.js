@@ -723,7 +723,7 @@ function accessArchivedProject ( loginData,data )  {
   let projectDir = prj.getProjectDirPath ( loginData,archiveID );
   if (utils.dirExists(projectDir))  {
     let pDesc = prj.readProjectDesc ( loginData,archiveID );
-    let pList = prj.readProjectList ( loginData );  // this reads new project in
+    let pList = prj.readProjectList ( loginData,1 );  // this reads new project in
     if (pDesc && pList)  {
       pList.current = pDesc.name;        // make it current
       if (!prj.writeProjectList(loginData,pList))  {
@@ -754,7 +754,7 @@ function accessArchivedProject ( loginData,data )  {
 
   try {
 
-    let pList = prj.readProjectList ( loginData );  // this reads new project in
+    let pList = prj.readProjectList ( loginData,1 );  // this reads new project in
     let pDesc = prj.readProjectDesc ( loginData,archiveID );
     // pList.projects.push ( pDesc );  // should be no need for this
     pList.current = pDesc.name;        // make it current
