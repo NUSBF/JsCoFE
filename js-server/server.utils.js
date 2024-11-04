@@ -262,8 +262,8 @@ function appendString ( fpath,data_string )  {
 
 function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
 
-if (fpath.endsWith('projects.list'))
-  console.log ( ' >>>>> write project list' );
+// if (fpath.endsWith('projects.list'))
+//   console.log ( ' >>>>> write project list' );
 
   let json_str = '';
   try {
