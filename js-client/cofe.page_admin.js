@@ -624,9 +624,10 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                                    'Space<br>(MB)','CPU<br>(hours)',
                                    'Known<br>since','Last<br>seen'] );
 
-  let loggedUsers;
-  if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
-                         else  loggedUsers = udata.loginHash.loggedUsers;
+  // let loggedUsers;
+  // if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
+  //                        else  loggedUsers = udata.loginHash.loggedUsers;
+  let loggedUsers = udata.loginHash.loggedUsers;
   for (let i=0;i<udata.userList.length;i++)  {
     let trow  = this.userListTable.addRow();
     let uDesc = udata.userList[i];
