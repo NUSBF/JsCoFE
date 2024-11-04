@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.11.24   <--  Date of Last Modification.
+ *    04.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -514,15 +514,16 @@ UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
     }
 }
 
-UserLoginHash.prototype.logoutExpire = function()  {
-  const dt = 86400000;  // 24 hours login expire
+const __day_ms = 86400000;  // 24 hours login expire
+
+UserLoginHash.prototype.loginExpire = function()  {
   let loggedUsers = {};
   let t = Date.now();
   let activity = anl.getFEAnalytics().activity;
   for (let key in this.loggedUsers)  {
     let ulogin = this.loggedUsers[key].login;
-    if ((['devel',ud.__local_user_id].indexOf(ulogin)<0) ||
-        ((ulogin in activity) && ((t-activity[ulogin].lastSeen)<dt)))
+    if ((['devel',ud.__local_user_id].indexOf(ulogin)<0) &&
+        (ulogin in activity) && ((t-activity[ulogin].lastSeen)<__day_ms))
       loggedUsers[key] = this.loggedUsers[key];
   }
   this.loggedUsers = loggedUsers;
@@ -604,6 +605,8 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
   let response  = null;  // must become a cmd.Response object to return
   let fe_server = conf.getFEConfig();
 
+  __userLoginHash.loginExpire();
+
   // Get user data object and generate a temporary password
 //  let userData = JSON.parse ( user_data_json );
   let pwd = hashPassword ( userData.pwd );
@@ -625,8 +628,6 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
     if (uData)  {
 
       ud.checkUserData ( uData );
-
-      __userLoginHash.logoutExpire();
 
       if (uData.login.startsWith(__suspend_prefix))  {
         // for example, user's data is being moved to different disk
