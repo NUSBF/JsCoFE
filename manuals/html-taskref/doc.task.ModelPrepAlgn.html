@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -322,6 +323,13 @@
       <a href="doc.task.Molrep.html" class="md-nav__link">Molrep</a>
       
     
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.DimpleMR.html" class="md-nav__link">Dimple</a>
+      
+    
     </li></ul>
     
     </li>
@@ -403,32 +411,32 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="prepare-mr-model-s-from-alignment-data">
-<h1 id="doc-task-modelprepalgn--page-root">Prepare MR Model(s) from Alignment data<a class="headerlink" href="#doc-task-modelprepalgn--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-modelprepalgn--page-root">Prepare MR Model(s) from Alignment data<a class="headerlink" href="#doc-task-modelprepalgn--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Usually, sufficiently high amino acid sequence similarity correlates well with structural similarity, which fact is used for finding suitable structure homologs from PDB or other data bases. This task uses the <a class="reference external" href="https://toolkit.tuebingen.mpg.de/tools/hhpred" rel="noopener noreferrer" target="_blank">HHpred alignment</a> for identifying PDB entries, suitable for making MR search models. HHpred is and advanced bioinformatics tool that can detect structural homology even when sequence similarity is at the bottom of the twilight zone and even below that. The sequence alignment generated in the search step can be used as a guide for the pruning of the homologue.</p>
 <p>The task requires a preliminary import of a <code class="docutils literal notranslate"><span class="pre">.hhr</span></code> file with the results of HHpred search done at the <a class="reference external" href="https://toolkit.tuebingen.mpg.de/tools/hhpred" rel="noopener noreferrer" target="_blank">HHpred</a> web-site using the target sequence.</p>
 <p>The atomic coordinates of PDB entries listed in HHpred results are automatically trimmed according to the selection ranges given in HHpred output. The results are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>Unmodified</strong>: atomic coordinates are not altered in any way</p></li>
-<li><p><strong>Clip</strong>: water molecules and ligands are removed</p></li>
-<li><p><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
-<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></p></li>
-<li><p><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</p></li>
-<li><p><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></p></li>
-<li><p><strong>Polyalanine</strong>: all residues are replaced with polyalanines</p></li>
+<li><strong>Unmodified</strong>: atomic coordinates are not altered in any way</li>
+<li><strong>Clip</strong>: water molecules and ligands are removed</li>
+<li><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></li>
+<li><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</li>
+<li><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></li>
+<li><strong>Polyalanine</strong>: all residues are replaced with polyalanines</li>
 </ul>
 </div></blockquote>
 <p>The resulting models can be used in both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> tasks, but the outcome may be different, especially in difficult cases.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>the task usually produces several MR models with a range of similarity to target sequence. Although higher sequence similarity implies higher success or Molecular Replacement, this is not guaranteed.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">the task usually produces several MR models with a range of similarity to target sequence. Although higher sequence similarity implies higher success or Molecular Replacement, this is not guaranteed.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>combining several models, corresponding to the same target sequence, into MR Ensemble(s) may increase chances for success. MR ensembles may be prepared from individual models using the <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensembles</span></a> task</p>
+<p class="first admonition-title">Note</p>
+<p class="last">combining several models, corresponding to the same target sequence, into MR Ensemble(s) may increase chances for success. MR ensembles may be prepared from individual models using the <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensembles</span></a> task</p>
 </div>
 <p><strong>REFERENCES</strong></p>
 <p><a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0022283617305879" rel="noopener noreferrer" target="_blank">A Completely Reimplemented MPI Bioinformatics Toolkit with a New HHpred Server at its Core.
@@ -438,7 +446,7 @@ Gabler F, Nam SZ, Till S, Mirdita M, Steinegger M, Söding J, Lupas AN, Alva V. 
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/15531603" rel="noopener noreferrer" target="_blank">Söding J. (2005) Protein homology detection by HMM-HMM comparison. Bioinformatics 21: 951-960. PMID: 15531603</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/19626712" rel="noopener noreferrer" target="_blank">Hildebrand A., Remmert A., Biegert A., Söding J. (2009). Fast and accurate automatic structure prediction with HHpred. Proteins 77(Suppl 9):128-32. doi: 10.1002/prot.22499. PMID: 19626712</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/26496371" rel="noopener noreferrer" target="_blank">Meier A., Söding J. (2015). Automatic Prediction of Protein 3D Structures by Probabilistic Multi-template Homology Modeling. PLoS Comput Biol. 11(10):e1004343. doi: 10.1371/journal.pcbi.1004343. PMID: 26496371</a></p>
-</section>
+
 
 
           </article>
@@ -459,7 +467,7 @@ Gabler F, Nam SZ, Till S, Mirdita M, Steinegger M, Söding J, Lupas AN, Alva V. 
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Prepare MR Model(s) from Coordinate data </span>
+                      class="md-footer-nav__direction"> Previous </span> Prepare MR Model(s) from Coordinate data </span>
               </div>
             </a>
           
@@ -469,7 +477,7 @@ Gabler F, Nam SZ, Till S, Mirdita M, Steinegger M, Söding J, Lupas AN, Alva V. 
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Prepare Complex Model </span>
+                class="md-footer-nav__direction"> Next </span> Prepare Complex Model </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -483,7 +491,7 @@ Gabler F, Nam SZ, Till S, Mirdita M, Steinegger M, Söding J, Lupas AN, Alva V. 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

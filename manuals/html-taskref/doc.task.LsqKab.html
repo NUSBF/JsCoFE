@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -374,18 +375,18 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="structure-superposition-with-lsqkab">
-<h1 id="doc-task-lsqkab--page-root">Structure Superposition with LsqKab<a class="headerlink" href="#doc-task-lsqkab--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-lsqkab--page-root">Structure Superposition with LsqKab<a class="headerlink" href="#doc-task-lsqkab--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Superposition is the most common method for structure comparison. It is simply the process of rotating or orienting an object until it can be directly overlaid on top of a similar object. Structural superposition is used for comparison multiple conformations of the same protein (in case no alignment is necessary) and to evaluate the quality of alignments produced using only sequence information between two sequences whose structures are known. If you need to align two related proteins, you need to know which residues are equivalent. For doing so you can select limited regions of models for matching. The user can select the residues to superpose for each of the structures using the selection widget. You will be warned if you have not selected an equal number of residues for each structure.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>one input element may be fixed as a reference and therefore its superposed coordinates do not change. And all of the molecules are moved to the position of one fixed “target” molecule which does not move.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">one input element may be fixed as a reference and therefore its superposed coordinates do not change. And all of the molecules are moved to the position of one fixed “target” molecule which does not move.</p>
 </div>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0567739476001873" rel="noopener noreferrer" target="_blank">Kabsch, W. (1976) A solution for the best rotation to relate two sets of vectors. Acta Cryst. A32: 922-923;</a></p>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html" rel="noopener noreferrer" target="_blank">Krissinel E, Henrick K. (2004) Secondary-structure matching (SSM), a new tool for fast protein structure alignment in three dimensions. Acta Crystallogr. D60: 2256–2268;</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">Krissinel, E. (2012) Enhanced fold recognition using efficient short fragment clustering. J. Mol. Biochem. 1(2): 76-85;</a></p>
-</section>
+
 
 
           </article>
@@ -406,7 +407,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Pairwise Structural Alignment with GESAMT </span>
+                      class="md-footer-nav__direction"> Previous </span> Pairwise Structural Alignment with GESAMT </span>
               </div>
             </a>
           
@@ -416,7 +417,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Sequence Alignment with ClustalW </span>
+                class="md-footer-nav__direction"> Next </span> Sequence Alignment with ClustalW </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -430,7 +431,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

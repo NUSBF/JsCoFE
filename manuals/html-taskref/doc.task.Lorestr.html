@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -274,7 +275,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-lorestr--page-root" class="md-nav__link">Low-Resolution Refinement with Lorestr</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -420,7 +421,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-lorestr--page-root" class="md-nav__link">Low-Resolution Refinement with Lorestr</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -437,8 +438,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="low-resolution-refinement-with-lorestr">
-<h1 id="doc-task-lorestr--page-root">Low-Resolution Refinement with Lorestr<a class="headerlink" href="#doc-task-lorestr--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-lorestr--page-root">Low-Resolution Refinement with Lorestr<a class="headerlink" href="#doc-task-lorestr--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798316014534" rel="noopener noreferrer" target="_blank">LORESTR</a> an automated pipeline for structure refinement at low resolution (lower than around 3 Å). Such datasets have low information content; hence the ratio of the number of observations to adjustable model parameters is small. To achieve accurate models using only low-resolution data it is necessary to use as much available information about macromolecules as possible. The information used must complement the data.</p>
 <p>X-ray crystallographic data provide information about long-range interactions within and between molecules. At very low resolution, only information pertaining to shape and crystal packing is present. Basic chemical information, such as “ideal” bond lengths and angles, is usually employed at all resolutions. As resolution decreases, the use of information about torsion angles, secondary structures, domains, and intra-domain interactions might be required. If there are multiple copies of a molecule in the asymmetric unit then non-crystallographic restraints can be used to decrease the effective number of adjustable parameters.</p>
 <p>There are many factors that can reduce the information content of MX data thus reducing the effective resolution. These include crystal growth peculiarities such as twinning and order-disorder. In such cases, although the nominal resolution may be high, not all of the observations are independent. For example, <strong>in the case of perfect hemihedral twinning, the number of independent observations is decreased by a factor of two</strong>, corresponding to a resolution reduction by a factor of 21/3 ≈ 1.26. Therefore, in the limit, the quality of the electron density map in the presence of perfect hemihedral twinning at 2 Å would correspond to that of a 2.52 Å single crystal case.</p>
@@ -446,16 +447,20 @@
 <p>There are many problems that need to be tackled in order to make low-resolution structure analysis routine:</p>
 <blockquote>
 <div><ul>
-<li><p>The use of chemical and structural information as restraints to increase consistency between available prior knowledge and derived atomic models.</p></li>
-<li><p>The use of chemical information in the form of bond lengths, bond angles, and torsion angles has always been routine.</p></li>
-<li><p>Building an accurate likelihood function that reﬂects noise in the data as well as imperfections in the model. Low-resolution MX data are usually very noisy.</p>
+<li><p class="first">The use of chemical and structural information as restraints to increase consistency between available prior knowledge and derived atomic models.</p>
+</li>
+<li><p class="first">The use of chemical information in the form of bond lengths, bond angles, and torsion angles has always been routine.</p>
+</li>
+<li><p class="first">Building an accurate likelihood function that reﬂects noise in the data as well as imperfections in the model. Low-resolution MX data are usually very noisy.</p>
 <blockquote>
 <div><p>Unfortunately, the electron density always contains noise, which stems from several sources:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p>Noise due to variations in the experimental data.</p></li>
-<li><p>Noise due to errors in the model (e.g., atomic coordinates, model incompleteness, misparameterization, B-values, scale factors), and thus in the calculated phases. Such noise correlates with the “true” electron density, and is consequently very hard to address.</p></li>
-<li><p>Noise due to Fourier series termination. When data are collected to the crystal diffraction limit and no map sharpening is used, such noise usually dies out approaching the high-resolution limit. However, when map sharpening is used as an inverse filter then the effects of series termination become pronounced.</p>
+<li><p class="first">Noise due to variations in the experimental data.</p>
+</li>
+<li><p class="first">Noise due to errors in the model (e.g., atomic coordinates, model incompleteness, misparameterization, B-values, scale factors), and thus in the calculated phases. Such noise correlates with the “true” electron density, and is consequently very hard to address.</p>
+</li>
+<li><p class="first">Noise due to Fourier series termination. When data are collected to the crystal diffraction limit and no map sharpening is used, such noise usually dies out approaching the high-resolution limit. However, when map sharpening is used as an inverse filter then the effects of series termination become pronounced.</p>
 <blockquote>
 <div><p><em>Noise in the map will have two major components: noise due to observational errors, and noise due to errors in the model.</em></p>
 </div></blockquote>
@@ -464,13 +469,14 @@
 </div></blockquote>
 </div></blockquote>
 </li>
-<li><p>Calculation of electron density maps to aid the reduction of errors introduced during manual and automatic model building. Data from  low-resolution crystals usually exhibit high isotropic and anisotropic B-values. This contributes to observing smeared regions of electron density, with vanishing side chains, secondary structure elements, and even domains. Were this effect removed, the electron density map might reveal more features. Current approaches use only one B-value for map sharpening.</p></li>
+<li><p class="first">Calculation of electron density maps to aid the reduction of errors introduced during manual and automatic model building. Data from  low-resolution crystals usually exhibit high isotropic and anisotropic B-values. This contributes to observing smeared regions of electron density, with vanishing side chains, secondary structure elements, and even domains. Were this effect removed, the electron density map might reveal more features. Current approaches use only one B-value for map sharpening.</p>
+</li>
 </ul>
 </div></blockquote>
 <p>One of the problems encountered during low-resolution refinement and model building is that the maps are usually blurred, obscuring any finer details of the structure. In general, the overall B-values of crystallographic data can be considered arbitrary, depending on data scaling. It is tempting to remove the B-values altogether, thus making the power spectrum of the Fourier coefficients ﬂat over all resolution ranges. This can be achieved if one uses normalized structure factors.</p>
 <p><strong>Removing B-values is the same as applying an</strong> <a class="reference external" href="http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html" rel="noopener noreferrer" target="_blank">inverse filter</a> <strong>to the map.</strong> Despite increasing structural details, <a class="reference external" href="http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html" rel="noopener noreferrer" target="_blank">inverse filters</a> will also increase the noise level.</p>
-<section id="validation">
-<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h2>
 <p>At low resolution, all indicators, as well as the predictive power of the model, must be checked.</p>
 <p>Further to looking at global measures of quality/validation— refinement and geometry statistics it is important to investigate how well localized regions of the model agree with the electron density. Such manual inspection may reveal parts of the model that:</p>
 <blockquote>
@@ -481,11 +487,10 @@
 <p>● Have been pulled out of a sensible conformation into an incorrect one by the external restraints, in which case the external restraints should be regenerated excluding these identified regions, and the refinement repeated.</p>
 </div></blockquote>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
+<p class="first admonition-title">Note</p>
 <blockquote>
-<div><p>Since external restraints may have a positive effect on some regions of a structure and a negative effect on other regions, overall global statistics may be misleading.</p>
-</div></blockquote>
-<p><strong>Whenever new maps are calculated, one always must manually inspect the regions that do not have corresponding atoms built; omit maps or something similar must be used.</strong></p>
+<div>Since external restraints may have a positive effect on some regions of a structure and a negative effect on other regions, overall global statistics may be misleading.</div></blockquote>
+<p class="last"><strong>Whenever new maps are calculated, one always must manually inspect the regions that do not have corresponding atoms built; omit maps or something similar must be used.</strong></p>
 </div>
 <p>At low resolution, bias toward errors in the map is a real problem. Usual statistics such as R-factors are not good indicators of model quality.</p>
 <p>Good agreement with the prior knowledge does not also mean that the derived model corresponds well to the true crystal structure; rather, it only means that the model agrees with our prior knowledge (i.e., that the model is chemically/structurally sensible).</p>
@@ -496,8 +501,8 @@
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798316014534" rel="noopener noreferrer" target="_blank">Kovalevskiy, 0., Nicholls, R.A., Murshudov, G.N. (2016)  Acta Cryst. D72: 1149-1161</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S1399004714016241" rel="noopener noreferrer" target="_blank">Nicholls, R. A., Fischer, M., McNicholas, S. &amp; Murshudov, G. N. (2014). Acta Cryst. D70, 2487–2499.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744491105606X" rel="noopener noreferrer" target="_blank">Nicholls, R. A., Long, F. &amp; Murshudov, G. N. (2012). Acta Cryst. D68, 404–417.</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -518,7 +523,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Buster Refinement </span>
+                      class="md-footer-nav__direction"> Previous </span> Buster Refinement </span>
               </div>
             </a>
           
@@ -528,7 +533,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Automatic Model Building with CCP4Build </span>
+                class="md-footer-nav__direction"> Next </span> Automatic Model Building with CCP4Build </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -542,7 +547,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

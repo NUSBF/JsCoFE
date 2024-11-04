@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -237,7 +238,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-structureprediction--page-root" class="md-nav__link">Structure Prediction</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -335,6 +336,13 @@
       <a href="doc.task.Molrep.html" class="md-nav__link">Molrep</a>
       
     
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.DimpleMR.html" class="md-nav__link">Dimple</a>
+      
+    
     </li></ul>
     
     </li>
@@ -406,7 +414,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-structureprediction--page-root" class="md-nav__link">Structure Prediction</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -423,27 +431,27 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="structure-prediction">
-<h1 id="doc-task-structureprediction--page-root">Structure Prediction<a class="headerlink" href="#doc-task-structureprediction--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-structureprediction--page-root">Structure Prediction<a class="headerlink" href="#doc-task-structureprediction--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Task designed for prediction a protein’s 3D structure from amino acid sequence with <a class="reference external" href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb" rel="noopener noreferrer" target="_blank">ColabFold</a> or <a class="reference external" href="https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb" rel="noopener noreferrer" target="_blank">Openfold</a> services.</p>
-<section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p><strong>Predicted Aligned Error (PAE)</strong> reports AlphaFold’s expected position error of predicted residue regarding the structure aligned. PAE is useful for assessing confidence in global features (molecule interface), especially domain packing. <strong>Low PAE</strong> suggests <strong>AlphaFold is confident</strong> about the relative domain positions. Meanwhile, <strong>high PAE</strong> values suggest the relative positions of the domains should not be interpreted.</p>
 <p><strong>PLLDT scores plot</strong> shows the pLDDT score per position for each of the five AlphaFold models predicted.</p>
 <p>AlphaFold produces a per-residue estimate of its confidence score (<strong>pLDDT</strong>) ranging from 0 to 100.</p>
 <ul class="simple">
-<li><p><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</p></li>
-<li><p><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</p></li>
-<li><p><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</p></li>
-<li><p><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</p></li>
+<li><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</li>
+<li><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</li>
+<li><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</li>
+<li><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</li>
 </ul>
 <p><strong>Sequence coverages plot</strong> shows the number of homologous identified across the representative sequence and colored by the sequence identity to query.</p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1038/s41524-020-0330-9" rel="noopener noreferrer" target="_blank">Ozaki, Y., Suzuki, Y., Hawai, T. et al. Automated crystal structure analysis based on blackbox optimisation. npj Comput Mater 6, 75 (2020).</a></p>
 <p><a class="reference external" href="https://doi.org/10.1101/2021.08.15.456425" rel="noopener noreferrer" target="_blank">Mirdita, M., Ovchinnikov, S., Steinegger, M.. ColabFold - Making protein folding accessible to all. bioRxiv 2021.08.15.456425.</a></p>
 <p><a class="reference external" href="https://doi.org/10.5281/zenodo.5709540" rel="noopener noreferrer" target="_blank">Gustaf Ahdritz, Nazim Bouatta, Sachin Kadyan, Qinghui Xia, William Gerecke, &amp; Mohammed AlQuraishi. (2021). aqlaboratory/openfold: Openfold v1.0.0 (v1.0.0). Zenodo.</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -464,7 +472,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Structure Prediction </span>
+                      class="md-footer-nav__direction"> Previous </span> Structure Prediction </span>
               </div>
             </a>
           
@@ -474,7 +482,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Data Processing </span>
+                class="md-footer-nav__direction"> Next </span> Data Processing </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -488,7 +496,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

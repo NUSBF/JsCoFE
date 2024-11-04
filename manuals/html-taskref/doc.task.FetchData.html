@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,11 +51,14 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Push Data to Cloud" href="doc.task.PushToCloud.html" />
+    <link rel="prev" title="Hop on CCP4 Cloud" href="doc.task.Migrate.html" />
   
    
 
@@ -102,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -149,6 +152,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
+          <li class="md-tabs__item"><a href="Data_Import.html" class="md-tabs__link">Data Import</a></li>
       </ul>
     </div>
   </nav>
@@ -183,7 +187,72 @@
     
     
       <a href="Data_Import.html" class="md-nav__link">Data Import</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.Import.html" class="md-nav__link">Data Import</a>
       
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.ImportSeqCP.html" class="md-nav__link">Import Sequence(s) by Copy-Paste</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.ImportPDB.html" class="md-nav__link">Import from PDB/AFDB</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.CloudImport.html" class="md-nav__link">Import from Cloud Storage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.ImportReplace.html" class="md-nav__link">Import & Replace</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.Migrate.html" class="md-nav__link">Hop on CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Fetch Diffraction Images from WWW repositories </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Fetch Diffraction Images from WWW repositories</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.PushToCloud.html" class="md-nav__link">Push Data to Cloud</a>
+      
+    
+    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -299,15 +368,15 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="fetch-diffraction-images-from-www-repositories">
-<h1 id="doc-task-fetchdata--page-root">Fetch Diffraction Images from WWW repositories<a class="headerlink" href="#doc-task-fetchdata--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-fetchdata--page-root">Fetch Diffraction Images from WWW repositories<a class="headerlink" href="#doc-task-fetchdata--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This task retrieves raw X-ray diffraction data from public repositories using
 either a PDB code or a Digital Object Identifier (DOI) linked to the data.
 The following repositories are automatically searched:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://data.sbgrid.org/" rel="noopener noreferrer" target="_blank">SBGrid Data Bank</a></p></li>
-<li><p><a class="reference external" href="https://proteindiffraction.org/" rel="noopener noreferrer" target="_blank">Protein Diffraction</a></p></li>
-<li><p><a class="reference external" href="https://xrda.pdbj.org/" rel="noopener noreferrer" target="_blank">X-ray Diffraction Archive (XRDA)</a></p></li>
+<li><a class="reference external" href="https://data.sbgrid.org/" rel="noopener noreferrer" target="_blank">SBGrid Data Bank</a></li>
+<li><a class="reference external" href="https://proteindiffraction.org/" rel="noopener noreferrer" target="_blank">Protein Diffraction</a></li>
+<li><a class="reference external" href="https://xrda.pdbj.org/" rel="noopener noreferrer" target="_blank">X-ray Diffraction Archive (XRDA)</a></li>
 </ul>
 <p>The complete dataset will be downloaded and stored in the <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code>
 area at the path specified on the task’s <em>Report Page</em> upon completion.</p>
@@ -316,14 +385,14 @@ area at the path specified on the task’s <em>Report Page</em> upon completion.
 Be sure to set the file location selector in the <a class="reference internal" href="doc.task.Xia2.html"><span class="doc">Xia-2</span></a>
 task to <code class="docutils literal notranslate"><span class="pre">cloud</span> <span class="pre">storage</span></code>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Each user has access only to their personal area in <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code>.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Each user has access only to their personal area in <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code>.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This task is unavailable in the CCP4 Cloud Local version.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">This task is unavailable in the CCP4 Cloud Local version.</p>
 </div>
-</section>
+
 
 
           </article>
@@ -335,6 +404,30 @@ task to <code class="docutils literal notranslate"><span class="pre">cloud</span
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
+            <a href="doc.task.Migrate.html" title="Hop on CCP4 Cloud"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Hop on CCP4 Cloud </span>
+              </div>
+            </a>
+          
+          
+            <a href="doc.task.PushToCloud.html" title="Push Data to Cloud"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Push Data to Cloud </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
           
         </a>
         
@@ -344,7 +437,7 @@ task to <code class="docutils literal notranslate"><span class="pre">cloud</span
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

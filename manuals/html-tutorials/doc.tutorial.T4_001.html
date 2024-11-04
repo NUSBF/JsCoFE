@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -240,7 +241,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-001--page-root" class="md-nav__link">9. Refinement using REFMAC5 - Part 1: Simple Refinement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -316,7 +317,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-001--page-root" class="md-nav__link">9. Refinement using REFMAC5 - Part 1: Simple Refinement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -335,69 +336,69 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="refinement-using-refmac5-part-1-simple-refinement">
-<h1 id="doc-tutorial-t4-001--page-root"><span class="section-number">9. </span>Refinement using REFMAC5 - Part 1: Simple Refinement<a class="headerlink" href="#doc-tutorial-t4-001--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-tutorial-t4-001--page-root"><span class="section-number">9. </span>Refinement using REFMAC5 - Part 1: Simple Refinement<a class="headerlink" href="#doc-tutorial-t4-001--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Written by: Rob Nicholls</p>
-<section id="preliminary-notes">
-<h2 id="preliminary-notes"><span class="section-number">9.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="preliminary-notes"><span class="section-number">9.1. </span>Preliminary notes<a class="headerlink" href="#preliminary-notes" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</p></li>
+<li>It is essential for this tutorial that CCP4 Cloud is used in remote <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> or desktop <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="ccp4cloud_desktop" src="_images/ccp4cloud_desktop.png" style="width: 20px; height: 20px;"/></a> mode.</li>
 </ul>
 <ul class="simple">
-<li><dl class="simple">
-<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha simple">
-<li><p>The structure is already phased and built</p></li>
-<li><p>Protein sequence is not imported (and not needed)</p></li>
-<li><p>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</p></li>
+<li><dl class="first docutils">
+<dt>The tutorial project is initialised in <em>Hop-on</em> mode. This means that:</dt><dd><ol class="loweralpha">
+<li>The structure is already phased and built</li>
+<li>Protein sequence is not imported (and not needed)</li>
+<li>The <em>Task List</em> is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.</li>
 </ol>
 </dd>
 </dl>
 </li>
 </ul>
-</section>
-<section id="tutorial">
-<h2 id="tutorial"><span class="section-number">9.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="tutorial"><span class="section-number">9.2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span> <span class="pre">Reflection</span> <span class="pre">data</span> <span class="pre">(rnase.mtz),</span> <span class="pre">Phases</span> <span class="pre">(rnase.mtz)</span> <span class="pre">and</span> <span class="pre">Atomic</span> <span class="pre">coordinates</span> <span class="pre">(rnase.pdb)</span> <span class="pre">are</span> <span class="pre">already</span> <span class="pre">imported</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">project</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span> <span class="pre">Perform</span> <span class="pre">model</span> <span class="pre">refinement</span> <span class="pre">using</span> <span class="pre">default</span> <span class="pre">settings</span></code></p>
 <ul class="simple">
-<li><p>Click the green <strong>+</strong> button in order to add a follow-on job. Choose <strong>Refinement with Refmac</strong> from the task list (if not yet in the <strong>Suggested</strong> task list, you can find it in the <strong>Refinement and Model Building</strong> section of the <strong>Full list</strong> of tasks).</p></li>
-<li><p>Change the <strong>job description</strong> field to something meaningful, like: “Refine with default settings”.</p></li>
-<li><p>Click the green arrow at the top of the window to run the job. While a job is running, you can safely click the red cross at the top-right of the window in order to close the job dialog, and the job will continue running in the background. To view the current status of a running job, or to view the results of a completed job, double click on the job in the tree.</p></li>
+<li>Click the green <strong>+</strong> button in order to add a follow-on job. Choose <strong>Refinement with Refmac</strong> from the task list (if not yet in the <strong>Suggested</strong> task list, you can find it in the <strong>Refinement and Model Building</strong> section of the <strong>Full list</strong> of tasks).</li>
+<li>Change the <strong>job description</strong> field to something meaningful, like: “Refine with default settings”.</li>
+<li>Click the green arrow at the top of the window to run the job. While a job is running, you can safely click the red cross at the top-right of the window in order to close the job dialog, and the job will continue running in the background. To view the current status of a running job, or to view the results of a completed job, double click on the job in the tree.</li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span> <span class="pre">Run</span> <span class="pre">refinement</span> <span class="pre">with</span> <span class="pre">a</span> <span class="pre">different</span> <span class="pre">data-geometry</span> <span class="pre">weight</span></code></p>
 <p>We now want to try refinement with different parameters, in parallel with the first job that is already running.</p>
 <ul class="simple">
-<li><p>Ensure that the existing refinement job is selected in the project tree, and click the <strong>Clone job</strong> button on the left side of the screen.</p></li>
-<li><p>A refinement job window will open – in the <strong>Basic options</strong> section, change <strong>Overall data-geometry weight</strong> to <strong>Fixed</strong> with a value of <strong>1.0</strong>.</p></li>
-<li><p>Give the job a meaningful description.</p></li>
-<li><p>Click the green arrow at the top of the window to run the job. Again, close the job dialog window while it runs.</p></li>
+<li>Ensure that the existing refinement job is selected in the project tree, and click the <strong>Clone job</strong> button on the left side of the screen.</li>
+<li>A refinement job window will open – in the <strong>Basic options</strong> section, change <strong>Overall data-geometry weight</strong> to <strong>Fixed</strong> with a value of <strong>1.0</strong>.</li>
+<li>Give the job a meaningful description.</li>
+<li>Click the green arrow at the top of the window to run the job. Again, close the job dialog window while it runs.</li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span> <span class="pre">Run</span> <span class="pre">refinement</span> <span class="pre">with</span> <span class="pre">different</span> <span class="pre">B-factor</span> <span class="pre">parameterisation</span></code></p>
 <ul class="simple">
-<li><p>Clone the job again.</p></li>
-<li><p>Open the <strong>Model Parameterisation</strong> section, and change <strong>Atomic B-factors</strong> to <strong>Anisotropic</strong>.</p></li>
-<li><p>Give the job a meaningful description.</p></li>
-<li><p>Click the green arrow at the top of the window to run the job, and close the job dialog window while it runs.</p></li>
+<li>Clone the job again.</li>
+<li>Open the <strong>Model Parameterisation</strong> section, and change <strong>Atomic B-factors</strong> to <strong>Anisotropic</strong>.</li>
+<li>Give the job a meaningful description.</li>
+<li>Click the green arrow at the top of the window to run the job, and close the job dialog window while it runs.</li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">5.</span> <span class="pre">Inspect</span> <span class="pre">the</span> <span class="pre">refinement</span> <span class="pre">results</span></code></p>
 <p>In the main project tree, you can now see three refinement jobs that have been run in parallel, all starting from the same structure revision.</p>
 <ul class="simple">
-<li><p>When the jobs finish, the final R-factors are appended to the job title. Which of the three jobs produced the best R-factors, thus presumably the best model?</p></li>
-<li><p>More detailed output can be found by double-clicking on a job. Once the jobs have finished, double-click on the last refinement job in the tree. Does refinement seem to have converged after the default 10 cycles?</p></li>
-<li><p>Consider the difference between the R-factors before and after refinement… why do you think they have improved so much?</p></li>
+<li>When the jobs finish, the final R-factors are appended to the job title. Which of the three jobs produced the best R-factors, thus presumably the best model?</li>
+<li>More detailed output can be found by double-clicking on a job. Once the jobs have finished, double-click on the last refinement job in the tree. Does refinement seem to have converged after the default 10 cycles?</li>
+<li>Consider the difference between the R-factors before and after refinement… why do you think they have improved so much?</li>
 </ul>
 <p>Note that CCP4 Cloud’s Verdict is different for the three jobs - this suggests what parameters you could try changing in order to improve refinement.</p>
 <p><code class="docutils literal notranslate"><span class="pre">6.</span> <span class="pre">Inspect</span> <span class="pre">the</span> <span class="pre">refined</span> <span class="pre">model</span> <span class="pre">in</span> <span class="pre">Coot</span></code></p>
 <ul class="simple">
-<li><p>Select the last refinement job in the tree.</p></li>
-<li><p>Click the green <strong>+</strong> button in order to add a follow-on job, and select the <strong>Model Building with Coot</strong> task in order to open the Coot job window.</p></li>
-<li><p>By default, the structure revision corresponding to the output of your refinement job will be already selected for opening in Coot. But we also want to load the original model, so that we can compare the model before/after refinement. To do this: in <strong>Additional Structures</strong> select the job ID that corresponds to your <strong>hop on ccp4 cloud</strong> job (which may be called something like <strong>[0001-01] hop-on /structure/</strong>) – this will tell Coot to also open your original model and associated maps. Now run the job in order to open Coot.</p></li>
-<li><p>Within Coot, open the Display Manager and repeatedly toggle the two models on and off, to visually compare differences between them. Does it seem that the coordinates corresponding to the model have changed much during refinement?</p></li>
-<li><p>Now colour both models according to their B-factors – this is also done in the Display Manager. The models will be coloured on a blue-green-yellow-red scale to indicate low-to-high B-factors. Again, toggle the two models on and off. Does it seem that the B-factors have changed much during refinement? Does this shed any light on why the R-factors improved so much during refinement?</p></li>
-<li><p>Now toggle off the model and map corresponding to the original structure revision, so that only the post-refinement model and map are displayed. Select <strong>Unmodelled blobs</strong> from Coot’s <strong>Validate</strong> menu. One large blob should be identified. Zoom into this region. What seems to be missing from the model?</p></li>
+<li>Select the last refinement job in the tree.</li>
+<li>Click the green <strong>+</strong> button in order to add a follow-on job, and select the <strong>Model Building with Coot</strong> task in order to open the Coot job window.</li>
+<li>By default, the structure revision corresponding to the output of your refinement job will be already selected for opening in Coot. But we also want to load the original model, so that we can compare the model before/after refinement. To do this: in <strong>Additional Structures</strong> select the job ID that corresponds to your <strong>hop on ccp4 cloud</strong> job (which may be called something like <strong>[0001-01] hop-on /structure/</strong>) – this will tell Coot to also open your original model and associated maps. Now run the job in order to open Coot.</li>
+<li>Within Coot, open the Display Manager and repeatedly toggle the two models on and off, to visually compare differences between them. Does it seem that the coordinates corresponding to the model have changed much during refinement?</li>
+<li>Now colour both models according to their B-factors – this is also done in the Display Manager. The models will be coloured on a blue-green-yellow-red scale to indicate low-to-high B-factors. Again, toggle the two models on and off. Does it seem that the B-factors have changed much during refinement? Does this shed any light on why the R-factors improved so much during refinement?</li>
+<li>Now toggle off the model and map corresponding to the original structure revision, so that only the post-refinement model and map are displayed. Select <strong>Unmodelled blobs</strong> from Coot’s <strong>Validate</strong> menu. One large blob should be identified. Zoom into this region. What seems to be missing from the model?</li>
 </ul>
-</section>
-</section>
+
+
 
 
           </article>
@@ -418,7 +419,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">8. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">8. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
               </div>
             </a>
           
@@ -428,7 +429,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">10. </span>Refinement using REFMAC5 - Part 2: Twin Refinement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -442,7 +443,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

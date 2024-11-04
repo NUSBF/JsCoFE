@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -239,7 +240,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-arcimboldolite--page-root" class="md-nav__link">Fragment Molecular Replacement with Arcimboldo</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -356,7 +357,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-arcimboldolite--page-root" class="md-nav__link">Fragment Molecular Replacement with Arcimboldo</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -379,59 +380,59 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="fragment-molecular-replacement-with-arcimboldo">
-<h1 id="doc-task-arcimboldolite--page-root">Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#doc-task-arcimboldolite--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-arcimboldolite--page-root">Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#doc-task-arcimboldolite--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2015/01/00/lz5004/" rel="noopener noreferrer" target="_blank">ARCIMBOLDO</a>, originally conceived for <em>ab initio</em> phasing of macromolecular structures.</p>
 <p>There is two main barriers for <em>ab initio</em> phasing: structure size and resolution of the data. <strong>ARCIMBOLDO</strong> constitutes a general method for 2Å data, based on combination of small α-helices with <a class="reference internal" href="doc.task.Phaser.html#phaser-go"><span class="std std-ref">PHASER</span></a> ( to locate of small model fragments) and <a class="reference internal" href="doc.task.SHELX.html#shelx"><span class="std std-ref">SHELXE</span></a> (density modification with and autotracing). The method has been named after the Italian painter Giuseppe Arcimboldo, best known for creating compose portraits out of  fruits, vegetables, flowers, fish, and books.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_LITE</span></code> performs <em>ab initio</em> phasing using polyalanine helices or other single search fragments. (<a class="reference external" href="http://chango.ibmb.csic.es/" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/</a>)</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO</span> <span class="pre">BORGES</span></code> performs ab initio phasing with nonspecific libraries of small folds. (<a class="reference external" href="http://chango.ibmb.csic.es/borges" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/borges</a>)</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_SHREDDER</span></code> uses fragments derived from a distant homologue template. (<a class="reference external" href="http://chango.ibmb.csic.es/shredder" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/shredder</a>)</p>
 <blockquote>
-<div><p><em>All-helical structures are favourable cases for phasing with ARCIMBOLDO.</em></p>
-</div></blockquote>
-<section id="input">
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
+<div><em>All-helical structures are favourable cases for phasing with ARCIMBOLDO.</em></div></blockquote>
+
+<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>The default value of the rmsd for model helices is 0.2 Å (this value can be increased).</p></li>
-<li><p>It is mandatory to define the number of helices to search and their length (length needs to be specified according to secondary-structure prediction or previous knowledge about the target structure).</p></li>
-<li><p>The molecular weight, number of components and estimated rmsd should be defined for the PHASER search.</p></li>
+<li>The default value of the rmsd for model helices is 0.2 Å (this value can be increased).</li>
+<li>It is mandatory to define the number of helices to search and their length (length needs to be specified according to secondary-structure prediction or previous knowledge about the target structure).</li>
+<li>The molecular weight, number of components and estimated rmsd should be defined for the PHASER search.</li>
 </ul>
-<section id="coil-coiled-mode">
-<h3 id="coil-coiled-mode">Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this heading">¶</a></h3>
+
+<h3 id="coil-coiled-mode">Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p><em>represent a search algorithm to probe and verify alternative helix directions</em></p>
-</div></blockquote>
+<div><em>represent a search algorithm to probe and verify alternative helix directions</em></div></blockquote>
 <p>Coil coiled mode entails:*</p>
 <ul>
-<li><p>VRMS calculation in the refinement step to optimize the RMSD parameter in order to maximize the LLG.</p></li>
-<li><p>Activation of PHASER’s packing filter at translation, so at least one translated solution will pass the packing check.</p></li>
-<li><p>Generate and probe reverse helices. At resolution below 2 Å it was frequently observed that placement of the first helices occasionally took place in the correct position but in reversed direction and at low resolution are not distinguishable from the PHASER figures of merit.</p></li>
-<li><p>Final verification step, an additional step that generates perturbations of the substructure leading to the best solution and compares their scores before and after extension. As the reverse helices this will be only activated at resolution worse than 2Å.</p></li>
-<li><p>SHELXE with helical sliding, which improves the autotracing of the coiled coil structures.</p>
+<li><p class="first">VRMS calculation in the refinement step to optimize the RMSD parameter in order to maximize the LLG.</p>
+</li>
+<li><p class="first">Activation of PHASER’s packing filter at translation, so at least one translated solution will pass the packing check.</p>
+</li>
+<li><p class="first">Generate and probe reverse helices. At resolution below 2 Å it was frequently observed that placement of the first helices occasionally took place in the correct position but in reversed direction and at low resolution are not distinguishable from the PHASER figures of merit.</p>
+</li>
+<li><p class="first">Final verification step, an additional step that generates perturbations of the substructure leading to the best solution and compares their scores before and after extension. As the reverse helices this will be only activated at resolution worse than 2Å.</p>
+</li>
+<li><p class="first">SHELXE with helical sliding, which improves the autotracing of the coiled coil structures.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>adapted from <a class="reference external" href="http://chango.ibmb.csic.es/tutorial_coiled" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/tutorial_coiled</a>.</p></li>
+<li>adapted from <a class="reference external" href="http://chango.ibmb.csic.es/tutorial_coiled" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/tutorial_coiled</a>.</li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
-</section>
-</section>
-<section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+
+
+
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>Arcimboldo report window summarizes your job results. A search and expansion tables updated in real time and can help to judge parameterization.</p>
 <p>A search and expansion tables shows:</p>
-<dl class="simple">
-<dt><strong>LLG</strong> (Log-likelihood-gain)</dt><dd><p>displays how well given model explain data in comparison with random atoms. The LLG has to be positive (as high as possible), and it should increase as the solution progresses.</p>
-</dd>
+<dl class="docutils">
+<dt><strong>LLG</strong> (Log-likelihood-gain)</dt><dd>displays how well given model explain data in comparison with random atoms. The LLG has to be positive (as high as possible), and it should increase as the solution progresses.</dd>
 </dl>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The LLG allows to compare different models against the same data set, but the LLG values for different data sets should not be compared with each other.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">The LLG allows to compare different models against the same data set, but the LLG values for different data sets should not be compared with each other.</p>
 </div>
 <div class="toggle-header docutils container">
-<p><strong>Guide to expected LLG values</strong></p>
-</div>
+<strong>Guide to expected LLG values</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p>Top solution correct?</p>
@@ -444,13 +445,11 @@
 </div></blockquote>
 </div></blockquote>
 </div>
-<dl class="simple">
-<dt><strong>Zscore</strong></dt><dd><p>The signal of a placement is indicated by its translation-function Z-score (TFZ). It is computed by comparing the LLG values from the rotation or translation search with LLG values for a set of random rotations or translations. signal-to-noise is judged</p>
-</dd>
+<dl class="docutils">
+<dt><strong>Zscore</strong></dt><dd>The signal of a placement is indicated by its translation-function Z-score (TFZ). It is computed by comparing the LLG values from the rotation or translation search with LLG values for a set of random rotations or translations. signal-to-noise is judged</dd>
 </dl>
 <div class="toggle-header docutils container">
-<p><strong>Guide to expected translation-function Z-score (TFZ-score)</strong></p>
-</div>
+<strong>Guide to expected translation-function Z-score (TFZ-score)</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p>TFZ-score</p>
@@ -461,15 +460,14 @@
 <p>more than 8*        <strong>definitely</strong> a solution</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>6 for 1st model in monoclinic space groups</p></li>
+<li>6 for 1st model in monoclinic space groups</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
 </div>
 <p><strong>CC</strong> correlation coefficient</p>
 <blockquote>
-<div><p><strong>CC more than 25%  indicates the solution is found</strong></p>
-</div></blockquote>
+<div><strong>CC more than 25%  indicates the solution is found</strong></div></blockquote>
 <p><strong>CC</strong> calculated on all data is reliable when atomic resolution data are available but at lower resolution, all random collections of a large enough number of unconstrained atoms show equally high CC values.</p>
 <p>For online documentation and tutorials visit <a class="reference external" href="http://chango.ibmb.csic.es/" rel="noopener noreferrer" target="_blank">www.chango.ibmb.csic.es</a></p>
 <p><strong>References</strong></p>
@@ -480,8 +478,8 @@
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798318001365" rel="noopener noreferrer" target="_blank">Millán C, Sammito M. D, McCoy A. J, Nascimento A. F. Z, Petrillo G, Oeffner R. D, Domínguez-Gil T, Hermoso J. A, Read R. J, Usón I (2018) Exploiting distant homologues for phasing through the generation of compact fragments, local fold refinement and partial solution combination. Acta Cryst. D74: 290-304</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798317017582" rel="noopener noreferrer" target="_blank">Caballero I, Sammito M, Millán C, Lebedev A, Soler N, Usón I (2018) ARCIMBOLDO on coiled coils. Acta Cryst D74, 194-204,</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798317015121" rel="noopener noreferrer" target="_blank">Uson, I., Sheldrick, G.M. (2018) An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features. Acta Cryst. D74: 106-116</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -502,7 +500,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> Fragment-Based Molecular Replacement </span>
+                      class="md-footer-nav__direction"> Previous </span> Fragment-Based Molecular Replacement </span>
               </div>
             </a>
           
@@ -512,7 +510,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> Arcimboldo Borges </span>
+                class="md-footer-nav__direction"> Next </span> Arcimboldo Borges </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -526,7 +524,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

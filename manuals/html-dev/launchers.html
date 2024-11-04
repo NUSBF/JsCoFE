@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -191,7 +192,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#launchers--page-root" class="md-nav__link">2. CCP4 Cloud Launch Scripts</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -325,7 +326,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#launchers--page-root" class="md-nav__link">2. CCP4 Cloud Launch Scripts</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -346,13 +347,13 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="ccp4-cloud-launch-scripts">
-<h1 id="launchers--page-root"><span class="section-number">2. </span>CCP4 Cloud Launch Scripts<a class="headerlink" href="#launchers--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="launchers--page-root"><span class="section-number">2. </span>CCP4 Cloud Launch Scripts<a class="headerlink" href="#launchers--page-root" title="Permalink to this headline">¶</a></h1>
 <p>There is now a new launch script for CCP4 Cloud that supports using
 PM2 (<a class="reference external" href="https://pm2.keymetrics.io/" rel="noopener noreferrer" target="_blank">https://pm2.keymetrics.io/</a>).</p>
 <p>See: <a class="reference internal" href="pm2.html#pm2"><span class="std std-ref">Managing CCP4 Cloud with PM2</span></a></p>
-<section id="launch-script-for-front-end-server">
-<h2 id="launch-script-for-front-end-server"><span class="section-number">2.1. </span>Launch script for Front-End Server<a class="headerlink" href="#launch-script-for-front-end-server" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="launch-script-for-front-end-server"><span class="section-number">2.1. </span>Launch script for Front-End Server<a class="headerlink" href="#launch-script-for-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Generic script (<code class="docutils literal notranslate"><span class="pre">start-fe.sh</span></code>) for launching Front-End Server is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
 
@@ -399,9 +400,9 @@ function start_fe() {
 start_fe &amp;
 </pre></div>
 </div>
-</section>
-<section id="launch-script-for-number-cruncher">
-<h2 id="launch-script-for-number-cruncher"><span class="section-number">2.2. </span>Launch script for Number Cruncher<a class="headerlink" href="#launch-script-for-number-cruncher" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="launch-script-for-number-cruncher"><span class="section-number">2.2. </span>Launch script for Number Cruncher<a class="headerlink" href="#launch-script-for-number-cruncher" title="Permalink to this headline">¶</a></h2>
 <p>Generic script (<code class="docutils literal notranslate"><span class="pre">start-nc.sh</span></code>) for launching Number Cruncher Server is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
 
@@ -435,9 +436,9 @@ cd $jscofe_dir
 node ./js-server/nc_server.js $server_dir/config.json 0 &gt;&gt; $server_dir/node_nc.log 2&gt;&gt; $server_dir/node_nc.err &amp;
 </pre></div>
 </div>
-</section>
-<section id="update-script">
-<h2 id="update-script"><span class="section-number">2.3. </span>Update script<a class="headerlink" href="#update-script" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="update-script"><span class="section-number">2.3. </span>Update script<a class="headerlink" href="#update-script" title="Permalink to this headline">¶</a></h2>
 <p>The update script <code class="docutils literal notranslate"><span class="pre">update-script.sh</span></code>, used in the launcher script for the
 Front-End Server, should replace jscofe code from repository
 and restart all servers. Possible solution is as follows:</p>
@@ -514,8 +515,8 @@ echo 'restart nc5'
 ssh $nc5 '/bin/bash /path/to/server-dir/start-nc.sh'
 </pre></div>
 </div>
-</section>
-</section>
+
+
 
 
           </article>
@@ -536,7 +537,7 @@ ssh $nc5 '/bin/bash /path/to/server-dir/start-nc.sh'
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">1. </span>Setup </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">1. </span>Setup </span>
               </div>
             </a>
           
@@ -546,7 +547,7 @@ ssh $nc5 '/bin/bash /path/to/server-dir/start-nc.sh'
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">3. </span>CCP4 Cloud Configuration </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">3. </span>CCP4 Cloud Configuration </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -560,7 +561,7 @@ ssh $nc5 '/bin/bash /path/to/server-dir/start-nc.sh'
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
