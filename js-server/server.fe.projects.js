@@ -488,16 +488,19 @@ function readProjectDesc ( loginData,projectName )  {
 }
 
 
-function writeProjectList ( loginData,projectList )  {
+function writeProjectList ( loginData,projectList,force_sync=false )  {
   let userProjectsListPath = getUserProjectListPath ( loginData );
-  return utils.writeObject ( userProjectsListPath,projectList );
+  return utils.writeObject ( userProjectsListPath,projectList,force_sync );
 }
 
 
-function readProjectList ( loginData )  {
+function readProjectList ( loginData,mode=0 )  {
+// mode = 0 : read, compose and rewrite 
+//      = 1 : read and compose, do not rewrite
+//      = 2 : read only, do not compose and rewrite
   let userProjectsListPath = getUserProjectListPath ( loginData );
   let pList = utils.readClass ( userProjectsListPath );
-  if (pList)  {
+  if (pList && (mode<2))  {
     // read all project descriptions anew
     // think how to make this more smart in future
     pList.projects = [];
@@ -537,7 +540,8 @@ function readProjectList ( loginData )  {
     //   if (currentFolder)
     //     pList.setCurrentFolder ( currentFolder );
     // }
-    writeProjectList   ( loginData,pList );
+    if (mode<1)
+      writeProjectList ( loginData,pList,true );
   }
   return pList;
 }
@@ -838,7 +842,7 @@ let response = null;  // must become a cmd.Response object to return
 //  if (utils.fileExists(userProjectsListPath))  {
 //    let pList = utils.readObject ( userProjectsListPath );
 
-  let pList = readProjectList ( loginData );
+  let pList = readProjectList ( loginData,1 );
   if (pList)  {
 
     // create new projects
@@ -867,16 +871,7 @@ let response = null;  // must become a cmd.Response object to return
     }
 
     if (!response)  {
-      //let userProjectsListPath = getUserProjectListPath ( loginData );
-      //if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
       if (writeProjectList(loginData,newProjectList))  {
-        // let rdata = {};
-        // if (disk_space_change!=0.0)  {
-        //   // save on reading files if ration does not change; see related
-        //   // comments above
-        //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-        //   // clearJobs() only to decrease the amount of transmitted data
-        // }
         response = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
       } else
         response = new cmd.Response ( cmd.fe_retcode.writeError,
@@ -1842,7 +1837,7 @@ let t_email   = 1000; //msec
     writeProjectData ( loginData,pData,true );
 
     // modify project entry in project list
-    let pList = readProjectList ( loginData );
+    let pList = readProjectList ( loginData,1 );
     if (pList)  {
       let pno = -1;
       for (let i=0;(i<pList.projects.length) && (pno<0);i++)
@@ -2048,7 +2043,7 @@ let pData    = readProjectData ( loginData,data.name );
             if (pDesc.archive && pDesc.archive.in_archive) 
               pDesc.archive.in_archive = false;
             writeProjectData ( loginData,pData,true );
-            let pList = readProjectList ( loginData );
+            let pList = readProjectList ( loginData,1 );
             if (pList)  {
               pList.resetFolders ( loginData.login );
               pList.current = data.new_name;
@@ -2196,7 +2191,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
       if (duplicate_key==1)  {
 
         // re-read project list because a new project was added
-        let pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData,1 );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
@@ -2304,7 +2299,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         // make the corresponding entry in project list
 
         // re-read project list because a new project was added
-        let pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData,1 );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
 

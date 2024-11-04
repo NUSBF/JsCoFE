@@ -1444,7 +1444,7 @@ function retireUser_admin ( loginData,meta )  {
 
   // check that there are no duplicate project ids
 
-  let userPrjList = prj.readProjectList ( userData );
+  let userPrjList = prj.readProjectList ( userData   );
   let succPrjList = prj.readProjectList ( sLoginData );
   let duplPrjIDs  = [];
 

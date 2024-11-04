@@ -445,37 +445,11 @@ function ProjectListPage ( sceneId )  {
                        'msg_error' );
   }
 
-  // let sharePrj = function()  {
-  //   panel.click();  // get rid of context menu
-  //   let pno = getCurrentProjectNo();
-  //   if (pno>=0)  {
-  //     shareProject ( projectList.projects[pno],function(desc){
-  //       if (desc)  {
-  //         projectList.projects[pno] = desc;
-  //         projectList.resetFolders ( __login_id );
-  //         saveProjectList ( function(data){},null );
-  //       }
-  //     });
-  //   } else
-  //     new MessageBox ( 'No Project',
-  //                      '<h2>No Project is selected<h2>' +
-  //                      'This is likely to be a program error. ' +
-  //                      'Select project and try again.',
-  //                      'msg_error' );
-  // }
-
   let prjWorkTeam = function()  {
     panel.click();  // get rid of context menu
     let pno = getCurrentProjectNo();
     if (pno>=0)  {
       new WorkTeamDialog ( projectList.projects[pno] );
-      // ,function(desc){
-      //   if (desc)  {
-      //     projectList.projects[pno] = desc;
-      //     projectList.resetFolders ( __login_id );
-      //     saveProjectList ( function(data){},null );
-      //   }
-      // });
     } else
       new MessageBox ( 'No Project',
                        '<h2>No Project is selected<h2>' +
