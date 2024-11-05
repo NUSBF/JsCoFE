@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.24   <--  Date of Last Modification.
+ *    05.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -872,7 +872,6 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_server[key] = confObj.FrontEnd[key];
 
     // complete configuration
-    utils.configureCache ( fe_server.cache );
 
     if (!fe_server.hasOwnProperty('description'))
       fe_server.description = {
