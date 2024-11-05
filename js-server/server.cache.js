@@ -153,7 +153,7 @@ function getFileKey ( fpath )  {
   // This key is used for caching project or job metadata. We check on symbolic
   // link because of possible shared projects. This is a point of inefficiency
   if (fpath.endsWith(projectListFName))
-    return path.parse ( path.dirname(projectListFName) ).name;
+    return path.parse ( path.dirname(fpath) ).name;
   let job_spec = '';
   if (fpath.endsWith(jobDataFName))  {
     let jdname = path.basename ( path.dirname(fpath) );

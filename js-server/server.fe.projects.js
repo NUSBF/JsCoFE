@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.24   <--  Date of Last Modification.
+ *    05.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -282,7 +282,11 @@ function writeProjectData ( loginData,projectData,putTimeStamp,force_sync=false 
 }
 
 function checkProjectDescData ( projectDesc,loginData )  {
-let update = false;
+
+  if (('version' in projectDesc) && (projectDesc.version==1))
+    return false;
+
+  projectDesc.version = 1; // with new checks, update here and above simultaneously 
 
   if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
     // backward compatibility on 11.01.2020
@@ -293,12 +297,12 @@ let update = false;
       email  : uData.email,
       labels : {}
     };
-    update = true;  // update project metadata
+    // update = true;  // update project metadata
   }
 
   if ((!('timestamp' in projectDesc)) || (!projectDesc.timestamp))  {
     projectDesc.timestamp = Date.now();
-    update = true;
+    // update = true;
   }
 
   if ((!('share' in projectDesc)) ||
@@ -320,50 +324,50 @@ let update = false;
           };
       delete projectDesc.owner.share;
     }
-    update = true;
+    // update = true;
   } else  {
     for (let slogin in projectDesc.share)
       if (projectDesc.share[slogin].permissions=='rw')  {
         projectDesc.share[slogin].permissions = pd.share_permissions.run_own;
-        update = true;
+        // update = true;
       }
   }
   
   for (let login in projectDesc.share)
     if (projectDesc.share[login].labels.constructor===Array)  {
       projectDesc.share[login].labels = {};
-      update = true;
+      // update = true;
     }
   
   if ((!('labels' in projectDesc.owner)) ||
       (projectDesc.owner.labels.constructor===Array))  {
     projectDesc.owner.labels = {};  // was not used before writing this, so empty
-    update = true;
+    // update = true;
   }
   
   if ('labels' in projectDesc)  {
     delete projectDesc.labels;
-    update = true;
+    // update = true;
   }
   
   if ('keeper' in projectDesc.owner)  {
     delete projectDesc.owner.keeper;
-    update = true;
+    // update = true;
   }
   
   if ('is_shared' in projectDesc.owner)  {
     delete projectDesc.owner.is_shared;
-    update = true;
+    // update = true;
   }
   
   if (!('autorun' in projectDesc))  {
     projectDesc.autorun = false;
-    update = true;
+    // update = true;
   }
 
   if ((!('ccp4cloud_version' in projectDesc)) || (!projectDesc.ccp4cloud_version))  {
     projectDesc.ccp4cloud_version = cmd.appVersion();
-    update = true;
+    // update = true;
   }
   
   let f0name = pd.getProjectAuthor ( projectDesc );
@@ -373,28 +377,29 @@ let update = false;
   else  f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
-    update = true;
+    // update = true;
   }
   
-  if (projectDesc.folderPath.toLowerCase().startsWith('tutorials'))  {
+  if (projectDesc.folderPath.toLowerCase().startsWith('tutorials') &&
+      (!projectDesc.folderPath.startsWith(pd.folder_path.tutorials)))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
-    update = true;
+    // update = true;
   }
   
   if ([pd.folder_path.all_projects,pd.folder_path.shared,pd.folder_path.joined]
           .indexOf(projectDesc.folderPath)>=0)  {
     projectDesc.folderPath = f0name;  // virtual project folder path
-    update = true;
+    // update = true;
   }
   
   let flist = projectDesc.folderPath.split('/');
   
   if (flist.length<=0)  {
     flist.push ( f0name );
-    update   = true;
+    // update   = true;
   } else if (flist[0]=='My Projects')  {
     flist[0] = f0name;
-    update   = true;
+    // update   = true;
   }
 
   projectDesc.folderPath = flist.join('/');
@@ -408,50 +413,56 @@ let update = false;
   
   if (!('archive' in projectDesc))  {
     projectDesc.archive = null;
-    update = true;
+    // update = true;
   }
   
   // if (update) 
   //   console.log ( ' >>>>>>> update project description after check' )
 
-
-  return update;  // no changes
+  return true;  // update project metadata
 
 }
 
 
 function checkProjectData ( projectData,loginData )  {
-let update = false;
+// let update = false;
+
+  if (('version' in projectData) && (projectData.version==1))
+    return false;
+
+  projectData.version = 1; // with new checks, update here and above simultaneously 
 
   if ('jobCount' in projectData)  {
     projectData.desc.jobCount = projectData.jobCount;
     delete projectData.jobCount;
-    update = true;
+    // update = true;
   }
 
   if ('timestamp' in projectData)  {
     delete projectData.timestamp;
-    update = true;
+    // update = true;
   }
 
   if (!projectData.settings)  {
     projectData.settings = {};
-    update = true;
+    // update = true;
   }
 
   if (!projectData.settings.hasOwnProperty('prefix_key'))  {
     projectData.settings.prefix_key = 0;   // 0: default; 1: custom
     projectData.settings.prefix     = '';  // custom
-    update = true;
+    // update = true;
   }
 
-  if (checkProjectDescData(projectData.desc,loginData))
-    update = true;
+  checkProjectDescData ( projectData.desc,loginData );
+
+  // if (checkProjectDescData(projectData.desc,loginData))
+  //   update = true;
 
   // if (update) 
   //   console.log ( ' >>>>>>> update project data after check' )
 
-  return update;
+  return true;
 
 }
 
