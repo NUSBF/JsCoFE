@@ -385,7 +385,7 @@ class dataCatalog {
         await tools.fileCallback(dest, async (file) => {
           try {
             let stat = await pfs.lstat(file);
-            // if the file is older than check_date then remove
+            // if the file last modified time is older than the prune date then remove
             if (stat.mtime < check_date) {
               await pfs.unlink(file);
             }
@@ -395,8 +395,8 @@ class dataCatalog {
           return true;
         });
 
-        // remove any empty subdirs
-        await tools.removeEmptySubDirs(dest);
+        // remove any empty subdirs older than a week to avoid removing directories that are going to be used
+        await tools.removeEmptySubDirs(dest, this.getPruneDate(7));
       }
     }
   }
