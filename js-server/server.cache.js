@@ -284,6 +284,8 @@ function memoryReport()  {
 
   return {
 
+    cache_enabled      : cache_enabled,
+
     usedRAM            : memoryUsage.heapUsed  / mbyte,  // MB
     totalHeap          : memoryUsage.heapTotal / mbyte,  // MB
     externalRAM        : memoryUsage.external  / mbyte,  // MB
@@ -303,6 +305,7 @@ function memoryReport()  {
     job_meta_cache     : [cache_list[jobDataFName].size(),
                           cache_list[jobDataFName].maxItems],
     file_path_cache    : [path_cache.size(),path_cache.maxItems]
+  
   };
 
 }
@@ -311,6 +314,9 @@ function memoryReport()  {
 function printMemoryReport()  {
   let mr = memoryReport();
   log.standard ( 3,'memory usage:' );
+  if (mr.cache_enabled)
+        console.log ( ' --- Metadata cache: ON'  );
+  else  console.log ( ' --- Metadata cache: OFF' );
   console.log ( ' --- RAM:' );
   console.log ( '          used : ' + mr.usedRAM.toFixed(1)     + ' MB' );
   console.log ( '         total : ' + mr.totalRAM.toFixed(1)    + ' MB' );

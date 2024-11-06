@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.24   <--  Date of Last Modification.
+ *    06.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,13 +62,14 @@ function AdminPage ( sceneId )  {
   // make tabs
   this.tabs = new Tabs();
   // this.tabs.setVisible ( false );
-  this.usersTab = this.tabs.addTab ( 'Users'  ,true  );
-  this.nodesTab = this.tabs.addTab ( 'Nodes'  ,false );
-  this.anlTab   = null;
+  this.usersTab  = this.tabs.addTab ( 'Users'  ,true  );
+  this.nodesTab  = this.tabs.addTab ( 'Nodes'  ,false );
+  this.memoryTab = this.tabs.addTab ( 'Memory' ,false );
+  this.anlTab    = null;
   if (__user_role==role_code.admin)
-    this.anlTab = this.tabs.addTab ( 'Monitor',false );
-  this.usageTab = this.tabs.addTab ( 'Usage'  ,false );
-  this.jobsTab  = this.tabs.addTab ( 'Jobs'   ,false );
+    this.anlTab  = this.tabs.addTab ( 'Monitor',false );
+  this.usageTab  = this.tabs.addTab ( 'Usage'  ,false );
+  this.jobsTab   = this.tabs.addTab ( 'Jobs'   ,false );
   // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
@@ -129,7 +130,7 @@ function AdminPage ( sceneId )  {
                                          .setHeight_px ( 32 );
   this.nodeListTable = null;
 
-  this.naPanel       = new Grid('');
+  this.naPanel = new Grid('');
   this.nodesTab.grid.setWidget   ( this.naPanel,0,1,1,1 );
   this.nodesTab.grid.setCellSize ( '','32px',0,0 );
   this.nodesTab.grid.setCellSize ( '','32px',0,1 );
@@ -139,6 +140,7 @@ function AdminPage ( sceneId )  {
   this.naPanel.setLabel    ( '   ',0,0,1,1 );
   this.naPanel.setCellSize ( '95%','32px',0,0 );
 
+  // nodes control toolbar
   col = 1;
   let zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
                                .setSize('30px','30px')
@@ -246,9 +248,9 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 */
 
 AdminPage.prototype.loadUsageStats = function()  {
-  let usageTabNo = 3;
+  let usageTabNo = 4;
   if (!this.anlTab)
-    usageTabNo = 2;
+    usageTabNo = 3;
   if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==usageTabNo))  {
     this.usageStats.loadPage ( this.usageStats._url );
     this.usageStats._loaded = true;
@@ -343,7 +345,8 @@ AdminPage.prototype.refresh = function()  {
             }
             if (!__local_service)  {
               window.setTimeout ( function(){
-                self.makeNodesInfoTab ( data.nodesInfo );
+                self.makeNodesInfoTab  ( data.nodesInfo );
+                self.makeMemoryInfoTab ( data.memoryReport,data.performance );
                 self.onResize ( window.innerWidth,window.innerHeight );
               },10);
             } else  {
@@ -358,7 +361,8 @@ AdminPage.prototype.refresh = function()  {
                         'when trying to fetch Client NC data.', 'msg_error' );
                   }
                   window.setTimeout ( function(){
-                    self.makeNodesInfoTab ( data.nodesInfo );
+                    self.makeNodesInfoTab  ( data.nodesInfo );
+                    self.makeMemoryInfoTab ( data.memoryReport,data.performance );
                     self.onResize ( window.innerWidth,window.innerHeight );
                   },0);
                   return (response!=null);
@@ -383,11 +387,12 @@ AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.refresh();
   let inner_height = (height-180)+'px';
   if (this.anlTab)
-    $(this.anlTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.usageTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.jobsTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+    $(this.anlTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.usersTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.nodesTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.memoryTab.element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.usageTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.jobsTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
 }
 
 
@@ -840,6 +845,83 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     console.log ( '... Nodes Tab complete in ' + this.__load_time() );
 
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
+
+}
+
+AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
+  
+  let grid = this.memoryTab.grid;
+
+  grid.setLabel ( 'Memory Report',0,0,1,1 )
+                     .setFontSize('1.5em').setFontBold(true);
+
+  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+
+  if (mdata.cache_enabled)  {
+    grid.setLabel ( 'Metadata Cache Status: ON',grid.getNRows(),0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+
+    grid.setLabel ( 'Cache state',grid.getNRows(),0,1,1 )
+        .setFontItalic(true).setFontBold(true);
+    let cache_table = new Table();
+    grid.setWidget ( cache_table,grid.getNRows(),0,1,1 );
+    cache_table.setWidth_px ( 400 );
+    cache_table.setHeaderRow ( 
+      ['Cache','Used','Capacity'],
+      ['Cache type','','','']
+    );
+
+    const cdesc = [
+      ['User records'        ,'user_cache'        ],
+      ['User rations'        ,'user_ration_cache' ],
+      ['Project lists'       ,'project_list_cache'],
+      ['Project descriptions','project_desc_cache'],
+      ['Project metadata'    ,'project_meta_cache'],
+      ['Job metadata'        ,'job_meta_cache'    ],
+      ['File paths'          ,'file_path_cache'   ]
+    ]
+    let alt = false;
+    for (let i=0;i<cdesc.length;i++)  {
+      let used     = mdata[cdesc[i][1]][0];
+      let capacity = mdata[cdesc[i][1]][1];
+      if (!capacity)
+        capacity = 'not limited';
+      cache_table.setRow ( cdesc[i][0],'',[used,capacity],i+1,alt );
+      alt = !alt;
+    }
+
+  } else
+    grid.setLabel ( 'Metadata Cache Status: OFF',grid.getNRows(),0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+
+  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+  grid.setLabel ( 'Front-End Memory usage',grid.getNRows(),0,1,1 )
+      .setFontItalic(true).setFontBold(true);
+  let mem_table = new Table();
+  grid.setWidget ( mem_table,grid.getNRows(),0,1,1 );
+  mem_table.setWidth_px ( 300 );
+
+  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
+  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)] ,1,true  );
+  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)]  ,2,false );
+  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
+  mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
+
+  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+  grid.setLabel ( 'Front-End performance stats',grid.getNRows(),0,1,1 )
+      .setFontItalic(true).setFontBold(true);
+  let perf_table = new Table();
+  grid.setWidget ( perf_table,grid.getNRows(),0,1,1 );
+  perf_table.setWidth_px ( 300 );
+
+  let alt = false;
+  let n   = 0;
+  for (let title in pdata)  {
+    let t = pdata[title].time/pdata[title].weight;
+    perf_table.setRow ( title,'',[t.toFixed(2)],n++,alt );
+    alt = !alt;
+  }
 
 }
 

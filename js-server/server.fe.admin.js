@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.11.24   <--  Date of Last Modification.
+ *    06.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -136,7 +136,6 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo = {};
   adminData.nodesInfo.FEconfig = {};
   adminData.nodesInfo.ncInfo   = [];
-  adminData.memoryReport       = cache.memoryReport(); 
   adminData.usageReportURL     = ustats.getUsageReportURL();
   adminData.nodesInfo.ccp4_version   = conf.CCP4Version();
   adminData.nodesInfo.jscofe_version = cmd.appVersion();
@@ -153,6 +152,9 @@ function getAdminData ( loginData,data,callback_func )  {
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
       let dt = performance.now()-t0;
       log.standard ( 3,'admin data collected in ' + dt.toFixed(3) + 'ms' );
+      adminData.memoryReport = cache.memoryReport(); 
+      adminData.performance  = anl.getFEAnalytics().performance;
+      anl.logPerformance ( 'Collecting Admin Data, ms',dt,1 );
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData,'getAdminData') );
     });
     //_getNCData ( adminData,callback_func );

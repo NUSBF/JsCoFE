@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.11.24   <--  Date of Last Modification.
+ *    06.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -103,6 +103,7 @@ const path      = require('path');
 //  load application modules
 const emailer   = require('./server.emailer');
 const conf      = require('./server.configuration');
+const anl       = require('./server.fe.analytics');
 const utils     = require('./server.utils');
 const send_dir  = require('./server.send_dir.js');
 const ration    = require('./server.fe.ration');
@@ -509,6 +510,7 @@ function readProjectList ( loginData,mode=0 )  {
 // mode = 0 : read, compose and rewrite 
 //      = 1 : read and compose, do not rewrite
 //      = 2 : read only, do not compose and rewrite
+  let t0 = performance.now();
   let userProjectsListPath = getUserProjectListPath ( loginData );
   let pList = utils.readClass ( userProjectsListPath );
   if (pList && (mode<2))  {
@@ -553,6 +555,8 @@ function readProjectList ( loginData,mode=0 )  {
     // }
     if (mode<1)
       writeProjectList ( loginData,pList,true );
+    anl.logPerformance ( 'Reading Project List, ms/project',performance.now()-t0,
+                         pList.projects.length );
   }
   return pList;
 }
@@ -1175,6 +1179,7 @@ function getProjectData ( loginData,data )  {
   if (data.mode=='replay')
     projectName += ':' + replayDir;
 
+  let njobs = 0;
   let pData = readProjectData ( loginData,projectName );
   if (pData)  {
     if (!pd.isProjectAccessible(loginData.login,pData.desc))
@@ -1197,6 +1202,7 @@ function getProjectData ( loginData,data )  {
           d.message = '[00021] Job metadata cannot be read.';
           utils.removePathAsync ( path.join ( projectDirPath,file ) );
         }
+        njobs++;
       }
     });
   } else  {
@@ -1212,6 +1218,8 @@ function getProjectData ( loginData,data )  {
 
   t0 = performance.now() - t0;
   console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
+  if (njobs>0)
+    anl.logPerformance ( ' Reading Project Data, ms/job',t0,njobs );
 
   return response;
 

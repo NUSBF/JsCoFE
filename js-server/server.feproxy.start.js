@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.11.22   <--  Date of Last Modification.
+ *    06.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,7 +54,6 @@ function start ( callback_func )  {
   let client_url    = null;
 
   log.standard ( 1,'setting up proxy for ' + fe_url + ' ' + fe_config.host );
-  utils.configureCache ( 0 );
 
   proxy_config.killPrevious();
   proxy_config.savePID();
