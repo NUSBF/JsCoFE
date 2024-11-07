@@ -868,7 +868,7 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
     grid.setWidget ( cache_table,grid.getNRows(),0,1,1 );
     cache_table.setWidth_px ( 400 );
     cache_table.setHeaderRow ( 
-      ['Cache','Used','Capacity'],
+      ['Cache','Cached items','Cache capacity','Used memory (MB)'],
       ['Cache type','','','']
     );
 
@@ -881,15 +881,25 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
       ['Job metadata'        ,'job_meta_cache'    ],
       ['File paths'          ,'file_path_cache'   ]
     ]
-    let alt = false;
+    let alt       = false;
+    let nc_total  = 0;
+    let mem_total = 0;
     for (let i=0;i<cdesc.length;i++)  {
       let used     = mdata[cdesc[i][1]][0];
       let capacity = mdata[cdesc[i][1]][1];
       if (!capacity)
         capacity = 'not limited';
-      cache_table.setRow ( cdesc[i][0],'',[used,capacity],i+1,alt );
+      let used_memory = mdata[cdesc[i][1]][2].toFixed(3);
+      cache_table.setRow ( cdesc[i][0],'',[used,capacity,used_memory],
+                           i+1,alt );
+      nc_total  += mdata[cdesc[i][1]][0];
+      mem_total += mdata[cdesc[i][1]][2];
       alt = !alt;
     }
+    cache_table.setRow ( 'Total','',[
+                           '<b><i>' + nc_total + '</i></b>','',
+                           '<b><i>' + mem_total.toFixed(3) + '</i></b>'
+                         ],cdesc.length+1,alt );
 
   } else
     grid.setLabel ( 'Metadata Cache Status: OFF',grid.getNRows(),0,1,1 )
