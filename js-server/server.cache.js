@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.11.24   <--  Date of Last Modification.
+ *    07.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -93,6 +93,13 @@ Cache.prototype.putItem = function ( key,item )  {
   this.trim();
 }
 
+Cache.prototype.usedMemory = function()  {
+  let used_memory = 0;
+  for (let key in this.cache)
+    used_memory += JSON.stringify(this.cache[key]).length + key.length;
+  return used_memory;
+}
+
 // --------------------------------------------------------------------------
 
 // these constants duplicate definitions in other files -- keep in sync
@@ -116,7 +123,7 @@ const nprj_per_user = 50;
 
 // Assume 400 jobs per project on average; only one project is open for every 
 // user at a time
-const njobs_per_prj = 400;
+const njobs_per_prj = 1000;
 
 const path_cache = new Cache(2500);
 
@@ -293,18 +300,25 @@ function memoryReport()  {
     freeRAM            : os.freemem()          / mbyte,  // MB
 
     user_cache         : [cache_list[__userDataExt].size(),
-                          cache_list[__userDataExt].maxItems],
+                          cache_list[__userDataExt].maxItems,
+                          cache_list[__userDataExt].usedMemory()/mbyte],
     user_ration_cache  : [cache_list[__rationFileExt].size(),
-                          cache_list[__rationFileExt].maxItems],
+                          cache_list[__rationFileExt].maxItems,
+                          cache_list[__rationFileExt].usedMemory()/mbyte],
     project_list_cache : [cache_list[projectListFName].size(),
-                          cache_list[projectListFName].maxItems],
+                          cache_list[projectListFName].maxItems,
+                          cache_list[projectListFName].usedMemory()/mbyte],
     project_desc_cache : [cache_list[projectDescFName].size(),
-                          cache_list[projectDescFName].maxItems],
+                          cache_list[projectDescFName].maxItems,
+                          cache_list[projectDescFName].usedMemory()/mbyte],
     project_meta_cache : [cache_list[projectDataFName].size(),
-                          cache_list[projectDataFName].maxItems],
+                          cache_list[projectDataFName].maxItems,
+                          cache_list[projectDataFName].usedMemory()/mbyte],
     job_meta_cache     : [cache_list[jobDataFName].size(),
-                          cache_list[jobDataFName].maxItems],
-    file_path_cache    : [path_cache.size(),path_cache.maxItems]
+                          cache_list[jobDataFName].maxItems,
+                          cache_list[jobDataFName].usedMemory()/mbyte],
+    file_path_cache    : [path_cache.size(),path_cache.maxItems,
+                          path_cache.usedMemory()/mbyte]
   
   };
 
