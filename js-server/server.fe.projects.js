@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.24   <--  Date of Last Modification.
+ *    08.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -502,7 +502,11 @@ function readProjectDesc ( loginData,projectName )  {
 
 function writeProjectList ( loginData,projectList,force_sync=false )  {
   let userProjectsListPath = getUserProjectListPath ( loginData );
-  return utils.writeObject ( userProjectsListPath,projectList,force_sync );
+  let projects = projectList.projects;
+  projectList.projects = [];  // make file slimmer
+  let rc = utils.writeObject ( userProjectsListPath,projectList,force_sync );
+  projectList.projects = projects;
+  return rc;
 }
 
 
@@ -538,23 +542,9 @@ function readProjectList ( loginData,mode=0 )  {
         if (pdesc)
           pList.projects.push ( pdesc );
       }
-    // if ((pList.folders[0].path=='My Projects') ||
-    //     (pList.folders[1].type!=pd.folder_type.shared))
-
-    // if ((typeof pList.currentFolder==='string') ||
-    //     (pList.currentFolder instanceof String))
-    // let currentFolder = null;
-    // if ('currentFolder' in pList)
-    //   currentFolder = pList.currentFolder;
-    // pList.seedFolders  ( loginData.login );  // to be commented
     pList.resetFolders ( loginData.login );
-    // if (currentFolder)  {
-    //   currentFolder = pList.findFolder ( currentFolder.path );
-    //   if (currentFolder)
-    //     pList.setCurrentFolder ( currentFolder );
-    // }
-    if (mode<1)
-      writeProjectList ( loginData,pList,true );
+    // if (mode<1)
+    //   writeProjectList ( loginData,pList,true );
     anl.logPerformance ( 'Reading Project List, ms/project',performance.now()-t0,
                          pList.projects.length );
   }
@@ -851,12 +841,6 @@ let response = null;  // must become a cmd.Response object to return
 
   log.detailed ( 8,'save project list, login ' + loginData.login );
 
-  // Get users' projects list file name
-  //let userProjectsListPath = getUserProjectListPath ( loginData );
-
-//  if (utils.fileExists(userProjectsListPath))  {
-//    let pList = utils.readObject ( userProjectsListPath );
-
   let pList = readProjectList ( loginData,1 );
   if (pList)  {
 
@@ -1137,12 +1121,13 @@ function finishFailedJobExport ( loginData,fjdata )  {
 function getProjectData ( loginData,data )  {
 
   let t0 = performance.now();
+  let response = null;
 
+  // read project list to get the name of current project
   let userProjectsListPath = getUserProjectListPath ( loginData );
   let projectList = utils.readObject ( userProjectsListPath );
 
-  let response = null;
-  if (!projectList)  {
+  if (!projectList)  {  // this should never happen, is here only for safety
     response = getProjectList ( loginData );
     if (response.status!=cmd.fe_retcode.ok)
       return response;
@@ -1151,9 +1136,88 @@ function getProjectData ( loginData,data )  {
                      '), login ' + loginData.login );
   }
 
-  // Get users' projects list file name
-  // let projectList    = response.data;
+  let projectName = projectList.current;  // projectID or archiveID
+
+  if (data.mode=='replay')
+    projectName += ':' + replayDir;
+
+  // read project data
+  let njobs = 0;
+  let pData = readProjectData ( loginData,projectName );
+  if (pData)  {
+    if (!pd.isProjectAccessible(loginData.login,pData.desc))  {  
+      response = new cmd.Response ( cmd.fe_retcode.projectAccess,
+                                '[00035] Project access denied.',
+                                { access_denied : true } );
+    } else  {
+      let d = {};
+      d.meta      = pData;
+      d.tasks_add = [];
+      d.tasks_del = [];
+      let projectDirPath = getProjectDirPath ( loginData,projectName );
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
+      fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
+        if (file.startsWith(jobDirPrefix)) {
+          let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
+          let task    = utils.readObject ( jobPath );
+          if (task)  {
+            d.tasks_add.push ( task );
+          } else  {
+            d.message = '[00021] Job metadata cannot be read.';
+            utils.removePathAsync ( path.join ( projectDirPath,file ) );
+          }
+          njobs++;
+        }
+      });
+    }
+  } else  {
+    let projectDataPath = getProjectDataPath ( loginData,projectName );
+    if (utils.fileExists(projectDataPath))  {
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                            '[00022] Project metadata cannot be read or is corrupt.',
+                            '' );
+    } else  {
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 
+          'missing' : 1,
+          'project' : projectName 
+      });
+    }
+  }
+
+  t0 = performance.now() - t0;
+  console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
+  if (njobs>0)
+    anl.logPerformance ( ' Reading Project Data, ms/job',t0,njobs );
+
+  return response;
+
+}
+
+/*
+function getProjectData ( loginData,data )  {
+
+  let t0 = performance.now();
+  let response = null;
+
+  // do not write projectList.projects and always compose them at reading
+  // below in this function, where projectList.projects are used, just read 
+  // pdesc directly from project directory.
+  // do not read projectList.projects here -- and this is Ok
+  // try tp get rid of projectList here, pass project name in data
+  let userProjectsListPath = getUserProjectListPath ( loginData );
+  let projectList = utils.readObject ( userProjectsListPath );
+
+  if (!projectList)  {  // this should never happen, is here only for safety
+    response = getProjectList ( loginData );
+    if (response.status!=cmd.fe_retcode.ok)
+      return response;
+    projectList = response.data;
+    log.warning ( 11,'get current project data (' + response.data.current +
+                     '), login ' + loginData.login );
+  }
+
   let projectName    = projectList.current;  // projectID or archiveID
+  // read pdesc here and identify archive status from there
   let archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
                        (projectList.currentFolder.type==pd.folder_type.cloud_archive);
 
@@ -1224,7 +1288,7 @@ function getProjectData ( loginData,data )  {
   return response;
 
 }
-
+*/
 
 // ===========================================================================
 

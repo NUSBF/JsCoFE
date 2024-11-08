@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.24   <--  Date of Last Modification.
+ *    07.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -851,21 +851,22 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   
   let grid = this.memoryTab.grid;
+  let grow = 0;
 
   grid.setLabel ( 'Memory Report',0,0,1,1 )
                      .setFontSize('1.5em').setFontBold(true);
 
-  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
   if (mdata.cache_enabled)  {
-    grid.setLabel ( 'Metadata Cache Status: ON',grid.getNRows(),0,1,1 )
+    grid.setLabel ( 'Metadata Cache Status: ON',grow++,0,1,1 )
         .setFontSize('1.2em').setFontBold(true);
-    grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
-    grid.setLabel ( 'Cache state',grid.getNRows(),0,1,1 )
+    grid.setLabel ( 'Cache state',grow++,0,1,1 )
         .setFontItalic(true).setFontBold(true);
     let cache_table = new Table();
-    grid.setWidget ( cache_table,grid.getNRows(),0,1,1 );
+    grid.setWidget ( cache_table,grow++,0,1,1 );
     cache_table.setWidth_px ( 400 );
     cache_table.setHeaderRow ( 
       ['Cache','Cached items','Cache capacity','Used memory (MB)'],
@@ -902,14 +903,14 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
                          ],cdesc.length+1,alt );
 
   } else
-    grid.setLabel ( 'Metadata Cache Status: OFF',grid.getNRows(),0,1,1 )
+    grid.setLabel ( 'Metadata Cache Status: OFF',grow++,0,1,1 )
         .setFontSize('1.2em').setFontBold(true);
 
-  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
-  grid.setLabel ( 'Front-End Memory usage',grid.getNRows(),0,1,1 )
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+  grid.setLabel ( 'Front-End Memory usage',grow++,0,1,1 )
       .setFontItalic(true).setFontBold(true);
   let mem_table = new Table();
-  grid.setWidget ( mem_table,grid.getNRows(),0,1,1 );
+  grid.setWidget ( mem_table,grow++,0,1,1 );
   mem_table.setWidth_px ( 300 );
 
   mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
@@ -918,11 +919,11 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
   mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
 
-  grid.setLabel ( '&nbsp;',grid.getNRows(),0,1,1 );
-  grid.setLabel ( 'Front-End performance stats',grid.getNRows(),0,1,1 )
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+  grid.setLabel ( 'Front-End performance stats',grow++,0,1,1 )
       .setFontItalic(true).setFontBold(true);
   let perf_table = new Table();
-  grid.setWidget ( perf_table,grid.getNRows(),0,1,1 );
+  grid.setWidget ( perf_table,grow++,0,1,1 );
   perf_table.setWidth_px ( 300 );
 
   let alt = false;

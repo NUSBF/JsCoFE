@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    08.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -35,7 +35,7 @@
  *      function getTaskNodeId   ( taskId );
  *      function countTasks      ();
  *      function getChildTasks   ( node   );
- *      function readProjectData ( page_title,
+ *      function loadProjectData ( page_title,
  *                                 allow_selection,
  *                                 timestamp,
  *                                 onLoaded_func  ,onRightClick_func,
@@ -229,7 +229,7 @@ let tree1 = job_tree.tree;
 }
 
 
-JobTree.prototype.readProjectData = function ( page_title,
+JobTree.prototype.loadProjectData = function ( page_title,
                                                allow_selection,
                                                timestamp,
                                                onLoaded_func,
