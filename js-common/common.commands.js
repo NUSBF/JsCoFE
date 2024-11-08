@@ -151,7 +151,6 @@ const fe_reqtype = {
   saveJobFile         : '-saveJobFile',       // request to save file in job directory
   saveJobFiles        : '-saveJobFiles',      // request to save files in job directory
   runJob              : '-runJob',            // request to run job
-  replayJob           : '-replayJob',         // request to replay job
   stopJob             : '-stopJob',           // request to stop job
   webappEndJob        : '-webappEndJob',      // request to conclude a webapp job
   checkJobs           : '-checkJobs',         // request to check on jobs' state

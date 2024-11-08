@@ -35,7 +35,6 @@
  *                            shared_logins, callback_func )
  *     runJob               ( loginData,data, callback_func )
  *     webappEndJob         ( loginData,data, callback_func )
- *     replayJob            ( loginData,data, callback_func )
  *     stopJob              ( loginData,data )
  *     killJob              ( loginData,projectName,taskId )
  *     webappFinished       ( loginData,data )
@@ -1092,155 +1091,6 @@ function webappEndJob ( loginData,data, callback_func )  {
     function(jtoken){
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
     });
-
-}
-
-
-// ===========================================================================
-
-function replayJob ( loginData,data, callback_func )  {
-
-  let replay_task = class_map.makeClass ( data.meta );
-  if (!replay_task)  {
-    log.error ( 10,'Cannot make replay job class' );
-    callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
-                    '[00202] Corrupt replay job metadata',{}) );
-    return;
-  }
-
-  // run job
-
-  let replayJobDataPath = prj.getJobDataPath ( loginData,replay_task.project,task.id );
-  replay_task.state = task_t.job_code.running;
-
-  // write task data because it may have latest changes
-  if (utils.writeObject(jobDataPath,task))  {
-
-    let jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
-
-    let nc_number = 0;
-    if (task.nc_type=='ordinary')  {
-
-      nc_number = selectNumberCruncher ( task );
-
-      if (nc_number<0)  {
-        utils.writeJobReportMessage ( jobDir,
-          '<h1>The task cannot be proccessed</h1>' +
-          'No computational server has agreed to accept the task. This may ' +
-          'be due to the lack of available servers for given task type, or ' +
-          'because of the high number of tasks queued. Please try submitting ' +
-          'this task later on.',false );
-        task.state = task_t.job_code.failed;
-        utils.writeObject ( jobDataPath,task );
-        return;
-      }
-
-      log.standard ( 7,'sending job ' + task.id + ' to ' +
-                       conf.getNCConfig(nc_number).name );
-
-    } else
-      log.standard ( 8,'sending job ' + task.id + ' to client service' );
-
-    utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
-
-    // prepare input data
-    task.makeInputData ( loginData,jobDir );
-
-    if (task.nc_type=='client')  {
-      // job for client NC, just pack the job directory and inform client
-
-      // send_dir.packDir ( jobDir,'*',null,null, function(code,jobballSize){
-      send_dir.packDir ( jobDir,{ 
-          destination : send_dir.getPackPath ( jobDir ) 
-        },
-        function(code,jobballPath,jobballSize){
-          if (!code)  {
-
-            utils.writeJobReportMessage ( jobDir,'<h1>Running on client ...</h1>' +
-                        'Job is running on client machine. Full report will ' +
-                        'become available after job finishes.',true );
-
-            let job_token = newJobToken();
-            feJobRegister.addJob ( job_token,nc_number,loginData,
-                                  task.project,task.id,[],null,'YES' );
-            feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
-            writeFEJobRegister();
-
-            rdata = {};
-            rdata.job_token   = job_token;
-            rdata.jobballName = send_dir.jobballName;
-            // rdata.jobballName = path.basename ( jobballPath );
-
-            callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
-            log.standard ( 13,'created jobball for client, dir=' + jobDir + 
-                              ', size=' + jobballSize );
-
-          } else  {
-            callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
-                            '[00006] Jobball creation errors',{}) );
-          }
-
-        });
-
-      // NOTE: we do not count client jobs against user rations (quotas)
-
-    } else  {
-
-      // job for ordinary NC, pack and send all job directory to number cruncher
-      let nc_cfg = conf.getNCConfig(nc_number);
-      let nc_url = nc_cfg.externalURL;
-      let meta   = {};
-      meta.setup_id = conf.getSetupID();
-      meta.user_id  = loginData.login;
-
-      send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
-                         meta,{compression:nc_cfg.compression},
-
-        function ( rdata,stats ){  // send successful
-
-          // The number cruncher will start dealing with the job automatically.
-          // On FE end, register job as engaged for further communication with
-          // NC and client.
-          feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
-                                 task.project,task.id,[],null,'YES' );
-          writeFEJobRegister();
-
-        },function(stageNo,code){  // send failed
-
-          switch (stageNo)  {
-
-            case 1: utils.writeJobReportMessage ( jobDir,
-                    '<h1>[00007] Failed: data preparation error (' + code + ').</h1>',
-                    false );
-                  break;
-
-            case 2: utils.writeJobReportMessage ( jobDir,
-                    '<h1>[00008] Failed: data transmission errors.</h1>' +
-                    '<p><i>Return: ' + code + '</i>',false );
-                    log.error ( 11,'[00008] Cannot send data to NC at ' + nc_url );
-                  break;
-
-            default: utils.writeJobReportMessage ( jobDir,
-                     '<h1>[00009] Failed: number cruncher errors.</h1>' +
-                     '<p><i>Return: ' + code.message + '</i>',false );
-
-          }
-
-          task.state = task_t.job_code.failed;
-          utils.writeObject ( jobDataPath,task );
-
-        });
-
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{}) );
-
-    }
-
-  } else  {
-
-    callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00010] Job metadata cannot be written.',{} ) );
-
-  }
 
 }
 
@@ -2336,7 +2186,6 @@ module.exports.cleanFEJobRegister  = cleanFEJobRegister;
 module.exports.getEFJobEntry       = getEFJobEntry;
 module.exports.setNCCapacityChecks = setNCCapacityChecks;
 module.exports.runJob              = runJob;
-module.exports.replayJob           = replayJob;
 module.exports.readJobStats        = readJobStats;
 module.exports.stopJob             = stopJob;
 module.exports.killJob             = killJob;
