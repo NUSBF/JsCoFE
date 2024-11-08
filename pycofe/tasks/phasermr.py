@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    24.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -57,6 +57,9 @@ class PhaserMR(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def run(self):
+
+        # number of cores that SLURM was made aware of
+        ncores = self.getCommandLineParameter ( "ncores" )
 
         # Prepare phaser input
         # fetch input data
@@ -162,6 +165,7 @@ class PhaserMR(basic.TaskDriver):
             "TITLE Phaser-MR" +\
             "\nMODE MR_AUTO"  +\
             "\nROOT \""       + self.outputFName + "\"" +\
+            "\nJOBS "         + str(ncores) +\
             "\nHKLIN \""      + hklfile + "\"" +\
             hkl_labin
         )

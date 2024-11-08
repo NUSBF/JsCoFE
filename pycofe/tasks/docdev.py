@@ -198,9 +198,28 @@ class DocDev(basic.TaskDriver):
 #                new HelpBox ( '','./html/jscofe_myprojects.html',null );
 #              });
 
+            summary_line = "source"
+            if doctype=="dev":
+                summary_line = "developer's reference"
+            elif doctype=="taskref":
+                summary_line = "task reference"
+            elif doctype=="tutorials":
+                summary_line = "tutorials reference"
+            elif doctype=="userguide":
+                summary_line = "user guide"
+            summary_line += " compiled"
+            if restype!="compile":
+                summary_line += " and deployed"
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : summary_line
+            }
+
         else:
             self.putTitle   ( "Documentation build failed" )
             self.putMessage ( "<b>Error:</b> " + rc.msg )
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : "failed"
+            }
 
         shutil.rmtree ( repname )
 

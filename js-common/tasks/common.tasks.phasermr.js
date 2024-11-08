@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    24.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -885,6 +885,11 @@ TaskPhaserMR.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
     return this.__check_keywords ( keywords,['phaser', 'molecular','replacement','mr'] );
 }
+
+TaskPhaserMR.prototype.getNCores = function ( ncores_available )  {
+  return Math.min(4,ncores_available);
+}
+
 
 if (!__template)  {
 

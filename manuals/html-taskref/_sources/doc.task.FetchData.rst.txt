@@ -1,0 +1,22 @@
+==============================================
+Fetch Diffraction Images from WWW repositories
+==============================================
+
+This task retrieves raw X-ray diffraction data from public repositories using 
+either a PDB code or a Digital Object Identifier (DOI) linked to the data. 
+The following repositories are automatically searched:
+
+* `SBGrid Data Bank <https://data.sbgrid.org/>`_
+* `Protein Diffraction <https://proteindiffraction.org/>`_
+* `X-ray Diffraction Archive (XRDA) <https://xrda.pdbj.org/>`_
+
+The complete dataset will be downloaded and stored in the ``My Cloud Storage`` 
+area at the path specified on the task’s *Report Page* upon completion.
+
+Once fetched, the data can be processed using the 
+:doc:`Automatic Image Processing with Xia-2 <doc.task.Xia2>` task.
+Be sure to set the file location selector in the :doc:`Xia-2 <doc.task.Xia2>` 
+task to ``cloud storage``.
+
+.. note:: Each user has access only to their personal area in ``My Cloud Storage``.
+.. note:: This task is unavailable in the CCP4 Cloud Local version.
