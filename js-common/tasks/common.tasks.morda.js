@@ -138,6 +138,9 @@ TaskMorda.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['morda', 'molecular','replacement','mr', 'auto-mr'] );
 }
 
+TaskMorda.prototype.getNCores = function ( ncores_available )  {
+  return Math.min(4,ncores_available);
+}
 
 if (!__template)  {
   //  for client side
@@ -167,16 +170,6 @@ if (!__template)  {
   TaskMorda.prototype.cleanJobDir = function ( jobDir )  {
 
     __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
-
-    // paranoid piece of code, but just in case
-    ['tmp_local','morda'].forEach((suspect) => {
-      let badDirPath = path.join ( jobDir,suspect );
-      if (utils.fileExists(badDirPath))  {
-        console.log ( ' +++ remove stray directory ' + badDirPath +
-                      ' from MoRDa job' );
-        utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
-      }
-    });
 
   }
 
