@@ -345,7 +345,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
   //      icon = image_path('single_page');
   //      ttip = 'Hide replay project';
   //      replayJobTree = self.makeReplayJobTree();
-  //      replayJobTree.readProjectData ( 'Replay Project',false,-1,
+  //      replayJobTree.loadProjectData ( 'Replay Project',false,-1,
   //                                      function(){  // onTreeLoaded
   //                                        self.replay_job_tree = replayJobTree;
   //                                      },
@@ -381,7 +381,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
 
   //  Read project data from server first time
   // takes project name from projectList.current
-  self.jobTree.readProjectData ( 'Project',true,-1,
+  self.jobTree.loadProjectData ( 'Project',true,-1,
     function(){
       if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
         // self.dock.loadDockData();
@@ -1294,7 +1294,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
       let job_tree_1 = jobTree1;
 
       job_tree_1.multiple = self.jobTree.multiple;  // needed for tree creation
-      job_tree_1.readProjectData ( 'Project',false,timestamp,
+      job_tree_1.loadProjectData ( 'Project',false,timestamp,
         function(){
           if ('no_access' in job_tree_1)  {
             makeProjectListPage ( __current_page.sceneId );
