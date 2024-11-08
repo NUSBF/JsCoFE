@@ -68,7 +68,7 @@ const utils   = require('./server.utils');
 const prj     = require('./server.fe.projects');
 const ration  = require('./server.fe.ration');
 const storage = require('./server.fe.storage');
-const adm     = require('./server.fe.admin');
+// const adm     = require('./server.fe.admin');
 const anl     = require('./server.fe.analytics');
 const ud      = require('../js-common/common.data_user');
 const cmd     = require('../js-common/common.commands');
@@ -163,12 +163,15 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   } else  {
 
+    log.error ( 11,'file write error at user registration (' + userData.login +
+                   ') ' + userFilePath );
+
     response = new cmd.Response ( cmd.fe_retcode.writeError,
                       'Cannot write user data',
                       emailer.send ( conf.getEmailerConfig().maintainerEmail,
                         'CCP4 Registration Write Fails',
-                        'Detected write failure at new user registration, ' +
-                        'please investigate.'
+                        'Detected write failure at new user registration (' +
+                        userData.login + '), please investigate.'
                       )
     );
 
