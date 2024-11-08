@@ -131,7 +131,6 @@ const userKnowledgeFName = 'knowledge.meta';
 const projectDataFName   = 'project.meta';
 const projectDescFName   = 'project.desc';
 const jobDirPrefix       = 'job_';
-const replayDir          = 'replay';
 // const treeNodeFName      = 'tree.node'
 
 // ===========================================================================
@@ -175,16 +174,9 @@ function getUserKnowledgePath ( loginData )  {
 function getProjectDirPath ( loginData,projectName )  {
 // path to directory containing project 'projectName' of user with
 // given login data
-  let n = projectName.lastIndexOf(':'+replayDir);
-  if (n>0)
-    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
-                       loginData.login + userProjectsExt,
-                       projectName.slice(0,n) + projectExt,
-                       replayDir );
-  else
-    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
-                       loginData.login + userProjectsExt,
-                       projectName + projectExt );
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                      loginData.login + userProjectsExt,
+                      projectName + projectExt );
 }
 
 function getProjectDataPath ( loginData,projectName )  {
@@ -714,22 +706,14 @@ let response = null;  // must become a cmd.Response object to return
 
     let projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
-    if (writeProjectData(loginData,projectData,true,true))  {
-      if (utils.mkDir(path.join(projectDirPath,replayDir))) {
-        let pname = projectData.desc.name;
-        projectData.desc.name = projectData.desc.name + ':' + replayDir;
-        if (writeProjectData(loginData,projectData,true,true))
+    if (writeProjectData(loginData,projectData,true,true))
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
-        projectData.desc.name = pname;
-      }
-    }
-    if (!response)
-      response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00017] Project data cannot be written.','' );
+    else  response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                        '[00017] Project data cannot be written.','' );
 
   } else  {
 
-    response  = new cmd.Response ( cmd.fe_retcode.mkDirError,
+    response = new cmd.Response ( cmd.fe_retcode.mkDirError,
             '[00018] Cannot create Project Directory',
             emailer.send ( conf.getEmailerConfig().maintainerEmail,
                   'CCP4 Create Project Dir Fails',
@@ -1138,9 +1122,6 @@ function getProjectData ( loginData,data )  {
 
   let projectName = projectList.current;  // projectID or archiveID
 
-  if (data.mode=='replay')
-    projectName += ':' + replayDir;
-
   // read project data
   let njobs = 0;
   let pData = readProjectData ( loginData,projectName );
@@ -1239,9 +1220,6 @@ function getProjectData ( loginData,data )  {
           'project' : projectName 
       });
   }
-
-  if (data.mode=='replay')
-    projectName += ':' + replayDir;
 
   let njobs = 0;
   let pData = readProjectData ( loginData,projectName );
