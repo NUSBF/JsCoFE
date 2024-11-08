@@ -430,7 +430,8 @@ class Coot(coot_ce.CootCE):
             # else:
             #     fn,fext = os.path.splitext ( f )
 
-            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            # fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            fn,fext = os.path.splitext ( fname )
 
             # shutil.copy2 ( fname,"inspect.txt" )
 
