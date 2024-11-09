@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.24   <--  Date of Last Modification.
+ *    08.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -634,38 +634,40 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   //                        else  loggedUsers = udata.loginHash.loggedUsers;
   let loggedUsers = udata.loginHash.loggedUsers;
   for (let i=0;i<udata.userList.length;i++)  {
-    let trow  = this.userListTable.addRow();
     let uDesc = udata.userList[i];
-    trow.addCell ( i+1         ).setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( uDesc.name  ).setNoWrap();
-    trow.addCell ( uDesc.login ).setNoWrap();
-    let online = '&nbsp;';
-    for (let token in loggedUsers)
-      if (loggedUsers[token].login==uDesc.login)  {
-        online = '&check;';
-        break;
+    if ((!__local_user) || (uDesc.login==__local_user_id))  {
+      let trow  = this.userListTable.addRow();
+      trow.addCell ( i+1         ).setNoWrap().setHorizontalAlignment('right');
+      trow.addCell ( uDesc.name  ).setNoWrap();
+      trow.addCell ( uDesc.login ).setNoWrap();
+      let online = '&nbsp;';
+      for (let token in loggedUsers)
+        if (loggedUsers[token].login==uDesc.login)  {
+          online = '&check;';
+          break;
+        }
+      trow.addCell ( online ).setNoWrap().setHorizontalAlignment('center');
+      trow.addCell ( uDesc.role ).setNoWrap();
+      if (uDesc.dormant)
+            trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
+      else  trow.addCell ( 'active' ).setNoWrap();
+      trow.addCell ( uDesc.email     ).setNoWrap();
+      trow.addCell ( uDesc.licence   ).setNoWrap();
+      trow.addCell ( uDesc.ration.jobs_total  ).setNoWrap().setHorizontalAlignment('right');
+      trow.addCell ( round(uDesc.ration.storage_used,1) )
+                                      .setNoWrap().setHorizontalAlignment('right');
+      trow.addCell ( round(uDesc.ration.cpu_total_used,2) )
+                                      .setNoWrap().setHorizontalAlignment('right');
+      trow.addCell ( new Date(uDesc.knownSince).toISOString().slice(0,10) )
+                                      .setNoWrap().setHorizontalAlignment('right');
+      let lastSeen = '';
+      if ('lastSeen' in uDesc)  {
+        if (uDesc.lastSeen)
+          lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
       }
-    trow.addCell ( online ).setNoWrap().setHorizontalAlignment('center');
-    trow.addCell ( uDesc.role ).setNoWrap();
-    if (uDesc.dormant)
-          trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
-    else  trow.addCell ( 'active' ).setNoWrap();
-    trow.addCell ( uDesc.email     ).setNoWrap();
-    trow.addCell ( uDesc.licence   ).setNoWrap();
-    trow.addCell ( uDesc.ration.jobs_total  ).setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( round(uDesc.ration.storage_used,1) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( round(uDesc.ration.cpu_total_used,2) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( new Date(uDesc.knownSince).toISOString().slice(0,10) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    let lastSeen = '';
-    if ('lastSeen' in uDesc)  {
-      if (uDesc.lastSeen)
-        lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
+      trow.addCell ( lastSeen ).setNoWrap().setHorizontalAlignment('right');
+      trow.uDesc = uDesc;
     }
-    trow.addCell ( lastSeen ).setNoWrap().setHorizontalAlignment('right');
-    trow.uDesc = uDesc;
   }
 
   if (__user_role==role_code.admin)  {
