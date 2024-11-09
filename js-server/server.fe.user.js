@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    09.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -420,7 +420,7 @@ UserLoginHash.prototype.read = function()  {
   let hash = utils.readObject ( userHashPath);
   if (hash)  {
     if (!hash.hasOwnProperty('_type'))  {
-      // transformation for backward compatibility
+      // transformation for backward compatibility, probably redundant
       let loggedUsers = {};
       for (let token in hash)  {
         loggedUsers[token] = {
@@ -598,13 +598,15 @@ function readUserLoginHash()  {
 
   if (!__userLoginHash.read())  {
     let userData = new ud.UserData();
-    userData.name    = 'Developer';
-    userData.email   = conf.getEmailerConfig().maintainerEmail;
-    userData.login   = 'devel';
-    userData.pwd     = 'devel';
-    userData.licence = 'academic';
-    userData.role    = ud.role_code.user;
-    makeNewUser ( userData,function(response){} );
+    if (!('localuser' in fe_server))  {
+      userData.name    = 'Developer';
+      userData.email   = conf.getEmailerConfig().maintainerEmail;
+      userData.login   = 'devel';
+      userData.pwd     = 'devel';
+      userData.licence = 'academic';
+      userData.role    = ud.role_code.user;
+      makeNewUser ( userData,function(response){} );
+    }
     updateHash = true;
   }
 
@@ -624,7 +626,7 @@ function readUserLoginHash()  {
                                 'volume' : '*storage*'
                             });
     updateHash = false;
-  }
+  } 
 
   if (updateHash)
     __userLoginHash.save();
