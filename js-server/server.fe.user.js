@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.11.24   <--  Date of Last Modification.
+ *    08.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -470,17 +470,17 @@ UserLoginHash.prototype.read = function()  {
 
 UserLoginHash.prototype.addUser = function ( token,login_data )  {
 
-  // let logUsers = {};
+  let loggedUsers = {};
 
-  // for (let key in this.loggedUsers)
-  //   if (this.loggedUsers[key].login!=login_data.login)
-  //     logUsers[key] = this.loggedUsers[key];
+  for (let key in this.loggedUsers)
+    if (this.loggedUsers[key].login!=login_data.login)
+      loggedUsers[key] = this.loggedUsers[key];
 
-  // this.loggedUsers         = logUsers;
+  loggedUsers[token]          = JSON.parse ( JSON.stringify(login_data) );
+  loggedUsers[token].lastSeen = Date.now();
+  this.umap[login_data.login] = token;
 
-  this.loggedUsers[token]          = JSON.parse ( JSON.stringify(login_data) );
-  this.loggedUsers[token].lastSeen = Date.now();
-  this.umap[login_data.login]      = token;
+  this.loggedUsers = loggedUsers;
 
   this.save();
 
@@ -495,14 +495,19 @@ UserLoginHash.prototype.removeUser = function ( token )  {
 */
 
 UserLoginHash.prototype.removeUser = function ( login_name )  {
-  // let loggedUsers = {};
-  // for (let key in this.loggedUsers)
-  //   if (this.loggedUsers[key].login!=login_name)
-  //     loggedUsers[key] = this.loggedUsers[key];
-  // this.loggedUsers = loggedUsers;
-  delete this.loggedUsers[this.umap[login_name]];
+  
+  let loggedUsers = {};
+  
+  for (let key in this.loggedUsers)
+    if (this.loggedUsers[key].login!=login_name)
+      loggedUsers[key] = this.loggedUsers[key];
+
   delete this.umap[login_name];
+
+  this.loggedUsers = loggedUsers;
+
   this.save();
+
 }
 
 UserLoginHash.prototype.getLoginEntry = function ( token )  {
