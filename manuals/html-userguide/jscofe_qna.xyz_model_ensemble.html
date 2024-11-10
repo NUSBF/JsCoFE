@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -254,7 +253,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-qna-xyz-model-ensemble--page-root" class="md-nav__link">10.1. What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -316,7 +315,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-qna-xyz-model-ensemble--page-root" class="md-nav__link">10.1. What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -333,39 +332,40 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-qna-xyz-model-ensemble--page-root"><span class="section-number">10.1. </span>What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?<a class="headerlink" href="#jscofe-qna-xyz-model-ensemble--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="what-are-xyz-model-and-ensemble">
+<h1 id="jscofe-qna-xyz-model-ensemble--page-root"><span class="section-number">10.1. </span>What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?<a class="headerlink" href="#jscofe-qna-xyz-model-ensemble--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>XYZ</strong>, <strong>Model</strong> and <strong>Ensemble</strong> are related, but not identical, types of data in CCP4 Cloud.</p>
 <blockquote>
 <div><p><strong>XYZ</strong> is a simple type, which corresponds to bare atomic coordinates, commonly obtained from PDB or mmCIF-formatted files.</p>
 <p><strong>Model</strong> is a complex type, used to represent search models for Molecular Replacement (MR). It includes XYZ coordinates of one or several macromolecular chains linked to target sequence(s) that these chains relate to, along with the corresponding similarity scores, such as sequence identity and estimated r.m.s.d..</p>
 <p><strong>Ensemble</strong> is another complex data type used in MR tasks, which represents sets of closely related Models, superposed on each other and truncated to the same length (if necessary).</p>
 <blockquote>
-<div><strong>Models</strong> and <strong>Ensembles</strong> <strong>can be used</strong> in <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser-MR</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks, while <strong>XYZs cannot be</strong>.</div></blockquote>
+<div><p><strong>Models</strong> and <strong>Ensembles</strong> <strong>can be used</strong> in <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser-MR</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks, while <strong>XYZs cannot be</strong>.</p>
+</div></blockquote>
 </div></blockquote>
 <p>Models and Ensembles are prepared from XYZ and/or Sequence data with the following tasks, found in the <a class="reference external" href="../html-taskref/Molecular_Replacement.html" rel="noopener noreferrer" target="_blank">Molecular Replacement</a> section of the <a class="reference external" href="jscofe_tasklist.html" rel="noopener noreferrer" target="_blank">Task List</a>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">Find and Prepare MR Models with MrParse</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.ModelPrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Coordinate data</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.ModelPrepAlgn.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Alighnment data</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Model(s)</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepSeq.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Sequence</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Coordinate data</a></li>
-<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">Find and Prepare MR Models with MrParse</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.ModelPrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Coordinate data</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.ModelPrepAlgn.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Alighnment data</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Model(s)</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepSeq.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Sequence</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Coordinate data</a></p></li>
+<li><p><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a></p></li>
 </ul>
 </div></blockquote>
-
-<h2 id="why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly"><span class="section-number">10.1.1. </span>Why XYZ data cannot be used in Molecular Replacement tasks directly?<a class="headerlink" href="#why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly" title="Permalink to this headline">¶</a></h2>
+<section id="why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly">
+<h2 id="why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly"><span class="section-number">10.1.1. </span>Why XYZ data cannot be used in Molecular Replacement tasks directly?<a class="headerlink" href="#why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly" title="Permalink to this heading">¶</a></h2>
 <p>The main reason for disallowing the direct use of XYZ (<em>i.e.,</em> bare PDB or mmCIF files) in CCP4 Cloud’s MR tasks is to make the model preparation step mandatory and unavoidable. This procedure includes trimming XYZ data for achieving best similarity with the target sequence. Model preparation should always be done before using structure templates in Molecular Replacement. This may seem to be redundant and even annoying in some cases, but in general, the preparatory step significantly improves chances for successful Molecular Replacement.</p>
 <blockquote>
 <div><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">trimming structure templates may be switched off in model preparation tasks, if necessary.</p>
+<p class="admonition-title">Note</p>
+<p>trimming structure templates may be switched off in model preparation tasks, if necessary.</p>
 </div>
 </div></blockquote>
-
-
+</section>
+</section>
 
 
           </article>
@@ -386,7 +386,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">10. </span>Questions and Answers </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">10. </span>Questions and Answers </span>
               </div>
             </a>
           
@@ -396,7 +396,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">10.2. </span>What is <em>Structure</em>? </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">10.2. </span>What is <em>Structure</em>? </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -410,7 +410,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

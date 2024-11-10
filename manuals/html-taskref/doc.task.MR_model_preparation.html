@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -410,14 +409,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-mr-model-preparation--page-root">Molecular Replacement Models and Ensembles<a class="headerlink" href="#doc-task-mr-model-preparation--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="molecular-replacement-models-and-ensembles">
+<h1 id="doc-task-mr-model-preparation--page-root">Molecular Replacement Models and Ensembles<a class="headerlink" href="#doc-task-mr-model-preparation--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>MR Search Models</strong> are structural templates prepared for use in molecular replacement programs (Phaser and Molrep). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. As a rough guideline, MR models should be made from structural homologs with r.m.s.d. better than 2.5 angstrom (1.5 Å and better is desirable) from the target structure and sequence identity of more than 30%. If the homolog is highly similar to the target protein, it can be taken for MR model as a whole, unmodified. However, in many cases, the homolog should be trimmed by removing structural features that are distinctly different from the expected structure. Such trimming is done on the basis of sequence comparison. In CCP4 Cloud, MR search model is associated with the sequence it represents, which is used for informing MR programs on subsequent stages.</p>
 <p>A well-chosen and optimised search model has two key advantages:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Facilitates finding the correct position by MR program and hence more sensible initial phases</li>
-<li>Facilitates quicker and easier model building and refinement post MR</li>
+<li><p>Facilitates finding the correct position by MR program and hence more sensible initial phases</p></li>
+<li><p>Facilitates quicker and easier model building and refinement post MR</p></li>
 </ol>
 </div></blockquote>
 <p>The success of Molecular Replacement may be noticeably increased if MR programs are given more than one model for each target sequence. This assumes that the models are derived from structure homologs with some degree of diversity, which gives MR programs more chances to choose the optimal orientation for their “average”. In this approach, MR models, associated with the same target sequence, are superposed on each other and assembled in packs called <strong>MR Ensembles</strong>, which can be used in MR programs in exactly the same way as individual MR models. Like MR models, MR Ensembles are associated with the target sequence they represent, for further informing MR programs in a seamless way.</p>
@@ -452,7 +451,7 @@
 <p><a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">Phaser Wiki</a></p>
 <p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?dd5033" rel="noopener noreferrer" target="_blank">N. Stein, (2008) J. Appl. Cryst. 41, 641 - 643. CHAINSAW: a program for mutating pdb files used as templates in molecular replacement.</a></p>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2018/03/00/rr5152/" rel="noopener noreferrer" target="_blank">Keegan, R. M., McNicholas, S. J., Thomas, J. M. H., Simpkin, A. J., Simkovic, F., Uski, V., Ballard, C. C., Winn, M. D., Wilson, K. S. &amp; Rigden, D. J. (2018). Acta Cryst. D74, 167-182.</a></p>
-
+</section>
 
 
           </article>
@@ -473,7 +472,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Molecular Replacement </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Molecular Replacement </span>
               </div>
             </a>
           
@@ -483,7 +482,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Find and prepare MR models with MrParse </span>
+                class="md-footer-nav__direction"> "Next" </span> Find and prepare MR models with MrParse </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -497,7 +496,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
