@@ -46,7 +46,7 @@
   
   
   
-    <title>2.5.9. File name customisation &#8212; CCP4 Cloud 1.8 documentation</title>
+    <title>Push Data to Cloud &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -56,8 +56,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="2.5.10. Using AlphaFold2 and Rosetta models" href="jscofe_tips.AlphaFold.html" />
-    <link rel="prev" title="2.5.8. End of Job Notifications" href="jscofe_tips.eoj_notifications.html" />
+    <link rel="next" title="Structure Prediction" href="Structure_prediction.html" />
+    <link rel="prev" title="Fetch Diffraction Images from WWW repositories" href="doc.task.FetchData.html" />
   
    
 
@@ -76,7 +76,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#jscofe_tips.file_names" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#doc.task.PushToCloud" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
-          <span class="md-header-nav__topic"> 2.5.9. File name customisation </span>
+          <span class="md-header-nav__topic"> Push Data to Cloud </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -151,8 +151,7 @@
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
-          <li class="md-tabs__item"><a href="jscofe_interface.html" class="md-tabs__link"><span class="section-number">2. </span>CCP4 Cloud interface documentation</a></li>
-          <li class="md-tabs__item"><a href="jscofe_tips.html" class="md-tabs__link"><span class="section-number">2.5. </span>Tips and Tricks</a></li>
+          <li class="md-tabs__item"><a href="Data_Import.html" class="md-tabs__link">Data Import</a></li>
       </ul>
     </div>
   </nav>
@@ -179,101 +178,61 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_about.html" class="md-nav__link">1. About CCP4 Cloud</a>
+      <a href="Workflows.html" class="md-nav__link">Automatic workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_interface.html" class="md-nav__link">2. CCP4 Cloud interface documentation</a>
+      <a href="Data_Import.html" class="md-nav__link">Data Import</a>
       <ul class="md-nav__list"> 
     <li class="md-nav__item">
     
     
-      <a href="jscofe_myprojects.html" class="md-nav__link">2.1. My Projects</a>
+      <a href="doc.task.Import.html" class="md-nav__link">Data Import</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_project.html" class="md-nav__link">2.2. Project Management</a>
+      <a href="doc.task.ImportSeqCP.html" class="md-nav__link">Import Sequence(s) by Copy-Paste</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_tasklist.html" class="md-nav__link">2.3. Task List</a>
+      <a href="doc.task.ImportPDB.html" class="md-nav__link">Import from PDB/AFDB</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_jobdialog.html" class="md-nav__link">2.4. Job Dialog</a>
+      <a href="doc.task.CloudImport.html" class="md-nav__link">Import from Cloud Storage</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_tips.html" class="md-nav__link">2.5. Tips and Tricks</a>
-      <ul class="md-nav__list"> 
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.coot_crash.html" class="md-nav__link">2.5.1. Coot Task Recovery</a>
+      <a href="doc.task.ImportReplace.html" class="md-nav__link">Import & Replace</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_tips.task_dock.html" class="md-nav__link">2.5.2. Task Dock</a>
+      <a href="doc.task.Migrate.html" class="md-nav__link">Hop on CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_tips.remarks.html" class="md-nav__link">2.5.3. Using Remarks</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.sharing.html" class="md-nav__link">2.5.4. Project Sharing</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.login_project.html" class="md-nav__link">2.5.5. Login in Project or List of Projects</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.three_clouds.html" class="md-nav__link">2.5.6. Working modes of CCP4 Cloud</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.hot_task_launchers.html" class="md-nav__link">2.5.7. Hot Task Launchers</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.eoj_notifications.html" class="md-nav__link">2.5.8. End of Job Notifications</a>
+      <a href="doc.task.FetchData.html" class="md-nav__link">Fetch Diffraction Images from WWW repositories</a>
       
     
     </li>
@@ -281,9 +240,9 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 2.5.9. File name customisation </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Push Data to Cloud </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">2.5.9. File name customisation</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Push Data to Cloud</a>
       
         
 <nav class="md-nav md-nav--secondary">
@@ -292,127 +251,97 @@
 </nav>
       
     
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.AlphaFold.html" class="md-nav__link">2.5.10. Using AlphaFold2 and Rosetta models</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.Work_with_diffraction_images.html" class="md-nav__link">2.5.11. Work with diffraction images within CCP4 Cloud</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.folders.html" class="md-nav__link">2.5.12. Project folders</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.archive.html" class="md-nav__link">2.5.13. CCP4 Cloud Archive</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.tree_marker.html" class="md-nav__link">2.5.14. Project Tree Marker</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.download.html" class="md-nav__link">2.5.15. How to download files in CCP4 Cloud</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="jscofe_tips.store_completed_projects.html" class="md-nav__link">2.5.16. How to store completed projects</a>
-      
-    
-    </li></ul>
-    
     </li></ul>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_workflows.html" class="md-nav__link">3. Structure solution with CCP4 Cloud</a>
+      <a href="Structure_prediction.html" class="md-nav__link">Structure Prediction</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="Data_Processing.html" class="md-nav__link">Data Processing</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_globus.html" class="md-nav__link">5. Transferring data to CCP4 Cloud via Globus</a>
+      <a href="Asymmetric_Unit_and_Structure_Revision.html" class="md-nav__link">Asymmetric Unit and Structure Revision</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="Automated_Molecular_Replacement.html" class="md-nav__link">Automated Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="Molecular_Replacement.html" class="md-nav__link">Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
+      <a href="Fragment-Based_Molecular_Replacement.html" class="md-nav__link">Fragment-Based Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="Experimental_Phasing.html" class="md-nav__link">Experimental Phasing</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
+      <a href="Density_Modification.html" class="md-nav__link">Density Modification</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      <a href="Refinement_and_Model_Building.html" class="md-nav__link">Refinement and Model Building</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
+      <a href="COOT.html" class="md-nav__link">COOT</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="Ligands.html" class="md-nav__link">Ligands</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="Validation_Analysis_and_Deposition.html" class="md-nav__link">Validation, Analysis and Deposition</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="Toolbox.html" class="md-nav__link">Toolbox</a>
       
     
     </li>
@@ -438,43 +367,31 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="file-name-customisation">
-<h1 id="jscofe-tips-file-names--page-root"><span class="section-number">2.5.9. </span>File name customisation<a class="headerlink" href="#jscofe-tips-file-names--page-root" title="Permalink to this heading">¶</a></h1>
-<p>CCP4 Cloud generates names for data objects and files automatically, using the following pattern:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">JJJJ</span><span class="o">-</span><span class="n">NN</span><span class="p">]</span> <span class="n">outputID</span> <span class="o">/</span><span class="nb">type</span><span class="o">/</span><span class="n">specs</span>
-</pre></div>
-</div>
-<p>where <code class="docutils literal notranslate"><span class="pre">JJJJ</span></code> stands for serial number of job that produced the object, <code class="docutils literal notranslate"><span class="pre">NN</span></code> is serial number of output data item in that job, <code class="docutils literal notranslate"><span class="pre">outputId</span></code> is data object ID, <code class="docutils literal notranslate"><span class="pre">type</span></code> is data object type (such as <em>Structure</em>) and <code class="docutils literal notranslate"><span class="pre">specs</span></code> are optional specifications such as <em>protein</em>, <em>dna</em>, <em>atom</em> and others.</p>
-<p>Usually, automatic naming is all what you need, yet, you may find it useful to customise object names for extra annotation and easier data identification in big projects, or when downloading data files for custom processing outside CCP4 Cloud context.</p>
-<p>Object names may be customised in two ways.</p>
+  <section id="push-data-to-cloud">
+<h1 id="doc-task-pushtocloud--page-root">Push Data to Cloud<a class="headerlink" href="#doc-task-pushtocloud--page-root" title="Permalink to this heading">¶</a></h1>
+<p>This task transfers X-ray diffraction image directories from your device to the
+<code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code> area in CCP4 Cloud. Instead of sending individual files,
+it uploads entire directories, supporting up to 10 directories per task.</p>
+<p>In the task interface, you can choose a custom name for the destination folder,
+or allow an auto-generated name. The full path to the destination folder will be
+displayed on the task’s <em>Report Page</em> upon completion.</p>
+<p>Once the transfer is complete, the data can be processed using the
+<a class="reference internal" href="doc.task.Xia2.html"><span class="doc">Automatic Image Processing with Xia-2</span></a> task.
+Be sure to set the file location selector in the <a class="reference internal" href="doc.task.Xia2.html"><span class="doc">Xia-2</span></a>
+task to <code class="docutils literal notranslate"><span class="pre">cloud</span> <span class="pre">storage</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Changing object names is not possible if task is already running or has finished.</p>
+<p>Each user has access only to their personal area in <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code>.</p>
 </div>
-<p><strong>Changing object Id</strong></p>
-<p>In most tasks, <code class="docutils literal notranslate"><span class="pre">outputId</span></code> is customisable and is used for naming all data objects produced by the task (a few exceptions include import tasks, where <code class="docutils literal notranslate"><span class="pre">outputId</span></code> follows the imported file names and, therefore, is different for different objects). By default, <code class="docutils literal notranslate"><span class="pre">output</span> <span class="pre">ID</span></code> is set to the name of the main program used in the task; it can be found in the <em>Input tab</em> of the <em>Job Dialog</em>. For example, using default naming in <em>Refmac</em> task:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_default.png"><img alt="_images/refmac_fname_default.png" class="align-center" src="_images/refmac_fname_default.png" style="width: 471.20000000000005px; height: 88.0px;"/></a>
-<p>produces file names like these:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_default_out.png"><img alt="_images/refmac_fname_default_out.png" class="align-center" src="_images/refmac_fname_default_out.png" style="width: 308.8px; height: 116.0px;"/></a>
-<p>If <em>output ID</em> is changed before running the task, for example:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_custom.png"><img alt="_images/refmac_fname_custom.png" class="align-center" src="_images/refmac_fname_custom.png" style="width: 471.20000000000005px; height: 88.0px;"/></a>
-<p>then the resulting file names will look like:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_custom_out.png"><img alt="_images/refmac_fname_custom_out.png" class="align-center" src="_images/refmac_fname_custom_out.png" style="width: 308.8px; height: 122.4px;"/></a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <em>job description</em> field was also changed in the above example. This fields corresponds to job title in the Project’s <em>Job Tree</em>. Changing job description is possible for jobs in preparation or finished jobs, but not while a job is running.</p>
+<p>Multiple source directories will be merged into a single destination
+folder in <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Cloud</span> <span class="pre">Storage</span></code>.</p>
 </div>
-<p><strong>Setting the Output Id Prefix</strong></p>
-<p>This customisation is useful if results from a series of alike projects are downloaded and processed out of Cloud context. In order to associate downloaded files with a particular project, sequence, ligand etc., output IDs can be prepended with a chosen ID. For doing this, choose <em>Project settings</em> item from the Main menu if the <em>Project page</em>. The following prompt will appear:</p>
-<a class="reference internal image-reference" href="_images/project_setings_prefix.png"><img alt="_images/project_setings_prefix.png" class="align-center" src="_images/project_setings_prefix.png" style="width: 405.29999999999995px; height: 108.5px;"/></a>
-<p>after which the default <em>output id</em> will be automatically prefixed with the chosen value, for example:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_prefixed.png"><img alt="_images/refmac_fname_prefixed.png" class="align-center" src="_images/refmac_fname_prefixed.png" style="width: 434.40000000000003px; height: 81.60000000000001px;"/></a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Automatic prefixing will work only for newly created (not cloned or already created) jobs.</p>
+<p>This task is unavailable in the CCP4 Cloud Local version.</p>
 </div>
-<p>For extra convenience, automatic prefixing with <em>project ID</em> may be set in <em>My Account</em> page (look for <em>Use project name as default prefix</em> checkbox in <em>Preferences</em>), in which case it will be applied to all projects until cancelled.</p>
-<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
 </section>
 
 
@@ -487,7 +404,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="jscofe_tips.eoj_notifications.html" title="2.5.8. End of Job Notifications"
+            <a href="doc.task.FetchData.html" title="Fetch Diffraction Images from WWW repositories"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -496,17 +413,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">2.5.8. </span>End of Job Notifications </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Fetch Diffraction Images from WWW repositories </span>
               </div>
             </a>
           
           
-            <a href="jscofe_tips.AlphaFold.html" title="2.5.10. Using AlphaFold2 and Rosetta models"
+            <a href="Structure_prediction.html" title="Structure Prediction"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">2.5.10. </span>Using AlphaFold2 and Rosetta models </span>
+                class="md-footer-nav__direction"> "Next" </span> Structure Prediction </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

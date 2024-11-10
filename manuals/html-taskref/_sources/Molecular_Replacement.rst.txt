@@ -34,6 +34,7 @@ In case you have a homologous protein structure you can use:
     doc.task.MR_model_preparation
     doc.task.Phaser
     doc.task.Molrep
+    doc.task.DimpleMR
     
 .. hint::   
         If you cannot create a suitable module, you can try programs for **Automated Molecular Replacement**.
