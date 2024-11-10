@@ -403,6 +403,7 @@ UserLoginHash.prototype.save = function()  {
                           'CCP4 Login Hash Write Fails',
                           'Detected file read failure at user login hash write, ' +
                           'please investigate.' );
+  // callback not implemented
   // utils.writeObject ( userHashPath,this,false,function(err){
   //   if (err)
   //     emailer.send ( conf.getEmailerConfig().maintainerEmail,
