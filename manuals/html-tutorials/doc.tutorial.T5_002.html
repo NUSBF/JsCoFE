@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -46,14 +46,13 @@
   
   
   
-    <title>14. Automated model building in CCP4 Cloud &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>14. Automated model building in CCP4 Cloud &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -81,7 +80,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -93,7 +92,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
           <span class="md-header-nav__topic"> 14. Automated model building in CCP4 Cloud </span>
         </div>
       </div>
@@ -104,7 +103,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -150,7 +149,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -162,13 +161,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
   </label>
   
 
@@ -303,14 +302,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t5-002--page-root"><span class="section-number">14. </span>Automated model building in CCP4 Cloud<a class="headerlink" href="#doc-tutorial-t5-002--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="automated-model-building-in-ccp4-cloud">
+<h1 id="doc-tutorial-t5-002--page-root"><span class="section-number">14. </span>Automated model building in CCP4 Cloud<a class="headerlink" href="#doc-tutorial-t5-002--page-root" title="Permalink to this heading">¶</a></h1>
 <p>This project demonstrates some of the automated model-building options in CCP4 Cloud after molecular replacement.</p>
 <p>The first part shows building of a 566-residue protein with 1.26A data and one copy in the asymmetric unit. <a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">MrParse</a> finds a homologue with 51% sequence identity in the PDB (<a class="reference external" href="https://www.rcsb.org/structure/6fth" rel="noopener noreferrer" target="_blank">6fth</a>) and prepares it for molecular replacement. <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> successfully places this model to get an R-free of 53%, which is not a great starting point. Four model-building programs are run at this stage: <a class="reference external" href="../html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="../html-taskref/doc.task.ArpWArp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a>, <a class="reference external" href="../html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4 Build</a> and <a class="reference external" href="../html-taskref/doc.task.Modelcraft.html" rel="noopener noreferrer" target="_blank">Modelcraft</a>. In this case, ModelCraft produces the most complete model, partly due to its initial use of shift-field refinement with <a class="reference external" href="../html-taskref/doc.task.Sheetbend.html" rel="noopener noreferrer" target="_blank">Sheetbend</a>.</p>
 <p>The automated model-building programs are sensitive to the quality of the starting model/phases, so it is good practice to try to improve the starting model. Here we have tried 200 cycles of jelly-body refinement in <a class="reference external" href="../html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">Refmacat</a> and shift-field refinement in Sheetbend followed by 10 cycles of conventional refinement in Refmacat. Both jelly-body and shift-field refinement are useful for correcting large-scale differences such as domain and loop movements while keeping the local structure intact. In this example Sheetbend followed by Refmacat produced a lower R-free (42%) than to jelly-body refinement with Refmacat alone, but this will not always be the case. All four automated model building programs were run again from this starting point and they performed much better. ARP/wARP works especially well with such high-resolution data. If you have high-resolution data it is also worth trying to improve your starting phases with <a class="reference external" href="../html-taskref/doc.task.Acorn.html" rel="noopener noreferrer" target="_blank">ACORN</a></p>
 <p>An alternative to using MrParse to find existing models for molecular replacement is to generate a new structure prediction for your exact sequence. The <a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">structure prediction</a> task  produced a model with an average pLDDT of 87.1. At both termini the prediction has low confidence but in the centre it is very confident. <a class="reference external" href="../html-taskref/doc.task.Slice.html" rel="noopener noreferrer" target="_blank">Slice’N’Dice</a> is used to remove residues with a pLDDT below 70, split the model into two domains and convert pLDDT into B-factor. Phaser places both domains to get a model with an R-free of 46%. All of the automated model-building programs build a fairly complete model from this starting point.</p>
 <p>The second part of the project shows an example of nucleic acid building. The structure is <a class="reference external" href="https://www.rcsb.org/structure/1HR2" rel="noopener noreferrer" target="_blank">1hr2</a> with two copies of a 158-residue RNA at 2.25A resolution. We are going to build a model <em>de novo</em> using a phased structure [0032 hop-on task] and sequence information imported [0033 import task] and added to structure revision using the edit structure revision task [0034]. <a class="reference external" href="../html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">Nautilus</a>, ARP/wARP <a class="reference external" href="../html-taskref/doc.task.AWNuce.html" rel="noopener noreferrer" target="_blank">NUCE</a> and ModelCraft are used to try to build the model.</p>
-
+</section>
 
 
           </article>
@@ -331,7 +330,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">13. </span>Using PISA in CCP4 Cloud </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">13. </span>Using PISA in CCP4 Cloud </span>
               </div>
             </a>
           
@@ -344,7 +343,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
