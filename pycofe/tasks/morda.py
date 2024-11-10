@@ -41,6 +41,7 @@
 import os
 import sys
 import shutil
+import tempfile
 
 #  application imports
 from . import basic
@@ -119,12 +120,16 @@ class Morda(basic.TaskDriver):
                 "HKLOUT",cad_mtz ]
         self.runApp ( "cad",cmd,logType="Service" )
 
+        # create local temporary directory for morda
+        tmp_dir = tempfile.mkdtemp(dir = os.environ["CCP4_SCR"])
+
         # MORDA is running on a cluster, all output is done by morda_sge.py module;
         # pass RVAPI document for morda_sge.py script
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
                 "--sge" if self.jobManager == "SGE" else "--mp",
+                "--tmpdir",tmp_dir,
                 "-f",cad_mtz,
                 "-s",self.morda_seq(),
                 "-d",self.reportDocumentName() ]
@@ -243,8 +248,8 @@ class Morda(basic.TaskDriver):
         if os.path.exists("morda"):
             shutil.rmtree ( "morda",ignore_errors=True )
 
-        if os.path.exists("tmp_local"):
-            shutil.rmtree ( "tmp_local",ignore_errors=True )
+        if os.path.exists(tmp_dir):
+            shutil.rmtree ( tmp_dir,ignore_errors=True )
 
         # this will go in the project tree job's line
         if not have_results:
