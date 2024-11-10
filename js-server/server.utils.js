@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.24   <--  Date of Last Modification.
+ *    10.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -157,14 +157,8 @@ function removeFile ( fpath ) {
 
 function readString ( fpath )  {
   try {
-    if (cache_enabled)  {
-      let json_str = cache.getItem ( fpath );
-      if (!json_str)  {
-        json_str = fs.readFileSync(fpath).toString();
-        cache.putItem ( fpath,json_str );
-      }
-      return json_str;
-    }
+    if (cache_enabled)
+      return cache.readCache(fpath);
     return fs.readFileSync(fpath).toString();
   } catch (e)  {
     return null;
@@ -185,63 +179,58 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 
 function readObject ( fpath )  {
-  try {
-    if (cache_enabled)  {
-      let json_str = cache.getItem ( fpath );
-      if (!json_str)  {
-        json_str = fs.readFileSync(fpath).toString();
-        cache.putItem ( fpath,json_str );
-      } 
-      return JSON.parse ( json_str );
-    }
-    return JSON.parse ( fs.readFileSync(fpath).toString() );
-  } catch (e)  {
-    if (e.code !== 'ENOENT')  {
-      log.error ( 10, e.message + ' when loading ' + fpath );
-      console.error ( e );
-    }
-    return null;
-  }
+  return JSON.parse ( cache.readCache(fpath) );
+  // try {
+  //   return JSON.parse ( fs.readFileSync(fpath).toString() );
+  // } catch (e)  {
+  //   if (e.code !== 'ENOENT')  {
+  //     log.error ( 10, e.message + ' when loading ' + fpath );
+  //     console.error ( e );
+  //   }
+  //   return null;
+  // }
 }
 
 
 function readClass ( fpath ) {  // same as object but with class functions
-  try {
-    if (cache_enabled)  {
-      let json_str = cache.getItem ( fpath );
-      if (!json_str)  {
-        json_str = fs.readFileSync(fpath).toString();
-        cache.putItem ( fpath,json_str );
-      }
-      return class_map.getClassInstance ( json_str );
-    }
-    return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
-  } catch (e)  {
-    return null;
-  }
+  return class_map.getClassInstance ( cache.readCache(fpath) );
+  // try {
+  //   if (cache_enabled)  {
+  //     let json_str = cache.getItem ( fpath );
+  //     if (!json_str)  {
+  //       json_str = fs.readFileSync(fpath).toString();
+  //       cache.putItem ( fpath,json_str );
+  //     }
+  //     return class_map.getClassInstance ( json_str );
+  //   }
+  //   return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
+  // } catch (e)  {
+  //   return null;
+  // }
 }
 
 
 function writeString ( fpath,data_string )  {
-  try {
-    if (cache_enabled && cache.putItem(fpath,data_string))  {
-      // was put into cache, use asynchronous write
-      fs.writeFile ( fpath,data_string,function(err){
-        if (err)  {
-          log.error ( 20,'cannot write file ' + fpath );
-          console.error(err);
-        }
-      });
-    } else  {
-      fs.writeFileSync ( fpath,data_string );
-    }
-    return true;
-  } catch (e)  {
-    log.error ( 21,'cannot write file ' + fpath +
-                   ' error: ' + JSON.stringify(e) );
-    console.error(e);
-    return false;
-  }
+  cache.writeCache ( fpath,data_string,true );
+  // try {
+  //   if (cache_enabled && cache.putItem(fpath,data_string))  {
+  //     // was put into cache, use asynchronous write
+  //     fs.writeFile ( fpath,data_string,function(err){
+  //       if (err)  {
+  //         log.error ( 20,'cannot write file ' + fpath );
+  //         console.error(err);
+  //       }
+  //     });
+  //   } else  {
+  //     fs.writeFileSync ( fpath,data_string );
+  //   }
+  //   return true;
+  // } catch (e)  {
+  //   log.error ( 21,'cannot write file ' + fpath +
+  //                  ' error: ' + JSON.stringify(e) );
+  //   console.error(e);
+  //   return false;
+  // }
 }
 
 
@@ -259,7 +248,30 @@ function appendString ( fpath,data_string )  {
   }
 }
 
+function writeObject ( fpath,dataObject,force_sync=false )  {
 
+  let json_str = '';
+  try {
+    // json_str = JSON.stringify ( dataObject );
+    json_str = JSON.stringify ( dataObject,null,2 );
+  } catch (e) {
+    log.error ( 40,'attempt to write corrupt data object at ' + fpath +
+                   ' error: ' + JSON.stringify(e) );
+    console.error(e);
+    return false;
+  }
+
+  try {
+    return cache.writeCache ( fpath,json_str,force_sync );
+  } catch (e)  {
+    log.error ( 42,'cannot write file ' + fpath );
+    console.error(e);
+    return false;
+  }
+
+}
+
+/*
 function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
 
 // if (fpath.endsWith('projects.list'))
@@ -301,6 +313,7 @@ function writeObject ( fpath,dataObject,force_sync=false,callback_func=null )  {
   }
 
 }
+*/
 
 // ----------------------------------------------------------------------------
 

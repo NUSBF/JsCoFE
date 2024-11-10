@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.24   <--  Date of Last Modification.
+ *    10.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,23 @@ const log = require('./server.log').newLog(29);
 
 
 // ==========================================================================
+
+// these constants duplicate definitions in other files -- keep in sync
+
+const __userDataExt    = '.user';
+const __rationFileExt  = '.ration';
+const projectDataFName = 'project.meta';
+const projectDescFName = 'project.desc';
+const projectListFName = 'projects.list';
+const jobDataFName     = 'job.meta';
+const jobDirPrefix     = 'job_';
+
+const projectExt       = '.prj';
+const userProjectsExt  = '.projects';
+
+
+
+// --------------------------------------------------------------------------
 
 function Cache ( maxItems=0 )  {
   this.cache = {};
@@ -81,39 +98,94 @@ Cache.prototype.removeItems = function ( key_prefix )  {
       delete this.cache[keys[i]];
 }
 
-
-Cache.prototype.getItem = function ( key )  {
+Cache.prototype.readCache = function ( key,fpath )  {
+  
   if (key in this.cache)
-    return this.cache[key];
+    return this.cache[key].data;
+
+  if (fpath)  {
+    try {
+      let data_str = fs.readFileSync(fpath).toString();
+      this.cache[key] = {
+        data : data_str,
+        sync : true
+      };
+      this.trim();
+      return data_str;
+    } catch (e)  {
+      if (e.code !== 'ENOENT')  {
+        log.error ( 1, e.message + ' when reading ' + fpath );
+        console.error ( e );
+      }
+    }
+  }
+
   return null;
+
 }
 
-Cache.prototype.putItem = function ( key,item )  {
-  this.cache[key] = item;
-  this.trim();
+
+function write_async ( fpath,item )  {
+  item.sync = true;
+  fs.writeFile ( fpath,item.data,function(err){
+    if (err)  {
+      log.error ( 2,'cannot write file ' + fpath );
+      console.error(err);
+      item.sync = false;  // however we do not attempt another write here
+    } else if (!item.sync)  {
+      // was rewritten during flush
+      write_async ( fpath,item );
+    }
+  });
+}
+
+Cache.prototype.writeCache = function ( key,data_str,fpath,force_sync )  {
+
+  let sync = false;
+  
+  if (cache_enabled)  {
+    if (key in this.cache)  {
+      // necessary doing it this way for concurrent async requests not to clash
+      sync = this.cache[key].sync;
+      this.cache[key].data = data_str;
+      this.cache[key].sync = false;
+    } else  {
+      this.cache[key] = {
+        data : data_str,
+        sync : false
+      }
+      this.trim();
+    }
+  }
+  
+  if (fpath)  {
+    if (force_sync || (!cache_enabled))  {
+      try {
+        fs.writeFileSync ( fpath,data_str );
+        return true;
+      } catch (e)  {
+        log.error ( 3,'cannot write file ' + fpath );
+        console.error(e);
+        return false;
+      }
+    } else if (!sync)  {
+      write_async ( fpath,this.cache[key] );
+    }
+  }
+
+  return true;
+
 }
 
 Cache.prototype.usedMemory = function()  {
   let used_memory = 0;
   for (let key in this.cache)
-    used_memory += JSON.stringify(this.cache[key]).length + key.length;
+    used_memory += JSON.stringify(this.cache[key].data).length + key.length + 4;
   return used_memory;
 }
 
+
 // --------------------------------------------------------------------------
-
-// these constants duplicate definitions in other files -- keep in sync
-
-const __userDataExt    = '.user';
-const __rationFileExt  = '.ration';
-const projectDataFName = 'project.meta';
-const projectDescFName = 'project.desc';
-const projectListFName = 'projects.list';
-const jobDataFName     = 'job.meta';
-const jobDirPrefix     = 'job_';
-
-const projectExt       = '.prj';
-const userProjectsExt  = '.projects';
 
 
 // Assume 50 projects/user on average; this is important only for repeat
@@ -138,6 +210,7 @@ const cache_list = {
 
 var cache_enabled = false;
 
+
 function configureCache ( ncache )  {
   // ncache is an estimated number of users working simultaneously in the system
   cache_enabled = (ncache>0);
@@ -150,6 +223,7 @@ function configureCache ( ncache )  {
   } else
     log.standard ( 2,'metadata cache is turned off' );
 }
+
 
 function isCacheEnabled()  {
   return cache_enabled;
@@ -170,14 +244,14 @@ function getFileKey ( fpath )  {
   let index = fpath.lastIndexOf ( projectExt );
   if (index>0)  {
     let dpath  = fpath.substring ( 0,index ) + projectExt;
-    let dpath1 = path_cache.getItem ( dpath );
+    let dpath1 = path_cache.readCache ( dpath,null );
     if (!dpath1)  {
       let stat  = fs.lstatSync ( dpath );
       if (stat)  {
         if (stat.isSymbolicLink())
               dpath1 = fs.readlinkSync ( dpath )
         else  dpath1 = dpath;
-        path_cache.putItem ( dpath,dpath1 );
+        path_cache.writeCache ( dpath,dpath1,null );
       }
     }
     if (dpath1)  {    
@@ -189,6 +263,7 @@ function getFileKey ( fpath )  {
   }
   return null;
 }
+
 
 function getDirKey ( fpath )  {
   // This key is used at deleting directories. In this case, we do not check on
@@ -267,20 +342,46 @@ function removeDirItems ( dirpath )  {
 }
 
 
-function getItem ( fpath )  {
-  let r = selectCache ( fpath );
-  if (r.cache)
-    return r.cache.getItem ( r.key );
-  return null; // file operation is required
+function readCache ( fpath )  {
+
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      return r.cache.readCache ( r.key,fpath );
+  }
+
+  try {
+    return fs.readFileSync(fpath).toString();
+  } catch (e)  {
+    if (e.code !== 'ENOENT')  {
+      log.error ( 4, e.message + ' when reading ' + fpath );
+      console.error ( e );
+    }
+  }
+
+  return null;
+
 }
 
-function putItem ( fpath,item )  {
-  let r = selectCache ( fpath );
-  if (r.cache)  {
-    r.cache.putItem ( r.key,item );
-    return true;
+
+function writeCache ( fpath,data_string,force_sync )  {
+
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      return r.cache.writeCache ( r.key,data_string,fpath,force_sync );
   }
-  return false;
+
+  try {
+    fs.writeFileSync ( fpath,data_string );
+    return true;
+  } catch (e)  {
+    log.error ( 5,'cannot write file ' + fpath +
+                  ' error: ' + JSON.stringify(e) );
+    console.error(e);
+    return false;
+  }
+
 }
 
 
@@ -358,7 +459,7 @@ module.exports.itemExists        = itemExists;
 module.exports.removePathItem    = removePathItem;
 module.exports.removeItem        = removeItem;
 module.exports.removeDirItems    = removeDirItems;
-module.exports.getItem           = getItem;
-module.exports.putItem           = putItem;
+module.exports.readCache         = readCache;
+module.exports.writeCache        = writeCache;
 module.exports.memoryReport      = memoryReport;
 module.exports.printMemoryReport = printMemoryReport;
