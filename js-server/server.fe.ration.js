@@ -192,7 +192,7 @@ function updateResourceStats ( loginData,job_class,add_resource )  {
   let disk_space = 0.0;
   let cpu_time   = 0.0;
 
-  let pList = prj.readProjectList ( loginData );
+  let pList = prj.readProjectList ( loginData,1 );
   if (pList)  {
     for (let i=0;i<pList.projects.length;i++)  {
       let pdesc = pList.projects[i];
@@ -276,7 +276,7 @@ function updateProjectStats ( loginData,projectName,cpu_change,
       pData.desc.disk_space += disk_space_change;
       pData.desc.njobs      += njobs_change;
       prj.writeProjectData ( loginData,pData,true );
-      let pList = prj.readProjectList ( loginData );
+      let pList = prj.readProjectList ( loginData,1 );
       if (pList)  {
         let cpu_total_used   = 0.0;
         let disk_space_total = 0.0;
@@ -341,39 +341,13 @@ let r = getUserRation ( loginData );
 
 
 function calculateUserDiskSpace ( loginData )  {
-let pList = prj.readProjectList ( loginData );
+let pList = prj.readProjectList ( loginData,1 );
   if (pList)
     return calculate_user_disk_space ( loginData,pList );
   log.error ( 11,'cannot read project list at ' +
                  prj.getUserProjectListPath(loginData) );
   return getUserRation ( loginData );
 }
-
-
-/*
-function calculateUserDiskSpace ( loginData )  {
-let pList  = prj.readProjectList ( loginData );
-let rfpath = getUserRationFPath ( loginData );
-let r      = getUserRation      ( loginData );
-  if (r && pList)  {
-    let disk_space_total = 0.0;
-    for (let i=0;i<pList.projects.length;i++)  {
-      let pdesc = pList.projects[i];
-      if (pdesc.owner.login==loginData.login)
-        disk_space_total += pdesc.disk_space;
-    }
-    r.storage_used = disk_space_total;
-    // if (!utils.writeObject(rfpath,r))
-    //   log.error ( 9,'cannot save user ration at ' + rfpath );
-    saveUserRation ( loginData,r );
-  } else if (!r)
-    log.error ( 10,'cannot read user ration at ' + rfpath );
-  else
-    log.error ( 11,'cannot read project list at ' +
-                   prj.getUserProjectListPath(loginData) );
-  return r;
-}
-*/
 
 
 function maskProject ( loginData,projectName )  {

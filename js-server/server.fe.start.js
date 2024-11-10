@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    05.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,6 +63,8 @@ function start ( callback_func )  {
     log.standard ( 2,'NC[' + i + ']: type=' + ncConfigs[i].exeType +
                      ' url=' + ncConfigs[i].url() );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
+
+  utils.configureCache ( feConfig.cache );
 
   // read user login hash
   user.readUserLoginHash();
