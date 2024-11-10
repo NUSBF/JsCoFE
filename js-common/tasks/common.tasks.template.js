@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.10.24   <--  Date of Last Modification.
+ *    29.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -529,18 +529,19 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
     if (any_mobile_device)  {
       return ['client',
               'task is not available on mobile devices',
-              '<h3>CCP4 Cloud Client is required</h3>'+
+              '<h3>Local CCP4 setup is required</h3>'+
               'This task cannot be used when working with ' + app_name +
               ' from mobile devices.<br>In order to use the task, ' +
-              'access ' + app_name + ' via CCP4 Cloud Client,<br>' +
-              'found in CCP4 Software Suite.'];
+              'access ' + app_name + ' via launch icon,<br>' +
+              'found in CCP4 setup on your PC.'];
     } else  {
       return ['client',
-              'task is available only if started via CCP4 Cloud Client',
-              '<h3>CCP4 Cloud Client is required</h3>' +
+              'task is available only if started from ' + app_name + 
+              ' icon in local CCP4 setup',
+              '<h3>Local CCP4 setup is required</h3>' +
               'This task can be used only if ' + app_name +
-              ' was accessed via CCP4 Cloud Client,<br>found in ' +
-              'CCP4 Software Suite.'];
+              ' was accessed via launch icon,<br>found in ' +
+              'CCP4 setup on your PC.'];
     }
   }
 
@@ -548,12 +549,12 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
       (!local_service) && (!cloud_storage))  {
     // task require either client or cloud storage but neither is given
     return ['client-storage',
-            'task is available only if started via CCP4 Cloud Client ' +
-            'or if Cloud Storage is configured',
-            '<h3>CCP4 Cloud Client is required</h3>' +
+            'task is available only if started from ' + app_name + 
+            ' icon in CCP4 setup or if Cloud Storage is configured',
+            '<h3>Local CCP4 setup is required</h3>' +
             'This task can be used only if ' + app_name +
-            ' was accessed via ' + app_name + ' Client,<br>found in ' +
-            'CCP4 Software Suite, or if user has access to ' +
+            ' was accessed via ' + app_name + ' icon,<br>found in ' +
+            'CCP4 setup on your PC, or if user has access to ' +
             'Cloud Storage.'];
   }
 
@@ -614,10 +615,10 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
       // task requires client of higher version
       return ['client-version',
               'task requires a higher version of CCP4 Cloud Client ' +
-              '(update CCP4 on your device)',
+              '(update CCP4 setup on your device)',
               '<h3>Too low version of CCP4 Cloud Client</h3>' +
               'This task requires a higher version of CCP4 Cloud ' +
-              'Client.<br>Please update CCP4 Software Suite on ' +
+              'Client.<br>Please update CCP4 setup on ' +
               'your device.'];
     }
 

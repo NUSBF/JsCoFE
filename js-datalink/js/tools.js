@@ -91,11 +91,11 @@ class tools {
     return true;
   }
 
-  static async removeEmptySubDirs(dir, depth = 0) {
+  static async removeEmptySubDirs(dir, older_than = new Date(), depth = 0) {
     const msg = 'removeEmptySubDirs';
-
+    let stat;
     try {
-      const stat = await pfs.lstat(dir);
+      stat = await pfs.lstat(dir);
       if (! stat.isDirectory()) {
         return;
       }
@@ -107,7 +107,7 @@ class tools {
     let files = await pfs.readdir(dir);
     if (files.length > 0) {
       const map = files.map(
-        (file) => this.removeEmptySubDirs(path.join(dir, file), depth + 1)
+        (file) => this.removeEmptySubDirs(path.join(dir, file), older_than, depth + 1)
       );
       // wait on all promises to complete
       await Promise.all(map);
@@ -116,7 +116,9 @@ class tools {
       files = await pfs.readdir(dir);
     }
 
-    if (depth > 0 && files.length == 0) {
+    // if depth is greater than 0 (so we don't remove the top level) and there are no more files
+    // and the modified date of the directory is older than requested date then remove
+    if (depth > 0 && files.length == 0 && stat.mtime < older_than) {
       try {
         await pfs.rmdir(dir);
       } catch (err) {

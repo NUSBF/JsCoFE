@@ -502,16 +502,16 @@ let nc_servers = conf.getNCConfigs();
   let s = '';
   for (let i=0;i<nc_servers.length;i++)  {
     let s1 = ' ';
-    if ((i==nc_selected) && (i==last_number_cruncher))  s1 += '^*';
-    else if (i==last_number_cruncher)  s1 += ' ^';
-    else if (i==nc_selected)  s1 += ' *';
-    else s1 += '  ';
-    s1 += i + '[' + nc_servers[i].capacity + ']:';
+    if ((i==nc_selected) && (i==last_number_cruncher))  s1 += '!';
+    else if (i==last_number_cruncher)  s1 += '^';
+    else if (i==nc_selected)  s1 += '*';
+    else if (i>0)  s1 += ' ';
     if (!nc_servers[i].in_use)
-      s1 += 'NIU';
+      s1 += (i+1) + ':NIU';
     else if (nc_servers[i].exeType=='CLIENT')
-      s1 += 'CLIENT';
+      s1 += (i+1) + ':CLIENT';
     else {
+      s1 += (i+1) + '[' + nc_servers[i].capacity + ']';
       let s2 = Math.round ( 100*(1-nc_servers[i].current_capacity/nc_servers[i].capacity) ) + '%';
       while (s2.length<4)  s2 += ' ';
       s1 += s2;
