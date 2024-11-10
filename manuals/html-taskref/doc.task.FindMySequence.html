@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -268,7 +267,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-findmysequence--page-root" class="md-nav__link">findMySequence: protein sequence identification</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -365,7 +364,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-findmysequence--page-root" class="md-nav__link">findMySequence: protein sequence identification</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -382,32 +381,32 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-findmysequence--page-root">findMySequence: protein sequence identification<a class="headerlink" href="#doc-task-findmysequence--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="findmysequence-protein-sequence-identification">
+<h1 id="doc-task-findmysequence--page-root">findMySequence: protein sequence identification<a class="headerlink" href="#doc-task-findmysequence--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference external" href="https://gitlab.com/gchojnowski/findmysequence" rel="noopener noreferrer" target="_blank">findMySequence</a> is a neural-network-based approach for the identification of unknown proteins in X-ray crystallography and cryo-EM. Given a protein model (side-chains are ignored) and corresponding crystallographic <strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> map the program will identify most likely sequence from a database.</p>
 <p>The findMySequeden can be used for</p>
 <ul class="simple">
-<li>the identification of unknown proteins in your crystal (eg. contaminants) following structure determination with <a class="reference internal" href="doc.task.Simbad.html"><span class="doc">SIMBAD</span></a></li>
-<li>validating sequence of an existing model (finding a sequence that better fits the data)</li>
+<li><p>the identification of unknown proteins in your crystal (eg. contaminants) following structure determination with <a class="reference internal" href="doc.task.Simbad.html"><span class="doc">SIMBAD</span></a></p></li>
+<li><p>validating sequence of an existing model (finding a sequence that better fits the data)</p></li>
 </ul>
 <p>The findMySequence uses residue-type probability estimates and <a class="reference external" href="http://hmmer.org/" rel="noopener noreferrer" target="_blank">HMMER</a> suite for making queries. Hits are scored with E-value; the lower the E-value, the higher is the probability that a sequence is correct.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">There is usually no need to modify your model and map prior making queries; model-bias is already addressed in REFMAC’s maximum likelihood <strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> maps. However, removing obvious tracing errors and gaps in the model followed by a quick restrained refinement may help to identify a correct sequence in difficult cases.</p>
+<p class="admonition-title">Note</p>
+<p>There is usually no need to modify your model and map prior making queries; model-bias is already addressed in REFMAC’s maximum likelihood <strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> maps. However, removing obvious tracing errors and gaps in the model followed by a quick restrained refinement may help to identify a correct sequence in difficult cases.</p>
 </div>
-
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<section id="parameters">
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
 <p><strong>Model fragment selection</strong> By default findMySequence will use complete input model for queries. Here, you can select specific chain or residue range.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">For heteromultimers chain sequences may be identified sequentially</p>
+<p class="admonition-title">Note</p>
+<p>For heteromultimers chain sequences may be identified sequentially</p>
 </div>
 <p><strong>UniProt proteome identifier</strong>  Identifier (UPID) of a proteome for querying sequences (will be downloaded automatically from UniProt). By default the program uses a database of all PDB sequences from <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a>.</p>
 <p><strong>Number of best sequence hits to show</strong> By default 3 most plausible sequence hits are selected. This number can be increased if more hits are expected.</p>
 <p><strong>REFERENCES</strong></p>
 <p><a class="reference external" href="https://journals.iucr.org/m/issues/2022/01/00/pw5018/" rel="noopener noreferrer" target="_blank">Grzegorz Chojnowski, Adam J. Simpkin, Diego A. Leonardo, Wolfram Seifert-Davila, Dan E. Vivas-Ruiz, Ronan M. Keegan, Daniel J. Rigden (2022) findMySequence: a neural-network-based approach for identification of unknown proteins in X-ray crystallography and cryo-EM. IUCrJ 9, 86-97.;</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -428,7 +427,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Ample </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Ample </span>
               </div>
             </a>
           
@@ -438,7 +437,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Molecular Replacement </span>
+                class="md-footer-nav__direction"> "Next" </span> Molecular Replacement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -452,7 +451,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

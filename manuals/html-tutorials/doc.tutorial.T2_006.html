@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -227,7 +226,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t2-006--page-root" class="md-nav__link">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -407,7 +406,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t2-006--page-root" class="md-nav__link">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -446,20 +445,21 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-006--page-root"><span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-006--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="determining-the-structure-of-twinned-crystals-using-molecular-replacement">
+<h1 id="doc-tutorial-t2-006--page-root"><span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-006--page-root" title="Permalink to this heading">¶</a></h1>
 <p>In this tutorial, we will guide you through the process of determining the structure of twinned crystals using Molecular Replacement. We will use the SH3-like domain from the <em>Penicillium virgatum</em> muramidase as an example (<a class="reference external" href="https://www.rcsb.org/structure/8B2G" rel="noopener noreferrer" target="_blank">PDB_ID 8B2G</a>).</p>
 <p><em>All data required for this tutorial were already imported into the project. Please look at the import’s task output.</em></p>
-
-<h2 id="step-1-merge-data-with-aimless"><span class="section-number">7.1. </span>Step 1: Merge Data with Aimless<a class="headerlink" href="#step-1-merge-data-with-aimless" title="Permalink to this headline">¶</a></h2>
+<section id="step-1-merge-data-with-aimless">
+<h2 id="step-1-merge-data-with-aimless"><span class="section-number">7.1. </span>Step 1: Merge Data with Aimless<a class="headerlink" href="#step-1-merge-data-with-aimless" title="Permalink to this heading">¶</a></h2>
 <p>Since we are dealing with unmerged data, the first step is to merge them using the “Merging and Scaling with Aimless” task:</p>
 <ul class="simple">
-<li>Click on “Add Task.”</li>
-<li><dl class="first docutils">
-<dt>Go to “All Tasks” &gt; “Data Processing” &gt; “Merging and Scaling with</dt><dd>Aimless.”</dd>
+<li><p>Click on “Add Task.”</p></li>
+<li><dl class="simple">
+<dt>Go to “All Tasks” &gt; “Data Processing” &gt; “Merging and Scaling with</dt><dd><p>Aimless.”</p>
+</dd>
 </dl>
 </li>
-<li>Use default parameters and click the “Run” button.</li>
+<li><p>Use default parameters and click the “Run” button.</p></li>
 </ul>
 <p>Once the task is finished you can find lots of useful information about the tasks performance in the output tab.</p>
 <p>For the purpose of this tutorial, we will pay close attention to the <strong>Anisotropy analysis of CC(1/2) and I/sd, 1</strong> graph (can be found in
@@ -472,75 +472,75 @@ of CC(1/2) and I/sd, 1</strong></p>
 <img alt="_images/image_3.png" class="align-center" src="_images/image_3.png"/>
 <p>CC1/2 is a correlation coefficient between two halves of the original dataset with multiple observations distributed randomly between the two
 halves. This is independent of estimates of σ(I). CC1/2 = 1 means signal, CC1/2 = 0 means noise. Resolution cut off is usually chosen where CC1/2 is between 0.2 and 0.5.</p>
-
-
-<h2 id="step-2-resolution-cut-off"><span class="section-number">7.2. </span>Step 2: Resolution Cut-off<a class="headerlink" href="#step-2-resolution-cut-off" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-2-resolution-cut-off">
+<h2 id="step-2-resolution-cut-off"><span class="section-number">7.2. </span>Step 2: Resolution Cut-off<a class="headerlink" href="#step-2-resolution-cut-off" title="Permalink to this heading">¶</a></h2>
 <p>Determine an appropriate resolution cut-off based on the Anisotropy analysis of CC(1/2) and I/sd, 1. Clone the existing “<strong>Merging and
 Scaling with Aimless”</strong> task and set the <strong>high-resolution cut-off to 1.5 Å</strong> in the Basic options menu, as shown below</p>
 <img alt="_images/image_4.png" class="align-center" src="_images/image_4.png"/>
 <p>Then, run the task.</p>
-
-
-<h2 id="step-3-define-asymmetric-unit-content"><span class="section-number">7.3. </span>Step 3: Define Asymmetric Unit Content<a class="headerlink" href="#step-3-define-asymmetric-unit-content" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-3-define-asymmetric-unit-content">
+<h2 id="step-3-define-asymmetric-unit-content"><span class="section-number">7.3. </span>Step 3: Define Asymmetric Unit Content<a class="headerlink" href="#step-3-define-asymmetric-unit-content" title="Permalink to this heading">¶</a></h2>
 <p>Define the Asymmetric Unit content:</p>
 <ul class="simple">
-<li>Click on “Add Task.”</li>
-<li>Go to “All Tasks” &gt; “Asymmetric Unit and Structure Revision” &gt; “Asymmetric Unit Contents.”</li>
-<li>Run the task.</li>
+<li><p>Click on “Add Task.”</p></li>
+<li><p>Go to “All Tasks” &gt; “Asymmetric Unit and Structure Revision” &gt; “Asymmetric Unit Contents.”</p></li>
+<li><p>Run the task.</p></li>
 </ul>
 <p>Note: you can also find tasks by typing <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>.</p>
-
-
-<h2 id="step-4-prepare-mr-model"><span class="section-number">7.4. </span>Step 4: Prepare MR Model<a class="headerlink" href="#step-4-prepare-mr-model" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-4-prepare-mr-model">
+<h2 id="step-4-prepare-mr-model"><span class="section-number">7.4. </span>Step 4: Prepare MR Model<a class="headerlink" href="#step-4-prepare-mr-model" title="Permalink to this heading">¶</a></h2>
 <p>Since you already have a homology structure, create a Molecular Replacement (MR) model using the “Prepare Single-Chain MR Model(s) from Coordinate Data” task:</p>
 <ul class="simple">
-<li>Click on “Add Task.”</li>
-<li>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Prepare Single-Chain MR Model(s) from Coordinate Data.”</li>
-<li>Use default parameters (<strong>Modification protocol: Molrep</strong>)</li>
-<li>Run the task.</li>
+<li><p>Click on “Add Task.”</p></li>
+<li><p>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Prepare Single-Chain MR Model(s) from Coordinate Data.”</p></li>
+<li><p>Use default parameters (<strong>Modification protocol: Molrep</strong>)</p></li>
+<li><p>Run the task.</p></li>
 </ul>
-
-
-<h2 id="step-5-run-molecular-replacement"><span class="section-number">7.5. </span>Step 5: Run Molecular Replacement<a class="headerlink" href="#step-5-run-molecular-replacement" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-5-run-molecular-replacement">
+<h2 id="step-5-run-molecular-replacement"><span class="section-number">7.5. </span>Step 5: Run Molecular Replacement<a class="headerlink" href="#step-5-run-molecular-replacement" title="Permalink to this heading">¶</a></h2>
 <p>Created models can now be used in
 <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> or <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
 <p>In this tutorial we will use Molrep for Molecular Replacement:</p>
 <ul class="simple">
-<li>Click on “Add Next Job.”</li>
-<li>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Molecular Replacement with Molrep.”</li>
+<li><p>Click on “Add Next Job.”</p></li>
+<li><p>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Molecular Replacement with Molrep.”</p></li>
 </ul>
-
-
-<h2 id="step-6-refinement"><span class="section-number">7.6. </span>Step 6: Refinement<a class="headerlink" href="#step-6-refinement" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-6-refinement">
+<h2 id="step-6-refinement"><span class="section-number">7.6. </span>Step 6: Refinement<a class="headerlink" href="#step-6-refinement" title="Permalink to this heading">¶</a></h2>
 <p>After finding the MR solution, refine the positioned model with Refmac.</p>
 <p>In the early stages of refinement (e.g. straight after MR) it’s advised to run many cycles (up to 200 with jelly body restraints) of refinement. We will run 100 cycles, as shown below</p>
 <ul class="simple">
-<li>Add the next job.</li>
-<li>Go to “All Tasks” &gt; “Refinement and Model Building” &gt; “Refinement with Refmac.”</li>
-<li>Run 100 cycles of refinement with jelly-body restrains.</li>
+<li><p>Add the next job.</p></li>
+<li><p>Go to “All Tasks” &gt; “Refinement and Model Building” &gt; “Refinement with Refmac.”</p></li>
+<li><p>Run 100 cycles of refinement with jelly-body restrains.</p></li>
 </ul>
 <img alt="_images/image_5.png" class="align-center" src="_images/image_5.png"/>
-
-
-<h2 id="step-7-analyze-r-factors"><span class="section-number">7.7. </span>Step 7: Analyze R Factors<a class="headerlink" href="#step-7-analyze-r-factors" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-7-analyze-r-factors">
+<h2 id="step-7-analyze-r-factors"><span class="section-number">7.7. </span>Step 7: Analyze R Factors<a class="headerlink" href="#step-7-analyze-r-factors" title="Permalink to this heading">¶</a></h2>
 <p>Once the Refmac task is finished, check the R factors. If they remain high, it indicates an issue with the data.</p>
 <img alt="_images/image_6.png" class="align-center" src="_images/image_6.png"/>
 <p>To investigate further, return to the Aimless task results.</p>
-
-
-<h2 id="step-8-check-data-for-twinning"><span class="section-number">7.8. </span>Step 8: Check data for twinning<a class="headerlink" href="#step-8-check-data-for-twinning" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-8-check-data-for-twinning">
+<h2 id="step-8-check-data-for-twinning"><span class="section-number">7.8. </span>Step 8: Check data for twinning<a class="headerlink" href="#step-8-check-data-for-twinning" title="Permalink to this heading">¶</a></h2>
 <p>Now we will more carefully examine the data to check for the presence of twinning. During the data processing phase, twinning has the potential to hinder us in accurately determining the appropriate space group. If the space group is assumed wrong, the structure cannot be solved and therefore it’s important to identify twinning in the early stages. In some cases, individual crystals of the twin have pseudosymmetry, whose rotational component nearly coincides with the twin operation. In such cases, a pseudosolution in a wrong higher symmetry space group is possible, which might have a high contrast in the MR search, but will eventually fail to refine to reasonable stats (as we have just observed).</p>
 <p><strong>L-Test Analysis</strong>: The L-test is a statistical test based on experimental merged data and designed to identify twinning without guessing the twin operation. It is nearly insensitive to pseudotranslation and anisotropy of the data and is the most frequently used twinning test in MX. In its “manual” version, we have to compare the experimental cumulative distribution of the statistic L with its theoretical distribution for untwinned data (a straight line). Even a minor deviation from untwinned statistics is a warning sign. The theoretical distribution for perfect twins is usually provided as a reference as well.</p>
 <img alt="_images/image_7.png" class="align-center" src="_images/image_7.png"/>
 <ul class="simple">
-<li><strong>Summary Warning</strong>: If the L-test indicates that the data may be twinned, you may encounter a warning in the summary section of the Aimless result.</li>
+<li><p><strong>Summary Warning</strong>: If the L-test indicates that the data may be twinned, you may encounter a warning in the summary section of the Aimless result.</p></li>
 </ul>
 <p>That means that we probably should reconsider the space group of our
 crystal.</p>
 <img alt="_images/image_8.png" class="align-center" src="_images/image_8.png"/>
-
-
-<h2 id="step-9-identify-the-correct-space-group"><span class="section-number">7.9. </span>Step 9: Identify the correct space group<a class="headerlink" href="#step-9-identify-the-correct-space-group" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-9-identify-the-correct-space-group">
+<h2 id="step-9-identify-the-correct-space-group"><span class="section-number">7.9. </span>Step 9: Identify the correct space group<a class="headerlink" href="#step-9-identify-the-correct-space-group" title="Permalink to this heading">¶</a></h2>
 <p>In this step, we will determine the most appropriate space group for the crystal based on the presence of screw axes and the information from symmetry determination tables in the Aimless report.</p>
 <p>Axial reflections, axis c (lattice frame) screw axis 2(1) graph suggest the presence of Screw Axes</p>
 <img alt="_images/image_9.png" class="align-center" src="_images/image_9.png"/>
@@ -551,31 +551,31 @@ crystal.</p>
 <p>Identifying the correct space group is crucial for crystallographic analysis because it defines the symmetry elements and constraints that will be applied during data processing and refinement. Selecting the correct space group ensures that the crystallographic model accurately reflects the crystal’s true symmetry and leads to a more accurate determination of the crystal structure.</p>
 <img alt="_images/image_11.png" class="align-center" src="_images/image_11.png"/>
 <a class="reference internal image-reference" href="_images/image_12.png"><img alt="_images/image_12.png" class="align-center" src="_images/image_12.png" style="width: 253.0px; height: 43.0px;"/></a>
-
-
-<h2 id="step-10-process-data-in-correct-space-group"><span class="section-number">7.10. </span>Step 10: Process Data in Correct Space Group<a class="headerlink" href="#step-10-process-data-in-correct-space-group" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-10-process-data-in-correct-space-group">
+<h2 id="step-10-process-data-in-correct-space-group"><span class="section-number">7.10. </span>Step 10: Process Data in Correct Space Group<a class="headerlink" href="#step-10-process-data-in-correct-space-group" title="Permalink to this heading">¶</a></h2>
 <p>Clone the Aimless task with resolution cut-off and Select <strong>P 1 2/m 1 as the Patterson group and</strong> <strong>P1 21 1 as the space group.</strong> As shown below.</p>
 <img alt="_images/image_13.png" class="align-center" src="_images/image_13.png"/>
 <p>Run the task</p>
-
-
-<h2 id="step-10-repeat-steps-4-8-in-new-space-group"><span class="section-number">7.11. </span>Step 10: Repeat Steps 4-8 in New Space Group<a class="headerlink" href="#step-10-repeat-steps-4-8-in-new-space-group" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-10-repeat-steps-4-8-in-new-space-group">
+<h2 id="step-10-repeat-steps-4-8-in-new-space-group"><span class="section-number">7.11. </span>Step 10: Repeat Steps 4-8 in New Space Group<a class="headerlink" href="#step-10-repeat-steps-4-8-in-new-space-group" title="Permalink to this heading">¶</a></h2>
 <p>Repeat Steps 4 to 8 in the new space group (P 1 21 1). Check if the R factors have improved:</p>
 <img alt="_images/image_14.png" class="align-center" src="_images/image_14.png"/>
 <p>As you can see, in the P1 21 1 space group R factors dropped to 0.3, which allows us to perform twin refinement. It is highly advised not to start twin refinement before R drops below 0.4. The reason is that, according to theoretical estimates, switching to twin refinement before this point will likely result in a drop in R-free even if the crystal was not actually a twin crystal.</p>
 <img alt="_images/image_15.png" class="align-center" src="_images/image_15.png"/>
-
-
-<h2 id="step-11-twin-refinement"><span class="section-number">7.12. </span>Step 11: Twin refinement<a class="headerlink" href="#step-11-twin-refinement" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="step-11-twin-refinement">
+<h2 id="step-11-twin-refinement"><span class="section-number">7.12. </span>Step 11: Twin refinement<a class="headerlink" href="#step-11-twin-refinement" title="Permalink to this heading">¶</a></h2>
 <p>Run 100 cycles of refinement with jelly-body restrains + change the <strong>Refine using</strong> the field to <strong>Mean Amplitudes assuming twinning</strong>.</p>
 <a class="reference internal image-reference" href="_images/image_16.png"><img alt="_images/image_16.png" class="align-center" src="_images/image_16.png" style="width: 743.0px; height: 243.0px;"/></a>
 <p>While the job is running, the results page will be updated. Summary information will be displayed in the <strong>Report</strong> tab.</p>
 <p>Twinning information can be found in the REFMAC5 log file, which is displayed in the <strong>Main Log</strong> tab.</p>
 <ul class="simple">
-<li>Once the job is finished, select the <strong>Main Log</strong> tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find,etc.) in order to search for the word <strong>twin</strong> in the log file. Cycle through the results in order to find information about potential twinning in this dataset.</li>
+<li><p>Once the job is finished, select the <strong>Main Log</strong> tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find,etc.) in order to search for the word <strong>twin</strong> in the log file. Cycle through the results in order to find information about potential twinning in this dataset.</p></li>
 </ul>
-
-
+</section>
+</section>
 
 
           </article>
@@ -596,7 +596,7 @@ crystal.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">6. </span>MR with predicted model </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>MR with predicted model </span>
               </div>
             </a>
           
@@ -606,7 +606,7 @@ crystal.</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">8. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -620,7 +620,7 @@ crystal.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

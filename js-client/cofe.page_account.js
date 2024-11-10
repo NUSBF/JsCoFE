@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.24   <--  Date of Last Modification.
+ *    31.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -357,7 +357,7 @@ function AccountPage ( sceneId )  {
         .setFontSize ( '90%' ).setFontItalic(true);
 
   let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
-  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy CloudRun Id to clipboard' );
+  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
   cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
   cloudrun_copy_btn.addOnClickListener ( function(){
     copyToClipboard ( cloudrun_inp.getValue() );
@@ -365,8 +365,7 @@ function AccountPage ( sceneId )  {
 
   let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
   cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
-                            'security reasons). Note that your CloudRun scripts ' +
-                            'will need to be updated with the new Id.' );
+                            'security reasons)' );
   cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
   cloudrun_btn.addOnClickListener ( function(){
     cloudrun_inp.setValue ( getRandomToken() );
@@ -559,7 +558,7 @@ function AccountPage ( sceneId )  {
       pswd_inp.setStyle    ( 'password','','Your password','' );
       pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
       inputBox.setText ( '','msg_confirm' );
-      ibx_grid  = inputBox.grid;
+      let ibx_grid  = inputBox.grid;
       ibx_grid .setWidget  ( new Label(
         '<h2>Delete My Account</h2>' +
         'Your account will be deleted, are you sure?<p>' +
