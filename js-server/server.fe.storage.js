@@ -308,7 +308,7 @@ let slist = new storage.StorageList()
       let fstr0 = file_tuple[0];
       let fstr1 = file_tuple[1];
       let fpath = path.join ( rpath,fstr0 );
-      let stat  = utils.fileExists(fpath);
+      let stat  = utils.fileStat(fpath);
       if (stat) {
         if (fstr1 == 'dir') {
           sdir      = new storage.StorageDir();
@@ -398,7 +398,7 @@ let slist = null;
           let fstr0 = file_tuple[0];
           let fstr1 = file_tuple[1];
           let fpath = path.join ( dirpath,fstr0 );
-          let stat  = utils.fileExists(fpath);
+          let stat  = utils.fileStat(fpath);
           if (stat) {
             if (fstr1 == 'dir') {
               sdir      = new storage.StorageDir();

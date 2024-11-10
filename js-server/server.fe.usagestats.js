@@ -347,7 +347,7 @@ let total_diff = 0;
 
   for (let i=0;i<users.length;i++)  {
 
-    let pList = prj.readProjectList ( users[i] );
+    let pList = prj.readProjectList ( users[i],1 );
     if (pList)  {
 
       let uData = users[i];

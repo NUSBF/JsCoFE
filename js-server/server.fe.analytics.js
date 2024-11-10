@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.10.24   <--  Date of Last Modification.
+ *    03.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -318,8 +318,9 @@ function getCountry ( code )  {
 
 
 function FEAnalytics()  {
-  this.activity = {};
-  this.doclog   = {};
+  this.activity    = {};
+  this.doclog      = {};
+  this.performance = {};
 }
 
 FEAnalytics.prototype.userLogin = function ( userData )  {
@@ -332,6 +333,11 @@ FEAnalytics.prototype.userLogin = function ( userData )  {
   this.activity[userData.login].domain    = dlist.slice(dlist.length-n).join('.');
   this.activity[userData.login].lastLogin = Date.now();
   this.activity[userData.login].lastSeen  = this.activity[userData.login].lastLogin;
+}
+
+FEAnalytics.prototype.lastSeen = function ( ulogin )  {
+  if (ulogin in this.activity)
+    return this.activity[ulogin].lastSeen;
 }
 
 FEAnalytics.prototype.logPresence = function ( ulogin,t )  {
@@ -351,6 +357,18 @@ let fname = path.parse(fpath).base;
       this.doclog[fpath] = 1;
   } else
     this.doclog[fpath]++;
+}
+
+FEAnalytics.prototype.logPerformance = function ( title,time,weight )  {
+  if (title in this.performance)  {
+    this.performance[title].time   += time;
+    this.performance[title].weight += weight;
+  } else  {
+    this.performance[title] = {
+      time   : time,
+      weight : weight
+    };
+  }
 }
 
 function add_to_uhash ( country,domain,uhash )  {
@@ -479,7 +497,8 @@ function readFEAnalytics()  {
     if (obj)  {
       feAnalytics = new FEAnalytics();
       for (let key in obj)
-        feAnalytics[key] = obj[key];
+        if (key!='performance')
+          feAnalytics[key] = obj[key];
       lastSaved = Date.now();
     } else
       writeFEAnalytics();
@@ -505,6 +524,9 @@ function logPresence ( ulogin )  {
     writeFEAnalytics();
 }
 
+function logPerformance ( title,time,weight )  {
+  feAnalytics.logPerformance ( title,time,weight );
+}
 
 // ==========================================================================
 // export for use in node
@@ -513,3 +535,4 @@ module.exports.readFEAnalytics  = readFEAnalytics;
 module.exports.writeFEAnalytics = writeFEAnalytics;
 module.exports.getFEAnalytics   = getFEAnalytics;
 module.exports.logPresence      = logPresence;
+module.exports.logPerformance   = logPerformance;
