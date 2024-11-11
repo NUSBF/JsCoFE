@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.08.23   <--  Date of Last Modification.
+ *    11.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2023
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -93,20 +93,20 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     delete this.disk_total_users;
   }
 
-  var currDate = Date.now();
-  var n0 = this.njobs.length;
+  let currDate = Date.now();
+  let n0 = this.njobs.length;
   while (currDate-this.currentDate>day_ms)  {
     this.currentDate += day_ms;
     this.njobs.push(0);
     this.cpu  .push(0);
-    for (var vname in this.volumes)  {
+    for (let vname in this.volumes)  {
       if (!('committed' in this.volumes[vname]))
         this.volumes[vname].committed = Array(this.volumes[vname].free.length).fill(0)
       this.volumes[vname].free.push ( this.volumes[vname].free[n0-1] );
       this.volumes[vname].committed.push ( this.volumes[vname].committed[n0-1] );
     }
   }
-  var n1 = this.njobs.length-1;
+  let n1 = this.njobs.length-1;
   this.njobs[n1]++;
 
   if (job_class)  {
@@ -125,9 +125,9 @@ UsageStats.prototype.registerJob = function ( job_class )  {
         'last_used'   : 0,
         'last_failed' : 0
       };
-    var ts = this.tasks[job_class.title];
+    let ts = this.tasks[job_class.title];
     ts.nuses++;
-    var today = new Date();
+    let today = new Date();
     ts.last_used = today.toISOString().slice(0,10);
     if (job_class.state==task_t.job_code.failed)  {
       ts.nfails++;
@@ -136,7 +136,7 @@ UsageStats.prototype.registerJob = function ( job_class )  {
     if (job_class.state==task_t.job_code.stopped)
       ts.nterms++;
 
-    var rf = (ts.nuses-1.0)/ts.nuses;
+    let rf = (ts.nuses-1.0)/ts.nuses;
     ts.cpu_time   = ts.cpu_time*rf   + job_class.cpu_time/ts.nuses;
     ts.disk_space = ts.disk_space*rf + job_class.disk_space/ts.nuses;
 
@@ -162,16 +162,16 @@ function getUsageReportFilePath ( fname )  {
 var usageStats = null;
 
 function registerJob ( job_class )  {
-var fe_config       = conf.getFEConfig();
-var statsDirPath    = path.join ( fe_config.storage,statsDirName );
-var statsFilePath   = path.join ( statsDirPath,statsFileName );
-var generate_report = false;
+let fe_config       = conf.getFEConfig();
+let statsDirPath    = path.join ( fe_config.storage,statsDirName );
+let statsFilePath   = path.join ( statsDirPath,statsFileName );
+let generate_report = false;
 
   if (!usageStats)  {
     usageStats = utils.readClass ( statsFilePath );
     if (!usageStats)  {
       if (utils.fileExists(statsFilePath))  {
-        var statsFilePath1 = statsFilePath + '.sav';
+        let statsFilePath1 = statsFilePath + '.sav';
         utils.copyFile ( statsFilePath,statsFilePath1 );
         log.warning ( 1,'usage stats reading error; ' + statsFilePath +
                       '\n               retained as ' + statsFilePath1  );
@@ -189,8 +189,8 @@ var generate_report = false;
 
   if (generate_report)  {
 
-    for (var vname in usageStats.volumes)  {
-      var committed = usageStats.volumes[vname].committed;
+    for (let vname in usageStats.volumes)  {
+      let committed = usageStats.volumes[vname].committed;
       committed[committed.length-1] = 0.0;
     }
 
@@ -200,7 +200,7 @@ var generate_report = false;
       if (users[i].dormant)  c = users[i].ration.storage_used;
                        else  c = users[i].ration.storage;
       if (users[i].volume in usageStats.volumes)  {
-        var committed = usageStats.volumes[users[i].volume].committed;
+        let committed = usageStats.volumes[users[i].volume].committed;
         committed[committed.length-1] += c/1024.0;  // from MB to GB
       }
     }
@@ -217,13 +217,13 @@ var generate_report = false;
     // generate usage report once in 24 hours
 
     log.standard ( 2,'generate usage stats report ...' );
-    var cmd_params = [ '-m', 'pycofe.proc.usagestats',
+    let cmd_params = [ '-m', 'pycofe.proc.usagestats',
                        statsFilePath,
                        statsDirPath,
                        'user_data', fe_config.userDataPath,
                        'storage',   fe_config.storage
                      ];
-    for (var fsname in fe_config.projectsPath)  {
+    for (let fsname in fe_config.projectsPath)  {
       cmd_params.push ( fsname );
       cmd_params.push ( fe_config.projectsPath[fsname].path );
     }
@@ -239,10 +239,10 @@ var generate_report = false;
     //              *** ./cofe-projects
     //              disk1 ./cofe-projects-1
 
-    var job = utils.spawn ( conf.pythonName(),cmd_params,{} );
+    let job = utils.spawn ( conf.pythonName(),cmd_params,{} );
     // make stdout and stderr catchers for debugging purposes
-    var stdout = '';
-    var stderr = '';
+    let stdout = '';
+    let stderr = '';
     job.stdout.on('data',function(buf){
       stdout += buf;
     });
@@ -256,7 +256,7 @@ var generate_report = false;
         log.error    ( 3,'failed to generate usage report, code=' + code +
                          '\n    stderr=\n' + stderr );
       } else  {
-        var ustats = utils.readClass ( statsFilePath );
+        let ustats = utils.readClass ( statsFilePath );
         if (ustats)  {
           usageStats = ustats;
           log.standard ( 2,'usage stats report generated' );
@@ -267,11 +267,11 @@ var generate_report = false;
 
     //  check for ccp4 updates once in 24 hours
 
-    var emailer_conf = conf.getEmailerConfig();
+    let emailer_conf = conf.getEmailerConfig();
     if (emailer_conf.type!='desktop')  {
       conf.checkOnUpdate ( function(code){
         if ((code>0) && (code<255))  {
-          var userData   = new ud.UserData();
+          let userData   = new ud.UserData();
           userData.name  = cmd.appName() + ' Maintainer';
           userData.email = emailer_conf.maintainerEmail;
           if (code==254)  {
@@ -280,7 +280,7 @@ var generate_report = false;
                          cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
           } else  {
             log.standard ( 21,code + ' CCP4 updates available, please apply' );
-            var txt = 'CCP4 Update is ';
+            let txt = 'CCP4 Update is ';
             if (code>1)
               txt = code + ' CCP4 Updates are '
             emailer.sendTemplateMessage ( userData,
@@ -294,12 +294,12 @@ var generate_report = false;
 
     /*
     if (process.env.hasOwnProperty('CCP4'))  {
-      var ccp4um_path = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
+      let ccp4um_path = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists())
         utils.spawn ( ccp4um_path,['-check-silent'] )
              .on('exit', function(code){
-               var emailer_conf = conf.getEmailerConfig();
-               var userData = null;
+               let emailer_conf = conf.getEmailerConfig();
+               let userData = null;
                if (emailer_conf.type!='desktop')  {
                  userData = new ud.UserData();
                  userData.name  = cmd.appName() + ' Mainteiner';
@@ -313,7 +313,7 @@ var generate_report = false;
                } else if ((0<code) && (code<254))  {
                  log.standard ( 21,code + ' CCP4 updates available, please apply' );
                  if (userData)  {
-                   var txt = 'CCP4 Update is ';
+                   let txt = 'CCP4 Update is ';
                    if (code>1)
                      txt = code + ' CCP4 Updates are '
                    emailer.sendTemplateMessage ( userData,

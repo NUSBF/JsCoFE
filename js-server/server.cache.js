@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.11.24   <--  Date of Last Modification.
+ *    11.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,6 +87,7 @@ Cache.prototype.itemExists = function ( key )  {
 }
 
 Cache.prototype.removeItem = function ( key )  {
+  // console.log ( ' >>>>>> remove key ' + key );
   if (key in this.cache)
     delete this.cache[key];
 }
@@ -105,6 +106,7 @@ Cache.prototype.readCache = function ( key,fpath )  {
 
   if (fpath)  {
     try {
+      // console.log ( ' >>>> cread-1 ' + fpath )
       let data_str = fs.readFileSync(fpath).toString();
       this.cache[key] = {
         data : data_str,
@@ -309,14 +311,19 @@ function selectCache ( fpath )  {
 
 
 function itemExists ( fpath )  {
-  let r = selectCache ( fpath );
-  if (r.cache)
-    return r.cache.itemExists ( r.key );
+// console.log ( ' >>> cexists ' + fpath );
+
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      return r.cache.itemExists ( r.key );
+  }
   return -1; // file operation is required
 }
 
 function removePathItem ( fpath )  {
-  if (fpath.endsWith(projectExt))  {
+  if (cache_enabled && fpath.endsWith(projectExt))  {
+// console.log ( ' >>> crpath' + fpath );
     let bname = path.basename ( fpath );
     let keys = Object.keys(path_cache.cache);
     for (let i=0;i<keys.length;i++)
@@ -326,23 +333,31 @@ function removePathItem ( fpath )  {
 }
 
 function removeItem ( fpath )  {
-  let r = selectCache ( fpath );
-  if (r.cache)
-    r.cache.removeItem ( r.key );
-  removePathItem ( fpath );
+// console.log ( ' >>> cremove ' + fpath );
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache)
+      r.cache.removeItem ( r.key );
+    removePathItem ( fpath );
+  }
 }
 
 function removeDirItems ( dirpath )  {
+// console.log ( ' >>> crmdir ' + dirpath );
   // to be used when a directory is removed
-  let key_prefix = getDirKey ( dirpath );
-  if (key_prefix)
-    for (let c in cache_list)
-      cache_list[c].removeItems ( key_prefix );
-  removePathItem ( dirpath );
+  if (cache_enabled)  {
+    let key_prefix = getDirKey ( dirpath );
+    if (key_prefix)
+      for (let c in cache_list)
+        cache_list[c].removeItems ( key_prefix );
+    removePathItem ( dirpath );
+  }
 }
 
 
 function readCache ( fpath )  {
+
+// console.log ( ' >>> cread ' + fpath );
 
   if (cache_enabled)  {
     let r = selectCache ( fpath );
@@ -351,6 +366,7 @@ function readCache ( fpath )  {
   }
 
   try {
+// console.log ( ' >>> cread-0 ' + fpath );
     return fs.readFileSync(fpath).toString();
   } catch (e)  {
     if (e.code !== 'ENOENT')  {
@@ -365,6 +381,8 @@ function readCache ( fpath )  {
 
 
 function writeCache ( fpath,data_string,force_sync )  {
+
+// console.log ( ' >>> cwrite ' + fpath );
 
   if (cache_enabled)  {
     let r = selectCache ( fpath );
