@@ -366,7 +366,7 @@ JobDialog.prototype.setDlgState = function()  {
 
 }
 
-JobDialog.prototype.getDlgSize = function ()  {
+JobDialog.prototype.getDlgSize = function()  {
   if (!__any_mobile_device)  {
     this.task.job_dialog_data.width  = this.width_px ();
     this.task.job_dialog_data.height = this.height_px();
@@ -377,7 +377,7 @@ JobDialog.prototype.getDlgSize = function ()  {
 }
 
 
-JobDialog.prototype.onDlgResize = function ()  {
+JobDialog.prototype.onDlgResize = function()  {
 
   //if (__any_mobile_device)
   //  return;
@@ -416,26 +416,22 @@ JobDialog.prototype.onDlgResize = function ()  {
 }
 
 
-JobDialog.prototype.setDlgSize = function()  {
+JobDialog.prototype.setDlgSize = function ( touch=0 )  {
   if (__any_mobile_device)  {
-    this.setSize_px ( this.initialWidth,this.initialHeight );
+    this.setSize_px ( this.initialWidth-touch,this.initialHeight-touch );
   } else  {
     if (this.task.job_dialog_data.height<=0)  {
       this.task.job_dialog_data.width  = this.width_px();
       this.task.job_dialog_data.height = this.initialHeight;
     }
-    this.setSize_px ( this.task.job_dialog_data.width,this.task.job_dialog_data.height );
+    this.setSize_px ( this.task.job_dialog_data.width-touch,
+                      this.task.job_dialog_data.height-touch );
   }
   this.onDlgResize();
 }
 
 JobDialog.prototype.close = function()  {
   this.delete();
-  // if (this._created)  {
-  //   // $(this.element).dialog ( 'close' );
-  //   $(this.element).dialog( 'destroy' );
-  //   this._created = false;
-  // }
 }
 
 
@@ -447,22 +443,27 @@ JobDialog.prototype.show = function()  {
   $(this.element).parent().show();
 }
 
-
 JobDialog.prototype.loadReport = function()  {
   if (this.outputPanel)  {  // check because the function may be called from outside
     let reportURL;
     if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
         __local_service && this.task.job_dialog_data.job_token)  {
-      reportURL = __special_url_tag + '/' +
+      reportURL = __local_service + '/' + __special_url_tag + '/' +
                   this.task.job_dialog_data.job_token + '/' +
                   this.task.getLocalReportPath();
-      reportURL = __local_service + '/' + reportURL;
-      //reportURL = __special_client_tag + '/' + reportURL;
     } else
       reportURL = this.task.getReportURL();
-    if (__local_service)
-      reportURL += '?local_service';
-    this.outputPanel.loadPage ( reportURL );
+    // if (__local_service)
+    //   reportURL += '?local_service';
+    // if (__local_service)
+    //   reportURL += '?' + performance.now();
+    if (__local_service)  {
+      // this is to force reload after coot in local mode, magic or a bug
+      this.setDlgSize (  1 );  
+      this.outputPanel.loadPage ( reportURL );
+      this.setDlgSize ( -1 );
+    } else
+      this.outputPanel.loadPage ( reportURL );
   }
 }
 
@@ -513,7 +514,7 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
 
 JobDialog.prototype.saveJobData = function()  {
   let dlg = this;
-  this.requestServer   ( fe_reqtype.saveJobData,function(rdata){
+  this.requestServer ( fe_reqtype.saveJobData,function(rdata){
     if (rdata.project_missing)  {
       new MessageBoxF ( 'Project not found',
           '<h3>Project "' + dlg.tree.projectData.desc.name +
@@ -529,8 +530,6 @@ JobDialog.prototype.saveJobData = function()  {
   });
 }
 
-
-//window.document.__base_url_cache = {};
 
 JobDialog.prototype.addToolBarButton = function ( gap,icon,tooltip )  {
 //  if (gap)

@@ -220,7 +220,7 @@ function start_client_application()  {
 
     for (let i=0;i<desktopConfig.args.length;i++)  {
       let arg = desktopConfig.args[i].replace('$feURL',feURL)
-                                    .replace('$clientURL',clientURL);
+                                     .replace('$clientURL',clientURL);
       command.push ( arg );
       if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
                           else  msg += ' '  + arg;

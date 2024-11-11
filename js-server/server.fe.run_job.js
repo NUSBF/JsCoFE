@@ -1635,111 +1635,11 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     let jobDir = prj.getJobDirPath ( jobEntry.loginData,jobEntry.project,
                                      jobEntry.jobId );
-//    utils.setLock ( jobDir,100 );
 
-    if (cache.isCacheEnabled())
-      cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
-
-    // send_dir.receiveDir ( jobDir,conf.getFETmpDir(),server_request,
     send_dir.receiveDir ( jobDir,server_request,
       function(code,errs,meta){
-
-        // In case of client job, original jobball remains in job directory
-        // (because client fetches it by pulling). Delete it now.
-
-        // let jobball_path = send_dir.getJobballPath ( jobDir );
-        // if (utils.fileExists(jobball_path))
-        //   utils.removeFile ( jobball_path );
-
+        cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
         _place_job_results ( job_token,code,errs,meta,server_response );
-
-        // if (jobEntry.nc_number>=0)  {
-        //   let nc_servers = conf.getNCConfigs();
-        //   if (jobEntry.nc_number>=nc_servers.length)  {
-        //     log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ')' );
-        //   } else  {
-        //     if ('current_capacity' in meta)  {
-        //       nc_servers[jobEntry.nc_number].capacity         = meta.capacity;
-        //       nc_servers[jobEntry.nc_number].current_capacity = meta.current_capacity;
-        //       log.standard ( 19,'NC' + jobEntry.nc_number + ' current capacity ' + 
-        //                         meta.current_capacity + ' / ' +
-        //                         meta.capacity );
-        //     } else if ('capacity' in meta)  {
-        //       nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
-        //       log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
-        //     }
-        //   }
-        // }
-
-        // if (!code)  {  // success
-        //   // print usage stats and update the user ration state
-
-        //   let jobClass = writeJobStats ( jobEntry );
-        //   if (jobClass)  {
-        //     if (jobClass.autoRunId && jobClass.isSuccessful())
-        //       addJobAuto ( jobEntry,jobClass );
-        //     ustats.registerJob ( jobClass );
-        //     let nhours = (jobClass.end_time-jobEntry.start_time)/3600000.0;
-        //     if (jobEntry.eoj_notification &&
-        //         jobEntry.eoj_notification.send &&
-        //         (nhours>jobEntry.eoj_notification.lapse))  {
-        //       let uData = user.readUserData ( jobEntry.loginData );
-        //       emailer.sendTemplateMessage ( uData,
-        //         cmd.appName() + ' Job Finished',
-        //         'job_finished',{
-        //           'job_id'     : jobEntry.jobId,
-        //           'project_id' : jobEntry.project,
-        //           'job_title'  : jobClass.title,
-        //           'job_time'   : nhours
-        //         });
-        //     }
-        //   }
-
-        //   if ('tokens' in meta)
-        //     feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
-        //   // if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
-        //   //   let nc_servers = conf.getNCConfigs();
-        //   //   if (jobEntry.nc_number<nc_servers.length)  {
-        //   //     nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
-        //   //     log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
-        //   //   } else
-        //   //     log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
-        //   //                    meta.capacity );
-        //   // }
-        //   feJobRegister.removeJob ( job_token );
-        //   feJobRegister.n_jobs++;
-        //   writeFEJobRegister();
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.ok,'','' );
-
-        // } else if (code=='err_rename')  { // file renaming errors
-        //   log.error ( 10,'cannot accept job from NC due to file rename errors' );
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-        //                     '[00012] File rename errors' );
-        // } else if (code=='err_dirnotexist')  { // work directory deleted
-        //   log.error ( 11,'cannot accept job from NC as job directory does not ' +
-        //                  'exist' );
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.fileErrors,
-        //                     '[00013] Recepient directory does not exist ' +
-        //                     '(job deleted?)' );
-        // } else if (code=='err_transmission')  {  // data transmission errors
-        //   log.error ( 12,'cannot accept job from NC due to transmission errors: ' +
-        //                  errs );
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
-        //                     '[00014] Data transmission errors: ' + errs );
-        // } else if (code=='data_unpacking_errors')  {  // data unpacking errors
-        //   log.error ( 13,'cannot accept job from NC due to unpacking errors: ' +
-        //                  errs );
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.uploadErrors,
-        //                     '[00015] Data unpack errors: ' + errs );
-        // } else  {
-        //   log.error ( 14,'cannot accept job from NC due to unspecified unpacking ' +
-        //                  'errors' );
-        //   cmd.sendResponse ( server_response, cmd.nc_retcode.unpackErrors,
-        //                     '[00016] Unspecified unpacking errors' );
-        // }
-
-//        utils.removeLock ( jobDir );
-
       });
 
   } else  { // job token not recognised, return Ok

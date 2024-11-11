@@ -179,7 +179,15 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 
 
 function readObject ( fpath )  {
-  return JSON.parse ( cache.readCache(fpath) );
+  try {
+    return JSON.parse ( cache.readCache(fpath) );
+  } catch(e)  {
+    if (e.code !== 'ENOENT')  {
+      log.error ( 10, e.message + ' when loading ' + fpath );
+      console.error ( e );
+    }
+    return null;
+  }
   // try {
   //   return JSON.parse ( fs.readFileSync(fpath).toString() );
   // } catch (e)  {

@@ -321,7 +321,8 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 
-//console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
+  // console.log ( 'send file = ' + this.filePath + ' ' + 
+  //               utils.fileSize(this.filePath) + ',  mtype=' + this.mimeType );
 
 // if (this.doprint)  {
 //   console.log ( ' >>>>> FPATH ' + this.filePath );

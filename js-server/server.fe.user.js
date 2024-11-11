@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.24   <--  Date of Last Modification.
+ *    11.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -442,7 +442,7 @@ UserLoginHash.prototype.read = function()  {
         if (!('signal' in this.loggedUsers[token]))
           this.loggedUsers[token].signal = '';
     }
-    this.map_users;
+    this.map_users();
     return true;
   }
 
@@ -629,7 +629,7 @@ function readUserLoginHash()  {
                                 'login'  : ud.__local_user_id,
                                 'volume' : '*storage*'
                             });
-    updateHash = false;
+    updateHash = true;
   } 
 
   if (updateHash)
