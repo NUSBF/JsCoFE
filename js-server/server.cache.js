@@ -25,15 +25,8 @@ const os    = require('os');
 const fs    = require('fs-extra');
 const path  = require('path');
 
-// const conf  = require('./server.configuration');
-// const utils = require('./server.utils');
-
-// const com_utils = require('../js-common/common.utils');
-
-
 //  prepare log
 const log = require('./server.log').newLog(29);
-
 
 // ==========================================================================
 
@@ -50,7 +43,8 @@ const jobDirPrefix     = 'job_';
 const projectExt       = '.prj';
 const userProjectsExt  = '.projects';
 
-
+var cache_enabled      = false;
+var force_write_sync   = false;
 
 // --------------------------------------------------------------------------
 
@@ -161,7 +155,7 @@ Cache.prototype.writeCache = function ( key,data_str,fpath,force_sync )  {
   }
   
   if (fpath)  {
-    if (force_sync || (!cache_enabled))  {
+    if (force_sync || (!cache_enabled) || force_write_sync)  {
       try {
         fs.writeFileSync ( fpath,data_str );
         return true;
@@ -209,8 +203,6 @@ const cache_list = {
   [projectDataFName] : new Cache(2500),
   [jobDataFName]     : new Cache(20000)
 };
-
-var cache_enabled = false;
 
 
 function configureCache ( ncache )  {
@@ -315,10 +307,15 @@ function itemExists ( fpath )  {
 
   if (cache_enabled)  {
     let r = selectCache ( fpath );
-    if (r.cache)
-      return r.cache.itemExists ( r.key );
+    if (r.cache && (r.cache.itemExists(r.key)>0))
+      return true;
   }
-  return -1; // file operation is required
+  try {
+    return fs.lstatSync(fpath); // || fs.lstatSync(path);
+  } catch (e)  {
+    return null;
+  }
+  // return -1; // file operation is required
 }
 
 function removePathItem ( fpath )  {

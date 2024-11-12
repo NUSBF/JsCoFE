@@ -94,13 +94,14 @@ function configureCache ( ncache )  {
 }
 
 function fileExists ( fpath )  {
-  try {
-    if (cache_enabled && (cache.itemExists(fpath)>0))
-      return true;
-    return fs.lstatSync(fpath); // || fs.lstatSync(path);
-  } catch (e)  {
-    return null;
-  }
+  return cache.itemExists ( fpath );
+  // try {
+  //   if (cache_enabled && (cache.itemExists(fpath)>0))
+  //     return true;
+  //   return fs.lstatSync(fpath); // || fs.lstatSync(path);
+  // } catch (e)  {
+  //   return null;
+  // }
 }
 
 function fileStat ( fpath )  {
