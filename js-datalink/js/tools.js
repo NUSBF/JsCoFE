@@ -187,8 +187,8 @@ class tools {
     if (/[^a-z]/.test(source) || source.length < 3) {
       return this.errorMsg('Data source name must contain only lowercase characters (with a minimum length of 3)', 400);
     }
-    if (/[^\w]/.test(id) || id.length < 3) {
-      return this.errorMsg('Data ID name must contain only alphanumeric characters (with a minimum length of 3)', 400);
+    if (/[^\w\-]/.test(id) || id.length < 3) {
+      return this.errorMsg('Data ID name must contain only alphanumeric, - and _ characters (with a minimum length of 3)', 400);
     }
     return true;
   }
