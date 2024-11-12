@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.24   <--  Date of Last Modification.
+ *    12.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -318,6 +318,17 @@ function itemExists ( fpath )  {
   // return -1; // file operation is required
 }
 
+
+function itemCached ( fpath )  {
+  if (cache_enabled)  {
+    let r = selectCache ( fpath );
+    if (r.cache && (r.cache.itemExists(r.key)>0))
+      return true;
+  }
+  return false;
+}
+
+
 function removePathItem ( fpath )  {
   if (cache_enabled && fpath.endsWith(projectExt))  {
 // console.log ( ' >>> crpath' + fpath );
@@ -329,6 +340,7 @@ function removePathItem ( fpath )  {
   }
 }
 
+
 function removeItem ( fpath )  {
 // console.log ( ' >>> cremove ' + fpath );
   if (cache_enabled)  {
@@ -338,6 +350,7 @@ function removeItem ( fpath )  {
     removePathItem ( fpath );
   }
 }
+
 
 function removeDirItems ( dirpath )  {
 // console.log ( ' >>> crmdir ' + dirpath );
@@ -471,6 +484,7 @@ function printMemoryReport()  {
 module.exports.isCacheEnabled    = isCacheEnabled;
 module.exports.configureCache    = configureCache;
 module.exports.itemExists        = itemExists;
+module.exports.itemCached        = itemCached;
 module.exports.removePathItem    = removePathItem;
 module.exports.removeItem        = removeItem;
 module.exports.removeDirItems    = removeDirItems;
