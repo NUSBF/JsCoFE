@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.24   <--  Date of Last Modification.
+ *    14.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -906,10 +906,10 @@ if (!__template)  {
   TaskXia2.prototype.getNCores = function ( ncores_available )  {
   // This function should return the number of cores, up to ncores_available,
   // that should be reported to a queuing system like SGE or SLURM, in
-  // case the task spawns threds or processes bypassing the queuing system.
+  // case the task spawns threds or processes bßßßßßypassing the queuing system.
   // It is expected that the task will not utilise more cores than what is
   // given on input to this function.
-    return ncores_available;
+    return Math.min(4,ncores_available);
   }
 
   TaskXia2.prototype.makeInputData = function ( loginData,jobDir )  {
