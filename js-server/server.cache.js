@@ -129,8 +129,12 @@ function write_async ( fpath,item )  {
       console.error(err);
       item.sync = false;  // however we do not attempt another write here
     } else if (!item.sync)  {
-      // was rewritten during flush
-      write_async ( fpath,item );
+      // 'sync' field was reset during flush - another write is required
+      // report this as this should not be regularly happening
+      log.warning ( 1,'asynchronous write race, path=' + fpath );
+      setTimeout ( function(){
+        write_async ( fpath,item );
+      },0);
     }
   });
 }
