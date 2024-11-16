@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    16.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -865,6 +865,13 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
         .setFontSize('1.2em').setFontBold(true);
     grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
+    let wmode = 'ASYNC'
+    if (mdata.force_write_sync)
+      wmode = 'SYNC';
+    grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+
     grid.setLabel ( 'Cache state',grow++,0,1,1 )
         .setFontItalic(true).setFontBold(true);
     let cache_table = new Table();
@@ -904,9 +911,13 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
                            '<b><i>' + mem_total.toFixed(3) + '</i></b>'
                          ],cdesc.length+1,alt );
 
-  } else
+  } else  {
     grid.setLabel ( 'Metadata Cache Status: OFF',grow++,0,1,1 )
         .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+    grid.setLabel ( 'Metadata Write Mode: SYNC' ,grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+  }
 
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
   grid.setLabel ( 'Front-End Memory usage',grow++,0,1,1 )

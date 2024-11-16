@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.24   <--  Date of Last Modification.
+ *    16.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -426,6 +426,7 @@ function memoryReport()  {
   return {
 
     cache_enabled      : cache_enabled,
+    force_write_sync   : force_write_sync,
 
     usedRAM            : memoryUsage.heapUsed  / mbyte,  // MB
     totalHeap          : memoryUsage.heapTotal / mbyte,  // MB
@@ -465,6 +466,9 @@ function printMemoryReport()  {
   if (mr.cache_enabled)
         console.log ( ' --- Metadata cache: ON'  );
   else  console.log ( ' --- Metadata cache: OFF' );
+  if (mr.force_write_sync)
+        console.log ( ' --- Metadata write mode: SYNC'  );
+  else  console.log ( ' --- Metadata write mode: ASYNC' );
   console.log ( ' --- RAM:' );
   console.log ( '          used : ' + mr.usedRAM.toFixed(1)     + ' MB' );
   console.log ( '         total : ' + mr.totalRAM.toFixed(1)    + ' MB' );
