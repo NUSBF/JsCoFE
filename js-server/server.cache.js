@@ -44,7 +44,8 @@ const projectExt       = '.prj';
 const userProjectsExt  = '.projects';
 
 var cache_enabled      = false;
-var force_write_sync   = false;
+var force_write_sync   = true;  // needs to be true, a race between JS and Python
+                                // processes detected in local mode
 
 // --------------------------------------------------------------------------
 
