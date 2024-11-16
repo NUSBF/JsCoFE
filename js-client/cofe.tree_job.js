@@ -977,6 +977,7 @@ let refkeys = null;  // reference keywords
     if (reftask.version<task.currentVersion())
       return -1;  // version clash, stop
     task.parameters = jQuery.extend ( true,{},reftask.parameters );
+    // task.copyParameters ( reftask );
     return 1;  // reference task found and parameters copied, Ok
   } else if (refkeys)
     return task.set_refkeys_parameters ( refkeys );
