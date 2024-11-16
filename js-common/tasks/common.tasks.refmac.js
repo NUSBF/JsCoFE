@@ -709,7 +709,8 @@ if (!__template)  {
   TaskRefmac.prototype.layParameters = function ( grid,row,col )  {
     if (!this.parameters.sec4.contains.TLS_GROUPS.value)  {
       let item = this.getInputItem ( grid.inpDataRef,'revision' );
-      if (item && (item.dt.length>0) && ('tls_groups' in item.dt[0]))  {      
+      if (item && (item.dt.length>0) && ('tls_groups' in item.dt[0]))  {
+        this.parameters.sec4.contains.TLS.value = 'explicit';
         this.parameters.sec4.contains.TLS_GROUPS.value = item.dt[0].tls_groups;
       }
     }
