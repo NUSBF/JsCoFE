@@ -248,7 +248,7 @@ TaskBuster.prototype.requiredEnvironment = function() { return ['CCP4','BDG_home
 TaskBuster.prototype.authorisationID     = function() { return 'gphl-buster'; }
 
 TaskBuster.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -275,7 +275,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskBuster.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -283,7 +283,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
