@@ -132,9 +132,9 @@ function write_async ( fpath,item )  {
       // 'sync' field was reset during flush - another write is required
       // report this as this should not be regularly happening
       log.warning ( 1,'asynchronous write race, path=' + fpath );
-      setTimeout ( function(){
+      // setTimeout ( function(){
         write_async ( fpath,item );
-      },0);
+      // },0);
     }
   });
 }

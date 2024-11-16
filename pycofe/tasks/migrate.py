@@ -31,7 +31,7 @@ import os, copy
 # import pyrvapi
 
 #  application imports
-from   pycofe.dtypes import dtype_template, dtype_revision
+from   pycofe.dtypes import dtype_revision
 from   pycofe.tasks  import import_task
 from   proc          import import_merged, import_xyz, import_ligand
 from   pycofe.auto   import auto
