@@ -120,6 +120,8 @@ function start ( callback_func )  {
   //  set up request listener
   server.on ( 'request', function(server_request,server_response)  {
 
+    server_response.t_received = performance.now();
+
     server_response.setHeader ( 'Cross-Origin-Opener-Policy'  ,'same-origin'   );
     // server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialles' );
     // server_response.setHeader ( 'Cross-Origin-Resource-Policy','same-origin'  );
