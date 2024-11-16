@@ -363,10 +363,15 @@ FEAnalytics.prototype.logPerformance = function ( title,time,weight )  {
   if (title in this.performance)  {
     this.performance[title].time   += time;
     this.performance[title].weight += weight;
+    let t = time/weight;
+    this.performance[title].time_min = Math.min(this.performance[title].time_min,t);
+    this.performance[title].time_max = Math.max(this.performance[title].time_max,t);
   } else  {
     this.performance[title] = {
-      time   : time,
-      weight : weight
+      time     : time,
+      weight   : weight,
+      time_min : time/weight,
+      time_max : time/weight
     };
   }
 }

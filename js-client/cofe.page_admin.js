@@ -856,7 +856,7 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   let grow = 0;
 
   grid.setLabel ( 'Memory Report',0,0,1,1 )
-                     .setFontSize('1.5em').setFontBold(true);
+      .setFontSize('1.5em').setFontBold(true);
 
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
@@ -938,12 +938,20 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   let perf_table = new Table();
   grid.setWidget ( perf_table,grow++,0,1,1 );
   perf_table.setWidth_px ( 300 );
+  perf_table.setHeaderRow ( 
+    [' ','Min','Average','Max'],
+    ['','','','']
+  );
 
   let alt = false;
   let n   = 0;
   for (let title in pdata)  {
     let t = pdata[title].time/pdata[title].weight;
-    perf_table.setRow ( title,'',[t.toFixed(2)],n++,alt );
+    perf_table.setRow ( title,'',[
+        pdata[title].time_min.toFixed(2),
+        t.toFixed(2),
+        pdata[title].time_max.toFixed(2)
+      ],++n,alt );
     alt = !alt;
   }
 
