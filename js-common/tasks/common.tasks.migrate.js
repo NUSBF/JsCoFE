@@ -399,7 +399,7 @@ if (!__template)  {
   }
 
   // reserved function name
-  TaskMigrate.prototype.runButtonName = function()  { return 'Start'; }
+  TaskMigrate.prototype.runButtonName = function()  { return 'Import'; }
   TaskMigrate.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
       return this.__check_keywords ( keywords,['hopon', 'hop-on','hop', 'on', 'migrate', 'import'] );
