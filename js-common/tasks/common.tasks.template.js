@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.10.24   <--  Date of Last Modification.
+ *    16.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2986,6 +2986,14 @@ if (!dbx)  {
       this._clone_suggested ( this.parameters,task.suggestedParameters );
     return;
   }
+
+  // This function is called at creating nw classes that inherit parameters 
+  // from upstream jobs ( tree._copy_task_parameters() )
+  // TaskTemplate.prototype.copyParameters = function ( task )  {
+  //   this.parameters = jQuery.extend ( true,{},task.parameters );
+  //   return;
+  // }
+
 
   TaskTemplate.prototype.score_string = function() {
   let S = '';

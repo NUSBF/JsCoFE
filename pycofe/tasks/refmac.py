@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.08.24   <--  Date of Last Modification.
+#    16.11.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,6 +140,7 @@ class Refmac(basic.TaskDriver):
         sec3 = self.task.parameters.sec3.contains
         sec4 = self.task.parameters.sec4.contains
         sec5 = self.task.parameters.sec5.contains
+        sec6 = self.task.parameters.sec6.contains
 
         #  protein:  hmodel[i].hasSubtype ( dtype_template.subtypeProtein() )
         #  dna:  hmodel[i].hasSubtype ( dtype_template.subtypeDNA() )
@@ -270,7 +271,7 @@ class Refmac(basic.TaskDriver):
             if vdwrestraints:
                stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
 
-        if str(sec5.EXPERIMENT.value) != 'neutron':
+        if str(sec6.EXPERIMENT.value) != 'neutron':
             stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value)  )
 
         stdin.append ( 'MAKE LINK ' + str(sec3.MKLINKS.value) )
@@ -283,14 +284,23 @@ class Refmac(basic.TaskDriver):
         # Parameters
         stdin.append ( 'REFI BREF ' + str(sec2.BFAC.value) )
 
-        if str(sec2.TLS.value) != 'none':
-            stdin.append ( 'REFI TLSC ' + str(sec2.TLS_CYCLES.value) )
-            if str(sec2.RESET_B_TLS.value) == 'yes':
-                stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_TLS_VAL.value) )
-            if str(sec2.TLSOUT_ADDU.value) == 'yes':
+        tlsin  = None
+        tlsout = None
+        if str(sec4.TLS.value) != 'none':
+            stdin.append ( 'REFI TLSC ' + str(sec4.TLS_CYCLES.value) )
+            if str(sec4.RESET_B_TLS.value) == 'yes':
+                stdin.append ( 'BFAC SET ' + str(sec4.RESET_B_TLS_VAL.value) )
+            if str(sec4.TLSOUT_ADDU.value) == 'yes':
                stdin.append ( 'TLSOUT ADDU' )
-        elif str(sec2.RESET_B.value) == 'yes':
-            stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_VAL.value) )
+            if str(sec4.TLS.value) == 'explicit':
+                tls_groups = self.getParameter(sec4.TLS_GROUPS).strip();
+                if tls_groups:
+                    tlsin  = "_in.tls"
+                    tlsout = "_out.tls"
+                    with open(tlsin,"w") as f:
+                        f.write ( tls_groups +'\n' )
+        elif str(sec4.RESET_B.value) == 'yes':
+            stdin.append ( 'BFAC SET ' + str(sec4.RESET_B_VAL.value) )
 
         stdin.append ('SCALE TYPE ' + str(sec2.SCALING.value) )
         if str(sec2.SOLVENT_MASK.value) == 'no':
@@ -323,49 +333,49 @@ class Refmac(basic.TaskDriver):
                 stdin.append ( '@' + external_restraint_files[i] )
 
         # Output
-        if str(sec4.RIDING_HYDROGENS.value) != 'DEFAULT':
-           stdin.append ( 'MAKE HOUT ' + str(sec4.RIDING_HYDROGENS.value) )
+        if str(sec5.RIDING_HYDROGENS.value) != 'DEFAULT':
+           stdin.append ( 'MAKE HOUT ' + str(sec5.RIDING_HYDROGENS.value) )
 
-        if str(sec4.MAP_SHARPEN.value) == 'yes':
-           if str(sec4.MAP_SHARPEN_B.value) == 'default':
+        if str(sec5.MAP_SHARPEN.value) == 'yes':
+           if str(sec5.MAP_SHARPEN_B.value) == 'default':
               stdin.append ( 'MAPC SHAR' )
            else:
-              stdin.append ( 'MAPC SHAR ' + str(sec4.MAP_SHARPEN_B.value) )
+              stdin.append ( 'MAPC SHAR ' + str(sec5.MAP_SHARPEN_B.value) )
 
         # Advanced
-        if str(sec5.EXPERIMENT.value) == 'electron':
-           if str(sec5.FORM_FACTOR.value) == 'mb':
+        if str(sec6.EXPERIMENT.value) == 'electron':
+           if str(sec6.FORM_FACTOR.value) == 'mb':
               stdin.append ( 'SOURCE ELECTRON MB' )
            else:
               stdin.append ( 'SOURCE ELECTRON' )
-        elif str(sec5.EXPERIMENT.value) == 'neutron':
+        elif str(sec6.EXPERIMENT.value) == 'neutron':
            stdin.append ( 'SOURCE NEUTRON' )
-           stdin.append ( 'MAKE HYDR ' + str(sec5.MKHYDR_NEUTRON.value) )
-           if str(sec5.MKHYDR_NEUTRON.value) != 'NO':
-              if str(sec5.H_REFINE.value) != 'NO':
-                 stdin.append ( 'HYDROGEN REFINE ' + str(sec5.H_REFINE.value) )
-              if str(sec5.H_TORSION.value) == 'yes':
+           stdin.append ( 'MAKE HYDR ' + str(sec6.MKHYDR_NEUTRON.value) )
+           if str(sec6.MKHYDR_NEUTRON.value) != 'NO':
+              if str(sec6.H_REFINE.value) != 'NO':
+                 stdin.append ( 'HYDROGEN REFINE ' + str(sec6.H_REFINE.value) )
+              if str(sec6.H_TORSION.value) == 'yes':
                  stdin.append ( 'RESTRAINT TORSION HYDROGEN INCLUDE ALL' )
-              if str(sec5.H_REFINE_HD.value) != 'NO':
+              if str(sec6.H_REFINE_HD.value) != 'NO':
                  stdin.append ( 'REFINEMENT DFRACTION' )
-                 stdin.append ( 'HYDROGEN DFRACTION ' + str(sec5.H_REFINE_HD.value) )
-              if str(sec5.MKHYDR_NEUTRON.value) == 'YES':
-                 if str(sec5.H_INIT_HD.value) == 'alld':
+                 stdin.append ( 'HYDROGEN DFRACTION ' + str(sec6.H_REFINE_HD.value) )
+              if str(sec6.MKHYDR_NEUTRON.value) == 'YES':
+                 if str(sec6.H_INIT_HD.value) == 'alld':
                     stdin.append ( 'HYDROGEN DFRACTION INIT' )
-                 elif str(sec5.H_INIT_HD.value) == 'mix':
+                 elif str(sec6.H_INIT_HD.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )  
-              elif str(sec5.MKHYDR_NEUTRON.value) == 'ALL':
-                 if str(sec5.H_INIT_HD_HALL.value) == 'alld':
+              elif str(sec6.MKHYDR_NEUTRON.value) == 'ALL':
+                 if str(sec6.H_INIT_HD_HALL.value) == 'alld':
                     stdin.append ( 'HYDROGEN DFRACTION INIT' )
-                 elif str(sec5.H_INIT_HD_HALL.value) == 'mix':
+                 elif str(sec6.H_INIT_HD_HALL.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )                  
 
         stdin.append ( 'REFI RESO ' + str(hkl.res_low) + ' ' + str(hkl.res_high) )
 
         # Other keywords
         stdin.append ( 'MAKE NEWLIGAND EXIT' )
-        if str(sec5.KEYWORDS.value) != '':
-           stdin.append ( str(sec5.KEYWORDS.value) )
+        if str(sec6.KEYWORDS.value) != '':
+           stdin.append ( str(sec6.KEYWORDS.value) )
 
         stdin.append ( 'Pdbout keep true' )
         stdin.append ( 'END' )
@@ -393,17 +403,20 @@ class Refmac(basic.TaskDriver):
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
                 "xyzout",mmcifout,
-                "xmlout",xmlOutRefmac,
-                "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+                "xmlout",xmlOutRefmac
+              ]
+        if tlsin:
+            cmd += [ "tlsin",tlsin,"tlsout",tlsout ]
+        cmd += [ "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
         if libin:
             cmd += ["libin",libin]
 
-        if str(sec5.EXPERIMENT.value) == 'electron':
-           if str(sec5.FORM_FACTOR.value) == 'gaussian':
+        if str(sec6.EXPERIMENT.value) == 'electron':
+           if str(sec6.FORM_FACTOR.value) == 'gaussian':
               cmd += ["atomsf",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_electron.lib')]
-        elif str(sec5.EXPERIMENT.value) == 'neutron':
+        elif str(sec6.EXPERIMENT.value) == 'neutron':
            cmd += ["atomsf",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
 
         # Prepare report parser
@@ -552,6 +565,11 @@ class Refmac(basic.TaskDriver):
                 # update structure revision
                 revision.setStructureData ( substructure )
                 revision.setStructureData ( structure    )
+
+                if tlsout:
+                  with (open(tlsout,'r')) as f:
+                      revision.tls_groups = f.read()
+
                 self.registerRevision     ( revision     )
                 have_results = True
 
@@ -579,7 +597,7 @@ class Refmac(basic.TaskDriver):
                                 "twinning"   : isTwinning,
                                 "jellyBody"  : str(sec3.JELLY.value)  == 'yes',
                                 "ncsRestr"   : str(sec3.NCSR.value)   == 'yes',
-                                "tls"        : str(sec2.TLS.value)    != 'none',
+                                "tls"        : str(sec4.TLS.value)    != 'none',
                                 "anisoBfact" : str(sec2.BFAC.value)   == "ANIS",
                                 "hydrogens"  : str(sec1.MKHYDR.value) == "ALL",
                                 "vdw_val"    : vdwrestraints
