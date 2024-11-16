@@ -954,8 +954,8 @@ function runJob ( loginData,data, callback_func )  {
     task.job_dialog_data.job_token = job_token;
   task.start_time = Date.now();
 
-  // write task data because it may have latest changes
-  if (!utils.writeObject(jobDataPath,task))  {
+  // force-write task data because it may have latest changes
+  if (!utils.writeObject(jobDataPath,task,true))  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
                               '[00005] Job metadata cannot be written.',rdata ) );
     return;
