@@ -707,7 +707,8 @@ if (!__template)  {
   //  for client side
 
   TaskRefmac.prototype.layParameters = function ( grid,row,col )  {
-    if (!this.parameters.sec4.contains.TLS_GROUPS.value)  {
+    if (('TLS_GROUPS' in this.parameters.sec4.contains) && 
+        (!this.parameters.sec4.contains.TLS_GROUPS.value))  {
       let item = this.getInputItem ( grid.inpDataRef,'revision' );
       if (item && (item.dt.length>0) && ('tls_groups' in item.dt[0]))  {
         this.parameters.sec4.contains.TLS.value = 'explicit';

@@ -290,9 +290,18 @@ Response.prototype.send = function ( server_response )  {
       const duration = performance.now() - startTime; // Convert to milliseconds
       console.log ( ' ... response for "' + this.measure_time_label +
                     '" sent in ' + duration.toFixed(3) + 'ms' );
+  // if (server_response.t_received)  {
+  //   let dt = performance.now() - server_response.t_received;
+  //   console.log ( ' >>>>>> tdiff = ' + dt );
+  // }
     });
   } else
-    server_response.end ( JSON.stringify(this) );
+    server_response.end ( JSON.stringify(this), () => {
+  // if (server_response.t_received)  {
+  //   let dt = performance.now() - server_response.t_received;
+  //   console.log ( ' >>>>>> tdiff = ' + dt );
+  // }
+    });
 }
 
 function sendResponse ( server_response, status,message,data,measure_time_label=null )  {
