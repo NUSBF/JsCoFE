@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1165,108 +1165,15 @@ function getProjectData ( loginData,data )  {
     }
   }
 
-  t0 = performance.now() - t0;
-  console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
+  // t0 = performance.now() - t0;
+  // console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
   if (njobs>0)
-    anl.logPerformance ( ' Reading Project Data, ms/job',t0,njobs );
+    anl.logPerformance ( ' Reading Project Data, ms/job',performance.now()-t0,njobs );
 
   return response;
 
 }
 
-/*
-function getProjectData ( loginData,data )  {
-
-  let t0 = performance.now();
-  let response = null;
-
-  // do not write projectList.projects and always compose them at reading
-  // below in this function, where projectList.projects are used, just read 
-  // pdesc directly from project directory.
-  // do not read projectList.projects here -- and this is Ok
-  // try tp get rid of projectList here, pass project name in data
-  let userProjectsListPath = getUserProjectListPath ( loginData );
-  let projectList = utils.readObject ( userProjectsListPath );
-
-  if (!projectList)  {  // this should never happen, is here only for safety
-    response = getProjectList ( loginData );
-    if (response.status!=cmd.fe_retcode.ok)
-      return response;
-    projectList = response.data;
-    log.warning ( 11,'get current project data (' + response.data.current +
-                     '), login ' + loginData.login );
-  }
-
-  let projectName    = projectList.current;  // projectID or archiveID
-  // read pdesc here and identify archive status from there
-  let archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
-                       (projectList.currentFolder.type==pd.folder_type.cloud_archive);
-
-  // check that current project exists
-  let pdesc = null;
-  if (archive_folder)  {
-    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
-      if (projectList.projects[i].archive && 
-          (projectList.projects[i].archive.id==projectName))
-        pdesc = projectList.projects[i];
-  }
-  if (!pdesc)  {
-    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
-      if (projectList.projects[i].name==projectName)
-        pdesc = projectList.projects[i];
-    if (!pdesc)
-      return new cmd.Response ( cmd.fe_retcode.ok,'',{ 
-          'missing' : 1,
-          'project' : projectName 
-      });
-  }
-
-  let njobs = 0;
-  let pData = readProjectData ( loginData,projectName );
-  if (pData)  {
-    if (!pd.isProjectAccessible(loginData.login,pData.desc))
-      return new cmd.Response ( cmd.fe_retcode.projectAccess,
-                                '[00035] Project access denied.',
-                                { access_denied : true } );
-    let d = {};
-    d.meta      = pData;
-    d.tasks_add = [];
-    d.tasks_del = [];
-    let projectDirPath = getProjectDirPath ( loginData,projectName );
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
-    fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
-      if (file.startsWith(jobDirPrefix)) {
-        let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
-        let task    = utils.readObject ( jobPath );
-        if (task)  {
-          d.tasks_add.push ( task );
-        } else  {
-          d.message = '[00021] Job metadata cannot be read.';
-          utils.removePathAsync ( path.join ( projectDirPath,file ) );
-        }
-        njobs++;
-      }
-    });
-  } else  {
-    let projectDataPath = getProjectDataPath ( loginData,projectName );
-    if (utils.fileExists(projectDataPath))  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                 '[00022] Project metadata cannot be read.','' );
-    } else  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                            '[00023] Project metadata file does not exist.','' );
-    }
-  }
-
-  t0 = performance.now() - t0;
-  console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
-  if (njobs>0)
-    anl.logPerformance ( ' Reading Project Data, ms/job',t0,njobs );
-
-  return response;
-
-}
-*/
 
 // ===========================================================================
 

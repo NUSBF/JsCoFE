@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.11.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -359,6 +359,17 @@ let fname = path.parse(fpath).base;
     this.doclog[fpath]++;
 }
 
+FEAnalytics.prototype.setPerformance = function ( title,time,weight,
+                                                  time_min,time_max )  {
+  this.performance[title] = {
+    time     : time,
+    weight   : weight,
+    time_min : time_min,
+    time_max : time_max
+  };
+}
+
+
 FEAnalytics.prototype.logPerformance = function ( title,time,weight )  {
   if (title in this.performance)  {
     this.performance[title].time   += time;
@@ -367,12 +378,7 @@ FEAnalytics.prototype.logPerformance = function ( title,time,weight )  {
     this.performance[title].time_min = Math.min(this.performance[title].time_min,t);
     this.performance[title].time_max = Math.max(this.performance[title].time_max,t);
   } else  {
-    this.performance[title] = {
-      time     : time,
-      weight   : weight,
-      time_min : time/weight,
-      time_max : time/weight
-    };
+    this.setPerformance ( title,time,weight,time/weight,time/weight );
   }
 }
 
@@ -533,6 +539,10 @@ function logPerformance ( title,time,weight )  {
   feAnalytics.logPerformance ( title,time,weight );
 }
 
+function setPerformance ( title,time,weight,time_min,time_max )  {
+  feAnalytics.setPerformance ( title,time,weight,time_min,time_max );
+}
+
 // ==========================================================================
 // export for use in node
 
@@ -541,3 +551,4 @@ module.exports.writeFEAnalytics = writeFEAnalytics;
 module.exports.getFEAnalytics   = getFEAnalytics;
 module.exports.logPresence      = logPresence;
 module.exports.logPerformance   = logPerformance;
+module.exports.setPerformance   = setPerformance;

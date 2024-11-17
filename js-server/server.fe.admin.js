@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -125,7 +125,7 @@ function getNCData ( ncInfo,callback_func )  {
 function getAdminData ( loginData,data,callback_func )  {
 // the 'data' parameter must be where it is
 
-  cache.printMemoryReport();
+  // cache.printMemoryReport();
 
   let t0 = performance.now()
   let adminData = {};
@@ -152,6 +152,11 @@ function getAdminData ( loginData,data,callback_func )  {
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
       let dt = performance.now()-t0;
       log.standard ( 3,'admin data collected in ' + dt.toFixed(3) + 'ms' );
+      let response_timing = cmd.getResponseTiming();
+      anl.setPerformance ( 'Server response time, ms',
+        response_timing.time_sum,response_timing.n_sum,
+        response_timing.time_min,response_timing.time_max 
+      );
       adminData.memoryReport = cache.memoryReport(); 
       adminData.performance  = anl.getFEAnalytics().performance;
       anl.logPerformance ( 'Collecting Admin Data, ms',dt,1 );
@@ -162,7 +167,6 @@ function getAdminData ( loginData,data,callback_func )  {
   }
 
 }
-
 
 function getAnalytics ( loginData,data )  {
 let uData = user.readUserData ( loginData );

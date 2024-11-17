@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,14 +62,14 @@ function AdminPage ( sceneId )  {
   // make tabs
   this.tabs = new Tabs();
   // this.tabs.setVisible ( false );
-  this.usersTab  = this.tabs.addTab ( 'Users'  ,true  );
-  this.nodesTab  = this.tabs.addTab ( 'Nodes'  ,false );
-  this.memoryTab = this.tabs.addTab ( 'Memory' ,false );
+  this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
+  this.nodesTab  = this.tabs.addTab ( 'Nodes'      ,false );
+  this.memoryTab = this.tabs.addTab ( 'Performance',false );
   this.anlTab    = null;
   if (__user_role==role_code.admin)
-    this.anlTab  = this.tabs.addTab ( 'Monitor',false );
-  this.usageTab  = this.tabs.addTab ( 'Usage'  ,false );
-  this.jobsTab   = this.tabs.addTab ( 'Jobs'   ,false );
+    this.anlTab  = this.tabs.addTab ( 'Monitor'    ,false );
+  this.usageTab  = this.tabs.addTab ( 'Usage'      ,false );
+  this.jobsTab   = this.tabs.addTab ( 'Jobs'       ,false );
   // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
@@ -953,6 +953,13 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
         pdata[title].time_max.toFixed(2)
       ],++n,alt );
     alt = !alt;
+    if (title.startsWith('Server'))
+      perf_table.setRow ( 'Server request time, ms',
+          'Time between sending request and receiving a response in browser',[
+          __request_timing.time_min.toFixed(2),
+          (__request_timing.time_sum/__request_timing.n_sum).toFixed(2),
+          __request_timing.time_max.toFixed(2)
+        ],++n,alt );
   }
 
 }
