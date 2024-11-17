@@ -58,7 +58,7 @@ const request       = require('request');
 
 //  load application modules
 const conf          = require('./server.configuration');
-const send_dir      = require('./server.send_dir.js');
+const send_dir      = require('./server.send_dir');
 const utils         = require('./server.utils');
 const task_t        = require('../js-common/tasks/common.tasks.template');
 const data_t        = require('../js-common/dtypes/common.dtypes.template');
