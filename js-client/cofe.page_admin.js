@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ========================================================================
  *
  *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/cofe.page_admin.js
  *       ~~~~~~~~~
@@ -15,7 +15,7 @@
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
- *  =================================================================
+ *  ========================================================================
  *
  */
 
@@ -701,6 +701,13 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 //  $(this.userListTable.element).css({'overflow-y':'hidden'});
 
 //  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
+
+  this.usersTabPaginator = new Paginator ( udata.userList.length+200,20,7,
+      function(){} );
+
+  this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
+
+
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );
