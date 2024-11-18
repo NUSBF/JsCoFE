@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    17.11.24   <--  Date of Last Modification.
+//    18.11.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -28,7 +28,8 @@ function Paginator ( n_items,n_page,n_visible,callback_func )  {
   $(this.element).twbsPagination({
     totalPages   : nPages,
     visiblePages : n_visible,
-    onPageClick  : function ( event,page ) {
+    onPageClick  : function ( event,pageNo ) {
+      callback_func ( pageNo );
       // alert ( 'page ' + page + ', n1=' + n_page*(page-1) );
     }
   });

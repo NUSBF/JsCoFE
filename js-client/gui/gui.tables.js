@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.24   <--  Date of Last Modification.
+ *    18.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -145,6 +145,15 @@ let cell = this.getCell ( row,col );
 }
 
 
+Table.prototype.setCellCSS = function ( css,row,col )  {
+  if (row<this.element.rows.length)  {
+    let cells = this.element.rows[row].cells;
+    if (col<cells.length)
+       $(cells[col]).css ( css );
+  }
+}
+
+
 Table.prototype.setColumnCSS = function ( css,col,start_row )  {
   for (let i=start_row;i<this.element.rows.length;i++)
     if (col<this.element.rows[i].cells.length)
@@ -158,6 +167,11 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
        $(this.element.rows[i].cells[j]).css ( css );
 }
 
+Table.prototype.addSignalHandler = function (signal, onReceive) {
+  this.element.addEventListener(signal, function (e) {
+    onReceive(e.target);
+  }, false);
+}
 
 // -------------------------------------------------------------------------
 // TableCell class
