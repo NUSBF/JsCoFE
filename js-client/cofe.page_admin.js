@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    18.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -615,23 +615,100 @@ AdminPage.prototype.loadAnalytics = function()  {
 }
 
 
-AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
+/*
+function sortByField(array, field, ascending = true) {
+  return array.sort((a, b) => {
+    const valueA = a[field];
+    const valueB = b[field];
+
+    if (valueA < valueB) return ascending ? -1 : 1;
+    if (valueA > valueB) return ascending ? 1 : -1;
+    return 0; // If values are equal
+  });
+}
+
+// Example Usage:
+const data = [
+  { name: "Alice", age: 30 },
+  { name: "Bob", age: 25 },
+  { name: "Charlie", age: 35 }
+];
+
+// Sort by "age" in ascending order
+console.log(sortByField(data, "age"));
+
+// Sort by "name" in descending order
+console.log(sortByField(data, "name", false));
+*/
+
+AdminPage.prototype.makeUserList = function ( udata )  {
+  this.userList    = [];
+  for (let i=0;i<udata.userList.length;i++)
+    if ((!__local_user) || (udata.userList[i].login==__local_user_id))  {
+      let uDesc = udata.userList[i];
+      let online = '&nbsp;';
+      for (let token in this.loggedUsers)
+        if (this.loggedUsers[token].login==uDesc.login)  {
+          online = '&check;';
+          break;
+        }
+      let dormant = 'active';
+      if (uDesc.dormant)
+          dormant = new Date(uDesc.dormant).toISOString().slice(0,10);
+      let lastSeen = '';
+      if ('lastSeen' in uDesc)  {
+        if (uDesc.lastSeen)
+          lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
+      }
+      let urec = {
+        name       : uDesc.name,
+        login      : uDesc.login,
+        online     : online,
+        role       : uDesc.role,
+        dormant    : dormant,
+        email      : uDesc.email,
+        licence    : uDesc.licence,
+        njobs      : uDesc.ration.jobs_total,
+        storage    : round(uDesc.ration.storage_used,1),
+        cpu        : round(uDesc.ration.cpu_total_used,2),
+        knownAfter : new Date(uDesc.knownSince).toISOString().slice(0,10),
+        lastSeen   : lastSeen
+      };
+      this.userList.push ( urec );
+    }
+}
+
+
+AdminPage.prototype.sortUserList = function()  {
+  const slist = [
+    ['name'      ,true],
+    ['login'     ,true],
+    ['online'    ,true],
+    ['role'      ,true],
+    ['dormant'   ,true],
+    ['email'     ,true],
+    ['licence'   ,true],
+    ['njobs'     ,false],
+    ['storage'   ,false],
+    ['cpu'       ,false],
+    ['knownAfter',false],
+    ['lastSeen'  ,false]
+  ];
+  if (this.sortCol>0)
+    this.userList = sortObjects ( this.userList,slist[this.sortCol-1][0],
+                                                slist[this.sortCol-1][1] );
+}
+
+AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
   // function to create user info tables and fill them with data
 
-  this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
+  let userTable = new Table();
+  this.usersTab.grid.setWidget ( userTable,1,0,1,2 );
 
-  this.userListTable = new Table();
-  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
-
-  // this.userListTable.setHeaders ( ['##','Name','Login','Online','Profile',
-  //                                  'Dormant<br>since' ,'E-mail',
-  //                                  'Licence','N<sub>jobs</sub>',
-  //                                  'Space<br>(MB)','CPU<br>(hours)',
-  //                                  'Known<br>since','Last<br>seen'] );
-  this.userListTable.setHeaderRow ([
+  let headers = [[
       '##','Name','Login','Online','Profile','Dormant<br>since','E-mail',
       'Licence','N<sub>jobs</sub>','Space<br>(MB)','CPU<br>(hours)',
-      'Known<br>since','Last<br>seen'
+      'Known since','Last seen'
     ],[
       'Row number','User name','User login name',
       'Ticked if user is currently logged in','User profile',
@@ -640,97 +717,106 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
       'Total disk space currently occupied by user\'s projects',
       'Total CPU time consumed by user','Date when user account was created',
       'Date when user was seen last time'
-    ]);
+    ]];
 
-  let row = 0;
-  let loggedUsers = udata.loginHash.loggedUsers;
-  for (let i=0;i<udata.userList.length;i++)  {
-    let uDesc = udata.userList[i];
-    if ((!__local_user) || (uDesc.login==__local_user_id))  {
-      row++;
-      let online = '&nbsp;';
-      for (let token in loggedUsers)
-        if (loggedUsers[token].login==uDesc.login)  {
-          online = '&check;';
-          break;
-        }
-      let dormant = 'active';
-      if (uDesc.dormant)
-         dormant = new Date(uDesc.dormant).toISOString().slice(0,10);
-      let lastSeen = '';
-      if ('lastSeen' in uDesc)  {
-        if (uDesc.lastSeen)
-          lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
-      }
-      let cell_list = [
-        uDesc.name,
-        uDesc.login,
-        online,
-        uDesc.role,
-        dormant,
-        uDesc.email,
-        uDesc.licence,
-        uDesc.ration.jobs_total,
-        round(uDesc.ration.storage_used,1),
-        round(uDesc.ration.cpu_total_used,2),
-        new Date(uDesc.knownSince).toISOString().slice(0,10),
-        lastSeen
-      ];
-      // trow.uDesc = uDesc;
-      this.userListTable.setRow ( ''+row,'',cell_list,row,row % 2 );
-    }
+  let sh = headers[0][this.sortCol].split('<');
+  sh[0] = sh[0] + '&nbsp;&darr;';
+  headers[0][this.sortCol] = sh.join('<');
+
+  userTable.setHeaderRow ( headers[0],headers[1] );
+
+  let row     = 0;
+  let udindex = [];
+  let endNo   = Math.min ( this.userList.length,startNo+pageLen );
+  for (let i=startNo;i<endNo;i++)  {
+    row++;
+    let urec = this.userList[i];
+    udindex.push ( i );
+    userTable.setRow ( ''+(i+1),'',[
+        urec.name,
+        urec.login,
+        urec.online,
+        urec.role,
+        urec.dormant,
+        urec.email,
+        urec.licence,
+        urec.njobs,
+        urec.storage,
+        urec.cpu,
+        urec.knownAfter,
+        urec.lastSeen
+      ],row,row % 2 );
   }
 
   if (__user_role==role_code.admin)  {
-    (function(self){
-      self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
-        //alert ( 'trow='+JSON.stringify(trow.uDesc) );
-        new ManageUserDialog ( trow.uDesc,FEconfig,function(){ self.refresh(); } );
-      });
-    }(this))
+    let self = this;
+    userTable.addSignalHandler ( 'click',function(target){
+      // Ensure the click happened inside a table row (skip headers)
+      if (target.tagName === "TD") {
+        const row    = target.parentElement; // The <tr> containing the clicked <td>
+        const uindex = startNo + row.rowIndex; // Get the row index (1-based for <tbody>)
+        new ManageUserDialog ( self.userList[uindex-1],FEconfig,
+                               function(){ self.refresh(); } );
+      } else if (target.tagName === "TH") {
+        // const row = target.parentElement; // The <tr> containing the clicked <th>
+        let colNo = 0;
+        for (let i=0;(i<headers[0].length) && (!colNo);i++)
+          if (target.innerHTML==headers[0][i])
+            colNo = i;
+        if (colNo>0)  {
+          self.sortCol = colNo;
+          self.sortUserList  ();
+          self.makeUserTable ( startNo,pageLen,FEconfig );
+        }
+        // alert ( ' TH cliecked ' + target.innerHTML + ' =' + colNo);
+      }
+    });
   }
 
-  this.userListTable.setColumnCSS ({'text-align' :'right'}  ,0 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'left',
-                                    'white-space':'nowrap'} ,1 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'left'}   ,2 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'center'} ,3 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'left'}   ,4 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'center',
-                                    'white-space':'nowrap' },5 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'left'}   ,6 ,1 );
-  this.userListTable.setColumnCSS ({'text-align' :'center'} ,7 ,1 );
-  this.userListTable.setColumnCSS ({'white-space':'nowrap'} ,11,1 );
-  this.userListTable.setColumnCSS ({'white-space':'nowrap'} ,12,1 );
+  userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
 
 
-  // this.userListTable.createTable ( null );
+  userTable.setColumnCSS ({'text-align' :'right',
+                           'white-space':'nowrap'} ,0 ,1 );
+  userTable.setColumnCSS ({'text-align' :'left',
+                           'white-space':'nowrap'} ,1 ,1 );
+  userTable.setColumnCSS ({'text-align' :'left'}   ,2 ,1 );
+  userTable.setColumnCSS ({'text-align' :'center'} ,3 ,1 );
+  userTable.setColumnCSS ({'text-align' :'left'}   ,4 ,1 );
+  userTable.setColumnCSS ({'text-align' :'center',
+                           'white-space':'nowrap' },5 ,1 );
+  userTable.setColumnCSS ({'text-align' :'left'}   ,6 ,1 );
+  userTable.setColumnCSS ({'text-align' :'center'} ,7 ,1 );
+  userTable.setColumnCSS ({'white-space':'nowrap'} ,11,1 );
+  userTable.setColumnCSS ({'white-space':'nowrap'} ,12,1 );
 
-  // this.userListTable.setHeaderNoWrap   ( -1       );
-  // this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
-  // this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
-  // this.userListTable.setHeaderColWidth ( 2 ,'4%'   );  // Login
-  // this.userListTable.setHeaderColWidth ( 3 ,'3%'   );  // Online
-  // this.userListTable.setHeaderColWidth ( 4 ,'3%'   );  // Profile
-  // this.userListTable.setHeaderColWidth ( 5 ,'4%'   );  // Dormancy date
-  // this.userListTable.setHeaderColWidth ( 6 ,'auto' );  // E-mail
-  // this.userListTable.setHeaderColWidth ( 7 ,'4%'   );  // Licence
-  // this.userListTable.setHeaderColWidth ( 8 ,'3%'   );  // Jobs run
-  // this.userListTable.setHeaderColWidth ( 9 ,'3%'   );  // Space used
-  // this.userListTable.setHeaderColWidth ( 10,'3%'   );  // CPU used
-  // this.userListTable.setHeaderColWidth ( 11,'4%'   );  // Known since
-  // this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
+  userTable.setAllColumnCSS ({'cursor':'pointer'},0,1 );
 
-  // this.userListTable.setHeaderFontSize ( '100%' );
+}
 
-//  $(this.userListTable.element).css({'overflow-y':'hidden'});
 
-//  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
+AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
+  // function to create user info tables and fill them with data
 
-  this.usersTabPaginator = new Paginator ( udata.userList.length+200,20,7,
-      function(){} );
+  this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
-  this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
+  let pageLen      = 3;
+  this.sortCol     = 1;
+  this.loggedUsers = udata.loginHash.loggedUsers;
+
+  this.makeUserList ( udata );
+  this.sortUserList ();
+
+  if (this.userList.length<pageLen)  {
+    this.makeUserTable ( 0,pageLen,FEconfig );
+  } else  {
+    let self = this;
+    this.usersTabPaginator = new Paginator ( this.userList.length,pageLen,7,
+      function(pageNo){
+        self.makeUserTable ( pageLen*(pageNo-1),pageLen,FEconfig );
+      });
+    this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
+  }
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );
