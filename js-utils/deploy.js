@@ -154,6 +154,8 @@ if (cfgfpath.endsWith('.json'))  {
     process.exit(2);
   }
 
+  utils.configureCache ( 0 );
+
   feConfig = conf.getFEConfig();
   inpfpath = feConfig.bootstrapHTML;
   if (inpfpath.endsWith('.min.html'))
@@ -168,6 +170,8 @@ if (cfgfpath.endsWith('.json'))  {
   }
 
 } else  {
+
+  utils.configureCache ( 0 );
 
   let inpfpath = cfgfpath;
   log.standard ( 3,'template file path: ' + inpfpath );

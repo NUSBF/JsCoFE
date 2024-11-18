@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.11.24   <--  Date of Last Modification.
+ *    18.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -220,7 +220,7 @@ function readClass ( fpath ) {  // same as object but with class functions
 
 
 function writeString ( fpath,data_string )  {
-  cache.writeCache ( fpath,data_string,true );
+  return cache.writeCache ( fpath,data_string,true );
   // try {
   //   if (cache_enabled && cache.putItem(fpath,data_string))  {
   //     // was put into cache, use asynchronous write
