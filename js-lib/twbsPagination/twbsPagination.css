@@ -1,0 +1,44 @@
+/* Minimal Pagination Styles */
+.pagination {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  justify-content: left;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  color: #2280e4;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* .pagination li.active a {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+} */
+
+.pagination li.active a {
+  background-color: #2280e4;
+  color: #fff;
+  border-color: #2280e4;
+}
+
+.pagination li.disabled a {
+  color: #6c757d;
+  pointer-events: none;
+  background-color: #f8f9fa;
+}
+
+.pagination li a:hover {
+  background-color: #f0f0f0;
+}
