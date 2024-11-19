@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.24   <--  Date of Last Modification.
+ *    19.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,6 +35,7 @@
 function Table()  {
   Grid.call ( this,'None' );
   this.element.setAttribute ( 'class','table-blue' );
+  this.selectedRow = -1;  // no selection by default
 }
 
 Table.prototype = Object.create ( Grid.prototype );
@@ -145,6 +146,15 @@ let cell = this.getCell ( row,col );
 }
 
 
+Table.prototype.setCellCSS = function ( css,row,col )  {
+  if (row<this.element.rows.length)  {
+    let cells = this.element.rows[row].cells;
+    if (col<cells.length)
+       $(cells[col]).css ( css );
+  }
+}
+
+
 Table.prototype.setColumnCSS = function ( css,col,start_row )  {
   for (let i=start_row;i<this.element.rows.length;i++)
     if (col<this.element.rows[i].cells.length)
@@ -158,6 +168,42 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
        $(this.element.rows[i].cells[j]).css ( css );
 }
 
+Table.prototype.addSignalHandler = function (signal, onReceive) {
+  this.element.addEventListener(signal, function (e) {
+    onReceive(e.target);
+  }, false);
+}
+
+Table.prototype.setMouseHoverHighlighting = function ( start_row,start_col ) {
+  for (let i=start_row;i<this.element.rows.length;i++)
+    if (i!=this.selectedRow)  {
+      let cells = this.element.rows[i].cells;
+      this.element.rows[i].addEventListener('mouseover', () => {
+        for (let j=start_col;j<cells.length;j++)
+          cells[j].classList.add('table-blue-highlight');
+      });
+      this.element.rows[i].addEventListener('mouseout', () => {
+        for (let j=start_col;j<cells.length;j++)
+          cells[j].classList.remove('table-blue-highlight');
+      });
+    }
+}
+
+Table.prototype.selectRow = function ( rowNo,start_col )  {
+  if (this.selectedRow>=0)  {
+    let cells = this.element.rows[this.selectedRow].cells;
+    for (let j=start_col;j<cells.length;j++)
+      cells[j].classList.remove('table-blue-select');
+  }
+  if ((rowNo>=0) && (rowNo<this.element.rows.length))  {
+    this.selectedRow = rowNo;
+    let cells = this.element.rows[this.selectedRow].cells;
+    for (let j=start_col;j<cells.length;j++)  {
+      cells[j].classList.remove('table-blue-highlight');
+      cells[j].classList.add('table-blue-select');
+    }
+  }
+}
 
 // -------------------------------------------------------------------------
 // TableCell class

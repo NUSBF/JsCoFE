@@ -94,7 +94,7 @@ Canvas.prototype.setFillColor = function ( r,g,b,a )  {
 
 Canvas.prototype.drawCircle = function ( x,y,r )  {
   this.ctx.beginPath();
-  var rad = Math.min ( Math.abs(r*this._scx),Math.abs(r*this._scy) );
+  let rad = Math.min ( Math.abs(r*this._scx),Math.abs(r*this._scy) );
   this.ctx.arc ( this.u(x),this.v(y),rad, 0, 2.0*Math.PI, false );
   if (this.do_stroke)
     this.ctx.stroke();
@@ -114,15 +114,15 @@ Canvas.prototype.drawFilledCircle = function ( x,y,r )  {
 Canvas.prototype.drawArrow = function ( x1,y1,x2,y2, hsize )  {
 // hsize is the absolute length of arrow head beyond (x2,y2)
 
-  var u1 = this.u(x1);
-  var v1 = this.v(y1);
-  var ua = this.u(x2);
-  var va = this.v(y2);
+  let u1 = this.u(x1);
+  let v1 = this.v(y1);
+  let ua = this.u(x2);
+  let va = this.v(y2);
 
-  var d1 = ua-u1;
-  var d2 = va-v1;
-  var d3 = Math.sqrt ( d1*d1+d2*d2 );
-  var ca,sa;
+  let d1 = ua-u1;
+  let d2 = va-v1;
+  let d3 = Math.sqrt ( d1*d1+d2*d2 );
+  let ca,sa;
   if (d3>0.0)  {
     ca = d1/d3;
     sa = d2/d3;
@@ -131,16 +131,16 @@ Canvas.prototype.drawArrow = function ( x1,y1,x2,y2, hsize )  {
     sa = 0.0;
   }
 
-  var beta = Math.PI/12.0;
-  var cb   = Math.cos(beta);
-  var sb   = Math.sin(beta);
+  let beta = Math.PI/12.0;
+  let cb   = Math.cos(beta);
+  let sb   = Math.sin(beta);
 
-  var lw   = Math.max ( 0.5,this._scxy*this.ctx.lineWidth/200.0-0.5 );  // "line" width
-  var u2   = sa*lw;
-  var v2   = ca*lw;
+  let lw   = Math.max ( 0.5,this._scxy*this.ctx.lineWidth/200.0-0.5 );  // "line" width
+  let u2   = sa*lw;
+  let v2   = ca*lw;
 
-  var u0   = ua-u2;
-  var v0   = va+v2;
+  let u0   = ua-u2;
+  let v0   = va+v2;
 
   this.ctx.beginPath();
   this.ctx.moveTo ( u0,v0 );
@@ -155,11 +155,11 @@ Canvas.prototype.drawArrow = function ( x1,y1,x2,y2, hsize )  {
   u2 = ua + ca*d1;
   v2 = va + sa*d1;
 
-  var u3 = ua - sa*d2;
-  var v3 = va + ca*d2;
+  let u3 = ua - sa*d2;
+  let v3 = va + ca*d2;
 
-  var u4 = ua + sa*d2;
-  var v4 = va - ca*d2;
+  let u4 = ua + sa*d2;
+  let v4 = va - ca*d2;
 
   this.ctx.lineTo ( u4,v4 );
   this.ctx.lineTo ( u2,v2 );
@@ -287,7 +287,7 @@ qreal              x0,y0, x1,y1, x2,y2, x3,y3, x4,y4, xa,ya;
 Canvas.prototype.setMouseListener = function ( mouse_event,socket_function )  {
   (function(canvas){
     canvas.addEventListener ( mouse_event,function(evt){
-      var rect = canvas.getBoundingClientRect();
+      let rect = canvas.getBoundingClientRect();
       socket_function (  // mouseX,mouseY in canvas coordinates
           (evt.clientX-rect.left)*canvas.width/(rect.right-rect.left),
           (evt.clientY-rect.top)*canvas.height/(rect.bottom-rect.top)

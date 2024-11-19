@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.24   <--  Date of Last Modification.
+ *    18.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -149,6 +149,17 @@ function isValidURL(url) {
   return pattern.test(url);
 }
 
+function sortObjects ( array, field, ascending=true )  {
+  return array.sort((a, b) => {
+    const valueA = a[field];
+    const valueB = b[field];
+    if (valueA < valueB) return ascending ? -1 : 1;
+    if (valueA > valueB) return ascending ? 1 : -1;
+    return 0; // If values are equal
+  });
+}
+
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
@@ -166,4 +177,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.startsWith     = startsWith;
   module.exports.round          = round;
   module.exports.getDateString  = getDateString;
+  module.exports.sortObjects    = sortObjects;
 }
