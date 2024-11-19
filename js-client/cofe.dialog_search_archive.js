@@ -35,7 +35,7 @@ function SearchArchiveDialog ( callback_func )  {
 
   this.makeLayout();
 
-  var self = this;
+  let self = this;
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
