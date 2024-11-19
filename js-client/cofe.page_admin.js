@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    18.11.24   <--  Date of Last Modification.
+ *    19.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -672,31 +672,32 @@ AdminPage.prototype.makeUserList = function ( udata )  {
         storage    : round(uDesc.ration.storage_used,1),
         cpu        : round(uDesc.ration.cpu_total_used,2),
         knownAfter : new Date(uDesc.knownSince).toISOString().slice(0,10),
-        lastSeen   : lastSeen
+        lastSeen   : lastSeen,
+        uDesc      : uDesc
       };
       this.userList.push ( urec );
     }
 }
 
+var __slist = [
+  ['name'      ,true],
+  ['login'     ,true],
+  ['online'    ,true],
+  ['role'      ,true],
+  ['dormant'   ,true],
+  ['email'     ,true],
+  ['licence'   ,true],
+  ['njobs'     ,false],
+  ['storage'   ,false],
+  ['cpu'       ,false],
+  ['knownAfter',false],
+  ['lastSeen'  ,false]
+];
 
 AdminPage.prototype.sortUserList = function()  {
-  const slist = [
-    ['name'      ,true],
-    ['login'     ,true],
-    ['online'    ,true],
-    ['role'      ,true],
-    ['dormant'   ,true],
-    ['email'     ,true],
-    ['licence'   ,true],
-    ['njobs'     ,false],
-    ['storage'   ,false],
-    ['cpu'       ,false],
-    ['knownAfter',false],
-    ['lastSeen'  ,false]
-  ];
   if (this.sortCol>0)
-    this.userList = sortObjects ( this.userList,slist[this.sortCol-1][0],
-                                                slist[this.sortCol-1][1] );
+    this.userList = sortObjects ( this.userList,__slist[this.sortCol-1][0],
+                                                __slist[this.sortCol-1][1] );
 }
 
 AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
@@ -708,7 +709,7 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
   let headers = [[
       '##','Name','Login','Online','Profile','Dormant<br>since','E-mail',
       'Licence','N<sub>jobs</sub>','Space<br>(MB)','CPU<br>(hours)',
-      'Known since','Last seen'
+      'Known<br>since','Last seen'
     ],[
       'Row number','User name','User login name',
       'Ticked if user is currently logged in','User profile',
@@ -720,7 +721,9 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
     ]];
 
   let sh = headers[0][this.sortCol].split('<');
-  sh[0] = sh[0] + '&nbsp;&darr;';
+  if (__slist[this.sortCol-1][1])
+        sh[0] += '&nbsp;&darr;';
+  else  sh[0] += '&nbsp;&uarr;';
   headers[0][this.sortCol] = sh.join('<');
 
   userTable.setHeaderRow ( headers[0],headers[1] );
@@ -750,25 +753,35 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
 
   if (__user_role==role_code.admin)  {
     let self = this;
-    userTable.addSignalHandler ( 'click',function(target){
+    userTable.addSignalHandler ( 'contextmenu',function(target){
       // Ensure the click happened inside a table row (skip headers)
       if (target.tagName === "TD") {
         const row    = target.parentElement; // The <tr> containing the clicked <td>
         const uindex = startNo + row.rowIndex; // Get the row index (1-based for <tbody>)
-        new ManageUserDialog ( self.userList[uindex-1],FEconfig,
-                               function(){ self.refresh(); } );
-      } else if (target.tagName === "TH") {
-        // const row = target.parentElement; // The <tr> containing the clicked <th>
+        userTable.selectRow ( row.rowIndex,1 );
+        new ManageUserDialog ( self.userList[uindex-1].uDesc,FEconfig,
+                               function(code){ 
+                                 userTable.selectRow ( -1,1 );  // deselect
+                                 if (code>0)
+                                   self.refresh();
+                               });
+      }
+    });
+    userTable.addSignalHandler ( 'click',function(target){
+      if (target.tagName === "TH") {
         let colNo = 0;
-        for (let i=0;(i<headers[0].length) && (!colNo);i++)
-          if (target.innerHTML==headers[0][i])
+        for (let i=0;(i<headers[0].length) && (!colNo);i++)  {
+          let prefix = headers[0][i].split('<')[0].split('&')[0];
+          if (target.innerHTML.startsWith(prefix))
             colNo = i;
+        }
         if (colNo>0)  {
+          if (colNo==self.sortCol)
+            __slist[colNo-1][1] = !__slist[colNo-1][1];
           self.sortCol = colNo;
           self.sortUserList  ();
           self.makeUserTable ( startNo,pageLen,FEconfig );
         }
-        // alert ( ' TH cliecked ' + target.innerHTML + ' =' + colNo);
       }
     });
   }
@@ -790,7 +803,10 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
   userTable.setColumnCSS ({'white-space':'nowrap'} ,11,1 );
   userTable.setColumnCSS ({'white-space':'nowrap'} ,12,1 );
 
-  userTable.setAllColumnCSS ({'cursor':'pointer'},0,1 );
+  userTable.setAllColumnCSS ({'cursor':'pointer',
+                              'font-family':'Arial, Helvetica, sans-serif'},0,1 );
+
+  userTable.setMouseHoverHighlighting(1,1);
 
 }
 
