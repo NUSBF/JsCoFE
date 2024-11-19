@@ -635,32 +635,6 @@ AdminPage.prototype.loadAnalytics = function()  {
 }
 
 
-/*
-function sortByField(array, field, ascending = true) {
-  return array.sort((a, b) => {
-    const valueA = a[field];
-    const valueB = b[field];
-
-    if (valueA < valueB) return ascending ? -1 : 1;
-    if (valueA > valueB) return ascending ? 1 : -1;
-    return 0; // If values are equal
-  });
-}
-
-// Example Usage:
-const data = [
-  { name: "Alice", age: 30 },
-  { name: "Bob", age: 25 },
-  { name: "Charlie", age: 35 }
-];
-
-// Sort by "age" in ascending order
-console.log(sortByField(data, "age"));
-
-// Sort by "name" in descending order
-console.log(sortByField(data, "name", false));
-*/
-
 AdminPage.prototype.makeUserList = function ( udata )  {
   this.userList = [];
   for (let i=0;i<udata.userList.length;i++)  {
@@ -792,7 +766,7 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
 
   if (__user_role==role_code.admin)  {
     let self = this;
-    userTable.addSignalHandler ( 'contextmenu',function(target){
+    userTable.addSignalHandler ( 'dblclick',function(target){
       // Ensure the click happened inside a table row (skip headers)
       if (target.tagName === "TD") {
         const row    = target.parentElement; // The <tr> containing the clicked <td>
@@ -869,7 +843,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
   let pageLen      = 20;
-  this.sortCol     = 1;
+  this.sortCol     = 12;
   this.loggedUsers = udata.loginHash.loggedUsers;
 
   this.makeUserList ( udata );
