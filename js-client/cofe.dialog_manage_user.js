@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    19.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Manage User Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -118,7 +118,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                     '</i> has been successfully updated, and ' +
                                     'notification<br>sent to e-mail address:<p><b><i>' +
                                     dlg.userData.email + '</i></b>.', 'msg_confirm' );
-                                onExit_func();
+                                onExit_func ( 1 );
                                 $(dlg.element).dialog("close");
                               },null,'persist' );
                             }
@@ -151,7 +151,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                     '</i> has been successfully reset, and ' +
                                     'notification<br>sent to e-mail address:<p><b><i>' +
                                     dlg.userData.email + '</i></b>.', 'msg_ok' );
-                                onExit_func();
+                                onExit_func ( 1 );
                                 $(dlg.element).dialog("close");
                               },null,'persist' );
                             }
@@ -184,7 +184,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                     '</i> has been successfully deleted, and ' +
                                     'notification<br>sent to e-mail address:<p><b><i>' +
                                     dlg.userData.email + '</i></b>.' );
-                                onExit_func();
+                                onExit_func ( 1 );
                                 $(dlg.element).dialog("close");
                               },null,'persist' );
                             }
@@ -258,7 +258,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                       stop_reason + '</h2>' + response.message +
                                       '.</div>','msg_stop' );
                 } else  {
-                  onExit_func();
+                  onExit_func ( 1 );
                   $(dlg.element).dialog("close");
                 }
               },null,'persist' );
@@ -272,6 +272,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
           id   : "cancel_btn",
           text : "Close",
           click: function() {
+            onExit_func ( 0 );
             $(dlg.element).dialog("close");
           }
 
