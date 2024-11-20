@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    20.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -410,8 +410,10 @@ JobDialog.prototype.onDlgResize = function()  {
     this.task.inputPanelResize ( this.inputPanel,panelWidth,panelHeight );
   }
 
-  if (this.outputPanel)
+  if (this.outputPanel)  {
+    console.log ( ' >>>>> op w=' + panelWidth + ':' + panelHeight );
     this.outputPanel.setSize_px ( panelWidth,panelHeight );
+  }
 
 }
 
@@ -444,7 +446,9 @@ JobDialog.prototype.show = function()  {
 }
 
 JobDialog.prototype.loadReport = function()  {
+
   if (this.outputPanel)  {  // check because the function may be called from outside
+  
     let reportURL;
     if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
         __local_service && this.task.job_dialog_data.job_token)  {
@@ -457,14 +461,20 @@ JobDialog.prototype.loadReport = function()  {
     //   reportURL += '?local_service';
     // if (__local_service)
     //   reportURL += '?' + performance.now();
-    if (__local_service)  {
-      // this is to force reload after coot in local mode, magic or a bug
-      this.setDlgSize (  1 );  
-      this.outputPanel.loadPage ( reportURL );
-      this.setDlgSize ( -1 );
-    } else
-      this.outputPanel.loadPage ( reportURL );
+
+    // // if (__local_service)  {
+    // //   // this is to force reload after coot in local mode, magic or a bug
+    // //   // side effect: screwed reports in task created by running workflows
+    // //   this.setDlgSize (  1 );  
+    // //   this.outputPanel.loadPage ( reportURL );
+    // //   this.setDlgSize ( -1 );
+    // // } else
+    //   this.outputPanel.loadPage ( reportURL );
+
+    this.outputPanel.loadPage ( reportURL );
+
   }
+
 }
 
 JobDialog.prototype.reloadReport = function()  {
