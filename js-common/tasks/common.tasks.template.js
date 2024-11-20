@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.11.24   <--  Date of Last Modification.
+ *    20.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1018,7 +1018,7 @@ if (!dbx)  {
 
 
   // reserved function name
-  TaskTemplate.prototype.collectInput = function ( inputPanel )  {
+  TaskTemplate.prototype.collectInput = function ( inputPanel,ignore_keys=null )  {
   // Collects data from input widgets, created in makeInputPanel() and
   // stores it in internal fields. Returns empty string if input is
   // validated, and an error message otherwise
@@ -1046,7 +1046,7 @@ if (!dbx)  {
 
     if (msg)
       msg += '|';
-    msg += this.collectParameterValues ( inputPanel );
+    msg += this.collectParameterValues ( inputPanel,ignore_keys );
 
     return msg;
 
@@ -2764,7 +2764,9 @@ if (!dbx)  {
                    explanation + '</i>';
   }
 
-  TaskTemplate.prototype.collectParameterValues = function ( widget ) {
+  TaskTemplate.prototype.collectParameterValues = function ( widget,ignore_keys=null ) {
+  // 'ignore' can give a list of data keys, errors for which will be ignored
+  // (but data is collected). This is used in Workflow Creator.
 
     let msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
@@ -2813,8 +2815,9 @@ if (!dbx)  {
 
         for (let key in widget.inpParamRef.parameters)  {
 
-          let param = widget.inpParamRef.parameters[key];
-          let item  = param.ref;
+          let ignore = ignore_keys && (ignore_keys.indexOf(key)>=0);
+          let param  = widget.inpParamRef.parameters[key];
+          let item   = param.ref;
 
           switch (item.type)  {
 
@@ -2825,12 +2828,12 @@ if (!dbx)  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else if (isInteger(texti))  {
                                 let value = parseInt ( texti );
                                 checkRange ( value,item,key );
-                              } else
+                              } else if (!ignore)
                                 addMessage ( item,key,'wrong integer format' );
                           break;
 
@@ -2841,12 +2844,12 @@ if (!dbx)  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else if (isFloat(textr))  {
                                 let value = parseFloat ( textr );
                                 checkRange ( value,item,key );
-                              } else
+                              } else if (!ignore)
                                 addMessage ( item,key,'wrong real format' );
                           break;
 
@@ -2857,7 +2860,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texts;
@@ -2874,7 +2877,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texta;
@@ -2887,7 +2890,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texte;
