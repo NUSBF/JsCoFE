@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    19.11.24   <--  Date of Last Modification.
+ *    21.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -1212,13 +1212,15 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
         pdata[title].time_max.toFixed(2)
       ],++n,alt );
     alt = !alt;
-    if (title.startsWith('Server'))
+    if (title.startsWith('Server'))  {
       perf_table.setRow ( 'Server request time, ms',
           'Time between sending request and receiving a response in browser',[
           __request_timing.time_min.toFixed(2),
           (__request_timing.time_sum/__request_timing.n_sum).toFixed(2),
           __request_timing.time_max.toFixed(2)
         ],++n,alt );
+      alt = !alt;
+    }
   }
 
 }
