@@ -731,6 +731,21 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
       'Total disk space currently occupied by user\'s projects',
       'Total CPU time consumed by user','Date when user account was created',
       'Date when user was seen last time'
+  //   ],[
+  //     ['right' ,'30px' ],
+  //     ['left'  ,'140px'],
+  //     ['left'  ,'40px' ],
+  //     ['center','50px' ],
+  //     ['left'  ,'70px' ],
+  //     ['center','80px' ],
+  //     ['left'  ,'auto' ],
+  //     ['center','60px' ],
+  //     ['50px'];
+  // userTable.setColumnCSS ({'width'      :'70px'  } ,9,1 );
+  // userTable.setColumnCSS ({'width'      :'60px'  } ,10,1 );
+  // userTable.setColumnCSS ({'width'      :'80px'  } ,11,1 );
+  // userTable.setColumnCSS ({'width'      :'80px'  } ,12,1 );
+
     ]];
 
   let sh = headers[0][this.sortCol].split('<br>');
@@ -801,36 +816,31 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
 
   userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
 
-
   userTable.setColumnCSS ({'text-align' :'right',
-                           'white-space':'nowrap',
                            'width'      :'30px'  } ,0 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left',
-                           'white-space':'nowrap',
+  userTable.setColumnCSS ({'text-align' :'left', 
                            'width'      :'140px' } ,1 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left',
-                           'white-space':'nowrap',
+  userTable.setColumnCSS ({'text-align' :'left', 
                            'width'      :'40px'  } ,2 ,1 );
   userTable.setColumnCSS ({'text-align' :'center',
                            'width'      :'50px'  } ,3 ,1 );
   userTable.setColumnCSS ({'text-align' :'left',
                            'width'      :'70px'  } ,4 ,1 );
   userTable.setColumnCSS ({'text-align' :'center',
-                           'white-space':'nowrap',
                            'width'      :'80px'  } ,5 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left'  } ,6 ,1 );
+  userTable.setColumnCSS ({'text-align' :'left'  } ,6,1 );
   userTable.setColumnCSS ({'text-align' :'center',
                            'width'      :'60px'  } ,7 ,1 );
-  userTable.setColumnCSS ({'width'      :'50px'  } ,8 ,1 );
-  userTable.setColumnCSS ({'width'      :'70px'  } ,9 ,1 );
+  userTable.setColumnCSS ({'width'      :'50px'  } ,8,1 );
+  userTable.setColumnCSS ({'width'      :'70px'  } ,9,1 );
   userTable.setColumnCSS ({'width'      :'60px'  } ,10,1 );
-  userTable.setColumnCSS ({'white-space':'nowrap',
-                           'width'      :'80px'  } ,11,1 );
-  userTable.setColumnCSS ({'white-space':'nowrap',
-                           'width'      :'80px'  } ,12,1 );
+  userTable.setColumnCSS ({'width'      :'80px'  } ,11,1 );
+  userTable.setColumnCSS ({'width'      :'80px'  } ,12,1 );
 
-  userTable.setAllColumnCSS ({'cursor':'pointer',
-                              'font-family':'Arial, Helvetica, sans-serif'},0,1 );
+  userTable.setAllColumnCSS ({'cursor'      : 'pointer',
+                              'white-space' : 'nowrap',
+                              'font-family' : 'Arial, Helvetica, sans-serif'
+                             },0,1 );
 
   userTable.setMouseHoverHighlighting(1,1);
 
