@@ -731,21 +731,20 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
       'Total disk space currently occupied by user\'s projects',
       'Total CPU time consumed by user','Date when user account was created',
       'Date when user was seen last time'
-  //   ],[
-  //     ['right' ,'30px' ],
-  //     ['left'  ,'140px'],
-  //     ['left'  ,'40px' ],
-  //     ['center','50px' ],
-  //     ['left'  ,'70px' ],
-  //     ['center','80px' ],
-  //     ['left'  ,'auto' ],
-  //     ['center','60px' ],
-  //     ['50px'];
-  // userTable.setColumnCSS ({'width'      :'70px'  } ,9,1 );
-  // userTable.setColumnCSS ({'width'      :'60px'  } ,10,1 );
-  // userTable.setColumnCSS ({'width'      :'80px'  } ,11,1 );
-  // userTable.setColumnCSS ({'width'      :'80px'  } ,12,1 );
-
+    ],[
+      ['right' ,'30px' ],
+      ['left'  ,'100px'],
+      ['left'  ,'40px' ],
+      ['center','50px' ],
+      ['left'  ,'70px' ],
+      ['center','80px' ],
+      ['left'  ,'auto' ],
+      ['center','60px' ],
+      ['right' ,'50px' ],
+      ['right' ,'70px' ],
+      ['right' ,'60px' ],
+      ['center','80px' ],
+      ['center','80px' ]
     ]];
 
   let sh = headers[0][this.sortCol].split('<br>');
@@ -757,12 +756,12 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
   userTable.setHeaderRow ( headers[0],headers[1] );
 
   let row     = 0;
-  let udindex = [];
+  // let udindex = [];
   let endNo   = Math.min ( this.userList.length,startNo+pageLen );
   for (let i=startNo;i<endNo;i++)  {
     row++;
     let urec = this.userList[i];
-    udindex.push ( i );
+    // udindex.push ( i );
     userTable.setRow ( ''+(i+1),'',[
         urec.name,
         urec.login,
@@ -816,26 +815,10 @@ AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
 
   userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
 
-  userTable.setColumnCSS ({'text-align' :'right',
-                           'width'      :'30px'  } ,0 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left', 
-                           'width'      :'140px' } ,1 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left', 
-                           'width'      :'40px'  } ,2 ,1 );
-  userTable.setColumnCSS ({'text-align' :'center',
-                           'width'      :'50px'  } ,3 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left',
-                           'width'      :'70px'  } ,4 ,1 );
-  userTable.setColumnCSS ({'text-align' :'center',
-                           'width'      :'80px'  } ,5 ,1 );
-  userTable.setColumnCSS ({'text-align' :'left'  } ,6,1 );
-  userTable.setColumnCSS ({'text-align' :'center',
-                           'width'      :'60px'  } ,7 ,1 );
-  userTable.setColumnCSS ({'width'      :'50px'  } ,8,1 );
-  userTable.setColumnCSS ({'width'      :'70px'  } ,9,1 );
-  userTable.setColumnCSS ({'width'      :'60px'  } ,10,1 );
-  userTable.setColumnCSS ({'width'      :'80px'  } ,11,1 );
-  userTable.setColumnCSS ({'width'      :'80px'  } ,12,1 );
+  for (let i=0;i<headers[2].length;i++)
+    userTable.setColumnCSS ( { 'text-align' : headers[2][i][0],
+                               'width'      : headers[2][i][1]  
+                             } ,i,1 );
 
   userTable.setAllColumnCSS ({'cursor'      : 'pointer',
                               'white-space' : 'nowrap',

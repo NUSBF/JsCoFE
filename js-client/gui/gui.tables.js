@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ========================================================================
  *
  *    19.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/gui/gui.tables.js
  *       ~~~~~~~~~
@@ -13,10 +13,11 @@
  *  **** Content :  Table        - plain table
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
+ *                  TablePages   - table with sortable columns and pages
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
- *  =================================================================
+ *  ========================================================================
  *
  *  Requires: 	jquery.js
  *  	          theme.blue.css  // from tablesorter
@@ -651,4 +652,96 @@ let onSorted_func = this.onsorted;
     this.onsorted = null;
   $(this.table.element).trigger("sorton",[sortList]);
   this.onsorted = onSorted_func;
+}
+
+
+// -------------------------------------------------------------------------
+// TablePages class:  table with sortable columns and pages
+
+function TablePages()  {
+  Grid.call ( this,'-compact' );
+  this.table   = null;
+  this.tdesc   = null;
+  this.tdata   = null;
+  this.header_list  = [];
+  this.tooltip_list = [];
+  this.sort_list    = [];
+  this.sortCol = 0;
+}
+
+TablePages.prototype = Object.create ( Grid.prototype );
+TablePages.prototype.constructor = TablePages;
+
+TablePages.prototype.formTable = function ( tdesc )  {
+  // tdesc = {
+  //   columns : [   
+  //     { header  : text, // must be absent in all columns for no headers
+  //       tooltip : tooltip,
+  //       style   : { 'taxt-align' : 'right', 'width' : '80px', ... },
+  //       sort    : true  // initial sorting, true for ascending
+  //     }
+  //     ...
+  //   ],
+  //   vheaders : 'row',  // null|'row'
+  //   style    : { cursor' : 'pointer', 'white-space' : 'nowrap', ... }, 
+  //                                           // general css for data columns
+  //   sortCol     : 0,   // shoudl be absent for no sorting
+  //   mouse_hover : true,
+  //   page_size   : 20,  // 0 for no pages
+  //   onsort      : function(){},
+  //   onclick     : function(){},
+  //   ondblclick  : function(){}
+  // }
+  this.tdesc = tdesc;
+
+  if ('sortCol' in tdesc)
+        this.sortCol = tdesc.sortCol;
+  else  this.sortCol = -1;
+
+  this.header_list  = [];
+  this.tooltip_list = [];
+  this.sort_list    = [];
+  for (i=0;i<tdesc.columns.length;i++)  
+    if ('header' in tdesc.columns[i])  {
+      this.header_list .push ( tdesc.columns[i].header  );
+      this.tooltip_list.push ( tdesc.columns[i].tooltip );
+      this.sort_list   .push ( tdesc.columns[i].sort    );
+    }
+  if (header_list.length<tdesc.columns.length)  {
+    this.header_list  = [];
+    this.tooltip_list = [];
+    this.sort_list    = [];
+    this.sortCol      = -1;  // no sorting without headers
+  }
+
+}
+
+TablePages.prototype.setData = function ( tdata )  {
+  // tdata = [  // vheader excluded
+  //   [d11,d12,...],
+  //   [d21,d22,...],
+  //   ...
+  // ]
+  this.tdata = tdata;
+}
+
+TablePages.prototype.makeTable = function()  {
+
+  this.table = new Table();
+  this.setWidget ( this.table,0,0,1,1 );
+
+  if (this.sortCol>=0)  {
+    let sh = header_list[this.sortCol].split('<br>');
+    if (this.sort_list[this.sortCol])
+          sh[0] += '&nbsp;&darr;';
+    else  sh[0] += '&nbsp;&uarr;';
+    header_list[this.sortCol] = sh.join('<br>');
+  }
+
+  if (header_list.length==tdesc.columns.length)
+    this.table.setHeaderRow ( this.header_list,this.tooltip_list );
+
+  if (this.sortCol>=0)
+    userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
+
 }
