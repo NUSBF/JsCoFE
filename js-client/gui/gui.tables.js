@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    19.11.24   <--  Date of Last Modification.
+ *    22.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -659,20 +659,25 @@ let onSorted_func = this.onsorted;
 // TablePages class:  table with sortable columns and pages
 
 function TablePages()  {
-  Grid.call ( this,'-compact' );
-  this.table   = null;
-  this.tdesc   = null;
-  this.tdata   = null;
+  Grid.call ( this,'' );
+  this.table        = null;
+  this.tdesc        = null;
+  this.tdata        = null;
   this.header_list  = [];
   this.tooltip_list = [];
   this.sort_list    = [];
-  this.sortCol = 0;
+  this.startRow     = 0;
+  this.startCol     = 0;
+  this.sortCol      = 0;
+  this.pageSize     = 20;
+  this.style        = null;
 }
 
 TablePages.prototype = Object.create ( Grid.prototype );
 TablePages.prototype.constructor = TablePages;
 
-TablePages.prototype.formTable = function ( tdesc )  {
+
+TablePages.prototype._form_table = function ( tdesc )  {
   // tdesc = {
   //   columns : [   
   //     { header  : text, // must be absent in all columns for no headers
@@ -682,14 +687,16 @@ TablePages.prototype.formTable = function ( tdesc )  {
   //     }
   //     ...
   //   ],
+  //   rows     : [
+  //     [d11,d12,...],
+  //     ...
+  //   ],
   //   vheaders : 'row',  // null|'row'
   //   style    : { cursor' : 'pointer', 'white-space' : 'nowrap', ... }, 
   //                                           // general css for data columns
-  //   sortCol     : 0,   // shoudl be absent for no sorting
+  //   sortCol     : 0,   // should be absent for no sorting
   //   mouse_hover : true,
   //   page_size   : 20,  // 0 for no pages
-  //   onsort      : function(){},
-  //   onclick     : function(){},
   //   ondblclick  : function(){}
   // }
   this.tdesc = tdesc;
@@ -698,50 +705,151 @@ TablePages.prototype.formTable = function ( tdesc )  {
         this.sortCol = tdesc.sortCol;
   else  this.sortCol = -1;
 
+  this.startRow     = 1;
   this.header_list  = [];
   this.tooltip_list = [];
   this.sort_list    = [];
-  for (i=0;i<tdesc.columns.length;i++)  
+  for (let i=0;i<tdesc.columns.length;i++)  
     if ('header' in tdesc.columns[i])  {
       this.header_list .push ( tdesc.columns[i].header  );
       this.tooltip_list.push ( tdesc.columns[i].tooltip );
       this.sort_list   .push ( tdesc.columns[i].sort    );
     }
-  if (header_list.length<tdesc.columns.length)  {
+  if (this.header_list.length<tdesc.columns.length)  {
     this.header_list  = [];
     this.tooltip_list = [];
     this.sort_list    = [];
     this.sortCol      = -1;  // no sorting without headers
+    this.startRow     = 0;
   }
 
+  this.vheaders = null;
+  this.startCol = 0;
+  if ('vheaders' in tdesc)  {
+    this.vheaders = tdesc.vheaders;
+    if (this.vheaders)
+      this.startCol = 1;
+  }
+
+  this.pageSize = 20;
+  if ('page_size' in tdesc)
+    this.pageSize = tdesc.page_size;
+
+  this.style = null;
+  if ('style' in tdesc)
+    this.style = tdesc.style;
+
 }
 
-TablePages.prototype.setData = function ( tdata )  {
-  // tdata = [  // vheader excluded
-  //   [d11,d12,...],
-  //   [d21,d22,...],
-  //   ...
-  // ]
-  this.tdata = tdata;
+
+TablePages.prototype.sortData = function()  {
+  this.tdata = sortObjects ( this.tdata,this.sortCol-this.startCol,
+                                        this.sort_list[this.sortCol] );
 }
 
-TablePages.prototype.makeTable = function()  {
+
+TablePages.prototype._fill_table = function ( startRow )  {
 
   this.table = new Table();
   this.setWidget ( this.table,0,0,1,1 );
 
-  if (this.sortCol>=0)  {
-    let sh = header_list[this.sortCol].split('<br>');
+  let header0 = '';
+  if (this.sortCol>=this.startCol)  {
+    header0 = this.header_list[this.sortCol];
+    let sh  = this.header_list[this.sortCol].split('<br>');
     if (this.sort_list[this.sortCol])
           sh[0] += '&nbsp;&darr;';
     else  sh[0] += '&nbsp;&uarr;';
-    header_list[this.sortCol] = sh.join('<br>');
+    this.header_list[this.sortCol] = sh.join('<br>');
   }
 
-  if (header_list.length==tdesc.columns.length)
+  if (this.header_list.length==this.tdesc.columns.length)  {
     this.table.setHeaderRow ( this.header_list,this.tooltip_list );
+    if (this.sortCol>=0)  {
+      this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
+      this.header_list[this.sortCol] = header0;
+    }
+  }
 
-  if (this.sortCol>=0)
-    userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
+  let row    = 0;
+  let endRow = Math.min ( this.tdata.length,startRow+this.pageSize );
+  let ncols  = this.header_list.length-this.startCol;
+  for (let i=startRow;i<endRow;i++)  {
+    row++;
+    if (this.vheaders)
+      this.table.setRow ( ''+(i+1),'',this.tdata[i].slice(0,ncols),row,row % 2 );
+    else
+      this.table.setRow ( this.tdata[i][0],'',this.tdata[i].slice(1,ncols),row,row % 2 );
+  }
+
+  let self = this;
+  if (this.sortCol>=0)  {
+    this.table.addSignalHandler ( 'click',function(target){
+      if (target.tagName === "TH") {
+        let colNo = 0;
+        for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
+          let prefix = self.header_list[i].split('<')[0].split('&')[0];
+          if (target.innerHTML.startsWith(prefix))
+            colNo = i;
+        }
+        if (colNo>=self.startCol)  {
+          if (colNo==self.sortCol)
+            self.sort_list[colNo] = !self.sort_list[colNo];
+          self.sortCol = colNo;
+          self.sortData    ();
+          self._fill_table ( startRow );
+        }
+      }
+    });
+  }
+
+  if (this.tdesc.ondblclick)  {
+    this.table.addSignalHandler ( 'dblclick',function(target){
+      // Ensure the click happened inside a table row (skip headers)
+      // if (target.tagName === "TD") {
+      const row = target.parentElement; // The <tr> containing the clicked <td>
+      if (row.rowIndex>0)  {
+        const uindex = startRow + row.rowIndex; // Get the row index (1-based for <tbody>)
+        self.table.selectRow  ( row.rowIndex,1 );
+        self.tdesc.ondblclick ( self.tdata[uindex-1],function(){
+                                  self.table.selectRow ( -1,1 );  // deselect
+                                });
+      }
+    });
+  }
+
+  this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
+
+  for (let i=0;i<this.tdesc.columns.length;i++)
+    if (this.tdesc.columns[i].style)
+      this.table.setColumnCSS ( this.tdesc.columns[i].style,i,this.startRow );
+
+  if (this.style)
+    this.table.setAllColumnCSS ( this.style,this.startRow,this.startCol );
+
+  if (this.tdesc.mouse_hover)
+    this.table.setMouseHoverHighlighting ( this.startRow,this.startCol );
+
+}
+
+
+TablePages.prototype.makeTable = function ( tdesc )  {
+
+  this._form_table ( tdesc );
+
+  this.tdata = tdesc.rows;
+  if (this.sortCol>=this.startCol)
+    this.sortData();
+
+  this._fill_table ( 0 );
+
+  if (this.pageSize<this.tdata.length)  {
+    let self = this;
+    let paginator = new Paginator ( this.tdata.length,this.pageSize,7,
+      function(pageNo){
+        self._fill_table ( self.pageSize*(pageNo-1) );
+      });
+    this.setWidget ( paginator,1,0,1,1 );
+  }
 
 }
