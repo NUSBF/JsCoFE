@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    21.11.24   <--  Date of Last Modification.
+ *    22.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -635,8 +635,232 @@ AdminPage.prototype.loadAnalytics = function()  {
 }
 
 
-AdminPage.prototype.makeUserList = function ( udata )  {
-  this.userList = [];
+// AdminPage.prototype.makeUserList = function ( udata )  {
+//   this.userList = [];
+//   for (let i=0;i<udata.userList.length;i++)  {
+//     let uDesc = udata.userList[i];
+//     let includeUser = (!__local_user) || (uDesc.login==__local_user_id);
+//     if (includeUser && this.searchFilters)  {
+//       includeUser = (
+//                      (!this.searchFilters.logname) || 
+//                      (uDesc.login==this.searchFilters.logname)
+//                     ) && (
+//                      (!this.searchFilters.email) || 
+//                      (uDesc.email==this.searchFilters.email)
+//                     );
+//       if (includeUser && this.searchFilters.uname)  {
+//         includeUser = false;
+//         let words   = this.searchFilters.uname.toUpperCase().split(' ')
+//                                               .filter(w => w !== '');
+//         let uname   = uDesc.name.toUpperCase();
+//         for (let i=0;(i<words.length) && (!includeUser);i++)
+//           includeUser = (uname.indexOf(words[i])>=0);
+//       }
+//     }
+//     if (includeUser)  {
+//       let online = '&nbsp;';
+//       for (let token in this.loggedUsers)
+//         if (this.loggedUsers[token].login==uDesc.login)  {
+//           online = '&check;';
+//           break;
+//         }
+//       let dormant = 'active';
+//       if (uDesc.dormant)
+//           dormant = new Date(uDesc.dormant).toISOString().slice(0,10);
+//       let lastSeen = '';
+//       if ('lastSeen' in uDesc)  {
+//         if (uDesc.lastSeen)
+//           lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
+//       }
+//       let urec = {
+//         name       : uDesc.name,
+//         login      : uDesc.login,
+//         online     : online,
+//         role       : uDesc.role,
+//         dormant    : dormant,
+//         email      : uDesc.email,
+//         licence    : uDesc.licence,
+//         njobs      : uDesc.ration.jobs_total,
+//         storage    : round(uDesc.ration.storage_used,1),
+//         cpu        : round(uDesc.ration.cpu_total_used,2),
+//         knownAfter : new Date(uDesc.knownSince).toISOString().slice(0,10),
+//         lastSeen   : lastSeen,
+//         uDesc      : uDesc
+//       };
+//       this.userList.push ( urec );
+//     }
+//   }
+// }
+
+// var __slist = [
+//   ['name'      ,true],
+//   ['login'     ,true],
+//   ['online'    ,true],
+//   ['role'      ,true],
+//   ['dormant'   ,true],
+//   ['email'     ,true],
+//   ['licence'   ,true],
+//   ['njobs'     ,false],
+//   ['storage'   ,false],
+//   ['cpu'       ,false],
+//   ['knownAfter',false],
+//   ['lastSeen'  ,false]
+// ];
+
+// AdminPage.prototype.sortUserList = function()  {
+//   if (this.sortCol>0)
+//     this.userList = sortObjects ( this.userList,__slist[this.sortCol-1][0],
+//                                                 __slist[this.sortCol-1][1] );
+// }
+
+// AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
+//   // function to create user info tables and fill them with data
+
+//   let userTable = new Table();
+//   this.usersTab.grid.setWidget ( userTable,1,0,1,2 );
+
+//   let headers = [[
+//       '##','Name','Login','Online','Profile','Dormant<br>since','E-mail',
+//       'Licence','N<sub>jobs</sub>','Space<br>(MB)','CPU<br>(hours)',
+//       'Known<br>since','Last seen'
+//     ],[
+//       'Row number','User name','User login name',
+//       'Ticked if user is currently logged in','User profile',
+//       'Date when user was deemed as dormant','User contact e-mail address',
+//       'Type of user\'s licence','Total number of jobs run by user',
+//       'Total disk space currently occupied by user\'s projects',
+//       'Total CPU time consumed by user','Date when user account was created',
+//       'Date when user was seen last time'
+//     ],[
+//       ['right' ,'30px' ],
+//       ['left'  ,'100px'],
+//       ['left'  ,'40px' ],
+//       ['center','50px' ],
+//       ['left'  ,'70px' ],
+//       ['center','80px' ],
+//       ['left'  ,'auto' ],
+//       ['center','60px' ],
+//       ['right' ,'50px' ],
+//       ['right' ,'70px' ],
+//       ['right' ,'60px' ],
+//       ['center','80px' ],
+//       ['center','80px' ]
+//     ]];
+
+//   let sh = headers[0][this.sortCol].split('<br>');
+//   if (__slist[this.sortCol-1][1])
+//         sh[0] += '&nbsp;&darr;';
+//   else  sh[0] += '&nbsp;&uarr;';
+//   headers[0][this.sortCol] = sh.join('<br>');
+
+//   userTable.setHeaderRow ( headers[0],headers[1] );
+
+//   let row     = 0;
+//   // let udindex = [];
+//   let endNo   = Math.min ( this.userList.length,startNo+pageLen );
+//   for (let i=startNo;i<endNo;i++)  {
+//     row++;
+//     let urec = this.userList[i];
+//     // udindex.push ( i );
+//     userTable.setRow ( ''+(i+1),'',[
+//         urec.name,
+//         urec.login,
+//         urec.online,
+//         urec.role,
+//         urec.dormant,
+//         urec.email,
+//         urec.licence,
+//         urec.njobs,
+//         urec.storage,
+//         urec.cpu,
+//         urec.knownAfter,
+//         urec.lastSeen
+//       ],row,row % 2 );
+//   }
+
+//   if (__user_role==role_code.admin)  {
+//     let self = this;
+//     userTable.addSignalHandler ( 'dblclick',function(target){
+//       // Ensure the click happened inside a table row (skip headers)
+//       if (target.tagName === "TD") {
+//         const row    = target.parentElement; // The <tr> containing the clicked <td>
+//         const uindex = startNo + row.rowIndex; // Get the row index (1-based for <tbody>)
+//         userTable.selectRow ( row.rowIndex,1 );
+//         new ManageUserDialog ( self.userList[uindex-1].uDesc,FEconfig,
+//                                function(code){ 
+//                                  userTable.selectRow ( -1,1 );  // deselect
+//                                  if (code>0)
+//                                    self.refresh();
+//                                });
+//       }
+//     });
+//     userTable.addSignalHandler ( 'click',function(target){
+//       if (target.tagName === "TH") {
+//         let colNo = 0;
+//         for (let i=0;(i<headers[0].length) && (!colNo);i++)  {
+//           let prefix = headers[0][i].split('<')[0].split('&')[0];
+//           if (target.innerHTML.startsWith(prefix))
+//             colNo = i;
+//         }
+//         if (colNo>0)  {
+//           if (colNo==self.sortCol)
+//             __slist[colNo-1][1] = !__slist[colNo-1][1];
+//           self.sortCol = colNo;
+//           self.sortUserList  ();
+//           self.makeUserTable ( startNo,pageLen,FEconfig );
+//         }
+//       }
+//     });
+//   }
+
+//   userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
+
+//   for (let i=0;i<headers[2].length;i++)
+//     userTable.setColumnCSS ( { 'text-align' : headers[2][i][0],
+//                                'width'      : headers[2][i][1]  
+//                              } ,i,1 );
+
+//   userTable.setAllColumnCSS ({'cursor'      : 'pointer',
+//                               'white-space' : 'nowrap',
+//                               'font-family' : 'Arial, Helvetica, sans-serif'
+//                              },0,1 );
+
+//   userTable.setMouseHoverHighlighting(1,1);
+
+// }
+
+
+// AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
+//   // function to create user info tables and fill them with data
+
+//   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
+
+//   let pageLen      = 20;
+//   this.sortCol     = 12;
+//   this.loggedUsers = udata.loginHash.loggedUsers;
+
+//   this.makeUserList ( udata );
+//   this.sortUserList ();
+
+//   if (this.userList.length<pageLen)  {
+//     this.makeUserTable ( 0,pageLen,FEconfig );
+//     this.usersTab.grid.setLabel ( '&nbsp;',2,0,1,2 );
+//   } else  {
+//     let self = this;
+//     this.usersTabPaginator = new Paginator ( this.userList.length,pageLen,7,
+//       function(pageNo){
+//         self.makeUserTable ( pageLen*(pageNo-1),pageLen,FEconfig );
+//       });
+//     this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
+//   }
+
+//   if (__user_role==role_code.admin)
+//     console.log ( '... Users Tab complete in ' + this.__load_time() );
+
+// }
+
+AdminPage.prototype.makeUserList = function ( udata,tdesc )  {
+  // this.userList = [];
   for (let i=0;i<udata.userList.length;i++)  {
     let uDesc = udata.userList[i];
     let includeUser = (!__local_user) || (uDesc.login==__local_user_id);
@@ -672,161 +896,23 @@ AdminPage.prototype.makeUserList = function ( udata )  {
         if (uDesc.lastSeen)
           lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
       }
-      let urec = {
-        name       : uDesc.name,
-        login      : uDesc.login,
-        online     : online,
-        role       : uDesc.role,
-        dormant    : dormant,
-        email      : uDesc.email,
-        licence    : uDesc.licence,
-        njobs      : uDesc.ration.jobs_total,
-        storage    : round(uDesc.ration.storage_used,1),
-        cpu        : round(uDesc.ration.cpu_total_used,2),
-        knownAfter : new Date(uDesc.knownSince).toISOString().slice(0,10),
-        lastSeen   : lastSeen,
-        uDesc      : uDesc
-      };
-      this.userList.push ( urec );
+      tdesc.rows.push ([
+        uDesc.name,
+        uDesc.login,
+        online,
+        uDesc.role,
+        dormant,
+        uDesc.email,
+        uDesc.licence,
+        uDesc.ration.jobs_total,
+        round(uDesc.ration.storage_used,1),
+        round(uDesc.ration.cpu_total_used,2),
+        new Date(uDesc.knownSince).toISOString().slice(0,10),
+        lastSeen,
+        uDesc
+      ]);
     }
   }
-}
-
-var __slist = [
-  ['name'      ,true],
-  ['login'     ,true],
-  ['online'    ,true],
-  ['role'      ,true],
-  ['dormant'   ,true],
-  ['email'     ,true],
-  ['licence'   ,true],
-  ['njobs'     ,false],
-  ['storage'   ,false],
-  ['cpu'       ,false],
-  ['knownAfter',false],
-  ['lastSeen'  ,false]
-];
-
-AdminPage.prototype.sortUserList = function()  {
-  if (this.sortCol>0)
-    this.userList = sortObjects ( this.userList,__slist[this.sortCol-1][0],
-                                                __slist[this.sortCol-1][1] );
-}
-
-AdminPage.prototype.makeUserTable = function ( startNo,pageLen,FEconfig )  {
-  // function to create user info tables and fill them with data
-
-  let userTable = new Table();
-  this.usersTab.grid.setWidget ( userTable,1,0,1,2 );
-
-  let headers = [[
-      '##','Name','Login','Online','Profile','Dormant<br>since','E-mail',
-      'Licence','N<sub>jobs</sub>','Space<br>(MB)','CPU<br>(hours)',
-      'Known<br>since','Last seen'
-    ],[
-      'Row number','User name','User login name',
-      'Ticked if user is currently logged in','User profile',
-      'Date when user was deemed as dormant','User contact e-mail address',
-      'Type of user\'s licence','Total number of jobs run by user',
-      'Total disk space currently occupied by user\'s projects',
-      'Total CPU time consumed by user','Date when user account was created',
-      'Date when user was seen last time'
-    ],[
-      ['right' ,'30px' ],
-      ['left'  ,'100px'],
-      ['left'  ,'40px' ],
-      ['center','50px' ],
-      ['left'  ,'70px' ],
-      ['center','80px' ],
-      ['left'  ,'auto' ],
-      ['center','60px' ],
-      ['right' ,'50px' ],
-      ['right' ,'70px' ],
-      ['right' ,'60px' ],
-      ['center','80px' ],
-      ['center','80px' ]
-    ]];
-
-  let sh = headers[0][this.sortCol].split('<br>');
-  if (__slist[this.sortCol-1][1])
-        sh[0] += '&nbsp;&darr;';
-  else  sh[0] += '&nbsp;&uarr;';
-  headers[0][this.sortCol] = sh.join('<br>');
-
-  userTable.setHeaderRow ( headers[0],headers[1] );
-
-  let row     = 0;
-  // let udindex = [];
-  let endNo   = Math.min ( this.userList.length,startNo+pageLen );
-  for (let i=startNo;i<endNo;i++)  {
-    row++;
-    let urec = this.userList[i];
-    // udindex.push ( i );
-    userTable.setRow ( ''+(i+1),'',[
-        urec.name,
-        urec.login,
-        urec.online,
-        urec.role,
-        urec.dormant,
-        urec.email,
-        urec.licence,
-        urec.njobs,
-        urec.storage,
-        urec.cpu,
-        urec.knownAfter,
-        urec.lastSeen
-      ],row,row % 2 );
-  }
-
-  if (__user_role==role_code.admin)  {
-    let self = this;
-    userTable.addSignalHandler ( 'dblclick',function(target){
-      // Ensure the click happened inside a table row (skip headers)
-      if (target.tagName === "TD") {
-        const row    = target.parentElement; // The <tr> containing the clicked <td>
-        const uindex = startNo + row.rowIndex; // Get the row index (1-based for <tbody>)
-        userTable.selectRow ( row.rowIndex,1 );
-        new ManageUserDialog ( self.userList[uindex-1].uDesc,FEconfig,
-                               function(code){ 
-                                 userTable.selectRow ( -1,1 );  // deselect
-                                 if (code>0)
-                                   self.refresh();
-                               });
-      }
-    });
-    userTable.addSignalHandler ( 'click',function(target){
-      if (target.tagName === "TH") {
-        let colNo = 0;
-        for (let i=0;(i<headers[0].length) && (!colNo);i++)  {
-          let prefix = headers[0][i].split('<')[0].split('&')[0];
-          if (target.innerHTML.startsWith(prefix))
-            colNo = i;
-        }
-        if (colNo>0)  {
-          if (colNo==self.sortCol)
-            __slist[colNo-1][1] = !__slist[colNo-1][1];
-          self.sortCol = colNo;
-          self.sortUserList  ();
-          self.makeUserTable ( startNo,pageLen,FEconfig );
-        }
-      }
-    });
-  }
-
-  userTable.setCellCSS ({'color':'yellow'},0,this.sortCol );
-
-  for (let i=0;i<headers[2].length;i++)
-    userTable.setColumnCSS ( { 'text-align' : headers[2][i][0],
-                               'width'      : headers[2][i][1]  
-                             } ,i,1 );
-
-  userTable.setAllColumnCSS ({'cursor'      : 'pointer',
-                              'white-space' : 'nowrap',
-                              'font-family' : 'Arial, Helvetica, sans-serif'
-                             },0,1 );
-
-  userTable.setMouseHoverHighlighting(1,1);
-
 }
 
 
@@ -835,29 +921,108 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
-  let pageLen      = 20;
-  this.sortCol     = 12;
+  let tdesc = {
+    columns : [   
+      { header  : '##',
+        tooltip : 'Row number',
+        style   : { 'text-align' : 'right', 'width' : '30px' },
+        sort    : true
+      },
+      { header  : 'Name',
+        tooltip : 'User name',
+        style   : { 'text-align' : 'left', 'width' : '100px' },
+        sort    : true
+      },
+      { header  : 'Login',
+        tooltip : 'User login name',
+        style   : { 'text-align' : 'left', 'width' : '40px' },
+        sort    : true
+      },
+      { header  : 'Online',
+        tooltip : 'Ticked if user is currently logged in',
+        style   : { 'text-align' : 'center', 'width' : '50px' },
+        sort    : true
+      },
+      { header  : 'Profile',
+        tooltip : 'User profile',
+        style   : { 'text-align' : 'left', 'width' : '70px' },
+        sort    : true
+      },
+      { header  : 'Dormant<br>since',
+        tooltip : 'Date when user was deemed as dormant',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : true
+      },
+      { header  : 'E-mail',
+        tooltip : 'User contact e-mail address',
+        style   : { 'text-align' : 'left', 'width' : 'auto' },
+        sort    : true
+      },
+      { header  : 'Licence',
+        tooltip : 'Type of user\'s licence',
+        style   : { 'text-align' : 'center', 'width' : '60px' },
+        sort    : true
+      },
+      { header  : 'N<sub>jobs</sub>',
+        tooltip : 'Total number of jobs run by user',
+        style   : { 'text-align' : 'right', 'width' : '50px' },
+        sort    : true
+      },
+      { header  : 'Space<br>(MB)',
+        tooltip : 'Total disk space currently occupied by user\'s projects',
+        style   : { 'text-align' : 'right', 'width' : '70px' },
+        sort    : true
+      },
+      { header  : 'CPU<br>(hours)',
+        tooltip : 'Total CPU time consumed by user',
+        style   : { 'text-align' : 'right', 'width' : '60px' },
+        sort    : true
+      },
+      { header  : 'Known<br>since',
+        tooltip : 'Date when user account was created',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : true
+      },
+      { header  : 'Last seen',
+        tooltip : 'Date when user was seen last time',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : true
+      }
+    ],
+    rows        : [],
+    vheaders    : 'row',
+    style       : { 'cursor'      : 'pointer',
+                    'white-space' : 'nowrap',
+                    'font-family' : 'Arial, Helvetica, sans-serif'
+                  }, 
+    sortCol     : 12,
+    mouse_hover : true,
+    page_size   : 20,  // 0 for no pages
+    ondblclick  : function ( dataRow,callback_func){
+      new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
+                             function(code){ 
+                               callback_func();  // deselect row
+                               if (code>0)
+                                 self.refresh();
+                             });
+    }
+  };
+
   this.loggedUsers = udata.loginHash.loggedUsers;
 
-  this.makeUserList ( udata );
-  this.sortUserList ();
+  this.makeUserList ( udata,tdesc );
 
-  if (this.userList.length<pageLen)  {
-    this.makeUserTable ( 0,pageLen,FEconfig );
-    this.usersTab.grid.setLabel ( '&nbsp;',2,0,1,2 );
-  } else  {
-    let self = this;
-    this.usersTabPaginator = new Paginator ( this.userList.length,pageLen,7,
-      function(pageNo){
-        self.makeUserTable ( pageLen*(pageNo-1),pageLen,FEconfig );
-      });
-    this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
-  }
+  let userTable = new TablePages();
+  this.usersTab.grid.setWidget ( userTable,1,0,1,2 );
+
+  userTable.makeTable ( tdesc );
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );
 
 }
+
+
 
 
 /*
