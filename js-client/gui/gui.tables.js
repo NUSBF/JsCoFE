@@ -69,7 +69,7 @@ Table.prototype.setHeaderRow = function ( header_list,tooltip_list )  {
   for (let i=0;i<header_list.length;i++)  {
     let headerCell = document.createElement('th');
     headerCell.innerHTML = header_list[i];
-    headerCell.setAttribute ( 'class','table-blue-vh' );
+    headerCell.setAttribute ( 'class','table-blue-hh' );
     __set_tooltip ( headerCell,tooltip_list[i] );
     // if (tooltip_list.length>0)
     //   headerCell.setAttribute ( 'title',tooltip_list[i] );
@@ -678,27 +678,7 @@ TablePages.prototype.constructor = TablePages;
 
 
 TablePages.prototype._form_table = function ( tdesc )  {
-  // tdesc = {
-  //   columns : [   
-  //     { header  : text, // must be absent in all columns for no headers
-  //       tooltip : tooltip,
-  //       style   : { 'taxt-align' : 'right', 'width' : '80px', ... },
-  //       sort    : true  // initial sorting, true for ascending
-  //     }
-  //     ...
-  //   ],
-  //   rows     : [
-  //     [d11,d12,...],
-  //     ...
-  //   ],
-  //   vheaders : 'row',  // null|'row'
-  //   style    : { cursor' : 'pointer', 'white-space' : 'nowrap', ... }, 
-  //                                           // general css for data columns
-  //   sortCol     : 0,   // should be absent for no sorting
-  //   mouse_hover : true,
-  //   page_size   : 20,  // 0 for no pages
-  //   ondblclick  : function(){}
-  // }
+
   this.tdesc = tdesc;
 
   if ('sortCol' in tdesc)
@@ -820,9 +800,12 @@ TablePages.prototype._fill_table = function ( startRow )  {
 
   this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
 
-  for (let i=0;i<this.tdesc.columns.length;i++)
+  for (let i=0;i<this.tdesc.columns.length;i++)  {
+    if ((this.startRow>0) && ('hstyle' in this.tdesc.columns[i]))
+      this.table.setCellCSS ( this.tdesc.columns[i].hstyle,0,i );
     if (this.tdesc.columns[i].style)
       this.table.setColumnCSS ( this.tdesc.columns[i].style,i,this.startRow );
+  }
 
   if (this.style)
     this.table.setAllColumnCSS ( this.style,this.startRow,this.startCol );
@@ -834,6 +817,28 @@ TablePages.prototype._fill_table = function ( startRow )  {
 
 
 TablePages.prototype.makeTable = function ( tdesc )  {
+// tdesc = {
+//   columns : [   
+//     { header  : text, // must be absent in all columns for no headers
+//       hstyle  : { 'text-align' : 'center' },  // optional
+//       tooltip : tooltip,
+//       style   : { 'text-align' : 'right', 'width' : '80px', ... },
+//       sort    : true  // initial sorting, true for ascending
+//     }
+//     ...
+//   ],
+//   rows     : [
+//     [d11,d12,...],
+//     ...
+//   ],
+//   vheaders : 'row',  // null|'row'
+//   style    : { cursor' : 'pointer', 'white-space' : 'nowrap', ... }, 
+//                                           // general css for data columns
+//   sortCol     : 0,   // should be absent for no sorting
+//   mouse_hover : true,
+//   page_size   : 20,  // 0 for no pages
+//   ondblclick  : function(){}
+// }
 
   this._form_table ( tdesc );
 
