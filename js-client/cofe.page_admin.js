@@ -924,69 +924,82 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   let tdesc = {
     columns : [   
       { header  : '##',
+        hstyle  : { 'text-align' : 'right' },
         tooltip : 'Row number',
         style   : { 'text-align' : 'right', 'width' : '30px' },
         sort    : true
       },
       { header  : 'Name',
+        hstyle  : { 'text-align' : 'left' },
         tooltip : 'User name',
         style   : { 'text-align' : 'left', 'width' : '100px' },
         sort    : true
       },
       { header  : 'Login',
+        hstyle  : { 'text-align' : 'left' },
         tooltip : 'User login name',
         style   : { 'text-align' : 'left', 'width' : '40px' },
         sort    : true
       },
       { header  : 'Online',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Ticked if user is currently logged in',
         style   : { 'text-align' : 'center', 'width' : '50px' },
         sort    : true
       },
       { header  : 'Profile',
+        hstyle  : { 'text-align' : 'left' },
         tooltip : 'User profile',
         style   : { 'text-align' : 'left', 'width' : '70px' },
         sort    : true
       },
       { header  : 'Dormant<br>since',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Date when user was deemed as dormant',
         style   : { 'text-align' : 'center', 'width' : '80px' },
         sort    : true
       },
       { header  : 'E-mail',
+        hstyle  : { 'text-align' : 'left' },
         tooltip : 'User contact e-mail address',
         style   : { 'text-align' : 'left', 'width' : 'auto' },
         sort    : true
       },
       { header  : 'Licence',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Type of user\'s licence',
         style   : { 'text-align' : 'center', 'width' : '60px' },
         sort    : true
       },
       { header  : 'N<sub>jobs</sub>',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Total number of jobs run by user',
         style   : { 'text-align' : 'right', 'width' : '50px' },
-        sort    : true
+        sort    : false
       },
       { header  : 'Space<br>(MB)',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Total disk space currently occupied by user\'s projects',
         style   : { 'text-align' : 'right', 'width' : '70px' },
-        sort    : true
+        sort    : false
       },
       { header  : 'CPU<br>(hours)',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Total CPU time consumed by user',
         style   : { 'text-align' : 'right', 'width' : '60px' },
-        sort    : true
+        sort    : false
       },
       { header  : 'Known<br>since',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Date when user account was created',
         style   : { 'text-align' : 'center', 'width' : '80px' },
-        sort    : true
+        sort    : false
       },
       { header  : 'Last seen',
+        hstyle  : { 'text-align' : 'center' },
         tooltip : 'Date when user was seen last time',
         style   : { 'text-align' : 'center', 'width' : '80px' },
-        sort    : true
+        sort    : false
       }
     ],
     rows        : [],
