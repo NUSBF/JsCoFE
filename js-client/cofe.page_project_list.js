@@ -697,7 +697,7 @@ function ProjectListPage ( sceneId )  {
   }
 
 
-  function selectProject()  {
+  function selectRow()  {
     let selRow = -1;  // find if a row needs to be selected
     if (projectList.current)  {
       let pte = self.projectTable.table.element; 
@@ -713,6 +713,51 @@ function ProjectListPage ( sceneId )  {
 
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
+
+    if (__current_folder.nprojects>=0)  // works first time after login
+          __current_folder = projectList.currentFolder;
+    else  projectList.currentFolder = __current_folder;
+
+    let archive_folder = (__current_folder.type==folder_type.archived) ||
+                         (__current_folder.type==folder_type.cloud_archive);
+
+    let selRow = -1;  // no selection in the page if <0
+
+    function enableToolbarButtons()  {
+      if (projectList.current)  {
+        selRow = -1;  // no selection in the page if <0
+        let pte = self.projectTable.table.element; 
+        for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
+          if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
+            selRow = i;
+        if (selRow>0)
+          self.projectTable.selectRow ( selRow,1 );
+      }
+      if (selRow>=0)  {
+        open_btn  .setDisabled ( false );
+        add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        rename_btn.setDisabled ( archive_folder );
+        clone_btn .setDisabled ( false );
+        move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
+            [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
+            .includes(__current_folder.type) );
+        // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
+        del_btn   .setDisabled ( archive_folder  );
+        import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        export_btn.setDisabled ( false );
+        join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      } else  {
+        open_btn  .setDisabled ( true  );
+        add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        rename_btn.setDisabled ( true  );
+        clone_btn .setDisabled ( true  );
+        move_btn  .setDisabled ( true  );
+        del_btn   .setDisabled ( true  );
+        import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        export_btn.setDisabled ( true  );
+        join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      }
+    }
 
     let tdesc = {
       columns : [   
@@ -774,7 +819,11 @@ function ProjectListPage ( sceneId )  {
       mouse_hover : true,
       page_size   : 20,  // 0 for no pages
       start_page  : 1,
-      onclick     : function(){},
+      onclick     : function(rowData){
+                      projectList.current = rowData[0].split(':</b>').pop();
+                      if (selRow<0)
+                        enableToolbarButtons();
+                    },
       ondblclick  : function ( dataRow,callback_func){
                       openProject();
                     },
@@ -787,6 +836,9 @@ function ProjectListPage ( sceneId )  {
                         if (projectList.current==tdata[i][0].split(':</b>').pop())
                           showIndex = i;
                       return showIndex;
+                    },
+      onpage      : function(pageNo)  {
+                      enableToolbarButtons();
                     }
     };
 
@@ -797,13 +849,6 @@ function ProjectListPage ( sceneId )  {
 
 
     //  ===== Prepare table description
-
-    if (__current_folder.nprojects>=0)  // works first time after login
-          __current_folder = projectList.currentFolder;
-    else  projectList.currentFolder = __current_folder;
-
-    let archive_folder = (__current_folder.type==folder_type.archived) ||
-                         (__current_folder.type==folder_type.cloud_archive);
 
     if (archive_folder)
       tdesc.columns.splice ( 1,0, {
@@ -823,6 +868,8 @@ function ProjectListPage ( sceneId )  {
 
     //  ===== Add table data to table description
 
+    let selectIndex = -1;  // selection in current view
+
     for (let i=0;i<projectList.projects.length;i++)  {
       let pDesc = projectList.projects[i];
       if (listProject(pDesc))  {
@@ -832,6 +879,8 @@ function ProjectListPage ( sceneId )  {
         let pName = pDesc.name;
         if (archive_folder)
           pName = pDesc.archive.project_name;
+        if (projectList.current==pName)
+          selectIndex = tdesc.rows.length;
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
         let joined = ['','',''];
@@ -902,6 +951,11 @@ function ProjectListPage ( sceneId )  {
         tdesc.rows.push ( rowData    );
 
       }
+    }
+
+    if ((selectIndex<0) && (tdesc.rows.length>0))  {
+      selectIndex = 0;
+      projectList.current = tdesc.rows[0][0].split(':</b>').pop();
     }
 
     //  ===== Put number of projects in folder metadata
@@ -997,20 +1051,33 @@ function ProjectListPage ( sceneId )  {
       // trow.addCell ( '' );
       // trow.addCell ( '' );
       // self.tablesort_tbl.createTable ( null );
-      open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( true  );
-      clone_btn .setDisabled ( true  );
-      move_btn  .setDisabled ( true  );
-      del_btn   .setDisabled ( true  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( true  );
-      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      // open_btn  .setDisabled ( true  );
+      // add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      // rename_btn.setDisabled ( true  );
+      // clone_btn .setDisabled ( true  );
+      // move_btn  .setDisabled ( true  );
+      // del_btn   .setDisabled ( true  );
+      // import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      // export_btn.setDisabled ( true  );
+      // join_btn  .setDisabled ( (__dormant!=0) || __local_user );
     
     } else  {
 
       self.welcome_lbl.hide();
-      selectProject();
+      // if (selectRow()>=0)  {
+      //   open_btn  .setDisabled ( false );
+      //   add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      //   rename_btn.setDisabled ( archive_folder );
+      //   clone_btn .setDisabled ( false );
+      //   move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
+      //       [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
+      //       .includes(__current_folder.type) );
+      //   // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
+      //   del_btn   .setDisabled ( archive_folder  );
+      //   import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      //   export_btn.setDisabled ( false );
+      //   join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      // }
 
     }
 
