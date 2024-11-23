@@ -847,7 +847,7 @@ AdminPage.prototype.loadAnalytics = function()  {
 //     this.usersTab.grid.setLabel ( '&nbsp;',2,0,1,2 );
 //   } else  {
 //     let self = this;
-//     this.usersTabPaginator = new Paginator ( this.userList.length,pageLen,7,
+//     this.usersTabPaginator = new Paginator ( this.userList.length,pageLen,7,1,
 //       function(pageNo){
 //         self.makeUserTable ( pageLen*(pageNo-1),pageLen,FEconfig );
 //       });
@@ -1126,7 +1126,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
 //  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
-  this.usersTabPaginator = new Paginator ( udata.userList.length+200,20,7,
+  this.usersTabPaginator = new Paginator ( udata.userList.length+200,20,7,1,
       function(){} );
 
   this.usersTab.grid.setWidget ( this.usersTabPaginator,2,0,1,2 );
