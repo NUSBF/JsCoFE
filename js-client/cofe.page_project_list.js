@@ -43,7 +43,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   let projectList    = new ProjectList(__login_id);  // project list data
-  this.tablesort_tbl = null;                         // project list table
+  this.projectTable  = null;                         // project list table
   let folder_btn     = null;
   let open_btn       = null;
   let add_btn        = null;
@@ -60,6 +60,7 @@ function ProjectListPage ( sceneId )  {
   this.welcome_lbl   = null;
   let nCols          = 0;                  // column span of project table
   let table_row      = 0;                  // project list position in panel
+  let sortCol        = 7;                  // sort column in the list of projects
   let self           = this;               // for reference to Base class
   let pageTitle_lbl  = null;
 
@@ -68,9 +69,13 @@ function ProjectListPage ( sceneId )  {
   let tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
 
   function currentProjectName()  {
-    if (__current_folder.nprojects>0)
-          return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
-    else  return '';
+    if (__current_folder.nprojects>0)  {
+      let rowData = self.projectTable.getSelectedRowData();
+      if (rowData)
+        return rowData[1].split(':</b>').pop();
+          // return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
+    }
+    return '';
   }
 
   function getCurrentProjectDesc()  {
@@ -157,7 +162,7 @@ function ProjectListPage ( sceneId )  {
           projectList.current = crProjectName;
     else  projectList.current = '';
     
-    if (self.tablesort_tbl.selectedRow)  {
+    if (self.projectTable.table.selectedRow)  {
       if (!crProjectName)
         projectList.current = currentProjectName();
       for (let i=0;i<projectList.projects.length;i++)  {
@@ -167,9 +172,11 @@ function ProjectListPage ( sceneId )  {
           break;
         }
       }
+
     }
     
-    projectList.sortList = self.tablesort_tbl.getSortList();
+    // projectList.sortList = self.tablesort_tbl.getSortList();
+    projectList.listState = self.projectTable.getTableState();
     serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
       function(data){
         if (onDone_func)
@@ -670,6 +677,7 @@ function ProjectListPage ( sceneId )  {
 
 
   function listProject ( projectDesc )  {
+    // returns true if project should be included in the list
     if (projectDesc.archive && projectDesc.archive.in_archive)  {
       if (projectDesc.owner.login==__login_id)
             return (__current_folder.type==folder_type.archived);
@@ -688,8 +696,328 @@ function ProjectListPage ( sceneId )  {
     }
   }
 
+
+  function selectProject()  {
+    let selRow = -1;  // find if a row needs to be selected
+    if (projectList.current)  {
+      let pte = self.projectTable.table.element; 
+      for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
+        if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
+          selRow = i;
+      if (selRow>0)
+        self.projectTable.selectRow ( selRow,1 );
+    }
+    return selRow;
+  }
+
+
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
+
+    let tdesc = {
+      columns : [   
+        { header  : '##',
+          hstyle  : { 'text-align' : 'right' },
+          tooltip : 'Project number',
+          style   : { 'text-align' : 'right', 'width' : '30px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'ID',
+          hstyle  : { 'text-align' : 'left' },
+          tooltip : 'Project ID',
+          style   : { 'text-align' : 'left', 'width' : '60px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'Name',
+          hstyle  : { 'text-align' : 'left' },
+          tooltip : 'Project name',
+          style   : { 'text-align' : 'left', 'width' : 'auto' },
+          sort    : true
+        },
+        { header  : 'R<sub>free</sub>',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Best R<sub>free</sub> factor achieved in the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'Disk<br>(MBytes)',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Disk space occupied by the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'CPU<br>(hours)',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'CPU time consumed by the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'Date<br>Created',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Date when project was created',
+          style   : { 'text-align' : 'center', 'width' : '80px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'Last<br>Opened',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Date when project was last opened',
+          style   : { 'text-align' : 'center', 'width' : '80px', 'white-space' : 'nowrap' },
+          sort    : false
+        }
+      ],
+      rows        : [],
+      vheaders    : 'row',
+      style       : { 'cursor'      : 'pointer',                      
+                      'font-family' : 'Arial, Helvetica, sans-serif'
+                    },
+      sortCol     : sortCol,
+      mouse_hover : true,
+      page_size   : 20,  // 0 for no pages
+      start_page  : 1,
+      onclick     : function(){},
+      ondblclick  : function ( dataRow,callback_func){
+                      openProject();
+                    },
+      showonstart : function(rowData){
+                      return (projectList.current==rowData[0].split(':</b>').pop());
+                    },
+      onsort      : function(tdata)  {
+                      let showIndex = -1;
+                      for (let i=0;(i<tdata.length) && (showIndex<0);i++)
+                        if (projectList.current==tdata[i][0].split(':</b>').pop())
+                          showIndex = i;
+                      return showIndex;
+                    }
+    };
+
+    // if (self.tablesort_tbl)
+    //   projectList.sortList = self.tablesort_tbl.getSortList();
+    // else if (!('sortList' in projectList))
+    //   projectList.sortList = [[5,1]];
+
+
+    //  ===== Prepare table description
+
+    if (__current_folder.nprojects>=0)  // works first time after login
+          __current_folder = projectList.currentFolder;
+    else  projectList.currentFolder = __current_folder;
+
+    let archive_folder = (__current_folder.type==folder_type.archived) ||
+                         (__current_folder.type==folder_type.cloud_archive);
+
+    if (archive_folder)
+      tdesc.columns.splice ( 1,0, {
+        header  : 'Archive ID',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'Archive ID',
+        style   : { 'text-align' : 'left', 'width' : '60px', 'white-space' : 'nowrap' },
+        sort    : true
+      });
+
+    if ('listState' in projectList)  {
+      // tdesc.start_page = projectList.listState.crPage;
+      tdesc.sortCol    = projectList.listState.sortCol;
+      for (let i=tdesc.columns.length-1;i>=0;i--)
+        tdesc.columns[i].sort = projectList.listState.sort_list[i];
+    }
+
+    //  ===== Add table data to table description
+
+    for (let i=0;i<projectList.projects.length;i++)  {
+      let pDesc = projectList.projects[i];
+      if (listProject(pDesc))  {
+        let rowData    = [];
+        if (archive_folder)
+          rowData.push ( pDesc.archive.id );
+        let pName = pDesc.name;
+        if (archive_folder)
+          pName = pDesc.archive.project_name;
+        // when list of projects is served from FE, shared record is removed
+        // in case of owner's login
+        let joined = ['','',''];
+        let shared_project = false;
+        if ('owner' in pDesc)  {
+          if (Object.keys(pDesc.share).length>0)  {
+            if (pDesc.owner.login!=__login_id)  {
+              joined = ['<i>','</i>',"is not included in user\'s quota"];
+              pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+              shared_project = true;
+            }
+          } else if (('author' in pDesc.owner) && pDesc.owner.author &&
+                      (pDesc.owner.author!=pDesc.owner.login) &&
+                      (pDesc.owner.author!=__login_id))
+            pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
+        }
+        rowData.push ( pName );
+        rowData.push ( pDesc.title );
+
+        let info = '';
+        if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
+                                  && (pDesc.metrics.R_free<'1.0'))  {
+          info = '<table class="table-rations">' +
+                 '<tr><td colspan="2"><b><i>Best scores (job ' +
+                 padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
+                 '<tr><td colspan="2"><hr/></td></tr>';
+          function add_info ( title,value )  {
+            info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
+          }
+          add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
+                      '</b> / ' + round(pDesc.metrics.R_factor,4) );
+          add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
+                      '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
+                      '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
+          info += '</table><table class="table-rations">' +
+                      '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
+                      '<tr><td colspan="2"><hr/></td></tr>';
+          add_info ( 'Space group',pDesc.metrics.SG       );
+          add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
+                      round(pDesc.metrics.res_high,2) + ' &Aring;' );
+          if (pDesc.metrics.Solvent>0.0)
+            add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
+                        round(pDesc.metrics.Solvent,1) + '%' );
+          if (pDesc.metrics.MolWeight>0.0)
+            add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
+          if (pDesc.metrics.nRes_ASU>0)
+            add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
+                        '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
+                        '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
+          if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
+            add_info ( 'HA type',pDesc.metrics.ha_type );
+          rowData.push ( [pDesc.metrics.R_free.toFixed(4),info+'</table>'] );
+        } else
+          rowData.push ( '' );
+
+        if (pDesc.hasOwnProperty('disk_space'))
+              rowData.push ( [joined[0]+pDesc.disk_space.toFixed(1)+joined[1],joined[2]] );
+        else  rowData.push ( [joined[0]+'-:-'+joined[1],joined[2]] );
+
+        if (pDesc.hasOwnProperty('cpu_time'))
+              rowData.push ( [joined[0]+pDesc.cpu_time.toFixed(4)+joined[1],joined[2]] );
+        else  rowData.push ( [joined[0]+'-:-'+joined[1],joined[2]] );
+
+        rowData.push ( pDesc.dateCreated  );
+        rowData.push ( pDesc.dateLastUsed );
+        rowData.push ( pDesc );
+
+        tdesc.rows.push ( rowData    );
+
+      }
+    }
+
+    //  ===== Put number of projects in folder metadata
+
+   let nrows = tdesc.rows.length;
+    __current_folder.nprojects = nrows;
+    switch (__current_folder.type)  {
+      case folder_type.shared        : projectList.folders[1].nprojects = nrows;
+                                       projectList.folders[1].nprjtree  = nrows;
+                                     break;
+      case folder_type.joined        : projectList.folders[2].nprojects = nrows;
+                                       projectList.folders[2].nprjtree  = nrows;
+                                     break;
+      case folder_type.all_projects  : projectList.folders[3].nprojects = nrows;
+                                       projectList.folders[3].nprjtree  = nrows;
+                                     break;
+      case folder_type.archived      : projectList.folders[4].nprojects = nrows;
+                                       projectList.folders[4].nprjtree  = nrows;
+                                     break;
+      case folder_type.cloud_archive : projectList.folders[5].nprojects = nrows;
+                                       projectList.folders[5].nprjtree  = nrows;
+                                     break;
+      default : ;
+    }
+
+    setPageTitle ( __current_folder );
+
+    let addLbl   = 'Add';
+    let addIcon  = 'add';
+    let addWidth = '60pt';
+    if (__current_folder.type==folder_type.cloud_archive)  {
+      addLbl   = 'Access';
+      addIcon  = 'folder_cloud_archive';
+      addWidth = '75pt';
+    }
+    if (tightScreen)  {
+      addLbl   = '';
+      addWidth = '30pt';
+    }
+    add_btn.setButton ( addLbl,image_path(addIcon) ).setWidth(addWidth);
+
+    let moveLbl  = '';
+    let moveIcon = 'folder_projects';
+    if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
+          folder_type.all_projects].includes(__current_folder.type))  {
+      if (!tightScreen)
+        moveLbl = 'Delist';
+      moveIcon = 'folder_list_custom_delist';
+    } else if (__current_folder.type==folder_type.cloud_archive)  {
+      if (!tightScreen)
+        moveLbl = 'Delist';
+      moveIcon = 'folder_cloud_archive_delist';
+    } else if (!tightScreen)
+      moveLbl = 'Move';
+    move_btn.setButton ( moveLbl,image_path(moveIcon) );
+
+    self.projectTable = new TablePages();
+    panel.setWidget ( self.projectTable,table_row,0,1,nCols );
+    self.projectTable.makeTable ( tdesc );
+
+    let message = 'folder';
+    if (isCurrentFolderList())
+      message = 'list';
+
+    message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
+              'There are no projects in ' + message + ' "' +
+              folderPathTitle(__current_folder,__login_id,1000) + '".' +
+              '<p>Use "Add" button to create a new Project' +
+              ';<br>"Import" button for importing a project exported from ' +
+                appName() +
+              ';<br>"Join" button for joining project shared with you by ' +
+              'another user;<br>or "Tutorials" button for loading ' +
+              'tutorial/demo projects;<br>or click on page title or folder ' +
+              'icon in it to change the folder.</h3></div>';
+    self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
+                                   table_row+1,0,1,nCols )
+                            .setFontItalic ( true )
+                            .setNoWrap();
+    panel.setHorizontalAlignment ( table_row+1,0,"center" );
+
+    if (nrows<=0)  {
+
+      __current_project = null;
+
+      // let trow = self.tablesort_tbl.addRow();
+      // if (archive_folder)
+      //   trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // trow.addCell ( '' );
+      // self.tablesort_tbl.createTable ( null );
+      open_btn  .setDisabled ( true  );
+      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      rename_btn.setDisabled ( true  );
+      clone_btn .setDisabled ( true  );
+      move_btn  .setDisabled ( true  );
+      del_btn   .setDisabled ( true  );
+      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+      export_btn.setDisabled ( true  );
+      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+    
+    } else  {
+
+      self.welcome_lbl.hide();
+      selectProject();
+
+    }
+
+  }
+
+  // function to create project list table and fill it with data
+  function makeProjectListTable_1()  {
 
     if (self.tablesort_tbl)
       projectList.sortList = self.tablesort_tbl.getSortList();
@@ -1024,6 +1352,7 @@ function ProjectListPage ( sceneId )  {
     // });
 
   }
+
 
   function loadProjectList()  {
     //  Read list of projects from server

@@ -101,10 +101,15 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
     if (alt_bool)
           cell.setAttribute ( 'class','table-blue-alt' );
     else  cell.setAttribute ( 'class','table-blue-td'  );
-    cell.innerHTML = cell_list[i];
+    if (Array.isArray(cell_list[i]))  {
+      cell.innerHTML = cell_list[i][0];
+      __set_tooltip ( cell,cell_list[i][1] );
+    } else
+      cell.innerHTML = cell_list[i];
   }
 
 }
+
 
 Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
   let cell = this.getCell ( row,col );
@@ -116,6 +121,12 @@ Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false
   else  cell.setAttribute ( 'class','table-blue-td'  );
   cell.innerHTML = text;
 }
+
+
+Table.prototype.setTooltip = function ( tooltip,row,col )  {
+  __set_tooltip ( this.getCell(row,col),tooltip );
+}
+
 
 Table.prototype.setWidget = function ( widget,row,col,alt_bool )  {
 let cell = this.getCell ( row,col );
@@ -131,6 +142,7 @@ let cell = this.getCell ( row,col );
   }
   return cell;
 }
+
 
 Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
 let label = new Label ( text );
@@ -204,6 +216,29 @@ Table.prototype.selectRow = function ( rowNo,start_col )  {
       cells[j].classList.add('table-blue-select');
     }
   }
+}
+
+Table.prototype.getSelectedRowData = function()  {
+  let rowData = null;
+  if ((this.selectedRow>=0) && (this.selectedRow<this.element.rows.length))  {
+    let cells = this.element.rows[this.selectedRow].cells;
+    rowData   = [];
+    for (let j=0;j<cells.length;j++)
+      rowData.push ( cells[j].innerHTML );
+  }
+  return rowData;
+}
+
+Table.prototype.getTableData = function()  {
+  let tdata = [];
+  for (let i=0;i<this.element.rows.length;i++)  {
+    let cells = this.element.rows[i].cells;
+    let rdata = [];
+    for (let j=0;j<cells.length;j++)
+      rdata.push ( cells[j].innerHTML );
+    tdata.push ( rdata );
+  }
+  return tdata;
 }
 
 // -------------------------------------------------------------------------
@@ -666,10 +701,13 @@ function TablePages()  {
   this.header_list  = [];
   this.tooltip_list = [];
   this.sort_list    = [];
-  this.startRow     = 0;
-  this.startCol     = 0;
-  this.sortCol      = 0;
+  this.startRow     = 0;   // 1 if horizontal headers are there
+  this.startCol     = 0;   // 1 if vertical headers are there
+  this.startIndex   = 0;   // first currently displayed record
+  this.endIndex     = 0;   // last currently displayed record + 1
+  this.sortCol      = 0;   // currently sorted column
   this.pageSize     = 20;
+  this.crPage       = 1;
   this.style        = null;
 }
 
@@ -728,7 +766,10 @@ TablePages.prototype.sortData = function()  {
 }
 
 
-TablePages.prototype._fill_table = function ( startRow )  {
+TablePages.prototype._fill_table = function ( startIndex )  {
+
+  this.startIndex = startIndex;
+  this.endIndex   = Math.min ( this.tdata.length,startIndex+this.pageSize );
 
   this.table = new Table();
   this.setWidget ( this.table,0,0,1,1 );
@@ -751,10 +792,9 @@ TablePages.prototype._fill_table = function ( startRow )  {
     }
   }
 
-  let row    = 0;
-  let endRow = Math.min ( this.tdata.length,startRow+this.pageSize );
-  let ncols  = this.header_list.length-this.startCol;
-  for (let i=startRow;i<endRow;i++)  {
+  let row   = 0;
+  let ncols = this.header_list.length-this.startCol;
+  for (let i=this.startIndex;i<this.endIndex;i++)  {
     row++;
     if (this.vheaders)
       this.table.setRow ( ''+(i+1),'',this.tdata[i].slice(0,ncols),row,row % 2 );
@@ -763,33 +803,47 @@ TablePages.prototype._fill_table = function ( startRow )  {
   }
 
   let self = this;
-  if (this.sortCol>=0)  {
-    this.table.addSignalHandler ( 'click',function(target){
-      if (target.tagName === "TH") {
-        let colNo = 0;
-        for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
-          let prefix = self.header_list[i].split('<')[0].split('&')[0];
-          if (target.innerHTML.startsWith(prefix))
-            colNo = i;
-        }
-        if (colNo>=self.startCol)  {
-          if (colNo==self.sortCol)
-            self.sort_list[colNo] = !self.sort_list[colNo];
-          self.sortCol = colNo;
-          self.sortData    ();
-          self._fill_table ( startRow );
-        }
-      }
-    });
-  }
 
-  if (this.tdesc.ondblclick)  {
+  this.table.addSignalHandler ( 'click',function(target){
+    const row = target.parentElement; // The <tr> containing the clicked <td>
+    if (row.rowIndex>=self.startRow)  {
+      if ('onclick' in self.tdesc)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+        self.table.selectRow ( -1,1 );  // deselect
+        self.table.selectRow ( row.rowIndex,1 );
+        self.tdesc.onclick   ( self.tdata[uindex-1] );
+      }
+    } else if ((target.tagName==="TH") && (self.sortCol>=0)) {
+      let colNo = 0;
+      for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
+        let prefix = self.header_list[i].split('<')[0].split('&')[0];
+        if (target.innerHTML.startsWith(prefix))
+          colNo = i;
+      }
+      if (colNo>=self.startCol)  {
+        if (colNo==self.sortCol)
+          self.sort_list[colNo] = !self.sort_list[colNo];
+        self.sortCol = colNo;
+        self.sortData    ();
+        if ('onsort' in self.tdesc)  {
+          let showRec = self.tdesc.onsort ( self.tdata );
+          if (showRec>=0)
+            self.paginator.showPage ( Math.floor(showRec/self.tdesc.page_size+1) );
+          else
+            self._fill_table ( self.startIndex );
+        } else
+          self._fill_table ( self.startIndex );
+      }
+    }
+  });
+
+  if ('ondblclick' in this.tdesc)  {
     this.table.addSignalHandler ( 'dblclick',function(target){
       // Ensure the click happened inside a table row (skip headers)
       // if (target.tagName === "TD") {
       const row = target.parentElement; // The <tr> containing the clicked <td>
-      if (row.rowIndex>0)  {
-        const uindex = startRow + row.rowIndex; // Get the row index (1-based for <tbody>)
+      if (row.rowIndex>=self.startRow)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
         self.table.selectRow  ( row.rowIndex,1 );
         self.tdesc.ondblclick ( self.tdata[uindex-1],function(){
                                   self.table.selectRow ( -1,1 );  // deselect
@@ -828,7 +882,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //     ...
 //   ],
 //   rows     : [
-//     [d11,d12,...],
+//     [d11,d12,...],   // possibly [[d11,tooltip11],d12,...]
 //     ...
 //   ],
 //   vheaders : 'row',  // null|'row'
@@ -837,7 +891,11 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //   sortCol     : 0,   // should be absent for no sorting
 //   mouse_hover : true,
 //   page_size   : 20,  // 0 for no pages
-//   ondblclick  : function(){}
+//   start_page  : 1,   // optional
+//   onclick     : function(rowData){}
+//   ondblclick  : function(rowData,callback_func){}
+//   showonstart : function(rowData){ return true/false }
+//   onsort      : function(tdata){ return index to show for page change, or -1 }
 // }
 
   this._form_table ( tdesc );
@@ -847,14 +905,44 @@ TablePages.prototype.makeTable = function ( tdesc )  {
     this.sortData();
 
   this._fill_table ( 0 );
-
-  if (this.pageSize<this.tdata.length)  {
+  
+  this.crPage    = 1;
+  this.paginator = null;
+  if (this.pageSize<this.tdata.length)  {    
     let self = this;
-    let paginator = new Paginator ( this.tdata.length,this.pageSize,7,
+    let startPage = 1;
+    if ('start_page' in tdesc)
+      startPage = tdesc.start_page;
+    if ('showonstart' in tdesc)  {
+      let showIndex = -1;
+      for (let i=0;(i<this.tdata.length) && (showIndex<0);i++)
+        if (tdesc.showonstart(this.tdata[i]))
+          showIndex = i;
+      if (showIndex>=0)
+        startPage = Math.floor(showIndex/this.pageSize+1);
+    }
+    self.paginator = new Paginator ( this.tdata.length,this.pageSize,7,startPage,
       function(pageNo){
+        self.crPage = pageNo;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
-    this.setWidget ( paginator,1,0,1,1 );
+    this.setWidget ( self.paginator,1,0,1,1 );
   }
 
+}
+
+TablePages.prototype.getTableState = function()  {
+  return {
+    crPage    : this.crPage,
+    sortCol   : this.sortCol,
+    sort_list : this.sort_list
+  };
+}
+
+TablePages.prototype.selectRow = function ( rowNo,start_col )  {
+  this.table.selectRow ( rowNo,start_col );
+}
+
+TablePages.prototype.getSelectedRowData = function()  {
+  return this.table.getSelectedRowData();
 }
