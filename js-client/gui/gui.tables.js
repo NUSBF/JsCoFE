@@ -814,7 +814,7 @@ TablePages.prototype._fill_table = function ( startIndex )  {
         self.tdesc.onclick   ( self.tdata[uindex-1] );
       }
     } else if ((target.tagName==="TH") && (self.sortCol>=0)) {
-      let colNo = 0;
+      let colNo = 0;  // find header column which was clicked
       for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
         let prefix = self.header_list[i].split('<')[0].split('&')[0];
         if (target.innerHTML.startsWith(prefix))
@@ -824,12 +824,15 @@ TablePages.prototype._fill_table = function ( startIndex )  {
         if (colNo==self.sortCol)
           self.sort_list[colNo] = !self.sort_list[colNo];
         self.sortCol = colNo;
-        self.sortData    ();
+        self.sortData();
         if ('onsort' in self.tdesc)  {
           let showRec = self.tdesc.onsort ( self.tdata );
-          if (showRec>=0)
-            self.paginator.showPage ( Math.floor(showRec/self.tdesc.page_size+1) );
-          else
+          if (showRec>=0)  {
+            self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
+            self.paginator.showPage ( self.crPage );
+            if ('onpage' in self.tdesc)
+              self.tdesc.onpage ( self.crPage );
+          } else
             self._fill_table ( self.startIndex );
         } else
           self._fill_table ( self.startIndex );
@@ -867,6 +870,9 @@ TablePages.prototype._fill_table = function ( startIndex )  {
   if (this.tdesc.mouse_hover)
     this.table.setMouseHoverHighlighting ( this.startRow,this.startCol );
 
+  if ('onpage' in this.tdesc)
+    this.tdesc.onpage ( this.crPage );
+
 }
 
 
@@ -896,6 +902,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //   ondblclick  : function(rowData,callback_func){}
 //   showonstart : function(rowData){ return true/false }
 //   onsort      : function(tdata){ return index to show for page change, or -1 }
+//   onpage      : function(pageNo){}
 // }
 
   this._form_table ( tdesc );
@@ -904,9 +911,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
   if (this.sortCol>=this.startCol)
     this.sortData();
 
+  this.crPage = 1;
   this._fill_table ( 0 );
   
-  this.crPage    = 1;
   this.paginator = null;
   if (this.pageSize<this.tdata.length)  {    
     let self = this;
