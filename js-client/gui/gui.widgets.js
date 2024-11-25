@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    25.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -388,14 +388,14 @@ Widget.prototype.addWidget = function ( widget ) {
   return this;
 }
 
-Widget.prototype.insertWidget = function (widget, pos) {
+Widget.prototype.insertWidget = function ( widget,pos ) {
   this.child.splice(pos, 0, widget);
   this.element.insertBefore(widget.element, this.element.childNodes[pos]);
   widget.parent = this;
   return this;
 }
 
-Widget.prototype.removeChild = function (widget) {
+Widget.prototype.removeChild = function ( widget ) {
   let child = [];
   for (let i = 0; i < this.child.length; i++)
     if (this.child[i].id == widget.id) {
@@ -510,7 +510,7 @@ Widget.prototype.addOnClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnDblClickListener = function (listener_func) {
+Widget.prototype.addOnDblClickListener = function ( listener_func ) {
   this.element.addEventListener('dblclick', function (e) {
     e.preventDefault();
     listener_func(e);
@@ -518,7 +518,7 @@ Widget.prototype.addOnDblClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnRightClickListener = function (listener_func) {
+Widget.prototype.addOnRightClickListener = function ( listener_func ) {
   this.element.addEventListener('contextmenu', function (e) {
     e.preventDefault();
     listener_func(e);
@@ -527,12 +527,12 @@ Widget.prototype.addOnRightClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnChangeListener = function (listener_func) {
+Widget.prototype.addOnChangeListener = function ( listener_func ) {
   this.element.addEventListener('change', listener_func);
   return this;
 }
 
-Widget.prototype.addOnInputListener = function (listener_func) {
+Widget.prototype.addOnInputListener = function ( listener_func ) {
   this.element.addEventListener('input', listener_func);
   return this;
 }
@@ -1354,16 +1354,16 @@ Button.prototype.setIndicator = function (indicon_uri, location) {
   this.addWidget(indicator);
 }
 
-Button.prototype.setText = function (text) {
+Button.prototype.setText = function ( text ) {
   this._set_button(text, '');
   return this;
 }
 
-Button.prototype.setIcon = function (icon_uri) {
+Button.prototype.setIcon = function ( icon_uri ) {
   $(this.element).css({ 'background-image': 'url("' + icon_uri + '")' });
 }
 
-Button.prototype.setDisabled = function (disabled_bool) {
+Button.prototype.setDisabled = function ( disabled_bool ) {
   try {
     $(this.element).button("option", "disabled", disabled_bool);
   } catch (e) { }

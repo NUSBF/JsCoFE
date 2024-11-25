@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    22.11.24   <--  Date of Last Modification.
+ *    25.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -181,11 +181,12 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
        $(this.element.rows[i].cells[j]).css ( css );
 }
 
-Table.prototype.addSignalHandler = function (signal, onReceive) {
+Table.prototype.addSignalHandler = function ( signal,onReceive ) {
   this.element.addEventListener(signal, function (e) {
     onReceive(e.target);
   }, false);
 }
+
 
 Table.prototype.setMouseHoverHighlighting = function ( start_row,start_col ) {
   for (let i=start_row;i<this.element.rows.length;i++)
@@ -855,6 +856,21 @@ TablePages.prototype._fill_table = function ( startIndex )  {
     });
   }
 
+  if ('oncontext' in this.tdesc)  {
+    this.table.addSignalHandler ( 'contextmenu',function(target){
+      // Ensure the click happened inside a table row (skip headers)
+      // if (target.tagName === "TD") {
+      const row = target.parentElement; // The <tr> containing the clicked <td>
+      if (row.rowIndex>=self.startRow)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+        self.table.selectRow ( row.rowIndex,1 );
+        self.tdesc.oncontext ( self.table,self.tdata[uindex-1],function(){
+                                  self.table.selectRow ( -1,1 );  // deselect
+                                });
+      }
+    });
+  }
+
   this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
 
   for (let i=0;i<this.tdesc.columns.length;i++)  {
@@ -877,6 +893,7 @@ TablePages.prototype._fill_table = function ( startIndex )  {
 
 
 TablePages.prototype.makeTable = function ( tdesc )  {
+//
 // tdesc = {
 //   columns : [   
 //     { header  : text, // must be absent in all columns for no headers
@@ -900,6 +917,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //   start_page  : 1,   // optional
 //   onclick     : function(rowData){}
 //   ondblclick  : function(rowData,callback_func){}
+//   oncontext   : function(target,rowData,callback_func){}
 //   showonstart : function(rowData){ return true/false }
 //   onsort      : function(tdata){ return index to show for page change, or -1 }
 //   onpage      : function(pageNo){}
@@ -953,3 +971,14 @@ TablePages.prototype.selectRow = function ( rowNo,start_col )  {
 TablePages.prototype.getSelectedRowData = function()  {
   return this.table.getSelectedRowData();
 }
+
+
+TablePages.prototype.setContextMenu = function ( contextmenu_func )  {
+  for (let i=this.startRow;i<this.table.element.rows.length;i++)  {
+    let row         = this.table.element.rows[i];
+    let contextMenu = contextmenu_func ( i,row,this.tdata[i-this.startRow] );
+    let cell        = row.cells[2];
+    cell.insertBefore ( contextMenu.element,cell.childNodes[0] );
+  }
+}
+
