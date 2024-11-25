@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    25.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -314,8 +314,7 @@ function ProjectListPage ( sceneId )  {
             .setFontItalic ( true )
             .setWidth      ( '240px' );
       ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
-      let title_inp = ibx_grid.setInputText
-                          ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
+      let title_inp = ibx_grid.setInputText ( pDesc.title,3,4,1,1 )
             .setStyle      ( 'text','','Put a descriptive title here','' )
             .setFontItalic ( true )
             .setWidth      ( '520px' );
@@ -441,7 +440,7 @@ function ProjectListPage ( sceneId )  {
 
   let exportProject = function() {
     panel.click();  // get rid of context menu
-    if (self.tablesort_tbl.selectedRow)  {
+    if (self.projectTable.table.selectedRow)  {
       projectList.current = currentProjectName();
       new ExportProjectDialog ( projectList );
     } else
@@ -502,7 +501,8 @@ function ProjectListPage ( sceneId )  {
     ibx_grid.setLabel ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
     ibx_grid.setLabel ( 'Cloned Project ID:',2,3,1,1 );
     let name_sugg  = prjName + '-clone';
-    let title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    // let title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    let title_sugg = pDesc.title;
     if (pDesc.archive)  {
       name_sugg  = prjName + '-rev' + pDesc.archive.version;
       title_sugg = title_sugg.split(': Revision #')[0] + ': Revision #' +
@@ -697,18 +697,18 @@ function ProjectListPage ( sceneId )  {
   }
 
 
-  function selectRow()  {
-    let selRow = -1;  // find if a row needs to be selected
-    if (projectList.current)  {
-      let pte = self.projectTable.table.element; 
-      for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
-        if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
-          selRow = i;
-      if (selRow>0)
-        self.projectTable.selectRow ( selRow,1 );
-    }
-    return selRow;
-  }
+  // function selectRow()  {
+  //   let selRow = -1;  // find if a row needs to be selected
+  //   if (projectList.current)  {
+  //     let pte = self.projectTable.table.element; 
+  //     for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
+  //       if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
+  //         selRow = i;
+  //     if (selRow>0)
+  //       self.projectTable.selectRow ( selRow,1 );
+  //   }
+  //   return selRow;
+  // }
 
 
   // function to create project list table and fill it with data
@@ -727,9 +727,16 @@ function ProjectListPage ( sceneId )  {
       if (projectList.current)  {
         selRow = -1;  // no selection in the page if <0
         let pte = self.projectTable.table.element; 
-        for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
-          if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
+        for (let i=1;(i<pte.rows.length) && (selRow<0);i++)  {
+          let pname = pte.rows[i].cells[1].innerHTML.toString();
+          if (pname.split(':</b>').pop()==projectList.current)  {
             selRow = i;
+            if (!tightScreen)  {
+              if (pname.indexOf('[')>=0)  del_btn.setText ( 'Unjoin' );
+                                    else  del_btn.setText ( 'Delete' );
+            }
+          }
+        }
         if (selRow>0)
           self.projectTable.selectRow ( selRow,1 );
       }
@@ -757,6 +764,54 @@ function ProjectListPage ( sceneId )  {
         export_btn.setDisabled ( true  );
         join_btn  .setDisabled ( (__dormant!=0) || __local_user );
       }
+    }
+
+    function setContextMenu()  {
+
+      self.projectTable.setContextMenu ( function(rowNo,row_element,rowData){
+
+        let pDesc = rowData[rowData.length-1];
+
+        let del_label = '';
+        if (!tightScreen)  {
+          del_label = 'Delete';
+          if (row_element.cells[1].innerHTML.toString().indexOf('[')>=0)  
+            del_label = 'Unjoin';
+        }
+
+        let contextMenu = new ContextMenu ( row_element,function(){
+          self.projectTable.selectRow ( rowNo,1 );
+          del_btn.setText ( del_label );
+        });
+
+        contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
+        if (!archive_folder)
+          contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
+        if (!archive_folder)
+          contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
+        contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
+        contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
+        if (((__current_folder.type==folder_type.user) &&
+              __current_folder.path.startsWith(owners_folder)) ||
+            (__current_folder.type==folder_type.tutorials))
+          contextMenu.addItem('Move',image_path('folder_projects') )
+                    .addOnClickListener(function(){ browseFolders('move') });
+        else if (__current_folder.type==folder_type.custom_list)
+          contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
+                    .addOnClickListener(function(){ delistProject(); });
+        else if (__current_folder.type==folder_type.cloud_archive)
+          contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
+                    .addOnClickListener(function(){ delistProject(); });
+        if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
+            (!__local_user))
+          contextMenu.addItem('Work team',image_path('workteam')).addOnClickListener(prjWorkTeam);
+        if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
+          contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
+
+        return contextMenu;
+
+      });
+
     }
 
     let tdesc = {
@@ -821,6 +876,12 @@ function ProjectListPage ( sceneId )  {
       start_page  : 1,
       onclick     : function(rowData){
                       projectList.current = rowData[0].split(':</b>').pop();
+                      let pDesc = rowData[rowData.length-1];
+                      if (('owner' in pDesc) && 
+                          (Object.keys(pDesc.share).length>0) &&
+                          (pDesc.owner.login!=__login_id))
+                            del_btn.setText ( 'Unjoin' );
+                      else  del_btn.setText ( 'Delete' );
                       if (selRow<0)
                         enableToolbarButtons();
                     },
@@ -839,14 +900,9 @@ function ProjectListPage ( sceneId )  {
                     },
       onpage      : function(pageNo)  {
                       enableToolbarButtons();
+                      setContextMenu();
                     }
     };
-
-    // if (self.tablesort_tbl)
-    //   projectList.sortList = self.tablesort_tbl.getSortList();
-    // else if (!('sortList' in projectList))
-    //   projectList.sortList = [[5,1]];
-
 
     //  ===== Prepare table description
 
@@ -873,7 +929,7 @@ function ProjectListPage ( sceneId )  {
     for (let i=0;i<projectList.projects.length;i++)  {
       let pDesc = projectList.projects[i];
       if (listProject(pDesc))  {
-        let rowData    = [];
+        let rowData = [];
         if (archive_folder)
           rowData.push ( pDesc.archive.id );
         let pName = pDesc.name;
@@ -884,13 +940,13 @@ function ProjectListPage ( sceneId )  {
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
         let joined = ['','',''];
-        let shared_project = false;
+        // let shared_project = false;
         if ('owner' in pDesc)  {
           if (Object.keys(pDesc.share).length>0)  {
             if (pDesc.owner.login!=__login_id)  {
               joined = ['<i>','</i>',"is not included in user\'s quota"];
               pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-              shared_project = true;
+              // shared_project = true;
             }
           } else if (('author' in pDesc.owner) && pDesc.owner.author &&
                       (pDesc.owner.author!=pDesc.owner.login) &&
@@ -1031,54 +1087,15 @@ function ProjectListPage ( sceneId )  {
               'tutorial/demo projects;<br>or click on page title or folder ' +
               'icon in it to change the folder.</h3></div>';
     self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
-                                   table_row+1,0,1,nCols )
+                                        table_row+1,0,1,nCols )
                             .setFontItalic ( true )
                             .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
     if (nrows<=0)  {
-
       __current_project = null;
-
-      // let trow = self.tablesort_tbl.addRow();
-      // if (archive_folder)
-      //   trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // trow.addCell ( '' );
-      // self.tablesort_tbl.createTable ( null );
-      // open_btn  .setDisabled ( true  );
-      // add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      // rename_btn.setDisabled ( true  );
-      // clone_btn .setDisabled ( true  );
-      // move_btn  .setDisabled ( true  );
-      // del_btn   .setDisabled ( true  );
-      // import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      // export_btn.setDisabled ( true  );
-      // join_btn  .setDisabled ( (__dormant!=0) || __local_user );
-    
     } else  {
-
       self.welcome_lbl.hide();
-      // if (selectRow()>=0)  {
-      //   open_btn  .setDisabled ( false );
-      //   add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      //   rename_btn.setDisabled ( archive_folder );
-      //   clone_btn .setDisabled ( false );
-      //   move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
-      //       [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
-      //       .includes(__current_folder.type) );
-      //   // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
-      //   del_btn   .setDisabled ( archive_folder  );
-      //   import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      //   export_btn.setDisabled ( false );
-      //   join_btn  .setDisabled ( (__dormant!=0) || __local_user );
-      // }
-
     }
 
   }
