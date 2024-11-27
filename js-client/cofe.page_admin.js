@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    22.11.24   <--  Date of Last Modification.
+ *    27.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -62,6 +62,7 @@ function AdminPage ( sceneId )  {
   // make tabs
   this.tabs = new Tabs();
   // this.tabs.setVisible ( false );
+  this.userTable = null;
   this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
   this.nodesTab  = this.tabs.addTab ( 'Nodes'      ,false );
   this.memoryTab = this.tabs.addTab ( 'Performance',false );
@@ -400,11 +401,22 @@ AdminPage.prototype.refresh = function()  {
 
 }
 
+AdminPage.prototype.calcUserPageSize = function()  {
+  let rowHeight = 29.1953;
+  if (this.userTable)
+    rowHeight = this.userTable.getRowHeight(1);
+  return  Math.floor ( (window.innerHeight-318)/rowHeight );
+}
+
 AdminPage.prototype.onResize = function ( width,height )  {
+
   this.tabs.setWidth_px  ( width -42  );
   this.tabs.setHeight_px ( height-104 );
+
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
+
   this.tabs.refresh();
+
   let inner_height = (height-180)+'px';
   if (this.anlTab)
     $(this.anlTab .element).css({'height':inner_height,'overflow-y':'scroll'});
@@ -413,6 +425,10 @@ AdminPage.prototype.onResize = function ( width,height )  {
   $(this.memoryTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usageTab .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.jobsTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
+
+  if (this.userTable)
+    this.userTable.setPageSize ( this.calcUserPageSize() );
+
 }
 
 
@@ -1010,7 +1026,8 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                   }, 
     sortCol     : 12,
     mouse_hover : true,
-    page_size   : 20,  // 0 for no pages
+    page_size   : this.calcUserPageSize(),  // 0 for no pages
+    start_page  : 1,
     ondblclick  : function ( dataRow,callback_func){
       new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
                              function(code){ 
@@ -1025,10 +1042,10 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
   this.makeUserList ( udata,tdesc );
 
-  let userTable = new TablePages();
-  this.usersTab.grid.setWidget ( userTable,1,0,1,2 );
+  this.userTable = new TablePages();
+  this.usersTab.grid.setWidget ( this.userTable,1,0,1,2 );
 
-  userTable.makeTable ( tdesc );
+  this.userTable.makeTable ( tdesc );
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );

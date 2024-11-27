@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.09.24   <--  Date of Last Modification.
+ *    27.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -872,7 +872,7 @@ function ProjectListPage ( sceneId )  {
                     },
       sortCol     : sortCol,
       mouse_hover : true,
-      page_size   : 20,  // 0 for no pages
+      page_size   : self.calcPageSize(),  // 0 for no pages
       start_page  : 1,
       onclick     : function(rowData){
                       projectList.current = rowData[0].split(':</b>').pop();
@@ -903,6 +903,8 @@ function ProjectListPage ( sceneId )  {
                       setContextMenu();
                     }
     };
+
+// console.log ( ' >>>> wh=' + window.innerHeight + ' - ' + tdesc.page_size)
 
     //  ===== Prepare table description
 
@@ -1070,7 +1072,10 @@ function ProjectListPage ( sceneId )  {
 
     self.projectTable = new TablePages();
     panel.setWidget ( self.projectTable,table_row,0,1,nCols );
+
     self.projectTable.makeTable ( tdesc );
+    // $(self.projectTable.element).css({'max-height':'600px','overflow-y':'scroll'});
+    // $(panel.element).css({'max-height':'600px','overflow-y':'scroll'});
 
     let message = 'folder';
     if (isCurrentFolderList())
@@ -1098,8 +1103,14 @@ function ProjectListPage ( sceneId )  {
       self.welcome_lbl.hide();
     }
 
+    // setTimeout ( function(){
+    //   console.log ( ' >>>> ' + self.projectTable.table.height_px() + ' : ' + window.innerHeight );
+    // },1000);
+
   }
 
+
+/*
   // function to create project list table and fill it with data
   function makeProjectListTable_1()  {
 
@@ -1282,16 +1293,14 @@ function ProjectListPage ( sceneId )  {
               del_btn.setText(del_label);
             });
 
-            /*
-            let can_move = ((__current_folder.type==folder_type.user) &&
-                             __current_folder.path.startsWith(owners_folder)) ||
-                           (__current_folder.type==folder_type.tutorials);
+            // let can_move = ((__current_folder.type==folder_type.user) &&
+            //                  __current_folder.path.startsWith(owners_folder)) ||
+            //                (__current_folder.type==folder_type.tutorials);
 
-            let can_move = ((__current_folder.type==folder_type.user) &&
-                            //  __current_folder.path.startsWith(owners_folder)) ||
-                             pDesc.folderPath.startsWith(owners_folder)) ||
-                           (__current_folder.type==folder_type.tutorials);
-            */
+            // let can_move = ((__current_folder.type==folder_type.user) &&
+            //                 //  __current_folder.path.startsWith(owners_folder)) ||
+            //                  pDesc.folderPath.startsWith(owners_folder)) ||
+            //                (__current_folder.type==folder_type.tutorials);
 
             contextMenu = new ContextMenu ( trow,function(){
               del_btn.setText ( del_label );
@@ -1436,7 +1445,7 @@ function ProjectListPage ( sceneId )  {
     // });
 
   }
-
+*/
 
   function loadProjectList()  {
     //  Read list of projects from server
@@ -1835,14 +1844,15 @@ function ProjectListPage ( sceneId )  {
 registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
 
 
+ProjectListPage.prototype.calcPageSize = function()  {
+  let rowHeight = 29.1953;
+  if (this.projectTable)
+    rowHeight = this.projectTable.getRowHeight(1);
+  return  Math.floor ( (window.innerHeight-248)/rowHeight );
+}
+
 ProjectListPage.prototype.onResize = function ( width,height )  {
-//  let h = (height - 164) + 'px';
-//  this.tablesort_tbl.table_div.element.style.height = h;
-  if (this.tablesort_tbl)  {
-    this.tablesort_tbl.fixHeader();
-    if (this.welcome_lbl && (!this.welcome_lbl.isVisible()))
-      this.tablesort_tbl.setTableHeight ( height-72 );
-  }
+  this.projectTable.setPageSize ( this.calcPageSize() );
 }
 
 ProjectListPage.prototype.reloadProjectList = function()  {
