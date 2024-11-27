@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    25.11.24   <--  Date of Last Modification.
+ *    27.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -240,6 +240,12 @@ Table.prototype.getTableData = function()  {
     tdata.push ( rdata );
   }
   return tdata;
+}
+
+Table.prototype.getRowHeight = function ( rowNo )  {
+  if (rowNo<this.element.rows.length)
+    return  $(this.element.rows[1]).outerHeight();
+  return  29.1953;
 }
 
 // -------------------------------------------------------------------------
@@ -699,6 +705,7 @@ function TablePages()  {
   this.table        = null;
   this.tdesc        = null;
   this.tdata        = null;
+  this.paginator    = null;
   this.header_list  = [];
   this.tooltip_list = [];
   this.sort_list    = [];
@@ -932,8 +939,8 @@ TablePages.prototype.makeTable = function ( tdesc )  {
   this.crPage = 1;
   this._fill_table ( 0 );
   
-  this.paginator = null;
   if (this.pageSize<this.tdata.length)  {    
+    // console.log ( ' >>>>> ' + this.pageSize + ' : ' + this.tdata.length)
     let self = this;
     let startPage = 1;
     if ('start_page' in tdesc)
@@ -946,14 +953,30 @@ TablePages.prototype.makeTable = function ( tdesc )  {
       if (showIndex>=0)
         startPage = Math.floor(showIndex/this.pageSize+1);
     }
-    self.paginator = new Paginator ( this.tdata.length,this.pageSize,7,startPage,
+    this.paginator = new Paginator ( this.tdata.length,this.pageSize,7,startPage,
       function(pageNo){
         self.crPage = pageNo;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
     this.setWidget ( self.paginator,1,0,1,1 );
+  } else if (this.paginator)  {
+    this.setLabel ( '&nbsp;',1,0,1,1 );
+    this.paginator = null;
   }
 
+}
+
+TablePages.prototype.setPageSize = function ( page_size )  {
+  let psize = Math.max ( 1,page_size );
+  if (psize!=this.tdesc.page_size)  {
+    // console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
+    // console.log ( ' >>>> page_size=' + page_size )
+    let showRow   = Math.max ( this.startRow,this.table.selectedRow );
+    let showIndex = this.startIndex + showRow - this.startRow;
+    this.tdesc.page_size  = Math.min   ( psize,this.tdata.length );
+    this.tdesc.start_page = Math.floor ( showIndex/psize ) + 1;
+    this.makeTable ( this.tdesc );
+  }
 }
 
 TablePages.prototype.getTableState = function()  {
@@ -972,6 +995,11 @@ TablePages.prototype.getSelectedRowData = function()  {
   return this.table.getSelectedRowData();
 }
 
+TablePages.prototype.getRowHeight = function ( rowNo )  {
+  if (this.table)
+    return  this.table.getRowHeight ( rowNo );
+  return  29.1953;
+}
 
 TablePages.prototype.setContextMenu = function ( contextmenu_func )  {
   for (let i=this.startRow;i<this.table.element.rows.length;i++)  {
