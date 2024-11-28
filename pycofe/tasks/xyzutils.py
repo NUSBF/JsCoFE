@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    28.11.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,7 +27,7 @@
 #  python native imports
 import os
 import json
-import time
+# import time
 
 import gemmi
 
@@ -195,7 +195,7 @@ class XyzUtils(basic.TaskDriver):
 
         log = []
 
-        mmcifout = ixyz.lessDataId ( ixyz.getMMCIFFileName() )
+        mmcifout = ixyz.lessDataId ( mmcifin )
         self.outputFName = os.path.splitext(mmcifout)[0]
 
         pdbout = ixyz.lessDataId ( ixyz.getPDBFileName() )  # may be None
