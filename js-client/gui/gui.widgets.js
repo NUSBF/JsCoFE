@@ -1048,9 +1048,10 @@ InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, a
   if (type) this.element.setAttribute('type', type);
   if (pattern) {
     if ((pattern == 'integer') || (pattern == 'integer_'))
-      this.element.setAttribute('pattern', '^(-?[0-9]+\d*)$|^0$');
-    else if ((pattern == 'real') || (pattern == 'real_'))
-      this.element.setAttribute('pattern', '^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$');
+      this.element.setAttribute ( 'pattern', '^(-?[0-9]+\d*)$|^0$' );
+    else if (((pattern == 'real') || (pattern == 'real_')) && (__browser_brand != 'Firefox'))
+      // this.element.setAttribute ( 'type','number' );
+      this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?$' );
       // this.element.setAttribute ( 'pattern',"^[+-]?(\\d*\\.\\d+|\\d+)([eE][+-]?\\d+)?$" );
     else
       //this.element.pattern = pattern;
