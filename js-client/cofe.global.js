@@ -132,6 +132,7 @@ var __any_mobile_device = __mobile_device || __iOS_device;
 
 
 var __browser_checked = false;
+var __browser_brand   = '';
 
 function isSafari()  {
   if (window.safari!==undefined)
@@ -140,6 +141,11 @@ function isSafari()  {
           navigator.userAgent &&
           navigator.userAgent.indexOf('CriOS') == -1 &&
           navigator.userAgent.indexOf('FxiOS') == -1;
+}
+
+function isFirefox() {
+  return navigator.userAgentData?.brands.some(brand => brand.brand === 'Firefox') ||
+         navigator.userAgent.toLowerCase().includes('firefox');
 }
 
 function isQtWebEngine() {
@@ -157,6 +163,10 @@ function checkBrowser()  {
   //       '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
   //   );
   __browser_checked = true;
+  if (isSafari())
+    __browser_brand = 'Safari';
+  if (isFirefox())
+    __browser_brand = 'Firefox';
   return;
 }
 
