@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    03.12.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2020-2024
 #
 # ============================================================================
 #
@@ -154,6 +154,7 @@ class ImportReplace(migrate.Migrate):
 
         if xyzPath or mtzPath or istruct:   # replace Structure
             if xyzPath:  implist.append ( "XYZ"    )
+            # if hkl_passed: implist.append ( "HKL" )
             if mtzPath:  implist.append ( "Phases" )
             if libPath:  implist.append ( "Ligand(s)" )
             xyz_path = xyzPath
@@ -231,7 +232,7 @@ class ImportReplace(migrate.Migrate):
                 self.putTitle   ( "Import & Replace failed" )
                 self.putMessage ( "No data for replacement in Structure" +\
                                   doc_link +\
-                                  " were provided.<br><i>Check your data</i>" )
+                                  " were provided.<br><i>Check your data</i>")
                 # close execution logs and quit
                 self.generic_parser_summary["import_replace"] = {
                     "summary_line" : "malformed import request"
@@ -242,8 +243,7 @@ class ImportReplace(migrate.Migrate):
             mtzPath = None
 
         if subPath or isub:   # replace Substructure
-
-            if (not xyz_path) and (not mtz_path) and lib_path:
+            if (not xyzPath) and (not mtzPath) and libPath:
                 self.putTitle ( "Import & Replace not possible" )
                 self.putMessage ( "<i>Ligand library cannot be placed in " +\
                                   "Substructure" + doc_link + "</i>" )
