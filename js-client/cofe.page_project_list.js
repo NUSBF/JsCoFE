@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.24   <--  Date of Last Modification.
+ *    03.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,6 +56,7 @@ function ProjectListPage ( sceneId )  {
   let demoprj_btn    = null;
   let join_btn       = null;
   let help_btn       = null;
+  let search_btn     = null;
   let panel          = null;
   this.welcome_lbl   = null;
   let nCols          = 0;                  // column span of project table
@@ -72,7 +73,7 @@ function ProjectListPage ( sceneId )  {
     if (__current_folder.nprojects>0)  {
       let rowData = self.projectTable.getSelectedRowData();
       if (rowData)
-        return rowData[1].split(':</b>').pop();
+        return rowData[1].split(':</b>').pop().replace(/<[^>]*>/g,'');
           // return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
     }
     return '';
@@ -1662,7 +1663,7 @@ function ProjectListPage ( sceneId )  {
     // }
     demoprj_btn = new Button ( '',image_path('demoprj') );
     help_btn    = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
-
+    search_btn  = new Button ( '',image_path('search' ) );
 
     // for (let i=0;i<9;i++)
     for (let i=0;i<11;i++)
@@ -1681,6 +1682,7 @@ function ProjectListPage ( sceneId )  {
     join_btn    = new Button ( 'Join'  ,image_path('join'     ) );
     demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
     help_btn    = new Button ( 'Help'  ,image_path('help') ); //.setTooltip('Documentation' );
+    search_btn  = new Button ( ''      ,image_path('search'   ) );
     btn_width = [
       '65pt',
       '60pt',
@@ -1692,29 +1694,17 @@ function ProjectListPage ( sceneId )  {
       '70pt',
       '60pt',
       '80pt',
-      '60pt'
+      '60pt',
     ];
 
-    // btn_width = [
-    //   '65pt',
-    //   '60pt',
-    //   '80pt',
-    //   '70pt',
-    //   '70pt',
-    //   '70pt',
-    //   '70pt',
-    //   '60pt',
-    // ];
-    //
-    // if (__demo_projects)  {
-    //   demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
-    //   btn_width.push ( '80pt' );
-    //   demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
-    // }
-    // help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
-    // btn_width.push ( '60pt' );
-
   }
+
+  search_btn.setTooltip (
+    'Find projects using a search template, case-sensitive. The template ' +
+    'may contain <span style="font-family:courier">*</span> and ' +
+    '<span style="font-family:courier">?</span> wildcards, e.g., ' +
+    '<span style="font-family:courier">*project??</span>.'
+  );
 
   open_btn   .setWidth ( btn_width[0] ).setHeight ( btn_height );
   add_btn    .setWidth ( btn_width[1] ).setHeight ( btn_height );
@@ -1727,6 +1717,7 @@ function ProjectListPage ( sceneId )  {
   join_btn   .setWidth ( btn_width[8] ).setHeight ( btn_height );
   demoprj_btn.setWidth ( btn_width[9] ).setHeight ( btn_height );
   help_btn   .setWidth ( btn_width[10]).setHeight ( btn_height );
+  search_btn .setWidth ( '30pt'       ).setHeight ( btn_height );
 
   // make panel
   panel = new Grid('');
@@ -1759,7 +1750,9 @@ function ProjectListPage ( sceneId )  {
 
   for (let i=0;i<nCols-1;i++)
     panel.setCellSize ( btn_width[i],'',row,i );
-  panel.setCellSize            ( 'auto','',row++,nCols-1 );
+  panel.setCellSize            ( 'auto'     ,'',row,nCols-1 );
+  panel.setWidget              ( search_btn ,   row,nCols,1,1 );
+  panel.setCellSize            ( '30pt'     ,'',row++,nCols++ );
 
   open_btn  .setDisabled       ( true );
   add_btn   .setDisabled       ( true );
@@ -1825,24 +1818,23 @@ function ProjectListPage ( sceneId )  {
     new HelpBox ( '',__user_guide_base_url + 'jscofe_myprojects.html',null );
   });
 
+  search_btn.addOnClickListener ( function(){
+    new TableSearchDialog ( 'Find Project',self.projectTable,500,40 ); 
+  });
+
   //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
 
   //  Read list of projects from server in new thread, so that all widgets
   // are initialised
   window.setTimeout ( function(){
-    loadProjectList();
-    offlineGreeting ( function(){} );
-    // new MessageBox ( 'Information','<h3>Information</h3>This is information',
-    //                  'msg_information' );
+    loadProjectList    ();
+    self.setScrollbars ( window.innerHeight );
+    offlineGreeting    ( function(){} );
   },10);
 
 }
 
-// ProjectListPage.prototype = Object.create ( BasePage.prototype );
-// ProjectListPage.prototype.constructor = ProjectListPage;
-
 registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
-
 
 ProjectListPage.prototype.calcPageSize = function()  {
   let rowHeight = 29.1953;
@@ -1853,6 +1845,31 @@ ProjectListPage.prototype.calcPageSize = function()  {
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
   this.projectTable.setPageSize ( this.calcPageSize() );
+  // this.setScrollbars ( height );
+}
+
+ProjectListPage.prototype.setScrollbars = function ( height )  {
+  $('#'+this.sceneId).css({ 
+    'width'      : '100%',
+    'height'     : '100vh',
+    'overflow-x' : 'auto',
+    'overflow-y' : 'auto'
+    // 'scroll-padding-bottom' : '60px',
+    // 'scroll-margin'  : '200px'
+  });  
+
+  // let overflow_y = 'hidden';
+  // if (height<278)
+  //   overflow_y = 'auto';
+  // $('#'+this.sceneId).css({ 
+  //   'width'      : '100%',
+  //   'height'     : height-32,
+  //   'overflow-x' : 'auto',
+  //   'overflow-y' : overflow_y
+  //   // 'scroll-padding-bottom' : '60px',
+  //   // 'scroll-margin'  : '200px'
+  // });
+
 }
 
 ProjectListPage.prototype.reloadProjectList = function()  {

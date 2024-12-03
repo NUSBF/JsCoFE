@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    27.11.24   <--  Date of Last Modification.
+ *    02.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -14,6 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *                  TablePages   - table with sortable columns and pages
+ *                  TableSearchDialog - search dialog for TablePages
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
@@ -709,6 +710,7 @@ function TablePages()  {
   this.header_list  = [];
   this.tooltip_list = [];
   this.sort_list    = [];
+  this.filter       = null;
   this.startRow     = 0;   // 1 if horizontal headers are there
   this.startCol     = 0;   // 1 if vertical headers are there
   this.startIndex   = 0;   // first currently displayed record
@@ -837,7 +839,9 @@ TablePages.prototype._fill_table = function ( startIndex )  {
           let showRec = self.tdesc.onsort ( self.tdata );
           if (showRec>=0)  {
             self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
-            self.paginator.showPage ( self.crPage );
+            if (self.paginator)
+                  self.paginator.showPage ( self.crPage );
+            else  self._fill_table ( self.startIndex );
             if ('onpage' in self.tdesc)
               self.tdesc.onpage ( self.crPage );
           } else
@@ -932,7 +936,29 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 
   this._form_table ( tdesc );
 
-  this.tdata = tdesc.rows;
+  if (!this.filter)
+    this.tdata = tdesc.rows;
+  else  {
+    const escapedPattern = this.filter.replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
+    // Replace * with .* (zero or more characters) and ? with . (exactly one character)
+    const regexPattern = "^" + escapedPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
+    // Create a regex and test the string
+    const regex = new RegExp(regexPattern);
+    this.tdata = [];
+    for (let i=0;i<tdesc.rows.length;i++)  {
+      let match = false;
+      let row   = [];
+      for (let j=0;j<tdesc.rows[i].length;j++)
+        if (regex.test(tdesc.rows[i][j]))  {
+          match = true;
+          row.push ( '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span>' );
+        } else  
+          row.push ( tdesc.rows[i][j] );
+        if (match)
+          this.tdata.push ( row );
+    }
+  }
+
   if (this.sortCol>=this.startCol)
     this.sortData();
 
@@ -979,6 +1005,13 @@ TablePages.prototype.setPageSize = function ( page_size )  {
   }
 }
 
+TablePages.prototype.setFilter = function ( filter )  {
+  if (filter!=this.filter)  {
+    this.filter = filter;
+    this.makeTable ( this.tdesc );
+  }
+}
+
 TablePages.prototype.getTableState = function()  {
   return {
     crPage    : this.crPage,
@@ -1001,12 +1034,73 @@ TablePages.prototype.getRowHeight = function ( rowNo )  {
   return  29.1953;
 }
 
-TablePages.prototype.setContextMenu = function ( contextmenu_func )  {
+TablePages.prototype.setContextMenu = function ( contextmenu_func,cellNo=2 )  {
   for (let i=this.startRow;i<this.table.element.rows.length;i++)  {
     let row         = this.table.element.rows[i];
     let contextMenu = contextmenu_func ( i,row,this.tdata[i-this.startRow] );
-    let cell        = row.cells[2];
+    let cell        = row.cells[cellNo];
     cell.insertBefore ( contextMenu.element,cell.childNodes[0] );
   }
 }
 
+
+// -------------------------------------------------------------------------
+// TableSearchDialog class
+
+function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title',title );
+  document.body.appendChild ( this.element );
+
+  let grid = new Grid('');
+  this.addWidget ( grid );
+
+  grid.setLabel ( 'Filter:',0,0,1,1 );
+  let filter    = grid.setInputText('',0,1,1,1).setWidth('160px')
+                      .setStyle('text','','','Search target')
+                      .setWidth('220px');
+  let find_btn  = grid.setButton ( 'Find' ,image_path('find' ),0,2,1,1 );
+  let close_btn = grid.setButton ( 'Close',image_path('close'),0,3,1,1 );
+  grid.setVerticalAlignment ( 0,0,'middle' );
+  grid.setVerticalAlignment ( 0,1,'middle' );
+  grid.setVerticalAlignment ( 0,2,'middle' );
+  grid.setVerticalAlignment ( 0,3,'middle' );
+
+  let self = this;
+  find_btn.addOnClickListener ( function(){
+    tablePages.setFilter ( filter.getValue() );
+  });
+  close_btn.addOnClickListener ( function(){
+    tablePages.setFilter ( '' );
+    $(self.element).dialog ( 'close' );
+  });
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 90,
+    width     : 'auto',
+    position  : { my: "left top", at: "left+" + offset_x + " top+" + offset_y, of: window },
+    // maxHeight : 600,
+    // width     : '820px',
+    modal     : false,
+    closeOnEscape: false,
+    open: function (event,ui) {
+      //hide close button.
+      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+    },
+    buttons : {}
+  });
+
+  this.setShade ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
+                  //  '0px 0px 16px 8px rgba(212,212,212,1.0) inset',
+                  'none',
+                  __active_color_mode );
+
+  // this.setBackgroundColor ( '#BCC6CC' );
+  this.setBackgroundColor ( '#F8F8F8' );
+
+}
+
+TableSearchDialog.prototype = Object.create(Widget.prototype);
+TableSearchDialog.prototype.constructor = TableSearchDialog;

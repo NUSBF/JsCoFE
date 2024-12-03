@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    25.11.24   <--  Date of Last Modification.
+ *    02.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -341,7 +341,7 @@ Widget.prototype.setMargins = function ( left, top, right, bottom ) {
   return this;
 }
 
-Widget.prototype.setScrollable = function ( onx_value, ony_value ) {
+Widget.prototype.setScrollable = function ( onx_value, ony_value )  {
   if (onx_value.length > 0)
     $(this.element).css({ 'overflow-x': onx_value });
   if (ony_value.length > 0)
@@ -355,7 +355,7 @@ Widget.prototype.getScrollPosition = function () {
 
 Widget.prototype.setScrollPosition = function ( scrollPos ) {
   this.element.scrollLeft = scrollPos[0];
-  this.element.scrollTop = scrollPos[1];
+  this.element.scrollTop  = scrollPos[1];
 }
 
 Widget.prototype.setScrollListener = function ( callback_func )  {
@@ -444,7 +444,7 @@ Widget.prototype.toggle = function () {
   return this;
 }
 
-Widget.prototype.setOpacity = function (opacity) {
+Widget.prototype.setOpacity = function ( opacity )  {
   $(this.element).css({ 'opacity': opacity });
   // if (yn_bool)  $(this.element).css({'opacity':1});
   //         else  $(this.element).css({'opacity':0});
