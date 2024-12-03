@@ -32,7 +32,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   __electron_find_text_dialog  = null;
 
   // clear the page first
-  $(document.body).empty().addClass('main-page');
+  $(document.body).empty(); //.addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
 
   checkBrowser();
@@ -163,7 +163,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   // let logoPanel = this.grid.setPanel ( row,col,1,colSpan );
 
   let logoPanel = new Widget('div');
-  $(logoPanel.element).appendTo('body');
+  $(logoPanel.element).appendTo(document.body);
   let logoGrid  = new Grid ( '' );
   logoPanel.addWidget ( logoGrid );
   // let logoGrid = this.grid.setGrid ( '',row,col,1,colSpan );

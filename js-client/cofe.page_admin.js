@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    27.11.24   <--  Date of Last Modification.
+ *    03.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -109,8 +109,7 @@ function AdminPage ( sceneId )  {
   if (__user_role==role_code.admin)  {
     col = 1;
     search_btn    = this.uaPanel.setButton ( '',image_path('search' ),0,col++,1,1 )
-                                .setSize('30px','30px')
-                                .setTooltip('Find user records');
+                                .setSize('30px','30px');
     newuser_btn   = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
                                 .setSize('30px','30px')
                                 .setTooltip('Make new user');
@@ -213,13 +212,21 @@ function AdminPage ( sceneId )  {
 
       });
 
+      search_btn.setTooltip (
+        'Find users using a search template, case-sensitive. The template ' +
+        'may contain <span style="font-family:courier">*</span> and ' +
+        '<span style="font-family:courier">?</span> wildcards, e.g., ' +
+        '<span style="font-family:courier">*name??</span>.'
+      );
+    
       search_btn.addOnClickListener ( function(){
-        new FindUserDialog ( function(filters){ 
-               self.searchFilters = filters;
-               if (self.adminData)
-                 self.makeUsersInfoTab ( self.adminData.usersInfo,
-                                         self.adminData.nodesInfo.FEconfig );
-             });
+        new TableSearchDialog ( 'Find User',self.userTable,500,60 ); 
+        // new FindUserDialog ( function(filters){ 
+        //        self.searchFilters = filters;
+        //        if (self.adminData)
+        //          self.makeUsersInfoTab ( self.adminData.usersInfo,
+        //                                  self.adminData.nodesInfo.FEconfig );
+        //      });
       });
 
       newuser_btn.addOnClickListener ( function(){
