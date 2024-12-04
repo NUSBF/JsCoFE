@@ -1842,8 +1842,8 @@ registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
 ProjectListPage.prototype.calcPageSize = function()  {
   let rowHeight = 29.1953;
   if (this.projectTable)
-    rowHeight = this.projectTable.getRowHeight(1);
-  return  Math.floor ( (window.innerHeight-248)/rowHeight );
+    rowHeight = this.projectTable.getRowHeight();
+  return  Math.floor ( (window.innerHeight-248*rowHeight/29.1953)/rowHeight );
 }
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
