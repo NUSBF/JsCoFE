@@ -46,3 +46,4 @@ Paginator.prototype.constructor = Paginator;
 Paginator.prototype.showPage = function ( pageNo )  {
   this.pagination.twbsPagination ( 'show',pageNo );
 }
+

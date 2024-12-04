@@ -1027,7 +1027,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 TablePages.prototype.setPageSize = function ( page_size )  {
   let psize = Math.max ( 1,page_size );
   if (psize!=this.tdesc.page_size)  {
-    // console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
+    console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
     // console.log ( ' >>>> page_size=' + page_size )
     let showRow   = Math.max ( this.startRow,this.table.selectedRow );
     let showIndex = this.startIndex + showRow - this.startRow;
