@@ -1016,7 +1016,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         self.crPage = pageNo;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
-    this.setWidget ( self.paginator,1,0,1,1 );
+    this.setWidget ( this.paginator,1,0,1,1 );
   } else if (this.paginator)  {
     this.setLabel ( '&nbsp;',1,0,1,1 );
     this.paginator = null;

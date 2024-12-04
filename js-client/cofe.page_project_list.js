@@ -38,9 +38,14 @@ function ProjectListPage ( sceneId )  {
   BasePage.call ( this,sceneId,'-full','ProjectListPage' );
 
   // set scrollbars 
-  $(this.grid.element).css ({ 'height' : 'calc(100vh - 32px)' });
+  $(this.grid.element).css ({ 
+    'height' : 'calc(100vh - 32px)'
+    // 'overflow-x' : 'hidden',
+    // 'overflow-y' : 'auto'
+  });
   $(this.element).css({ 
     'width'      : '100%',
+    // 'height'     : '100%',
     'height'     : 'calc(100vh - 32px)',
     'overflow-x' : 'auto',
     'overflow-y' : 'auto'
@@ -67,7 +72,7 @@ function ProjectListPage ( sceneId )  {
   let help_btn       = null;
   let search_btn     = null;
   let panel          = null;
-  this.welcome_lbl   = null;
+  // this.welcome_lbl   = null;
   let nCols          = 0;                  // column span of project table
   let table_row      = 0;                  // project list position in panel
   let sortCol        = 7;                  // sort column in the list of projects
@@ -1087,30 +1092,33 @@ function ProjectListPage ( sceneId )  {
     // $(self.projectTable.element).css({'max-height':'600px','overflow-y':'scroll'});
     // $(panel.element).css({'max-height':'600px','overflow-y':'scroll'});
 
-    let message = 'folder';
-    if (isCurrentFolderList())
-      message = 'list';
-
-    message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
-              'There are no projects in ' + message + ' "' +
-              folderPathTitle(__current_folder,__login_id,1000) + '".' +
-              '<p>Use "Add" button to create a new Project' +
-              ';<br>"Import" button for importing a project exported from ' +
-                appName() +
-              ';<br>"Join" button for joining project shared with you by ' +
-              'another user;<br>or "Tutorials" button for loading ' +
-              'tutorial/demo projects;<br>or click on page title or folder ' +
-              'icon in it to change the folder.</h3></div>';
-    self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
-                                        table_row+1,0,1,nCols )
-                            .setFontItalic ( true )
-                            .setNoWrap();
-    panel.setHorizontalAlignment ( table_row+1,0,"center" );
-
     if (nrows<=0)  {
-      __current_project = null;
-    } else  {
-      self.welcome_lbl.hide();
+
+      let message = 'folder';
+      if (isCurrentFolderList())
+        message = 'list';
+  
+      message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
+                'There are no projects in ' + message + ' "' +
+                folderPathTitle(__current_folder,__login_id,1000) + '".' +
+                '<p>Use "Add" button to create a new Project' +
+                ';<br>"Import" button for importing a project exported from ' +
+                  appName() +
+                ';<br>"Join" button for joining project shared with you by ' +
+                'another user;<br>or "Tutorials" button for loading ' +
+                'tutorial/demo projects;<br>or click on page title or folder ' +
+                'icon in it to change the folder.</h3></div>';
+      panel.setLabel ( message, //.fontcolor('darkgrey'),
+                       table_row+1,0,1,nCols )
+            .setFontItalic ( true )
+            .setNoWrap();
+
+      panel.setHorizontalAlignment ( table_row+1,0,"center" );
+
+       __current_project = null;
+
+    // } else  {
+    //   self.welcome_lbl.hide();
     }
 
     // setTimeout ( function(){
@@ -1726,12 +1734,13 @@ function ProjectListPage ( sceneId )  {
   // make panel
   panel = new Grid('');
   // center panel horizontally and make left- and right-most columns page margins
-  this.grid.setCellSize ( left_margin ,''    ,1,0,1,1 );
-  this.grid.setWidget   ( panel              ,1,1,1,1 );
-  this.grid.setCellSize ( right_margin,'100%',1,2,1,1 );
+  this.grid.setCellSize ( left_margin ,'',1,0,1,1 );
+  this.grid.setWidget   ( panel          ,1,1,1,1 );
+  this.grid.setCellSize ( right_margin,'',1,2,1,1 );
+  // this.grid.setCellSize ( right_margin,'100%',1,2,1,1 );
 
 //  panel.setVerticalAlignment ( 1,0,'top' );
-  panel.setVerticalAlignment ( 1,1,'middle' );
+  // panel.setVerticalAlignment ( 1,1,'middle' );
 
   this.makeLogoPanel ( 2,0,3 );
 
@@ -1758,6 +1767,8 @@ function ProjectListPage ( sceneId )  {
   panel.setWidget              ( search_btn ,   row,nCols,1,1 );
   panel.setCellSize            ( '30pt'     ,'',row++,nCols++ );
 
+  table_row = row;  // note the project list table position here
+
   open_btn  .setDisabled       ( true );
   add_btn   .setDisabled       ( true );
   rename_btn.setDisabled       ( true );
@@ -1765,7 +1776,6 @@ function ProjectListPage ( sceneId )  {
   move_btn  .setDisabled       ( true );
   del_btn   .setDisabled       ( true );
   import_btn.setDisabled       ( true );
-  table_row = row;  // note the project list table position here
 
   // add a listeners to toolbar buttons
   open_btn  .addOnClickListener ( openProject   );
@@ -1848,6 +1858,8 @@ ProjectListPage.prototype.calcPageSize = function()  {
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
   this.projectTable.setPageSize ( this.calcPageSize() );
+  // this.element.style.height = `${window.innerHeight - 32}px`;
+  // this.element.style.height = (height+8) + 'px';
 }
 
 ProjectListPage.prototype.reloadProjectList = function()  {
