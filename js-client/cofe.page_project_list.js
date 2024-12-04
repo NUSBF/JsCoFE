@@ -929,7 +929,7 @@ function ProjectListPage ( sceneId )  {
 
     if ('listState' in projectList)  {
       // tdesc.start_page = projectList.listState.crPage;
-      tdesc.sortCol    = projectList.listState.sortCol;
+      tdesc.sortCol = projectList.listState.sortCol;
       for (let i=tdesc.columns.length-1;i>=0;i--)
         tdesc.columns[i].sort = projectList.listState.sort_list[i];
     }

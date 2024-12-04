@@ -938,13 +938,15 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
+  let tstate     = null;
   let page_size  = this.calcUserPageSize ( window.innerHeight );
   let start_page = 1;
   let sortCol    = 12;
   if (this.userTable)  {
-    page_size  = this.userTable.tdesc.page_size;
-    start_page = this.userTable.crPage;
-    sortCol    = this.userTable.sortCol;
+    tstate     = this.userTable.getTableState();
+    page_size  = tstate.pageSize;
+    start_page = tstate.crPage;
+    sortCol    = tstate.sortCol;
   }
 
   let tdesc = {
@@ -1047,6 +1049,10 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                              });
     }
   };
+
+  if (tstate)
+    for (let i=0;i<tdesc.columns.length;i++)
+      tdesc.columns[i].sort = tstate.sort_list[i];
 
   this.loggedUsers = udata.loginHash.loggedUsers;
 
