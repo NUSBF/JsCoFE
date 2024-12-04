@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.12.24   <--  Date of Last Modification.
+ *    04.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,15 @@ function ProjectListPage ( sceneId )  {
 
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','ProjectListPage' );
+
+  // set scrollbars 
+  $(this.grid.element).css ({ 'height' : 'calc(100vh - 32px)' });
+  $(this.element).css({ 
+    'width'      : '100%',
+    'height'     : 'calc(100vh - 32px)',
+    'overflow-x' : 'auto',
+    'overflow-y' : 'auto'
+  });  
 
   if (!__login_token)  {
     alert ( ' NOT LOGED IN');
@@ -1827,9 +1836,8 @@ function ProjectListPage ( sceneId )  {
   //  Read list of projects from server in new thread, so that all widgets
   // are initialised
   window.setTimeout ( function(){
-    loadProjectList    ();
-    self.setScrollbars ( window.innerHeight );
-    offlineGreeting    ( function(){} );
+    loadProjectList ();
+    offlineGreeting ( function(){} );
   },10);
 
 }
@@ -1845,31 +1853,6 @@ ProjectListPage.prototype.calcPageSize = function()  {
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
   this.projectTable.setPageSize ( this.calcPageSize() );
-  // this.setScrollbars ( height );
-}
-
-ProjectListPage.prototype.setScrollbars = function ( height )  {
-  $('#'+this.sceneId).css({ 
-    'width'      : '100%',
-    'height'     : '100vh',
-    'overflow-x' : 'auto',
-    'overflow-y' : 'auto'
-    // 'scroll-padding-bottom' : '60px',
-    // 'scroll-margin'  : '200px'
-  });  
-
-  // let overflow_y = 'hidden';
-  // if (height<278)
-  //   overflow_y = 'auto';
-  // $('#'+this.sceneId).css({ 
-  //   'width'      : '100%',
-  //   'height'     : height-32,
-  //   'overflow-x' : 'auto',
-  //   'overflow-y' : overflow_y
-  //   // 'scroll-padding-bottom' : '60px',
-  //   // 'scroll-margin'  : '200px'
-  // });
-
 }
 
 ProjectListPage.prototype.reloadProjectList = function()  {

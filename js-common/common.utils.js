@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.24   <--  Date of Last Modification.
+ *    04.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -149,16 +149,53 @@ function isValidURL(url) {
   return pattern.test(url);
 }
 
+// function sortObjects ( array, field, ascending=true )  {
+//   return array.sort((a, b) => {
+//     let valueA = a[field];
+//     let valueB = b[field];
+//     if (Array.isArray(valueA))  {
+//       if (valueA.length>0)  valueA = valueA[0];
+//                       else  valueA = '';
+//     }
+//     if (Array.isArray(valueB))  {
+//       if (valueB.length>0)  valueB = valueB[0];
+//                       else  valueB = '';
+//     }
+//     if (valueA < valueB) return ascending ? -1 : 1;
+//     if (valueA > valueB) return ascending ? 1 : -1;
+//     return 0; // If values are equal
+//   });
+// }
+
+
 function sortObjects ( array, field, ascending=true )  {
   return array.sort((a, b) => {
-    const valueA = a[field];
-    const valueB = b[field];
-    if (valueA < valueB) return ascending ? -1 : 1;
-    if (valueA > valueB) return ascending ? 1 : -1;
-    return 0; // If values are equal
+    let valueA = a[field];
+    let valueB = b[field];
+    if (Array.isArray(valueA))  {
+      if (valueA.length>0)  valueA = valueA[0];
+                      else  valueA = '';
+    }
+    if (Array.isArray(valueB))  {
+      if (valueB.length>0)  valueB = valueB[0];
+                      else  valueB = '';
+    }
+    const numA      = parseFloat(valueA);
+    const numB      = parseFloat(valueB);  
+    const isNumber1 = !isNaN(valueA) && !isNaN(numA) && valueA.trim() !== '';
+    const isNumber2 = !isNaN(valueB) && !isNaN(numB) && valueB.trim() !== '';
+    if (isNumber1 && isNumber2) {
+        // Compare as numbers
+      if (numA < numB) return ascending ? -1 :  1;
+      if (numA > numB) return ascending ?  1 : -1;
+      return 0;
+    }
+    // Compare lexicographically
+    if (valueA < valueB) return ascending ? -1 :  1;
+    if (valueA > valueB) return ascending ?  1 : -1;
+    return 0;
   });
 }
-
 
 // ===========================================================================
 
