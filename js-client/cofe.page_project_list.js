@@ -970,7 +970,7 @@ function ProjectListPage ( sceneId )  {
 
         let info = '';
         if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
-                                  && (pDesc.metrics.R_free<'1.0'))  {
+                                 && (pDesc.metrics.R_free<'1.0'))  {
           info = '<table class="table-rations">' +
                  '<tr><td colspan="2"><b><i>Best scores (job ' +
                  padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
@@ -1708,12 +1708,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  search_btn.setTooltip (
-    'Find projects using a search template, case-sensitive. The template ' +
-    'may contain <span style="font-family:courier">*</span> and ' +
-    '<span style="font-family:courier">?</span> wildcards, e.g., ' +
-    '<span style="font-family:courier">*project??</span>.'
-  );
+  search_btn.setTooltip ( 'Find projects using a search template' );
 
   open_btn   .setWidth ( btn_width[0] ).setHeight ( btn_height );
   add_btn    .setWidth ( btn_width[1] ).setHeight ( btn_height );

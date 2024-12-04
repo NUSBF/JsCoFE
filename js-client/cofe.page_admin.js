@@ -212,12 +212,7 @@ function AdminPage ( sceneId )  {
 
       });
 
-      search_btn.setTooltip (
-        'Find users using a search template, case-sensitive. The template ' +
-        'may contain <span style="font-family:courier">*</span> and ' +
-        '<span style="font-family:courier">?</span> wildcards, e.g., ' +
-        '<span style="font-family:courier">*name??</span>.'
-      );
+      search_btn.setTooltip ( 'Find users using a search template' );
     
       search_btn.addOnClickListener ( function(){
         new TableSearchDialog ( 'Find User',self.userTable,500,60 ); 
