@@ -1,1 +1,23 @@
-:orphan:
+Protein-ligand structure determination by Molecular Replacement
+===============================================================
+
+Introduction
+------------
+
+In this tutorial, we will guide you through the process of determining a protein-ligand structure using Molecular Replacement (MR) followed up by ligand fitting and refinement. 
+
+
+Steps
+-----
+
+``1.``	 All data required for this tutorial were already imported into the project. Please look at the import's task output.
+
+``2.`` Since we have unmerged data imported. First step would be merging them with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All tasks => Data Processing => Merging and Scaling with Aimless**. Run the task.
+
+``3.``	The next step is to define the **Asymmetric Unit content**: click **add task => go to All tasks => Asymmetric Unit and Structure revision => Asymmetric Unit Contents.** or type *Asymmetric Unit Contents* in the search bar in the **A-Z tab**. Run the task
+
+After the task is finished, please, investigate the output it created. Every task in CCP4 Cloud produces a report. Here we can see that Matthew's coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.
+
+``3.``	Once **Asymmetric Unit Contents** is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry). In this tutorial we will use automated molecular replacement task `Auto-MR with MrBump <..html-taskref/doc.task.MrBump.html>`_. Go to all tasks => Molecular Replacement => Automated Molecular Replacement => Auto-MR with MrBump
+
+``4.``
