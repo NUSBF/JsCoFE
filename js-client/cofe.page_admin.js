@@ -406,7 +406,6 @@ AdminPage.prototype.calcUserPageSize = function ( height )  {
   let rowHeight = 29.1953;
   if (this.userTable)
     rowHeight = this.userTable.getRowHeight(1);
-  console.log ( ' >>>>> height=' + height + '  rowHeight=' + rowHeight)
   return  Math.floor ( (height-318)/rowHeight );
 }
 
@@ -939,6 +938,15 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
+  let page_size  = this.calcUserPageSize ( window.innerHeight );
+  let start_page = 1;
+  let sortCol    = 12;
+  if (this.userTable)  {
+    page_size  = this.userTable.tdesc.page_size;
+    start_page = this.userTable.crPage;
+    sortCol    = this.userTable.sortCol;
+  }
+
   let tdesc = {
     columns : [   
       { header  : '##',
@@ -1026,10 +1034,10 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                     'white-space' : 'nowrap',
                     'font-family' : 'Arial, Helvetica, sans-serif'
                   }, 
-    sortCol     : 12,
+    sortCol     : sortCol,
     mouse_hover : true,
-    page_size   : this.calcUserPageSize(window.innerHeight),  // 0 for no pages
-    start_page  : 1,
+    page_size   : page_size,  // 0 for no pages
+    start_page  : start_page,
     ondblclick  : function ( dataRow,callback_func){
       new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
                              function(code){ 
