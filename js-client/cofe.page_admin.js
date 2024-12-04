@@ -89,7 +89,7 @@ function AdminPage ( sceneId )  {
   this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 ).setHeight_px ( 32 );
   this.adminData     = null;
   this.userListTable = null;
-  this.searchFilters   = null;
+  this.searchFilters = null;
   this.uaPanel       = new Grid('');
   this.usersTab.grid.setWidget   ( this.uaPanel,0,1,1,1 );
   this.usersTab.grid.setCellSize ( '','32px',0,0 );
@@ -295,124 +295,119 @@ AdminPage.prototype.refresh = function()  {
   this.searchFilters = null;
 
   self = this;
-  // (function(self){
+  serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
 
-    serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+    self.adminData = data;
 
-      self.adminData = data;
+    if (__user_role==role_code.admin)
+      console.log ( '... getAdminData response ' + self.__load_time() );
 
-      if (__user_role==role_code.admin)
-        console.log ( '... getAdminData response ' + self.__load_time() );
+    if (!data.served)  {
 
-      if (!data.served)  {
+      self.jobsTitle .setText ( data.jobsStat );
+      self.usersTitle.setText ( data.jobsStat );
+      self.nodesTitle.setText ( data.jobsStat );
 
-        self.jobsTitle .setText ( data.jobsStat );
-        self.usersTitle.setText ( data.jobsStat );
-        self.nodesTitle.setText ( data.jobsStat );
+    } else  {
 
-      } else  {
+      window.setTimeout ( function(){
 
+        self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+        
         window.setTimeout ( function(){
+        
+          self.usageStats._url    = data.usageReportURL;
+          self.usageStats._loaded = false;
+          self.loadUsageStats();
 
-          self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
-          
           window.setTimeout ( function(){
-          
-            self.usageStats._url    = data.usageReportURL;
-            self.usageStats._loaded = false;
-            self.loadUsageStats();
-
-            window.setTimeout ( function(){
-          
-              self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-              let lines = data.jobsStat.split(/\r\n|\r|\n/);
-              if ((lines.length>0) && startsWith(lines[0],'--------'))  {
-                lines[0] = lines[0].replace ( /-/g,'=' );
-                lines[2] = lines[2].replace ( /-/g,'=' );
-                if (!lines[lines.length-1])
-                  lines.pop();
-                lines.push ( lines.shift() );
-                lines.push ( lines.shift() );
-                lines.push ( lines.shift() );
+        
+            self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
+            let lines = data.jobsStat.split(/\r\n|\r|\n/);
+            if ((lines.length>0) && startsWith(lines[0],'--------'))  {
+              lines[0] = lines[0].replace ( /-/g,'=' );
+              lines[2] = lines[2].replace ( /-/g,'=' );
+              if (!lines[lines.length-1])
+                lines.pop();
+              lines.push ( lines.shift() );
+              lines.push ( lines.shift() );
+              lines.push ( lines.shift() );
+            }
+            let nJobsToday = 0;
+            let usersToday = [];
+            let today_template = new Date(Date.now()).toUTCString().split(' ');
+            today_template = '[' + today_template[0] + ' ' + today_template[1] +
+                              ' ' + today_template[2] + ' ' + today_template[3];
+            for (let i=lines.length-1;i>=0;i--)
+              if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
+                if (lines[i].indexOf(today_template)>=0) {
+                  nJobsToday++;
+                  let user = lines[i].split(' (')[0].split(' ').pop();
+                  if (usersToday.indexOf(user)<0)
+                    usersToday.push ( user );
+                } else
+                  break;
               }
-              let nJobsToday = 0;
-              let usersToday = [];
-              let today_template = new Date(Date.now()).toUTCString().split(' ');
-              today_template = '[' + today_template[0] + ' ' + today_template[1] +
-                               ' ' + today_template[2] + ' ' + today_template[3];
-              for (let i=lines.length-1;i>=0;i--)
-                if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
-                  if (lines[i].indexOf(today_template)>=0) {
-                    nJobsToday++;
-                    let user = lines[i].split(' (')[0].split(' ').pop();
-                    if (usersToday.indexOf(user)<0)
-                      usersToday.push ( user );
-                  } else
-                    break;
-                }
-              self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
-                                      usersToday.length + ' users\n' +
-                                      lines.reverse().join('\n') + '</pre>' );
-              if (__user_role==role_code.admin)
-                console.log ( '... Jobs Tab complete in ' + self.__load_time() );
-            },10);
-
+            self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
+                                    usersToday.length + ' users\n' +
+                                    lines.reverse().join('\n') + '</pre>' );
+            if (__user_role==role_code.admin)
+              console.log ( '... Jobs Tab complete in ' + self.__load_time() );
           },10);
 
         },10);
 
-        serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
-          function(rsp){
-            if (rsp)  {
-              if (rsp.status==nc_retcode.ok)
-                data.nodesInfo.FEProxy = rsp.data;
-              else
-                new MessageBox ( 'Get FE Proxy Info Error',
-                  'Unknown error: <b>' + rsp.status + '</b><p>' +
-                  'when trying to fetch FE Proxy data.', 'msg_error' );
-            }
-            if (!__local_service)  {
-              window.setTimeout ( function(){
-                self.makeNodesInfoTab  ( data.nodesInfo );
-                self.makeMemoryInfoTab ( data.memoryReport,data.performance );
-                self.onResize ( window.innerWidth,window.innerHeight );
-              },10);
-            } else  {
-              localCommand ( nc_command.getNCInfo,{},'NC Info Request',
-                function(response){
-                  if (response)  {
-                    if (response.status==nc_retcode.ok)
-                      data.nodesInfo.ncInfo.push ( response.data );
-                    else
-                      new MessageBox ( 'Get NC Info Error',
-                        'Unknown error: <b>' + response.status + '</b><p>' +
-                        'when trying to fetch Client NC data.', 'msg_error' );
-                  }
-                  window.setTimeout ( function(){
-                    self.makeNodesInfoTab  ( data.nodesInfo );
-                    self.makeMemoryInfoTab ( data.memoryReport,data.performance );
-                    self.onResize ( window.innerWidth,window.innerHeight );
-                  },0);
-                  return (response!=null);
-                });
-            }
-            // self.tabs.refresh();
-            return (rsp!=null);
-          });
-      }
+      },10);
 
-      // self.tabs.refresh();
-    },null,'persist');
+      serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
+        function(rsp){
+          if (rsp)  {
+            if (rsp.status==nc_retcode.ok)
+              data.nodesInfo.FEProxy = rsp.data;
+            else
+              new MessageBox ( 'Get FE Proxy Info Error',
+                'Unknown error: <b>' + rsp.status + '</b><p>' +
+                'when trying to fetch FE Proxy data.', 'msg_error' );
+          }
+          if (!__local_service)  {
+            window.setTimeout ( function(){
+              self.makeNodesInfoTab  ( data.nodesInfo );
+              self.makeMemoryInfoTab ( data.memoryReport,data.performance );
+              self.onResize ( window.innerWidth,window.innerHeight );
+            },10);
+          } else  {
+            localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+              function(response){
+                if (response)  {
+                  if (response.status==nc_retcode.ok)
+                    data.nodesInfo.ncInfo.push ( response.data );
+                  else
+                    new MessageBox ( 'Get NC Info Error',
+                      'Unknown error: <b>' + response.status + '</b><p>' +
+                      'when trying to fetch Client NC data.', 'msg_error' );
+                }
+                window.setTimeout ( function(){
+                  self.makeNodesInfoTab  ( data.nodesInfo );
+                  self.makeMemoryInfoTab ( data.memoryReport,data.performance );
+                  self.onResize ( window.innerWidth,window.innerHeight );
+                },10);
+                return (response!=null);
+              });
+          }
+          return (rsp!=null);
+        });
+    }
 
-  // }(this))
+  },null,'persist');
 
 }
 
-AdminPage.prototype.calcUserPageSize = function()  {
+AdminPage.prototype.calcUserPageSize = function ( height )  {
   let rowHeight = 29.1953;
   if (this.userTable)
     rowHeight = this.userTable.getRowHeight(1);
-  return  Math.floor ( (window.innerHeight-318)/rowHeight );
+  console.log ( ' >>>>> height=' + height + '  rowHeight=' + rowHeight)
+  return  Math.floor ( (height-318)/rowHeight );
 }
 
 AdminPage.prototype.onResize = function ( width,height )  {
@@ -434,7 +429,7 @@ AdminPage.prototype.onResize = function ( width,height )  {
   $(this.jobsTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
 
   if (this.userTable)
-    this.userTable.setPageSize ( this.calcUserPageSize() );
+    this.userTable.setPageSize ( this.calcUserPageSize(height) );
 
 }
 
@@ -1033,7 +1028,7 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
                   }, 
     sortCol     : 12,
     mouse_hover : true,
-    page_size   : this.calcUserPageSize(),  // 0 for no pages
+    page_size   : this.calcUserPageSize(window.innerHeight),  // 0 for no pages
     start_page  : 1,
     ondblclick  : function ( dataRow,callback_func){
       new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
