@@ -45,7 +45,9 @@ function ProjectListPage ( sceneId )  {
   });
   $(this.element).css({ 
     'width'      : '100%',
-    // 'height'     : '100%',
+    // 'height'     : '100vh',
+    // 'padding-bottom' : '32px',
+    // 'scrollbar-padding-bottom' : '34px',
     'height'     : 'calc(100vh - 32px)',
     'overflow-x' : 'auto',
     'overflow-y' : 'auto'
