@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.12.24   <--  Date of Last Modification.
+ *    04.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -1018,6 +1018,7 @@ TablePages.prototype.setFilter = function ( filter )  {
 
 TablePages.prototype.getTableState = function()  {
   return {
+    pageSize  : this.pageSize,
     crPage    : this.crPage,
     sortCol   : this.sortCol,
     sort_list : this.sort_list
