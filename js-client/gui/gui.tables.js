@@ -244,8 +244,11 @@ Table.prototype.getTableData = function()  {
 }
 
 Table.prototype.getRowHeight = function ( rowNo )  {
-  if (rowNo<this.element.rows.length)
-    return  $(this.element.rows[1]).outerHeight();
+  if (rowNo<this.element.rows.length)  {
+    let rowHeight = $(this.element.rows[1]).outerHeight();
+    if (rowHeight>6)
+      return rowHeight;
+  }
   return  29.1953;
 }
 
@@ -939,6 +942,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
   if (!this.filter)
     this.tdata = tdesc.rows;
   else  {
+    // Apply filter to table data
     const escapedPattern = this.filter.replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
     // Replace * with .* (zero or more characters) and ? with . (exactly one character)
     const regexPattern = "^" + escapedPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
