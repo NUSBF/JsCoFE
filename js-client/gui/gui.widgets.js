@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    02.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -341,7 +341,7 @@ Widget.prototype.setMargins = function ( left, top, right, bottom ) {
   return this;
 }
 
-Widget.prototype.setScrollable = function ( onx_value, ony_value ) {
+Widget.prototype.setScrollable = function ( onx_value, ony_value )  {
   if (onx_value.length > 0)
     $(this.element).css({ 'overflow-x': onx_value });
   if (ony_value.length > 0)
@@ -355,7 +355,7 @@ Widget.prototype.getScrollPosition = function () {
 
 Widget.prototype.setScrollPosition = function ( scrollPos ) {
   this.element.scrollLeft = scrollPos[0];
-  this.element.scrollTop = scrollPos[1];
+  this.element.scrollTop  = scrollPos[1];
 }
 
 Widget.prototype.setScrollListener = function ( callback_func )  {
@@ -388,14 +388,14 @@ Widget.prototype.addWidget = function ( widget ) {
   return this;
 }
 
-Widget.prototype.insertWidget = function (widget, pos) {
+Widget.prototype.insertWidget = function ( widget,pos ) {
   this.child.splice(pos, 0, widget);
   this.element.insertBefore(widget.element, this.element.childNodes[pos]);
   widget.parent = this;
   return this;
 }
 
-Widget.prototype.removeChild = function (widget) {
+Widget.prototype.removeChild = function ( widget ) {
   let child = [];
   for (let i = 0; i < this.child.length; i++)
     if (this.child[i].id == widget.id) {
@@ -444,7 +444,7 @@ Widget.prototype.toggle = function () {
   return this;
 }
 
-Widget.prototype.setOpacity = function (opacity) {
+Widget.prototype.setOpacity = function ( opacity )  {
   $(this.element).css({ 'opacity': opacity });
   // if (yn_bool)  $(this.element).css({'opacity':1});
   //         else  $(this.element).css({'opacity':0});
@@ -510,7 +510,7 @@ Widget.prototype.addOnClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnDblClickListener = function (listener_func) {
+Widget.prototype.addOnDblClickListener = function ( listener_func ) {
   this.element.addEventListener('dblclick', function (e) {
     e.preventDefault();
     listener_func(e);
@@ -518,7 +518,7 @@ Widget.prototype.addOnDblClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnRightClickListener = function (listener_func) {
+Widget.prototype.addOnRightClickListener = function ( listener_func ) {
   this.element.addEventListener('contextmenu', function (e) {
     e.preventDefault();
     listener_func(e);
@@ -527,12 +527,12 @@ Widget.prototype.addOnRightClickListener = function (listener_func) {
   return this;
 }
 
-Widget.prototype.addOnChangeListener = function (listener_func) {
+Widget.prototype.addOnChangeListener = function ( listener_func ) {
   this.element.addEventListener('change', listener_func);
   return this;
 }
 
-Widget.prototype.addOnInputListener = function (listener_func) {
+Widget.prototype.addOnInputListener = function ( listener_func ) {
   this.element.addEventListener('input', listener_func);
   return this;
 }
@@ -1355,16 +1355,16 @@ Button.prototype.setIndicator = function (indicon_uri, location) {
   this.addWidget(indicator);
 }
 
-Button.prototype.setText = function (text) {
+Button.prototype.setText = function ( text ) {
   this._set_button(text, '');
   return this;
 }
 
-Button.prototype.setIcon = function (icon_uri) {
+Button.prototype.setIcon = function ( icon_uri ) {
   $(this.element).css({ 'background-image': 'url("' + icon_uri + '")' });
 }
 
-Button.prototype.setDisabled = function (disabled_bool) {
+Button.prototype.setDisabled = function ( disabled_bool ) {
   try {
     $(this.element).button("option", "disabled", disabled_bool);
   } catch (e) { }
