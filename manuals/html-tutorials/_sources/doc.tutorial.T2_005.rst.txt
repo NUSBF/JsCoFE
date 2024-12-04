@@ -86,7 +86,7 @@ for more tasks as shown below
     :scale: 50%
     :align: center
 
-In full task list go to all tasks => Molecular Replacement => Molrep
+In full task list go to all tasks => Molecular Replacement => MR solvers => Molrep
 
 **It's better to phase the bigger domain first**. But in our case all 3 domains are approximately the same size, so we will start by choosing **[0010-01] pdb_0002-01_af_struct_cluster_0 /model/protein/** in **Model ensemble** section of Molrep input table as shown below
 
@@ -99,7 +99,7 @@ Run Molrep task
 
 5. After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose **[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/** in the **Model ensemble** section.
 
-6. Run third Molrep task with **[0010-02] pdb_0002-01_af_struct_cluster_2 /model/protein/** in the **Model ensemble** section.
+6. Run third Molrep task with **[0010-03] pdb_0002-01_af_struct_cluster_2 /model/protein/** in the **Model ensemble** section.
 
 You should have a branch with 3 Molrep jobs as a result as shown below
 

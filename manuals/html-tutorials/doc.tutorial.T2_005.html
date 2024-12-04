@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -303,15 +304,15 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="mr-with-predicted-model">
-<h1 id="doc-tutorial-t2-005--page-root"><span class="section-number">6. </span>MR with predicted model<a class="headerlink" href="#doc-tutorial-t2-005--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-tutorial-t2-005--page-root"><span class="section-number">6. </span>MR with predicted model<a class="headerlink" href="#doc-tutorial-t2-005--page-root" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial, we will show you how to use predicted models as a search model for Molecular Replacement (MR), and how to develop a project tree in case the automatic workflow run was not successful on Chicken CNTN4 FN1-FN3 domains with T751A, V752A, Y781A, E786A mutations (<a class="reference external" href="https://www.rcsb.org/structure/7MRQ" rel="noopener noreferrer" target="_blank">PDB ID 7MRQ</a>) example.</p>
 <p><a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RoseTTAFold</a> predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR).</p>
 <p>This tutorial comes with an already failed workflow branch, which will be used as a seed for further work.</p>
 <p>Structure prediction task generated model using OpenFold implementation of AlphaFold with a decent level of confidence.</p>
 <p>Let’s look at this closely.</p>
 <ol class="arabic simple">
-<li><p>Double-click on <strong>Structure Prediction task [0002]</strong>. In the task report you can find:</p></li>
+<li>Double-click on <strong>Structure Prediction task [0002]</strong>. In the task report you can find:</li>
 </ol>
 <p><strong>Predicted Aligned Error matrix:</strong></p>
 <img alt="_images/1_ptm_PAE.png" src="_images/1_ptm_PAE.png"/>
@@ -320,8 +321,7 @@
 <img alt="_images/1_ptm_plddt.png" src="_images/1_ptm_plddt.png"/>
 <p>pLDDT scores are estimate of confidence on a scale from 0 - 100. Although pLDDT is stored in the B-factor fields of the mmCIF and PDB files but unlike a B-factor, higher pLDDT is better. This misguides MR programs regarding the regions with low or high reliability, and, therefore, the <strong>scores must be recalculated as B-factors</strong>. The good news is that in CCP4 Cloud, this recalculation is <strong>done automatically</strong></p>
 <div class="toggle-header docutils container">
-<p><strong>pLDDT</strong></p>
-</div>
+<strong>pLDDT</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p>Regions with pLDDT &gt; 90 are expected to be modelled to high accuracy. These should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
@@ -335,47 +335,47 @@ Unphysical bond lengths and clashes do not usually appear in confident regions. 
 <p><em>Information regarding pLDDT and PAE was taken from</em> <a class="reference external" href="https://alphafold.ebi.ac.uk/" rel="noopener noreferrer" target="_blank">https://alphafold.ebi.ac.uk/</a></p>
 <p><strong>For successful Molecular Replacement with the predicted model as the next step we need to identify domains or rigid units:</strong></p>
 <ol class="arabic simple" start="2">
-<li><p>Let’s have a look at the model with UglyMol.</p></li>
+<li>Let’s have a look at the model with UglyMol.</li>
 </ol>
 <a class="reference internal image-reference" href="_images/T2_005_1.png"><img alt="_images/T2_005_1.png" class="align-center" src="_images/T2_005_1.png" style="width: 1096.0px; height: 848.0px;"/></a>
 <p>Here we can distinguish <strong>3 domains in the model</strong>.</p>
 <a class="reference internal image-reference" href="_images/T2_005_2.png"><img alt="_images/T2_005_2.png" class="align-center" src="_images/T2_005_2.png" style="width: 1683.0px; height: 971.0px;"/></a>
 <p>Splitting models into domains can make the placement of models through MR easier. <strong>So next logical step will be to slice the model into 3 domains with</strong> <a class="reference external" href="../html-taskref/doc.task.Slice.html" rel="noopener noreferrer" target="_blank">Slice</a> <strong>task</strong>.</p>
 <ol class="arabic simple" start="3">
-<li><p>Since Slice task was created in workflow, we can <strong>copy</strong> existing Slice task and change <strong>Number of splits</strong> to <strong>3</strong> and <strong>pLDDT threshold</strong> to <strong>85</strong> as shown below.</p></li>
+<li>Since Slice task was created in workflow, we can <strong>copy</strong> existing Slice task and change <strong>Number of splits</strong> to <strong>3</strong> and <strong>pLDDT threshold</strong> to <strong>85</strong> as shown below.</li>
 </ol>
 <a class="reference internal image-reference" href="_images/T2_005_3.png"><img alt="_images/T2_005_3.png" class="align-center" src="_images/T2_005_3.png" style="width: 877.8px; height: 388.5px;"/></a>
 <p>Run the task with <strong>Keep auto</strong> mode activated as shown above. By doing so you can <strong>continue workflow</strong> (WF) from the Slice task. That will result in branching out the working tree on the failed WF branch and the <strong>new WF branch with the model sliced on 3 domains</strong>. Domains will be separately phased by <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a>.</p>
 <ol class="arabic simple" start="4">
-<li><p>Alongside WF we can branch the working tree even more and try solving our structure with <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a>.</p></li>
+<li>Alongside WF we can branch the working tree even more and try solving our structure with <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a>.</li>
 </ol>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We will have to phase each domain separately.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">We will have to phase each domain separately.</p>
 </div>
 <p>To add Molrep task click on Slice task, then press add new task =&gt; and then in the bottom left corner Switch to full list
 for more tasks as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_4.png"><img alt="_images/T2_005_4.png" class="align-center" src="_images/T2_005_4.png" style="width: 1110.0px; height: 717.0px;"/></a>
-<p>In full task list go to all tasks =&gt; Molecular Replacement =&gt; Molrep</p>
+<p>In full task list go to all tasks =&gt; Molecular Replacement =&gt; MR solvers =&gt; Molrep</p>
 <p><strong>It’s better to phase the bigger domain first</strong>. But in our case all 3 domains are approximately the same size, so we will start by choosing <strong>[0010-01] pdb_0002-01_af_struct_cluster_0 /model/protein/</strong> in <strong>Model ensemble</strong> section of Molrep input table as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_5.png"><img alt="_images/T2_005_5.png" class="align-center" src="_images/T2_005_5.png" style="width: 926.0px; height: 717.0px;"/></a>
 <p>Run Molrep task</p>
 <ol class="arabic simple" start="5">
-<li><p>After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose <strong>[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</p></li>
-<li><p>Run third Molrep task with <strong>[0010-02] pdb_0002-01_af_struct_cluster_2 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</p></li>
+<li>After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose <strong>[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</li>
+<li>Run third Molrep task with <strong>[0010-03] pdb_0002-01_af_struct_cluster_2 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</li>
 </ol>
 <p>You should have a branch with 3 Molrep jobs as a result as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_6.png"><img alt="_images/T2_005_6.png" class="align-center" src="_images/T2_005_6.png" style="width: 1075.0px; height: 734.0px;"/></a>
 <p>Predicted models usually have very high sequence similarity with the target structure. Nevertheless, structure rebuilding with <a class="reference external" href="../html-taskref/doc.task.Modelcraft.html" rel="noopener noreferrer" target="_blank">Modelcraft</a>, <a class="reference external" href="../html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4 Build</a>, <a class="reference external" href="../html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a> or <a class="reference external" href="../html-taskref/doc.task.ArpWArp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> is usually required after phasing because low confidence parts of the model were removed at model preparation stage (equivalent to high B-factors).</p>
 <ol class="arabic simple" start="7">
-<li><p>Next step is start Modelcraft: add new job =&gt; All tasks =&gt; Refinement and Model Building =&gt; Automatic Model Building with ModelCraft.</p></li>
+<li>Next step is start Modelcraft: add new job =&gt; All tasks =&gt; Refinement and Model Building =&gt; Automatic Model Building with ModelCraft.</li>
 </ol>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can watch in real-time how Modelcraft builds model by clicking on <strong>Build in progress</strong> button</p>
+<p class="first admonition-title">Note</p>
+<p class="last">You can watch in real-time how Modelcraft builds model by clicking on <strong>Build in progress</strong> button</p>
 </div>
 <ol class="arabic simple" start="8">
-<li><p>Once Modelcraft is finished you may want to remove water at first. To remove water go to All Tasks =&gt; Toolbox =&gt; <strong>Coordinate Utilities</strong></p></li>
+<li>Once Modelcraft is finished you may want to remove water at first. To remove water go to All Tasks =&gt; Toolbox =&gt; <strong>Coordinate Utilities</strong></li>
 </ol>
 <p>Select <strong>Remove waters</strong> in <strong>Solvent and ligands</strong> section as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_7.png"><img alt="_images/T2_005_7.png" class="align-center" src="_images/T2_005_7.png" style="width: 769.0px; height: 492.0px;"/></a>
@@ -385,7 +385,7 @@ for more tasks as shown below</p>
 <p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_001.%20Simple%20Refinement.ccp4cloud" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 1: Simple Refinement</a></p>
 <p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_002.%20Twin%20Refinement" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 2: Twin Refinement</a></p>
 <p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&amp;%20Refinement.ccp4cloud" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement</a></p>
-</section>
+
 
 
           </article>
@@ -406,7 +406,7 @@ for more tasks as shown below</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
               </div>
             </a>
           
@@ -416,7 +416,7 @@ for more tasks as shown below</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -430,7 +430,7 @@ for more tasks as shown below</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

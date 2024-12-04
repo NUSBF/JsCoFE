@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -104,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -261,7 +262,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-004--page-root" class="md-nav__link">12. Paired refinement with PAIREF in CCP4Cloud</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -325,7 +326,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">"Contents"</label>
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-tutorial-t4-004--page-root" class="md-nav__link">12. Paired refinement with PAIREF in CCP4Cloud</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -346,8 +347,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="paired-refinement-with-pairef-in-ccp4cloud">
-<h1 id="doc-tutorial-t4-004--page-root"><span class="section-number">12. </span>Paired refinement with PAIREF in CCP4Cloud<a class="headerlink" href="#doc-tutorial-t4-004--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-tutorial-t4-004--page-root"><span class="section-number">12. </span>Paired refinement with PAIREF in CCP4Cloud<a class="headerlink" href="#doc-tutorial-t4-004--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Written by: Martin Malý</p>
 <p>In this tutorial, we submit a paired refinement job using the <em>PAIREF</em> program in CCP4Cloud. The paired refinement protocol investigates the impact of high-resolution data on the structure model quality.</p>
 <p>We will use a data set from human glycosylated natural killer cell inhibitory receptor (NKR-P1), PDB entry
@@ -355,15 +356,15 @@
 <p>The structure of hNKR-P1-glyco (5MGR) was originally refined at 1.8 Å resolution - this high-resolution cutoff was determined using conventional criteria on diffraction data quality. Nevertheless, the diffraction data are processed up to 1.5 Å resolution. The structure and data are imported in this project. Thus, we will inspect the impact of the reflection beyond this high-resolution cutoff (from 1.8 Å to 1.5 Å) on the model quality. We will add three high-resolution shells step-by-step: 1.8-1.7 Å, 1.7-1.6 Å and 1.6-1.5 Å.</p>
 <p>Right click on the last REFMAC5 job in the project and select ‘Add new job -&gt; All tasks -&gt; Refinement and Model Building -&gt; Paired refinement with PAIREF’. In the new window, we need to specify:</p>
 <ul class="simple">
-<li><p>How we want to add high-resolution shells - put 1.8,1.7,1.6,1.5 to <strong>Check given high-resolution shells</strong>.</p></li>
-<li><p>Leave the default value in <strong>Start with 0 refinement cycles</strong>.</p></li>
-<li><p>Put <strong>Make 10 refinement cycles on every iteration</strong>, that is enough for this particular data set.</p></li>
-<li><p>In advance, put <strong>Overall data-geometry weight Fixed value 0.5</strong> - <em>from prior knowledge for this particular data set</em>.</p></li>
+<li>How we want to add high-resolution shells - put 1.8,1.7,1.6,1.5 to <strong>Check given high-resolution shells</strong>.</li>
+<li>Leave the default value in <strong>Start with 0 refinement cycles</strong>.</li>
+<li>Put <strong>Make 10 refinement cycles on every iteration</strong>, that is enough for this particular data set.</li>
+<li>In advance, put <strong>Overall data-geometry weight Fixed value 0.5</strong> - <em>from prior knowledge for this particular data set</em>.</li>
 </ul>
 <img alt="_images/pairef_ccp4cloud_window.png" class="align-center" src="_images/pairef_ccp4cloud_window.png"/>
 <p>Now we are ready - press Run.</p>
-<section id="results">
-<h2 id="results"><span class="section-number">12.1. </span>Results<a class="headerlink" href="#results" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="results"><span class="section-number">12.1. </span>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
 <p>Go to <strong>Output</strong> -&gt; <strong>Pairef report</strong> to see the results. They should be very similar to the ones presented here but can slightly differ because of different versions of the software.</p>
 <p><em>PAIREF</em> refined the input structure model step-by-step using different high-resolution cutoffs. Firstly, go to the very bottom of the report to the section <strong>Statistics vs. cycle</strong> to check whether all the refinement runs converged. The R-values have to be stabilised in the last few refinement cycles. If not, the results would not be meaningful and paired refinement would need to be run using more refinement cycles. In this case, we can conclude that all the refinements have converged.</p>
 <p>At the top of the report, an automatic algorithm suggests cutting data at 1.5 Å resolution - which is quite a difference in comparison with the previous choice at 1.8 Å resolution. Let’s check the following sections to understand the reasons for this decision.</p>
@@ -390,23 +391,23 @@
 </pre></div>
 </div>
 <p>If <em>PAIREF</em> did useful work for you, please cite us: M. Maly, K. Diederichs, J. Dohnalek, P. Kolenko (2020) <em>IUCrJ</em> <strong>7</strong>:681-692, <a class="reference external" href="https://doi.org/10.1107/S2052252520005916" rel="noopener noreferrer" target="_blank">DOI: 10.1107/S2052252520005916</a></p>
-</section>
-<section id="data">
-<h2 id="data"><span class="section-number">12.2. </span>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="data"><span class="section-number">12.2. </span>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <p>You can download the used data using the following link: <a class="reference external" href="https://pairef.fjfi.cvut.cz/docs/PAIREF_tutorial_hnkrp1glyco.zip" rel="noopener noreferrer" target="_blank">https://pairef.fjfi.cvut.cz/docs/PAIREF_tutorial_hnkrp1glyco.zip</a></p>
 <p>It is also possible to run <em>PAIREF</em> in CCP4i2, using a standalone <em>PAIREF</em> graphical interface or in the command line. The job described here could be executed using the following command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">ccp4-python</span> <span class="pre">-m</span> <span class="pre">pairef</span> <span class="pre">--XYZIN</span> <span class="pre">NKRP1_1-80A_start.pdb</span> <span class="pre">--HKLIN</span> <span class="pre">XDS_ASCII_1_50A.mtz</span> <span class="pre">-u</span> <span class="pre">XDS_ASCII.HKL</span> <span class="pre">-i</span> <span class="pre">1.8</span> <span class="pre">-r</span> <span class="pre">1.7,1.6,1.5</span> <span class="pre">--ncyc</span> <span class="pre">10</span> <span class="pre">-w</span> <span class="pre">0.5</span> <span class="pre">-p</span> <span class="pre">hnkrp1glyco</span></code></p>
 <p>More information about <em>PAIREF</em> settings and possibilities are explained in the <a class="reference external" href="https://pairef.fjfi.cvut.cz/docs/" rel="noopener noreferrer" target="_blank">documentation</a>.</p>
-</section>
-<section id="further-reading">
-<h2 id="further-reading"><span class="section-number">12.3. </span>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="further-reading"><span class="section-number">12.3. </span>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Linking crystallographic model and data quality. P.A. Karplus &amp; K. Diederichs (2012) Science 336:1030–3</p></li>
-<li><p>Assessing and maximizing data quality in macromolecular crystallography. P.A. Karplus &amp; K. Diederichs (2015) Cur. Op. in Str. Biology 34:60–68</p></li>
-<li><p>Better models by discarding data? P.A. Karplus &amp; K. Diederichs (2013) Acta Cryst. D59:1215–1222</p></li>
+<li>Linking crystallographic model and data quality. P.A. Karplus &amp; K. Diederichs (2012) Science 336:1030–3</li>
+<li>Assessing and maximizing data quality in macromolecular crystallography. P.A. Karplus &amp; K. Diederichs (2015) Cur. Op. in Str. Biology 34:60–68</li>
+<li>Better models by discarding data? P.A. Karplus &amp; K. Diederichs (2013) Acta Cryst. D59:1215–1222</li>
 </ul>
-</section>
-</section>
+
+
 
 
           </article>
@@ -427,7 +428,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">11. </span>Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">11. </span>Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement </span>
               </div>
             </a>
           
@@ -437,7 +438,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">13. </span>Using PISA in CCP4 Cloud </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">13. </span>Using PISA in CCP4 Cloud </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -451,7 +452,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
