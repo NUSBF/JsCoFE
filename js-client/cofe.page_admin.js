@@ -400,8 +400,8 @@ AdminPage.prototype.refresh = function()  {
 AdminPage.prototype.calcUserPageSize = function ( height )  {
   let rowHeight = 29.1953;
   if (this.userTable)
-    rowHeight = this.userTable.getRowHeight(1);
-  return  Math.floor ( (height-318)/rowHeight );
+    rowHeight = this.userTable.getRowHeight();
+  return  Math.floor ( (height-318*rowHeight/29.1953)/rowHeight );
 }
 
 AdminPage.prototype.onResize = function ( width,height )  {

@@ -244,11 +244,11 @@ Table.prototype.getTableData = function()  {
 }
 
 Table.prototype.getRowHeight = function ( rowNo )  {
-  if (rowNo<this.element.rows.length)  {
-    let rowHeight = $(this.element.rows[1]).outerHeight();
-    if (rowHeight>6)
-      return rowHeight;
-  }
+  let rowHeight = 0;
+  for (let i=rowNo;i<this.element.rows.length;i++)
+    rowHeight += $(this.element.rows[1]).outerHeight();
+  if (rowHeight>0)
+    return rowHeight/(this.element.rows.length-rowNo);
   return  29.1953;
 }
 
@@ -1027,7 +1027,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 TablePages.prototype.setPageSize = function ( page_size )  {
   let psize = Math.max ( 1,page_size );
   if (psize!=this.tdesc.page_size)  {
-    console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
+    // console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
     // console.log ( ' >>>> page_size=' + page_size )
     let showRow   = Math.max ( this.startRow,this.table.selectedRow );
     let showIndex = this.startIndex + showRow - this.startRow;
@@ -1061,9 +1061,9 @@ TablePages.prototype.getSelectedRowData = function()  {
   return this.table.getSelectedRowData();
 }
 
-TablePages.prototype.getRowHeight = function ( rowNo )  {
+TablePages.prototype.getRowHeight = function()  {
   if (this.table)
-    return  this.table.getRowHeight ( rowNo );
+    return  this.table.getRowHeight ( this.startRow );
   return  29.1953;
 }
 
