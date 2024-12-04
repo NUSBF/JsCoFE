@@ -943,7 +943,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
     this.tdata = tdesc.rows;
   else  {
     // Apply filter to table data
-    const escapedPattern = this.filter.replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
+    const escapedPattern = this.filter.toUpperCase().replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
     // Replace * with .* (zero or more characters) and ? with . (exactly one character)
     const regexPattern = "^" + escapedPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
     // Create a regex and test the string
@@ -952,14 +952,42 @@ TablePages.prototype.makeTable = function ( tdesc )  {
     for (let i=0;i<tdesc.rows.length;i++)  {
       let match = false;
       let row   = [];
-      for (let j=0;j<tdesc.rows[i].length;j++)
-        if (regex.test(tdesc.rows[i][j]))  {
+      for (let j=0;j<tdesc.columns.length-this.startCol;j++)  {
+        let ucline  = tdesc.rows[i][j];
+        let seltext = '';
+        let multivalue = Array.isArray(ucline);
+        if (multivalue)
+          ucline = ucline[0];
+        ucline = ucline.toUpperCase();
+        if (regex.test(ucline))  {
           match = true;
-          row.push ( '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span>' );
-        } else  
-          row.push ( tdesc.rows[i][j] );
-        if (match)
-          this.tdata.push ( row );
+          if (multivalue)
+            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j][0] + '</span';
+          else
+            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span';
+        } else  {
+          // first try whole word match
+          let uclist = ucline.split(' ');
+          let rclist = [];
+          if (multivalue)  rclist = tdesc.rows[i][j][0].split(' ');
+                     else  rclist = tdesc.rows[i][j].split(' ');
+          for (let k=0;k<uclist.length;k++)
+            if (regex.test(uclist[k]))  {
+              match = true;
+              rclist[k] = '<span style="color:#D2042D;">' + rclist[k] + '</span>'
+            }
+          seltext = rclist.join(' ');
+        }
+        if (multivalue)  {
+          let st = [seltext]; 
+          for (let k=1;k<tdesc.rows[i][j].length;k++)
+            st.push ( tdesc.rows[i][j][k] );
+          row.push ( st );
+        } else
+          row.push ( seltext );
+      }
+      if (match)
+        this.tdata.push ( row );
     }
   }
 
@@ -1063,8 +1091,13 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
 
   grid.setLabel ( 'Filter:',0,0,1,1 );
   let filter    = grid.setInputText('',0,1,1,1).setWidth('160px')
-                      .setStyle('text','','','Search target')
-                      .setWidth('220px');
+                      .setWidth('220px')
+                      .setStyle('text','','',
+                        'Search template, case-insensitive, full-word match. For partial ' +
+                        'matches, use <span style="font-family:courier">*</span> and ' +
+                        '<span style="font-family:courier">?</span> wildcards, e.g., ' +
+                        '<span style="font-family:courier">*name??</span>.'
+                      );
   let find_btn  = grid.setButton ( 'Find' ,image_path('find' ),0,2,1,1 );
   let close_btn = grid.setButton ( 'Close',image_path('close'),0,3,1,1 );
   grid.setVerticalAlignment ( 0,0,'middle' );
@@ -1097,10 +1130,10 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
     buttons : {}
   });
 
-  this.setShade ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
-                  //  '0px 0px 16px 8px rgba(212,212,212,1.0) inset',
-                  'none',
-                  __active_color_mode );
+  // this.setShade ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
+  //                 //  '0px 0px 16px 8px rgba(212,212,212,1.0) inset',
+  //                 'none',
+  //                 __active_color_mode );
 
   // this.setBackgroundColor ( '#BCC6CC' );
   this.setBackgroundColor ( '#F8F8F8' );
