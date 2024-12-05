@@ -70,6 +70,9 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // console.log ( ' >>>> p1 ' + window.innerHeight );
   // console.log ( ' >>>> p1 ' + this.grid.height_px() );
   // this.grid.setHeight ( 'v100%' );
+  $(this.grid.element).css ({ 
+    'height' : 'calc(100vh - 32px)'
+  });
 
   this.getUserRation();
 
