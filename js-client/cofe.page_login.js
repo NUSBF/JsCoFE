@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.07.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,7 +84,7 @@ function LoginPage ( sceneId )  {
   this.grid.setCellSize            ( '','20px',mrow++,0,1,3 );
   this.grid.setCellSize            ( '','3px', mrow++,0,1,3 );
 
-  this.makeLogoPanel               ( mrow,0,3 );
+  // this.makeLogoPanel               ( mrow,0,3 );
 
   if (!__mobile_device)  {
     //  Fetch and display random tip of the day
