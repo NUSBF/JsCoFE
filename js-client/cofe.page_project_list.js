@@ -38,17 +38,17 @@ function ProjectListPage ( sceneId )  {
   BasePage.call ( this,sceneId,'-full','ProjectListPage' );
 
   // set scrollbars 
-  $(this.grid.element).css ({ 
-    'height' : 'calc(100vh - 32px)'
-    // 'overflow-x' : 'hidden',
-    // 'overflow-y' : 'auto'
-  });
+  // $(this.grid.element).css ({ 
+  //   'height' : 'calc(100vh - 32px)'
+  //   // 'overflow-x' : 'hidden',
+  //   // 'overflow-y' : 'auto'
+  // });
   $(this.element).css({ 
-    'width'      : '100%',
-    // 'height'     : '100vh',
-    // 'padding-bottom' : '32px',
-    // 'scrollbar-padding-bottom' : '34px',
-    'height'     : 'calc(100vh - 32px)',
+    // 'width'      : '100%',
+    // // 'height'     : '100vh',
+    // // 'padding-bottom' : '32px',
+    // // 'scrollbar-padding-bottom' : '34px',
+    // 'height'     : 'calc(100vh - 32px)',
     'overflow-x' : 'auto',
     'overflow-y' : 'auto'
   });  
