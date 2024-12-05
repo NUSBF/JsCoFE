@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,7 +61,7 @@ function AccountPage ( sceneId )  {
   this.grid.setCellSize          ( '50%','',1,1,1,1 );
   this.grid.setCellSize          ( '25%','',1,2,1,1 );
 //  this.grid.setCellSize          ( '','80pt',2,1,1,3 );
-  this.makeLogoPanel             ( 2,0,3 );
+  // this.makeLogoPanel             ();
 
 //  let response = {};  // will keep user data
   let userData = {};  // will keep user data

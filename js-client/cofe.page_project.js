@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -297,7 +297,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
 
   this.setJobTree ( this.makeJobTree() );
 
-  this.makeLogoPanel ( 2,0,3 );
+  // this.makeLogoPanel ( 2,0,3 );
 
   for (let i=0;i<this.headerPanel.getNCols();i++)
     if (i==3)  this.headerPanel.setCellSize ( '90%' ,'',0,i );

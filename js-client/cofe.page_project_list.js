@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.12.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1744,7 +1744,7 @@ function ProjectListPage ( sceneId )  {
 //  panel.setVerticalAlignment ( 1,0,'top' );
   // panel.setVerticalAlignment ( 1,1,'middle' );
 
-  this.makeLogoPanel ( 2,0,3 );
+  // this.makeLogoPanel ( 2,0,3 );
 
   let row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );

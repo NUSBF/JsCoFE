@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    03.12.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -78,7 +78,7 @@ function AdminPage ( sceneId )  {
   this.grid.setWidget   ( this.tabs    ,1,1,1,1 );
   this.grid.setCellSize ( '1px','auto' ,1,2,1,1 );
 
-  this.makeLogoPanel ( 2,0,3 );
+  // this.makeLogoPanel ( 2,0,3 );
 
   // this.makeAnalyticsTab ( null );
 
