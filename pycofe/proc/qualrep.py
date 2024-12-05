@@ -649,7 +649,7 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
         if refmacXML:
             if os.path.exists(refmacXML):
                 refmacResults = RefmacXMLLog(refmacXML)
-        put_Tab1_section(body, revision, meta, refmacResults)
+        put_Tab1_section ( body, revision, meta, refmacResults )
 
         if edmeta:
             for key in edmeta:
