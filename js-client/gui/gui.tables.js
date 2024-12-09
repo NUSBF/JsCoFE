@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    04.12.24   <--  Date of Last Modification.
+ *    08.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -229,6 +229,22 @@ Table.prototype.getSelectedRowData = function()  {
       rowData.push ( cells[j].innerHTML );
   }
   return rowData;
+}
+
+Table.prototype.selectByRowData = function ( rowData,startCol )  {
+  let selRow = -1;
+  if (rowData)  {
+    for (let i=0;(i<this.element.rows.length) && (selRow<0);i++)  {
+      let cells = this.element.rows[i].cells;
+      let match = toUpperCase;
+      for (let j=0;(j<cells.length) && match;j++)
+        match = (cells[j].innerHTML==rowData[j]);
+      if (match)
+        selRow = i;
+    }
+    if (selRow>=0)
+      this.selectRow ( selRow,startCol );
+  }
 }
 
 Table.prototype.getTableData = function()  {
@@ -818,10 +834,10 @@ TablePages.prototype._fill_table = function ( startIndex )  {
   let self = this;
 
   this.table.addSignalHandler ( 'click',function(target){
-    const row = target.parentElement; // The <tr> containing the clicked <td>
+    const row = target.closest('tr');
     if (row.rowIndex>=self.startRow)  {
       if ('onclick' in self.tdesc)  {
-        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>) 
         self.table.selectRow ( -1,1 );  // deselect
         self.table.selectRow ( row.rowIndex,1 );
         self.tdesc.onclick   ( self.tdata[uindex-1] );
@@ -937,6 +953,12 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //   onpage      : function(pageNo){}
 // }
 
+  let selRowData = null;
+  if (this.table)  {
+    this.table.getSelectedRowData();
+    this.table.selectedRow = -1;
+  }
+
   this._form_table ( tdesc );
 
   if (!this.filter)
@@ -946,9 +968,8 @@ TablePages.prototype.makeTable = function ( tdesc )  {
     const escapedPattern = this.filter.toUpperCase().replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
     // Replace * with .* (zero or more characters) and ? with . (exactly one character)
     const regexPattern = "^" + escapedPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
-    // Create a regex and test the string
-    const regex = new RegExp(regexPattern);
-    this.tdata = [];
+    const regex    = new RegExp(regexPattern);  // regex for testing strings
+    this.tdata     = [];
     for (let i=0;i<tdesc.rows.length;i++)  {
       let match = false;
       let row   = [];
@@ -962,9 +983,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         if (regex.test(ucline))  {
           match = true;
           if (multivalue)
-            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j][0] + '</span';
+            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j][0] + '</span>';
           else
-            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span';
+            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span>';
         } else  {
           // first try whole word match
           let uclist = ucline.split(' ');
@@ -973,7 +994,7 @@ TablePages.prototype.makeTable = function ( tdesc )  {
                      else  rclist = tdesc.rows[i][j].split(' ');
           for (let k=0;k<uclist.length;k++)
             if (regex.test(uclist[k]))  {
-              match = true;
+              match     = true;
               rclist[k] = '<span style="color:#D2042D;">' + rclist[k] + '</span>'
             }
           seltext = rclist.join(' ');
@@ -986,9 +1007,15 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         } else
           row.push ( seltext );
       }
-      if (match)
+      if (match)  {
+        // if (i==this.table.selectedRow+this.startRow)
+        //   selRow = this.tdata.length+this.startRow;
+        for (let j=row.length;j<tdesc.rows[i].length;j++)
+          row.push ( tdesc.rows[i][j] );
         this.tdata.push ( row );
+      }
     }
+    this.table.selectedRow = -1;
   }
 
   if (this.sortCol>=this.startCol)
@@ -996,7 +1023,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 
   this.crPage = 1;
   this._fill_table ( 0 );
-  
+
+  this.table.selectByRowData ( selRowData,this.startCol );
+
   if (this.pageSize<this.tdata.length)  {    
     // console.log ( ' >>>>> ' + this.pageSize + ' : ' + this.tdata.length)
     let self = this;
@@ -1059,6 +1088,10 @@ TablePages.prototype.selectRow = function ( rowNo,start_col )  {
 
 TablePages.prototype.getSelectedRowData = function()  {
   return this.table.getSelectedRowData();
+}
+
+TablePages.prototype.selectByRowData = function ( rowData,startCol )  {
+  return this.table.selectByRowData ( rowData,startCol );
 }
 
 TablePages.prototype.getRowHeight = function()  {
