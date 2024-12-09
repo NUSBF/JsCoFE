@@ -85,11 +85,16 @@ function ProjectListPage ( sceneId )  {
 
   let tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
 
+  function getProjectName ( displayName )  {
+    return strip_html_tags ( displayName.split(':</b>').pop() );
+  }
+
   function currentProjectName()  {
     if (__current_folder.nprojects>0)  {
       let rowData = self.projectTable.getSelectedRowData();
       if (rowData)
-        return rowData[1].split(':</b>').pop().replace(/<[^>]*>/g,'');
+        return getProjectName ( rowData[1] );
+        // return rowData[1].split(':</b>').pop().replace(/<[^>]*>/g,'');
           // return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
     }
     return '';
@@ -746,7 +751,7 @@ function ProjectListPage ( sceneId )  {
         let pte = self.projectTable.table.element; 
         for (let i=1;(i<pte.rows.length) && (selRow<0);i++)  {
           let pname = pte.rows[i].cells[1].innerHTML.toString();
-          if (pname.split(':</b>').pop()==projectList.current)  {
+          if (getProjectName(pname)==projectList.current)  {
             selRow = i;
             if (!tightScreen)  {
               if (pname.indexOf('[')>=0)  del_btn.setText ( 'Unjoin' );
@@ -892,26 +897,27 @@ function ProjectListPage ( sceneId )  {
       page_size   : self.calcPageSize(),  // 0 for no pages
       start_page  : 1,
       onclick     : function(rowData){
-                      projectList.current = rowData[0].split(':</b>').pop();
+                      projectList.current = getProjectName ( rowData[0] );
                       let pDesc = rowData[rowData.length-1];
                       if (('owner' in pDesc) && 
                           (Object.keys(pDesc.share).length>0) &&
                           (pDesc.owner.login!=__login_id))
                             del_btn.setText ( 'Unjoin' );
                       else  del_btn.setText ( 'Delete' );
-                      if (selRow<0)
-                        enableToolbarButtons();
+                      // selRow = self.projectTable.table.selectedRow;
+                      // if (selRow<0)
+                      enableToolbarButtons();
                     },
       ondblclick  : function ( dataRow,callback_func){
                       openProject();
                     },
       showonstart : function(rowData){
-                      return (projectList.current==rowData[0].split(':</b>').pop());
+                      return (projectList.current==getProjectName(rowData[0]));
                     },
       onsort      : function(tdata)  {
                       let showIndex = -1;
                       for (let i=0;(i<tdata.length) && (showIndex<0);i++)
-                        if (projectList.current==tdata[i][0].split(':</b>').pop())
+                        if (projectList.current==getProjectName(tdata[i][0]))
                           showIndex = i;
                       return showIndex;
                     },
@@ -1030,7 +1036,7 @@ function ProjectListPage ( sceneId )  {
 
     if ((selectIndex<0) && (tdesc.rows.length>0))  {
       selectIndex = 0;
-      projectList.current = tdesc.rows[0][0].split(':</b>').pop();
+      projectList.current = getProjectName ( tdesc.rows[0][0] );
     }
 
     //  ===== Put number of projects in folder metadata
@@ -1718,7 +1724,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  search_btn.setTooltip ( 'Find projects using a search template' );
+  search_btn .setTooltip ( 'Find projects using a search template' );
 
   open_btn   .setWidth ( btn_width[0] ).setHeight ( btn_height );
   add_btn    .setWidth ( btn_width[1] ).setHeight ( btn_height );

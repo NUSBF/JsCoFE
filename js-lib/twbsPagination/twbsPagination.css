@@ -42,3 +42,15 @@
 .pagination li a:hover {
   background-color: #f0f0f0;
 }
+
+.pagination-button {
+  display         : block;
+  padding         : 8px 12px;
+  margin-top      : 16px;
+  text-decoration : none;
+  color           : #2280e4 !important;
+  background-color: #ffffff;
+  border          : 1px solid #ccc;
+  border-radius   : 4px;
+  font-size       : 14px !important;
+}
