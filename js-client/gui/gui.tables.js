@@ -835,31 +835,34 @@ TablePages.prototype._fill_table = function ( startIndex )  {
         self.table.selectRow ( row.rowIndex,1 );
         self.tdesc.onclick   ( self.tdata[uindex-1] );
       }
-    } else if ((target.tagName==="TH") && (self.sortCol>=0)) {
-      let colNo = 0;  // find header column which was clicked
-      for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
-        let prefix = self.header_list[i].split('<')[0].split('&')[0];
-        if (target.innerHTML.startsWith(prefix))
-          colNo = i;
-      }
-      if (colNo>=self.startCol)  {
-        if (colNo==self.sortCol)
-          self.sort_list[colNo] = !self.sort_list[colNo];
-        self.sortCol = colNo;
-        self.sortData();
-        if ('onsort' in self.tdesc)  {
-          let showRec = self.tdesc.onsort ( self.tdata );
-          if (showRec>=0)  {
-            self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
-            if (self.paginator)
-                  self.paginator.showPage ( self.crPage );
-            else  self._fill_table ( self.startIndex );
-            if ('onpage' in self.tdesc)
-              self.tdesc.onpage ( self.crPage );
+    } else {
+      let th = target.closest('th');
+      if (th && (self.sortCol>=0)) {
+        let colNo = 0;  // find header column which wasElement clicked
+        for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
+          let prefix = self.header_list[i].split('<')[0].split('&')[0];
+          if (th.innerHTML.startsWith(prefix))
+            colNo = i;
+        }
+        if (colNo>=self.startCol)  {
+          if (colNo==self.sortCol)
+            self.sort_list[colNo] = !self.sort_list[colNo];
+          self.sortCol = colNo;
+          self.sortData();
+          if ('onsort' in self.tdesc)  {
+            let showRec = self.tdesc.onsort ( self.tdata );
+            if (showRec>=0)  {
+              self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
+              if (self.paginator)
+                    self.paginator.showPage ( self.crPage );
+              else  self._fill_table ( self.startIndex );
+              if ('onpage' in self.tdesc)
+                self.tdesc.onpage ( self.crPage );
+            } else
+              self._fill_table ( self.startIndex );
           } else
             self._fill_table ( self.startIndex );
-        } else
-          self._fill_table ( self.startIndex );
+        }
       }
     }
   });
@@ -939,7 +942,8 @@ TablePages.prototype._filter_data = function ( tdesc )  {
         let listval = Array.isArray(line);
         if (listval)
           line = line[0];
-        seltext = line.replace ( regex, 
+        console.log ( ' >>>>> j='+ j + ', line=' + line);
+        seltext = line.toString().replace ( regex, 
                   match => `<span style="color:#D2042D;">${match}</span>` );
         if (seltext.length>line.length)
           match = true;

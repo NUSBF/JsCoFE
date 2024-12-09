@@ -205,11 +205,13 @@ function sortObjects ( array, field, ascending=true )  {
       if (valueB.length>0)  valueB = valueB[0];
                       else  valueB = '';
     }
-    const numA      = parseFloat(valueA);
-    const numB      = parseFloat(valueB);  
-    const isNumber1 = !isNaN(valueA) && !isNaN(numA) && valueA.trim() !== '';
-    const isNumber2 = !isNaN(valueB) && !isNaN(numB) && valueB.trim() !== '';
-    if (isNumber1 && isNumber2) {
+    valueA = valueA.toString().trim();
+    valueB = valueB.toString().trim();
+    const numA   = parseFloat(valueA);
+    const numB   = parseFloat(valueB);  
+    const isNum1 = !isNaN(valueA) && !isNaN(numA) && valueA !== '';
+    const isNum2 = !isNaN(valueB) && !isNaN(numB) && valueB !== '';
+    if (isNum1 && isNum2) {
         // Compare as numbers
       if (numA < numB) return ascending ? -1 :  1;
       if (numA > numB) return ascending ?  1 : -1;
