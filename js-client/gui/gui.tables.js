@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    08.12.24   <--  Date of Last Modification.
+ *    09.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -682,14 +682,6 @@ TableSort.prototype.fixHeader = function()  {
     for (let j=0;j<hrow.length;j++)
       $(trow[j].element).outerWidth ( $(hrow[j].element).outerWidth() );
 
-/*
-    let hwidth = [];
-    vat twidth = [];
-    for (let j=0;j<hrow.length;j++)
-
-
-*/
-
   }
 
 }
@@ -730,11 +722,12 @@ function TablePages()  {
   this.tooltip_list = [];
   this.sort_list    = [];
   this.filter       = null;
-  this.startRow     = 0;   // 1 if horizontal headers are there
-  this.startCol     = 0;   // 1 if vertical headers are there
-  this.startIndex   = 0;   // first currently displayed record
-  this.endIndex     = 0;   // last currently displayed record + 1
-  this.sortCol      = 0;   // currently sorted column
+  this.filter_mode  = null; // substring|wildcard
+  this.startRow     = 0;    // 1 if horizontal headers are there
+  this.startCol     = 0;    // 1 if vertical headers are there
+  this.startIndex   = 0;    // first currently displayed record
+  this.endIndex     = 0;    // last currently displayed record + 1
+  this.sortCol      = 0;    // currently sorted column
   this.pageSize     = 20;
   this.crPage       = 1;
   this.style        = null;
@@ -922,6 +915,53 @@ TablePages.prototype._fill_table = function ( startIndex )  {
 }
 
 
+TablePages.prototype._filter_data = function ( tdesc )  {
+  if (!this.filter)  {
+    this.tdata = tdesc.rows;
+  } else  {
+    // Apply filter to table data
+    let regex = null;
+    if (this.filter_mode=='wildcard')  {
+      const escPattern   = this.filter.replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
+      // Replace * with .* (zero or more characters) and ? with . (exactly one character)
+      const regexPattern = "^" + 
+                escPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
+      regex = new RegExp ( regexPattern,'i'  );  // regex for testing strings
+    } else
+      regex = new RegExp ( this.filter, 'gi' );
+    this.tdata  = [];
+    let seltext = null;
+    for (let i=0;i<tdesc.rows.length;i++)  {
+      let match = false;
+      let row   = [];
+      for (let j=0;j<tdesc.columns.length-this.startCol;j++)  {
+        let line    = tdesc.rows[i][j];
+        let listval = Array.isArray(line);
+        if (listval)
+          line = line[0];
+        seltext = line.replace ( regex, 
+                  match => `<span style="color:#D2042D;">${match}</span>` );
+        if (seltext.length>line.length)
+          match = true;
+        if (listval)  {
+          let st = [seltext]; 
+          for (let k=1;k<tdesc.rows[i][j].length;k++)
+            st.push ( tdesc.rows[i][j][k] );
+          row.push ( st );
+        } else
+          row.push ( seltext );
+      }
+      if (match)  {
+        for (let j=row.length;j<tdesc.rows[i].length;j++)
+          row.push ( tdesc.rows[i][j] );
+        this.tdata.push ( row );
+      }
+    }
+    this.table.selectedRow = -1;
+  }
+}
+
+
 TablePages.prototype.makeTable = function ( tdesc )  {
 //
 // tdesc = {
@@ -959,64 +999,8 @@ TablePages.prototype.makeTable = function ( tdesc )  {
     this.table.selectedRow = -1;
   }
 
-  this._form_table ( tdesc );
-
-  if (!this.filter)
-    this.tdata = tdesc.rows;
-  else  {
-    // Apply filter to table data
-    const escapedPattern = this.filter.toUpperCase().replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
-    // Replace * with .* (zero or more characters) and ? with . (exactly one character)
-    const regexPattern = "^" + escapedPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
-    const regex    = new RegExp(regexPattern);  // regex for testing strings
-    this.tdata     = [];
-    for (let i=0;i<tdesc.rows.length;i++)  {
-      let match = false;
-      let row   = [];
-      for (let j=0;j<tdesc.columns.length-this.startCol;j++)  {
-        let ucline  = tdesc.rows[i][j];
-        let seltext = '';
-        let multivalue = Array.isArray(ucline);
-        if (multivalue)
-          ucline = ucline[0];
-        ucline = ucline.toUpperCase();
-        if (regex.test(ucline))  {
-          match = true;
-          if (multivalue)
-            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j][0] + '</span>';
-          else
-            seltext = '<span style="color:#D2042D;">' + tdesc.rows[i][j] + '</span>';
-        } else  {
-          // first try whole word match
-          let uclist = ucline.split(' ');
-          let rclist = [];
-          if (multivalue)  rclist = tdesc.rows[i][j][0].split(' ');
-                     else  rclist = tdesc.rows[i][j].split(' ');
-          for (let k=0;k<uclist.length;k++)
-            if (regex.test(uclist[k]))  {
-              match     = true;
-              rclist[k] = '<span style="color:#D2042D;">' + rclist[k] + '</span>'
-            }
-          seltext = rclist.join(' ');
-        }
-        if (multivalue)  {
-          let st = [seltext]; 
-          for (let k=1;k<tdesc.rows[i][j].length;k++)
-            st.push ( tdesc.rows[i][j][k] );
-          row.push ( st );
-        } else
-          row.push ( seltext );
-      }
-      if (match)  {
-        // if (i==this.table.selectedRow+this.startRow)
-        //   selRow = this.tdata.length+this.startRow;
-        for (let j=row.length;j<tdesc.rows[i].length;j++)
-          row.push ( tdesc.rows[i][j] );
-        this.tdata.push ( row );
-      }
-    }
-    this.table.selectedRow = -1;
-  }
+  this._form_table  ( tdesc );
+  this._filter_data ( tdesc );
 
   if (this.sortCol>=this.startCol)
     this.sortData();
@@ -1041,8 +1025,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         startPage = Math.floor(showIndex/this.pageSize+1);
     }
     this.paginator = new Paginator ( this.tdata.length,this.pageSize,7,startPage,
-      function(pageNo){
-        self.crPage = pageNo;
+      function(pageNo,pageSize){
+        self.crPage   = pageNo;
+        self.pageSize = pageSize;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
     this.setWidget ( this.paginator,1,0,1,1 );
@@ -1066,9 +1051,10 @@ TablePages.prototype.setPageSize = function ( page_size )  {
   }
 }
 
-TablePages.prototype.setFilter = function ( filter )  {
+TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
   if (filter!=this.filter)  {
-    this.filter = filter;
+    this.filter      = filter;
+    this.filter_mode = filter_mode.toLowerCase();
     this.makeTable ( this.tdesc );
   }
 }
@@ -1113,7 +1099,7 @@ TablePages.prototype.setContextMenu = function ( contextmenu_func,cellNo=2 )  {
 // -------------------------------------------------------------------------
 // TableSearchDialog class
 
-function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
+function TableSearchDialog ( title,tablePages,offset_x,offset_y,filter_mode='substring' )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
@@ -1122,28 +1108,39 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
   let grid = new Grid('');
   this.addWidget ( grid );
 
-  grid.setLabel ( 'Filter:',0,0,1,1 );
-  let filter    = grid.setInputText('',0,1,1,1).setWidth('160px')
-                      .setWidth('220px')
-                      .setStyle('text','','',
-                        'Search template, case-insensitive, full-word match. For partial ' +
-                        'matches, use <span style="font-family:courier">*</span> and ' +
-                        '<span style="font-family:courier">?</span> wildcards, e.g., ' +
-                        '<span style="font-family:courier">*name??</span>.'
-                      );
-  let find_btn  = grid.setButton ( 'Find' ,image_path('find' ),0,2,1,1 );
-  let close_btn = grid.setButton ( 'Close',image_path('close'),0,3,1,1 );
-  grid.setVerticalAlignment ( 0,0,'middle' );
-  grid.setVerticalAlignment ( 0,1,'middle' );
-  grid.setVerticalAlignment ( 0,2,'middle' );
-  grid.setVerticalAlignment ( 0,3,'middle' );
+  let tooltip = 'Search template, case-insensitive.';
+  if (filter_mode=='wildcard')
+    tooltip = 'Search template, case-insensitive, full-word match. For partial ' +
+              'matches, use <span style="font-family:courier">*</span> and ' +
+              '<span style="font-family:courier">?</span> wildcards, e.g., ' +
+              '<span style="font-family:courier">*name??</span>.';
+
+  let col = 0;
+  grid.setLabel ( 'Filter:',0,col++,1,1 );
+  let filter  = grid.setInputText('',0,col++,1,1).setWidth('160px')
+                    .setWidth('220px')
+                    .setStyle('text','','',tooltip );
+  let find_btn = null;
+  if (filter_mode=='wildcard')
+    find_btn = grid.setButton ( 'Find' ,image_path('find' ),0,col++,1,1 );
+  let close_btn = grid.setButton ( 'Close',image_path('close'),0,col++,1,1 );
+  for (let i=0;i<col;i++)
+    grid.setVerticalAlignment ( 0,i,'middle' );
 
   let self = this;
-  find_btn.addOnClickListener ( function(){
-    tablePages.setFilter ( filter.getValue() );
-  });
+
+  if (find_btn)  {
+    find_btn.addOnClickListener ( function(){
+      tablePages.setFilter ( filter.getValue(),filter_mode );
+    });
+  } else  {
+    filter.addOnInputListener ( function(){
+      tablePages.setFilter ( filter.getValue(),filter_mode );
+    });
+  }
+
   close_btn.addOnClickListener ( function(){
-    tablePages.setFilter ( '' );
+    tablePages.setFilter ( '',filter_mode );
     $(self.element).dialog ( 'close' );
   });
 
@@ -1152,23 +1149,15 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y )  {
     height    : 90,
     width     : 'auto',
     position  : { my: "left top", at: "left+" + offset_x + " top+" + offset_y, of: window },
-    // maxHeight : 600,
-    // width     : '820px',
     modal     : false,
     closeOnEscape: false,
-    open: function (event,ui) {
+    open      : function ( event,ui ) {
       //hide close button.
       $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
     },
     buttons : {}
   });
 
-  // this.setShade ( '8px 8px 16px 8px rgba(212,212,212,1.0)',
-  //                 //  '0px 0px 16px 8px rgba(212,212,212,1.0) inset',
-  //                 'none',
-  //                 __active_color_mode );
-
-  // this.setBackgroundColor ( '#BCC6CC' );
   this.setBackgroundColor ( '#F8F8F8' );
 
 }

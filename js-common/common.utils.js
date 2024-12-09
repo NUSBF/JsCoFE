@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.12.24   <--  Date of Last Modification.
+ *    09.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,6 +112,31 @@ function strip_html_tags ( S )  {
   if (!S) return '';
   return S.toString().replace(/<[^>]*>/g, '');
   //return S.replace(/(<\?[a-z]*(\s[^>]*)?\?(>|$)|<!\[[a-z]*\[|\]\]>|<!DOCTYPE[^>]*?(>|$)|<!--[\s\S]*?(-->|$)|<[a-z?!\/]([a-z0-9_:.])*(\s[^>]*)?(>|$))/gi, '');
+}
+
+function highlightSubstringMatches ( text, substring, color )  {
+  if (!text || !substring) return text; // Return original text if input is invalid  
+  // Create a regex to find all occurrences of the substring, case-insensitive
+  const regex = new RegExp ( substring, 'gi' );
+  // Replace occurrences with a span that adds the color
+  const highlightedText = text.replace ( regex, 
+                    match => `<span style="color: ${color}">${match}</span>` );
+  return highlightedText;
+}
+
+function highlightWildcardMatches ( text, pattern, color )  {
+  if (!text || !pattern) return text;
+  // Escape special regex characters, except for '*' and '?'
+  const escapedPattern = pattern.replace(/[-[\]{}()+.,\\^$|#]/g, '\\$&');
+  // Convert '*' to '.*' and '?' to '.' for regex
+  const regexPattern = escapedPattern
+      .replace(/\*/g, '.*')
+      .replace(/\?/g, '.');
+  // Create a case-insensitive regex
+  const regex = new RegExp(regexPattern, 'gi');
+  // Replace matches with highlighted spans
+  const highlightedText = text.replace(regex, match => `<span style="color: ${color}">${match}</span>`);
+  return highlightedText;
 }
 
 function startsWith ( str,substr )  {
