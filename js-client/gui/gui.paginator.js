@@ -25,9 +25,9 @@ function Paginator ( n_items,n_page,n_visible,n_start,callback_func )  {
 
   let self = this;
 
-  this.paginate = true;
+  this.paginate     = true;
   this.__start_page = n_start;
-  this.base     = new Widget ( 'ul' );
+  this.base         = new Widget ( 'ul' );
   this.addWidget ( this.base,0,0,1,1 );
 
   this.nPages  = Math.floor(n_items/n_page+1);
