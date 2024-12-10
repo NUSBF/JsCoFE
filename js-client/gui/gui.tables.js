@@ -849,10 +849,11 @@ TablePages.prototype._fill_table = function ( startIndex )  {
             self.sort_list[colNo] = !self.sort_list[colNo];
           self.sortCol = colNo;
           self.sortData();
-          if ('onsort' in self.tdesc)  {
+          if (('onsort' in self.tdesc) && self.paginator.paginate)  {
             let showRec = self.tdesc.onsort ( self.tdata );
             if (showRec>=0)  {
-              self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
+              // self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
+              self.crPage = Math.floor(showRec/self.pageSize+1);
               if (self.paginator)
                     self.paginator.showPage ( self.crPage );
               else  self._fill_table ( self.startIndex );
