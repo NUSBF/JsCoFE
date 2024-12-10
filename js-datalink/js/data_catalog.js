@@ -165,23 +165,26 @@ class dataCatalog {
   }
 
   addEntry(user, source, id, fields = {}) {
+    const err_msg = `addEntry ${user}/${source}/${id}`;
     let dest = this.getDataDest(user, source, id);
 
     // create directory for the data
     try {
       fs.mkdirSync(dest, { recursive: true });
     } catch (err) {
-      log.error(`addEntry ${user}/${source}/${id} - ${err}`);
+      log.error(`${err_msg} - ${err}`);
       return false;
     }
 
     // copy any files from 'meta' subfolder into data folder.
-    let stat = fs.statSync(this.meta_dir);
-    if (stat.isDirectory()) {
-      try {
-        fs.cpSync('meta', dest, { recursive: true });
-      } catch (err) {
-        log.error(`addEntry - Unable to copy 'meta' files - ${err}`);
+    try {
+      if (fs.statSync(this.meta_dir).isDirectory()) {
+        fs.cpSync(this.meta_dir, dest, { recursive: true });
+      }
+    } catch (err) {
+      // log errors apart from meta directory not being found
+      if (err.code != 'ENOENT') {
+        log.error(`${err_msg} - ${err}`);
       }
     }
 
@@ -382,7 +385,7 @@ class dataCatalog {
         await tools.fileCallback(dest, async (file) => {
           try {
             let stat = await pfs.lstat(file);
-            // if the file is older than check_date then remove
+            // if the file last modified time is older than the prune date then remove
             if (stat.mtime < check_date) {
               await pfs.unlink(file);
             }
@@ -392,8 +395,8 @@ class dataCatalog {
           return true;
         });
 
-        // remove any empty subdirs
-        await tools.removeEmptySubDirs(dest);
+        // remove any empty subdirs older than a week to avoid removing directories that are going to be used
+        await tools.removeEmptySubDirs(dest, this.getPruneDate(7));
       }
     }
   }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.24   <--  Date of Last Modification.
+#    21.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -83,7 +83,9 @@ class StructurePrediction(basic.TaskDriver):
         for i in range(len(seq)):
             seqname.append ( 'seq' + str(i+1) )
             seq[i] = self.makeClass ( seq[i] )
-            sequence.append ( seq[i].getSequence(self.inputDir()).replace("-","").replace("X","") )
+            sequence.append ( seq[i].getSequence(self.inputDir())
+                                    .replace("-","").replace("X","")
+                                    .replace("*","").replace(" ","") )
             if not hasattr(seq[i],"npred"):
                 seq[i].npred = 1  # backward compatibility in existing setups
             ncopies.append ( seq[i].npred )
@@ -135,8 +137,8 @@ class StructurePrediction(basic.TaskDriver):
         elif engine in ["colabfold","openfold","alphafold"]:
 
             script = "#!/bin/bash\n" +\
-                    "af2start"  +\
-                    " --seqin " + self.file_seq_path()
+                     "af2start"  +\
+                     " --seqin " + self.file_seq_path()
 
             if hasattr(sec1,"MINSCORE"):
                 script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.03.23   <--  Date of Last Modification.
+#    21.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,13 +15,14 @@
 #
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 import sys
 import os
+os.environ['PATH'] = os.environ['PATH'].replace('WinCoot', '___Coot')
 from   PyQt5 import QtWidgets
 from   PyQt5 import QtCore
 

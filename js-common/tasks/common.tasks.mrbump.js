@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -162,7 +162,7 @@ TaskMrBump.prototype.icon           = function()  { return 'task_mrbump'; }
 TaskMrBump.prototype.clipboard_name = function()  { return '"MrBump"';    }
 
 TaskMrBump.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -229,9 +229,9 @@ if (!__template)  {
 
     if (((emitterId=='revision') || (emitterId=='seq')) && (this.state==job_code.new))  {
 
-      var name       = this.name;
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var nRev       = this.countInputData ( inpDataRef,'revision','' );
+      let name       = this.name;
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let nRev       = this.countInputData ( inpDataRef,'revision','' );
       if (nRev<=0)  {
         this.name  = 'mrbump-search';
         this.title = 'Search for MR Models with MrBump';
@@ -241,7 +241,7 @@ if (!__template)  {
       }
 
       if (this.name!=name)  {
-        var inputPanel = inpParamRef.grid.parent.parent;
+        let inputPanel = inpParamRef.grid.parent.parent;
         inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
         this.updateInputPanel ( inputPanel );
       }
@@ -252,7 +252,7 @@ if (!__template)  {
 
   TaskMrBump.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+      let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
       });
       inputPanel.element.dispatchEvent(event);
@@ -268,7 +268,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
     }
@@ -291,9 +291,9 @@ if (!__template)  {
                'references.bib', '_job.stde', '_job.stdo' ].indexOf(file)<0) &&
             (!file.endsWith('.log')) && (!file.endsWith('.meta')) &&
             (!file.endsWith('.script')))  {
-          var curPath = path.join ( jobDir,file );
+          let curPath = path.join ( jobDir,file );
           if (fs.lstatSync(curPath).isDirectory()) {
-            utils.removePath ( curPath );
+            utils.removePathAsync ( curPath,path.join(jobDir,'..') );
           } else { // delete file
             try {
               fs.unlinkSync ( curPath );
@@ -307,11 +307,11 @@ if (!__template)  {
 
     } else  {
       // paranoid piece of code, ugly
-      var badDirPath = path.join ( jobDir,'search_a' );
+      let badDirPath = path.join ( jobDir,'search_a' );
       if (utils.fileExists(badDirPath))  {
         console.log ( ' +++ remove stray directory ' + badDirPath +
                       ' from MrBump job' );
-        utils.removePath ( badDirPath );
+        utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
       }
     }
 

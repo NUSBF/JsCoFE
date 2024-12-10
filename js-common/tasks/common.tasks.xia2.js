@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.07.24   <--  Date of Last Modification.
+ *    09.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -300,7 +300,7 @@ if (!__template)  {
   let dirpath   = '';
 
     if (dirNo<inputPanel.imageDirMeta.length)
-      dirpath = inputPanel.imageDirMeta[dirNo].path;
+      dirpath = inputPanel.imageDirMeta[dirNo].ipath;  // ipath is "input path"
 
     if (!dirpath)
       this.hdf5_range = '';
@@ -408,7 +408,7 @@ if (!__template)  {
     // let row0  = row + inputPanel.dir_input.length;
     let ndirs = inputPanel.imageDirMeta.length;
     if ((ndirs>0) && (inputPanel.datatype=='images'))  {
-      if (inputPanel.imageDirMeta[ndirs-1].path!='')
+      if (inputPanel.imageDirMeta[ndirs-1].ipath!='')
         ndirs++;
     } else {
       ndirs = 1;
@@ -453,6 +453,7 @@ if (!__template)  {
                   if (response.status==nc_retcode.ok)  {
                     let rData = response.data;
                     if (rData.path!='')  {
+                      rData.ipath = rData.path;  // save for visualisation only
                       // alert ( JSON.stringify(response.data) );
                       function _accept_dir()  {  
                         task.collectRangesInput ( inputPanel );
@@ -514,6 +515,7 @@ if (!__template)  {
                     if (rData.file!='')  {
                       function _accept_file()  {
                         inputPanel.imageDirMeta = [{
+                          'ipath'   : rData.file,
                           'path'    : rData.file,
                           'sectors' : []
                         }]
@@ -570,7 +572,8 @@ if (!__template)  {
               function(dirmeta){
                 //alert ( JSON.stringify(dirmeta) );
                 task.collectRangesInput ( inputPanel );
-                dirmeta.path = 'cloudstorage::/' + dirmeta.path;
+                dirmeta.ipath = 'cloudstorage::/' + dirmeta.path; // visualisation only
+                dirmeta.path  = dirmeta.ipath;
                 if (dirNo<inputPanel.imageDirMeta.length)
                       inputPanel.imageDirMeta[dirNo] = dirmeta;
                 else  inputPanel.imageDirMeta.push ( dirmeta );
@@ -591,6 +594,7 @@ if (!__template)  {
                 if (file_items.length>0)  {
                   let cfpath = 'cloudstorage::/' + task.currentCloudPath + '/' + file_items[0].name;
                   inputPanel.imageDirMeta = [{
+                    'ipath'   : cfpath,
                     'path'    : cfpath,
                     'sectors' : []
                   }]
@@ -625,6 +629,11 @@ if (!__template)  {
     div.grid.setWidth ( '100%' );
     div.task = this;
 
+    // run this check for compatibility with old tasks
+    for (let i=0;i<this.imageDirMeta.length;i++)
+      if (!('ipath' in this.imageDirMeta[i]))
+        this.imageDirMeta[i].ipath = this.imageDirMeta[i].path;
+
     div.imageDirMeta = this.imageDirMeta;  // paths displayed in task dialog
     div.file_system  = this.file_system;   //  local/cloud
     div.datatype     = this.datatype;      //  images/hdf5
@@ -640,13 +649,6 @@ if (!__template)  {
       return div;
     }
 
-    /*
-    if ((this.state==job_code.new) || (this.state==job_code.running)) {
-      div.header.setLabel ( ' ',2,0,1,1 );
-      div.header.setLabel ( ' ',2,1,1,1 );
-    } else
-      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
-    */
     if ((this.state!=job_code.new) && (this.state!=job_code.running))
       div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
@@ -734,12 +736,6 @@ if (!__template)  {
       source_select_ddn.make();
       source_select_ddn.setTooltip ( tooltip );
 
-      // div.source_select_ddn.addOnChangeListener ( function(text,value){
-      //   div.imageDirMeta = [];    // paths displayed in task dialog
-      //   div.dir_path     = [];
-      //   div.file_system  = value;
-      //   div.task.layDirectoryInput ( div );
-      // });
       source_select_ddn.setWidth ( '180px' );
 
       div.grid2.setVerticalAlignment ( 0,2,'middle' );
@@ -854,7 +850,7 @@ if (!__template)  {
   //        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
   //        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
         msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
-              'underscores,<br>dashes and dots, and must start with a letter</i></b>';
+               'underscores,<br>dashes and dots, and must start with a letter</i></b>';
 
       if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {
         // check XDS availability
@@ -864,10 +860,17 @@ if (!__template)  {
   //      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
         if (!this.compareEnvironment(['CCP4','XDS_home'],env))
           msg += '|<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
-                'however, it was not found installed</i></b>';
+                 'however, it was not found installed</i></b>';
       }
 
     }
+
+    if (this.parameters.sec1.contains.CRYSTAL &&
+        this.parameters.sec1.contains.CRYSTAL.value && // if works in TaskXDS
+        (!(/^[A-Za-z_][A-Za-z0-9_]*$/.test(this.parameters.sec1.contains.CRYSTAL.value))))
+        msg += '|<b><i>Crystal name must consist only of alphanumeric ' +
+               'characters and underscores. The first character must be ' +
+               'a non-digit character</i></b>';
 
     return  msg;
 
@@ -922,14 +925,14 @@ if (!__template)  {
       let cloudMounts = storage.getUserCloudMounts ( loginData );
       for (let i=0;i<this.imageDirMeta.length;i++)  {
         imageDirMeta.push ( this.imageDirMeta[i] );
-        let lst = imageDirMeta[i].path.split('/');
+        let lst = imageDirMeta[i].ipath.split('/');  // use ipath as cloud mounts can change
         if (lst.length>2)  {
           if (lst[0]=='cloudstorage::')  {
             let cm = null;
             for (let j=0;(j<cloudMounts.length) && (!cm);j++)
               if (cloudMounts[j][0]==lst[1])
                 cm = cloudMounts[j];
-            if (cm)
+            if (cm)  // now calculate the real path
               imageDirMeta[i].path = path.join ( cm[1],lst.slice(2).join('/') );
           }
         }

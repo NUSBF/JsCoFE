@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    15.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  ALIGNMENT DATA IMPORT FUNCTION
+#  BORGES LIBRARY IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -24,11 +24,10 @@ import pyrvapi
 #  application imports
 from dtypes import dtype_borges
 from proc   import import_filetype
-from varut  import jsonut
 
 
 # ============================================================================
-# Alignment import function
+# Borges library import function
 
 def run ( body,sectionTitle="Borges library" ):  # body is reference to the main Import class
 

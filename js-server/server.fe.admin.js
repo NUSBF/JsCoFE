@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.12.22   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Admin Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -50,7 +50,7 @@ function getNCData ( ncInfo,callback_func )  {
     }
   }
 
-  var cfg = conf.getNCConfig(ncInfo.length);
+  let cfg = conf.getNCConfig(ncInfo.length);
 
   if (cfg.name=='client')  {
 
@@ -59,7 +59,7 @@ function getNCData ( ncInfo,callback_func )  {
 
   } else if (cfg.in_use)  {
 
-    var nc_url = cfg.externalURL;
+    let nc_url = cfg.externalURL;
 
     try {  // request may crash at timeouts!
 
@@ -81,7 +81,7 @@ function getNCData ( ncInfo,callback_func )  {
         if ((!error) && (response.statusCode==200))  {
           ncInfo.push ( body.data );
         } else  {
-          var nci = {
+          let nci = {
             'config'         : cfg,
             'jobRegister'    : null,
             'ccp4_version'   : 'unknown',
@@ -95,7 +95,7 @@ function getNCData ( ncInfo,callback_func )  {
 
     } catch(err)  {
 
-      var nci = {
+      let nci = {
         'config'         : cfg,
         'jobRegister'    : null,
         'ccp4_version'   : 'unknown',
@@ -108,7 +108,7 @@ function getNCData ( ncInfo,callback_func )  {
 
   } else  {
 
-    var nci = {
+    let nci = {
       'config'         : cfg,
       'jobRegister'    : null,
       'ccp4_version'   : 'unknown',
@@ -122,8 +122,11 @@ function getNCData ( ncInfo,callback_func )  {
 }
 
 function getAdminData ( loginData,data,callback_func )  {
+// the 'data' parameter must be where it is
 
-  var adminData = {};
+  let t0 = performance.now()
+  let adminData = {};
+
   adminData.served    = false;
   adminData.jobsStat  = '';
   adminData.usersInfo = [];
@@ -134,8 +137,8 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.nodesInfo.ccp4_version   = conf.CCP4Version();
   adminData.nodesInfo.jscofe_version = cmd.appVersion();
 
-  var uData = user.readUserData ( loginData );
-  if (uData.role!=ud.role_code.admin)  {
+  let uData = user.readUserData ( loginData );
+  if ((uData.role!=ud.role_code.admin) && (uData.role!=ud.role_code.localuser))  {
     adminData.jobsStat  = 'Data available only in account with administrative privileges.';
     return new cmd.Response ( cmd.fe_retcode.ok,'',adminData );
   } else  {
@@ -144,7 +147,9 @@ function getAdminData ( loginData,data,callback_func )  {
     adminData.usersInfo = user.readUsersData();
     adminData.nodesInfo.FEconfig = conf.getFEConfig();
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData) );
+      let dt = performance.now()-t0;
+      log.standard ( 3,'admin data collected in ' + dt.toFixed(3) + 'ms' );
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData,'getAdminData') );
     });
     //_getNCData ( adminData,callback_func );
     return null;
@@ -154,11 +159,11 @@ function getAdminData ( loginData,data,callback_func )  {
 
 
 function getAnalytics ( loginData,data )  {
-var uData = user.readUserData ( loginData );
-var rdata = {};
+let uData = user.readUserData ( loginData );
+let rdata = {};
 
   anl.writeFEAnalytics();
-  if (uData.role!=ud.role_code.admin)  {
+  if ((uData.role!=ud.role_code.admin) && ((uData.role!=ud.role_code.localuser)))  {
     rdata.served = false;
     rdata.code   = 'Data available only in account with administrative privileges.';
   } else  {
@@ -173,11 +178,11 @@ var rdata = {};
 
 function updateAndRestart ( loginData,data )  {
 
-  var uData = user.readUserData ( loginData );
+  let uData = user.readUserData ( loginData );
   if (uData.role!=ud.role_code.admin)  {
     log.standard ( 1,'attempt to update and restart from non-administrative account' );
   } else  {
-    var FEconfig = conf.getFEConfig();
+    let FEconfig = conf.getFEConfig();
     if (FEconfig.update_rcode>0)  {
       log.standard ( 2,'update and restart ...' );
       setTimeout ( function(){ process.exit(FEconfig.update_rcode); },1000 );

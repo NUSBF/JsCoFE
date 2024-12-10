@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    24.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -57,6 +57,9 @@ class PhaserMR(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def run(self):
+
+        # number of cores that SLURM was made aware of
+        ncores = self.getCommandLineParameter ( "ncores" )
 
         # Prepare phaser input
         # fetch input data
@@ -162,6 +165,7 @@ class PhaserMR(basic.TaskDriver):
             "TITLE Phaser-MR" +\
             "\nMODE MR_AUTO"  +\
             "\nROOT \""       + self.outputFName + "\"" +\
+            "\nJOBS "         + str(ncores) +\
             "\nHKLIN \""      + hklfile + "\"" +\
             hkl_labin
         )
@@ -496,6 +500,9 @@ class PhaserMR(basic.TaskDriver):
                             ens_meta[ensname]["data"] = ens0[i]
                     revision.phaser_meta = phaser_meta
 
+                rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+                rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
                 # Verdict section
 
                 verdict_meta = {
@@ -504,7 +511,8 @@ class PhaserMR(basic.TaskDriver):
                     "nasu"     : revision.getNofASUMonomers(),
                     "fllg"     : float ( llg ),
                     "ftfz"     : float ( tfz ),
-                    "rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] )
+                    "rfree"    : rfree,
+                    "rfactor"  : rfactor
                 }
                 verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
@@ -515,8 +523,8 @@ class PhaserMR(basic.TaskDriver):
                                 "revision"  : [revision]
                             },
                             "scores" :  {
-                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"]),
+                                "Rfactor"  : rfactor,
+                                "Rfree"    : rfree,
                                 "nfitted0" : nfitted0,         # number of polymers before run
                                 "nfitted"  : structure.getNofPolymers()  # number of polymers after run
                             }

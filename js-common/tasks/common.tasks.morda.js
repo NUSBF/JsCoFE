@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -127,7 +127,7 @@ TaskMorda.prototype.requiredEnvironment = function() {
 }
 
 TaskMorda.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -174,7 +174,7 @@ if (!__template)  {
       if (utils.fileExists(badDirPath))  {
         console.log ( ' +++ remove stray directory ' + badDirPath +
                       ' from MoRDa job' );
-        utils.removePath ( badDirPath );
+        utils.removePathAsync ( badDirPath,path.join(jobDir,'..') );
       }
     });
 
@@ -186,7 +186,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
     }

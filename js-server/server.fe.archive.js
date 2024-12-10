@@ -604,7 +604,7 @@ function archiveProject ( loginData,data,callback_func )  {
               // unlock user's account and inform user through Cloud message and via e-mail
               if (archiveBackupPath)  {
                 // the project was updated in archive
-                utils.removePath ( archiveBackupPath );
+                utils.removePathAsync ( archiveBackupPath );
                 user.suspendUser ( loginData,false,
                   '<div style="width:400px"><h2>Archive updating completed</h2>' +
                   'Archived Project <b>"' + pDesc.name +  
@@ -661,7 +661,7 @@ function archiveProject ( loginData,data,callback_func )  {
             failcode = 2;
 
           if (failcode)  {
-            utils.removePath ( archiveDirPath );
+            utils.removePathAsync ( archiveDirPath );
             if (archiveBackupPath)
               utils.moveDir ( archiveBackupPath,archiveDirPath,true );
             user.suspendUser ( loginData,false,

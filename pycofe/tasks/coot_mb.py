@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.05.24   <--  Date of Last Modification.
+#    23.10.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,14 +34,16 @@ import gemmi
 
 #  application imports
 from . import coot_ce
-from   pycofe.varut   import  signal
 from   pycofe.proc    import  covlinks, concorr
-try:
-    if sys.platform.startswith("win"):
-        os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
-    from pycofe.varut import messagebox
-except:
-    messagebox = None
+from   pycofe.varut   import  mmcif_utils # messagebox, selectfile
+
+# from   pycofe.varut   import  signal
+# try:
+#     if sys.platform.startswith("win"):
+#         os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
+#     from pycofe.varut import messagebox
+# except:
+#     messagebox = None
 
 # ============================================================================
 # Make Coot driver
@@ -122,6 +124,7 @@ class Coot(coot_ce.CootCE):
         #self.flush
 
         coot_backup_dir = self.makeBackupDirectory()
+        recover_fpath   = self.fetchRecoveryFile  ( coot_backup_dir )
 
         # fetch input data
         revision  = self.makeClass ( self.input_data.data.revision[0] )
@@ -156,6 +159,15 @@ class Coot(coot_ce.CootCE):
         args = []
         xyz_data_list = []
         xyzpath = istruct.getXYZFilePath ( self.inputDir() )
+        if recover_fpath:
+            xyzpath = recover_fpath
+            self.putMessage (
+                "<span style=\"font-size:112%;color:maroon;\"><b>" +\
+                "Input structure was restored from last backup in job " +\
+                str(self.task.recover_from) + ".</b></span><br>&nbsp;" 
+            )
+            self.flush()
+
         # if not xyzpath:
         #     xyzpath = istruct.getPDBFilePath ( self.inputDir() )    
         if not xyzpath:
@@ -192,23 +204,23 @@ class Coot(coot_ce.CootCE):
                 if mtzpath and mtzpath not in args:
                     args += ["--auto",mtzpath]
 
-        """
-        for s in data_list:
-            if s.getPDBFileName():
-                xyzpath = s.getPDBFilePath(self.inputDir())
-                if xyzpath not in args:
-                    args += ["--pdb",xyzpath]
-                    xyz_data_list.append(xyzpath)
-            if s._type=="DataStructure":
-                if s.getSubFileName():
-                    xyzpath = s.getSubFilePath(self.inputDir())
-                    if xyzpath not in args:
-                        args += ["--pdb",xyzpath]
-                        xyz_data_list.append(xyzpath)
-                mtzpath = s.getMTZFilePath(self.inputDir())
-                if mtzpath not in args:
-                    args += ["--auto",mtzpath]
-        """
+        # """
+        # for s in data_list:
+        #     if s.getPDBFileName():
+        #         xyzpath = s.getPDBFilePath(self.inputDir())
+        #         if xyzpath not in args:
+        #             args += ["--pdb",xyzpath]
+        #             xyz_data_list.append(xyzpath)
+        #     if s._type=="DataStructure":
+        #         if s.getSubFileName():
+        #             xyzpath = s.getSubFilePath(self.inputDir())
+        #             if xyzpath not in args:
+        #                 args += ["--pdb",xyzpath]
+        #                 xyz_data_list.append(xyzpath)
+        #         mtzpath = s.getMTZFilePath(self.inputDir())
+        #         if mtzpath not in args:
+        #             args += ["--auto",mtzpath]
+        # """
 
         if libPath:
             args += ["--dictionary",libPath]
@@ -219,22 +231,23 @@ class Coot(coot_ce.CootCE):
         coot_mod = os.path.join ( os.path.dirname(os.path.abspath(__file__)),
                                   "..","proc","coot_modifier.py" )
         coot_scr = istruct.getCootFilePath ( self.inputDir() )
-        """
-        if coot_scr or ligand:
-            f = open ( coot_mod,"r" )
-            coot_mod_content = f.read()
-            f.close()
-            if not coot_scr:
-                coot_scr = "__coot_script.py"
-            f = open ( coot_scr,"a" )
-            f.write  ( coot_mod_content )
-            #f.write  ( "\n    set_nomenclature_errors_on_read(\"ignore\")\n" )
-            if ligand:
-                f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
-            f.close()
-        else:
-            coot_scr = coot_mod
-        """
+
+        # """
+        # if coot_scr or ligand:
+        #     f = open ( coot_mod,"r" )
+        #     coot_mod_content = f.read()
+        #     f.close()
+        #     if not coot_scr:
+        #         coot_scr = "__coot_script.py"
+        #     f = open ( coot_scr,"a" )
+        #     f.write  ( coot_mod_content )
+        #     #f.write  ( "\n    set_nomenclature_errors_on_read(\"ignore\")\n" )
+        #     if ligand:
+        #         f.write ( "\n    get_monomer(\"" + ligand.code + "\")\n" )
+        #     f.close()
+        # else:
+        #     coot_scr = coot_mod
+        # """
 
         f = open ( coot_mod,"r" )
         coot_mod_content = f.read() \
@@ -281,6 +294,9 @@ class Coot(coot_ce.CootCE):
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
 
+        if recover_fpath:
+            os.remove ( recover_fpath )
+
         self.putMessage (
             "<i>Just in case: learn about recovering results from crashed Coot jobs " +\
                 self.hotDocLink ( "here","jscofe_tips.coot_crash",
@@ -314,12 +330,12 @@ class Coot(coot_ce.CootCE):
                 if fu.endswith(".CIF"):
 
                     exclude_list = []
-                    '''
-                    if hasattr(self.input_data.data,"void1"):
-                        ligands = self.input_data.data.void1
-                        for i in range(len(ligands)):
-                            exclude_list.append ( ligands[i].code )
-                    '''
+                    # '''
+                    # if hasattr(self.input_data.data,"void1"):
+                    #     ligands = self.input_data.data.void1
+                    #     for i in range(len(ligands)):
+                    #         exclude_list.append ( ligands[i].code )
+                    # '''
                     if istruct.ligands:
                         sep = '('
                         exclude_list = [(tt + sep).split(sep)[0] for tt in istruct.ligands]
@@ -377,51 +393,92 @@ class Coot(coot_ce.CootCE):
 
         if fname:
 
+            # convert to CIF if necessary            
+            # fn,fext = os.path.splitext ( fname )
+            # if fext.lower()==".pdb":
+            #     fname = mmcif_utils.convert_to_mmcif ( fname )
+
+            # check format because Coot is buggy!
+            # fname1  = fname
+            # fn,fext = os.path.splitext ( fname )
+            # try:
+            #     cif = gemmi.cif.read ( fname )
+            #     if fext.lower()==".pdb":
+            #         fname1 = fn + ".cif"
+            #     self.stdoutln ( " >>>>>1 " + fname1 )
+            # except:
+            #     #  assume PDB
+            #     if fext.lower()!=".pdb":
+            #         fname1 = fn + ".pdb"
+            #     self.stdoutln ( " >>>>>2 " + fname1 )
+            # if fname1!=fname:
+            #     os.rename ( fname,fname1 )
+            #     fname = fname1
+
             if newLigCode:
                 self.replace_ligand_code ( fname,"LIG",newLigCode,rename=False )
 
-            f = istruct.getMMCIFFileName()
-            if not f:
-                f = istruct.getPDBFileName()
-            if not f:
-                f = istruct.getSubFileName()
-            fnprefix = f[:f.find("_")]
+            # f = istruct.getMMCIFFileName()
+            # if not f:
+            #     f = istruct.getPDBFileName()
+            # if not f:
+            #     f = istruct.getSubFileName()
+            # fnprefix = f[:f.find("_")]
 
-            if fname.startswith(fnprefix):
-                fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
-            else:
-                fn,fext = os.path.splitext ( f )
+            # if fname.startswith(fnprefix):
+            #     fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            # else:
+            #     fn,fext = os.path.splitext ( f )
+
+            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+
+            # shutil.copy2 ( fname,"inspect.txt" )
+
 
             # coot_xyz = self.getOFName ( fext )
-            coot_xyz   = None
-            coot_pdb   = None
-            coot_mmcif = None
+            # coot_xyz   = None
+            # coot_pdb   = None
+            # coot_mmcif = None
+            # if fext.upper()!=".PDB":
+            #     coot_mmcif = self.getMMCIFOFName()
+            #     shutil.copy2 ( fname,coot_mmcif )
+            #     coot_xyz   = coot_mmcif
+            # else:
+            #     coot_pdb = self.getXYZOFName() #  .pdb
+            #     shutil.copy2 ( fname,coot_pdb )
+            #     coot_xyz = coot_pdb
+
+            # coot_pdb   = None
+            coot_mmcif = self.getMMCIFOFName()
+            # coot_xyz   = coot_mmcif
             if fext.upper()!=".PDB":
-                coot_mmcif = self.getMMCIFOFName()
+                # coot_mmcif = self.getMMCIFOFName()
                 shutil.copy2 ( fname,coot_mmcif )
-                coot_xyz   = coot_mmcif
             else:
-                coot_pdb = self.getXYZOFName() #  .pdb
-                shutil.copy2 ( fname,coot_pdb )
-                coot_xyz = coot_pdb
+                # coot_pdb = self.getXYZOFName() #  .pdb
+                shutil.copy2 ( mmcif_utils.convert_to_mmcif(fname),coot_mmcif )
+
             coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( mtzfile,coot_mtz )
 
             try:
-                concorr.conn_correct(xyz_data_list[0], coot_xyz, '_tmp_coot.cif')
-                os.rename('_tmp_coot.cif', coot_xyz)
+                # concorr.conn_correct(xyz_data_list[0], coot_xyz, '_tmp_coot.cif')
+                # os.rename('_tmp_coot.cif', coot_xyz)
+                concorr.conn_correct(xyz_data_list[0], coot_mmcif, '_tmp_coot.cif')
+                os.rename('_tmp_coot.cif', coot_mmcif )
             except:
                 self.file_stderr.write("# concorr.conn_correct failed")
 
             try:
                 mode = 1
-                cvl = covlinks.CovLinks(libPath, coot_xyz)
+                # cvl = covlinks.CovLinks(libPath, coot_xyz)
+                cvl = covlinks.CovLinks(libPath, coot_mmcif )
                 msg_llist = cvl.suggest_changes()
                 # combined mode would be better:
                 # - the same chain: 3
                 # - different chains: 2
-                cvl.update(mode = mode,
-                    xyzout = coot_xyz, stdo = self.file_stdout)
+                # cvl.update(mode = mode, xyzout = coot_xyz, stdo = self.file_stdout)
+                cvl.update(mode = mode, xyzout = coot_mmcif, stdo = self.file_stdout)
                 self.file_stdout.write(str(msg_llist))
                 lines = []
                 vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
@@ -466,7 +523,7 @@ class Coot(coot_ce.CootCE):
 
             struct = self.registerStructure ( 
                             coot_mmcif,
-                            coot_pdb,
+                            None, # coot_pdb,
                             None,
                             coot_mtz,
                             libPath = libPath,
@@ -531,19 +588,23 @@ class Coot(coot_ce.CootCE):
             "summary_line" : summary_line
         }
 
-        if rc.msg == "":
-            if not have_results and hasattr(self.task,"hot_launch") and self.task.hot_launch:
-                self.task.task_chain = ["delete_job"]
-            self.success ( have_results )
-        else:
-            self.file_stdout.close()
-            self.file_stderr.close()
-            if messagebox:
-                messagebox.displayMessage ( "Failed to launch",
-                  "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
-                  "<p>This may indicate a problem with software setup." )
+        if (rc.msg == "") and (not have_results) and hasattr(self.task,"hot_launch") and self.task.hot_launch:
+            self.task.task_chain = ["delete_job"]
+        self.success ( have_results )
 
-            raise signal.JobFailure ( rc.msg )
+        # if rc.msg == "":
+        #     if not have_results and hasattr(self.task,"hot_launch") and self.task.hot_launch:
+        #         self.task.task_chain = ["delete_job"]
+        #     self.success ( have_results )
+        # else:
+        #     self.file_stdout.close()
+        #     self.file_stderr.close()
+        #     if messagebox:
+        #         messagebox.displayMessage ( "Failed to launch",
+        #           "<b>Failed to launch Coot: <i>" + rc.msg + "</i></b>"
+        #           "<p>This may indicate a problem with software setup." )
+
+        #     raise signal.JobFailure ( rc.msg )
 
         return
 

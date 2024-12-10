@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.12.23   <--  Date of Last Modification.
+ *    13.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -32,7 +32,10 @@
 
 //  load system modules
 const url    = require('url');
-const path   = require('path');
+// const path   = require('path');
+const http   = require('http');
+const https  = require('https');
+
 
 //  load application modules
 const utils  = require('./server.utils');
@@ -109,7 +112,7 @@ function start()  {
 
   // check server storage and configure it if necessary
 
-  var jobsDir = jm.ncGetJobsDir();
+  let jobsDir = jm.ncGetJobsDir();
   if (!utils.fileExists(jobsDir))  {
     if (!utils.mkDir(jobsDir))  {
       log.error ( 11,'cannot create job area at ' + jobsDir );
@@ -119,7 +122,7 @@ function start()  {
     }
   }
 
-  var safeDir = srvConfig.getJobsSafe().path;
+  let safeDir = srvConfig.getJobsSafe().path;
   if (!utils.fileExists(safeDir))  {
     if (!utils.mkDir(safeDir))  {
       log.error ( 12,'cannot create safe area at ' + safeDir );
@@ -137,14 +140,12 @@ function start()  {
   // --------------------------------------------------------------------------
 
   //  instantiate server
-  var server = null;
+  let server = null;
   if (srvConfig.protocol=='http')  {
-    var http = require('http');
-    server   = http.createServer();
+    server  = http.createServer();
   } else  {
-    var https = require('https');
-    var fs    = require('fs');
-    options   = {};
+    // var fs    = require('fs');
+    options = {};
     /*
     //var options = {
     //  key : fs.readFileSync ( path.join('certificates','key.pem'   ) ),
@@ -162,12 +163,12 @@ function start()  {
 
     try {
 
-      var response = null;
-      var command  = '';
+      let response = null;
+      let command  = '';
 
       // Parse the server request command
-      var url_parse = url.parse(server_request.url);
-      var url_path  = url_parse.pathname;
+      let url_parse = url.parse(server_request.url);
+      let url_path  = url_parse.pathname;
       if (url_path.length>0)  {
         // remove leading slash and proxy forward-to-client tag
         // command = url_path.substr(1);
@@ -257,6 +258,14 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncSendJobResults,srvConfig.state );
             break;
 
+          case cmd.nc_command.checkJobResults :
+              pp.processPOSTData ( server_request,server_response,jm.ncCheckJobResults,srvConfig.state );
+            break;
+
+          case cmd.nc_command.getJobResults :
+              pp.processPOSTData ( server_request,server_response,jm.ncGetJobResults,srvConfig.state );
+            break;
+
           case cmd.nc_command.runClientJob :
               pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob,srvConfig.state );
             break;
@@ -279,7 +288,7 @@ function start()  {
 
       server.close();
 
-      var maxRestarts = 100;
+      let maxRestarts = 100;
       if ('maxRestarts' in srvConfig)
         maxRestarts = srvConfig.maxRestarts;
 

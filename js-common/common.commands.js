@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    09.09.24   <--  Date of Last Modification.
+ *    23.10.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.002 [09.09.2024]';   // for update
+const jsCoFE_version = '1.8.003 [08.11.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -63,8 +63,9 @@ function compareVersions ( version1,version2 )  {
 
 const localhost_name = 'localhost';
 const projectFileExt = '.ccp4cloud';
-const endJobFName    = '__end_job';    // signal file name to end job gracefully
-const endJobFName1   = 'stop_file';    // signal file name to end job gracefully
+const endJobFName    = '__end_job';      // signal file name to end job gracefully
+const endJobFName1   = 'stop_file';      // signal file name to end job gracefully
+const ncMetaFileName = '__nc_meta.json'; // communicated by 'REMOTE' NC
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -212,19 +213,21 @@ const fe_retcode = {
 // Commands for NC Server exchange.
 
 const nc_command = {
-  stop           : 'stop',            // quit the server
-  countBrowser   : '-countBrowser',   // request to advance browser start counter
-  runJob         : '-runJob',         // request to upload job data and run the job
-  stopJob        : '-stopJob',        // request to stop a running job
+  stop            : 'stop',            // quit the server
+  countBrowser    : '-countBrowser',   // request to advance browser start counter
+  runJob          : '-runJob',         // request to upload job data and run the job
+  stopJob         : '-stopJob',        // request to stop a running job
   wakeZombieJobs  : '-wakeZombieJobs',  // request to send zombi jobs to FE
-  selectDir      : '-selectDir',      // request to select directory (local service)
-  selectFile     : '-selectFile',     // request to select file (local service)
-  selectImageDir : '-selectImageDir', // request to select image directory (local service)
-  runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
-  runClientJob   : '-runClientJob',   // run client job (local service)
-  getNCInfo      : '-getNCInfo',      // get NC config and other info
-  getNCCapacity  : '-getNCCapacity',  // get NC current capacity
-  sendJobResults : '-sendJobResults'  // request to send job results to 3rd party application
+  selectDir       : '-selectDir',      // request to select directory (local service)
+  selectFile      : '-selectFile',     // request to select file (local service)
+  selectImageDir  : '-selectImageDir', // request to select image directory (local service)
+  runRVAPIApp     : '-runRVAPIApp',    // run RVAPI helper application (local service)
+  runClientJob    : '-runClientJob',   // run client job (local service)
+  getNCInfo       : '-getNCInfo',      // get NC config and other info
+  getNCCapacity   : '-getNCCapacity',  // get NC current capacity
+  sendJobResults  : '-sendJobResults', // request to send job results to 3rd party application
+  checkJobResults : '-checkJobResults', // request to check job results for a list of job tokens
+  getJobResults   : '-getJobResults'   // request to return job results to FE via pull
 };
 
 
@@ -242,7 +245,8 @@ const nc_retcode = {
   unpackErrors   : 'unpackErrors',   // unpack errors
   wrongRequest   : 'wrongRequest',   // incomplete or malformed request
   jobNotFound    : 'jobNotFound',    // job token not found in registry
-  pidNotFound    : 'pidNotFound'     // job's pid not found in registry
+  pidNotFound    : 'pidNotFound',    // job's pid not found in registry
+  jobIsRunning   : 'jobIsRunning'    // results reauested but job is still running
 };
 
 
@@ -251,11 +255,6 @@ const nc_retcode = {
 
 function image_path ( image_basename )  {
   return './images_png/' + image_basename + '.png';
-  /*
-  if (typeof __local_setup !== 'undefined' && __local_setup)
-        return './images_svg/' + image_basename + '.svg';
-  else  return './images_png/' + image_basename + '.png';
-  */
 }
 
 function activityIcon()  {
@@ -269,12 +268,14 @@ const __special_url_tag    = 'xxJsCoFExx';
 const __special_fjsafe_tag = 'xxFJSafexx';
 const __special_client_tag = 'xxClientxx';
 
-function Response ( status,message,data )  {
+function Response ( status,message,data,measure_time_label=null )  {
   this._type   = 'Response';
   this.version = appVersion();
   this.status  = status;
   this.message = message;
   this.data    = data;
+  if (measure_time_label)
+    this.measure_time_label = measure_time_label;
 }
 
 
@@ -284,21 +285,37 @@ Response.prototype.send = function ( server_response )  {
     // 'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
-  server_response.end ( JSON.stringify(this) );
+  if ('measure_time_label' in this)  {
+    const startTime = performance.now();
+    server_response.end ( JSON.stringify(this), () => {
+      const duration = performance.now() - startTime; // Convert to milliseconds
+      console.log ( ' ... response for "' + this.measure_time_label +
+                    '" sent in ' + duration.toFixed(3) + 'ms' );
+    });
+  } else
+    server_response.end ( JSON.stringify(this) );
 }
 
-function sendResponse ( server_response, status,message,data )  {
-  let resp = new Response ( status,message,data );
+function sendResponse ( server_response, status,message,data,measure_time_label=null )  {
+  let resp = new Response ( status,message,data,measure_time_label );
   resp.send ( server_response );
 }
 
-function sendResponseMessage ( server_response,message,mimeType )  {
+function sendResponseMessage ( server_response,message,mimeType,measure_time_label=null )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : mimeType,
     // 'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
-  server_response.end ( message );
+  if (measure_time_label)  {
+    const startTime = performance.now();
+    server_response.end ( message, () => {
+      const duration = performance.now() - startTime; // Convert to milliseconds
+      console.log ( ' ... response for "' + measure_time_label +
+                    '" sent in ' + duration.toFixed(3) + 'ms' );
+    });
+  } else
+    server_response.end ( message );
 }
 
 function Request ( request,token,data )  {
@@ -356,6 +373,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.projectFileExt       = projectFileExt;
   module.exports.endJobFName          = endJobFName;
   module.exports.endJobFName1         = endJobFName1;
+  module.exports.ncMetaFileName       = ncMetaFileName;
   module.exports.Response             = Response;
   module.exports.sendResponse         = sendResponse;
   module.exports.sendResponseMessage  = sendResponseMessage;

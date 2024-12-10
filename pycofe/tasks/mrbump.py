@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.11.23   <--  Date of Last Modification.
+#    26.09.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -36,8 +36,9 @@ import shutil
 
 #  application imports
 from . import basic
-from   pycofe.proc    import xyzmeta
-from   pycofe.auto    import auto, auto_workflow
+from   pycofe.proc     import xyzmeta
+from   pycofe.verdicts import verdict_phasermr
+from   pycofe.auto     import auto, auto_workflow
 
 # ============================================================================
 # Make MrBump driver
@@ -229,9 +230,11 @@ class MrBump(basic.TaskDriver):
                 # ================================================================
                 # make output structure and register it
 
+                row0 = self.rvrow + 1
+
                 structure = self.finaliseStructure ( xyzfile,self.outputFName,
                                                      sol_hkl,None,seq,0,
-                                                     leadKey=1 ) # ,openState="closed" )
+                                                     leadKey=1,reserveRows=3 ) # ,openState="closed" )
                 if structure:
                     # update structure revision
                     revision = self.makeClass  ( self.input_data.data.revision[0] )
@@ -239,6 +242,41 @@ class MrBump(basic.TaskDriver):
                     revision.setStructureData  ( structure )
                     self.registerRevision      ( revision  )
                     have_results = True
+
+                    llg = 0.0
+                    tfz = 0.0
+                    key = 0
+                    self.flush()
+                    self.file_stdout.close()
+                    with (open(self.file_stdout_path(),'r')) as fstd:
+                        for line in fstd:
+                            if key==2:
+                                words = line.split()
+                                llg = float ( words[len(words)-5] )
+                                tfz = float ( words[len(words)-6] )
+                                key = 3
+                            elif (key==1) and ("RFZ   TFZ     LLG" in line):
+                                key = 2
+                            elif "Final MR solution from Phaser..." in line:
+                                key = 1
+      
+                    self.file_stdout = open ( self.file_stdout_path(),'a' )
+    
+                    rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+                    rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
+                    # Verdict section
+
+                    verdict_meta = {
+                        "nfitted0" : 0,
+                        "nfitted"  : structure.getNofPolymers(),
+                        "nasu"     : revision.getNofASUMonomers(),
+                        "fllg"     : llg,
+                        "ftfz"     : tfz,
+                        "rfree"    : rfree,
+                        "rfactor"  : rfactor,
+                    }
+                    verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
                     if self.task.autoRunName.startswith("@"):
                         # scripted workflow framework
@@ -248,8 +286,8 @@ class MrBump(basic.TaskDriver):
                                     "hkl"      : [sol_hkl]
                                 },
                                 "scores" :  {
-                                    "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
-                                    "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                                    "Rfactor"  : rfactor,
+                                    "Rfree"    : rfree
                                 }
                         })
                         # self.putMessage ( "<h3>Workflow started</hr>" )

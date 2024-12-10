@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.09.24   <--  Date of Last Modification.
+ *    22.09.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -268,10 +268,10 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               switch (page_switch)  {
 
-                //case 0 : if (__admin && (userData.login=='admin'))
                 case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
                             makeAdminPage ( sceneId );
-                          else if ((!__local_setup) && (userData.action!=userdata_action.none))
+                          else if ((!__local_setup) && (userData.action!=userdata_action.none) &&
+                                   (userData.login!=__local_user_id))
                             makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
@@ -314,7 +314,6 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             });
                         break;
 
-                //default: if (__admin)  makeAdminPage   ( sceneId );
                 default:  if (__user_role==role_code.admin)
                                 makeAdminPage   ( sceneId );
                           else  makeProjectPage ( sceneId );

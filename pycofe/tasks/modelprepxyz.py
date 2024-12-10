@@ -311,7 +311,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
                     if seq:
                         model.addDataAssociation ( seq.dataId )
-                    model.meta  = { "rmsd" : "1.2", "seqId" : sid, "eLLG" : "" }
+                    model.meta  = { "rmsd" : "1", "seqId" : sid, "eLLG" : "" }
                     model.seqId = model.meta["seqId"]
                     model.rmsd  = model.meta["rmsd" ]
 
