@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    12.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,7 +51,7 @@ function AccountPage ( sceneId )  {
     });
   else if (__user_role==role_code.localuser)
     this.addMenuItem ( 'System info','system_info',function(){
-      saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
+      makeAdminPage ( sceneId );
     });
   this.addLogoutToMenu ( function(){ logout(sceneId,0); } );
 
