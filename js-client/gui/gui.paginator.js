@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    09.12.24   <--  Date of Last Modification.
+//    13.12.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -19,35 +19,41 @@
 
 'use strict'; // *client*
 
-function Paginator ( n_items,n_page,n_visible,n_start,callback_func )  {
+function Paginator ( n_items,n_page,n_visible,n_start,paginate,callback_func )  {
 
   Grid.call ( this,'-compact' );
 
   let self = this;
 
-  this.paginate     = true;
+  this.paginate     = paginate;
   this.__start_page = n_start;
   this.base         = new Widget ( 'ul' );
   this.addWidget ( this.base,0,0,1,1 );
 
-  this.nPages  = Math.floor(n_items/n_page+1);
-  this.options = {
+  this.nPages   = Math.floor(n_items/n_page+1);
+  this.options  = {
     totalPages             : this.nPages,
     visiblePages           : n_visible,
     startPage              : n_start,
     initiateStartPageClick : true,
     hideOnlyOnePage        : true,
-    onPageClick  : function ( event,pageNo ) {
+    onPageClick : function ( event,pageNo ) {
       if (self.paginate)
-            callback_func ( pageNo,n_page );
-      else  callback_func ( 1,n_items );
+            callback_func ( pageNo,n_page,self.paginate );
+      else  callback_func ( 1,n_items,self.paginate );
       // alert ( 'page ' + page + ', n1=' + n_page*(page-1) );
     }
   };
 
-  this.pagination = $(this.base.element).twbsPagination ( this.options );
+  if (!paginate)  {
+    this.options.totalPages = 1;
+    this.options.startPage  = 1;
+  }
 
-  this.show_btn = this.addButton ( 'Show all','',0,1,1,1 );
+  this.pagination = $(this.base.element).twbsPagination ( this.options );
+  this.base.setVisible ( this.paginate );
+
+  this.show_btn = this.addButton ( paginate ? 'Show all' : 'Paginate','',0,1,1,1 );
 
   $(this.show_btn.element).addClass('pagination-button');
 
@@ -57,20 +63,19 @@ function Paginator ( n_items,n_page,n_visible,n_start,callback_func )  {
       self.__start_page = self.pagination.twbsPagination('getCurrentPage');
       self.pagination.twbsPagination ( 'destroy' );
       self.pagination.twbsPagination ( $.extend({}, self.options, {
-        startPage  : 1,
-        totalPages : 1
+        totalPages : 1,
+        startPage  : 1
       }));
-      self.show_btn.setText ( 'Paginate' );
     } else  {
       self.paginate = true;
       self.pagination.twbsPagination ( 'destroy' );
       self.pagination.twbsPagination ( $.extend({}, self.options, {
-        startPage  : self.__start_page,
-        totalPages : self.nPages
+        totalPages : self.nPages,
+        startPage  : self.__start_page
       }));
-      self.show_btn.setText ( 'Show all' );
     }
-    self.base.setVisible ( self.paginate );
+    self.show_btn.setText ( self.paginate ? 'Show all' : 'Paginate' );
+    self.base.setVisible  ( self.paginate );
   });
 
 }

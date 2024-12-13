@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    09.12.24   <--  Date of Last Modification.
+ *    13.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -730,6 +730,7 @@ function TablePages()  {
   this.sortCol      = 0;    // currently sorted column
   this.pageSize     = 20;
   this.crPage       = 1;
+  this.paginate     = true; // if false, full list is displayed
   this.style        = null;
 }
 
@@ -943,7 +944,6 @@ TablePages.prototype._filter_data = function ( tdesc )  {
         let listval = Array.isArray(line);
         if (listval)
           line = line[0];
-        console.log ( ' >>>>> j='+ j + ', line=' + line);
         seltext = line.toString().replace ( regex, 
                   match => `<span style="color:#D2042D;">${match}</span>` );
         if (seltext.length>line.length)
@@ -988,8 +988,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //                                           // general css for data columns
 //   sortCol     : 0,   // should be absent for no sorting
 //   mouse_hover : true,
-//   page_size   : 20,  // 0 for no pages
-//   start_page  : 1,   // optional
+//   paginate    : true, // optional, initial pagination mode
+//   page_size   : 20,   // 0 for no pages
+//   start_page  : 1,    // optional
 //   onclick     : function(rowData){}
 //   ondblclick  : function(rowData,callback_func){}
 //   oncontext   : function(target,rowData,callback_func){}
@@ -999,10 +1000,13 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 // }
 
   let selRowData = null;
+  this.paginate  = true;
   if (this.table)  {
     this.table.getSelectedRowData();
     this.table.selectedRow = -1;
   }
+  if ('paginate' in tdesc)
+    this.paginate = tdesc.paginate;
 
   this._form_table  ( tdesc );
   this._filter_data ( tdesc );
@@ -1010,29 +1014,30 @@ TablePages.prototype.makeTable = function ( tdesc )  {
   if (this.sortCol>=this.startCol)
     this.sortData();
 
-  this.crPage = 1;
+  this.crPage   = 'start_page' in tdesc ? tdesc.start_page : 1;
+  let pageSize0 = this.pageSize;
+  if (!this.paginate)
+    this.pageSize = this.tdata.length;
   this._fill_table ( 0 );
 
   this.table.selectByRowData ( selRowData,this.startCol );
 
-  if (this.pageSize<this.tdata.length)  {    
-    // console.log ( ' >>>>> ' + this.pageSize + ' : ' + this.tdata.length)
+  if (pageSize0<this.tdata.length)  {    
     let self = this;
-    let startPage = 1;
-    if ('start_page' in tdesc)
-      startPage = tdesc.start_page;
     if ('showonstart' in tdesc)  {
       let showIndex = -1;
       for (let i=0;(i<this.tdata.length) && (showIndex<0);i++)
         if (tdesc.showonstart(this.tdata[i]))
           showIndex = i;
       if (showIndex>=0)
-        startPage = Math.floor(showIndex/this.pageSize+1);
+        this.crPage = Math.floor(showIndex/this.pageSize+1);
     }
-    this.paginator = new Paginator ( this.tdata.length,this.pageSize,7,startPage,
-      function(pageNo,pageSize){
+    this.paginator = new Paginator ( this.tdata.length,pageSize0,7,
+                                     this.crPage,this.paginate,
+      function(pageNo,pageSize,paginate){
         self.crPage   = pageNo;
         self.pageSize = pageSize;
+        self.paginate = paginate;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
     this.setWidget ( this.paginator,1,0,1,1 );
@@ -1043,18 +1048,20 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 
 }
 
+
 TablePages.prototype.setPageSize = function ( page_size )  {
   let psize = Math.max ( 1,page_size );
   if (psize!=this.tdesc.page_size)  {
-    // console.log ( ' >>>> ' + $(this.table.element.rows[1]).outerHeight() )
-    // console.log ( ' >>>> page_size=' + page_size )
     let showRow   = Math.max ( this.startRow,this.table.selectedRow );
     let showIndex = this.startIndex + showRow - this.startRow;
     this.tdesc.page_size  = Math.min   ( psize,this.tdata.length );
     this.tdesc.start_page = Math.floor ( showIndex/psize ) + 1;
+    if (this.paginator)
+      this.tdesc.paginate = this.paginator.paginate; 
     this.makeTable ( this.tdesc );
   }
 }
+
 
 TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
   if (filter!=this.filter)  {
@@ -1064,8 +1071,10 @@ TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
   }
 }
 
+
 TablePages.prototype.getTableState = function()  {
-  return {
+  return  {
+    paginate  : this.paginator ? this.paginator.paginate : true,
     pageSize  : this.pageSize,
     crPage    : this.crPage,
     sortCol   : this.sortCol,
@@ -1073,23 +1082,28 @@ TablePages.prototype.getTableState = function()  {
   };
 }
 
+
 TablePages.prototype.selectRow = function ( rowNo,start_col )  {
   this.table.selectRow ( rowNo,start_col );
 }
+
 
 TablePages.prototype.getSelectedRowData = function()  {
   return this.table.getSelectedRowData();
 }
 
+
 TablePages.prototype.selectByRowData = function ( rowData,startCol )  {
   return this.table.selectByRowData ( rowData,startCol );
 }
+
 
 TablePages.prototype.getRowHeight = function()  {
   if (this.table)
     return  this.table.getRowHeight ( this.startRow );
   return  29.1953;
 }
+
 
 TablePages.prototype.setContextMenu = function ( contextmenu_func,cellNo=2 )  {
   for (let i=this.startRow;i<this.table.element.rows.length;i++)  {
