@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    09.12.24   <--  Date of Last Modification.
+ *    12.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -943,7 +943,6 @@ TablePages.prototype._filter_data = function ( tdesc )  {
         let listval = Array.isArray(line);
         if (listval)
           line = line[0];
-        console.log ( ' >>>>> j='+ j + ', line=' + line);
         seltext = line.toString().replace ( regex, 
                   match => `<span style="color:#D2042D;">${match}</span>` );
         if (seltext.length>line.length)
@@ -988,8 +987,9 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //                                           // general css for data columns
 //   sortCol     : 0,   // should be absent for no sorting
 //   mouse_hover : true,
-//   page_size   : 20,  // 0 for no pages
-//   start_page  : 1,   // optional
+//   paginate    : true, // optional, initial pagination mode
+//   page_size   : 20,   // 0 for no pages
+//   start_page  : 1,    // optional
 //   onclick     : function(rowData){}
 //   ondblclick  : function(rowData,callback_func){}
 //   oncontext   : function(target,rowData,callback_func){}
@@ -999,10 +999,12 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 // }
 
   let selRowData = null;
+  let paginate0  = true;
   if (this.table)  {
     this.table.getSelectedRowData();
     this.table.selectedRow = -1;
-  }
+  } else if ('paginate' in tdesc)
+    paginate0 = tdesc.paginate;  // works only first time!
 
   this._form_table  ( tdesc );
   this._filter_data ( tdesc );
@@ -1016,7 +1018,6 @@ TablePages.prototype.makeTable = function ( tdesc )  {
   this.table.selectByRowData ( selRowData,this.startCol );
 
   if (this.pageSize<this.tdata.length)  {    
-    // console.log ( ' >>>>> ' + this.pageSize + ' : ' + this.tdata.length)
     let self = this;
     let startPage = 1;
     if ('start_page' in tdesc)
@@ -1035,6 +1036,8 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         self.pageSize = pageSize;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
+    if (!paginate0)  // works only first time!
+      this.paginator.show_btn.click();
     this.setWidget ( this.paginator,1,0,1,1 );
   } else if (this.paginator)  {
     this.setLabel ( '&nbsp;',1,0,1,1 );
@@ -1065,7 +1068,8 @@ TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
 }
 
 TablePages.prototype.getTableState = function()  {
-  return {
+  return  {
+    paginate  : this.paginator ? this.paginator.paginate : true,
     pageSize  : this.pageSize,
     crPage    : this.crPage,
     sortCol   : this.sortCol,

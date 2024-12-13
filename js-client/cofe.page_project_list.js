@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    12.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -945,6 +945,8 @@ function ProjectListPage ( sceneId )  {
       tdesc.sortCol = projectList.listState.sortCol;
       for (let i=tdesc.columns.length-1;i>=0;i--)
         tdesc.columns[i].sort = projectList.listState.sort_list[i];
+      if ('paginate' in projectList.listState)
+        tdesc.paginate = projectList.listState.paginate;
     }
 
     //  ===== Add table data to table description
@@ -1136,343 +1138,6 @@ function ProjectListPage ( sceneId )  {
   }
 
 
-/*
-  // function to create project list table and fill it with data
-  function makeProjectListTable_1()  {
-
-    if (self.tablesort_tbl)
-      projectList.sortList = self.tablesort_tbl.getSortList();
-    else if (!('sortList' in projectList))
-      projectList.sortList = [[5,1]];
-
-    if (__current_folder.nprojects>=0)  // works first time after login
-          __current_folder = projectList.currentFolder;
-    else  projectList.currentFolder = __current_folder;
-    // let owners_folder = __login_id + '\'s Projects';
-
-    let nrows = 0;
-    for (let i=0;i<projectList.projects.length;i++)
-      if (listProject(projectList.projects[i]))
-        nrows++;
-
-    __current_folder.nprojects = nrows;
-    switch (__current_folder.type)  {
-      case folder_type.shared        : projectList.folders[1].nprojects = nrows;
-                                       projectList.folders[1].nprjtree  = nrows;
-                                     break;
-      case folder_type.joined        : projectList.folders[2].nprojects = nrows;
-                                       projectList.folders[2].nprjtree  = nrows;
-                                     break;
-      case folder_type.all_projects  : projectList.folders[3].nprojects = nrows;
-                                       projectList.folders[3].nprjtree  = nrows;
-                                     break;
-      case folder_type.archived      : projectList.folders[4].nprojects = nrows;
-                                       projectList.folders[4].nprjtree  = nrows;
-                                     break;
-      case folder_type.cloud_archive : projectList.folders[5].nprojects = nrows;
-                                       projectList.folders[5].nprjtree  = nrows;
-                                     break;
-      default : ;
-    }
-
-    setPageTitle ( __current_folder );
-
-    let archive_folder = (__current_folder.type==folder_type.archived) ||
-                         (__current_folder.type==folder_type.cloud_archive);
-
-    self.tablesort_tbl = new TableSort();
-    let tbs_headers = [];
-    if (archive_folder)
-      tbs_headers = ['Archive ID'];
-    self.tablesort_tbl.setHeaders ( tbs_headers.concat([
-      'ID','Name',
-      '<center>R<sub>free</sub></center>',
-      '<center>Disk<br>(MBytes)</center>',
-      '<center>CPU<br>(hours)</center>',
-      '<center>Date<br>Created</center>',
-      '<center>Last<br>Opened</center>'
-    ]));
-
-    panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-
-    let message = 'folder';
-    if (isCurrentFolderList())
-      message = 'list';
-
-    message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
-              'There are no projects in ' + message + ' "' +
-              folderPathTitle(__current_folder,__login_id,1000) + '".' +
-              '<p>Use "Add" button to create a new Project' +
-              ';<br>"Import" button for importing a project exported from ' +
-                appName() +
-              ';<br>"Join" button for joining project shared with you by ' +
-              'another user;<br>or "Tutorials" button for loading ' +
-              'tutorial/demo projects;<br>or click on page title or folder ' +
-              'icon in it to change the folder.</h3></div>';
-    self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
-                                   table_row+1,0,1,nCols )
-                       .setFontItalic ( true )
-                       .setNoWrap();
-    panel.setHorizontalAlignment ( table_row+1,0,"center" );
-
-    let addLbl   = 'Add';
-    let addIcon  = 'add';
-    let addWidth = '60pt';
-    if (__current_folder.type==folder_type.cloud_archive)  {
-      addLbl   = 'Access';
-      addIcon  = 'folder_cloud_archive';
-      addWidth = '75pt';
-    }
-    if (tightScreen)  {
-      addLbl   = '';
-      addWidth = '30pt';
-    }
-    add_btn.setButton ( addLbl,image_path(addIcon) ).setWidth(addWidth);
-
-    let moveLbl  = '';
-    let moveIcon = 'folder_projects';
-    if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
-          folder_type.all_projects].includes(__current_folder.type))  {
-      if (!tightScreen)
-        moveLbl = 'Delist';
-      moveIcon = 'folder_list_custom_delist';
-    } else if (__current_folder.type==folder_type.cloud_archive)  {
-      if (!tightScreen)
-        moveLbl = 'Delist';
-      moveIcon = 'folder_cloud_archive_delist';
-    } else if (!tightScreen)
-      moveLbl = 'Move';
-    move_btn.setButton ( moveLbl,image_path(moveIcon) );
-
-    if (nrows<=0)  {
-
-      __current_project = null;
-
-      let trow = self.tablesort_tbl.addRow();
-      if (archive_folder)
-        trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      self.tablesort_tbl.createTable ( null );
-      open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( true  );
-      clone_btn .setDisabled ( true  );
-      move_btn  .setDisabled ( true  );
-      del_btn   .setDisabled ( true  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( true  );
-      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
-
-    } else  {
-
-      let selectedRow = null;
-      nrows = 0;
-      // alert ( __current_folder );
-      for (let i=0;i<projectList.projects.length;i++)
-        if (listProject(projectList.projects[i]))  {
-
-          let trow = self.tablesort_tbl.addRow();
-
-          //contextMenu.setWidth ( '10px' );
-          // contextMenu.setHeight_px ( 400 );
-          // contextMenu.setZIndex ( 101 );
-
-          let pDesc = projectList.projects[i];
-          let pName = pDesc.name;
-          if (archive_folder)
-            pName = pDesc.archive.project_name;
-          // when list of projects is served from FE, shared record is removed
-          // in case of owner's login
-          let joined = ['','',''];
-          let shared_project = false;
-          if ('owner' in pDesc)  {
-            // if (pDesc.owner.share.length>0)  {
-            if (Object.keys(pDesc.share).length>0)  {
-              if (pDesc.owner.login!=__login_id)  {
-                joined = ['<i>','</i>',"is not included in user\'s quota"];
-                pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-                shared_project = true;
-              }
-            } else if (('author' in pDesc.owner) && pDesc.owner.author &&
-                       (pDesc.owner.author!=pDesc.owner.login) &&
-                       (pDesc.owner.author!=__login_id))
-              pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
-          }
-
-          let contextMenu;
-          (function(shared_prj){
-
-            let del_label = '';
-            if (!tightScreen)  {
-              del_label = 'Delete';
-              if (shared_prj)
-                del_label = 'Unjoin';
-            }
-
-            $(trow.element).click(function(){
-              del_btn.setText(del_label);
-            });
-
-            // let can_move = ((__current_folder.type==folder_type.user) &&
-            //                  __current_folder.path.startsWith(owners_folder)) ||
-            //                (__current_folder.type==folder_type.tutorials);
-
-            // let can_move = ((__current_folder.type==folder_type.user) &&
-            //                 //  __current_folder.path.startsWith(owners_folder)) ||
-            //                  pDesc.folderPath.startsWith(owners_folder)) ||
-            //                (__current_folder.type==folder_type.tutorials);
-
-            contextMenu = new ContextMenu ( trow,function(){
-              del_btn.setText ( del_label );
-            });
-            contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
-            if (!archive_folder)
-              contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
-            if (!archive_folder)
-              contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
-            contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-            contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
-            if (((__current_folder.type==folder_type.user) &&
-                  __current_folder.path.startsWith(owners_folder)) ||
-                (__current_folder.type==folder_type.tutorials))
-              contextMenu.addItem('Move',image_path('folder_projects') )
-                         .addOnClickListener(function(){ browseFolders('move') });
-            else if (__current_folder.type==folder_type.custom_list)
-              contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
-                         .addOnClickListener(function(){ delistProject(); });
-            else if (__current_folder.type==folder_type.cloud_archive)
-              contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
-                         .addOnClickListener(function(){ delistProject(); });
-            if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
-                (!__local_user))
-              contextMenu.addItem('Work team',image_path('workteam')).addOnClickListener(prjWorkTeam);
-            if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
-              contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
-            // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
-
-          }(shared_project))
-
-          if (archive_folder)
-            trow.addCell ( pDesc.archive.id  ).setNoWrap();
-          trow.addCell ( pName  ).setNoWrap();
-          trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
-          if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
-                                   && (pDesc.metrics.R_free<'1.0'))  {
-            let info = '<table class="table-rations">' +
-                       '<tr><td colspan="2"><b><i>Best scores (job ' +
-                       padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
-                       '<tr><td colspan="2"><hr/></td></tr>';
-            function add_info ( title,value )  {
-              info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
-            }
-            add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
-                       '</b> / ' + round(pDesc.metrics.R_factor,4) );
-            add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
-                       '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
-                       '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
-            //add_info ( 'R-free'  ,round(pDesc.metrics.R_free,4)   );
-            //add_info ( 'R-factor',round(pDesc.metrics.R_factor,4) );
-            //add_info ( 'Residues modelled',pDesc.metrics.nRes_Model );
-            info += '</table><table class="table-rations">' +
-                       '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
-                       '<tr><td colspan="2"><hr/></td></tr>';
-            add_info ( 'Space group',pDesc.metrics.SG       );
-            add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
-                       round(pDesc.metrics.res_high,2) + ' &Aring;' );
-            if (pDesc.metrics.Solvent>0.0)
-              add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
-                         round(pDesc.metrics.Solvent,1) + '%' );
-            if (pDesc.metrics.MolWeight>0.0)
-              add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
-            if (pDesc.metrics.nRes_ASU>0)
-              add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
-                         '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
-                         '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
-            if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
-              add_info ( 'HA type',pDesc.metrics.ha_type );
-            trow.addCell ( pDesc.metrics.R_free ).setNoWrap()
-                .setTooltip1(info + '</table>','show',false,20000);
-          } else
-            trow.addCell ( '' );
-          if (pDesc.hasOwnProperty('disk_space'))
-                trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          if (pDesc.hasOwnProperty('cpu_time'))
-                trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
-          // trow.addCell ( pDesc.dateLastUsed + 'T' + (1000+i) // '<span style="visibility:hidden;font-size:1px;">' + (1000+i) + '</span>'
-          trow.addCell ( pDesc.dateLastUsed ).setNoWrap().setHorizontalAlignment('center');
-          //tablesort_tbl.addRow ( trow );
-          if ((nrows==0) || (pDesc.name==projectList.current))
-            selectedRow = trow;
-          nrows++;
-
-        }
-
-      self.tablesort_tbl.createTable ( function(){  // onSorted callback
-        saveProjectList ( null,null );
-      });
-      if (projectList.sortList)
-        window.setTimeout ( function(){
-          self.tablesort_tbl.applySortList ( projectList.sortList,true );
-        },10 );
-      self.tablesort_tbl.selectRow ( selectedRow );
-      selectedRow.click();  // just sets the Delete/Unjoin button label
-      open_btn  .setDisabled ( false );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( archive_folder );
-      clone_btn .setDisabled ( false );
-      move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
-          [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
-          .includes(__current_folder.type) );
-      // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
-      del_btn   .setDisabled ( archive_folder  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( false );
-      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
-
-      self.welcome_lbl.hide();
-
-    }
-
-    self.tablesort_tbl.setHeaderNoWrap   ( -1      );
-    let colNo = 0;
-    if (archive_folder)
-      self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'70%' );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-
-    self.tablesort_tbl.setHeaderFontSize ( '100%' );
-    self.onResize ( window.innerWidth,window.innerHeight );
-
-    self.tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
-      openProject();
-    });
-    self.tablesort_tbl.setCursor('pointer');
-
-    // self.tablesort_tbl.addSignalHandler ( 'row_click',function(trow){
-    //   __close_all_menus();
-    // });
-
-  }
-*/
-
   function loadProjectList()  {
     //  Read list of projects from server
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
@@ -1588,7 +1253,9 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  this.makeHeader ( 3,null );
+  this.makeHeader ( 3,function(callback_func){
+    saveProjectList ( function(data){ callback_func(); },null );
+  });
 
   this.headerPanel.setCellSize ( '30%','',0,3 );
   folder_btn = new ImageButton ( image_path('folder_projects'),'34px','34px' )
@@ -1619,6 +1286,7 @@ function ProjectListPage ( sceneId )  {
 
   // Make Main Menu
   this.addMenuItem ( 'Change project folder','folder_projects',function(){
+    saveProjectList ( function(data){ makeAccountPage(sceneId); },null );
     browseFolders ( 'select' );
   });
   // this.addMenuSeparator();
@@ -1865,7 +1533,8 @@ ProjectListPage.prototype.calcPageSize = function()  {
 }
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
-  this.projectTable.setPageSize ( this.calcPageSize() );
+  // if (this.projectTable.paginator.paginate)
+    this.projectTable.setPageSize ( this.calcPageSize() );
   // this.element.style.height = `${window.innerHeight - 32}px`;
   // this.element.style.height = (height+8) + 'px';
 }
