@@ -990,7 +990,6 @@ TablePages.prototype.makeTable = function ( tdesc )  {
 //   mouse_hover : true,
 //   paginate    : true, // optional, initial pagination mode
 //   page_size   : 20,   // 0 for no pages
-//   start_page  : 1,    // optional
 //   paginate    : true, // optional, initial pagination mode
 //   page_size   : 20,   // 0 for no pages
 //   start_page  : 1,    // optional
@@ -1043,8 +1042,6 @@ TablePages.prototype.makeTable = function ( tdesc )  {
         self.paginate = paginate;
         self._fill_table ( self.pageSize*(pageNo-1) );
       });
-    if (!paginate0)  // works only first time!
-      this.paginator.show_btn.click();
     this.setWidget ( this.paginator,1,0,1,1 );
   } else if (this.paginator)  {
     this.setLabel ( '&nbsp;',1,0,1,1 );
@@ -1078,8 +1075,6 @@ TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
 
 
 TablePages.prototype.getTableState = function()  {
-  return  {
-    paginate  : this.paginator ? this.paginator.paginate : true,
   return  {
     paginate  : this.paginator ? this.paginator.paginate : true,
     pageSize  : this.pageSize,
