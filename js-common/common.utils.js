@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.12.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -197,22 +197,15 @@ function sortObjects ( array, field, ascending=true )  {
   return array.sort((a, b) => {
     let valueA = a[field];
     let valueB = b[field];
-    if (Array.isArray(valueA))  {
-      if (valueA.length>0)  valueA = valueA[0];
-                      else  valueA = '';
-    }
-    if (Array.isArray(valueB))  {
-      if (valueB.length>0)  valueB = valueB[0];
-                      else  valueB = '';
-    }
-    valueA = valueA.toString().trim();
-    valueB = valueB.toString().trim();
-    const numA   = parseFloat(valueA);
-    const numB   = parseFloat(valueB);  
-    const isNum1 = !isNaN(valueA) && !isNaN(numA) && valueA !== '';
-    const isNum2 = !isNaN(valueB) && !isNaN(numB) && valueB !== '';
-    if (isNum1 && isNum2) {
-        // Compare as numbers
+    if (Array.isArray(valueA))
+      valueA = valueA.length>0 ? strip_html_tags(valueA[0].toString()).trim() : '';
+    if (Array.isArray(valueB))
+      valueB = valueB.length>0 ? strip_html_tags(valueB[0].toString()).trim() : '';
+    const numA = parseFloat(valueA);
+    const numB = parseFloat(valueB);  
+    if ( !isNaN(valueA) && !isNaN(numA) && valueA !== '' &&
+         !isNaN(valueB) && !isNaN(numB) && valueB !== '' )  {
+      // Compare as numbers
       if (numA < numB) return ascending ? -1 :  1;
       if (numA > numB) return ascending ?  1 : -1;
       return 0;
