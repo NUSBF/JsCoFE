@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -291,7 +291,7 @@ function printTemplate ( task )  {
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already), runs the "Hop-On Import" task (project',
           '# initiation from phased structure) followed by the Auto-REL automatic',
-          'refinement workflow.'
+          'refinement workflow (without ligand fitting).'
         ].concat(msg);
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
@@ -310,7 +310,7 @@ function printTemplate ( task )  {
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz      # reflection data (mandatory)',
           'XYZ         /path/to/apo.pdb      # model',
-          'LIGAND      /path/to/file.cif     # ligand (optional)',
+          'LIGAND      /path/to/file.cif     # ligand(s) (optional, if present in model)',
           '#',
           '# providing sequence is optional and may be used if a close, but',
           '# not 100% structure homologue is used, in which case the resulting',

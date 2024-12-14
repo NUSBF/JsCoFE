@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.11.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1978,29 +1978,33 @@ if (!dbx)  {
   TaskTemplate.prototype.collectInputLigands = function ( inputPanel )  {
     let msg = '';  // Ok if stays empty
 
-    for (let i=0;i<this.input_ligands.length;i++)  {
-      this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
-      this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
-      this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
-      if (this.input_ligands[i].source!='none')  {
-        if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
-          msg += '|<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
-        if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
-          msg += '|<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
-      }
-    }
+    if ('ligands' in inputPanel)  {
 
-    let unique = true;
-    for (let i=0;(i<this.input_ligands.length) && unique;i++)
-      if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
-        for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
-          if ((this.input_ligands[j].source!='none') &&
-              (this.input_ligands[i].code==this.input_ligands[j].code))  {
-            unique = false;
-            msg += '|<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
-                   '</i></b>';
-          }
+      for (let i=0;i<this.input_ligands.length;i++)  {
+        this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
+        this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
+        this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
+        if (this.input_ligands[i].source!='none')  {
+          if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
+            msg += '|<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
+          if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
+            msg += '|<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
+        }
       }
+
+      let unique = true;
+      for (let i=0;(i<this.input_ligands.length) && unique;i++)
+        if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
+          for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
+            if ((this.input_ligands[j].source!='none') &&
+                (this.input_ligands[i].code==this.input_ligands[j].code))  {
+              unique = false;
+              msg += '|<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
+                    '</i></b>';
+            }
+        }
+
+    }
 
     return  msg;
 

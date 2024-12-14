@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,7 +62,8 @@ function TaskMigrate()  {
   this.file_xyz  = ''; // name of file with atomic coordinates
   this.file_lib  = ''; // name of file with ligand descriptions
 
-  this.upload_files = [];
+  this.upload_files  = [];
+  this.input_ligands = [];  // list of ligand description widgets
 
 }
 
@@ -125,7 +126,8 @@ if (!__template)  {
       this.file_lib = task.file_lib; // name of file with ligand descriptions
     }
 
-    this.upload_files = [];
+    this.upload_files  = [];
+    this.input_ligands = [];  // list of ligand description widgets
 
     return;
 
