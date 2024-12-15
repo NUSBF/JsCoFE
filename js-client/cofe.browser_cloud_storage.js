@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    26.05.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -66,7 +66,7 @@ function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onCl
     this.tree_top = this.task.rootCloudPath;
   this.loadStorageTree ( this.task.currentCloudPath,this.tree_top );
 
-  var dlg_options = {
+  let dlg_options = {
     resizable : true,
     modal     : true
   }
@@ -122,7 +122,7 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath,topPath )  {
 
     browser.tree_loading = true;
 
-    var storageTree = new StorageTree ( browser.tree_type,cloudPath,topPath,
+    let storageTree = new StorageTree ( browser.tree_type,cloudPath,topPath,
                                                 browser.file_key,browser.dir_desc );
 
     storageTree.element.style.paddingTop    = '0px';
@@ -205,13 +205,13 @@ CloudFileBrowser.prototype.openItem = function()  {
   if (this.tree_loading)
     return;
 
-  var items = this.storageTree.getSelectedItems();
+  let items = this.storageTree.getSelectedItems();
   if (items.length>0)  {
     if (items[0]._type=='StorageDir')  {
-      var cloudPath = '';
+      let cloudPath = '';
       if (this.task.currentCloudPath)  {
         if (items[0].name=='..')  {
-          var lst = this.task.currentCloudPath.split('/');
+          let lst = this.task.currentCloudPath.split('/');
           cloudPath = lst.slice(0,lst.length-1).join('/');
         } else
           cloudPath = this.task.currentCloudPath + '/' + items[0].name;
@@ -247,7 +247,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
   } else  {
 
-    var storageTree = new StorageTree ( 'files',path,'/',this.file_key,this.dir_desc );
+    let storageTree = new StorageTree ( 'files',path,'/',this.file_key,this.dir_desc );
     storageTree.tree_type = this.tree_type;
     storageTree.readStorageData ( 'Cloud File Storage',this.ext_filter,
       function(){
@@ -268,8 +268,8 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
 
 CloudFileBrowser.prototype.selectItem = function()  {
-  var items = this.storageTree.getSelectedItems();
-  for (var i=items.length-1;i--;)  {
+  let items = this.storageTree.getSelectedItems();
+  for (let i=items.length-1;i--;)  {
     if (items[i].name=='..')
       items.splice(i,1);
   }
@@ -279,20 +279,25 @@ CloudFileBrowser.prototype.selectItem = function()  {
         if (items[0].name=='..')  {
           this.onSelect_func ( this.storageTree.storageList );
           $(this.element).dialog( "close" );
-          //$(this.element).dialog( "destroy" );
         } else  {
-          (function(browser){
-            browser.getStorageList ( browser.task.currentCloudPath+'/'+items[0].name,
-                                     function(storageList){
-              $(browser.element).dialog( "close" );
-              browser.onSelect_func ( storageList );
+          let browser = this;
+          this.getStorageList ( this.task.currentCloudPath+'/'+items[0].name,
+            function(storageList){
+                browser.onSelect_func ( storageList );
+                $(browser.element).dialog( "close" );
             });
-          }(this))
         }
       }
+    } else if (this.file_key==2)  {
+      // image file clicked for selection
+      let browser = this;
+      this.getStorageList ( this.task.currentCloudPath,
+        function(storageList){
+          browser.onSelect_func ( storageList );
+          $(browser.element).dialog( "close" );
+        });
     } else if (this.onSelect_func)  {
       if (this.onSelect_func(items)==1)
-        //$(this.element).dialog( "destroy" );
         $(this.element).dialog( "close" );
     }
   }
@@ -301,11 +306,11 @@ CloudFileBrowser.prototype.selectItem = function()  {
 
 CloudFileBrowser.prototype.onTreeItemSelect = function()  {
   if (this.storageTree)  {
-    var items   = this.storageTree.getSelectedItems();
-    var n_dirs  = 0;
-    var n_files = 0;
-    var parent_dir = false;
-    for (var i=0;i<items.length;i++)
+    let items   = this.storageTree.getSelectedItems();
+    let n_dirs  = 0;
+    let n_files = 0;
+    let parent_dir = false;
+    for (let i=0;i<items.length;i++)
       if (items[i]._type=='StorageDir')  {
         n_dirs++;
         if ((items[i].name=='..') || (items[i].name=='**top**'))
@@ -317,9 +322,11 @@ CloudFileBrowser.prototype.onTreeItemSelect = function()  {
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable || parent_dir );
     } else if (this.file_key==2)  {
+      // select image directories
       let disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
-      this.disableButton  ( 1,disable );
+      // this.disableButton  ( 1,disable );
+      this.disableButton  ( 1,disable && (n_files<=0) );
     } else if ((n_dirs==1) && (n_files==0))  {
       this.disableButton  ( 0,false  );
       this.disableButton  ( 1,true   );

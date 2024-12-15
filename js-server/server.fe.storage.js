@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.05.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,7 +86,7 @@ function getJobSafeMount()  {
 }
 
 
-function dirpath2sectors(dirpath, sectors, file_list) {
+function dirpath2sectors ( dirpath, sectors, file_list )  {
   //
   // indices for:
   // c = block of didgits within a filename
@@ -107,9 +107,9 @@ function dirpath2sectors(dirpath, sectors, file_list) {
   let rec_dat = /.+\.(?:pdb|mtz|cif)$/i;
   let rec_seq = /.+\.(?:seq|fasta|pir)$/i;
   let rec_img = /((?!$)[^0-9]*)([0-9]+|$)/g;
-  let t_q = [];
-  let l_cq = [];
-  let r_ciq = [];
+  let t_q     = [];
+  let l_cq    = [];
+  let r_ciq   = [];
   for (let f of fs.readdirSync(dirpath).sort())
     if (f!=cloudDirMetaFName)  {
       let fpath = path.join(dirpath, f);
@@ -148,12 +148,12 @@ function dirpath2sectors(dirpath, sectors, file_list) {
       }
     }
 
-  let f_p = [];
-  let t_f = {};
+  let f_p   = [];
+  let t_f   = {};
   let rr_jf = {};
   for (let q in t_q) {
-    let l_c = l_cq[q];
-    let r_ci = r_ciq[q];
+    let l_c   = l_cq[q];
+    let r_ci  = r_ciq[q];
     let u_max = 0;
     let c_max;
     for (let c in l_c) {
@@ -200,7 +200,7 @@ function dirpath2sectors(dirpath, sectors, file_list) {
   }
   f_p.sort()
   for (let f of f_p) {
-    let t = t_f[f];
+    let t    = t_f[f];
     let rr_j = [];
     let nn_j = [];
     for (let [r0, r1] of rr_jf[f]) {
@@ -219,7 +219,7 @@ function dirpath2sectors(dirpath, sectors, file_list) {
           fk_o.push([f1, 'unk']);
         }
         else {
-          fk_o.push([f0, f1]);
+          fk_o.push([f0, f1, i1-i0-1]);  // added with number of skipped files
         }
       }
     }
@@ -413,14 +413,17 @@ let slist = null;
               }
             } 
             else {
+              let skipname = file_tuple.length>2 ? 
+                                 file_tuple[2]+' files not shown here' : 
+                                 '-----';
               if (fstr0.split('.').pop().toLowerCase() == 'h5') {
                 add_file(fstr0, 0).h5 = 1;
-                add_file('......', 0).h5 = 0;
+                add_file(skipname, 0).h5 = 0;
                 add_file(fstr1, 0).h5 = 2;
               }
               else {
                 add_file(fstr0, 0).image = 1;
-                add_file('......', 0).image = 0;
+                add_file(skipname, 0).image = 0;
                 add_file(fstr1, 0).image = 2;
               }
             }
