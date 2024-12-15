@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    15.12.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +31,6 @@ import json
 
 #  application imports
 from . import basic
-from   pycofe.varut   import rvapi_utils
 
 
 # ============================================================================
@@ -175,7 +174,7 @@ class MrParse(basic.TaskDriver):
             self.putMessage1 (
                 "mrparse_report",
                 "<iframe src=\"../" + mrparse_dir + "/mrparse.html\" " +\
-                "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
+                "style=\"display:block;border:none;position:absolute;top:50px;left:0;width:100vw;height:90%;overflow-x:auto;\"></iframe>",
                 0 )
 
             self.insertTab ( "mrparse_log","MrParse Log",
@@ -212,6 +211,10 @@ class MrParse(basic.TaskDriver):
 
             if len(homologs)>0:
 
+                homologs = sorted ( homologs, 
+                                    key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                    reverse=True )
+
                 for i in range(len(homologs)):
                     if homologs[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
@@ -245,6 +248,10 @@ class MrParse(basic.TaskDriver):
 
 
             if len(afmodels)>0:
+
+                afmodels = sorted ( afmodels, 
+                                    key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                    reverse=True )
 
                 for i in range(len(afmodels)):
                     if afmodels[i]["pdb_file"]:
@@ -281,6 +288,10 @@ class MrParse(basic.TaskDriver):
 
             if len(esmmodels)>0:
 
+                esmmodels = sorted ( esmmodels, 
+                                     key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                     reverse=True )
+
                 for i in range(len(esmmodels)):
                     if esmmodels[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,esmmodels[i]["pdb_file"] )
@@ -290,7 +301,7 @@ class MrParse(basic.TaskDriver):
                                 if nhomologs<1:
                                     if nafmodels<1:
                                         self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                         "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                                                          "with sequence:&nbsp;" + seq.dname + "</b></i>" )
                                 self.putTitle ( "MR models prepared from ESMFold structures" )
                             else:
                                 self.putMessage ( "&nbsp;" )
