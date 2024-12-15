@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1147,6 +1147,40 @@ function padDigits ( number,digits ) {
 }
 
 
+function gracefulQuit()  {
+  if (//(process._getActiveHandles().length==0) && 
+      (process._getActiveRequests().length==0))  {
+    process.exit(0);
+  } else  {
+    log.standard ( 210,'active handles: '    + process._getActiveHandles().length + 
+                       ', active requests: ' + process._getActiveRequests().length );
+    const interval = setInterval(() => {
+      log.standard ( 211,'active handles: '    + process._getActiveHandles().length + 
+                         ', active requests: ' + process._getActiveRequests().length );
+      if (//(process._getActiveHandles().length==0) && 
+          (process._getActiveRequests().length==0)) {
+        clearInterval(interval);
+        process.exit(0);
+      }
+    },100 );
+  }
+}
+
+function setGracefulQuit()  {
+  process.on('beforeExit', () => {
+    log.standard ( 200,'exiting gracefully' );
+    gracefulQuit();
+  });
+  process.on('SIGINT', () => {
+    log.standard ( 201,'terminated from console, exit gracefully' );
+    gracefulQuit();
+  });
+  // process.on('SIGKILL', () => {
+  //   log.standard ( 202,'exiting gracefully on SIGKILL' );
+  //   gracefulQuit();
+  // });
+}
+
 // ==========================================================================
 // export for use in node
 module.exports.configureCache        = configureCache;
@@ -1194,3 +1228,4 @@ module.exports.send_file             = send_file;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
 module.exports.padDigits             = padDigits;
+module.exports.setGracefulQuit       = setGracefulQuit;
