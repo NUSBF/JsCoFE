@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.06.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -328,29 +328,5 @@ function launch()  {
   });
 
 }
-
-/*
-if (!startFE)  {
-  // just poll the server
-  var request = require('request');
-  var url = feConfig.externalURL;
-  if (url[url.length-1]!='/')  url += '/';
-  request ( url+'whoareyou', { json: true },function(err,res,body){
-    if (err) {
-      console.log ( ' *** probe connection to ' + feConfig.externalURL + ' failed' );
-      return console.log(err);
-    }
-    console.log ( ' ... Front-End at ' + feConfig.externalURL + ' replied: ' + body );
-    launch();
-  });
-} else
-  launch();
-*/
-
-
-process.on ( 'SIGINT',function() {
-  log.standard ( 7,'terminated from console by user' );
-  process.exit();
-});
 
 launch();
