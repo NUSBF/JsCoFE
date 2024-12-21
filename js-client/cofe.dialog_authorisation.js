@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    18.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Software Authorisation Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -53,7 +53,7 @@ function AuthorisationDialog ( callback_func )  {
   this.grid.setHLine ( 1, 2,0,1,5 );
 
   // fetch user data from server
-  var self      = this;
+  let self      = this;
   this.userData = null;
   serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
 
@@ -64,7 +64,7 @@ function AuthorisationDialog ( callback_func )  {
 
     self.layAuthorisationEntries();
 
-    var w = 3*$(window).width()/5 + 'px';
+    let w = 3*$(window).width()/5 + 'px';
 
     $(self.element).dialog({
       resizable : true,
@@ -107,13 +107,13 @@ AuthorisationDialog.prototype.startTimer = function()  {
 AuthorisationDialog.prototype.updateOnTimer = function()  {
   // (function(self){
     if (this.timerCount>0)  {
-      var self = this;
+      let self = this;
       serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
         if (data.hasOwnProperty('authorisation'))  {
-          for (var key in self.auth_dic)  {
+          for (let key in self.auth_dic)  {
             if (data.authorisation.hasOwnProperty(key)) {
-              var adate = data.authorisation[key].auth_date;
-              var token = data.authorisation[key].token;
+              let adate = data.authorisation[key].auth_date;
+              let token = data.authorisation[key].token;
               if ((self.auth_dic[key].auth_date0!=adate) ||
                   (self.auth_dic[key].token0!=token)) {
                 self.timerCount--;
@@ -122,8 +122,8 @@ AuthorisationDialog.prototype.updateOnTimer = function()  {
                 self.auth_dic[key].auth_date  = adate;
                 self.auth_dic[key].token      = token;
                 __user_authorisation[key]     = data.authorisation[key];
-                var auth_msg   = '';
-                var auth_color = '';
+                let auth_msg   = '';
+                let auth_color = '';
                 if (adate.length<=0)  {
                   auth_msg   = '<b><i>not authorised</i></b>';
                   auth_color = 'darkred';
@@ -160,11 +160,11 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
 
   this.timerCount = 0;
 
-  var row = 3;
+  let row = 3;
 
 //console.log ( JSON.stringify(__auth_software) );
 
-  for (var key in __auth_software)  {
+  for (let key in __auth_software)  {
 
     this.grid.setLabel ( '&nbsp;',row++,0,1,5 ).setHeight('9pt').setBackgroundColor('lightblue');
     this.grid.setLabel ( '&nbsp;',row++,0,1,5 ).setHeight('6pt');
@@ -172,8 +172,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     if (!this.auth_dic.hasOwnProperty(key))
       this.auth_dic[key] = { 'auth_date' : '', 'token' : '' };
 
-    var row1 = row+1;
-    var row2 = row+2;
+    let row1 = row+1;
+    let row2 = row+2;
     this.grid.setLabel ( '<b><i>Software:</i></b>',row,0,1,1 );
     this.grid.setLabel ( '<img src="' + image_path(__auth_software[key].icon_software) +
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
@@ -183,7 +183,7 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
                          __auth_software[key].desc_provider,row1,1,1,3 ).setNoWrap();
 
-    var auth_inp = null;
+    let auth_inp = null;
     if ('auth_data' in __auth_software[key])  {
       this.grid.setLabel ( '&nbsp;',row2++,0,1,1 );
       if ('help_page' in __auth_software[key])
@@ -196,10 +196,10 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
                 '<span style="color:blue">PDB-REDO token page</span></a></br>&nbsp;',
           row2++,1,1,2 );
       auth_inp = {};
-      for (var auth_item in __auth_software[key].auth_data)  {
+      for (let auth_item in __auth_software[key].auth_data)  {
         this.grid.setLabel ( '<i>' + __auth_software[key].auth_data[auth_item].label + ':</i>&nbsp;',
                              row2,0,1,1 ).setHorizontalAlignment('right');
-        var val0 = '';
+        let val0 = '';
         if (auth_item in this.auth_dic[key])
           val0 = this.auth_dic[key][auth_item];
         auth_inp[auth_item] = this.grid.setInputText ( val0,row2,1,1,1 )
@@ -212,8 +212,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
 
     this.grid.setLabel ( '<b><i>Authorisation:&nbsp;&nbsp;</i></b>',row2,0,1,1 );
 
-    var auth_msg   = '';
-    var auth_color = '';
+    let auth_msg   = '';
+    let auth_color = '';
     this.auth_dic[key].auth_date0 = this.auth_dic[key].auth_date;
     this.auth_dic[key].token0     = this.auth_dic[key].token;
     if (this.auth_dic[key].auth_date.length<=0)  {
@@ -224,9 +224,9 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       auth_color = '#FFBF00';
     } else  {
       if ('expiry_date' in this.auth_dic[key])  {
-        var d1 = new Date(this.auth_dic[key].expiry_date);
+        let d1 = new Date(this.auth_dic[key].expiry_date);
         if (d1!='Invalid Date')  {
-          var d2 = new Date(this.auth_dic[key].auth_date);
+          let d2 = new Date(this.auth_dic[key].auth_date);
           if (d1.getTime()<d2.getTime())  {
             auth_msg   = '<b><i>authorisation expired on ' + 
                          this.auth_dic[key].expiry_date + '</i></b>';
@@ -245,7 +245,7 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     this.auth_lbl[key] = this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
                                   .setFontColor(auth_color).setNoWrap();
 
-    var request_btn = this.grid.setButton ( 'request authorisation',
+    let request_btn = this.grid.setButton ( 'request authorisation',
                                             image_path('authorisation'),
                                             row2,2,1,1 ).setNoWrap();
 
@@ -253,10 +253,10 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
 
       (function(self,auth_input){
         request_btn.addOnClickListener ( function(){
-          var provided = true;
-          var vallog   = '';
-          for (var item in auth_input)  {
-            var v = auth_input[item].getValue().trim();
+          let provided = true;
+          let vallog   = '';
+          for (let item in auth_input)  {
+            let v = auth_input[item].getValue().trim();
             self.auth_dic[key][item] = v;
             if (v)
               switch (__auth_software[key].auth_data[item].type)  {
@@ -267,7 +267,7 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
                                       ' must be a valid integer</li>';
                                   }
                                 break;
-                case 'date'    :  var d = new Date(v);
+                case 'date'    :  let d = new Date(v);
                                   if (d=='Invalid Date')  {
                                     v = '';
                                     vallog += '<li>' + 
@@ -331,11 +331,11 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     } else if ('auth_url' in __auth_software[key])  {
       (function(self,akey){
         request_btn.addOnClickListener ( function(){
-          var ownURL = window.location.protocol + '//' + window.location.host +
+          let ownURL = window.location.protocol + '//' + window.location.host +
                        window.location.pathname;
           if (ownURL.endsWith('/'))
             ownURL = ownURL.slice(0,-1);
-          var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
+          let reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
                 'authorisation-' + akey + '-' + __login_token )
                 .replace ( '$cburl',ownURL );
           window.open ( reqURL );
@@ -349,7 +349,7 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       }(this,key))
     }
 
-    for (var j=0;j<2;j++)  {
+    for (let j=0;j<2;j++)  {
       this.grid.setVerticalAlignment ( row ,j,'middle' );
       this.grid.setVerticalAlignment ( row1,j,'middle' );
       this.grid.setVerticalAlignment ( row2,j,'middle' );

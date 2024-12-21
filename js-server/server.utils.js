@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    18.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,6 +57,7 @@
  *        function send_file        ( fpath,server_response,mimeType,
  *                                    deleteOnDone,capSize,persistance,
  *                                    nofile_callback,onDone_callback=null )  
+ *        function receiveRequest   ( server_request,onFinish_func )
  *        function spawn            ( exeName,args,options )  
  *        function padDigits        ( number,digits ) 
  *
@@ -71,6 +72,7 @@
 const fs            = require('fs-extra');
 const path          = require('path');
 const child_process = require('child_process');
+const formidable    = require('formidable');
 
 const class_map     = require('./server.class_map');
 const task_t        = require('../js-common/tasks/common.tasks.template');
@@ -380,8 +382,9 @@ function moveFile ( old_path,new_path )  {
 
 
 function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
-// if old_path is a directory, it will copy all its content but not the directory
-// itself
+// If old_path is a directory ane new_path exists, the function will copy 
+// all its content but not the directory itself. If new_path does not exist,
+// it will be created and content from old_path will be copied into it.
   fs.copy ( old_path,new_path,{
     'overwrite'          : overwrite_bool,
     'preserveTimestamps' : true,
@@ -558,6 +561,7 @@ let rc = true;
 
 
 function removePath ( dir_path )  {
+// remove non-empty directory completely
 let rc = true;
 
   flushDirCache ( dir_path );
@@ -1132,6 +1136,44 @@ function checkInternet ( url,callback_func ) {
 }
 */
 
+
+function receiveRequest ( server_request,onFinish_func )  {
+
+  // make structure to keep download metadata
+  let meta = {};
+
+  // create an incoming form object
+  let form = new formidable.IncomingForm();
+
+  form.on('field', function(name,value) {
+    log.debug2 ( 100,'name=' + name + ',  value=' + value );
+    meta[name] = value;
+  });
+
+  // log any errors that occur
+  let errs = '';
+  form.on('error', function(err) {
+    log.error ( 101,'receive request error:' );
+    log.error ( 102,err );
+    errs += err + '\n';
+  });
+
+  form.on ( 'end', function(){
+    onFinish_func ( errs,meta );  // file renaming errors
+  });
+
+  // parse the incoming request containing the form data
+  try {
+    form.parse ( server_request );
+  } catch(err) {
+    errs += 'request parse error: ' + err.name + '\nmessage: ' + err.message + '\n';
+    log.error ( 183,'request parse errors: ' + err );
+    onFinish_func ( errs,meta );  // file renaming errors
+  }
+
+}
+
+
 function spawn ( exeName,args,options )  {
   if (_is_windows)  {  // MS Windows
     return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(args),
@@ -1225,6 +1267,7 @@ module.exports.clearRVAPIreport      = clearRVAPIreport;
 module.exports.getMIMEType           = getMIMEType;
 module.exports.capData               = capData;
 module.exports.send_file             = send_file;
+module.exports.receiveRequest        = receiveRequest;
 module.exports.killProcess           = killProcess;
 module.exports.spawn                 = spawn;
 module.exports.padDigits             = padDigits;

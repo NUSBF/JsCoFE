@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    14.12.24   <--  Date of Last Modification.
+ *    17.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,7 @@
  *
  *    node js-utils/cloudrun.js -c command_file
  *
- * where task_file may be also the standard input:
+ * where command_file may be also provided via the standard input:
  *
  *    node js-utils/cloudrun.js -i <<eof
  *    ..commands..
@@ -32,13 +32,13 @@
  *
  *    node js-utils/cloudrun.js -t task
  *
+ * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref or
+ * dimple.
+ *
  * Obtaining help:
  *
  *    node js-utils/cloudrun.js
  *    node js-utils/cloudrun.js -h
- *
- * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref or
- * dimple.
  *
  * Commands (hash # may be used for comments, anything on the right from # is
  * ignored):
@@ -89,9 +89,6 @@ const task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr'   );
 const task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
 const task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
 const task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
-
-// let conf   = require('../js-server/server.configuration');
-// let cmd    = require('../js-common/common.commands');
 
 
 // ==========================================================================
