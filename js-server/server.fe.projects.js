@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    20.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,7 @@
  *     function cloneProject            ( loginData,data   )
  *     function checkCloneProject       ( loginData,projectName )
  *     function _import_project         ( loginData,tempdir,prjDir,chown_key,duplicate_key )
- *     function getProjectTmpDir        ( loginData,make_clean  )
+ *     function getProjectTmpDir        ( loginData,make_clean,suffix  )
  *     function importProject           ( loginData,upload_meta )
  *     function startDemoImport         ( loginData,meta   )
  *     function startSharedImport       ( loginData,meta   )
@@ -2310,7 +2310,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 }
 
 
-function getProjectTmpDir ( loginData,make_clean )  {
+const project_tmp_suffix = '_project_import';
+
+function getProjectTmpDir ( loginData,make_clean,suffix )  {
   let tempdir = conf.getFETmpDir1(loginData);
 
   if (make_clean)  {
@@ -2322,7 +2324,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
     }
   }
 
-  tempdir = path.join ( tempdir,loginData.login+'_project_import' );
+  tempdir = path.join ( tempdir,loginData.login+suffix );
   if (make_clean)  {
     utils.removePathAsync ( tempdir );  // just in case
     if (!utils.mkDir(tempdir))  {
@@ -2342,7 +2344,7 @@ function importProject ( loginData,upload_meta )  {
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
   if (tempdir)  {
 
     let errs = '';
@@ -2399,7 +2401,7 @@ function startDemoImport ( loginData,meta )  {
 let rc        = cmd.fe_retcode.ok;
 let rc_msg    = 'success';
 let rdata     = { 'status' : 'ok' };
-let tempdir   = getProjectTmpDir ( loginData,true );
+let tempdir   = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 // let duplicate = false;
 let duplicate = 0;
 
@@ -2462,7 +2464,7 @@ let duplicate = 0;
 function startSharedImport ( loginData,meta )  {
   let rc      = cmd.fe_retcode.ok;
   let rc_msg  = 'success';
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 
   let import_as_link = true;  // development switch, should be true in production
 
@@ -2512,7 +2514,9 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-  let signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
+  let signal_path = path.join ( getProjectTmpDir (
+                                    loginData,false,project_tmp_suffix),
+                                        'signal' );
   let rdata  = {};
   let signal = utils.readString ( signal_path );
   if (signal)  {
@@ -2530,7 +2534,7 @@ function checkProjectImport ( loginData,data )  {
 
 
 function finishProjectImport ( loginData,data )  {
-  let tempdir = getProjectTmpDir(loginData,false);
+  let tempdir = getProjectTmpDir ( loginData,false,project_tmp_suffix );
   utils.removePathAsync ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
