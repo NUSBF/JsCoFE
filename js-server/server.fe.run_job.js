@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.12.24   <--  Date of Last Modification.
+ *    22.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -2181,59 +2181,57 @@ function cloudFetch ( server_request,server_response )  {
 
         loginData.volume = uData.volume;
 
-        let projectName = meta.project;
-        let jobs        = [];
+        let projectName  = meta.project;
 
-        if ('job_id' in meta)  {
-          jobs.push ( {
-            path   : prj.getJobDirPath ( loginData,projectName,meta.job_id ),
-            job_id : meta.job_id 
-          });
+        meta.jobs = JSON.parse ( meta.jobs );
+
+        if (meta.jobs.length<=0)  {
+          let jmetas = prj.getJobMetas ( loginData,projectName );
+          let metas  = [];
+          for (let i=0;i<jmetas.length;i++)
+            metas.push ( jmetas[i].meta );
+          utils.writeObject ( path.join(fetch_dir,'index.json'),metas );
+          pack_and_send ( 'Index return' );
+          return;
         }
 
-        if (jobs.length>0)  {
+        function prepare_pack_and_send ( n )  {
 
-          function prepare_pack_and_send ( n )  {
+          if (n>=meta.jobs.length)  {
+ 
+            pack_and_send ( null );
+ 
+          } else  {
+            // prepare next job for packing
 
-            if (n<jobs.length)  {
-              // prepare next job for packing
-
-              let jobDataPath = path.join ( jobs[n].path,task_t.jobDataFName );
-              let jobData     = utils.readObject ( jobDataPath );
-              if (jobData)  {
-                if ((jobData.state!=task_t.job_code.running) &&
-                    (jobData.state!=task_t.job_code.ending)  &&
-                    (jobData.state!=task_t.job_code.exiting))  {
-                  // job is completed and may be fetched
-                  let new_path = path.join(fetch_dir,path.basename(jobs[n].path)); 
-                  utils.copyDirAsync ( jobs[n].path,new_path,true,
-                                       function(){ 
-                    ncopied++;  // just a count
-                    prepare_pack_and_send ( n+1 );
-                  });
-                } else  {
-                  not_completed.push ( jobs[i].job_id );
+            let jobDataPath = prj.getJobDataPath ( loginData,projectName,meta.jobs[n] );
+            let jobData     = utils.readObject   ( jobDataPath );
+            if (jobData)  {
+              jobData = class_map.makeClass ( jobData );
+              if (jobData.isComplete())  {
+                // job is completed and may be fetched
+                let dirpath  = prj.getJobDirPath ( loginData,projectName,meta.jobs[n] );
+                let new_path = path.join(fetch_dir,path.basename(dirpath)); 
+                utils.copyDirAsync ( dirpath,new_path,true,
+                                      function(){ 
+                  ncopied++;  // just a count
                   prepare_pack_and_send ( n+1 );
-                }
+                });
               } else  {
-                not_found.push ( jobs[i].job_id );
+                not_completed.push ( meta.jobs[n] );
                 prepare_pack_and_send ( n+1 );
               }
-
             } else  {
-
-              pack_and_send ( null );
-
+              not_found.push ( meta.jobs[n] );
+              prepare_pack_and_send ( n+1 );
             }
 
           }
 
-          prepare_pack_and_send ( 0 );
-     
-        } else
-          pack_and_send ( 'Status: 4 (No jobs could be selected - ' +
-                          'check job specification)' );
- 
+        }
+
+        prepare_pack_and_send ( 0 );
+
       }
 
     } else
