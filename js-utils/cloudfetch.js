@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    21.12.24   <--  Date of Last Modification.
+ *    22.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,15 +70,16 @@
  */
 
 //  load system modules
-const fs       = require("fs-extra");
-const request  = require('request' );
-const path     = require('path');
+const fs        = require("fs-extra");
+const request   = require('request' );
+const path      = require('path');
 
 //  load application modules
-const send_dir = require('../js-server/server.send_dir');
-const utils    = require('../js-server/server.utils');
-const cmd      = require('../js-common/common.commands');
-const comut    = require("../js-common/common.utils");
+const class_map = require('../js-server/server.class_map');
+const send_dir  = require('../js-server/server.send_dir');
+const utils     = require('../js-server/server.utils');
+const cmd       = require('../js-common/common.commands');
+const comut     = require("../js-common/common.utils");
 
 // ==========================================================================
 
@@ -158,10 +159,10 @@ function printTemplate()  {
     '#',
     '# Uncomment one of the following statements as suitable:',
     '#',
-    '# JOB         job_id                      # use only if job Id is known',
+    '# JOB         jobId1 jobId2 jobId3 ...    # use only if job Ids are known',
     '# JOB         last                        # for fetching the last job',
     '# JOB         last  job_type              # the last job of specific type',
-    '# JOB         title Job title of nterest  # for job with given title',
+    '# JOB         title Job title of interest # for job with given title',
     '# JOB         remark Remark of reference  # for parent of referenced remark',
     '# JOB         rfree                       # for job with the lowest rfree',
     '#'
@@ -182,7 +183,7 @@ function printTemplate()  {
 }
 
 
-function sendFetchQuery ( metaData,outDir )  {
+function sendFetchQuery ( title,metaData,outDir,callback_func )  {
 
   let formData = {};
   for (let key in metaData)
@@ -194,8 +195,9 @@ function sendFetchQuery ( metaData,outDir )  {
     rejectUnauthorized : false
   };
 
-  // console.log ( post_options );
-  console.log ( ' ... sending fetch query' );
+  utils.removePath ( path.join(outDir,'cloudfetch') );
+
+  console.log ( ' ... ' + title );
 
   let fetch_file = 'cloudfetch.zip';
 
@@ -203,25 +205,6 @@ function sendFetchQuery ( metaData,outDir )  {
     if (err) {
       console.log ( ' *** send failed: ' + err );
       process.exitCode = 1;
-    // } else  {
-    //   try {
-    //     let resp = JSON.parse ( response );
-    //     if (resp.status==cmd.fe_retcode.ok)  {
-    //       console.log ( ' ... server replied: ' + resp.message + '\n' );
-    //       console.log ( 'Note: list of projects and/or project will not update automatically\n' +
-    //                     '      in your browser, reload/refresh them manually if required.' );
-    //     } else if (resp.message.indexOf('quota')>=0)  {
-    //       console.log ( ' *** ' + resp.message );
-    //       process.exitCode = 1;
-    //     } else  {
-    //       console.log ( ' *** cloud fetch failed, rc=' + resp.status +
-    //                     '\n *** ' + resp.message );
-    //       process.exitCode = 1;
-    //     }
-    //   } catch(err)  {
-    //     console.log ( ' *** unparseable server reply: ' + response );
-    //     process.exitCode = 1;
-    //   }
     }
   })
   .pipe ( fs.createWriteStream(fetch_file) )
@@ -232,15 +215,7 @@ function sendFetchQuery ( metaData,outDir )  {
         if (err)  {
           console.log ( ' *** unpack errors: ' + err );
         } else  {
-          let fetch_dir = path.join ( outDir,'cloudfetch' );
-          let report = utils.readString ( path.join(fetch_dir,'delivery.log') );
-          if (!report)
-            report = 'REPORT NOT AVAILABLE';
-          else
-            console.log ( ' ... Fetch completed -- success' );
-          console.log ( ' ... Find results in "' + fetch_dir + '"' );
-          console.log ( ' ... Delivery report:' );
-          console.log ( report );
+          callback_func();
         }
       });
   })
@@ -290,8 +265,14 @@ let meta = {
   url          : '',
   user         : '',
   cloudrun_id  : '',
-  project      : ''
+  project      : '',
+  jobs         : []
 };
+
+let job_specification = {
+  key   : 'job_id',
+  value : null
+}
 
 let commands  = input.trim().split('\n');
 let ok        = true;
@@ -332,11 +313,23 @@ for (let i=0;i<commands.length;i++)  {
         auth_file        = val;
       } else if (key=='job')  {
         lst = val.split(' ');
-        if (lst.length>0)  {
-          if (comut.isInteger(val))
-            meta.job_id = parseInt(val);
-          else  
-            meta['job_'+lst[0]] = lst.length>1 ? lst.slice(1).join(' ').trim() : '*';
+        let words = lst.filter(word => word.trim() !== '');
+        if (words.length>0)  {
+          if (comut.isInteger(words[0]))  {
+            job_specification.key   = cloudfetch_code.job_id;
+            job_specification.value = [parseInt(words[0])];
+            for (let j=1;j<words.length;j++)
+              if (comut.isInteger(words[0]))  {
+                job_specification.value.push ( parseInt(words[j]) );
+              } else  {
+                console.log ( '   ^^^^ not an integer: ' + words[j] );
+                ok = false;
+              }
+          } else  {  
+            job_specification.key   = lst[0];
+            job_specification.value = lst.length>1 ? 
+                                            lst.slice(1).join(' ').trim() : '*';
+          }
         } else
           ok = false;
       } else  {
@@ -360,25 +353,20 @@ if (auth_file)
 // --------------------------------------------------------------------------
 // Check that input is sufficient
 
-let nj = 0;
-for (let key in meta)  {
-  // console.log ( ' >>>>> ' + key);
-  if (key.startsWith('job'))
-    nj++;
+for (let key in meta)
   if (!meta[key])  {
     ok = false;
     console.log ( ' *** ' + key.toUpperCase() + ' not specified' );
   }
-}
 
-if (nj!=1)  {
+if (!job_specification.value)  {
   ok = false;
   console.log ( '\n **** one and only one job statement must be given ' + nj );
 }
 
-if (!Object.values(cloudfetch_code).includes(meta.task)<0)  {
+if (!Object.values(cloudfetch_code).includes(job_specification.key)<0)  {
   ok = false;
-  console.log ( ' *** task key ' + meta.task + ' is not valid' );
+  console.log ( ' *** specification key ' + job_specification.key + ' is not valid' );
 }
 
 if ((!meta.project) || (!/^[A-Za-z][A-Za-z0-9-._]+$/.test(meta.project)))  {
@@ -387,7 +375,6 @@ if ((!meta.project) || (!/^[A-Za-z][A-Za-z0-9-._]+$/.test(meta.project)))  {
                 'numbers, underscores,\n     dashes and dots, and must ' +
                 'start with a letter (\"' + meta.project + '\" given).' );
 }
-
 
 if (!ok)  {
   console.log ( '\n **** ERRORS IN COMMANDS -- STOP\n\n' );
@@ -398,7 +385,102 @@ if (!ok)  {
 // --------------------------------------------------------------------------
 // Fetch job
 
-// console.log ( ' >>>>> \n' + JSON.stringify(meta) );
+meta.jobs = JSON.stringify([]);  // obtain job index first
 
-sendFetchQuery ( meta,outDir );
+let fetch_dir = path.join ( outDir,'cloudfetch' );
+
+sendFetchQuery ( 'getting job index',meta,outDir,function(){
+
+  let index = utils.readObject ( path.join(fetch_dir,'index.json') );
+
+  if (!index)  {
+    console.log ( ' *** job index not found -- stop' );
+  } else  {
+    // SELECT JOBS FOR FETCH
+    // meta.jobs = [191,19];
+
+    meta.jobs = [];
+
+    for (let i=0;i<index.length;i++)
+      index[i] = class_map.makeClass ( index[i] );
+
+    if (job_specification.key==cloudfetch_code.job_id)  {
+
+      for (let i=0;i<index.length;i++)
+        if (job_specification.value.indexOf(index[i].id)>=0)  {
+          if (index[i].isComplete())
+            meta.jobs.push ( index[i].id );
+          else
+            console.log ( ' *** selected job ' + index[i].id +
+                          ' is not completed - ignored' );
+        }
+    
+    } else if (job_specification.key==cloudfetch_code.last)  {
+
+      let id0 = -1;
+      for (let i=0;i<index.length;i++)
+        if ((index[i].id>id0) && index[i].isSuccessful() &&
+            ((job_specification.value=='*') ||
+             (index[i]._type=='Task'+job_specification.value)))
+           id0 = index[i].id;
+      if (id0>=0)
+        meta.jobs = [id0];
+
+    } else if (job_specification.key==cloudfetch_code.title)  {
+
+      for (let i=0;i<index.length;i++)
+        if (((index[i].name==job_specification.value) ||
+             (index[i].name==job_specification.value)) && 
+            index[i].isSuccessful())
+          meta.jobs.push ( index[i].id );
+
+    } else if (job_specification.key==cloudfetch_code.remark)  {
+
+      for (let i=0;i<index.length;i++)
+        if ((index[i]._type=='TaskRemark') && 
+            ((index[i].uname==job_specification.value) ||
+             (index[i].name==job_specification.value)))
+          meta.jobs.push ( index[i].parentId );
+
+    } else if (job_specification.key==cloudfetch_code.rfree)  {
+
+      let rfree0 = 2.0;
+      let id0    = -1;
+      for (let i=0;i<index.length;i++)
+        if (('scores' in index[i]) && index[i].isSuccessful())  {
+          for (let t in index[i].scores)
+            if ('R_free' in index[i].scores[t])  {
+              let rfree = parseFloat(index[i].scores[t].R_free);
+              if (rfree<rfree0)  {
+                rfree0 = rfree;
+                id0    = index[i].id;
+              }
+            }
+        }
+      if (id0>=0)
+        meta.jobs = [id0];
+
+    }
+
+    if (meta.jobs.length<=0)  {
+      console.log ( ' *** no jobs satisfy selection criteria -- stop' );
+    } else  {
+      meta.jobs = JSON.stringify(meta.jobs);
+      sendFetchQuery ( 'fetching job(s)',meta,outDir,function(){
+        let report = utils.readString ( path.join(fetch_dir,'delivery.log') );
+        if (!report)
+          report = 'REPORT NOT AVAILABLE ';
+        else
+          console.log ( ' ... Fetch completed -- success' );
+        console.log ( ' ... Find results in "' + fetch_dir + '"' );
+        console.log ( ' ... Delivery report:' );
+        console.log ( report );
+      });
+    }
+
+  }
+
+});
+
+
 
