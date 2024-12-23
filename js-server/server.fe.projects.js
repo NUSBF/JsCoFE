@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    22.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,7 @@
  *     function cloneProject            ( loginData,data   )
  *     function checkCloneProject       ( loginData,projectName )
  *     function _import_project         ( loginData,tempdir,prjDir,chown_key,duplicate_key )
- *     function getProjectTmpDir        ( loginData,make_clean  )
+ *     function getProjectTmpDir        ( loginData,make_clean,suffix  )
  *     function importProject           ( loginData,upload_meta )
  *     function startDemoImport         ( loginData,meta   )
  *     function startSharedImport       ( loginData,meta   )
@@ -1205,64 +1205,6 @@ function checkTimestamps ( loginData,projectDesc )  {
 }
 
 
-// function checkSharedProject ( loginData,projectData )  {
-// // 'projectData' comes from the client. Client does not change timestamps,
-// // therefore, timestamp on server side may be either equal or ahead of
-// // timestamp in 'projectData.desc'.
-//   let checkData   = {};
-//   checkData.pdata = projectData;  // synced Project Data
-//   checkData.rdata = {};           // response data object
-//   checkData.rdata.reload = 0;  // project reload codes for client:
-//                      //  0: no reload is needed
-//                      //  1: reload is needed but current operation may continue
-//                      //  2: reload is mandatory, current operation must terminate
-//   checkData.rdata.pdesc = null;
-//   let pdesc = projectData.desc;
-//   if ((pdesc.owner.share.length>0) || pdesc.autorun)  {  // the project is shared
-//     let pData = readProjectData ( loginData,pdesc.name );
-//     if (pData)  {
-//       checkData.rdata.pdesc = pData.desc;
-//       if (pData.desc.timestamp>pdesc.timestamp)  {
-//         // client timestamp is behind on-server project's timestamp; try to merge
-//         // projects
-//         // request update on client side
-//         if (rdata.pdesc.project_version>projectDesc.project_version)
-//               rdata.reload = 2;  // project changed considerably, reload client
-//         else  rdata.reload = 1;  // on-client data should be safe
-//       }
-//     }
-//   }
-//   return checkData;
-// }
-
-
-// function advanceJobCounter ( loginData,data )  {
-//   //let response    = null;
-//   let projectDesc = data.meta;
-//   let rdata       = checkTimestamps ( loginData,projectDesc );
-//   rdata.project_missing = false;
-//   if (!rdata.reload)  {
-//     let projectData = readProjectData ( loginData,projectDesc.name );
-//     if (projectData)  {
-//       projectData.desc.jobCount++;
-//       writeProjectData ( loginData,projectData,false );  // do not change the timestamp
-//       rdata.pdesc = projectData.desc;
-//     } else if (projectDesc.owner.share.length>0)
-//       rdata.project_missing = true;
-//   }
-//   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-// }
-
-// function getTreeNodeByTaskId ( projectTree,taskId )  {
-//   let node = null;
-//   for (let i=0;(i<projectTree.length) && (!node);i++)
-//     if (projectTree[i].dataId==taskId)
-//       node = projectTree[i];
-//     else if (projectTree[i].children.length>0)
-//       node = getTreeNodeByTaskId ( projectTree[i].children,taskId );
-//   return node;
-// }
-
 function makeNodeName ( task,title )  {
 let text = '[';
   if (task.autoRunId)
@@ -2310,7 +2252,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 }
 
 
-function getProjectTmpDir ( loginData,make_clean )  {
+const project_tmp_suffix = '_project_import';
+
+function getProjectTmpDir ( loginData,make_clean,suffix )  {
   let tempdir = conf.getFETmpDir1(loginData);
 
   if (make_clean)  {
@@ -2322,7 +2266,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
     }
   }
 
-  tempdir = path.join ( tempdir,loginData.login+'_project_import' );
+  tempdir = path.join ( tempdir,loginData.login+suffix );
   if (make_clean)  {
     utils.removePathAsync ( tempdir );  // just in case
     if (!utils.mkDir(tempdir))  {
@@ -2342,7 +2286,7 @@ function importProject ( loginData,upload_meta )  {
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
   if (tempdir)  {
 
     let errs = '';
@@ -2399,7 +2343,7 @@ function startDemoImport ( loginData,meta )  {
 let rc        = cmd.fe_retcode.ok;
 let rc_msg    = 'success';
 let rdata     = { 'status' : 'ok' };
-let tempdir   = getProjectTmpDir ( loginData,true );
+let tempdir   = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 // let duplicate = false;
 let duplicate = 0;
 
@@ -2462,7 +2406,7 @@ let duplicate = 0;
 function startSharedImport ( loginData,meta )  {
   let rc      = cmd.fe_retcode.ok;
   let rc_msg  = 'success';
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 
   let import_as_link = true;  // development switch, should be true in production
 
@@ -2512,7 +2456,9 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-  let signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
+  let signal_path = path.join ( getProjectTmpDir (
+                                    loginData,false,project_tmp_suffix),
+                                        'signal' );
   let rdata  = {};
   let signal = utils.readString ( signal_path );
   if (signal)  {
@@ -2530,7 +2476,7 @@ function checkProjectImport ( loginData,data )  {
 
 
 function finishProjectImport ( loginData,data )  {
-  let tempdir = getProjectTmpDir(loginData,false);
+  let tempdir = getProjectTmpDir ( loginData,false,project_tmp_suffix );
   utils.removePathAsync ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
@@ -2729,6 +2675,7 @@ module.exports.delete_project         = delete_project;
 module.exports.unshare_project        = unshare_project;
 module.exports.deleteProject          = deleteProject;
 module.exports.saveDockData           = saveDockData;
+module.exports.getJobMetas            = getJobMetas;
 module.exports.prepareProjectExport   = prepareProjectExport;
 module.exports.checkProjectExport     = checkProjectExport;
 module.exports.finishProjectExport    = finishProjectExport;

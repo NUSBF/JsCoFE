@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.11.24   <--  Date of Last Modification.
+ *    22.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -45,6 +45,7 @@
  *     checkJobs            ( loginData,data )
  *     wakeZombieJobs       ( loginData,data )
  *     cloudRun             ( server_request,server_response )
+ *     cloudFetch           ( server_request,server_response )
  *
  *  ==========================================================================
  */
@@ -2078,6 +2079,169 @@ function cloudRun ( server_request,server_response )  {
 }
 
 
+function cloudFetch ( server_request,server_response )  {
+
+  utils.receiveRequest ( server_request,function(errs,meta){
+
+    let fetch_tmp_dir = path.join ( conf.getFETmpDir(),
+                      'cloudfetch_' + crypto.randomBytes(20).toString('hex') );
+    utils.removePath ( fetch_tmp_dir );
+    utils.mkDir ( fetch_tmp_dir );
+    let fetch_dir = path.join ( fetch_tmp_dir,'cloudfetch' );
+    utils.mkDir ( fetch_dir );
+
+    let not_completed = [];
+    let not_found     = [];
+    let ncopied       = 0;
+
+    function pack_and_send ( message )  {
+
+      let S = message;
+      
+      if (!message) {
+
+        S = 'Status: ';
+        if ((not_completed.length==0) && (not_found.length==0) && (ncopied>0))
+          S += '0 (Ok)';
+        else if (not_completed.length>0)
+          S += '1 (job(s) unfinished)';
+        else if (not_found.length>0)
+          S += '2 (lost jobs - bugs or malfunction)';
+        else if (ncopied==0)
+          S += '3 (no jobs selected)';
+        
+        S += '\nJobs delivered: ' + ncopied;
+
+        if (not_completed.length>0)
+          S += '\nSelected job(s) (' + not_completed.join(', ') +
+              ') are still running and cannot be fetched';
+        if (not_found.length>0)
+            S += '\nSelected job(s) (' + not_found.join(', ') +
+                ') are not found; this is a bug or server malfunction; ' +
+                'please report';
+      }
+
+      utils.writeString ( path.join(fetch_dir,'delivery.log'),S );
+
+      send_dir.packDir ( fetch_tmp_dir,{
+        compression : 9,
+        destination : fetch_tmp_dir + '.zip'
+      },function(code,packFile,packSize ){
+        // packed, send the archive back to client now
+
+        // Set headers for file download
+        server_response.writeHead ( 200, {
+          'Content-Type'        : 'application/octet-stream',
+          'Content-Disposition' : 'attachment; filename="cloudfetch.zip"'
+        });
+
+        // Stream the file to the client
+        const fileStream = fs.createReadStream ( packFile );
+        fileStream.pipe ( server_response );
+
+        fileStream.on('end', () => {
+          // Clean up temporary file
+          utils.removePathAsync ( fetch_tmp_dir );
+          utils.removeFile      ( packFile );
+        });
+
+        fileStream.on('error', ( streamErr ) => {
+          log.error ( 70,'Error streaming file: ' + streamErr );
+          server_response.writeHead(500, { 'Content-Type': 'text/plain' });
+          server_response.end ( 'Error streaming file ' + streamErr );
+          // utils.removePathAsync ( fetch_tmp_dir );
+          // utils.removeFile      ( packFile );
+        });
+
+      });
+      
+    }
+
+    if (!errs)  {
+
+      let localSetup = conf.isLocalSetup();
+      if (localSetup>0)
+        meta.user = ud.__local_user_id;
+      let loginData = { login : meta.user, volume : null };
+
+      let uData = user.readUserData ( loginData );
+      if (!uData)  {
+
+        log.standard ( 70,'cloudrun request for unknown user (' + meta.user +
+                          ') -- ignored' );
+        pack_and_send ( 'Errors: unknown user' );
+
+      } else if ((!localSetup) && (uData.cloudrun_id!=meta.cloudrun_id))  {
+
+        log.standard ( 71,'cloudrun request with wrong cloudrun_id (user ' +
+                          meta.user + ') -- ignored' );
+        pack_and_send ( 'Errors: wrong CloudRun Id' );
+
+      } else  {
+
+        loginData.volume = uData.volume;
+
+        let projectName  = meta.project;
+
+        meta.jobs = JSON.parse ( meta.jobs );
+
+        if (meta.jobs.length<=0)  {
+          let jmetas = prj.getJobMetas ( loginData,projectName );
+          let metas  = [];
+          for (let i=0;i<jmetas.length;i++)
+            metas.push ( jmetas[i].meta );
+          utils.writeObject ( path.join(fetch_dir,'index.json'),metas );
+          pack_and_send ( 'Index return' );
+          return;
+        }
+
+        function prepare_pack_and_send ( n )  {
+
+          if (n>=meta.jobs.length)  {
+ 
+            pack_and_send ( null );
+ 
+          } else  {
+            // prepare next job for packing
+
+            let jobDataPath = prj.getJobDataPath ( loginData,projectName,meta.jobs[n] );
+            let jobData     = utils.readObject   ( jobDataPath );
+            if (jobData)  {
+              jobData = class_map.makeClass ( jobData );
+              if (jobData.isComplete())  {
+                // job is completed and may be fetched
+                let dirpath  = prj.getJobDirPath ( loginData,projectName,meta.jobs[n] );
+                let new_path = path.join(fetch_dir,path.basename(dirpath)); 
+                utils.copyDirAsync ( dirpath,new_path,true,
+                                      function(){ 
+                  ncopied++;  // just a count
+                  prepare_pack_and_send ( n+1 );
+                });
+              } else  {
+                not_completed.push ( meta.jobs[n] );
+                prepare_pack_and_send ( n+1 );
+              }
+            } else  {
+              not_found.push ( meta.jobs[n] );
+              prepare_pack_and_send ( n+1 );
+            }
+
+          }
+
+        }
+
+        prepare_pack_and_send ( 0 );
+
+      }
+
+    } else
+      pack_and_send ( 'Errors: ' + errs );
+  
+  });
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.readFEJobRegister   = readFEJobRegister;
@@ -2094,3 +2258,4 @@ module.exports.getJobResults       = getJobResults;
 module.exports.checkJobs           = checkJobs;
 module.exports.wakeZombieJobs      = wakeZombieJobs;
 module.exports.cloudRun            = cloudRun;
+module.exports.cloudFetch          = cloudFetch;
