@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Automatic Model Building with CCP4Build &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -449,10 +449,10 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="automatic-model-building-with-ccp4build">
-<h1 id="doc-task-ccp4build--page-root">Automatic Model Building with CCP4Build<a class="headerlink" href="#doc-task-ccp4build--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-ccp4build--page-root">Automatic Model Building with CCP4Build<a class="headerlink" href="#doc-task-ccp4build--page-root" title="Link to this heading">¶</a></h1>
 <p>CCP4Build is an automated model builder based on several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. In essence, CCP4Build combines conventional model building steps with density modification, model trimming, side-chain reconstruction and real-space refinement, trying to achieve the optimal combination by exploring several building scenarios in an iterative approach with rollbacks on all stages. CCP4Build employs different approaches to phase calculations depending on whether the initial phases were obtained in the course o molecular replacement or experimental phasing. In CCP4 Cloud, however, correct approach is chosen automatically from the logic of the overall project development.</p>
 <section id="main-options">
-<h2 id="main-options">Main options<a class="headerlink" href="#main-options" title="Permalink to this heading">¶</a></h2>
+<h2 id="main-options">Main options<a class="headerlink" href="#main-options" title="Link to this heading">¶</a></h2>
 <p><strong>Minimum number of building cycles</strong> may be set to more than 3 (default number) if the first attempt ends up with an incomplete model.</p>
 <p><strong>Maximum number of building cycles</strong> should be more than the number of <strong>minimum number of building cycles</strong>, but can not be more than 50.</p>
 <p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <em>This should be used by default</em></p>
@@ -460,7 +460,7 @@
 <p><strong>Model solvent for phase improvement</strong> option controls modelling the water molecules if Rfree falls below the given value in course of building.</p>
 </section>
 <section id="advanced-build-parameters">
-<h2 id="advanced-build-parameters">Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Permalink to this heading">¶</a></h2>
+<h2 id="advanced-build-parameters">Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Link to this heading">¶</a></h2>
 <p>Refinement may be described as an iterative adjustment of atomic coordinates such that the calculated structure factors match the observations as nearly as possible while keeping structural elements such as bond lengths, angles, chirality, planarity of aromatic rings and some others in chemically sensible states. CCP4Build offers three <strong>Refinement levels</strong>, which differ in the number of refinement cycles being used and, as a consequence, provide a different balance between quality of results and speed of calculations. Note that higher levels of refinement are not unambiguously linked with building success and quality.</p>
 <blockquote>
 <div><p>For the <strong>“light”</strong> level</p>
@@ -536,7 +536,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

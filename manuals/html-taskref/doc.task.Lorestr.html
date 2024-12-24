@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Low-Resolution Refinement with Lorestr &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -438,7 +438,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="low-resolution-refinement-with-lorestr">
-<h1 id="doc-task-lorestr--page-root">Low-Resolution Refinement with Lorestr<a class="headerlink" href="#doc-task-lorestr--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-lorestr--page-root">Low-Resolution Refinement with Lorestr<a class="headerlink" href="#doc-task-lorestr--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798316014534" rel="noopener noreferrer" target="_blank">LORESTR</a> an automated pipeline for structure refinement at low resolution (lower than around 3 Å). Such datasets have low information content; hence the ratio of the number of observations to adjustable model parameters is small. To achieve accurate models using only low-resolution data it is necessary to use as much available information about macromolecules as possible. The information used must complement the data.</p>
 <p>X-ray crystallographic data provide information about long-range interactions within and between molecules. At very low resolution, only information pertaining to shape and crystal packing is present. Basic chemical information, such as “ideal” bond lengths and angles, is usually employed at all resolutions. As resolution decreases, the use of information about torsion angles, secondary structures, domains, and intra-domain interactions might be required. If there are multiple copies of a molecule in the asymmetric unit then non-crystallographic restraints can be used to decrease the effective number of adjustable parameters.</p>
 <p>There are many factors that can reduce the information content of MX data thus reducing the effective resolution. These include crystal growth peculiarities such as twinning and order-disorder. In such cases, although the nominal resolution may be high, not all of the observations are independent. For example, <strong>in the case of perfect hemihedral twinning, the number of independent observations is decreased by a factor of two</strong>, corresponding to a resolution reduction by a factor of 21/3 ≈ 1.26. Therefore, in the limit, the quality of the electron density map in the presence of perfect hemihedral twinning at 2 Å would correspond to that of a 2.52 Å single crystal case.</p>
@@ -470,7 +470,7 @@
 <p>One of the problems encountered during low-resolution refinement and model building is that the maps are usually blurred, obscuring any finer details of the structure. In general, the overall B-values of crystallographic data can be considered arbitrary, depending on data scaling. It is tempting to remove the B-values altogether, thus making the power spectrum of the Fourier coefficients ﬂat over all resolution ranges. This can be achieved if one uses normalized structure factors.</p>
 <p><strong>Removing B-values is the same as applying an</strong> <a class="reference external" href="http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html" rel="noopener noreferrer" target="_blank">inverse filter</a> <strong>to the map.</strong> Despite increasing structural details, <a class="reference external" href="http://www.owlnet.rice.edu/~elec539/Projects99/BACH/proj2/inverse.html" rel="noopener noreferrer" target="_blank">inverse filters</a> will also increase the noise level.</p>
 <section id="validation">
-<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permalink to this heading">¶</a></h2>
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h2>
 <p>At low resolution, all indicators, as well as the predictive power of the model, must be checked.</p>
 <p>Further to looking at global measures of quality/validation— refinement and geometry statistics it is important to investigate how well localized regions of the model agree with the electron density. Such manual inspection may reveal parts of the model that:</p>
 <blockquote>
@@ -542,7 +542,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Automatic Model Building with Modelcraft &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -493,7 +493,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="automatic-model-building-with-modelcraft">
-<h1 id="doc-task-modelcraft--page-root">Automatic Model Building with Modelcraft<a class="headerlink" href="#doc-task-modelcraft--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-modelcraft--page-root">Automatic Model Building with Modelcraft<a class="headerlink" href="#doc-task-modelcraft--page-root" title="Link to this heading">¶</a></h1>
 <p>ModelCraft is an automated model-building pipeline for X-ray crystallography. It is based on the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">NAUTILUS</a> model-building pipelines, but with the following enhancements:</p>
 <ul class="simple">
 <li><p>Building of protein, RNA and DNA in a single pipeline.</p></li>
@@ -506,7 +506,7 @@
 <li><p>Final rebuilding of side chains using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</p></li>
 </ul>
 <section id="workflow">
-<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permalink to this heading">¶</a></h2>
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Link to this heading">¶</a></h2>
 <p>If a starting model was provided, ModelCraft refines it with <a class="reference external" href="https://journals.iucr.org/d/issues/2020/12/00/di5041/" rel="noopener noreferrer" target="_blank">shift-field refinement</a> using <a class="reference external" href="https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html" rel="noopener noreferrer" target="_blank">SHEETBEND</a> followed by 10 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a></p>
 <p>A <strong>single cycle of ModelCraft</strong> consists of the following seven steps:</p>
 <ol class="arabic">
@@ -537,7 +537,7 @@
 <p><strong>The model from the cycle with lowest R-work is chosen as the output</strong>. If the resolution is better than 2.5 Å and R-work is better than 30% ModelCraft <strong>rebuilds side chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by 5 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.</p>
 </section>
 <section id="input">
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
+<h2 id="input">Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
 <p>Two <strong>build modes</strong> are available. In <strong>basic mode</strong> ModelCraft uses only <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">NAUTILUS</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">PARROT</a> density modification is only used on the first cycle.</p>
 <p><strong>The pipeline will stop if the model does not improve</strong> for 4 cycles by default (setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). A cycle must improve on the previous best value to be marked as an improvement. <strong>Improvement is measured by R-work</strong>.</p>
 <p><strong>Before running ModelCraft:</strong></p>
@@ -549,7 +549,7 @@
 </div></blockquote>
 </section>
 <section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
 <p><strong>If ModelCraft didn’t produce a good output model:</strong></p>
 <blockquote>
 <div><ul class="simple">
@@ -560,16 +560,16 @@
 </div></blockquote>
 </section>
 <section id="useful-links">
-<h2 id="useful-links">Useful links<a class="headerlink" href="#useful-links" title="Permalink to this heading">¶</a></h2>
+<h2 id="useful-links">Useful links<a class="headerlink" href="#useful-links" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://paulsbond.co.uk/modelcraft/" rel="noopener noreferrer" target="_blank">ModelCraft web page</a></p>
 <p><a class="reference external" href="https://github.com/paulsbond/modelcraft" rel="noopener noreferrer" target="_blank">GitHub</a></p>
 </section>
 <section id="acknowledgements">
-<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">¶</a></h2>
+<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading">¶</a></h2>
 <p>This article uses materials kindly provided by <strong>Paul Bond</strong>, whose help is greatly appreciated.</p>
 </section>
 <section id="references">
-<h2 id="references">References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798322007732" rel="noopener noreferrer" target="_blank">Bond, P. &amp; Cowtan, K. ModelCraft: an advanced automated model-building pipeline using Buccaneer. Acta Crystallographica Section D 78 (2022)</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798320013170" rel="noopener noreferrer" target="_blank">Cowtan, K., Metcalfe, S. &amp; Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020)</a></p>
 </section>
@@ -618,7 +618,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

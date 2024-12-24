@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Interactive Image Processing with DIALS/DUI &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -470,19 +470,19 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="interactive-image-processing-with-dials-dui">
-<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Link to this heading">¶</a></h1>
 <p>DIALS (Diffraction Integration for Advanced Light Sources) is a software project for the analysis of crystallographic diffraction images. DIALS processing on CCP4 Cloud may be performed by either running the individual tools (spot finding, indexing, refinement, integration, symmetry, scaling, exporting to MTZ) using the graphical user interface DUI, or by automated processing with xia2.</p>
 <p>You can click <a class="reference external" href="https://dials.github.io/documentation/tutorials/processing_in_detail_betalactamase_dui.html" rel="noopener noreferrer" target="_blank">here</a> to learn more about processing with DUI.</p>
 <p>Interactive Image Processing with DUI includes next steps:</p>
 <section id="import">
-<h2 id="import">Import<a class="headerlink" href="#import" title="Permalink to this heading">¶</a></h2>
+<h2 id="import">Import<a class="headerlink" href="#import" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>import image data files into a format that can be used within DIALS.</strong></p>
 </div></blockquote>
 <p>If all the images in the dataset are consistent, then the dataset is imported and initial models for the “Beam”, “Scan” and “Detector” are created. The images are now also displayed within the <strong>“Image”</strong> tab.</p>
 </section>
 <section id="find">
-<h2 id="find">Find<a class="headerlink" href="#find" title="Permalink to this heading">¶</a></h2>
+<h2 id="find">Find<a class="headerlink" href="#find" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>locate spots on some or all of the data</strong></p>
 </div></blockquote>
@@ -507,7 +507,7 @@
 </div></blockquote>
 </section>
 <section id="index">
-<h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
+<h2 id="index">Index<a class="headerlink" href="#index" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>determining a crystal model which explains the position of the found spots (may optionally involve choices about lattice or space group)</strong></p>
 </div></blockquote>
@@ -517,7 +517,7 @@
 <p><em>The RMSDs at the start of each cycle start off worse than at the end of the previous cycle, because the best fit model for lower resolution data is being applied to higher resolution reflections. As long as each macrocycle shows a reduction in RMSDs then refinement is doing its job of extending the applicability of the model out to a new resolution limit, until eventually the highest resolution strong spots have been included.</em></p>
 </section>
 <section id="lattice">
-<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Permalink to this heading">¶</a></h2>
+<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>finding a Bravais lattice</strong></p>
 </div></blockquote>
@@ -525,7 +525,7 @@
 <p><em>If Bravais lattice unknown before indexing, we can determine likely candidates - by taking the results of the P1 autoindexing, and running refinement with all of the possible Bravais settings applied. You can then choose your preferred solution. Run this without altering any of the defaults, as they are suitable for the majority of data sets.Once the job has run, a window will pop up containing scoring data and the unit cell for each Bravais setting.</em></p>
 </section>
 <section id="refine">
-<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Permalink to this heading">¶</a></h2>
+<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>improving the model</strong></p>
 </div></blockquote>
@@ -545,7 +545,7 @@
 </div></blockquote>
 </section>
 <section id="integration">
-<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permalink to this heading">¶</a></h2>
+<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>recording how many counts in each spot, subtract background, usually fit reflection profiles.</strong></p>
 </div></blockquote>
@@ -574,7 +574,7 @@
 </div></blockquote>
 </section>
 <section id="symmetry">
-<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Permalink to this heading">¶</a></h2>
+<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Link to this heading">¶</a></h2>
 <p>This program implements the methods of <strong>POINTLESS</strong> <a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">[Evans_2011]</a>  for scoring and determination of Laue group symmetry.
 The program takes as input a set of one or more integrated experiments and reflections.</p>
 <p><strong>Stages of space group determination in POINTLESS</strong> :</p>
@@ -601,7 +601,7 @@ The program takes as input a set of one or more integrated experiments and refle
 </div>
 </section>
 <section id="scale">
-<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Permalink to this heading">¶</a></h2>
+<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>correction for experimental effects i.e. beam intensity, illuminated volume, sample absorption etc.</strong></p>
 </div></blockquote>
@@ -610,7 +610,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
 <p>A scaling.html file is also generated, containing interactive plots of merging statistics and scaling model plots.</p>
 </section>
 <section id="export">
-<h2 id="export">Export<a class="headerlink" href="#export" title="Permalink to this heading">¶</a></h2>
+<h2 id="export">Export<a class="headerlink" href="#export" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>exporting the results of dials processing in various formats.</strong></p>
 </div></blockquote>
@@ -676,7 +676,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

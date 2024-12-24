@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>SHELXCD &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -352,7 +352,7 @@
   <p id="shelx">The programs <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html" rel="noopener noreferrer" target="_blank">SHELXC, SHELXD and SHELXE</a> are designed to provide experimental phasing of macromolecules by the <em>MAD</em> (multi-wavelength anomalous dispersion), <em>SAD</em> (single-wavelength anomalous dispersion), <em>SIR</em> (single isomorphous replacement), <em>SIRAS</em> (combined SAD and SIR) and <em>RIP</em> (phasing based on radiation-induced changes in the structure) methods.</p>
 <p><strong>SHELXC</strong> is designed to provide a simple and fast way of setting up the files for the programs <a class="reference external" href="https://doi.org/10.1107/S0907444902011678" rel="noopener noreferrer" target="_blank">SHELXD</a> (heavy atom location) and <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/" rel="noopener noreferrer" target="_blank">SHELXE</a> (phasing and density modification).</p>
 <section id="shelxcd">
-<h1 id="doc-task-shelx--page-root">SHELXCD<a class="headerlink" href="#doc-task-shelx--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-shelx--page-root">SHELXCD<a class="headerlink" href="#doc-task-shelx--page-root" title="Link to this heading">¶</a></h1>
 <p>The program SHELXC provides a statistical analysis of the input data, estimates the marker-atom structure factors F<sub>A</sub>and the phase shifts α and sets up the files for SHELXD which are used for solving the substructure (i.e. locating the marker atoms).</p>
 <p>SHELXC outputs a file <code class="docutils literal notranslate"><span class="pre">_fa.hkl</span></code> containing h, k, l, F<sub>A</sub>, σ(FA) and the phase shift α for use by SHELXD for substructure solution and by SHELXE for calculating starting phases for the density modification and a file <code class="docutils literal notranslate"><span class="pre">_fa.ins</span></code> containing the crystal data and instructions for running SHELXD. <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">α</span> <span class="pre">estimates</span> <span class="pre">are</span> <span class="pre">only</span> <span class="pre">required</span> <span class="pre">for</span> <span class="pre">SHELXE</span></code>. SHELXD writes a <code class="docutils literal notranslate"><span class="pre">_fa.res</span></code> file in SHELX format for the best substructure solution, which in turn is read by SHELXE. <em>Content of outputs files you can find at</em> <code class="docutils literal notranslate"><span class="pre">Main</span> <span class="pre">Log</span></code> <em>window.</em></p>
 <p>In general the critical parameters for locating heavy atoms with SHELXD are:</p>
@@ -369,7 +369,7 @@
 <p>more information you can find <a class="reference external" href="https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD" rel="noopener noreferrer" target="_blank">here</a></p>
 </section>
 <section id="shelxe">
-<h1 id="shelxe">SHELXE<a class="headerlink" href="#shelxe" title="Permalink to this heading">¶</a></h1>
+<h1 id="shelxe">SHELXE<a class="headerlink" href="#shelxe" title="Link to this heading">¶</a></h1>
 <p>The program <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html" rel="noopener noreferrer" target="_blank">SHELXE</a> was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases <a class="reference external" href="https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml" rel="noopener noreferrer" target="_blank">[Sheldrick, 2002]</a>. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure</p>
 <p>SHELXE autotracing algorithm is primarily designed to obtain a toehold in maps with very poor starting phases, e.g. with a mean phase error greater than 60°. The tracing of a polyalanine backbone, combining the phases from the trace with the experimental phases and repeating the density modification iteratively. The tracing proceeds as follows.</p>
 <blockquote>
@@ -441,7 +441,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

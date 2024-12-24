@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Fragment Molecular Replacement with Arcimboldo &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -380,7 +380,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="fragment-molecular-replacement-with-arcimboldo">
-<h1 id="doc-task-arcimboldolite--page-root">Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#doc-task-arcimboldolite--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-arcimboldolite--page-root">Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#doc-task-arcimboldolite--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2015/01/00/lz5004/" rel="noopener noreferrer" target="_blank">ARCIMBOLDO</a>, originally conceived for <em>ab initio</em> phasing of macromolecular structures.</p>
 <p>There is two main barriers for <em>ab initio</em> phasing: structure size and resolution of the data. <strong>ARCIMBOLDO</strong> constitutes a general method for 2Å data, based on combination of small α-helices with <a class="reference internal" href="doc.task.Phaser.html#phaser-go"><span class="std std-ref">PHASER</span></a> ( to locate of small model fragments) and <a class="reference internal" href="doc.task.SHELX.html#shelx"><span class="std std-ref">SHELXE</span></a> (density modification with and autotracing). The method has been named after the Italian painter Giuseppe Arcimboldo, best known for creating compose portraits out of  fruits, vegetables, flowers, fish, and books.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_LITE</span></code> performs <em>ab initio</em> phasing using polyalanine helices or other single search fragments. (<a class="reference external" href="http://chango.ibmb.csic.es/" rel="noopener noreferrer" target="_blank">http://chango.ibmb.csic.es/</a>)</p>
@@ -390,14 +390,14 @@
 <div><p><em>All-helical structures are favourable cases for phasing with ARCIMBOLDO.</em></p>
 </div></blockquote>
 <section id="input">
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
+<h2 id="input">Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>The default value of the rmsd for model helices is 0.2 Å (this value can be increased).</p></li>
 <li><p>It is mandatory to define the number of helices to search and their length (length needs to be specified according to secondary-structure prediction or previous knowledge about the target structure).</p></li>
 <li><p>The molecular weight, number of components and estimated rmsd should be defined for the PHASER search.</p></li>
 </ul>
 <section id="coil-coiled-mode">
-<h3 id="coil-coiled-mode">Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this heading">¶</a></h3>
+<h3 id="coil-coiled-mode">Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p><em>represent a search algorithm to probe and verify alternative helix directions</em></p>
 </div></blockquote>
@@ -418,7 +418,7 @@
 </section>
 </section>
 <section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
 <p>Arcimboldo report window summarizes your job results. A search and expansion tables updated in real time and can help to judge parameterization.</p>
 <p>A search and expansion tables shows:</p>
 <dl class="simple">
@@ -526,7 +526,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

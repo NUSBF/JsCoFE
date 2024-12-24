@@ -5,3 +5,9 @@ Morda
 =====
 
 `MoRDa <http://scripts.iucr.org/cgi-bin/paper?S2053273315099672>`_ is a pipeline for automated molecular replacement protein structure solution based on its own domain database which derived from the PDB and contains a compact description of non-redundant protein chains, domains, homo- and hetero-oligomers.  Models relevant to the target sequence are further adjusted before molecular replacement search.The domain models are preprocessed to exclude flexible loops, which may hinder the molecular replacement search. 
+
+**References**
+
+`Vagin, A. & Lebedev, A. (2015). Acta Cryst. A71, s19. <http://dx.doi.org/10.1107/S2053273315099672>`_
+
+https://www.ccp4.ac.uk/morda-automatic-molecular-replacement-pipeline/

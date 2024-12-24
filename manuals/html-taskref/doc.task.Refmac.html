@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>REFMACAT &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -545,11 +545,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="refmacat">
-<h1 id="doc-task-refmac--page-root">REFMACAT<a class="headerlink" href="#doc-task-refmac--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-refmac--page-root">REFMACAT<a class="headerlink" href="#doc-task-refmac--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html" rel="noopener noreferrer" target="_blank">REFMAC5</a> is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.</p>
 <p><em>Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best’ electron-density maps for further model (re)building.</em></p>
 <section id="basic-principles-of-refinement">
-<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this heading">¶</a></h2>
+<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Link to this heading">¶</a></h2>
 <p>refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between <strong>F</strong> <sub>obs</sub> and <strong>F</strong> <sub>calc</sub></p>
 <p>The model is defined not only about the PDB file, but also should consider the parameters of the refinement program.</p>
 <p>We work with two types of maps:</p>
@@ -563,7 +563,7 @@
 </div>
 </section>
 <section id="stages-of-model-building">
-<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this heading">¶</a></h2>
+<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Link to this heading">¶</a></h2>
 <p><strong>Early stages (e.g. straight after MR)</strong></p>
 <ul class="simple">
 <li><p>Run many cycles (up to 200 with jelly body restraints) of refinement</p></li>
@@ -590,9 +590,9 @@
 <p>User may find further suggestions about improving your refinement strategy in Refmac output =&gt; <strong>Verdict</strong></p>
 </section>
 <section id="model-parameterisation">
-<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this heading">¶</a></h2>
+<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Link to this heading">¶</a></h2>
 <section id="b-factors">
-<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Permalink to this heading">¶</a></h3>
+<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p><strong>describe relative positional uncertainty</strong></p>
 </div></blockquote>
@@ -624,7 +624,7 @@
 </div></blockquote>
 </section>
 <section id="tls-groups">
-<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this heading">¶</a></h3>
+<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p><strong>describe anisotropic motion</strong></p>
 </div></blockquote>
@@ -653,7 +653,7 @@ Per group (20 parameters):</p>
 </div></blockquote>
 </section>
 <section id="solvent-model">
-<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this heading">¶</a></h3>
+<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p><strong>estimation of the bulk solvent contribution to the diffraction</strong></p>
 </div></blockquote>
@@ -670,7 +670,8 @@ Per group (20 parameters):</p>
 <li><p>Solvent region is flattened (set to constant)</p></li>
 <li><p>Structure factors for solvent are calculated: Fsolvent</p></li>
 </ul>
-<a class="reference internal image-reference" href="_images/doc.task.refmac5.solvent_model.png"><img alt="_images/doc.task.refmac5.solvent_model.png" src="_images/doc.task.refmac5.solvent_model.png" style="width: 576.9px; height: 239.4px;"/></a>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.solvent_model.png"><img alt="_images/doc.task.refmac5.solvent_model.png" src="_images/doc.task.refmac5.solvent_model.png" style="width: 576.9px; height: 239.4px;"/>
+</a>
 <p><em>Mask based bulk solvent is a standard in all refinement programs. In refmac it is default.</em></p>
 </div></blockquote>
 </li>
@@ -680,14 +681,15 @@ Per group (20 parameters):</p>
 <li><p>At low resolution electron density is flat</p></li>
 <li><p>Solvent and protein regions differ only by density height</p></li>
 </ul>
-<a class="reference internal image-reference" href="_images/doc.task.refmac5.Bulk_solventpng.png"><img alt="_images/doc.task.refmac5.Bulk_solventpng.png" src="_images/doc.task.refmac5.Bulk_solventpng.png" style="width: 558.0px; height: 302.4px;"/></a>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.Bulk_solventpng.png"><img alt="_images/doc.task.refmac5.Bulk_solventpng.png" src="_images/doc.task.refmac5.Bulk_solventpng.png" style="width: 558.0px; height: 302.4px;"/>
+</a>
 </div></blockquote>
 </li>
 </ul>
 </section>
 </section>
 <section id="restraints">
-<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Permalink to this heading">¶</a></h2>
+<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Link to this heading">¶</a></h2>
 <p>Standard restraints (used by default) include:</p>
 <ul class="simple">
 <li><p>Bond lengths</p></li>
@@ -703,7 +705,7 @@ Per group (20 parameters):</p>
 <div><p><em>we generally deal with restraints, not constraints.</em></p>
 </div></blockquote>
 <section id="ncs-non-crystallographic-symmetry-restraints">
-<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this heading">¶</a></h3>
+<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Link to this heading">¶</a></h3>
 <p><em>Used if there are two copies of the same molecule present.</em></p>
 <ul>
 <li><p><strong>Local NCS restraints</strong>  ( <em>Useful only for high resolution data</em> )</p>
@@ -731,7 +733,7 @@ Per group (20 parameters):</p>
 </ul>
 </section>
 <section id="jelly-body-restraints">
-<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this heading">¶</a></h3>
+<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Link to this heading">¶</a></h3>
 <p>The effect of “jelly-body” restraints is the implicit parameterization between the rigid body and individual atoms.</p>
 <dl class="simple">
 <dt>Jelly-body restraints</dt><dd><ul class="simple">
@@ -740,7 +742,8 @@ Per group (20 parameters):</p>
 </ul>
 </dd>
 </dl>
-<a class="reference internal image-reference" href="_images/jelly-body_restraints.png"><img alt="_images/jelly-body_restraints.png" src="_images/jelly-body_restraints.png" style="width: 562.5px; height: 72.89999999999999px;"/></a>
+<a class="reference internal image-reference" href="_images/jelly-body_restraints.png"><img alt="_images/jelly-body_restraints.png" src="_images/jelly-body_restraints.png" style="width: 562.5px; height: 72.89999999999999px;"/>
+</a>
 <p>t <sub>m</sub> denotes the current value calculated from the current model;</p>
 <p>t <sub>i</sub> denotes the ideal/target value (either tabulated in a dictionary or calculated from reference homologous structures);</p>
 <p>w(t <sub>m</sub> ,t <sub>i</sub>) is an additional weighting factor that may depend on the current value calculated from the model.</p>
@@ -760,7 +763,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
 </div>
 </section>
 <section id="fourier-shell-correlation-fsc">
-<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this heading">¶</a></h3>
+<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Link to this heading">¶</a></h3>
 <p>Fourier shell correlation measures the normalised cross-correlation coefficient between two 3-dimensional volumes over corresponding shells in Fourier space.  FSC calculated over all structure factors.</p>
 <p>The main idea:</p>
 <blockquote>
@@ -837,7 +840,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
