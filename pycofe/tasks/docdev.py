@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    23.12.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,10 +19,16 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
+
+# sudo port install py39-sphinx
+# pip3 install sphinxcontrib-contentui
+# pip3 install sphinxcontrib-jquery
+# pip3 install git+https://github.com/bwithd/sphinx-material
+
 
 #  python native imports
 import os
@@ -106,11 +110,15 @@ class DocDev(basic.TaskDriver):
 
         os.chmod ( scriptf, os.stat(scriptf).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH )
 
-        rc = self.runApp ( "env",[
-                                "-i",
-                                "HOME=" + os.environ["HOME"],
-                                "/bin/bash","-l","-c","./"+scriptf
-                            ],logType="Main",quitOnError=False )
+        if "SPHINX_PATH" in os.environ:
+            rc = self.runApp ( "env",[
+                                    "-i",
+                                    "HOME=" + os.environ["HOME"],
+                                    "/bin/bash","-l","-c","./"+scriptf
+                                ],logType="Main",quitOnError=False )
+        else:
+            rc = self.runApp ( "/bin/bash",["-l","-c","./"+scriptf],
+                               logType="Main",quitOnError=False )
 
         # rc = self.runApp ( "/bin/bash",["-l","-c","./"+scriptf],logType="Main",quitOnError=False )
 
@@ -134,6 +142,8 @@ class DocDev(basic.TaskDriver):
 
             docdir  = "html-" + doctype
             srcdir  = os.path.join ( srcpath,"_build","html" )
+            with open(os.path.join(srcdir,"versions.json"),"w") as f:
+                f.write ( "{}" )
 
             deppath = None
             if restype=="compile":

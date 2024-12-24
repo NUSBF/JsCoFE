@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Phase Refinement and Dynamic Density Modification with ACORN &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -394,11 +394,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="phase-refinement-and-dynamic-density-modification-with-acorn">
-<h1 id="doc-task-acorn--page-root">Phase Refinement and Dynamic Density Modification with ACORN<a class="headerlink" href="#doc-task-acorn--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-acorn--page-root">Phase Refinement and Dynamic Density Modification with ACORN<a class="headerlink" href="#doc-task-acorn--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S090744490502576X" rel="noopener noreferrer" target="_blank">ACORN</a> improves initial phase estimates to produce a more interpretable electron density map by applying prior information about protein electron density maps to the experimental map. Density modification should be carried out as a follow on to experimental phasing, to resolve phase ambiguities and estimate phases for the many reflections with low figures of merit. It may also be applied after molecular replacement with the aim of removing bias towards the search model.</p>
 <p>ACORN can be used for structures with observed data resolution as low as 1.7Å and reasonably accurate starting phases, but it is more consistently successful when the resolution is 1.5Å or better.</p>
 <section id="the-general-structure-of-acorn">
-<h2 id="the-general-structure-of-acorn">The general structure of ACORN<a class="headerlink" href="#the-general-structure-of-acorn" title="Permalink to this heading">¶</a></h2>
+<h2 id="the-general-structure-of-acorn">The general structure of ACORN<a class="headerlink" href="#the-general-structure-of-acorn" title="Link to this heading">¶</a></h2>
 <p>ACORN divides reflections into three groups (strong, medium, and weak) according to their normalised structure-factor (E) values.</p>
 <p><strong>Strong reflections (E &gt; 1.2)</strong> are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures</p>
 <p><strong>Medium refections (0.1 &lt; E &lt; 1.2)</strong> are used to calculate correlation coefficient (CC) for each potential solution of DDM.</p>
@@ -406,7 +406,7 @@
 <p>These groups are default settings and can be changed by the user.</p>
 </section>
 <section id="dynamic-density-modification-ddm">
-<h2 id="dynamic-density-modification-ddm">Dynamic density modification (DDM)<a class="headerlink" href="#dynamic-density-modification-ddm" title="Permalink to this heading">¶</a></h2>
+<h2 id="dynamic-density-modification-ddm">Dynamic density modification (DDM)<a class="headerlink" href="#dynamic-density-modification-ddm" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><em>eliminates negative densities, and truncates the highest density</em></p>
 </div></blockquote>
@@ -414,7 +414,7 @@
 <p><strong>CC</strong> <strong>greater than 0.150 usually indicates a successful refinement</strong>. Please mind the <strong>Correlation Coefficient vs number of cycles</strong> plot it should <strong>go up</strong>. ACORN will stop automatically if the value of <abbr title="correlation coefficient">CC</abbr> for the medium E-values in <abbr title="Dynamic Density Modification">DDM</abbr> becomes greater than the <strong>upper density limit for Dynamic Density Modification (DDM)</strong>. The default value is determined by ACORN, but it needs to be adjusted according to the data quality.</p>
 </section>
 <section id="density-model">
-<h2 id="density-model">Density model<a class="headerlink" href="#density-model" title="Permalink to this heading">¶</a></h2>
+<h2 id="density-model">Density model<a class="headerlink" href="#density-model" title="Link to this heading">¶</a></h2>
 <p><strong>Obtain density from</strong>:</p>
 <ul class="simple">
 <li><p><strong>Model coordinates</strong>: a correctly placed molecular replacement model should provide a sufficiently good starting set of phases. These coordinates can consist of: the whole contents of the asymmetric unit, a domain, or even a small fragment such as an alpha helix. The lower the resolution the more complete the starting model needs to be. ACORN provides an excellent correction to any phase bias resulting from defects in the MR model.</p></li>
@@ -422,7 +422,7 @@
 </ul>
 </section>
 <section id="artificially-extend-resolution">
-<h2 id="artificially-extend-resolution">Artificially extend resolution<a class="headerlink" href="#artificially-extend-resolution" title="Permalink to this heading">¶</a></h2>
+<h2 id="artificially-extend-resolution">Artificially extend resolution<a class="headerlink" href="#artificially-extend-resolution" title="Link to this heading">¶</a></h2>
 <p>If the observed data resolution is poorer than 1.0Å the list of reflection indices is first extended to a given value (1.0Å by default). Mean expected E value with estimated amplitudes but reasonable phases improve the resolution of the modified map.</p>
 <p><strong>Useful links</strong></p>
 <p><a class="reference external" href="https://www.ccp4.ac.uk/html/acorn.html" rel="noopener noreferrer" target="_blank">ACORN documentation</a></p>
@@ -477,7 +477,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

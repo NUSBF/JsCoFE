@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Molrep &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -394,7 +394,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="molrep">
-<h1 id="doc-task-molrep--page-root">Molrep<a class="headerlink" href="#doc-task-molrep--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-molrep--page-root">Molrep<a class="headerlink" href="#doc-task-molrep--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0907444909042589" rel="noopener noreferrer" target="_blank">Molrep</a> is the program for molecular replacement witch can be used in those cases where a homologous structure has already been identified.</p>
 <p><strong>Molecular Replacement (MR)</strong> is a method for approximating initial <em>phases</em> by positioning a suitable structure homolog (MR search model) such as to achieve best agreement between calculated and observed structure factors <em>moduli</em>. Phase components of thus calculated structure factors may be then taken as an approximation of “true” phases.</p>
 <p><strong>Molrep</strong> performs molecular replacement in two steps:</p>
@@ -405,7 +405,7 @@
 </ol>
 </div></blockquote>
 <section id="search-options">
-<h2 id="search-options">Search options<a class="headerlink" href="#search-options" title="Permalink to this heading">¶</a></h2>
+<h2 id="search-options">Search options<a class="headerlink" href="#search-options" title="Link to this heading">¶</a></h2>
 <p><strong>Rotation</strong> and <strong>Translation</strong> are correlation functions (or overlapping functions) between observed and calculated model Pattersons.</p>
 <p>The <strong>Patterson function</strong> is a Fourier summation with intensities as coefficients and without phase angles, or, rather, with all phase angles equal to zero.</p>
 <p>The <strong>Patterson function</strong> has the following properties:</p>
@@ -423,7 +423,7 @@
 <p>The program can detect and use <strong>pseudo-translation vectors</strong>. In this case, the pseudo-translation related copy will be added to the final model. <code class="docutils literal notranslate"><span class="pre">Peaks</span> <span class="pre">with</span> <span class="pre">height</span> <span class="pre">comparable</span> <span class="pre">with</span> <span class="pre">origin</span> <span class="pre">(in</span> <span class="pre">MOLREP</span> <span class="pre">0.15</span> <span class="pre">of</span> <span class="pre">origin)</span> <span class="pre">are</span> <span class="pre">indicative</span> <span class="pre">of</span> <span class="pre">pseudotranslation</span> <span class="pre">which</span> <span class="pre">often</span> <span class="pre">complicates</span> <span class="pre">MR</span> <span class="pre">–</span> <span class="pre">can</span> <span class="pre">give</span> <span class="pre">unreasonably</span> <span class="pre">high</span> <span class="pre">correlation</span> <span class="pre">coefficient</span> <span class="pre">(CC)</span> <span class="pre">for</span> <span class="pre">the</span> <span class="pre">wrong</span> <span class="pre">solution.</span></code></p>
 </section>
 <section id="experimental-data">
-<h2 id="experimental-data">Experimental data<a class="headerlink" href="#experimental-data" title="Permalink to this heading">¶</a></h2>
+<h2 id="experimental-data">Experimental data<a class="headerlink" href="#experimental-data" title="Link to this heading">¶</a></h2>
 <p>The <strong>low-resolution cut-off</strong> is applied in the form of a Gaussian F = F <sub>obs</sub> (1 - exp | - B <sub>off</sub> (sin θ/λ) <sup>2</sup> | )`, where B <sub>off</sub> = (2d <sub>max</sub> ) <sup>2</sup></p>
 <p>The common practice is to exclude low resolution reflections from calculations because they are corrupted by the bulk solvent contribution. However, this results in the series termination effect and introduces systematic errors in the electron density, particularly at the surface of the molecule <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?li5010" rel="noopener noreferrer" target="_blank">[Vagin and Teplyakov, 1997]</a></p>
 <p>The radius of gyration of the model and its sequence identity with the target protein, are translated into the parameters of Gaussian low-pass and high-pass filters, which define the resolution-dependence of reflection weights in the RF and TF. It is assumed that the reflections of low resolution, the intensities of which mostly depend on large-scale details of the crystal and are almost independent of the internal features of the molecules forming it, produce only noise in the RF and TF. High noise and low signal are also produced by high-resolution reflections, defining structural details of finer scale than the r.m.s.d. between the search and target molecules. The exact value of this r.m.s.d. is unknown until the structure is solved, but it correlates with the known sequence identity <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">[Lebedev,Vagin, Murshudov, 2007]</a></p>
@@ -435,11 +435,11 @@
 <p><strong>Scaling</strong> of the observed and calculated structure factors is based on the scaling of the corresponding Patterson origin peaks [Rogers, 1965]. This method is advantageous when only low-resolution data are available. In such a case, the estimation of the overall B factor from the Wilson plot may be inaccurate. Scaling by Patterson synthesis is also useful for the cross RF where there are different cells for the search model and for the unknown structure.</p>
 </section>
 <section id="infrequently-used-options">
-<h2 id="infrequently-used-options">Infrequently used options<a class="headerlink" href="#infrequently-used-options" title="Permalink to this heading">¶</a></h2>
+<h2 id="infrequently-used-options">Infrequently used options<a class="headerlink" href="#infrequently-used-options" title="Link to this heading">¶</a></h2>
 <p>The <strong>Packing function</strong> (PF) is very important in removing wrong solutions which correspond to overlapping symmetry-related or different models. The overlap between two molecules can be defined as a product of their electron densities. The total overlap is a function of the position of the search model, r. It is computed using a single Fast Fourier Transform (FFT) run, but it accounts for all the symmetry-generated contacts. The packing function PF(r) is derived from the total overlap and is an estimate of the likelihood of the molecular packing corresponding to a given r. It takes values from 0 to 1, with PF(r) = 1 if there are no clashes <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">[Lebedev,Vagin, Murshudov, 2007]</a> . Program use to calculate Packing Function only atoms which lying inside of molecule.</p>
 </section>
 <section id="scores">
-<h2 id="scores">Scores<a class="headerlink" href="#scores" title="Permalink to this heading">¶</a></h2>
+<h2 id="scores">Scores<a class="headerlink" href="#scores" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>RFZ – rotation search score should be greater than 5 and peak should be clear/</p></li>
@@ -499,7 +499,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

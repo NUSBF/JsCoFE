@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Prepare MR Ensemble with CCP4mg &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -443,13 +443,13 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="prepare-mr-ensemble-with-ccp4mg">
-<h1 id="doc-task-ensembleprepmg--page-root">Prepare MR Ensemble with CCP4mg<a class="headerlink" href="#doc-task-ensembleprepmg--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-ensembleprepmg--page-root">Prepare MR Ensemble with CCP4mg<a class="headerlink" href="#doc-task-ensembleprepmg--page-root" title="Link to this heading">¶</a></h1>
 <p>This task starts <a class="reference external" href="https://www.ccp4.ac.uk/MG/" rel="noopener noreferrer" target="_blank">CCP4mg</a> graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target protein, trim and ensemble them interactively with full visual control in real-time. This task uses <a class="reference internal" href="doc.task.MrBump.html"><span class="doc">MrBump</span></a> software to make the <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensemble</span></a> from given structural homologs.</p>
 <p>MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and <a class="reference external" href="https://doi.org/10.1038/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AFDB (AlphaFold DataBase)</a> with a sequence-based search.</p>
 <p>Automatically generated ensembles may be further improved by manual selection of found homologs and removing unsuitable structural features. That can be especially useful in cases where homologous structures, found by <a class="reference external" href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195" rel="noopener noreferrer" target="_blank">phmmer</a>, have multiple domains and no structural alignment can adequately superpose all domains simultaneously. For such proteins, the user may wish to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.</p>
 <p>It may be convenient to group, or cluster, the homologs found on the basis of their structural similarity. This can be done in CCP4mg interface with the rainbow colouring of structures displayed, using their <a class="reference external" href="https://academic.oup.com/bioinformatics/article/21/7/951/268976" rel="noopener noreferrer" target="_blank">phmmer score</a>. The colouring scheme corresponds to that of the <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1160169/" rel="noopener noreferrer" target="_blank">HHpred</a> web-application, with red indicating a high-scoring match through to blue at the lower end of the scale.</p>
 <section id="parameters">
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h2>
 <p><strong>PDB sequence redundancy level</strong> specifies the highest acceptable degree of similarity between structural models in the ensemble. The task offers a choice of 100%, 95%, 90%, 70% and 50% redundancy levels.</p>
 <p>At 100% redundancy level, all models with identical sequences, if found, are included in the ensemble. This option can be particularly useful for a protein that can adopt a range of different conformations or in cases where minor variations in the alignment between a set of very similar structures can guide the identification of the most conserved core residues.</p>
 <p>At redundancy level lower than 100%, only one out of two or more models with sequence similarity higher than the redundancy level, can be used. In such cases, a model from crystal with higher resolution and lower R-factor is selected as a representative of the redundant subset of models.</p>
@@ -467,7 +467,7 @@
 <p>You can search only the PDB or EBI-AFDB by unticking the relevant box in task interface.</p>
 </section>
 <section id="workflow">
-<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permalink to this heading">¶</a></h2>
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Link to this heading">¶</a></h2>
 <p>The task requires only amino acid sequence to prepare MR Ensemble with MrBump and CCP4mg.</p>
 <blockquote>
 <div><ul class="simple">
@@ -535,7 +535,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

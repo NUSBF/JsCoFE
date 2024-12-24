@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,14 @@
   
   
     <title>6. Cloud Run facility in CCP4i interface &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -131,7 +133,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "_static/versions.json",
+    var json_loc = ""versions.json"",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -290,16 +292,20 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="cloud-run-facility-in-ccp4i-interface">
-<h1 id="jscofe-i1tocloud--page-root"><span class="section-number">6. </span>Cloud Run facility in CCP4i interface<a class="headerlink" href="#jscofe-i1tocloud--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="jscofe-i1tocloud--page-root"><span class="section-number">6. </span>Cloud Run facility in CCP4i interface<a class="headerlink" href="#jscofe-i1tocloud--page-root" title="Link to this heading">¶</a></h1>
 <p>CCP4 Cloud projects can be initiated and executed from CCP4i interface using CCP4 Clouds Workflows task</p>
-<a class="reference internal image-reference" href="_images/i1toCloud_1.png"><img alt="_images/i1toCloud_1.png" class="align-center" src="_images/i1toCloud_1.png" style="width: 950.4000000000001px; height: 490.40000000000003px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_1.png"><img alt="_images/i1toCloud_1.png" class="align-center" src="_images/i1toCloud_1.png" style="width: 950.4000000000001px; height: 490.40000000000003px;"/>
+</a>
 <p>or using <strong>Cloud run option in Refmac, Molrep, Crank-2, MrBump and Morda tasks interfaces</strong>.</p>
-<a class="reference internal image-reference" href="_images/i1toCloud_2.png"><img alt="_images/i1toCloud_2.png" class="align-center" src="_images/i1toCloud_2.png" style="width: 948.8000000000001px; height: 487.20000000000005px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_2.png"><img alt="_images/i1toCloud_2.png" class="align-center" src="_images/i1toCloud_2.png" style="width: 948.8000000000001px; height: 487.20000000000005px;"/>
+</a>
 <p>Two running modes are available. <strong>“This machine”</strong> mode allows launching local installation of CCP4 Cloud interface on the users machine. <strong>All tasks will be run on user machine, data won’t transfer anywhere</strong>. This mode allows running Cloud without internet connection or authorisation on the Cloud server</p>
 <p>To Run jobs remotely on the server machines use the <strong>“CCP4 Cloud server”</strong> mode.</p>
-<a class="reference internal image-reference" href="_images/i1toCloud_3.png"><img alt="_images/i1toCloud_3.png" class="align-center" src="_images/i1toCloud_3.png" style="width: 922.5px; height: 605.0px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_3.png"><img alt="_images/i1toCloud_3.png" class="align-center" src="_images/i1toCloud_3.png" style="width: 922.5px; height: 605.0px;"/>
+</a>
 <p>Next Cloud run tasks are available:</p>
-<a class="reference internal image-reference" href="_images/i1toCloud_4.png"><img alt="_images/i1toCloud_4.png" class="align-center" src="_images/i1toCloud_4.png" style="width: 913.0px; height: 607.0px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_4.png"><img alt="_images/i1toCloud_4.png" class="align-center" src="_images/i1toCloud_4.png" style="width: 913.0px; height: 607.0px;"/>
+</a>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">MR</span> <span class="pre">with</span> <span class="pre">Alphafold2</span></code>: creates standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAFMR.html" rel="noopener noreferrer" target="_blank">workflow</a> based on structure prediction with AlphaFold-2</p></li>
 </ul>
@@ -314,12 +320,14 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">Dimple</span></code>: creates standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.Dimple.html" rel="noopener noreferrer" target="_blank">Dimple</a> workflow for fast ligand blob identification and fitting</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">hop-on</span></code>: creates <a class="reference external" href="../html-taskref/doc.task.Migrate.html" rel="noopener noreferrer" target="_blank">hop-on</a> project, import data and stop</p></li>
 </ul>
-<a class="reference internal image-reference" href="_images/i1toCloud_5.png"><img alt="_images/i1toCloud_5.png" class="align-center" src="_images/i1toCloud_5.png" style="width: 716.5px; height: 420.0px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_5.png"><img alt="_images/i1toCloud_5.png" class="align-center" src="_images/i1toCloud_5.png" style="width: 716.5px; height: 420.0px;"/>
+</a>
 <p>To send data on the remote server <strong>login (1)</strong> and <strong>CloudRun Id(2)</strong> are required. They can be found on <strong>My account page</strong>. Information how to find <strong>login (1)</strong> and <strong>CloudRun Id(2)</strong> can be acceded by pressing <a class="reference external" href="./jscofe_cloudRunID.html" rel="noopener noreferrer" target="_blank">help (3)</a> button.</p>
 <p>Copy your CloudRun Id from the web browser, <strong>paste it into ccp4i (control-V, even on macOS)</strong>, and enter your login name.</p>
 <p><strong>Keep “Save any changes to ccp4i configuration on successful submission” checked</strong> to save your authentication data to the ccp4i configurations.</p>
 <p>Or edit Cloud Run configuration in <strong>System Administration =&gt; Configure Cloud Run</strong></p>
-<a class="reference internal image-reference" href="_images/i1toCloud_6.png"><img alt="_images/i1toCloud_6.png" class="align-center" src="_images/i1toCloud_6.png" style="width: 237.0px; height: 572.0px;"/></a>
+<a class="reference internal image-reference" href="_images/i1toCloud_6.png"><img alt="_images/i1toCloud_6.png" class="align-center" src="_images/i1toCloud_6.png" style="width: 237.0px; height: 572.0px;"/>
+</a>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>You can change these from either the Cloud Run task interface or System Administration =&gt; Configure Cloud Run.</p>
@@ -382,7 +390,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

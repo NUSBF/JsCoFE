@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Space Group Validation with Zanuda &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -407,7 +407,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="space-group-validation-with-zanuda">
-<h1 id="doc-task-zanuda--page-root">Space Group Validation with Zanuda<a class="headerlink" href="#doc-task-zanuda--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-zanuda--page-root">Space Group Validation with Zanuda<a class="headerlink" href="#doc-task-zanuda--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S1399004714014795" rel="noopener noreferrer" target="_blank">Zanuda</a>  was developed to automate the validation of space group in case of the presence of pseudosymmetry and twinning. The program can be used to restore the correct space group in structures which were intentionally solved in low symmetry space groups including P1 (highest symmetry =  the smallest cell volume). The validation is based on the results of a series of refinements in space groups, which are compatible with the observed unit cell parameters.</p>
 <p>If the pseudosymmetry is very close to an exact crystallographic symmetry, the structure can be solved and partially refined in the <strong>wrong space group</strong>. Typically in such false structures all or some of the <em>pseudosymmetry operations are treated as crystallographic symmetry operations and vice versa</em>. Such misassignment is not uncommon when the structure is solved by molecular replacement (MR) and <code class="docutils literal notranslate"><span class="pre">it</span> <span class="pre">becomes</span> <span class="pre">apparent,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">R-free</span> <span class="pre">ceases</span> <span class="pre">to</span> <span class="pre">decrease</span> <span class="pre">at</span> <span class="pre">about</span> <span class="pre">35%</span> <span class="pre">or</span> <span class="pre">even</span> <span class="pre">at</span> <span class="pre">a</span> <span class="pre">higher</span> <span class="pre">value,</span> <span class="pre">and</span> <span class="pre">no</span> <span class="pre">further</span> <span class="pre">model</span> <span class="pre">rebuilding</span> <span class="pre">and</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">improve</span> <span class="pre">it.</span></code> At this point the electron density map remains imperfect (breaks in the main chain electron density, poor solvent peaks) while does not suggest any particular ways of model improvement.</p>
 <p>In case of space group validation with Zanuda was made the next assumptions:</p>
@@ -433,12 +433,12 @@ Only 65 space groups are “biological”. The reason is that in protein crystal
 </li>
 </ul>
 <section id="point-group">
-<h2 id="point-group">Point Group<a class="headerlink" href="#point-group" title="Permalink to this heading">¶</a></h2>
+<h2 id="point-group">Point Group<a class="headerlink" href="#point-group" title="Link to this heading">¶</a></h2>
 <p>In three dimensional objects, such as crystals, symmetry elements may be present in several different combinations.  In fact, in crystals there are 32 possible combinations of symmetry elements.  These operations can be thus combined to form a group of symmetry operations. These groups of operations are called <strong>point groups</strong> because the symmetry elements of these operations all pass through a single point of the object.Examples for point group symmetry operations are <strong>rotation axes</strong>, <strong>inversion axes</strong>, and <strong>mirror planes</strong>. <code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">case</span> <span class="pre">of</span> <span class="pre">point</span> <span class="pre">group</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">point</span> <span class="pre">to</span> <span class="pre">which</span> <span class="pre">all</span> <span class="pre">symmetry</span> <span class="pre">operations</span> <span class="pre">go</span> <span class="pre">through</span></code> with a net result that the actual molecule does not change.</p>
 <p>More about <strong>Symmetry in Crystallography</strong> you can find <a class="reference external" href="http://xrayweb.chem.ou.edu/notes/symmetry.html" rel="noopener noreferrer" target="_blank">here</a></p>
 </section>
 <section id="pseudosymmetry">
-<h2 id="pseudosymmetry">Pseudosymmetry<a class="headerlink" href="#pseudosymmetry" title="Permalink to this heading">¶</a></h2>
+<h2 id="pseudosymmetry">Pseudosymmetry<a class="headerlink" href="#pseudosymmetry" title="Link to this heading">¶</a></h2>
 <p>Crystals have an ordered internal arrangement of atoms i.e. the atoms are arranged in a symmetrical fashion on a three-dimensional network referred to as a lattice.
 Symmetry operator defines a rotation and a translation of the crystal such that each atom in the repositioned copy matches a certain atom in the original. <strong>Pseudo-symmetry operations</strong> are defined similarly, except that the coordinates of matching atoms are not required to coincide exactly. Therefore, it is convenient to define a <strong>pseudo-symmetry space group (PSSG)</strong> which contains both all of the operations from the crystal space group and all of the pseudo-symmetry operations.</p>
 <div class="admonition note">
@@ -502,7 +502,7 @@ Symmetry operator defines a rotation and a translation of the crystal such that 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

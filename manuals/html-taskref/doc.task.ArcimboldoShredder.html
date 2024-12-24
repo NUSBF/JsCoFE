@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Arcimboldo Shredder &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -402,30 +402,30 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="arcimboldo-shredder">
-<h1 id="doc-task-arcimboldoshredder--page-root">Arcimboldo Shredder<a class="headerlink" href="#doc-task-arcimboldoshredder--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-arcimboldoshredder--page-root">Arcimboldo Shredder<a class="headerlink" href="#doc-task-arcimboldoshredder--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://chango.ibmb.csic.es/shredder" rel="noopener noreferrer" target="_blank">Arcimboldo Shredder</a> uses fragments derived from distant homologs based on the experimental data, instead of by sequence similarity. In this approach, the initial template is systematically shredded, and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly.</p>
 <p>The Arcimboldo Shredder performs parallel and systematic molecular-replacement searches using a library of small structure motifs derived from a homologous structure and analyses the results to extract information from the persistence of solutions for different fragments among the noisy rotation-function results from Phaser.</p>
 <p>Potential molecular-replacement solutions are passed to SHELXE for density modification and model building, with the prospect that any correctly placed fragments can be expanded into a full structure.</p>
 <section id="input">
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
+<h2 id="input">Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
 <section id="shredder-mode">
-<h3 id="shredder-mode">Shredder mode<a class="headerlink" href="#shredder-mode" title="Permalink to this heading">¶</a></h3>
+<h3 id="shredder-mode">Shredder mode<a class="headerlink" href="#shredder-mode" title="Link to this heading">¶</a></h3>
 <p>In the <strong>sequential</strong> mode, the initial template is systematically shredded and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly. Models are selected by optimization of PHASER’s rotation function and trimming in SHELXE. Sequential shredding can improve models where the high average deviation from the target is owing to dissimilar or flexible regions.</p>
 <p>The <strong>spherical</strong> mode generates model, starting from a distant homolog template that is annotated in terms of secondary and tertiary structure, a set of compact search models used as a library in ARCIMBOLDO BORGES, profiting from specific options in PHASER and SHELXE for model improvement. Spherical shredding can improve models where deviations of the template from the target are evenly distributed among a similar fold.</p>
 </section>
 <section id="perform-gyre-refinement">
-<h3 id="perform-gyre-refinement">Perform gyre refinement<a class="headerlink" href="#perform-gyre-refinement" title="Permalink to this heading">¶</a></h3>
+<h3 id="perform-gyre-refinement">Perform gyre refinement<a class="headerlink" href="#perform-gyre-refinement" title="Link to this heading">¶</a></h3>
 <p>The maximum-likelihood GYRE method implemented in Phaser for optimizing the orientation and relative position of rigid-body fragments of a model after the orientation of the model has been identified, but before the model has been positioned in the unit cell. It performs the refinement of rigid-body groups against the rotation function target.</p>
 <p>Atoms with different chain identifiers within an ensemble will be treated as independent rigid groups, refining their rotation and relative  translation. At each orientation during gyre refinement, the amplitudes (but not the phases) of the structure factors of the symmetry-related copies of the molecular-replacement fragments oriented (but not positioned) in the unit cell can be calculated, giving a set of normalized structure-factor amplitudes for the rotating components.</p>
 <p>In gyre refinement, an initial RMSD parameter is chosen as a trade-off between convergence radius and sensitivity to coordinate accuracy, iterating refinement and decreasing the RMSD parameter estimation sequentially. The goal is to improve and select among the many possible models those with a true r.m.s.d. of below 0.6 A˚ , and thus susceptible of being expanded to the full solution in the density-modification and autotracing step. The chain definition also changes between cycles in order to increase the number of fragments and thus the degrees of freedom for model refinement, as predefined in the templatepartitioning step.</p>
 <p>After model translation, packing filtering and refinement, models are either disassembled into predetermined rigid groups and refined (gimble refinement)</p>
 </section>
 <section id="perform-gimble-refinement">
-<h3 id="perform-gimble-refinement">Perform gimble refinement<a class="headerlink" href="#perform-gimble-refinement" title="Permalink to this heading">¶</a></h3>
+<h3 id="perform-gimble-refinement">Perform gimble refinement<a class="headerlink" href="#perform-gimble-refinement" title="Link to this heading">¶</a></h3>
 <p>GIMBLE refinement is used for gimble the refinement of rigid-body fragments of the model after positioning. it is simply a re-implementation of Phaser’s rigid-body refinement developed for ease of scripting. It performs the refinement of rigid-body groups against the translation function target.</p>
 </section>
 <section id="perform-llg-guided-pruning">
-<h3 id="perform-llg-guided-pruning">Perform LLG-guided pruning<a class="headerlink" href="#perform-llg-guided-pruning" title="Permalink to this heading">¶</a></h3>
+<h3 id="perform-llg-guided-pruning">Perform LLG-guided pruning<a class="headerlink" href="#perform-llg-guided-pruning" title="Link to this heading">¶</a></h3>
 <p>LLG-guided pruning is used to trim the model of residues that are not contributing signal to the LLG at the target rmsd value.</p>
 <p>To find out more please read article <a class="reference external" href="https://dx.doi.org/10.1107%2FS2059798318004357" rel="noopener noreferrer" target="_blank">here</a></p>
 <blockquote>
@@ -485,7 +485,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

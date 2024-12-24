@@ -213,7 +213,7 @@ We now want to make a sequence of at least 5 tasks:
 - prepare MR model
 - define ASU
 - run Molrep
-- re-build model with, e.g., Buccaneer
+- re-build model with, e.g., Modelcraft
 - refine with Refmac
 
 Re-open molrep workflow script in **Workflow Cretor** again. In the bottom of 
@@ -244,7 +244,7 @@ and only non-default parameters should be specified for brevity. See more
 details in the :ref:`wscript_reference` below.
 
 Similarly to the *"Model Preparation XYZ"* task, you can now add 
-*"ASU Definition"*, *"Molrep"*, *"Buccaneer"* and *"Refmac"* tasks to the
+*"ASU Definition"*, *"Molrep"*, *"Modelcraft"* and *"Refmac"* tasks to the
 workflow, in that order. The resulting **WScript** will look like
 the following: ::
 
@@ -298,8 +298,8 @@ the following: ::
         RUN Molrep
     #
 
-    @BUCCANEER
-        RUN Buccaneer
+    @MODELCRAFT
+        RUN ModelCraft
     #
 
     @REFMAC
@@ -436,7 +436,7 @@ will be chosen. To see this, append another task, such as
 
 **Workflow parameters**
 
-Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in **Aimless** and decide whether to run the **Buccaneer** task. For this, add input of real-number parameter and a checkbox in
+Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in **Aimless** and decide whether to run the **Modelcraft** task. For this, add input of real-number parameter and a checkbox in
 :ref:`wscript_reference_input_parameters`: ::
 
     # ==========================================================================
@@ -450,7 +450,7 @@ Suppose now that we want to introduce workflow parameters, which a user could ma
         RANGE     0.1 5.0   # allowed min/max values
         DEFAULT   1.5       # default value
 
-    PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+    PAR_CHECK     runModelcraft # variable name to be used in workflow's expressions
         LABEL     Re-build model
         TOOLTIP   Check if phased model should be re-built
         DEFAULT   Checked
@@ -460,9 +460,9 @@ widgets for parameters look like.
 
 When workflow is started, it assigns input parameters (either given by user or
 read from *DEFAULT* fields) to internal variables specified in *PAR_XXX* 
-statements. In the above example, two variables: *resHigh* and *runBuccaneer*
+statements. In the above example, two variables: *resHigh* and *runModelcraft*
 will be created for high-resolution cutoff (real) and flag for running
-*Buccaneer* (boolean *True/False*), respectively. In order to use these flags,
+*Modelcraft* (boolean *True/False*), respectively. In order to use these flags,
 remove *Aimless* task from the workflow and re-insert it in the same place
 with **Workflow Creator**. When selecting *Aimless* in the task menu, specify
 a non-default value for the high-resolution cut-off, for example, 1.4A. This
@@ -488,12 +488,12 @@ instead of "1.4" and restore the ``IFDATA`` statement: ::
    one can put ``2*resHigh``, ``max(1.5,resHigh)`` and similar expressions 
    instead of ``resHigh`` in the above **WScript** fragment.
 
-As for the *Buccaneer*, we need simply to indicate that the task should be
-run if ``runBuccaneer`` is ``True``: ::
+As for the *Modelcraft*, we need simply to indicate that the task should be
+run if ``runModelcraft`` is ``True``: ::
 
-    @BUCCANEER
-        IF runBuccaneer
-        RUN Buccaneer
+    @MODELCRAFT
+        IF runModelcraft
+        RUN ModelCraft
 
 The final **WScript** for our molrep workflow reads as follows: ::
 
@@ -539,7 +539,7 @@ The final **WScript** for our molrep workflow reads as follows: ::
         RANGE     0.1 5.0   # allowed min/max values
         DEFAULT   1.5       # default real value
 
-    PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+    PAR_CHECK     runModelcraft # variable name to be used in workflow's expressions
         LABEL     Re-build model
         TOOLTIP   Check if phased model should be re-built
         DEFAULT   Checked
@@ -566,9 +566,9 @@ The final **WScript** for our molrep workflow reads as follows: ::
         RUN Molrep
     #
 
-    @BUCCANEER
-        IF runBuccaneer
-        RUN Buccaneer
+    @MODELCRAFT
+        IF runModelcraft
+        RUN ModelCraft
     #
 
     # Initialise loop control parameters

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Interactive Image Processing with iMosflm &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -478,7 +478,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="interactive-image-processing-with-imosflm">
-<h1 id="doc-task-imosflm--page-root">Interactive Image Processing with iMosflm<a class="headerlink" href="#doc-task-imosflm--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-imosflm--page-root">Interactive Image Processing with iMosflm<a class="headerlink" href="#doc-task-imosflm--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069742/" rel="noopener noreferrer" target="_blank">iMOSFLM</a> is a graphical user interface to the diffraction data-integration program <a class="reference external" href="http://journals.iucr.org/d/issues/2006/01/00/ba5082/index.html" rel="noopener noreferrer" target="_blank">MOSFLM</a>.
 MOSFLM  is a program to process diffraction data collected using the oscillation method (Arndt &amp; Wonacott, 1977). MOSFLM process the resulting diffraction images into three stages. The first is the determination of the crystal parameters, in particular the crystal lattice (unit cell) and its orientation relative to a laboratory axial system (usually based on the X-ray beam direction and the rotation axis). This is usually referred to as autoindexing. Knowledge of these parameters then allows an initial estimate of the crystal mosaicity. The second step is the determination of accurate unit-cell parameters, using a procedure known as post-refinement. This requires the integration of one or more segments of data with a few images in each segment. The final step is the integration of the entire set of diffraction images, while simultaneously refining parameters associated with both the crystal and the detector.</p>
 <p>There are the six basic “tasks” that iMosflm can perform:</p>
@@ -488,7 +488,7 @@ MOSFLM  is a program to process diffraction data collected using the oscillation
 <p><code class="docutils literal notranslate"><span class="pre">By</span> <span class="pre">clicking</span> <span class="pre">on</span> <span class="pre">"User</span> <span class="pre">Guide"</span> <span class="pre">you</span> <span class="pre">will</span> <span class="pre">guide</span> <span class="pre">to</span> <span class="pre">iMOSFILM</span> <span class="pre">user</span> <span class="pre">guide</span> <span class="pre">sections.</span></code></p>
 </div>
 <section id="images">
-<h2 id="images">Images<a class="headerlink" href="#images" title="Permalink to this heading">¶</a></h2>
+<h2 id="images">Images<a class="headerlink" href="#images" title="Link to this heading">¶</a></h2>
 <p><a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId486119" rel="noopener noreferrer" target="_blank">User Guide</a></p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -497,13 +497,13 @@ MOSFLM  is a program to process diffraction data collected using the oscillation
 <p>Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in <strong>HDF5</strong> format. iMosflm will read <strong>HDF5 “master” files</strong> (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the <a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473" rel="noopener noreferrer" target="_blank">iMosflm tutorial</a> ).</p>
 </section>
 <section id="indexing">
-<h2 id="indexing">Indexing<a class="headerlink" href="#indexing" title="Permalink to this heading">¶</a></h2>
+<h2 id="indexing">Indexing<a class="headerlink" href="#indexing" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>The cell dimensions derived from autoindexing usually give a good indication of the true symmetry of the crystal.</strong></p>
 </div></blockquote>
 <p><a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId325663" rel="noopener noreferrer" target="_blank">User Guide</a></p>
 <section id="indexing-overview">
-<h3 id="indexing-overview">Indexing – overview<a class="headerlink" href="#indexing-overview" title="Permalink to this heading">¶</a></h3>
+<h3 id="indexing-overview">Indexing – overview<a class="headerlink" href="#indexing-overview" title="Link to this heading">¶</a></h3>
 <ul>
 <li><p>Find spots on the image</p></li>
 <li><p>Convert 2D co-ordinates (image) to scattering vectors (corresponding to 3D RL co-ordinates)</p></li>
@@ -520,7 +520,8 @@ MOSFLM  is a program to process diffraction data collected using the oscillation
 <p>The 2D image co-ordinates of the spots can be converted to scattering vectors (that
 correspond to lattice points):</p>
 <blockquote>
-<div><a class="reference internal image-reference" href="_images/doc.task.iMOSFILM1.png"><img alt="_images/doc.task.iMOSFILM1.png" src="_images/doc.task.iMOSFILM1.png" style="width: 220.75px; height: 188.75px;"/></a>
+<div><a class="reference internal image-reference" href="_images/doc.task.iMOSFILM1.png"><img alt="_images/doc.task.iMOSFILM1.png" src="_images/doc.task.iMOSFILM1.png" style="width: 220.75px; height: 188.75px;"/>
+</a>
 </div></blockquote>
 <p>Here, <strong>D</strong> is the crystal to detector distance, <strong>X</strong> <sub>d</sub> and <strong>Y</strong> <sub>d</sub> are the spot co-ordinates relative to the beam centre on the image, and <strong>r</strong> is derived above (usually these are all in mm). In this calculation, <strong>s</strong> is in dimensionless reciprocal lattice units and the radius of the Ewald sphere is unity.</p>
 <p><strong>wavelength, crystal to detector distance and beam centre must all be known</strong></p>
@@ -532,7 +533,7 @@ correspond to lattice points):</p>
 </section>
 </section>
 <section id="data-collection-strategy">
-<h2 id="data-collection-strategy">Data collection strategy<a class="headerlink" href="#data-collection-strategy" title="Permalink to this heading">¶</a></h2>
+<h2 id="data-collection-strategy">Data collection strategy<a class="headerlink" href="#data-collection-strategy" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>Suggestion for optimization of data collection</strong></p>
 </div></blockquote>
@@ -540,7 +541,7 @@ correspond to lattice points):</p>
 <p>The total φ rotation to be used is normally calculated by MOSFLM based on the Laue group and the crystal orientation (the Auto setting).</p>
 </section>
 <section id="cell-refinement">
-<h2 id="cell-refinement">Cell Refinement<a class="headerlink" href="#cell-refinement" title="Permalink to this heading">¶</a></h2>
+<h2 id="cell-refinement">Cell Refinement<a class="headerlink" href="#cell-refinement" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>Optimize the fit of observed to predicted spot positions, so that the measurement boxes can be placed accurately over the spots.</strong></p>
 </div></blockquote>
@@ -562,14 +563,14 @@ correspond to lattice points):</p>
 </ul>
 </section>
 <section id="integration">
-<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permalink to this heading">¶</a></h2>
+<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Link to this heading">¶</a></h2>
 <blockquote>
 <div><p><strong>recording how many counts in each spot, subtract background, usually fit reflection profiles.</strong></p>
 </div></blockquote>
 <p><a class="reference external" href="https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId907047" rel="noopener noreferrer" target="_blank">User guide</a></p>
 <p>The first part of integration is to work out where the diffraction spot is, and where it ends. The assumption is made that, in the region of the spot, the background is planar and may have a slope. The background plane and its slope are calculated from pixels in the neighbourhood of the spot, once the spot pixels have been determined. Mosflm uses a rectangular mask, which is divided between an octagonal spot region and the background region</p>
 <section id="summation-integration">
-<h3 id="summation-integration">Summation integration<a class="headerlink" href="#summation-integration" title="Permalink to this heading">¶</a></h3>
+<h3 id="summation-integration">Summation integration<a class="headerlink" href="#summation-integration" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>In the absence of background, just add the pixel counts in the spot region together - but there is always some background, so this needs to be taken into account. It is impossible to measure the background directly under the spot, but its intensity can be inferred by assuming it to be a sloping plane in the neighbourhood of the spot. If the plane is steeper than some threshold value (e.g. because the spot is near an ice-ring), Mosflm will issue a warning.</p></li>
 <li><p>Need to define spot and background regions - we cannot measure background directly under the spots, so we calculate a local background plane and slope from nearby non-spot pixels</p></li>
@@ -578,7 +579,7 @@ correspond to lattice points):</p>
 </ul>
 </section>
 <section id="profile-fitting">
-<h3 id="profile-fitting">Profile fitting<a class="headerlink" href="#profile-fitting" title="Permalink to this heading">¶</a></h3>
+<h3 id="profile-fitting">Profile fitting<a class="headerlink" href="#profile-fitting" title="Link to this heading">¶</a></h3>
 <p>intended to improve weak spots</p>
 <ul class="simple">
 <li><p><a class="reference external" href="http://journals.iucr.org/d/issues/1999/10/00/ba0027/ba0027.pdf" rel="noopener noreferrer" target="_blank">two-dimensional (2D)</a> – builds up reflections from profiles on single images (but we can use spots on different images)</p></li>
@@ -588,7 +589,7 @@ correspond to lattice points):</p>
 </section>
 </section>
 <section id="analysing-the-results-of-integration">
-<h2 id="analysing-the-results-of-integration">Analysing the results of integration<a class="headerlink" href="#analysing-the-results-of-integration" title="Permalink to this heading">¶</a></h2>
+<h2 id="analysing-the-results-of-integration">Analysing the results of integration<a class="headerlink" href="#analysing-the-results-of-integration" title="Link to this heading">¶</a></h2>
 <p>Check graphs - they should vary smoothly without obvious discontinuities. If there are discontinuities in the graphs, they often occur around the same images for different graphs. Look at any images in the region of the discontinuities and see if there is anything obviously wrong with them</p>
 <ul class="simple">
 <li><p>Large changes in parameters may indicate problems with the crystal or instrument.</p></li>
@@ -649,7 +650,7 @@ correspond to lattice points):</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

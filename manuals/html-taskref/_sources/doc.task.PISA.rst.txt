@@ -64,3 +64,5 @@ investigated in
 `E. Krissinel and K. Henrick (2007) Inference of macromolecular assemblies from crystalline state, J. Mol. Biol. 372, 774-797, <https://doi.org/10.1016/j.jmb.2007.05.022>`_
 
 `E. Krissinel (2010) Crystal contacts as nature's docking solutions, J. Comput. Chem. 31(1), 133-143; <https://doi.org/10.1002/jcc.21303>`_
+
+`E. Krissinel (2011) Macromolecular complexes in crystals and solutions. Acta Crystallogr D Biol Crystallogr. 67(Pt 4):376-85. <https://doi.org/10.1107/S0907444911007232>`_

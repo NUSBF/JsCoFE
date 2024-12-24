@@ -55,6 +55,6 @@ The Xia-2 processing report varies according to the **processing pipeline** chos
 
 **References**
 
-`Winn, M. D. et al. (2011) Acta Cryst. D67, 235-242. <https://doi.org/10.1107/S0021889809045701>`_
+`Winter, G. (2010). J. Appl. Cryst. 43, 186-190. <https://doi.org/10.1107/S0021889809045701>`_
 
 `Karplus, A. and Diederichs, K. (2015) Curr Opin Struct Biol. 34, 60–68. <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/>`_

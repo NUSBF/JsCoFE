@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Self-Rotation Function Analysis with Molrep &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -407,7 +407,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="self-rotation-function-analysis-with-molrep">
-<h1 id="doc-task-srf--page-root">Self-Rotation Function Analysis with Molrep<a class="headerlink" href="#doc-task-srf--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-srf--page-root">Self-Rotation Function Analysis with Molrep<a class="headerlink" href="#doc-task-srf--page-root" title="Link to this heading">¶</a></h1>
 <blockquote>
 <div><p><em>A self-rotation function calculation and visualisation tool. It’s used for preliminary analysis of X-Ray data</em></p>
 </div></blockquote>
@@ -419,14 +419,14 @@
 <li><p>Can’t distinguish different oligomers with the same symmetry</p></li>
 </ul>
 <section id="input">
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
+<h2 id="input">Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
 <p><strong>Expected molecule size</strong> allows to define the radius of integration according the knowledge about molecule size.
 So the molecule size will define the radius of SRF sphere.</p>
 <p>If the point group of an assembly is known or can be assumed, then it is often possible to determine the orientation of the particle when the rotation-function peaks are otherwise hidden in noise. It is particularly important to know what range of angles needs to be explored before all independent rotation operations have been considered (angles selection depend on the point group of the rotated object). The task offers <strong>Chi sections</strong> at 180, 90, 120 and 60 (can be changed to any angle needed).</p>
 <p>Another point to consider is the <strong>resolution range</strong> of the data used in the calculation of the rotation function. Low-resolution data can be excluded because they are rather insensitive to rotation; moreover, they are determined to an appreciable extent by the solvent region. High-resolution data are more discriminating but are also more sensitive for the model. The best range is often found between <strong>3 and 5Å</strong>.</p>
 </section>
 <section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
 <p>For a better interpretation of task results, required to have a certain understanding of the theory of crystallographic symmetry. <a class="reference external" href="http://xrayweb.chem.ou.edu/notes/symmetry.html" rel="noopener noreferrer" target="_blank">Here</a> you can find a nice article covering this topic.</p>
 <p>One of the more informative output of the self-rotation function task is the <a class="reference external" href="https://en.wikipedia.org/wiki/Stereographic_projection" rel="noopener noreferrer" target="_blank">stereographic projection</a>. This shows the values of the function at a given κ (axis rotation angle) for φ and ψ. However the plot is constructed to that it appears as if it were projected onto a hemisphere and viewed from above (from +z toward the origin).</p>
 <p>Crystallographic and noncrystallographic point groups are described  <a class="reference download internal" download="" href="_downloads/9553636f5e323fa1fb953c45886e9f63/PointGroups.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
@@ -480,7 +480,7 @@ So the molecule size will define the radius of SRF sphere.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

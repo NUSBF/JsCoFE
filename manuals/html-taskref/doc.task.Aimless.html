@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Merging and Scaling with Aimless &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -474,13 +474,13 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="merging-and-scaling-with-aimless">
-<h1 id="doc-task-aimless--page-root">Merging and Scaling with Aimless<a class="headerlink" href="#doc-task-aimless--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-aimless--page-root">Merging and Scaling with Aimless<a class="headerlink" href="#doc-task-aimless--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html" rel="noopener noreferrer" target="_blank">Aimless</a> puts all the measurements on a common scale, averages measurements of symmetry-related reflections (using the symmetry determined previously) and produces many statistics that provide the first important measures of data quality.</p>
 <p>Aimless is used immediately after the program POINTLESS <a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">[Evans_2011]</a> , which determines the likely point group and possible space group, as well as optionally combining data from multiple files each containing a “sweep” of data and putting them on a common indexing system if necessary.</p>
 <section id="basic-options">
-<h2 id="basic-options">Basic Options<a class="headerlink" href="#basic-options" title="Permalink to this heading">¶</a></h2>
+<h2 id="basic-options">Basic Options<a class="headerlink" href="#basic-options" title="Link to this heading">¶</a></h2>
 <section id="scaling">
-<h3 id="scaling">Scaling<a class="headerlink" href="#scaling" title="Permalink to this heading">¶</a></h3>
+<h3 id="scaling">Scaling<a class="headerlink" href="#scaling" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p><strong>determine scale factors for the reflections, so that symmetry equivalent reflections have the best agreement - least deviation from a weighted average for the group.</strong></p>
 </div></blockquote>
@@ -498,18 +498,18 @@
 <p>Ideally have constant scaling factor <strong>(Mn(k) &amp; 0k (theta=0) v. batch)</strong> of 1; except if crystals have an irregular shape.</p>
 </section>
 <section id="merging">
-<h3 id="merging">Merging<a class="headerlink" href="#merging" title="Permalink to this heading">¶</a></h3>
+<h3 id="merging">Merging<a class="headerlink" href="#merging" title="Link to this heading">¶</a></h3>
 <p>One way of improving weak or incomplete data is to merge data from different crystals, provided that they are isomorphous. Model quality depends on data quality and merging many data sets usually improves the signal-to-noise ratio in the data. However, it is not clear how to merge data when there is severe non-isomorphism or radiation damage. Blindly merging data may do more harm than good. It is necessary to analyse the joint distribution of all data sets and to merge using this distribution.</p>
 </section>
 </section>
 <section id="symmetry-analysis">
-<h2 id="symmetry-analysis">Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Permalink to this heading">¶</a></h2>
+<h2 id="symmetry-analysis">Symmetry Analysis<a class="headerlink" href="#symmetry-analysis" title="Link to this heading">¶</a></h2>
 <p>The maximum lattice symmetry (diffraction pattern symmetry) consistent with the unit cell dimensions  is determined, within an angular tolerance of 2 degrees  (by default) or that given on the <strong>Tolerance for comparing lattices</strong> collum.</p>
 <p>Half-dataset correlation coefficient: <strong>CC1/2</strong> represents split observations for each reflection randomly into 2 halves, and calculate the correlation coefficient between them (or equivalent calculation). Not dependent on σ(I). <strong>CC1/2</strong> = 1 is perfect, <strong>CC1/2</strong> = 0 is no correlation. <code class="docutils literal notranslate"><span class="pre">Common</span> <span class="pre">value</span> <span class="pre">for</span> <span class="pre">cutoff</span> <span class="pre">is</span> <span class="pre">0.3</span> <span class="pre">or</span> <span class="pre">0.5.</span></code></p>
 <p>Signal/noise estimates: <strong>I/sig(I)</strong>  it relies on σ(I), which is not entirely reliable. Cut resolution at &lt;I/σ(I)&gt; after averaging Mn(I/sd) = 1 – 2</p>
 </section>
 <section id="observations-used">
-<h2 id="observations-used">Observations Used<a class="headerlink" href="#observations-used" title="Permalink to this heading">¶</a></h2>
+<h2 id="observations-used">Observations Used<a class="headerlink" href="#observations-used" title="Link to this heading">¶</a></h2>
 <p>If both summation and profile-fitted intensities are available, you can use:</p>
 <ol class="arabic simple">
 <li><p><strong>Combined intensives</strong> (Default). Use weighted mean of profile-fitted &amp; integrated intensity, profile-fitted for weak data, summation integration value for strong.</p></li>
@@ -519,23 +519,23 @@
 <p>If you integrate to the corners of the detector, you may have low completeness at high resolution.</p>
 </section>
 <section id="sd-correction">
-<h2 id="sd-correction">SD Correction<a class="headerlink" href="#sd-correction" title="Permalink to this heading">¶</a></h2>
+<h2 id="sd-correction">SD Correction<a class="headerlink" href="#sd-correction" title="Link to this heading">¶</a></h2>
 <p><strong>sdB parameter</strong> has no obvious physical meaning and ideally should be close to 0. So <strong>tie to zero</strong> restrain SdB to target value 0. <strong>fix to zero</strong> command fixes sdB parameter in the refinement (but it seems best to let it <strong>refine</strong>).</p>
 </section>
 <section id="outlier-rejection">
-<h2 id="outlier-rejection">Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Permalink to this heading">¶</a></h2>
+<h2 id="outlier-rejection">Outlier Rejection<a class="headerlink" href="#outlier-rejection" title="Link to this heading">¶</a></h2>
 <p>The merging algorithm analyses the data for outliers, and gives detailed analyses. It generates a weighted mean of the observations of the same reflection, after rejecting the outliers.</p>
 <p>If you get too many E ( normalised | F | ) rejects, you can switch the test off by set limit to 0.</p>
 </section>
 <section id="scaling-protocols">
-<h2 id="scaling-protocols">Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Permalink to this heading">¶</a></h2>
+<h2 id="scaling-protocols">Scaling Protocols<a class="headerlink" href="#scaling-protocols" title="Link to this heading">¶</a></h2>
 <p><strong>Scales on rotation axis</strong> are used by default.</p>
 <p>Only use the <strong>Scale by batch</strong> option <strong>if every image is different from every other one</strong> , i.e. off-line detectors (including film), or rapidly or discontinuously changing incident beam flux. <strong>This is rarely the case for synchrotron data</strong>, but is <strong>appropriate for serial data</strong> (eg XFEL). This mode may be VERY slow if there are many batches.</p>
 <p>The <strong>relative B-factor is a correction</strong> for radiation damage (hence it is a function of time), but it also includes some other corrections eg absorption. Do <strong>NOT</strong> use <strong>B-factor correction</strong> if you have very <strong>low-resolution</strong> data.</p>
 <p>The <strong>secondary beam correction</strong> is recommended and is the default: this provides a correction for absorption. It should always be restrained with a <strong>Tile scaling for CCD detectors</strong> command (this is the default).</p>
 </section>
 <section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
 <ul>
 <li><p><strong>CC1/2</strong> Clear interpretation of values &amp; known statistical properties. Not dependent on σ(I). Common value for cutoff is 0.3 or 0.5.</p></li>
 <li><p><strong>R-factors (Rmerge, Rpim, Rmeas)</strong> Shouldn’t be used to determine resolution cutoffs. Historically used, so useful to compare to previous practises.</p>
@@ -605,7 +605,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

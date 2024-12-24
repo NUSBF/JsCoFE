@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,14 @@
   
   
     <title>7. Custom (user-created) project workflows &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -131,7 +133,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "_static/versions.json",
+    var json_loc = ""versions.json"",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -440,12 +442,12 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="custom-user-created-project-workflows">
-<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">7. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="custom-workflows"></span><h1 id="jscofe-custom-workflows--page-root"><span class="section-number">7. </span>Custom (user-created) project workflows<a class="headerlink" href="#jscofe-custom-workflows--page-root" title="Link to this heading">¶</a></h1>
 <p>CCP4 Cloud projects can be developed automatically, using one of pre-defined
 <a class="reference internal" href="jscofe_automated_workflows.html#workflows-guide"><span class="std std-ref">automatic workflows</span></a>, as well as <em>custom workflows</em>,
 defined by user.</p>
 <section id="what-are-custom-workflows-and-how-one-can-use-them">
-<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">7.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
+<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">7.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Link to this heading">¶</a></h2>
 <p>Custom workflow is a script (<em>WScript</em>) describing tasks that need to be
 performed and the order of their invocation, <em>i.e.</em>, the workflow algorithm.
 The script is placed in a plain text file with extension <code class="docutils literal notranslate"><span class="pre">.wscript</span></code>,
@@ -472,7 +474,7 @@ system.</p></li>
 </ul>
 </section>
 <section id="writing-the-workflow-script-wscript">
-<h2 id="writing-the-workflow-script-wscript"><span class="section-number">7.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Permalink to this heading">¶</a></h2>
+<h2 id="writing-the-workflow-script-wscript"><span class="section-number">7.2. </span>Writing the Workflow script (WScript)<a class="headerlink" href="#writing-the-workflow-script-wscript" title="Link to this heading">¶</a></h2>
 <p>The main idea behind workflows is to automate operations when the same project (or branch of a project) needs to be repeated many (100s) times with  different input data, and <strong>WScript</strong> is limited to that purpose.</p>
 <p>The easiest way to create a <strong>WScript</strong> file is through using <strong>Workflow Creator</strong> in CCP4 Cloud. Login in your account and open <strong>Task List</strong> in any project.
 Then open tab <strong>Workflows</strong>, scroll it to section <strong>My Workflows</strong> in the end and push button <strong>Add workflow</strong>. This will launch <strong>Workflow Creator</strong> window with a template script loaded. It makes a good sense to save the newly created workflow in your personal library, therefore give it a unique <em>Workflow ID</em> on top of the dialog window. For easier workflow identification in <strong>My Workflows</strong> library, you may also change the colour of the workflow icon – simply click on it and choose from available options. Now you can save the script – it will appear in the <strong>My Workflows</strong> section of the <strong>Task List</strong>. You can run it as any other task now, but doing so will result in an empty <strong>Job Dialog</strong>, because we only saved a template, which does nothing.</p>
@@ -570,7 +572,7 @@ Values, on contrary, should be specified with respect to upper/lower case. Full
 list of keywords is given in the end of this document.</p>
 <p>We will create new workflow in several steps now.</p>
 <section id="simple-mr-workflow">
-<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">7.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Permalink to this heading">¶</a></h3>
+<span id="id1"></span><h3 id="simple-mr-workflow"><span class="section-number">7.2.1. </span>Simple MR Workflow<a class="headerlink" href="#simple-mr-workflow" title="Link to this heading">¶</a></h3>
 <p>As first example, let’s write a simple workflow, which takes reflection data,
 structure template, sequence and solves structure with Molecular Replacement
 using Molrep.</p>
@@ -628,7 +630,7 @@ any tasks in the <strong>WScript</strong> file yet.</p>
 <li><p>prepare MR model</p></li>
 <li><p>define ASU</p></li>
 <li><p>run Molrep</p></li>
-<li><p>re-build model with, e.g., Buccaneer</p></li>
+<li><p>re-build model with, e.g., Modelcraft</p></li>
 <li><p>refine with Refmac</p></li>
 </ul>
 <p>Re-open molrep workflow script in <strong>Workflow Cretor</strong> again. In the bottom of
@@ -658,7 +660,7 @@ alphanumeric identifier starting with <em>“@”</em> symbol. Other lines betwe
 and only non-default parameters should be specified for brevity. See more
 details in the <a class="reference internal" href="#wscript-reference"><span class="std std-ref">WScript Reference</span></a> below.</p>
 <p>Similarly to the <em>“Model Preparation XYZ”</em> task, you can now add
-<em>“ASU Definition”</em>, <em>“Molrep”</em>, <em>“Buccaneer”</em> and <em>“Refmac”</em> tasks to the
+<em>“ASU Definition”</em>, <em>“Molrep”</em>, <em>“Modelcraft”</em> and <em>“Refmac”</em> tasks to the
 workflow, in that order. The resulting <strong>WScript</strong> will look like
 the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
@@ -711,8 +713,8 @@ ALLOW_UPLOAD       # create file upload widgets if started from project root
     RUN Molrep
 #
 
-@BUCCANEER
-    RUN Buccaneer
+@MODELCRAFT
+    RUN ModelCraft
 #
 
 @REFMAC
@@ -736,7 +738,7 @@ project representing your workflow in design.</p>
 </div>
 </section>
 <section id="conditional-statements-and-other-advanced-operations">
-<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">7.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this heading">¶</a></h3>
+<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">7.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Link to this heading">¶</a></h3>
 <p>At the moment, our molrep workflow is quite straightforward in respect to its
 input data and algorithm. We may wish to make it more flexible. For example, it would be good if you can take both merged and unmerged reflection data on input, optimize refinement parameters and, optionally, prepare file for PDB deposition from the best results achieved.</p>
 <p><strong>Conditions based on availability of data</strong></p>
@@ -843,7 +845,7 @@ taken for further processing. In this example, results with lowest <em>R_free</e
 will be chosen. To see this, append another task, such as
 <em>“PDB Validation Report”</em> to the workflow and re-run it.</p>
 <p><strong>Workflow parameters</strong></p>
-<p>Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in <strong>Aimless</strong> and decide whether to run the <strong>Buccaneer</strong> task. For this, add input of real-number parameter and a checkbox in
+<p>Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in <strong>Aimless</strong> and decide whether to run the <strong>Modelcraft</strong> task. For this, add input of real-number parameter and a checkbox in
 <a class="reference internal" href="#wscript-reference-input-parameters"><span class="std std-ref">Input parameters section</span></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==========================================================================</span>
 <span class="c1"># Workflow parameters section. List all parameters required, "!" specifies</span>
@@ -856,7 +858,7 @@ will be chosen. To see this, append another task, such as
     <span class="n">RANGE</span>     <span class="mf">0.1</span> <span class="mf">5.0</span>   <span class="c1"># allowed min/max values</span>
     <span class="n">DEFAULT</span>   <span class="mf">1.5</span>       <span class="c1"># default value</span>
 
-<span class="n">PAR_CHECK</span>     <span class="n">runBuccaneer</span> <span class="c1"># variable name to be used in workflow's expressions</span>
+<span class="n">PAR_CHECK</span>     <span class="n">runModelcraft</span> <span class="c1"># variable name to be used in workflow's expressions</span>
     <span class="n">LABEL</span>     <span class="n">Re</span><span class="o">-</span><span class="n">build</span> <span class="n">model</span>
     <span class="n">TOOLTIP</span>   <span class="n">Check</span> <span class="k">if</span> <span class="n">phased</span> <span class="n">model</span> <span class="n">should</span> <span class="n">be</span> <span class="n">re</span><span class="o">-</span><span class="n">built</span>
     <span class="n">DEFAULT</span>   <span class="n">Checked</span>
@@ -866,9 +868,9 @@ will be chosen. To see this, append another task, such as
 widgets for parameters look like.</p>
 <p>When workflow is started, it assigns input parameters (either given by user or
 read from <em>DEFAULT</em> fields) to internal variables specified in <em>PAR_XXX</em>
-statements. In the above example, two variables: <em>resHigh</em> and <em>runBuccaneer</em>
+statements. In the above example, two variables: <em>resHigh</em> and <em>runModelcraft</em>
 will be created for high-resolution cutoff (real) and flag for running
-<em>Buccaneer</em> (boolean <em>True/False</em>), respectively. In order to use these flags,
+<em>Modelcraft</em> (boolean <em>True/False</em>), respectively. In order to use these flags,
 remove <em>Aimless</em> task from the workflow and re-insert it in the same place
 with <strong>Workflow Creator</strong>. When selecting <em>Aimless</em> in the task menu, specify
 a non-default value for the high-resolution cut-off, for example, 1.4A. This
@@ -895,11 +897,11 @@ instead of “1.4” and restore the <code class="docutils literal notranslate">
 one can put <code class="docutils literal notranslate"><span class="pre">2*resHigh</span></code>, <code class="docutils literal notranslate"><span class="pre">max(1.5,resHigh)</span></code> and similar expressions
 instead of <code class="docutils literal notranslate"><span class="pre">resHigh</span></code> in the above <strong>WScript</strong> fragment.</p>
 </div>
-<p>As for the <em>Buccaneer</em>, we need simply to indicate that the task should be
-run if <code class="docutils literal notranslate"><span class="pre">runBuccaneer</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@BUCCANEER</span>
-    <span class="n">IF</span> <span class="n">runBuccaneer</span>
-    <span class="n">RUN</span> <span class="n">Buccaneer</span>
+<p>As for the <em>Modelcraft</em>, we need simply to indicate that the task should be
+run if <code class="docutils literal notranslate"><span class="pre">runModelcraft</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@MODELCRAFT</span>
+    <span class="n">IF</span> <span class="n">runModelcraft</span>
+    <span class="n">RUN</span> <span class="n">ModelCraft</span>
 </pre></div>
 </div>
 <p>The final <strong>WScript</strong> for our molrep workflow reads as follows:</p>
@@ -945,7 +947,7 @@ PAR_REAL     resHigh   # variable name to be used in workflow's expressions
     RANGE     0.1 5.0   # allowed min/max values
     DEFAULT   1.5       # default real value
 
-PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+PAR_CHECK     runModelcraft # variable name to be used in workflow's expressions
     LABEL     Re-build model
     TOOLTIP   Check if phased model should be re-built
     DEFAULT   Checked
@@ -972,9 +974,9 @@ PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
     RUN Molrep
 #
 
-@BUCCANEER
-    IF runBuccaneer
-    RUN Buccaneer
+@MODELCRAFT
+    IF runModelcraft
+    RUN ModelCraft
 #
 
 # Initialise loop control parameters
@@ -1012,7 +1014,7 @@ branch @REFINE-OPT[iter0]
 </section>
 </section>
 <section id="custom-workflow-library">
-<h2 id="custom-workflow-library"><span class="section-number">7.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this heading">¶</a></h2>
+<h2 id="custom-workflow-library"><span class="section-number">7.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Link to this heading">¶</a></h2>
 <p>CCP4 Cloud comes with a library of custom workflows, which give <strong>WScript</strong>
 examples for few typical scenarios. They can be also used as templates for
 your own developments. Just open <strong>Workflow Creator</strong>, push <strong>Library</strong>
@@ -1020,7 +1022,7 @@ button and select a suitable <strong>WScript</strong>. It can be further modifie
 needs as any text file.</p>
 </section>
 <section id="wscript-reference">
-<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">7.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this heading">¶</a></h2>
+<span id="id2"></span><h2 id="wscript-reference"><span class="section-number">7.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Link to this heading">¶</a></h2>
 <p><strong>WScript</strong> file consists of four <strong>sections</strong>, which must follow order presented
 in this Reference. Each section contains a specific set of <strong>WScript</strong>
 statements; no statement from one section can appear in another one. Section
@@ -1047,10 +1049,10 @@ viewed as a computable trivial expression made of a single variable. See
 available functions, constants and operators in
 <a class="reference internal" href="#wscript-reference-expression-syntax"><span class="std std-ref">Mathematrical expressions syntax</span></a>.</p>
 <section id="header-section">
-<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">7.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">7.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Link to this heading">¶</a></h3>
 <p>Header section comes first in <strong>WScript</strong> and cannot be empty.</p>
 <table id="id3">
-<caption><span class="caption-text">Header section</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Header section</span><a class="headerlink" href="#id3" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 6.0%"/>
@@ -1146,7 +1148,7 @@ as one input data type).</p></td>
 </table>
 </section>
 <section id="input-data-section">
-<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">7.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">7.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Link to this heading">¶</a></h3>
 <p>Input data section must follow <a class="reference internal" href="#wscript-reference-header"><span class="std std-ref">Header section</span></a> and cannot
 be empty. The section may contain only <code class="docutils literal notranslate"><span class="pre">DATA</span></code> and <code class="docutils literal notranslate"><span class="pre">!DATA</span></code> statements, where
 exclamation mark means that data input is mandatory. One <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement
@@ -1157,7 +1159,7 @@ statement has the following syntax:</p>
 </div>
 <p>where the <code class="docutils literal notranslate"><span class="pre">TYPES</span></code> part is optional.</p>
 <table id="id4">
-<caption><span class="caption-text">Header section: data objects</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Header section: data objects</span><a class="headerlink" href="#id4" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -1192,7 +1194,7 @@ code or upload a <code class="docutils literal notranslate"><span class="pre">.c
 </tbody>
 </table>
 <table id="id5">
-<caption><span class="caption-text">Header section: data objects subtypes</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Header section: data objects subtypes</span><a class="headerlink" href="#id5" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -1236,7 +1238,7 @@ DATA XYZ TYPES protein
 </div>
 </section>
 <section id="input-parameters-section">
-<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">7.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">7.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Link to this heading">¶</a></h3>
 <p>Input parameters section is optional. If used, it must follow
 <a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>. The section is made of principal
 statements <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> or <code class="docutils literal notranslate"><span class="pre">!PAR_*</span></code> followed by their specifications. The leading
@@ -1246,7 +1248,7 @@ have a default parameter specified. The exclamation mark cannot be applied in
 case of <code class="docutils literal notranslate"><span class="pre">PAR_CHECK</span></code> and <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code> parameters, which always have a
 default value.</p>
 <table id="id6">
-<caption><span class="caption-text">Principal parameter statements</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Principal parameter statements</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 10.0%"/>
@@ -1296,7 +1298,7 @@ preceded with the exclamation sign, and it always has a default value
 </tbody>
 </table>
 <table id="id7">
-<caption><span class="caption-text">Input parameters specifications</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Input parameters specifications</span><a class="headerlink" href="#id7" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 8.0%"/>
@@ -1388,7 +1390,7 @@ PAR_CHECK     reqValReport  # name to be used in workflow's expressions
 </div>
 </section>
 <section id="workflow-body-section">
-<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">7.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-workflow-body"></span><h3 id="workflow-body-section"><span class="section-number">7.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Link to this heading">¶</a></h3>
 <p>Workflow body must be the last section in <strong>WScript</strong> file. It may contain
 task run instructions, variables and workflow control statements.</p>
 <p>Task run instructions represent a set of statements which starts with <em>Run Name</em>
@@ -1403,7 +1405,7 @@ statement and finishes with <em>Run</em> statenment:</p>
 examples and explanations. Therefore, here only the reference of relevant
 statements is provided.</p>
 <table id="id8">
-<caption><span class="caption-text">Task run statements</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Task run statements</span><a class="headerlink" href="#id8" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 18.0%"/>
@@ -1523,7 +1525,7 @@ of task run statements.</p></td>
 </tbody>
 </table>
 <table id="id9">
-<caption><span class="caption-text">Workflow variables and control</span><a class="headerlink" href="#id9" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Workflow variables and control</span><a class="headerlink" href="#id9" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 92.0%"/>
@@ -1636,12 +1638,12 @@ file. example:</p>
 </table>
 </section>
 <section id="pre-defined-variables">
-<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">7.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">7.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Link to this heading">¶</a></h3>
 <p><strong>WScript</strong> has direct access to certain metrics produced by tasks through
 pre-defined variables. For example, <em>R_free</em> value produced by <em>Refmac</em> is
 assigned to variable <code class="docutils literal notranslate"><span class="pre">Rfree</span></code>.</p>
 <table id="id10">
-<caption><span class="caption-text">Pre-defined variables</span><a class="headerlink" href="#id10" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Pre-defined variables</span><a class="headerlink" href="#id10" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 8.0%"/>
 <col style="width: 18.0%"/>
@@ -1710,12 +1712,12 @@ assigned to variable <code class="docutils literal notranslate"><span class="pre
 </table>
 </section>
 <section id="mathematrical-expressions-syntax">
-<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">7.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">7.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Link to this heading">¶</a></h3>
 <p><strong>WScript</strong> allows almost full range of <em>Python</em> mathematical expressions in
 <em>LET</em> statements and conditional statements. Available functions and operators
 are listed in this section.</p>
 <table id="id11">
-<caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id11" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id11" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 15.0%"/>
@@ -1783,7 +1785,7 @@ are listed in this section.</p>
 </tbody>
 </table>
 <table id="id12">
-<caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id12" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id12" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -1893,7 +1895,7 @@ are listed in this section.</p>
 </tbody>
 </table>
 <table id="id13">
-<caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id13" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id13" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 17.0%"/>
 <col style="width: 83.0%"/>
@@ -1952,7 +1954,7 @@ are listed in this section.</p>
 </tbody>
 </table>
 <table id="id14">
-<caption><span class="caption-text">Constants</span><a class="headerlink" href="#id14" title="Permalink to this table">¶</a></caption>
+<caption><span class="caption-text">Constants</span><a class="headerlink" href="#id14" title="Link to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -2024,7 +2026,7 @@ are listed in this section.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

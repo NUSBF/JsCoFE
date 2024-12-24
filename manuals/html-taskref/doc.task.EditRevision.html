@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -47,12 +47,12 @@
   
   
     <title>Edit Structure Revision &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -354,7 +354,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   <section id="edit-structure-revision">
-<h1 id="doc-task-editrevision--page-root">Edit Structure Revision<a class="headerlink" href="#doc-task-editrevision--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-task-editrevision--page-root">Edit Structure Revision<a class="headerlink" href="#doc-task-editrevision--page-root" title="Link to this heading">¶</a></h1>
 <p><em>Structure revision</em> is a combined data type, which contains a description of <em>crystal structure</em> achieved at the point where a particular <em>Structure revision</em> was created and can be viewed as a box with all sorts of data passing from task to task.</p>
 <p>The minimal possible <em>Structure revision</em> includes only the basic knowledge about the crystal: reflection dataset (HKL) and the content of the asymmetric unit (ASU). As the structure solution project develops, <em>Structure revisions</em> are passed from one task to another, getting updated with new or improved data (such as atomic coordinates, phases, heavy-atom substructure, ligands etc.), until the structure is considered as solved. Every task takes the needed input data from <em>Structure revision</em> automatically, which helps to maintain data integrity throughout the project and keep task interfaces laconic.</p>
 <p>CCP4 Cloud maintains <em>Structure revisions</em> automatically, and, in most cases, there is no need to tamper with their content. There are, however, special cases where direct manipulation with data items in <em>Structure revision</em> is unavoidable. Usually, this happens in difficult cases, when various tricks are attempted. For example, an expert crystallographer may want to substitute reflection dataset for a higher-resolution one, or bring phases from isomorphous crystals, or adjust the composition of ASU after a number of jobs have been run after the initial ASU definition <em>etc.</em>. Replacing (or removing) data items in <em>Structure revision</em> is done with the <strong>Edit Structure Revision</strong> task.</p>
@@ -407,7 +407,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
