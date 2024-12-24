@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.12.24   <--  Date of Last Modification.
+#    24.12.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,7 @@
 # ============================================================================
 #
 
+# install Sphinx:
 # sudo port install py39-sphinx
 # pip3 install sphinxcontrib-contentui
 # pip3 install sphinxcontrib-jquery
@@ -144,6 +145,9 @@ class DocDev(basic.TaskDriver):
             srcdir  = os.path.join ( srcpath,"_build","html" )
             with open(os.path.join(srcdir,"versions.json"),"w") as f:
                 f.write ( "{}" )
+
+            # shutil.copyfile ( os.path.join(srcpath,'versions.json'),
+            #                   os.path.join(srcdir ,"versions.json") )
 
             deppath = None
             if restype=="compile":
