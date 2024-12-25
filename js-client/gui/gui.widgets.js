@@ -1397,7 +1397,7 @@ Button.prototype.setSize = function ( width, height ) {
     'background-size': icon_size + 'px',
     'background-position': lm + 'px'
   });
-  return Widget.prototype.setSize.call(this, width, height);
+  return Widget.prototype.setSize.call ( this, width, height );
 }
 
 
@@ -1409,7 +1409,7 @@ Button.prototype.setSize_px = function ( width, height ) {
 }
 
 
-Button.prototype.addOnClickListener = function (listener_func) {
+Button.prototype.addOnClickListener = function ( listener_func ) {
   (function (button) {
     button.element.addEventListener('click', function () {
       if (button.click_count > 0) {
