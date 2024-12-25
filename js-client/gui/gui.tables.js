@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.12.24   <--  Date of Last Modification.
+ *    25.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -1114,6 +1114,12 @@ TablePages.prototype.setContextMenu = function ( contextmenu_func,cellNo=2 )  {
     let cell        = row.cells[cellNo];
     cell.insertBefore ( contextMenu.element,cell.childNodes[0] );
   }
+}
+
+TablePages.prototype.setOnShowAllListener = function ( listener_func )  {
+// listener_func() - no parameters
+  if (this.paginator)
+    this.paginator.setOnShowAllListener ( listener_func );
 }
 
 

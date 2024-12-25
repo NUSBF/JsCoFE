@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.24   <--  Date of Last Modification.
+ *    25.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1097,6 +1097,10 @@ function ProjectListPage ( sceneId )  {
     panel.setWidget ( self.projectTable,table_row,0,1,nCols );
 
     self.projectTable.makeTable ( tdesc );
+    self.projectTable.setOnShowAllListener ( function(){
+      saveProjectList ( function(rdata){},null );
+    });
+
     // $(self.projectTable.element).css({'max-height':'600px','overflow-y':'scroll'});
     // $(panel.element).css({'max-height':'600px','overflow-y':'scroll'});
 
@@ -1284,7 +1288,7 @@ function ProjectListPage ( sceneId )  {
 
   // Make Main Menu
   this.addMenuItem ( 'Change project folder','folder_projects',function(){
-    saveProjectList ( function(data){ makeAccountPage(sceneId); },null );
+    saveProjectList ( function(data){},null );
     browseFolders ( 'select' );
   });
   // this.addMenuSeparator();

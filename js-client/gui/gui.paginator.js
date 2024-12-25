@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    13.12.24   <--  Date of Last Modification.
+//    25.12.24   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -26,6 +26,7 @@ function Paginator ( n_items,n_page,n_visible,n_start,paginate,callback_func )  
   let self = this;
 
   this.paginate     = paginate;
+  this.onShowAllListener = null;
   this.__start_page = n_start;
   this.base         = new Widget ( 'ul' );
   this.addWidget ( this.base,0,0,1,1 );
@@ -76,6 +77,8 @@ function Paginator ( n_items,n_page,n_visible,n_start,paginate,callback_func )  
     }
     self.show_btn.setText ( self.paginate ? 'Show all' : 'Paginate' );
     self.base.setVisible  ( self.paginate );
+    if (self.onShowAllListener)
+      self.onShowAllListener();
   });
 
 }
@@ -87,3 +90,7 @@ Paginator.prototype.showPage = function ( pageNo )  {
   this.pagination.twbsPagination ( 'show',pageNo );
 }
 
+Paginator.prototype.setOnShowAllListener = function ( listener_func )  {
+// listener_func() - no parameters
+  this.onShowAllListener = listener_func;
+}
