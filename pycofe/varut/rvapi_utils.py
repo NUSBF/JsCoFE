@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    23.01.24   <--  Date of Last Modification.
+#    04.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  RVAPI Utility Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -26,8 +26,8 @@ def __get_item ( itemName,dictionary,defValue ):
 
 
 def cleanhtml(raw_html):
-  cleanr = re.compile('<.*?>')
-  cleantext = re.sub(cleanr, '', raw_html)
+  cleanr = re.compile ('<.*?>' )
+  cleantext = re.sub ( cleanr, '', raw_html )
   return cleantext
 
 
@@ -38,7 +38,8 @@ def makeTable ( tableDict, tableId,holderId, row,col,rowSpan,colSpan ):
 #   { title: "Table Title",        # empty string by default
 #     state: 0,                    # -1,0,1, -100,100
 #     class: "table-blue",         # "table-blue" by default
-#     css  : "text-align:right;",  # "text-align:rigt;" by default
+#     css  : "text-align:right;",  # "text-align:right;" by default
+#     alt_row_css : css_string,    # optional; "background:#EAF2D3;" by default
 #     horzHeaders :  [  # either empty list or full header structures for all columns
 #       { label: "Size"  , tooltip: "" },
 #       { label: "Weight", tooltip: "" },
@@ -70,6 +71,11 @@ def makeTable ( tableDict, tableId,holderId, row,col,rowSpan,colSpan ):
                                                      header["tooltip"],i )
 
     if "rows" in tableDict:
+        alt_css = None
+        if "alt_row_css" in tableDict:
+            alt_css = tableDict["alt_row_css"]
+            if not alt_css:
+                alt_css = "background:#EAF2D3"
         for i in range(len(tableDict["rows"])):
             trow = tableDict["rows"][i]
             if "header" in trow:
@@ -78,6 +84,8 @@ def makeTable ( tableDict, tableId,holderId, row,col,rowSpan,colSpan ):
             data = trow["data"]
             for j in range(len(data)):
                 pyrvapi.rvapi_put_table_string ( tableId,data[j],i,j )
+                if alt_css and (i%2>0):
+                    pyrvapi.rvapi_shape_table_cell ( tableId,i,j,"",alt_css,"",1,1 );
 
     return
 
@@ -200,11 +208,11 @@ def makeRTFTable ( tableDict ):
 
             if "header" in trow:
                 rtfTable += os.linesep + r'\pard\intbl\itap1\pardeftab720\sb60\sa60\partightenfactor0' + os.linesep + os.linesep
-                rtfTable += '\\f0\\b\\fs24 \\cf0 %s\\cell' % cleanhtml(trow["header"]['label'])
+                rtfTable += '\\f0\\b\\fs24 \\cf0 %s\\cell' % cleanhtml(trow["header"]['label'].replace("&nbsp;"," "))
 
             for j in range(len(data)):
                 rtfTable += os.linesep + r'\pard\intbl\itap1\pardeftab720\sb60\sa60\partightenfactor0' + os.linesep + os.linesep
-                rtfTable += '\\f1\\b0\\fs24 \\cf0 %s\\cell' % cleanhtml(data[j])
+                rtfTable += '\\f1\\b0\\fs24 \\cf0 %s\\cell' % cleanhtml(data[j].replace("&nbsp;"," "))
             rtfTable += ' \\row' + os.linesep + os.linesep
 
     if len(rtfTable) > 7:
