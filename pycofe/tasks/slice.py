@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.24   <--  Date of Last Modification.
+#    08.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -127,12 +127,12 @@ class Slice(basic.TaskDriver):
             # scripted workflow framework
             auto_workflow.nextTask ( self,{
                 "data" : {
-                    "models" : models
+                    "model" : models
                 }
             })
         else:
             auto.makeNextTask ( self,{
-                "models" : models
+                "model" : models
             })
 
 
