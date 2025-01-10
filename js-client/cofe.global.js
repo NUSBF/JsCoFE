@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    10.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -500,13 +500,34 @@ function replaceStylesheets ( href_pattern,href )  {
   });
 }
 
-function copyToClipboard ( text )  {
+function copyToClipboard ( text,event )  {
   
+  function _show_flash ( flash_text )  {
+    if (event)  {
+      let flashPanel = new Widget('div');
+      $(flashPanel.element).appendTo(document.body);
+      flashPanel.addClass ( 'flash-panel' );
+      const rect = event.target.getBoundingClientRect();
+      flashPanel.element.style.left = `${rect.left + rect.width / 2}px`;
+      flashPanel.element.style.top  = `${rect.top - 10}px`;
+      flashPanel.setFontSize   ( '86%' )
+                .setFontItalic ( true  )
+                .setText   ( flash_text );
+      window.setTimeout ( function(){
+        flashPanel.delete();
+      },2000);
+    }
+  }
+
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    
-    navigator.clipboard.writeText(text).then(function(){},
+
+    navigator.clipboard.writeText(text).then(
+      function(){
+        _show_flash ( 'Copied!' );
+      },
       function(err) {
-        console.error('Could not copy text: ', err);
+        _show_flash ( 'Copy failed' );
+        console.error ( 'Could not copy text: ', err );
       });
 
   } else {
@@ -525,13 +546,17 @@ function copyToClipboard ( text )  {
 
     try {
       let successful = document.execCommand('copy');
+      if (successful)  _show_flash ( 'Copied!' );
+                 else  _show_flash ( 'Copy failed' );
       let msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: Copying text command was ' + msg);
+      console.log ( 'Fallback: Copying text command was ' + msg );
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
+      _show_flash ( 'Copy failed' );
+      console.error ( 'Fallback: Oops, unable to copy', err );
     }
 
     document.body.removeChild(textArea);
+  
   }
 
 }

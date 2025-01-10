@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.24   <--  Date of Last Modification.
+ *    10.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -359,8 +359,8 @@ function AccountPage ( sceneId )  {
   let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
   cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
   cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
-  cloudrun_copy_btn.addOnClickListener ( function(){
-    copyToClipboard ( cloudrun_inp.getValue() );
+  cloudrun_copy_btn.addOnClickListener ( function(event){
+    copyToClipboard ( cloudrun_inp.getValue(),event );
   });
 
   let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
