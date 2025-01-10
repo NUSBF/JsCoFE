@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.12.24   <--  Date of Last Modification.
+ *    10.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ========================================================================
  *
@@ -1410,11 +1410,11 @@ Button.prototype.setSize_px = function ( width, height ) {
 
 
 Button.prototype.addOnClickListener = function ( listener_func ) {
-  (function (button) {
-    button.element.addEventListener('click', function () {
+  (function(button) {
+    button.element.addEventListener('click', function(event) {
       if (button.click_count > 0) {
         button.click_count = 0;
-        listener_func();
+        listener_func(event);
         window.setTimeout(function () {
           button.click_count = 1;
         }, 1000);
