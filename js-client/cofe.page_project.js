@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -1178,9 +1178,9 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
     this.jobTree.stopTaskLoop();
     this.jobTree.checkTimeout = -1;  // prevents task loop from starting again
     let dlg_task_parameters = this.jobTree.getJobDialogTaskParameters();
-    let scrollPos = this.jobTree.parent.getScrollPosition();
-    let jobTree1  = this.makeJobTree();
-    let timestamp = this.jobTree.projectData.desc.timestamp;
+    let scrollPos  = this.jobTree.parent.getScrollPosition();
+    let jobTree1   = this.makeJobTree();
+    let timestamp  = this.jobTree.projectData.desc.timestamp;
     if (blink)  {
       // this.jobTree.closeAllJobDialogs();
       this.jobTree.hide();

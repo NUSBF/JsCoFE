@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.24   <--  Date of Last Modification.
+ *    11.10.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -73,6 +73,7 @@ function ProjectListPage ( sceneId )  {
   let join_btn       = null;
   let help_btn       = null;
   let search_btn     = null;
+  let search_dlg     = null;
   let panel          = null;
   // this.welcome_lbl   = null;
   let nCols          = 0;                  // column span of project table
@@ -1511,7 +1512,7 @@ function ProjectListPage ( sceneId )  {
   });
 
   search_btn.addOnClickListener ( function(){
-    new TableSearchDialog ( 'Find Project',self.projectTable,500,40 ); 
+    search_dlg = new TableSearchDialog ( 'Find Project',self.projectTable,500,40 ); 
   });
 
   //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );

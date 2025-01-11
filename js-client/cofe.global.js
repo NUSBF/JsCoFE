@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.01.25   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -499,34 +499,33 @@ function replaceStylesheets ( href_pattern,href )  {
       this.href = href_n;
   });
 }
-
-function copyToClipboard ( text,event )  {
-  
-  function _show_flash ( flash_text )  {
-    if (event)  {
-      let flashPanel = new Widget('div');
-      $(flashPanel.element).appendTo(document.body);
-      flashPanel.addClass ( 'flash-panel' );
-      const rect = event.target.getBoundingClientRect();
-      flashPanel.element.style.left = `${rect.left + rect.width / 2}px`;
-      flashPanel.element.style.top  = `${rect.top - 10}px`;
-      flashPanel.setFontSize   ( '86%' )
-                .setFontItalic ( true  )
-                .setText   ( flash_text );
-      window.setTimeout ( function(){
-        flashPanel.delete();
-      },2000);
-    }
+ 
+function showFlashMessage ( flash_text,rect )  {
+  if (rect)  {
+    let flashPanel = new Widget('div');
+    $(flashPanel.element).appendTo(document.body);
+    flashPanel.addClass ( 'flash-panel' );
+    flashPanel.element.style.left = `${rect.left + rect.width/2}px`;
+    flashPanel.element.style.top  = `${rect.top - 10}px`;
+    flashPanel.setFontSize   ( '86%' )
+              .setFontItalic ( true  )
+              .setText   ( flash_text );
+    window.setTimeout ( function(){
+      flashPanel.delete();
+    },2000);
   }
+}
 
+function copyToClipboard ( text,rect )  {
+ 
   if (navigator.clipboard && navigator.clipboard.writeText) {
 
     navigator.clipboard.writeText(text).then(
       function(){
-        _show_flash ( 'Copied!' );
+        showFlashMessage ( 'Copied!',rect ); // event.target.getBoundingClientRect() );
       },
       function(err) {
-        _show_flash ( 'Copy failed' );
+        showFlashMessage ( 'Copy failed',rect );
         console.error ( 'Could not copy text: ', err );
       });
 
@@ -546,12 +545,12 @@ function copyToClipboard ( text,event )  {
 
     try {
       let successful = document.execCommand('copy');
-      if (successful)  _show_flash ( 'Copied!' );
-                 else  _show_flash ( 'Copy failed' );
+      if (successful)  showFlashMessage ( 'Copied!',rect );
+                 else  showFlashMessage ( 'Copy failed',rect );
       let msg = successful ? 'successful' : 'unsuccessful';
       console.log ( 'Fallback: Copying text command was ' + msg );
     } catch (err) {
-      _show_flash ( 'Copy failed' );
+      showFlashMessage ( 'Copy failed',rect );
       console.error ( 'Fallback: Oops, unable to copy', err );
     }
 
