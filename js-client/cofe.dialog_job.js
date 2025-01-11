@@ -28,17 +28,17 @@
 // JobDialog class
 
 var job_dialog_reason = {
-  rename_node     : 'rename_node',     // rename job node
-  set_node_icon   : 'set_node_icon',   // set    job node icon
-  reset_node      : 'reset_node',      // reset  job node label
-  select_node     : 'select_node',     // select job node
-  stop_job        : 'stop_job',        // stop job
-  end_job         : 'end_job',         // end job gracefully
-  webapp_finish   : 'webapp_finish',   // finish webapp job
-  tree_updated    : 'tree_updated',    // job tree should be updated
-  add_job         : 'add_job',         // add job from task list
-  clone_job       : 'clone_job',       // clone job
-  run_job         : 'run_job'          // run job
+  rename_node   : 'rename_node',     // rename job node
+  set_node_icon : 'set_node_icon',   // set    job node icon
+  reset_node    : 'reset_node',      // reset  job node label
+  select_node   : 'select_node',     // select job node
+  stop_job      : 'stop_job',        // stop job
+  end_job       : 'end_job',         // end job gracefully
+  webapp_finish : 'webapp_finish',   // finish webapp job
+  tree_updated  : 'tree_updated',    // job tree should be updated
+  add_job       : 'add_job',         // add job from task list
+  clone_job     : 'clone_job',       // clone job
+  run_job       : 'run_job'          // run job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch

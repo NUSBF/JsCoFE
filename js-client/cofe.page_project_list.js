@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.25   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1098,6 +1098,10 @@ function ProjectListPage ( sceneId )  {
     panel.setWidget ( self.projectTable,table_row,0,1,nCols );
 
     self.projectTable.makeTable ( tdesc );
+    if (search_dlg)  {
+      search_dlg.setTable ( self.projectTable );
+      search_dlg.applyFilter();
+    }
     self.projectTable.setOnShowAllListener ( function(){
       saveProjectList ( function(rdata){},null );
     });
@@ -1512,7 +1516,10 @@ function ProjectListPage ( sceneId )  {
   });
 
   search_btn.addOnClickListener ( function(){
-    search_dlg = new TableSearchDialog ( 'Find Project',self.projectTable,500,40 ); 
+    search_dlg = new TableSearchDialog ( 'Find Project',self.projectTable,500,40,
+      function(){ // on dialog close
+        search_dlg = null; 
+      }); 
   });
 
   //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
