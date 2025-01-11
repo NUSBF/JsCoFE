@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    11.10.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -1891,8 +1891,10 @@ let crTask = this.getSelectedTask();
         'Task "<i>' + reftask.title + '</i>" was retired. Please use ' +
         'alternative task.</div>','msg_stop' );
 
-    } else
+    } else  {
       __clipboard.task = crTask;
+      showFlashMessage ( 'Copied!',this.getSelectedNodeRect() );
+    }
 
   } else
     new MessageBox ( 'No task copied',

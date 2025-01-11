@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.01.25   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -360,7 +360,7 @@ function AccountPage ( sceneId )  {
   cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
   cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
   cloudrun_copy_btn.addOnClickListener ( function(event){
-    copyToClipboard ( cloudrun_inp.getValue(),event );
+    copyToClipboard ( cloudrun_inp.getValue(),event.target.getBoundingClientRect() );
   });
 
   let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
