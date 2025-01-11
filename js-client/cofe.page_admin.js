@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ========================================================================
  *
@@ -105,6 +105,8 @@ function AdminPage ( sceneId )  {
   let dormant_btn   = null;
   let announce_btn  = null;
   let sendtoall_btn = null;
+
+  this.search_dlg   = null;
 
   if (__user_role==role_code.admin)  {
     col = 1;
@@ -215,13 +217,10 @@ function AdminPage ( sceneId )  {
       search_btn.setTooltip ( 'Find users using a search template' );
     
       search_btn.addOnClickListener ( function(){
-        new TableSearchDialog ( 'Find User',self.userTable,500,60 ); 
-        // new FindUserDialog ( function(filters){ 
-        //        self.searchFilters = filters;
-        //        if (self.adminData)
-        //          self.makeUsersInfoTab ( self.adminData.usersInfo,
-        //                                  self.adminData.nodesInfo.FEconfig );
-        //      });
+        self.search_dlg = new TableSearchDialog ( 'Find User',self.userTable,500,60,
+          function(){ // on dialog close
+            self.search_dlg = null;
+          });
       });
 
       newuser_btn.addOnClickListener ( function(){
@@ -833,6 +832,11 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   this.usersTab.grid.setWidget ( this.userTable,1,0,1,2 );
 
   this.userTable.makeTable ( tdesc );
+
+  if (this.search_dlg)  {
+    this.search_dlg.setTable ( this.userTable );
+    this.search_dlg.applyFilter();
+  }
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );

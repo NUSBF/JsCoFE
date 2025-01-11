@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    25.12.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *                  TablePages   - table with sortable columns and pages
  *                  TableSearchDialog - search dialog for TablePages
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ========================================================================
  *
@@ -1126,17 +1126,22 @@ TablePages.prototype.setOnShowAllListener = function ( listener_func )  {
 // -------------------------------------------------------------------------
 // TableSearchDialog class
 
-function TableSearchDialog ( title,tablePages,offset_x,offset_y,filter_mode='substring' )  {
+function TableSearchDialog ( title,tablePages,offset_x,offset_y,
+                             onClose_func=null,
+                             filter_mode='substring' )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element );
 
+  this.tablePages  = tablePages;
+  this.filter_mode = filter_mode;
+
   let grid = new Grid('');
   this.addWidget ( grid );
 
   let tooltip = 'Search template, case-insensitive.';
-  if (filter_mode=='wildcard')
+  if (this.filter_mode=='wildcard')
     tooltip = 'Search template, case-insensitive, full-word match. For partial ' +
               'matches, use <span style="font-family:courier">*</span> and ' +
               '<span style="font-family:courier">?</span> wildcards, e.g., ' +
@@ -1144,11 +1149,11 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y,filter_mode='sub
 
   let col = 0;
   grid.setLabel ( 'Filter:',0,col++,1,1 );
-  let filter  = grid.setInputText('',0,col++,1,1).setWidth('160px')
+  this.filter  = grid.setInputText('',0,col++,1,1).setWidth('160px')
                     .setWidth('220px')
                     .setStyle('text','','',tooltip );
   let find_btn = null;
-  if (filter_mode=='wildcard')
+  if (this.filter_mode=='wildcard')
     find_btn = grid.setButton ( 'Find' ,image_path('find' ),0,col++,1,1 );
   let close_btn = grid.setButton ( 'Close',image_path('close'),0,col++,1,1 );
   for (let i=0;i<col;i++)
@@ -1158,16 +1163,16 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y,filter_mode='sub
 
   if (find_btn)  {
     find_btn.addOnClickListener ( function(){
-      tablePages.setFilter ( filter.getValue(),filter_mode );
+      self.tablePages.setFilter ( self.filter.getValue(),self.filter_mode );
     });
   } else  {
-    filter.addOnInputListener ( function(){
-      tablePages.setFilter ( filter.getValue(),filter_mode );
+    this.filter.addOnInputListener ( function(){
+      self.tablePages.setFilter ( self.filter.getValue(),self.filter_mode );
     });
   }
 
   close_btn.addOnClickListener ( function(){
-    tablePages.setFilter ( '',filter_mode );
+    self.tablePages.setFilter ( '',self.filter_mode );
     $(self.element).dialog ( 'close' );
   });
 
@@ -1182,12 +1187,25 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y,filter_mode='sub
       //hide close button.
       $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
     },
-    buttons : {}
+    buttons   : {}
   });
 
   this.setBackgroundColor ( '#F8F8F8' );
+
+  if (onClose_func)
+    $(this.element).on('dialogclose',function(event,ui){
+      onClose_func();
+    });
 
 }
 
 TableSearchDialog.prototype = Object.create(Widget.prototype);
 TableSearchDialog.prototype.constructor = TableSearchDialog;
+
+TableSearchDialog.prototype.setTable = function ( tablePages )  {
+  this.tablePages = tablePages;
+}
+
+TableSearchDialog.prototype.applyFilter = function()  {
+  this.tablePages.setFilter ( this.filter.getValue(),this.filter_mode );
+}
