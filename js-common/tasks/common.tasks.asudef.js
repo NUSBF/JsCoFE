@@ -62,11 +62,11 @@ function TaskASUDef()  {
       inputId     : 'seq',         // input Id for referencing input fields
       customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
-      force       : 10,            // meaning choose, by default, n<=10 sequences if
+      force       : 100,           // meaning choose, by default, n<=10 sequences if
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
       min         : 0,             // minimum acceptable number of data instances
-      max         : 10             // maximum acceptable number of data instances
+      max         : 100            // maximum acceptable number of data instances
     }
   ];
 
