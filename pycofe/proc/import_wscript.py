@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    29.06.24   <--  Date of Last Modification.
+#    12.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  WSCRTIPT (WORKFLOW SCRIPT) IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023-2025
 #
 # ============================================================================
 #
@@ -81,7 +81,7 @@ def run ( body ):  # body is reference to the main Import class
     wscriptSecId = body.getWidgetId ( "_xyz_sec_" )
     pyrvapi.rvapi_add_section ( wscriptSecId,"Workflow script",body.report_page_id(),
                                 body.rvrow,0,1,1,False )
-    workflowId  = "imported"
+    workflowId  = "Workflow"
     parseCode   = 0
 
     for i in range(len(script)):

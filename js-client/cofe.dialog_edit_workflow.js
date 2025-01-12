@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.08.24   <--  Date of Last Modification.
+ *    12.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Edit Workflow Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2023-2024
+ *  (C) E. Krissinel, A. Lebedev 2023-2025
  *
  *  =================================================================
  *
@@ -98,10 +98,10 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
       '# ' + new Date().toDateString(),
       '#',
       '',
-      'VERSION  1.0    # script version for backward compatibility',
-      'DEBUG    OFF    # ON/OFF',
-      'COMMENTS ON     # ON/OFF',
-      'WID      d-imp  # (optional) workflow ID for import mode',
+      'VERSION  1.0    # (optional) script version for backward compatibility',
+      'DEBUG    OFF    # (optional) ON/OFF',
+      'COMMENTS ON     # (optional) ON/OFF',
+      'WID      wId    # (optional) workflow ID for cloudrun\'s import mode',
       '',
       '# ==========================================================================',
       '# Workflow header -- EDIT AS NECESSARY',

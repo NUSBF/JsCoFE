@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    17.12.24   <--  Date of Last Modification.
+ *    12.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Initiation of Cloud projects from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -43,6 +43,11 @@
  * Commands (hash # may be used for comments, anything on the right from # is
  * ignored):
  *
+ *   VERSION  1.0    # script version for backward compatibility
+ *   DEBUG    OFF    # ON/OFF
+ *   COMMENTS ON     # ON/OFF
+ *   WID      wId    # (optional) workflow ID for cloudrun's import mode
+ * 
  *   URL         https://ccp4cloud.server    # mandatory
  *   USER        user_login                  # mandatory
  *   CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory
@@ -117,6 +122,7 @@ function printInstructions()  {
     '~~~~~~',
     '',
     '    node js-utils/cloudrun.js -c command_file',
+    '    in CCP4: cloudrun -c command_file',
     '',
     'where "command_file" is path to file with keyworded instructions. Alternatively,',
     'instructions can be read from standard input:',
@@ -125,14 +131,21 @@ function printInstructions()  {
     '    ..commands..',
     '    eof',
     '',
+    '    in CCP4:',
+    '    cloudrun -i <<eof',
+    '    ..commands..',
+    '    eof',
+    '',
     'Template command files can be generated as follows:',
     '',
     '    node js-utils/cloudrun.js -t task',
+    '    in CCP4: cloudrun -t task',
     '',
     'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref,',
     'or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
+    '    in CCP4: cloudrun -h',
     '',
     'prints these instructions.',
     '',
@@ -156,6 +169,11 @@ function printTemplate ( task )  {
     '#',
     '#  Edit instructions below this line as necessary:',
     '# _____________________________________________________________________________',
+    '#',
+    '# VERSION  1.0    # (optional) script version for backward compatibility',
+    '# DEBUG    OFF    # (optional) ON/OFF',
+    '# COMMENTS ON     # (optional) ON/OFF',
+    '# WID      wId    # (optional) workflow ID for import mode',
     '#',
     'URL         https://ccp4cloud.server    # mandatory',
     '#',
