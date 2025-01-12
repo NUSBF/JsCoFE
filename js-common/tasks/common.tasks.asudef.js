@@ -1,8 +1,10 @@
 
 /*
+ * MAIN ASU TASK
+ *
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    12.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +15,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -76,13 +78,28 @@ function TaskASUDef()  {
               position  : [0,0,1,5],
               contains  : {
 
+                TARGET_SEL : {
+                  type     : 'combobox',
+                  keyword  : 'target_sel',
+                  label    : 'Target solvent content',
+                  tooltip  : 'Choose whether the target solvent composition should ' +
+                             'be predicted (recommended), or set to a known value.',
+                  range    : ['P|AI-predicted',
+                              'H|hypothesized'
+                             ],
+                  value    : 'P',
+                  iwidth   : 154,
+                  position : [0,0,1,1]
+                },
+
                 TARGET_SOL : {
                           type      : 'real_', // blank value is not allowed
                           keyword   : 'target', // the real keyword for job input stream
-                          label     : 'Target solvent content, %',
-                          tooltip   : 'Target solvent content, typically 50%. If left blank, ' +
-                                      'solvent content will be calculated from given numbers '  +
-                                      'of copies (not given numbers will be optimised).',
+                          label     : '&nbsp;&nbsp;at',
+                          tooltip   : 'Target solvent content is typically set at 50%. If ' +
+                                      'left blank, the solvent content will be calculated ' +
+                                      'based on the provided number of sequence copies (any ' +
+                                      'missing values will be optimized).',
                           iwidth    : 40,
                           range     : [1.0,99.0], // may be absent (no limits) or must
                                                   // be one of the following:
@@ -90,8 +107,10 @@ function TaskASUDef()  {
                                                   //   [min,'*']  : limited from bottom
                                                   //   [min,max]  : limited from top and bottom
                           value     : '50.0',     // value to be paired with the keyword
+                          label2    : '%',
                           // placeholder : 'given',
-                          position  : [0,0,1,1]   // [row,col,rowSpan,colSpan]
+                          showon    : {TARGET_SEL:['H']},
+                          position  : [0,3,1,1]   // [row,col,rowSpan,colSpan]
                         },
 
                 HATOM : { type      : 'string_',   // empty string allowed
@@ -252,7 +271,7 @@ TaskASUDef.prototype.icon           = function()  { return 'task_asudef';    }
 TaskASUDef.prototype.clipboard_name = function()  { return '"ASU Contents"'; }
 
 TaskASUDef.prototype.currentVersion = function()  {
-  let version = 2;
+  let version = 3;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
