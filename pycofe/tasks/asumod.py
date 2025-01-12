@@ -76,7 +76,7 @@ class ASUMod(asudef.ASUDef):
                                          self.getParameter(sec1.COMPOSITION_SEL),
                                          altEstimateKey,nRes,molWeight,"",
                                          #self.getParameter(sec1.RESLIMIT),
-                                         revision0 )
+                                         revision0=revision0 )
 
         have_results = False
 
