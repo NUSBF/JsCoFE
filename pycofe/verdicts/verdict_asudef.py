@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.01.25   <--  Date of Last Modification.
+#    13.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,7 +27,9 @@ def makeVerdict ( verdict_meta ):
     ncopies1   = verdict_meta["ncopies"]
     nc0        = verdict_meta["nc"]
     sol        = verdict_meta["sol"]
-    sol_pred   = verdict_meta["sol_pred"]
+    #patched simbad verdict error
+    if sol:
+        sol_pred   = sol
     resolution = verdict_meta["resolution"]
 
     verdict_message = "<b style='font-size:18px;'>"
