@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Molecular Replacement Models and Ensembles &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -409,14 +410,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="molecular-replacement-models-and-ensembles">
-<h1 id="doc-task-mr-model-preparation--page-root">Molecular Replacement Models and Ensembles<a class="headerlink" href="#doc-task-mr-model-preparation--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-mr-model-preparation--page-root">Molecular Replacement Models and Ensembles<a class="headerlink" href="#doc-task-mr-model-preparation--page-root" title="Permalink to this headline">¶</a></h1>
 <p><strong>MR Search Models</strong> are structural templates prepared for use in molecular replacement programs (Phaser and Molrep). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. As a rough guideline, MR models should be made from structural homologs with r.m.s.d. better than 2.5 angstrom (1.5 Å and better is desirable) from the target structure and sequence identity of more than 30%. If the homolog is highly similar to the target protein, it can be taken for MR model as a whole, unmodified. However, in many cases, the homolog should be trimmed by removing structural features that are distinctly different from the expected structure. Such trimming is done on the basis of sequence comparison. In CCP4 Cloud, MR search model is associated with the sequence it represents, which is used for informing MR programs on subsequent stages.</p>
 <p>A well-chosen and optimised search model has two key advantages:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Facilitates finding the correct position by MR program and hence more sensible initial phases</p></li>
-<li><p>Facilitates quicker and easier model building and refinement post MR</p></li>
+<li>Facilitates finding the correct position by MR program and hence more sensible initial phases</li>
+<li>Facilitates quicker and easier model building and refinement post MR</li>
 </ol>
 </div></blockquote>
 <p>The success of Molecular Replacement may be noticeably increased if MR programs are given more than one model for each target sequence. This assumes that the models are derived from structure homologs with some degree of diversity, which gives MR programs more chances to choose the optimal orientation for their “average”. In this approach, MR models, associated with the same target sequence, are superposed on each other and assembled in packs called <strong>MR Ensembles</strong>, which can be used in MR programs in exactly the same way as individual MR models. Like MR models, MR Ensembles are associated with the target sequence they represent, for further informing MR programs in a seamless way.</p>
@@ -451,7 +452,7 @@
 <p><a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">Phaser Wiki</a></p>
 <p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?dd5033" rel="noopener noreferrer" target="_blank">N. Stein, (2008) J. Appl. Cryst. 41, 641 - 643. CHAINSAW: a program for mutating pdb files used as templates in molecular replacement.</a></p>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2018/03/00/rr5152/" rel="noopener noreferrer" target="_blank">Keegan, R. M., McNicholas, S. J., Thomas, J. M. H., Simpkin, A. J., Simkovic, F., Uski, V., Ballard, C. C., Winn, M. D., Wilson, K. S. &amp; Rigden, D. J. (2018). Acta Cryst. D74, 167-182.</a></p>
-</section>
+
 
 
           </article>
@@ -496,7 +497,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

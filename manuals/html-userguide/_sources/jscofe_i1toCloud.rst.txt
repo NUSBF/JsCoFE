@@ -1,95 +1,105 @@
 =====================================
-Cloud Run facility in CCP4i interface
+Cloud Run Facility in CCP4i Interface
 =====================================
 
-CCP4 Cloud projects can be initiated and executed from CCP4i interface using CCP4 Clouds Workflows task 
+CCP4 Cloud projects can be initiated and executed from the CCP4i interface using the **CCP4 Cloud Workflows** task:
 
 .. image:: images/i1toCloud_1.png
-         :scale: 40 %
-         :align: center
+   :scale: 40%
+   :align: center
 
-
-or using **Cloud run option in Refmac, Molrep, Crank-2, MrBump and Morda tasks interfaces**.
+Alternatively, you can use the **Cloud Run** option available in the interfaces for **Refmac, Molrep, Crank-2, MrBump, and Morda** tasks:
 
 .. image:: images/i1toCloud_2.png
-         :scale: 40 %
-         :align: center
+   :scale: 40%
+   :align: center
 
+**Running Modes**
 
-Two running modes are available. **"This machine"** mode allows launching local installation of CCP4 Cloud interface on the users machine. **All tasks will be run on user machine, data won't transfer anywhere**. This mode allows running Cloud without internet connection or authorisation on the Cloud server
+Two running modes are available:
 
-To Run jobs remotely on the server machines use the **"CCP4 Cloud server"** mode. 
+1. **"This machine" mode**  
+   - Launches a local installation of the CCP4 Cloud interface on your machine.
+   - **All tasks will be executed locally, and no data will be transferred elsewhere.**
+   - This mode is suitable for use without an internet connection or authorization on the CCP4 Cloud server.
+
+2. **"CCP4 Cloud server" mode**  
+   - Executes jobs remotely on CCP4 Cloud server machines.
 
 .. image:: images/i1toCloud_3.png
-         :scale: 50 %
-         :align: center
+   :scale: 50%
+   :align: center
 
+---
 
-Next Cloud run tasks are available:
+**Available Cloud Run Tasks**
 
+The following tasks are available for Cloud Run:
 
 .. image:: images/i1toCloud_4.png
-         :scale: 50 %
-         :align: center
+   :scale: 50%
+   :align: center
 
+- ``MR with Alphafold2``  
+  Creates a standard project, imports data, and starts a `workflow <../html-taskref/doc.task.WFlowAFMR.html>`__ based on structure prediction with AlphaFold-2.  
+  .. note:: This task is only available on the CCP4 Cloud remote server unless a `local AlphaFold setup <../html-dev/af_setup.html>`_ is linked with CCP4 Cloud.
 
+- ``AUTO EP``  
+  Creates a standard project, imports data, and starts the `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based on the `Crank-2 pipeline <../html-taskref/doc.task.Crank2.html>`_.
 
-- ``MR with Alphafold2``: creates standard project, import data and start `workflow <../html-taskref/doc.task.WFlowAFMR.html>`__ based on structure prediction with AlphaFold-2
+- ``AUTO MR``  
+  Creates a standard project, imports data, and starts the `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`__, utilizing `MrBump <../html-taskref/doc.task.MrBump.html>`__ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines.
 
-.. note:: available on the CCP4 Cloud remote only, unless `local AlphaFold setup linked with CCP4 Cloud <../html-dev/af_setup.html>`_
+- ``AUTO Refinement``  
+  Creates a standard project, imports data, and starts the `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_, performing automatic structure refinement with optimization of Refmac parameters and water molecule fitting.
 
-- ``AUTO EP``: creates standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
+- ``Dimple``  
+  Creates a standard project, imports data, and starts the `Dimple workflow <../html-taskref/doc.task.Dimple.html>`_ for fast ligand blob identification and fitting.
 
+- ``hop-on``  
+  Creates a `hop-on project <../html-taskref/doc.task.Migrate.html>`_, imports data, and stops.
 
-- ``AUTO MR``: creates standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`__ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`__ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
+---
 
-- ``AUTO Refinement``: creates standard project, import data and start `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_, performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules
+**Authentication for Remote Jobs**
 
-- ``Dimple``: creates standard project, import data and start `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for fast ligand blob identification and fitting
-  
-- ``hop-on``: creates `hop-on <../html-taskref/doc.task.Migrate.html>`_ project, import data and stop
-  
-  
-
+To run jobs on the CCP4 Cloud server, you need your **login (1)** and **CloudRun ID (2)**. These can be found on the **My Account** page. For more information, press the `help (3) <./jscofe_cloudRunID.html>`_ button.
 
 .. image:: images/i1toCloud_5.png
-         :scale: 50 %
-         :align: center
+   :scale: 50%
+   :align: center
 
+1. Copy your CloudRun ID from your web browser.  
+2. Paste it into CCP4i (use `Control-V`, even on macOS).  
+3. Enter your login name.  
 
-To send data on the remote server **login (1)** and **CloudRun Id(2)** are required. They can be found on **My account page**. Information how to find **login (1)** and **CloudRun Id(2)** can be acceded by pressing `help (3) <./jscofe_cloudRunID.html>`_ button.
-
-
-Copy your CloudRun Id from the web browser, **paste it into ccp4i (control-V, even on macOS)**, and enter your login name.
-
-**Keep "Save any changes to ccp4i configuration on successful submission" checked** to save your authentication data to the ccp4i configurations. 
-
-Or edit Cloud Run configuration in **System Administration => Configure Cloud Run**
+To save authentication data in CCP4i configuration, **keep "Save any changes to ccp4i configuration on successful submission" checked**. Alternatively, you can edit the Cloud Run configuration in **System Administration => Configure Cloud Run**.
 
 .. image:: images/i1toCloud_6.png
-         :scale: 50 %
-         :align: center
+   :scale: 50%
+   :align: center
 
+.. note:: You can update these settings from either the Cloud Run task interface or **System Administration => Configure Cloud Run**.
 
-.. note:: You can change these from either the Cloud Run task interface or System Administration => Configure Cloud Run.
+.. note:: To start a new CCP4 Cloud session, check the box next to "and launch CCP4 Cloud interface in web browser." Leave it unchecked to stay in an existing session.
 
-.. note:: Check the box next to "and launch CCP4 Cloud interface in web browser" to start a new CCP4 Cloud session or keep it unchecked to stay in an existing one.
+---
 
-After job was run in CCP4 Cloud interface, you may `continue work in the CCP4 Cloud <../html-tutorials/doc.tutorial.T0_001.html>`_ or `download output data <./jscofe_tips.download.html>`_
+**Continuing Work**
 
+Once the job is completed in the CCP4 Cloud interface, you can either:
 
-**Useful links**
+- `Continue working in CCP4 Cloud <../html-tutorials/doc.tutorial.T0_001.html>`_, or  
+- `Download the output data <./jscofe_tips.download.html>`_.
 
-`How to start work in CCP4 Cloud <./jscofe_start_project.html>`_
+---
 
-`CCP4 Cloud Automated Workflows <./jscofe_automated_workflows.html>`_
+**Useful Links**
 
-`CCP4 Cloud Project management <./jscofe_project.html>`_
-
-`CCP4 Cloud education capabilities <./jscofe_CloudED.html>`_
-
-`Starting CCP4 Cloud projects from the command line <./jscofe_cloudrun.html>`_
-
-`How to work with predicted models in CCP4 Cloud <./jscofe_workflow_with_predicted_models.html>`_
-
-`Examples of structure solution scenarios <./atlas/CCP4Cloud_Atlas.html>`_
+- `How to start work in CCP4 Cloud <./jscofe_start_project.html>`_  
+- `CCP4 Cloud Automated Workflows <./jscofe_automated_workflows.html>`_  
+- `CCP4 Cloud Project Management <./jscofe_project.html>`_  
+- `CCP4 Cloud Education Capabilities <./jscofe_CloudED.html>`_  
+- `Starting CCP4 Cloud projects from the command line <./jscofe_cloudrun.html>`_  
+- `How to work with predicted models in CCP4 Cloud <./jscofe_workflow_with_predicted_models.html>`_  
+- `Examples of structure solution scenarios <./atlas/CCP4Cloud_Atlas.html>`_

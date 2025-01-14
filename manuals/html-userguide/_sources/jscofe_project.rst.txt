@@ -115,9 +115,9 @@ In complex projects, it may be difficult to trace branches of interest. This may
 
 .. _refresh-project:
 
---------    
+-------
 Refresh
---------
+-------
 
 Nobody and nothing is perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the |refresh| button to refresh the Project Page. |refresh| simply reloads the project data and re-initialises internal page functions.
 

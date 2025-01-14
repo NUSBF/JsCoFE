@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -376,10 +377,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="ccp4-cloud-configuration">
-<span id="id1"></span><h1 id="configuration--page-root"><span class="section-number">3. </span>CCP4 Cloud Configuration<a class="headerlink" href="#configuration--page-root" title="Permalink to this heading">¶</a></h1>
-<section id="configuration-file-structure">
-<h2 id="configuration-file-structure"><span class="section-number">3.1. </span>Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this heading">¶</a></h2>
+  
+<span id="id1"></span><h1 id="configuration--page-root"><span class="section-number">3. </span>CCP4 Cloud Configuration<a class="headerlink" href="#configuration--page-root" title="Permalink to this headline">¶</a></h1>
+
+<h2 id="configuration-file-structure"><span class="section-number">3.1. </span>Configuration file structure<a class="headerlink" href="#configuration-file-structure" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud Configuration File is a json document with the following components:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="s2">"FrontEnd"</span> <span class="p">:</span> <span class="p">{</span> <span class="o">...........</span> <span class="p">},</span>
@@ -406,9 +407,9 @@ used for all servers in the setup. However, maintenance of individual number
 crunchers (in particular, client-side servers, or <em>CCP4 Cloud Clients</em>) may be
 more convenient if their configuration files do not contain items related to
 other components.</p>
-</section>
-<section id="configuration-of-the-front-end-server">
-<h2 id="configuration-of-the-front-end-server"><span class="section-number">3.2. </span>Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="configuration-of-the-front-end-server"><span class="section-number">3.2. </span>Configuration of the Front End Server<a class="headerlink" href="#configuration-of-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Front End Server configuration has the following structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"FrontEnd"</span> <span class="p">:</span> <span class="p">{</span>
   <span class="s2">"description"</span>      <span class="p">:</span> <span class="p">{</span>
@@ -496,8 +497,8 @@ other components.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<section id="fe-server-configuration-items">
-<h3 id="fe-server-configuration-items"><span class="section-number">3.2.1. </span>FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this heading">¶</a></h3>
+
+<h3 id="fe-server-configuration-items"><span class="section-number">3.2.1. </span>FE Server Configuration Items<a class="headerlink" href="#fe-server-configuration-items" title="Permalink to this headline">¶</a></h3>
 <p><strong>“description”</strong></p>
 <blockquote>
 <div><p>This is an optional object with the following items:</p>
@@ -511,18 +512,15 @@ other components.</p>
 <p>which gives global identification to a particular CCP4 Cloud setup (instance).
 Parameters:</p>
 <blockquote>
-<div><dl class="simple">
-<dt><em>“id”</em></dt><dd><p>Unix-type id, which must be globally unique. This id allows for
+<div><dl class="docutils">
+<dt><em>“id”</em></dt><dd>Unix-type id, which must be globally unique. This id allows for
 discrimination between CCP4 Cloud setups in different geographic locations.
-The id is used internally and is not exposed to end user.</p>
-</dd>
-<dt><em>“name”</em></dt><dd><p>Arbitrary name of CCP4 Cloud instance, which is used for reporting
-to end users. The name may contain HTML formatting</p>
-</dd>
-<dt><em>“icon”</em></dt><dd><p>Path to icon associated with CCP4 Cloud instance. Both absolute
+The id is used internally and is not exposed to end user.</dd>
+<dt><em>“name”</em></dt><dd>Arbitrary name of CCP4 Cloud instance, which is used for reporting
+to end users. The name may contain HTML formatting</dd>
+<dt><em>“icon”</em></dt><dd>Path to icon associated with CCP4 Cloud instance. Both absolute
 and relative paths may be used. Relative path originates from <code class="docutils literal notranslate"><span class="pre">jscofe</span></code>
-directory (the current directory for setver’s <em>node</em> process).</p>
-</dd>
+directory (the current directory for setver’s <em>node</em> process).</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
@@ -587,11 +585,10 @@ there is no reason to use value other than</p>
 </div></blockquote>
 <p><strong>“rejectUnauthorized”</strong></p>
 <blockquote>
-<div><p>Switches on/off (true/false) the verification of SSL certificates. This should be set
+<div>Switches on/off (true/false) the verification of SSL certificates. This should be set
 <code class="docutils literal notranslate"><span class="pre">true</span></code> by default. Switching the verification off may be used for debugging purposes
 or in case when site should be maintained even at risk while SSL certificates are being
-sorted. Note that this option is specific to server, not all Cloud setup.</p>
-</div></blockquote>
+sorted. Note that this option is specific to server, not all Cloud setup.</div></blockquote>
 <p><strong>“exclude_tasks”</strong></p>
 <blockquote>
 <div><p>Optional list of tasks that can be excluded from the list of available tasks.
@@ -639,19 +636,17 @@ See launcher script for further details. Example:</p>
 </div></blockquote>
 <p><strong>“userDataPath”</strong></p>
 <blockquote>
-<div><p>Path to directory, which will keep user metadata. Usually, no more than a
+<div>Path to directory, which will keep user metadata. Usually, no more than a
 few KBytes of data per user should be stored. Both absolute and relative
 paths can be used. Relative path is calculated from directory containing
 <em>jscofe</em> codes: <em>js-client</em>, <em>js-common</em>, <em>js-server</em>, <em>pycofe</em> and others.
 The directory must exist before starting server for first time, or server
-will not start.</p>
-</div></blockquote>
+will not start.</div></blockquote>
 <p><strong>“storage”</strong></p>
 <blockquote>
-<div><p>Path to directory to keep various data files such as logs, usage stats etc.
+<div>Path to directory to keep various data files such as logs, usage stats etc.
 The directory must exist before starting server for first time, or server
-will not start.</p>
-</div></blockquote>
+will not start.</div></blockquote>
 <p><strong>“projectsPath”</strong></p>
 <blockquote>
 <div><p>Description of file system area allocated for users’ projects and data.
@@ -686,12 +681,10 @@ object:</p>
 (disks), which is useful if users’ data does not fit single file system.</p>
 <p>Here,</p>
 <blockquote>
-<div><dl>
-<dt><em>“fsXX”</em></dt><dd><p>is an arbitrary chosen identifier for file system; at least
-one file system should be configured in the object.</p>
-</dd>
-<dt><em>“path”</em></dt><dd><p>is path to projects directory on related file system</p>
-</dd>
+<div><dl class="docutils">
+<dt><em>“fsXX”</em></dt><dd>is an arbitrary chosen identifier for file system; at least
+one file system should be configured in the object.</dd>
+<dt><em>“path”</em></dt><dd>is path to projects directory on related file system</dd>
 <dt><em>“type”</em></dt><dd><p>is file system type. Two options are available:</p>
 <blockquote>
 <div><p><em>“volume”</em> : means ordinary system, projects will be placed in path given</p>
@@ -701,13 +694,11 @@ in this, case, the actual directory path is calculated as
 and <code class="docutils literal notranslate"><span class="pre">dirName</span></code> is given below</p>
 </div></blockquote>
 </dd>
-<dt><em>“diskReserve”</em></dt><dd><p>(MBytes) specifies free disk space threshold; if free disk space
+<dt><em>“diskReserve”</em></dt><dd>(MBytes) specifies free disk space threshold; if free disk space
 falls below this value, new user projects will not be allocated on
-the related file system</p>
-</dd>
-<dt><em>“dirName”</em></dt><dd><p>specifies custom directory name for <em>“home”</em> type of
-file systems (ignored for <em>“volume”</em> type)</p>
-</dd>
+the related file system</dd>
+<dt><em>“dirName”</em></dt><dd>specifies custom directory name for <em>“home”</em> type of
+file systems (ignored for <em>“volume”</em> type)</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
@@ -725,21 +716,18 @@ description is the following object:</p>
 </div>
 <p>Here,</p>
 <blockquote>
-<div><dl class="simple">
-<dt><em>“path”</em></dt><dd><p>should point to safe directory as it is seen on the Front End server</p>
-</dd>
-<dt><em>“capacity”</em></dt><dd><p>is the maximum number of failed jobs of particular type that is retained
+<div><dl class="docutils">
+<dt><em>“path”</em></dt><dd>should point to safe directory as it is seen on the Front End server</dd>
+<dt><em>“capacity”</em></dt><dd>is the maximum number of failed jobs of particular type that is retained
 in the safe (so that only last <code class="docutils literal notranslate"><span class="pre">capacity</span></code> jobs will be available for
-investigation)</p>
-</dd>
+investigation)</dd>
 </dl>
 </div></blockquote>
 <p><strong>“facilitiesPath”</strong></p>
 <blockquote>
-<div><p>Path to directory to keep cache of files obtained from facilities like
+<div>Path to directory to keep cache of files obtained from facilities like
 external file servers, synchrotrons and similar. The directory must exist
-before starting server for first time, or server will not start.</p>
-</div></blockquote>
+before starting server for first time, or server will not start.</div></blockquote>
 <p><strong>“ICAT_wdsl”</strong></p>
 <blockquote>
 <div><p>URL of the WDSL service of STFC/SCD iCAT facility:</p>
@@ -805,17 +793,15 @@ of source code directories.</p>
 </div></blockquote>
 <p><strong>“maxRestarts”</strong></p>
 <blockquote>
-<div><p>CCP4 Cloud Front End can automatically restart after certain type of
+<div>CCP4 Cloud Front End can automatically restart after certain type of
 errors. This parameter limits the maximal number of restarts in order
-to avoid infinite restart loops.</p>
-</div></blockquote>
+to avoid infinite restart loops.</div></blockquote>
 <p><strong>“fileCapSize”</strong></p>
 <blockquote>
-<div><p>Limit size of log file of <em>running</em> jobs delivered to client device, in
+<div>Limit size of log file of <em>running</em> jobs delivered to client device, in
 bytes. If log file exceed this limit, extra content is removed from the
 middle of the file. Log files of <em>finished</em> jobs are delivered to client
-device full, without modifications, irrespective of their size.</p>
-</div></blockquote>
+device full, without modifications, irrespective of their size.</div></blockquote>
 <p><strong>“regMode”</strong></p>
 <blockquote>
 <div><p>User registration mode. Configuration</p>
@@ -833,12 +819,11 @@ In all cases, users are sent temporary password by e-mail.</p>
 </div></blockquote>
 <p><strong>“sessionCheckPeriod”</strong></p>
 <blockquote>
-<div><p>Time period, in milliseconds, for checking session status and connection
+<div>Time period, in milliseconds, for checking session status and connection
 between user device and the Front-End server. This period should be
 reasonably short such that duplicate sessions are forced to close before
 a user performs any action (CCP4 Cloud does not support multiple logins);
-2000 ms is a reasonable value.</p>
-</div></blockquote>
+2000 ms is a reasonable value.</div></blockquote>
 <p><strong>“ration”</strong></p>
 <blockquote>
 <div><p>This configuration object sets default quotas for new users:</p>
@@ -851,13 +836,10 @@ a user performs any action (CCP4 Cloud does not support multiple logins);
 </div>
 <p>where</p>
 <blockquote>
-<div><dl class="simple">
-<dt><em>“storage”</em></dt><dd><p>is disk quota, in MBytes</p>
-</dd>
-<dt><em>“cpu_day”</em></dt><dd><p>is CPU quota per day, in hours</p>
-</dd>
-<dt><em>“cpu_month”</em></dt><dd><p>is CPU quota per month, in hours</p>
-</dd>
+<div><dl class="docutils">
+<dt><em>“storage”</em></dt><dd>is disk quota, in MBytes</dd>
+<dt><em>“cpu_day”</em></dt><dd>is CPU quota per day, in hours</dd>
+<dt><em>“cpu_month”</em></dt><dd>is CPU quota per month, in hours</dd>
 </dl>
 </div></blockquote>
 <p>A user is able to submit new jobs if their projects occupy not more than
@@ -910,24 +892,22 @@ This may be achieved using the following configuration object:</p>
 </div>
 <p>where</p>
 <blockquote>
-<div><dl class="simple">
-<dt><em>“log_file”</em></dt><dd><p>is template path to log files. For example, template <code class="docutils literal notranslate"><span class="pre">/path/to/npde_fe</span></code>
+<div><dl class="docutils">
+<dt><em>“log_file”</em></dt><dd>is template path to log files. For example, template <code class="docutils literal notranslate"><span class="pre">/path/to/npde_fe</span></code>
 means that launch script defines log files with paths
-<code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.log</span></code> and <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.err</span></code></p>
-</dd>
-<dt><em>“chunk_length”</em></dt><dd><p>is the number of job launch records in a chunk. When specified number
+<code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.log</span></code> and <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.err</span></code></dd>
+<dt><em>“chunk_length”</em></dt><dd>is the number of job launch records in a chunk. When specified number
 of jobs is launched, current log files are renamed as
 <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.NN.log</span></code> and <code class="docutils literal notranslate"><span class="pre">/path/to/node_fe.NN.err</span></code>, where
 <code class="docutils literal notranslate"><span class="pre">NN</span></code> is chunk number, and new log files with template names are
-initialised</p>
-</dd>
+initialised</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
-</section>
-</section>
-<section id="configuration-of-the-client-proxy-server">
-<h2 id="configuration-of-the-client-proxy-server"><span class="section-number">3.3. </span>Configuration of the Client Proxy Server<a class="headerlink" href="#configuration-of-the-client-proxy-server" title="Permalink to this heading">¶</a></h2>
+
+
+
+<h2 id="configuration-of-the-client-proxy-server"><span class="section-number">3.3. </span>Configuration of the Client Proxy Server<a class="headerlink" href="#configuration-of-the-client-proxy-server" title="Permalink to this headline">¶</a></h2>
 <p>Client Proxy Server configuration has the following structure:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"FEProxy"</span> <span class="p">:</span> <span class="p">{</span>  <span class="o">//</span> <span class="n">optional</span> <span class="n">proxy</span> <span class="n">configuration</span>
   <span class="s2">"protocol"</span>         <span class="p">:</span> <span class="s2">"http"</span><span class="p">,</span>
@@ -944,8 +924,8 @@ initialised</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<section id="client-proxy-server-configuration-items">
-<h3 id="client-proxy-server-configuration-items"><span class="section-number">3.3.1. </span>Client Proxy Server Configuration Items<a class="headerlink" href="#client-proxy-server-configuration-items" title="Permalink to this heading">¶</a></h3>
+
+<h3 id="client-proxy-server-configuration-items"><span class="section-number">3.3.1. </span>Client Proxy Server Configuration Items<a class="headerlink" href="#client-proxy-server-configuration-items" title="Permalink to this headline">¶</a></h3>
 <p><strong>“protocol”, “host”, “port”</strong></p>
 <blockquote>
 <div><p>These are mandatory items. Client Proxy server always runs on localhost,
@@ -997,30 +977,25 @@ This makes the system more responsive, but could potentially lead to
 visualisation defects in case of version mismatch between local and
 remote CCP4 setups.</p>
 <blockquote>
-<div><dl class="simple">
-<dt><em>“localisation” : 0</em></dt><dd><p>all source files are obtained from remote server</p>
-</dd>
-<dt><em>“localisation” : 1</em></dt><dd><p>image files, icons and documentation, are
-obtained from local CCP4 setup. This is the recommended option</p>
-</dd>
-<dt><em>“localisation” : 2</em></dt><dd><p>image files, icons, documentation, and standard JavaScript
-libraries are obtained from local CCP4 setup</p>
-</dd>
-<dt><em>“localisation” : 3</em></dt><dd><p>all CCP4 Cloud source files are obtained from local CCP4 setup</p>
-</dd>
+<div><dl class="docutils">
+<dt><em>“localisation” : 0</em></dt><dd>all source files are obtained from remote server</dd>
+<dt><em>“localisation” : 1</em></dt><dd>image files, icons and documentation, are
+obtained from local CCP4 setup. This is the recommended option</dd>
+<dt><em>“localisation” : 2</em></dt><dd>image files, icons, documentation, and standard JavaScript
+libraries are obtained from local CCP4 setup</dd>
+<dt><em>“localisation” : 3</em></dt><dd>all CCP4 Cloud source files are obtained from local CCP4 setup</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
 <p><strong>“rejectUnauthorized”</strong></p>
 <blockquote>
-<div><p>Switches on/off (true/false) the verification of SSL certificates. This should be set
+<div>Switches on/off (true/false) the verification of SSL certificates. This should be set
 <code class="docutils literal notranslate"><span class="pre">true</span></code> by default. Switching the verification off may be used for debugging purposes
 or in case when site should be maintained even at risk while SSL certificates are being
-sorted. Note that this option is specific to server, not all Cloud setup.</p>
-</div></blockquote>
-</section>
-</section>
-</section>
+sorted. Note that this option is specific to server, not all Cloud setup.</div></blockquote>
+
+
+
 
 
           </article>
@@ -1065,7 +1040,7 @@ sorted. Note that this option is specific to server, not all Cloud setup.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

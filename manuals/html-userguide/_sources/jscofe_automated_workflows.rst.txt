@@ -1,46 +1,40 @@
 .. _workflows_guide:
 
 ===================
-Automatic workflows
+Automatic Workflows
 ===================
 
-Automatic workflows feature structure solution scenarios, such as Molecular
-Replacement or Experimental Phasing, which include several elementary tasks.
-A workflow can start with data import and then attempt phasing, model building,
-refinement, ligand fitting, solvent modeling, and preparing results for PDB
-deposition.
+Automatic workflows are designed to facilitate structure solution processes,
+such as based on Molecular Replacement or Experimental Phasing, by automating 
+the corresponding tasks. These workflows can begin with data import and progress
+through phasing, model building, refinement, ligand fitting, solvent modeling, 
+and preparing results for PDB deposition.
 
-A workflow will develop the *Project Tree* and perform all elementary steps
-automatically, exploring different ways of structure solutions and using various
-tasks as appropriate. For data of sufficiently high resolution, completeness
-and quality (no crystal pathologies), the automatic workflow can produce a
-reasonable approximation to the final structure. The result may be further
-improved with elementary task in manual mode, allowing finer control over
-tasks' parameters.
+A workflow will develop the *Project Tree* and execute all elementary steps 
+automatically, exploring different approaches to structure solution and using 
+the appropriate tasks as needed. For data with sufficiently high resolution, 
+completeness, and quality (i.e., free from crystal pathologies), the automatic 
+workflow can provide a good approximation of the final structure. The result 
+can then be further refined in manual mode, which offers more control over the 
+parameters of individual tasks.
 
-Not only the workflows can reduce chores, but they may also be used for a 
-better understanding of the structure solution strategy.
+Workflows not only help reduce repetitive tasks but can also provide valuable 
+insights into the structure solution strategy.
 
 -------------------------
 Using Automatic Workflows
 -------------------------
 
-Automatic Workflows progress automatically, creating and running new tasks
-and branching as necessary. If a workflow task fails or does not produce 
-useable results, the follow-up task is not formed and the corresponding
-*Project branch* terminates. Depending on the workflow logic, the algorithm 
-attempt another approach (by starting another *Project branch*) or stops.
+Automatic Workflows progress by automatically creating and running tasks, 
+branching as needed. If a task fails or produces unusable results, the 
+subsequent task will not be executed, and the corresponding *Project branch* 
+will terminate. Depending on the workflow’s design, the algorithm may attempt 
+an alternative approach (by starting a new *Project branch*) or stop altogether.
 
-A user can:
+Users can:
 
-- inspect any workflow job at any time without waiting for the workflow and
-  job to finish
-- stop any workflow job, which will stop the corresponding workflow branch
-- clone a workflow job, whether running, finished, failed or terminated, 
-  modify its parameters and re-run. *Such cloned job may be run as part of
-  the workflow (forming a new workflow branch), or in the standard (one-off,
-  manual) mode*
-- use results of any workflow job for further development of the structure
-  solution *Project*, irrespectively of whether the workflow has run to the
-  last step or not, and in parallel to workflow running.
+- Inspect any workflow job at any time, without waiting for the workflow or job to complete.
+- Stop any workflow job, which will halt the corresponding workflow branch.
+- Clone a workflow job (whether it is running, finished, failed, or terminated), modify its parameters, and re-run it. *The cloned job can either be integrated into the workflow (forming a new workflow branch) or run separately in manual mode (as a one-off task).*
+- Use the results from any workflow job for further development of the structure solution *Project*, regardless of whether the workflow has completed all steps. This can be done in parallel with the workflow execution.
 

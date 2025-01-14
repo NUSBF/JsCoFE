@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,14 +47,13 @@
   
   
     <title>1. About CCP4 Cloud &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/jquery.js?v=5d32c60e"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -133,7 +132,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "versions.json",
+    var json_loc = "_static/versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -192,7 +191,7 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#accessing-ccp4-cloud" class="md-nav__link">1.1. Accessing CCP4 Cloud</a>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 desktop applications</a>
+        <li class="md-nav__item"><a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 Desktop Applications</a>
         </li></ul>
             </nav>
         </li>
@@ -209,7 +208,7 @@
     <li class="md-nav__item">
     
     
-      <a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 desktop applications</a>
+      <a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 Desktop Applications</a>
       
     
     </li></ul>
@@ -232,7 +231,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -246,14 +245,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -267,7 +266,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -310,7 +309,7 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#accessing-ccp4-cloud" class="md-nav__link">1.1. Accessing CCP4 Cloud</a>
         </li>
-        <li class="md-nav__item"><a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 desktop applications</a>
+        <li class="md-nav__item"><a href="#ccp4-cloud-and-ccp4-desktop-applications" class="md-nav__link">1.2. CCP4 Cloud and CCP4 Desktop Applications</a>
         </li></ul>
             </nav>
         </li>
@@ -323,70 +322,33 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="about-ccp4-cloud">
-<h1 id="jscofe-about--page-root"><span class="section-number">1. </span>About CCP4 Cloud<a class="headerlink" href="#jscofe-about--page-root" title="Link to this heading">¶</a></h1>
-<p>CCP4 Cloud is a computational resource and platform specifically designed for
-structural biology research. <a class="reference external" href="https://www.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">CCP4</a> stands for
-<em>“Collaborative Computational Project Number 4”</em> which is a longstanding
-project in the field of macromolecular crystallography. It provides software
-tools and resources for the determination of macromolecular structures by
-X-ray crystallography, and other biophysical techniques.</p>
-<p>CCP4 Cloud extends the capabilities of the CCP4 software suite by providing
-a cloud-based platform where researchers can access computational resources
-for tasks such as X-ray data processing, phasing, model building, refinement,
-validation, analysis, and preparation for <a class="reference external" href="https://www.wwpdb.org/" rel="noopener noreferrer" target="_blank">PDB</a>
-deposition. By leveraging cloud computing infrastructure, CCP4 Cloud allows
-researchers to perform complex calculations without the need for significant
-local computational resources. This can be particularly beneficial for
-laboratories or institutions with limited computing infrastructure or for
-researchers who require on-demand access to scalable computing resources.</p>
-<section id="accessing-ccp4-cloud">
-<h2 id="accessing-ccp4-cloud"><span class="section-number">1.1. </span>Accessing CCP4 Cloud<a class="headerlink" href="#accessing-ccp4-cloud" title="Link to this heading">¶</a></h2>
-<p>Accessing CCP4 Cloud involves the following steps:</p>
-<p><strong>Registration:</strong> Visit the CCP4 Cloud website and register for an account
-if you haven’t already. You will need to provide some basic information
-(your name, chosen login name and e-mail address), indicate whether you are
-academic or commercial user, and choose one of feedback options.</p>
-<p><strong>Login:</strong> After registration, log in to your CCP4 Cloud account using your
-username and temporary password which you obtain in your mailbox.</p>
-<p><strong>Usage:</strong> Once logged in first time, choose new password in “My Account”
-page. After that, you can access the CCP4 Cloud platform and its resources.
-This involves uploading your data, running computational tasks using the
-available software tools, and accessing the results.</p>
-<p><strong>Documentation and Support:</strong> Familiarize yourself with the documentation
-and support resources provided by CCP4 Cloud. This includes user guides,
-tutorials, FAQs, and support channels where you can get assistance if needed.</p>
-<p><strong>Licence:</strong> Using CCP4 Cloud is covered by CCP4 Licence Agreement. CCP4 Licence
-is free for academic users; commercial users must be covered by appropriate
-licence agreement. Please find more details
-<a class="reference external" href="https://www.ccp4.ac.uk/ccp4-licence-and-conditions-2/" rel="noopener noreferrer" target="_blank">here</a>.</p>
-</section>
-<section id="ccp4-cloud-and-ccp4-desktop-applications">
-<h2 id="ccp4-cloud-and-ccp4-desktop-applications"><span class="section-number">1.2. </span>CCP4 Cloud and CCP4 desktop applications<a class="headerlink" href="#ccp4-cloud-and-ccp4-desktop-applications" title="Link to this heading">¶</a></h2>
-<p>Selected CCP4 applications, such as <strong>Coot</strong>, <strong>CCP4mg</strong>, <strong>DUI</strong>, <strong>iMosflm</strong>,
-and some others, require CCP4 Software installed on your machine (see
-installation packages and instructions in
-<a class="reference external" href="https://www.ccp4.ac.uk/download/" rel="noopener noreferrer" target="_blank">CCP4 Download</a>). To use them in CCP4 Cloud,
-just start your Cloud session by clicking on one of CCP4 Cloud icons, found in
-CCP4 directory. To connect to remote CCP4 Cloud setup, click on:</p>
-<a class="reference internal image-reference" href="_images/ccp4cloud_remote.png"><img alt="_images/ccp4cloud_remote.png" class="align-center" src="_images/ccp4cloud_remote.png" style="width: 112.96000000000001px; height: 112.96000000000001px;"/>
-</a>
-<p>In remote mode, your projects and data are kept on remote servers, and
-computational tasks run on cloud machines.</p>
-<p>To start CCP4 Cloud locally on your machine, click on:</p>
-<a class="reference internal image-reference" href="_images/ccp4cloud_desktop.png"><img alt="_images/ccp4cloud_desktop.png" class="align-center" src="_images/ccp4cloud_desktop.png" style="width: 105.60000000000001px; height: 105.60000000000001px;"/>
-</a>
-<p>In local mode, your projects and data are kept on your machine, and
-computational tasks run on your machine as well.</p>
+  
+<h1 id="jscofe-about--page-root"><span class="section-number">1. </span>About CCP4 Cloud<a class="headerlink" href="#jscofe-about--page-root" title="Permalink to this headline">¶</a></h1>
+<p>CCP4 Cloud is a cloud-based computational resource and platform designed specifically for structural biology research. <a class="reference external" href="https://www.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">CCP4</a> stands for <em>“Collaborative Computational Project Number 4”</em>, a long-established initiative in the field of macromolecular crystallography. It provides essential software tools and resources for determining macromolecular structures through X-ray crystallography and other biophysical techniques.</p>
+<p>CCP4 Cloud builds on the CCP4 software suite by offering a cloud-based platform where researchers can access powerful computational resources for tasks such as X-ray data processing, phasing, model building, refinement, validation, analysis, and preparation for <a class="reference external" href="https://www.wwpdb.org/" rel="noopener noreferrer" target="_blank">PDB</a> deposition. By harnessing the power of cloud computing infrastructure, CCP4 Cloud enables researchers to perform complex calculations without the need for extensive local computational resources. This is particularly advantageous for laboratories or institutions with limited computing infrastructure, or for researchers who need on-demand access to scalable computing power.</p>
+
+<h2 id="accessing-ccp4-cloud"><span class="section-number">1.1. </span>Accessing CCP4 Cloud<a class="headerlink" href="#accessing-ccp4-cloud" title="Permalink to this headline">¶</a></h2>
+<p>To access CCP4 Cloud, follow these steps:</p>
+<p><strong>Registration:</strong> Visit the CCP4 Cloud website and register for an account if you haven’t done so already. You will be asked to provide basic information, including your name, chosen login name, and email address. Additionally, you will need to specify whether you are an academic or commercial user and select one of the available feedback options.</p>
+<p><strong>Login:</strong> After registration, log in to your CCP4 Cloud account using the username and temporary password sent to your email.</p>
+<p><strong>Usage:</strong> Upon your first login, you will be prompted to choose a new password on the “My Account” page. Afterward, you will have full access to the CCP4 Cloud platform and its resources. This includes uploading your data, running computational tasks using the available software tools, and reviewing the results.</p>
+<p><strong>Documentation and Support:</strong> Familiarize yourself with the available documentation and support resources. These include user guides, tutorials, FAQs, and various support channels where you can receive assistance if needed.</p>
+<p><strong>Licence:</strong> Use of CCP4 Cloud is governed by the CCP4 Licence Agreement. The CCP4 Licence is free for academic users, while commercial users must obtain an appropriate licence. For more details, refer to the licence agreement <a class="reference external" href="https://www.ccp4.ac.uk/ccp4-licence-and-conditions-2/" rel="noopener noreferrer" target="_blank">here</a>.</p>
+
+
+<h2 id="ccp4-cloud-and-ccp4-desktop-applications"><span class="section-number">1.2. </span>CCP4 Cloud and CCP4 Desktop Applications<a class="headerlink" href="#ccp4-cloud-and-ccp4-desktop-applications" title="Permalink to this headline">¶</a></h2>
+<p>Some CCP4 applications, such as <strong>Coot</strong>, <strong>CCP4mg</strong>, <strong>DUI</strong>, <strong>iMosflm</strong>, and others, require the CCP4 software to be installed on your local machine (see installation packages and instructions in <a class="reference external" href="https://www.ccp4.ac.uk/download/" rel="noopener noreferrer" target="_blank">CCP4 Download</a>). To use these applications within CCP4 Cloud, simply start your Cloud session by clicking on the relevant CCP4 Cloud icon in the CCP4 directory. To connect to the remote CCP4 Cloud setup, click on:</p>
+<a class="reference internal image-reference" href="_images/ccp4cloud_remote.png"><img alt="_images/ccp4cloud_remote.png" class="align-center" src="_images/ccp4cloud_remote.png" style="width: 112.96000000000001px; height: 112.96000000000001px;"/></a>
+<p>In remote mode, your projects and data are stored on remote servers, with computational tasks running on cloud machines.</p>
+<p>To use CCP4 Cloud locally on your machine, click on:</p>
+<a class="reference internal image-reference" href="_images/ccp4cloud_desktop.png"><img alt="_images/ccp4cloud_desktop.png" class="align-center" src="_images/ccp4cloud_desktop.png" style="width: 105.60000000000001px; height: 105.60000000000001px;"/></a>
+<p>In local mode, your projects and data are stored on your machine, and computational tasks are performed locally.</p>
 <div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Note that projects and data in your CCP4 Cloud account are not
-synchronised with projects and data on your machine. You may,
-however, export projects from your account and import them into
-CCP4 Cloud on your machine, and vice versa.</p>
+<p class="first admonition-title">Tip</p>
+<p class="last">Note that projects and data stored in your CCP4 Cloud account are not automatically synchronised with projects and data on your local machine. However, you can export projects from your account and import them into CCP4 Cloud on your local machine, or vice versa.</p>
 </div>
-</section>
-</section>
+
+
 
 
           </article>
@@ -431,7 +393,7 @@ CCP4 Cloud on your machine, and vice versa.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

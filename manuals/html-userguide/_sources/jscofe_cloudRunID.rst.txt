@@ -4,49 +4,24 @@
 CloudRun ID
 ===========
 
-
-Project page is the page you find yourself in immediately after login in your 
-CCP4 Cloud account. Here you can find the Menu icon: |menu| in the top-left 
-corner of the page. Click on it, then choose **"My Account"** from the dropdown 
-menu, and you will be presented with your account settings. 
+The Project page is the first page displayed after logging into your CCP4 Cloud account. On this page, you can locate the Menu icon: |menu| in the top-left corner. Click on it, then select **"My Account"** from the dropdown menu to access your account settings.
 
 .. image:: images/project_page.png
-         :scale: 50 %
-
+         :scale: 50%
 
 .. image:: images/cloud_id.png
-         :scale: 50 %
+         :scale: 50%
          :align: center
 
-Please copy **CloudRun Id** from **"My Account"** to paste it into ccp4i 
-(**2**) (**control-V**, **even on macOS**), and enter your login name (**1**).
-
+In the **"My Account"** section, copy your **CloudRun ID** and paste it into CCP4i (**2**) using **Control-V** (even on macOS). Additionally, enter your login name (**1**).
 
 .. image:: images/i1toCloud_5.png
-         :scale: 50 %
+         :scale: 50%
          :align: center
 
-
-return to `Cloud Run facility in CCP4i interface <./jscofe_i1toCloud.html>`_ article
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Return to the `Cloud Run facility in CCP4i interface <./jscofe_i1toCloud.html>`_ article for further instructions.
 
 .. |menu| image:: images/menu.png
         :width: 16
         :height: 16
-
 
