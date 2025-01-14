@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,14 @@
   
   
     <title>2.2. Project Management &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +106,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -132,7 +133,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "_static/versions.json",
+    var json_loc = "versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -205,7 +206,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-project--page-root" class="md-nav__link">2.2. Project Management</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -366,7 +367,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-project--page-root" class="md-nav__link">2.2. Project Management</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -391,77 +392,77 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<span id="id1"></span><h1 id="jscofe-project--page-root"><span class="section-number">2.2. </span>Project Management<a class="headerlink" href="#jscofe-project--page-root" title="Permalink to this headline">¶</a></h1>
-
-<h2 id="basic-principles"><span class="section-number">2.2.1. </span>Basic principles<a class="headerlink" href="#basic-principles" title="Permalink to this headline">¶</a></h2>
+  <section id="project-management">
+<span id="id1"></span><h1 id="jscofe-project--page-root"><span class="section-number">2.2. </span>Project Management<a class="headerlink" href="#jscofe-project--page-root" title="Link to this heading">¶</a></h1>
+<section id="basic-principles">
+<h2 id="basic-principles"><span class="section-number">2.2.1. </span>Basic principles<a class="headerlink" href="#basic-principles" title="Link to this heading">¶</a></h2>
 <p>Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.</p>
 <p id="job-tree">Apart from straightforward cases, structure solution involves repeating certain actions and branching due to decision-making or exploration of a range of parameters. Correspondingly, <strong>project structure in CCP4 Cloud is a tree</strong>, rather than a linear (chronological) list of jobs.</p>
 <p><em>Projects Trees</em> are built with a few basic operations, associated with the first five buttons in the vertical toolbar on the left-hand side of the screen:</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">all buttons are duplicated by items in the dropdown context menu, which is displayed upon right-clicking on a job line in the <em>Tree</em></p>
+<p class="admonition-title">Note</p>
+<p>all buttons are duplicated by items in the dropdown context menu, which is displayed upon right-clicking on a job line in the <em>Tree</em></p>
 </div>
 <p><a class="reference internal" href="_images/add.png"><img alt="addjob" src="_images/add.png" style="width: 18px; height: 18px;"/></a> <strong>Add a job</strong>. The new job will be added as a child to one currently selected in the <em>Tree</em>. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat the addition of jobs to the same node will result in <em>Project Tree</em> branching.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the <em>Project Tree</em>. You may find this particularly useful in the model building and refinement stage when a number of similar-type jobs need to be run in multiple successions</p>
+<p class="admonition-title">Note</p>
+<p>the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the <em>Project Tree</em>. You may find this particularly useful in the model building and refinement stage when a number of similar-type jobs need to be run in multiple successions</p>
 </div>
 <p><a class="reference internal" href="_images/clonejob.png"><img alt="clonejob" src="_images/clonejob.png" style="width: 18px; height: 18px;"/></a> <strong>Clone job</strong>. The new job will be added as a sibling to one currently selected in the <em>Tree</em>, initialised with the same data and input parameters. Job dialog for the cloned job will be opened automatically, and you can change the input before running the job.</p>
 <p><a class="reference internal" href="_images/delete.png"><img alt="delete" src="_images/delete.png" style="width: 18px; height: 18px;"/></a> <strong>Delete job</strong>. The currently selected job and all jobs found in the tree branch descending from it will be deleted after confirmation.</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Once deleted, jobs cannot be restored.</p>
+<p class="admonition-title">Warning</p>
+<p>Once deleted, jobs cannot be restored.</p>
 </div>
 <p><a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> <strong>Stack/Unstack jobs</strong>. Excessively long project branches can be optimised (shortened) by stacking jobs in their <em>linear sections</em> (i.e., sections where each job has exactly one ancestor and one descendant). A typical example of such a section is given by the succession of model building and refinement jobs leading to a completed structure; these sections may reach tens and hundreds of jobs, which may be found inconvenient to work with. Stacking jobs are placed in a stack, which substitutes all of them in the branch. When necessary, the folder can be expanded back (unstacked).</p>
 <p>Stacking can be done in two ways:</p>
 <ol class="arabic simple">
-<li>Select all jobs to be stacked and click on the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button in the toolbar.</li>
+<li><p>Select all jobs to be stacked and click on the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button in the toolbar.</p></li>
 </ol>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">unless selected jobs represent a continuous linear section of the project branch, the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button is disabled</p>
+<p class="admonition-title">Note</p>
+<p>unless selected jobs represent a continuous linear section of the project branch, the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button is disabled</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">it is possible to include a previously stacked folder in the selection, in which case it will be merged with the new one</p>
+<p class="admonition-title">Note</p>
+<p>it is possible to include a previously stacked folder in the selection, in which case it will be merged with the new one</p>
 </div>
 <ol class="arabic simple" start="2">
-<li>Select a job in a <em>linear section</em> of the project branch and click the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button. The GUI will automatically identify boundaries of the <em>linear section</em>, and make lists of jobs, suitable for stacking, that are ancestors or descendants of the selected one. If one of the lists is empty, the other is used for stacking. If both lists are not empty, the user is asked which one, or both, should be used.</li>
+<li><p>Select a job in a <em>linear section</em> of the project branch and click the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button. The GUI will automatically identify boundaries of the <em>linear section</em>, and make lists of jobs, suitable for stacking, that are ancestors or descendants of the selected one. If one of the lists is empty, the other is used for stacking. If both lists are not empty, the user is asked which one, or both, should be used.</p></li>
 </ol>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">automatically identified <em>linear sections</em> are constrained by either project branching or previously created stack folders</p>
+<p class="admonition-title">Note</p>
+<p>automatically identified <em>linear sections</em> are constrained by either project branching or previously created stack folders</p>
 </div>
 <p>For unstacking jobs, select the stack folder and click the <a class="reference internal" href="_images/job_stack.png"><img alt="stack" src="_images/job_stack.png" style="width: 18px; height: 18px;"/></a> button.</p>
 <p><a class="reference internal" href="_images/task_remark.png"><img alt="remark" src="_images/task_remark.png" style="width: 18px; height: 18px;"/></a> <strong>Remarks</strong> are used for general annotation and can be placed in any place of the Projects. Remarks can be sticky (denoted by a pin dot in the icon: <a class="reference internal" href="_images/task_remark_s.png"><img alt="remark_s" src="_images/task_remark_s.png" style="width: 18px; height: 18px;"/></a>) and non-sticky. Sticky remarks make a pair with their parent jobs and are moved and deleted synchronously with them. Unlike all other items in the <em>Project Tree</em>, remarks can be deleted without deleting their descendants.</p>
-
-
-<h2 id="managing-the-jobs"><span class="section-number">2.2.2. </span>Managing the jobs<a class="headerlink" href="#managing-the-jobs" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="managing-the-jobs">
+<h2 id="managing-the-jobs"><span class="section-number">2.2.2. </span>Managing the jobs<a class="headerlink" href="#managing-the-jobs" title="Link to this heading">¶</a></h2>
 <p>The following buttons in the toolbar <strong>do not change the Project Tree</strong>:</p>
 <p><a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 18px; height: 18px;"/></a> <strong>Open Job</strong> dialog for the currently selected job. Alternatively, double click the corresponding line in the <em>Project Tree</em>. Job dialogs are used for setting the job’s input data and parameters, and for running them.</p>
 <p><a class="reference internal" href="_images/stop.png"><img alt="stop" src="_images/stop.png" style="width: 18px; height: 18px;"/></a> <strong>Stop</strong> the currently selected job. This button is active only when a job is running. <strong>Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone</strong>.</p>
-
-
-<h2 id="branch-highlighting"><span class="section-number">2.2.3. </span>Branch highlighting<a class="headerlink" href="#branch-highlighting" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="branch-highlighting">
+<h2 id="branch-highlighting"><span class="section-number">2.2.3. </span>Branch highlighting<a class="headerlink" href="#branch-highlighting" title="Link to this heading">¶</a></h2>
 <p>In complex projects, it may be difficult to trace branches of interest. This may be helped by branch highlighting. Select a job and click the <a class="reference internal" href="_images/highlight_branch.png"><img alt="highlight" src="_images/highlight_branch.png" style="width: 18px; height: 18px;"/></a> button in the toolbar (or the corresponding item in the context right-click menu). This will highlight all ancestors of the selected job to the project origin, and the descending branch which contains the most recent job. In order to clear the highlighting, click the <a class="reference internal" href="_images/highlight_branch.png"><img alt="highlight" src="_images/highlight_branch.png" style="width: 18px; height: 18px;"/></a> button again.</p>
-
-
-<span id="refresh-project"></span><h2 id="refresh"><span class="section-number">2.2.4. </span>Refresh<a class="headerlink" href="#refresh" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="refresh">
+<span id="refresh-project"></span><h2 id="refresh"><span class="section-number">2.2.4. </span>Refresh<a class="headerlink" href="#refresh" title="Link to this heading">¶</a></h2>
 <p>Nobody and nothing is perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;"/></a> button to refresh the Project Page. <a class="reference internal" href="_images/refresh.png"><img alt="refresh" src="_images/refresh.png" style="width: 16px; height: 16px;"/></a> simply reloads the project data and re-initialises internal page functions.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">this action is different from that of the browser’s Refresh button; the latter will log you out.</p>
+<p class="admonition-title">Note</p>
+<p>this action is different from that of the browser’s Refresh button; the latter will log you out.</p>
 </div>
-
-
-<h2 id="project-development"><span class="section-number">2.2.5. </span>Project development<a class="headerlink" href="#project-development" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="project-development">
+<h2 id="project-development"><span class="section-number">2.2.5. </span>Project development<a class="headerlink" href="#project-development" title="Link to this heading">¶</a></h2>
 <p>You can start developing your first Project right after creating it. In most cases, you should start with a task from the “Data Import” section of the <em>Task List</em> at the root of the <em>Project Tree</em> in order to import available data (reflection datasets, sequences, structure homologs, ligand descriptions <em>, etc.</em>), and then add computational jobs which use the imported data, as appropriate.</p>
 <p><em>You can create and run any number of jobs simultaneously, however, a child job cannot use its parent’s job output until the parent job is completed.</em></p>
 <p>CCP4 Cloud is not prescriptive about how you should grow and branch your <em>Project Tree</em>. <strong>It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid the most common mistakes and confusion.</strong>
 <strong>Please read the corresponding documentation.</strong></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -482,7 +483,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">2.1. </span>My Projects </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">2.1. </span>My Projects </span>
               </div>
             </a>
           
@@ -492,7 +493,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">2.3. </span>Task List </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">2.3. </span>Task List </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -506,7 +507,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ========================================================================
  *
- *    12.10.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/cofe.page_admin.js
  *       ~~~~~~~~~
@@ -13,9 +13,9 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
- *  =================================================================
+ *  ========================================================================
  *
  */
 
@@ -62,13 +62,15 @@ function AdminPage ( sceneId )  {
   // make tabs
   this.tabs = new Tabs();
   // this.tabs.setVisible ( false );
-  this.usersTab = this.tabs.addTab ( 'Users'  ,true  );
-  this.nodesTab = this.tabs.addTab ( 'Nodes'  ,false );
-  this.anlTab   = null;
+  this.userTable = null;
+  this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
+  this.nodesTab  = this.tabs.addTab ( 'Nodes'      ,false );
+  this.memoryTab = this.tabs.addTab ( 'Performance',false );
+  this.anlTab    = null;
   if (__user_role==role_code.admin)
-    this.anlTab = this.tabs.addTab ( 'Monitor',false );
-  this.usageTab = this.tabs.addTab ( 'Usage'  ,false );
-  this.jobsTab  = this.tabs.addTab ( 'Jobs'   ,false );
+    this.anlTab  = this.tabs.addTab ( 'Monitor'    ,false );
+  this.usageTab  = this.tabs.addTab ( 'Usage'      ,false );
+  this.jobsTab   = this.tabs.addTab ( 'Jobs'       ,false );
   // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
@@ -76,7 +78,7 @@ function AdminPage ( sceneId )  {
   this.grid.setWidget   ( this.tabs    ,1,1,1,1 );
   this.grid.setCellSize ( '1px','auto' ,1,2,1,1 );
 
-  this.makeLogoPanel ( 2,0,3 );
+  // this.makeLogoPanel ( 2,0,3 );
 
   // this.makeAnalyticsTab ( null );
 
@@ -85,7 +87,9 @@ function AdminPage ( sceneId )  {
                                   //      .setFontSize ( '14px' );
 
   this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.adminData     = null;
   this.userListTable = null;
+  this.searchFilters = null;
   this.uaPanel       = new Grid('');
   this.usersTab.grid.setWidget   ( this.uaPanel,0,1,1,1 );
   this.usersTab.grid.setCellSize ( '','32px',0,0 );
@@ -96,13 +100,18 @@ function AdminPage ( sceneId )  {
   this.uaPanel.setLabel    ( '   ',0,0,1,1 );
   this.uaPanel.setCellSize ( '95%','32px',0,0 );
 
+  let search_btn    = null;
   let newuser_btn   = null;
   let dormant_btn   = null;
   let announce_btn  = null;
   let sendtoall_btn = null;
 
+  this.search_dlg   = null;
+
   if (__user_role==role_code.admin)  {
     col = 1;
+    search_btn    = this.uaPanel.setButton ( '',image_path('search' ),0,col++,1,1 )
+                                .setSize('30px','30px');
     newuser_btn   = this.uaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
                                 .setSize('30px','30px')
                                 .setTooltip('Make new user');
@@ -129,7 +138,7 @@ function AdminPage ( sceneId )  {
                                          .setHeight_px ( 32 );
   this.nodeListTable = null;
 
-  this.naPanel       = new Grid('');
+  this.naPanel = new Grid('');
   this.nodesTab.grid.setWidget   ( this.naPanel,0,1,1,1 );
   this.nodesTab.grid.setCellSize ( '','32px',0,0 );
   this.nodesTab.grid.setCellSize ( '','32px',0,1 );
@@ -139,6 +148,7 @@ function AdminPage ( sceneId )  {
   this.naPanel.setLabel    ( '   ',0,0,1,1 );
   this.naPanel.setCellSize ( '95%','32px',0,0 );
 
+  // nodes control toolbar
   col = 1;
   let zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
                                .setSize('30px','30px')
@@ -204,6 +214,15 @@ function AdminPage ( sceneId )  {
 
       });
 
+      search_btn.setTooltip ( 'Find users using a search template' );
+    
+      search_btn.addOnClickListener ( function(){
+        self.search_dlg = new TableSearchDialog ( 'Find User',self.userTable,500,60,
+          function(){ // on dialog close
+            self.search_dlg = null;
+          });
+      });
+
       newuser_btn.addOnClickListener ( function(){
         makeRegisterPage ( sceneId );
       });
@@ -246,9 +265,9 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 */
 
 AdminPage.prototype.loadUsageStats = function()  {
-  let usageTabNo = 3;
+  let usageTabNo = 4;
   if (!this.anlTab)
-    usageTabNo = 2;
+    usageTabNo = 3;
   if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==usageTabNo))  {
     this.usageStats.loadPage ( this.usageStats._url );
     this.usageStats._loaded = true;
@@ -267,127 +286,144 @@ AdminPage.prototype.refresh = function()  {
   if (this.anlTab)
     this.loadAnalytics();
 
-  (function(self){
+  this.searchFilters = null;
 
-    serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+  self = this;
+  serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
 
-      if (__user_role==role_code.admin)
-        console.log ( '... getAdminData response ' + self.__load_time() );
+    self.adminData = data;
 
-      if (!data.served)  {
+    if (__user_role==role_code.admin)
+      console.log ( '... getAdminData response ' + self.__load_time() );
 
-        self.jobsTitle .setText ( data.jobsStat );
-        self.usersTitle.setText ( data.jobsStat );
-        self.nodesTitle.setText ( data.jobsStat );
+    if (!data.served)  {
 
-      } else  {
+      self.jobsTitle .setText ( data.jobsStat );
+      self.usersTitle.setText ( data.jobsStat );
+      self.nodesTitle.setText ( data.jobsStat );
 
+    } else  {
+
+      window.setTimeout ( function(){
+
+        self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+        
         window.setTimeout ( function(){
+        
+          self.usageStats._url    = data.usageReportURL;
+          self.usageStats._loaded = false;
+          self.loadUsageStats();
 
-          self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
-          
           window.setTimeout ( function(){
-          
-            self.usageStats._url    = data.usageReportURL;
-            self.usageStats._loaded = false;
-            self.loadUsageStats();
-
-            window.setTimeout ( function(){
-          
-              self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
-              let lines = data.jobsStat.split(/\r\n|\r|\n/);
-              if ((lines.length>0) && startsWith(lines[0],'--------'))  {
-                lines[0] = lines[0].replace ( /-/g,'=' );
-                lines[2] = lines[2].replace ( /-/g,'=' );
-                if (!lines[lines.length-1])
-                  lines.pop();
-                lines.push ( lines.shift() );
-                lines.push ( lines.shift() );
-                lines.push ( lines.shift() );
+        
+            self.jobsTitle .setText ( '<h2>Jobs Log</h2>' );
+            let lines = data.jobsStat.split(/\r\n|\r|\n/);
+            if ((lines.length>0) && startsWith(lines[0],'--------'))  {
+              lines[0] = lines[0].replace ( /-/g,'=' );
+              lines[2] = lines[2].replace ( /-/g,'=' );
+              if (!lines[lines.length-1])
+                lines.pop();
+              lines.push ( lines.shift() );
+              lines.push ( lines.shift() );
+              lines.push ( lines.shift() );
+            }
+            let nJobsToday = 0;
+            let usersToday = [];
+            let today_template = new Date(Date.now()).toUTCString().split(' ');
+            today_template = '[' + today_template[0] + ' ' + today_template[1] +
+                              ' ' + today_template[2] + ' ' + today_template[3];
+            for (let i=lines.length-1;i>=0;i--)
+              if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
+                if (lines[i].indexOf(today_template)>=0) {
+                  nJobsToday++;
+                  let user = lines[i].split(' (')[0].split(' ').pop();
+                  if (usersToday.indexOf(user)<0)
+                    usersToday.push ( user );
+                } else
+                  break;
               }
-              let nJobsToday = 0;
-              let usersToday = [];
-              let today_template = new Date(Date.now()).toUTCString().split(' ');
-              today_template = '[' + today_template[0] + ' ' + today_template[1] +
-                               ' ' + today_template[2] + ' ' + today_template[3];
-              for (let i=lines.length-1;i>=0;i--)
-                if (('0'<=lines[i][0]) && (lines[i][0]<='9'))  {
-                  if (lines[i].indexOf(today_template)>=0) {
-                    nJobsToday++;
-                    let user = lines[i].split(' (')[0].split(' ').pop();
-                    if (usersToday.indexOf(user)<0)
-                      usersToday.push ( user );
-                  } else
-                    break;
-                }
-              self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
-                                      usersToday.length + ' users\n' +
-                                      lines.reverse().join('\n') + '</pre>' );
-              if (__user_role==role_code.admin)
-                console.log ( '... Jobs Tab complete in ' + self.__load_time() );
-            },10);
-
+            self.jobStats.setText ( '<pre>Jobs today: total ' + nJobsToday + ' from ' +
+                                    usersToday.length + ' users\n' +
+                                    lines.reverse().join('\n') + '</pre>' );
+            if (__user_role==role_code.admin)
+              console.log ( '... Jobs Tab complete in ' + self.__load_time() );
           },10);
 
         },10);
 
-        serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
-          function(rsp){
-            if (rsp)  {
-              if (rsp.status==nc_retcode.ok)
-                data.nodesInfo.FEProxy = rsp.data;
-              else
-                new MessageBox ( 'Get FE Proxy Info Error',
-                  'Unknown error: <b>' + rsp.status + '</b><p>' +
-                  'when trying to fetch FE Proxy data.', 'msg_error' );
-            }
-            if (!__local_service)  {
-              window.setTimeout ( function(){
-                self.makeNodesInfoTab ( data.nodesInfo );
-                self.onResize ( window.innerWidth,window.innerHeight );
-              },10);
-            } else  {
-              localCommand ( nc_command.getNCInfo,{},'NC Info Request',
-                function(response){
-                  if (response)  {
-                    if (response.status==nc_retcode.ok)
-                      data.nodesInfo.ncInfo.push ( response.data );
-                    else
-                      new MessageBox ( 'Get NC Info Error',
-                        'Unknown error: <b>' + response.status + '</b><p>' +
-                        'when trying to fetch Client NC data.', 'msg_error' );
-                  }
-                  window.setTimeout ( function(){
-                    self.makeNodesInfoTab ( data.nodesInfo );
-                    self.onResize ( window.innerWidth,window.innerHeight );
-                  },0);
-                  return (response!=null);
-                });
-            }
-            // self.tabs.refresh();
-            return (rsp!=null);
-          });
-      }
+      },10);
 
-      // self.tabs.refresh();
-    },null,'persist');
+      serverCommand ( fe_command.getFEProxyInfo,{},'FE Proxy Info Request',
+        function(rsp){
+          if (rsp)  {
+            if (rsp.status==nc_retcode.ok)
+              data.nodesInfo.FEProxy = rsp.data;
+            else
+              new MessageBox ( 'Get FE Proxy Info Error',
+                'Unknown error: <b>' + rsp.status + '</b><p>' +
+                'when trying to fetch FE Proxy data.', 'msg_error' );
+          }
+          if (!__local_service)  {
+            window.setTimeout ( function(){
+              self.makeNodesInfoTab  ( data.nodesInfo );
+              self.makeMemoryInfoTab ( data.memoryReport,data.performance );
+              self.onResize ( window.innerWidth,window.innerHeight );
+            },10);
+          } else  {
+            localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+              function(response){
+                if (response)  {
+                  if (response.status==nc_retcode.ok)
+                    data.nodesInfo.ncInfo.push ( response.data );
+                  else
+                    new MessageBox ( 'Get NC Info Error',
+                      'Unknown error: <b>' + response.status + '</b><p>' +
+                      'when trying to fetch Client NC data.', 'msg_error' );
+                }
+                window.setTimeout ( function(){
+                  self.makeNodesInfoTab  ( data.nodesInfo );
+                  self.makeMemoryInfoTab ( data.memoryReport,data.performance );
+                  self.onResize ( window.innerWidth,window.innerHeight );
+                },10);
+                return (response!=null);
+              });
+          }
+          return (rsp!=null);
+        });
+    }
 
-  }(this))
+  },null,'persist');
 
 }
 
+AdminPage.prototype.calcUserPageSize = function ( height )  {
+  let rowHeight = 29.1953;
+  if (this.userTable)
+    rowHeight = this.userTable.getRowHeight();
+  return  Math.floor ( (height-318*rowHeight/29.1953)/rowHeight );
+}
+
 AdminPage.prototype.onResize = function ( width,height )  {
+
   this.tabs.setWidth_px  ( width -42  );
   this.tabs.setHeight_px ( height-104 );
+
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
+
   this.tabs.refresh();
+
   let inner_height = (height-180)+'px';
   if (this.anlTab)
-    $(this.anlTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.usageTab.element).css({'height':inner_height,'overflow-y':'scroll'});
-  $(this.jobsTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+    $(this.anlTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.usersTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.nodesTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.memoryTab.element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.usageTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.jobsTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
+
+  if (this.userTable)
+    this.userTable.setPageSize ( this.calcUserPageSize(height) );
+
 }
 
 
@@ -610,89 +646,197 @@ AdminPage.prototype.loadAnalytics = function()  {
 }
 
 
+AdminPage.prototype.makeUserList = function ( udata,tdesc )  {
+  // this.userList = [];
+  for (let i=0;i<udata.userList.length;i++)  {
+    let uDesc = udata.userList[i];
+    let includeUser = (!__local_user) || (uDesc.login==__local_user_id);
+    if (includeUser && this.searchFilters)  {
+      includeUser = (
+                     (!this.searchFilters.logname) || 
+                     (uDesc.login==this.searchFilters.logname)
+                    ) && (
+                     (!this.searchFilters.email) || 
+                     (uDesc.email==this.searchFilters.email)
+                    );
+      if (includeUser && this.searchFilters.uname)  {
+        includeUser = false;
+        let words   = this.searchFilters.uname.toUpperCase().split(' ')
+                                              .filter(w => w !== '');
+        let uname   = uDesc.name.toUpperCase();
+        for (let i=0;(i<words.length) && (!includeUser);i++)
+          includeUser = (uname.indexOf(words[i])>=0);
+      }
+    }
+    if (includeUser)  {
+      let online = '&nbsp;';
+      for (let token in this.loggedUsers)
+        if (this.loggedUsers[token].login==uDesc.login)  {
+          online = '&check;';
+          break;
+        }
+      let dormant = 'active';
+      if (uDesc.dormant)
+          dormant = new Date(uDesc.dormant).toISOString().slice(0,10);
+      let lastSeen = '';
+      if ('lastSeen' in uDesc)  {
+        if (uDesc.lastSeen)
+          lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
+      }
+      tdesc.rows.push ([
+        uDesc.name,
+        uDesc.login,
+        online,
+        uDesc.role,
+        dormant,
+        uDesc.email,
+        uDesc.licence,
+        uDesc.ration.jobs_total,
+        round(uDesc.ration.storage_used,1),
+        round(uDesc.ration.cpu_total_used,2),
+        new Date(uDesc.knownSince).toISOString().slice(0,10),
+        lastSeen,
+        uDesc
+      ]);
+    }
+  }
+}
+
+
 AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   // function to create user info tables and fill them with data
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
-  this.userListTable = new TableSort();
-  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
+  let tstate     = null;
+  let page_size  = this.calcUserPageSize ( window.innerHeight );
+  let start_page = 1;
+  let sortCol    = 12;
+  if (this.userTable)  {
+    tstate     = this.userTable.getTableState();
+    page_size  = tstate.pageSize;
+    start_page = tstate.crPage;
+    sortCol    = tstate.sortCol;
+  }
 
-  this.userListTable.setHeaders ( ['##','Name','Login','Online','Profile',
-                                   'Dormant<br>since' ,'E-mail',
-                                   'Licence','N<sub>jobs</sub>',
-                                   'Space<br>(MB)','CPU<br>(hours)',
-                                   'Known<br>since','Last<br>seen'] );
-
-  let loggedUsers;
-  if ('loggedUsers' in udata)  loggedUsers = udata.loggedUsers;
-                         else  loggedUsers = udata.loginHash.loggedUsers;
-  for (let i=0;i<udata.userList.length;i++)  {
-    let trow  = this.userListTable.addRow();
-    let uDesc = udata.userList[i];
-    trow.addCell ( i+1         ).setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( uDesc.name  ).setNoWrap();
-    trow.addCell ( uDesc.login ).setNoWrap();
-    let online = '&nbsp;';
-    for (let token in loggedUsers)
-      if (loggedUsers[token].login==uDesc.login)  {
-        online = '&check;';
-        break;
+  let tdesc = {
+    columns : [   
+      { header  : '##',
+        hstyle  : { 'text-align' : 'right' },
+        tooltip : 'Row number',
+        style   : { 'text-align' : 'right', 'width' : '30px' },
+        sort    : true
+      },
+      { header  : 'Name',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'User name',
+        style   : { 'text-align' : 'left', 'width' : '100px' },
+        sort    : true
+      },
+      { header  : 'Login',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'User login name',
+        style   : { 'text-align' : 'left', 'width' : '40px' },
+        sort    : true
+      },
+      { header  : 'Online',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Ticked if user is currently logged in',
+        style   : { 'text-align' : 'center', 'width' : '50px' },
+        sort    : true
+      },
+      { header  : 'Profile',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'User profile',
+        style   : { 'text-align' : 'left', 'width' : '70px' },
+        sort    : true
+      },
+      { header  : 'Dormant<br>since',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Date when user was deemed as dormant',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : true
+      },
+      { header  : 'E-mail',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'User contact e-mail address',
+        style   : { 'text-align' : 'left', 'width' : 'auto' },
+        sort    : true
+      },
+      { header  : 'Licence',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Type of user\'s licence',
+        style   : { 'text-align' : 'center', 'width' : '60px' },
+        sort    : true
+      },
+      { header  : 'N<sub>jobs</sub>',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Total number of jobs run by user',
+        style   : { 'text-align' : 'right', 'width' : '50px' },
+        sort    : false
+      },
+      { header  : 'Space<br>(MB)',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Total disk space currently occupied by user\'s projects',
+        style   : { 'text-align' : 'right', 'width' : '70px' },
+        sort    : false
+      },
+      { header  : 'CPU<br>(hours)',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Total CPU time consumed by user',
+        style   : { 'text-align' : 'right', 'width' : '60px' },
+        sort    : false
+      },
+      { header  : 'Known<br>since',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Date when user account was created',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : false
+      },
+      { header  : 'Last seen',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Date when user was seen last time',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : false
       }
-    trow.addCell ( online ).setNoWrap().setHorizontalAlignment('center');
-    trow.addCell ( uDesc.role ).setNoWrap();
-    if (uDesc.dormant)
-          trow.addCell ( new Date(uDesc.dormant).toISOString().slice(0,10) ).setNoWrap();
-    else  trow.addCell ( 'active' ).setNoWrap();
-    trow.addCell ( uDesc.email     ).setNoWrap();
-    trow.addCell ( uDesc.licence   ).setNoWrap();
-    trow.addCell ( uDesc.ration.jobs_total  ).setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( round(uDesc.ration.storage_used,1) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( round(uDesc.ration.cpu_total_used,2) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    trow.addCell ( new Date(uDesc.knownSince).toISOString().slice(0,10) )
-                                    .setNoWrap().setHorizontalAlignment('right');
-    let lastSeen = '';
-    if ('lastSeen' in uDesc)  {
-      if (uDesc.lastSeen)
-        lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
+    ],
+    rows        : [],
+    vheaders    : 'row',
+    style       : { 'cursor'      : 'pointer',
+                    'white-space' : 'nowrap',
+                    'font-family' : 'Arial, Helvetica, sans-serif'
+                  }, 
+    sortCol     : sortCol,
+    mouse_hover : true,
+    page_size   : page_size,  // 0 for no pages
+    start_page  : start_page,
+    ondblclick  : function ( dataRow,callback_func){
+      new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
+                             function(code){ 
+                               callback_func();  // deselect row
+                               if (code>0)
+                                 self.refresh();
+                             });
     }
-    trow.addCell ( lastSeen ).setNoWrap().setHorizontalAlignment('right');
-    trow.uDesc = uDesc;
+  };
+
+  if (tstate)
+    for (let i=0;i<tdesc.columns.length;i++)
+      tdesc.columns[i].sort = tstate.sort_list[i];
+
+  this.loggedUsers = udata.loginHash.loggedUsers;
+
+  this.makeUserList ( udata,tdesc );
+
+  this.userTable = new TablePages();
+  this.usersTab.grid.setWidget ( this.userTable,1,0,1,2 );
+
+  this.userTable.makeTable ( tdesc );
+
+  if (this.search_dlg)  {
+    this.search_dlg.setTable ( this.userTable );
+    this.search_dlg.applyFilter();
   }
-
-  if (__user_role==role_code.admin)  {
-    (function(self){
-      self.userListTable.addSignalHandler ( 'row_dblclick',function(trow){
-        //alert ( 'trow='+JSON.stringify(trow.uDesc) );
-        new ManageUserDialog ( trow.uDesc,FEconfig,function(){ self.refresh(); } );
-      });
-    }(this))
-  }
-
-  this.userListTable.createTable ( null );
-
-  this.userListTable.setHeaderNoWrap   ( -1       );
-  this.userListTable.setHeaderColWidth ( 0 ,'3%'   );  // Number
-  this.userListTable.setHeaderColWidth ( 1 ,'auto' );  // Name
-  this.userListTable.setHeaderColWidth ( 2 ,'4%'   );  // Login
-  this.userListTable.setHeaderColWidth ( 3 ,'3%'   );  // Online
-  this.userListTable.setHeaderColWidth ( 4 ,'3%'   );  // Profile
-  this.userListTable.setHeaderColWidth ( 5 ,'4%'   );  // Dormancy date
-  this.userListTable.setHeaderColWidth ( 6 ,'auto' );  // E-mail
-  this.userListTable.setHeaderColWidth ( 7 ,'4%'   );  // Licence
-  this.userListTable.setHeaderColWidth ( 8 ,'3%'   );  // Jobs run
-  this.userListTable.setHeaderColWidth ( 9 ,'3%'   );  // Space used
-  this.userListTable.setHeaderColWidth ( 10,'3%'   );  // CPU used
-  this.userListTable.setHeaderColWidth ( 11,'4%'   );  // Known since
-  this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
-
-  this.userListTable.setHeaderFontSize ( '100%' );
-
-//  $(this.userListTable.element).css({'overflow-y':'hidden'});
-
-//  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
   if (__user_role==role_code.admin)
     console.log ( '... Users Tab complete in ' + this.__load_time() );
@@ -839,6 +983,122 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     console.log ( '... Nodes Tab complete in ' + this.__load_time() );
 
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
+
+}
+
+AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
+  
+  let grid = this.memoryTab.grid;
+  let grow = 0;
+
+  grid.setLabel ( 'Memory Report',0,0,1,1 )
+      .setFontSize('1.5em').setFontBold(true);
+
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+
+  if (mdata.cache_enabled)  {
+    grid.setLabel ( 'Metadata Cache Status: ON',grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+
+    let wmode = 'ASYNC'
+    if (mdata.force_write_sync)
+      wmode = 'SYNC';
+    grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+
+    grid.setLabel ( 'Cache state',grow++,0,1,1 )
+        .setFontItalic(true).setFontBold(true);
+    let cache_table = new Table();
+    grid.setWidget ( cache_table,grow++,0,1,1 );
+    cache_table.setWidth_px ( 400 );
+    cache_table.setHeaderRow ( 
+      ['Cache','Cached items','Cache capacity','Used memory (MB)'],
+      ['Cache type','','','']
+    );
+
+    const cdesc = [
+      ['User records'        ,'user_cache'        ],
+      ['User rations'        ,'user_ration_cache' ],
+      ['Project lists'       ,'project_list_cache'],
+      ['Project descriptions','project_desc_cache'],
+      ['Project metadata'    ,'project_meta_cache'],
+      ['Job metadata'        ,'job_meta_cache'    ],
+      ['File paths'          ,'file_path_cache'   ]
+    ]
+    let alt       = false;
+    let nc_total  = 0;
+    let mem_total = 0;
+    for (let i=0;i<cdesc.length;i++)  {
+      let used     = mdata[cdesc[i][1]][0];
+      let capacity = mdata[cdesc[i][1]][1];
+      if (!capacity)
+        capacity = 'not limited';
+      let used_memory = mdata[cdesc[i][1]][2].toFixed(3);
+      cache_table.setRow ( cdesc[i][0],'',[used,capacity,used_memory],
+                           i+1,alt );
+      nc_total  += mdata[cdesc[i][1]][0];
+      mem_total += mdata[cdesc[i][1]][2];
+      alt = !alt;
+    }
+    cache_table.setRow ( 'Total','',[
+                           '<b><i>' + nc_total + '</i></b>','',
+                           '<b><i>' + mem_total.toFixed(3) + '</i></b>'
+                         ],cdesc.length+1,alt );
+
+  } else  {
+    grid.setLabel ( 'Metadata Cache Status: OFF',grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+    grid.setLabel ( 'Metadata Write Mode: SYNC' ,grow++,0,1,1 )
+        .setFontSize('1.2em').setFontBold(true);
+  }
+
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+  grid.setLabel ( 'Front-End Memory usage',grow++,0,1,1 )
+      .setFontItalic(true).setFontBold(true);
+  let mem_table = new Table();
+  grid.setWidget ( mem_table,grow++,0,1,1 );
+  mem_table.setWidth_px ( 300 );
+
+  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
+  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)] ,1,true  );
+  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)]  ,2,false );
+  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
+  mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
+
+  grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+  grid.setLabel ( 'Front-End performance stats',grow++,0,1,1 )
+      .setFontItalic(true).setFontBold(true);
+  let perf_table = new Table();
+  grid.setWidget ( perf_table,grow++,0,1,1 );
+  perf_table.setWidth_px ( 300 );
+  perf_table.setHeaderRow ( 
+    [' ','Min','Average','Max'],
+    ['','','','']
+  );
+
+  let alt = false;
+  let n   = 0;
+  for (let title in pdata)  {
+    let t = pdata[title].time/pdata[title].weight;
+    perf_table.setRow ( title,'',[
+        pdata[title].time_min.toFixed(2),
+        t.toFixed(2),
+        pdata[title].time_max.toFixed(2)
+      ],++n,alt );
+    alt = !alt;
+    if (title.startsWith('Server'))  {
+      perf_table.setRow ( 'Server request time, ms',
+          'Time between sending request and receiving a response in browser',[
+          __request_timing.time_min.toFixed(2),
+          (__request_timing.time_sum/__request_timing.n_sum).toFixed(2),
+          __request_timing.time_max.toFixed(2)
+        ],++n,alt );
+      alt = !alt;
+    }
+  }
 
 }
 

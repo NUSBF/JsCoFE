@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -187,10 +187,11 @@ StorageTree.prototype.readStorageData = function ( page_title,
             let sfile = tree.storageList.files[i];
             let name  = sfile.name;
 
-            if ((name!='..') && (!startsWith(name,'.')))  {  // remove hiden files
+            // if ((name!='..') && (!startsWith(name,'.')))  {  // remove hiden files
+            if ((name!='xx') && (!startsWith(name,'&')))  {  // remove hiden files
 
-              let base  = sfile.name.split('.');
-              let ext   = base.pop().toLowerCase();
+              let base = sfile.name.split('.');
+              let ext  = base.pop().toLowerCase();
               if (ext=='gz')  {
                 ext = base.pop().toLowerCase();
                 if (importable_ext.indexOf(ext)<0)
@@ -212,15 +213,17 @@ StorageTree.prototype.readStorageData = function ( page_title,
               if (ext in icon_ext)  {
                 icon = icon_ext[ext];
               } else if ('h5' in sfile)   {
-                if (sfile.h5>0)  icon = 'file_hdf';
-                           else  name = '(' + Array(name.length).join('....') + ')';
+                icon = 'file_hdf';
+                if (sfile.h5<=0)  
+                  name = '<i>&nbsp;&lt;&lt;&lt;&nbsp;' + name + '&nbsp;&gt;&gt;&gt;</i>';
                 show = false;
               } else if (ext=='cif')  {  // use wild heuristics
                 if (endsWith(base,'-sf'))  icon = 'file_mtz';
                                      else  icon = 'file_pdb';
               } else if ('image' in sfile)  {
-                if (sfile.image>0)  icon = 'file_xray';
-                              else  name = '(' + Array(name.length).join('....') + ')';
+                icon = 'file_xray';
+                if (sfile.image<=0)  
+                  name = '<i>&nbsp;&lt;&lt;&lt;&nbsp;' + name + '&nbsp;&gt;&gt;&gt;</i>';
                 show = (tree.file_key==1) || (tree.file_key==2);
               }
               if (show)  {

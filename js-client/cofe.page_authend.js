@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.03.20   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Authorisation end page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -70,7 +70,7 @@ function AuthEndPage ( sceneId,software_key,auth_result )  {
   this.grid.setVerticalAlignment ( 0,1,'middle'     );
   this.grid.setHorizontalAlignment ( 0,1,'center'   );
   this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  // this.makeLogoPanel             ( 1,0,3 );
 
   // make message panel
   let panel = new Grid('');

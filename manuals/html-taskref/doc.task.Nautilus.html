@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>Automatic Model Building of RNA/DNA with Nautilus &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -317,7 +316,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-nautilus--page-root" class="md-nav__link">Automatic Model Building of RNA/DNA with Nautilus</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -421,7 +420,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-nautilus--page-root" class="md-nav__link">Automatic Model Building of RNA/DNA with Nautilus</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -438,28 +437,28 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-nautilus--page-root">Automatic Model Building of RNA/DNA with Nautilus<a class="headerlink" href="#doc-task-nautilus--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="automatic-model-building-of-rna-dna-with-nautilus">
+<h1 id="doc-task-nautilus--page-root">Automatic Model Building of RNA/DNA with Nautilus<a class="headerlink" href="#doc-task-nautilus--page-root" title="Link to this heading">¶</a></h1>
 <p>The <strong>nautilus</strong> is a  tool for automated building of RNA/DNA from electron density.</p>
 <p>The calculation consists of the following steps:</p>
 <ul class="simple">
-<li>Locate likely phosphate and sugar features in the electron density</li>
-<li>Grow the features into chains</li>
-<li>Merge overlapping chains</li>
-<li>Join chains whose 3’ and 5’ ends are in close proximity</li>
-<li>Rebuild the chains using fragments from the Richardson’s database of well determined nucleotide structures</li>
-<li>Match the chains against the known sequence</li>
-<li>Build the bases and other peripheral atoms</li>
+<li><p>Locate likely phosphate and sugar features in the electron density</p></li>
+<li><p>Grow the features into chains</p></li>
+<li><p>Merge overlapping chains</p></li>
+<li><p>Join chains whose 3’ and 5’ ends are in close proximity</p></li>
+<li><p>Rebuild the chains using fragments from the Richardson’s database of well determined nucleotide structures</p></li>
+<li><p>Match the chains against the known sequence</p></li>
+<li><p>Build the bases and other peripheral atoms</p></li>
 </ul>
 <p>The option <strong>”Current model should be fixed”</strong> may be chosen if you want an initial model to be extended (<em>chains containing at least one non-nucleotide will be left untouched</em>)</p>
 <p><strong>High resolution limit (Å)</strong> Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute significantly to the quality of the final model.</p>
-
-<h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<section id="options">
+<h2 id="options">Options<a class="headerlink" href="#options" title="Link to this heading">¶</a></h2>
 <p><strong>Number of building/refinement cycles</strong> may be set more than 3 (default number) if a first attempt end up with an incomplete model.</p>
 <p><strong>Anisotropy correction</strong> applies a correction to the data to remove directional dependence in diffraction quality. <strong>This should use by default</strong></p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The chance a benefit in using more than 20 cycles is really small</p>
+<p class="admonition-title">Note</p>
+<p>The chance a benefit in using more than 20 cycles is really small</p>
 </div>
 <p><strong>Use phases in refinement</strong> explicit use of phases with <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?a07353" rel="noopener noreferrer" target="_blank">Hendrickson Lattman coefficients</a></p>
 <p><strong>Refine against twinned data</strong>  maximum likelihood refinement against twinned data performed by <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">Refmac</span></a></p>
@@ -468,8 +467,8 @@
 <p><a class="reference external" href="https://journals.iucr.org/m/issues/2014/06/00/fc5003/index.html" rel="noopener noreferrer" target="_blank">Cowtan, K. (2014) Automated nucleic acid chain tracing in real time. IUCrJ 1(Pt 6): 387-392;</a></p>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0907444911001314" rel="noopener noreferrer" target="_blank">Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011) REFMAC5 for the refinement of macromolecular crystal structures. Acta Cryst. D67: 355-367;</a></p>
 <p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?a07353" rel="noopener noreferrer" target="_blank">Hendrickson, W. A. &amp; Lattman, E. E. (1970) Representation of phase probability distributions for simplified combination of independent phase information. Acta Cryst. B26, 136–143</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -490,7 +489,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Automatic Model Building with Buccaneer </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Automatic Model Building with Buccaneer </span>
               </div>
             </a>
           
@@ -500,7 +499,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Dimple </span>
+                class="md-footer-nav__direction"> "Next" </span> Dimple </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -514,7 +513,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

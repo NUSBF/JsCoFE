@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.09.24   <--  Date of Last Modification.
+ *    15.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,6 @@ const url    = require('url');
 // const path   = require('path');
 const http   = require('http');
 const https  = require('https');
-
 
 //  load application modules
 const utils  = require('./server.utils');
@@ -107,6 +106,8 @@ function start()  {
                    ' url=' + conf.getNCConfig(nc_number).url() );
   log.standard ( 2,'Emailer: ' + conf.getEmailerConfig().type );
   log.standard ( 2,'State:   ' + conf.getNCConfig(nc_number).state );
+
+  utils.configureCache ( 0 );
 
   // --------------------------------------------------------------------------
 
@@ -327,6 +328,8 @@ function start()  {
     },10000);
 
   });
+
+  utils.setGracefulQuit();
 
 }
 

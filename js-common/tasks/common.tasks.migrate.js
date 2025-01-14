@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,7 +62,8 @@ function TaskMigrate()  {
   this.file_xyz  = ''; // name of file with atomic coordinates
   this.file_lib  = ''; // name of file with ligand descriptions
 
-  this.upload_files = [];
+  this.upload_files  = [];
+  this.input_ligands = [];  // list of ligand description widgets
 
 }
 
@@ -125,7 +126,8 @@ if (!__template)  {
       this.file_lib = task.file_lib; // name of file with ligand descriptions
     }
 
-    this.upload_files = [];
+    this.upload_files  = [];
+    this.input_ligands = [];  // list of ligand description widgets
 
     return;
 
@@ -384,6 +386,7 @@ if (!__template)  {
       if (file_mtz.length>0)  files.push ( file_mtz );
       if (file_xyz.length>0)  files.push ( file_xyz );
       if (file_lib.length>0)  files.push ( file_lib );
+      let self = this;
       new UploadDialog ( 'Upload data',files,inputPanel.customData,true,
                           function(returnCode){
         if (!returnCode)
@@ -399,10 +402,11 @@ if (!__template)  {
   }
 
   // reserved function name
-  TaskMigrate.prototype.runButtonName = function()  { return 'Import'; }
+  TaskMigrate.prototype.runButtonName = function()  { return 'Start'; }
   TaskMigrate.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['hopon', 'hop-on','hop', 'on', 'migrate', 'import'] );
+    return this.__check_keywords ( keywords,['hopon', 'hop-on','hop', 'on', 
+                                             'migrate', 'import'] );
   }
 
 } else  {

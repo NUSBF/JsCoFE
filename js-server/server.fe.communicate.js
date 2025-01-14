@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    21.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -321,7 +321,8 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 
-//console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
+  // console.log ( 'send file = ' + this.filePath + ' ' + 
+  //               utils.fileSize(this.filePath) + ',  mtype=' + this.mimeType );
 
 // if (this.doprint)  {
 //   console.log ( ' >>>>> FPATH ' + this.filePath );
@@ -415,4 +416,5 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
 // ==========================================================================
 // export for use in node
+
 module.exports.Communicate = Communicate;

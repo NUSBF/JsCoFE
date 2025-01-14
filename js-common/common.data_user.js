@@ -101,9 +101,6 @@ function getRandomToken()  {
 function checkUserData ( uData )  {
 let msg = '';
 
-  if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
-  if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
-
   if (uData.feedback.length<=0)  {
     uData.action = userdata_action.revise;
     msg = '<li>choose suitable <b>feedback agreement</b></li>';
@@ -113,6 +110,17 @@ let msg = '';
           msg = '<li>change your <b>password</b></li>';
     else  msg = '<li>confirm your account details</li>';
   }
+
+  if (uData.login==__local_user_id)
+    uData.role = role_code.localuser;
+
+  if (('version' in uData) && (uData.version==1))
+    return msg;
+
+  uData.version = 1;  // with new checks, update this number and above
+
+  if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
+  if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
 
   if (!uData.hasOwnProperty('globusId'))
     uData.globusId = '';
@@ -161,9 +169,6 @@ let msg = '';
     }
     delete uData.admin;
   }
-
-  if (uData.login==__local_user_id)
-    uData.role = role_code.localuser;
 
   return msg;
 

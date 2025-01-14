@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.10.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1018,7 +1018,7 @@ if (!dbx)  {
 
 
   // reserved function name
-  TaskTemplate.prototype.collectInput = function ( inputPanel )  {
+  TaskTemplate.prototype.collectInput = function ( inputPanel,ignore_keys=null )  {
   // Collects data from input widgets, created in makeInputPanel() and
   // stores it in internal fields. Returns empty string if input is
   // validated, and an error message otherwise
@@ -1046,7 +1046,7 @@ if (!dbx)  {
 
     if (msg)
       msg += '|';
-    msg += this.collectParameterValues ( inputPanel );
+    msg += this.collectParameterValues ( inputPanel,ignore_keys );
 
     return msg;
 
@@ -1978,29 +1978,33 @@ if (!dbx)  {
   TaskTemplate.prototype.collectInputLigands = function ( inputPanel )  {
     let msg = '';  // Ok if stays empty
 
-    for (let i=0;i<this.input_ligands.length;i++)  {
-      this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
-      this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
-      this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
-      if (this.input_ligands[i].source!='none')  {
-        if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
-          msg += '|<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
-        if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
-          msg += '|<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
-      }
-    }
+    if ('ligands' in inputPanel)  {
 
-    let unique = true;
-    for (let i=0;(i<this.input_ligands.length) && unique;i++)
-      if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
-        for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
-          if ((this.input_ligands[j].source!='none') &&
-              (this.input_ligands[i].code==this.input_ligands[j].code))  {
-            unique = false;
-            msg += '|<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
-                   '</i></b>';
-          }
+      for (let i=0;i<this.input_ligands.length;i++)  {
+        this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
+        this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
+        this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
+        if (this.input_ligands[i].source!='none')  {
+          if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
+            msg += '|<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
+          if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
+            msg += '|<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
+        }
       }
+
+      let unique = true;
+      for (let i=0;(i<this.input_ligands.length) && unique;i++)
+        if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
+          for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
+            if ((this.input_ligands[j].source!='none') &&
+                (this.input_ligands[i].code==this.input_ligands[j].code))  {
+              unique = false;
+              msg += '|<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
+                    '</i></b>';
+            }
+        }
+
+    }
 
     return  msg;
 
@@ -2764,7 +2768,9 @@ if (!dbx)  {
                    explanation + '</i>';
   }
 
-  TaskTemplate.prototype.collectParameterValues = function ( widget ) {
+  TaskTemplate.prototype.collectParameterValues = function ( widget,ignore_keys=null ) {
+  // 'ignore' can give a list of data keys, errors for which will be ignored
+  // (but data is collected). This is used in Workflow Creator.
 
     let msg = '';  // The output. If everything's Ok, 'msg' remains empty,
                    // otherwise, it ocntains a concatenation of errors found.
@@ -2813,8 +2819,9 @@ if (!dbx)  {
 
         for (let key in widget.inpParamRef.parameters)  {
 
-          let param = widget.inpParamRef.parameters[key];
-          let item  = param.ref;
+          let ignore = ignore_keys && (ignore_keys.indexOf(key)>=0);
+          let param  = widget.inpParamRef.parameters[key];
+          let item   = param.ref;
 
           switch (item.type)  {
 
@@ -2825,12 +2832,12 @@ if (!dbx)  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else if (isInteger(texti))  {
                                 let value = parseInt ( texti );
                                 checkRange ( value,item,key );
-                              } else
+                              } else if (!ignore)
                                 addMessage ( item,key,'wrong integer format' );
                           break;
 
@@ -2841,12 +2848,12 @@ if (!dbx)  {
                                   if (isNaN(item.default))
                                         item.value = '';
                                   else  item.value = item.default;
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else if (isFloat(textr))  {
                                 let value = parseFloat ( textr );
                                 checkRange ( value,item,key );
-                              } else
+                              } else if (!ignore)
                                 addMessage ( item,key,'wrong real format' );
                           break;
 
@@ -2857,7 +2864,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texts;
@@ -2874,7 +2881,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texta;
@@ -2887,7 +2894,7 @@ if (!dbx)  {
                                   if ('default' in item)
                                         item.value = item.default;
                                   else  item.value = '';
-                                } else
+                                } else if (!ignore)
                                   addMessage ( item,key,'no value given' );
                               } else
                                 item.value = texte;
@@ -2986,6 +2993,14 @@ if (!dbx)  {
       this._clone_suggested ( this.parameters,task.suggestedParameters );
     return;
   }
+
+  // This function is called at creating nw classes that inherit parameters 
+  // from upstream jobs ( tree._copy_task_parameters() )
+  // TaskTemplate.prototype.copyParameters = function ( task )  {
+  //   this.parameters = jQuery.extend ( true,{},task.parameters );
+  //   return;
+  // }
+
 
   TaskTemplate.prototype.score_string = function() {
   let S = '';

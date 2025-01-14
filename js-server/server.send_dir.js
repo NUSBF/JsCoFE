@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    11.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -438,7 +438,7 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
     }
   // }
 
-  // store all uploads in job directory
+  // store all uploads in temporary directory
 
   form.uploadDir = tmpDir;
 
@@ -485,6 +485,7 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
                     log.error ( 14,'destination directory ' + jobDir + ' exists' );
               else  log.error ( 15,'destination directory ' + jobDir + ' does not exist' );
             }
+            utils.removePath ( tmpDir );
           });
 
         } else  {
@@ -522,21 +523,27 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
                                   ' with errors: ' + code +
                                   ', filesize=' + packSize );
               }
+              utils.removePath ( tmpDir );
             });
 
-          } else if (onFinish_func)
+          } else if (onFinish_func)  {
+            utils.removePath ( tmpDir );
             onFinish_func ( 'err_rename',errs,upload_meta );  // file renaming errors
+          }
 
         }
 
       } else  {
+        utils.removePath ( tmpDir );
         if (onFinish_func)
           onFinish_func ( 'err_dirnotexist',errs,upload_meta );  // file renaming errors
         log.error ( 17,'target directory ' + jobDir + ' does not exist' );
       }
 
-    } else if (onFinish_func)
+    } else if (onFinish_func)  {
+      utils.removePath ( tmpDir );
       onFinish_func ( 'err_transmission',errs,upload_meta );  // data transmission errors
+    }
 
   });
 

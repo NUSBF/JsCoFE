@@ -54,6 +54,7 @@ body {
 .grid-layout-full {
   width          : 100%;
   height         : 98vh;
+  /* height         : calc(100vh - 32px); */
   font-size      : 16px;
   table-layout   : auto;
   border         : 0px ;

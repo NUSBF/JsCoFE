@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ========================================================================
  *
- *    15.03.23   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  ------------------------------------------------------------------------
  *
  *  **** Module  :  js-client/gui/gui.tables.js
  *       ~~~~~~~~~
@@ -13,10 +13,12 @@
  *  **** Content :  Table        - plain table
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
+ *                  TablePages   - table with sortable columns and pages
+ *                  TableSearchDialog - search dialog for TablePages
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
- *  =================================================================
+ *  ========================================================================
  *
  *  Requires: 	jquery.js
  *  	          theme.blue.css  // from tablesorter
@@ -35,13 +37,14 @@
 function Table()  {
   Grid.call ( this,'None' );
   this.element.setAttribute ( 'class','table-blue' );
+  this.selectedRow = -1;  // no selection by default
 }
 
 Table.prototype = Object.create ( Grid.prototype );
 Table.prototype.constructor = Table;
 
 Table.prototype.setHeaderWidget = function ( widget, row,col, rowSpan,colSpan ) {
-var cell = this.getCell ( row,col );
+let cell = this.getCell ( row,col );
   $(cell).empty();
   cell.setAttribute ( 'class','table-blue-hh' );
   cell.rowSpan = rowSpan;
@@ -55,7 +58,7 @@ var cell = this.getCell ( row,col );
 
 
 Table.prototype.setHeaderText = function ( text, row,col, rowSpan,colSpan )  {
-var label = new Label ( text );
+let label = new Label ( text );
   label.setAttribute ( 'class','label-blue-vh' );
   this.setHeaderWidget ( label, row,col, rowSpan,colSpan );
   return label;
@@ -63,11 +66,11 @@ var label = new Label ( text );
 
 
 Table.prototype.setHeaderRow = function ( header_list,tooltip_list )  {
-  var tableRow = this.getCell ( 0,-1 );
-  for (var i=0;i<header_list.length;i++)  {
-    var headerCell = document.createElement('th');
+  let tableRow = this.getCell ( 0,-1 );
+  for (let i=0;i<header_list.length;i++)  {
+    let headerCell = document.createElement('th');
     headerCell.innerHTML = header_list[i];
-    headerCell.setAttribute ( 'class','table-blue-vh' );
+    headerCell.setAttribute ( 'class','table-blue-hh' );
     __set_tooltip ( headerCell,tooltip_list[i] );
     // if (tooltip_list.length>0)
     //   headerCell.setAttribute ( 'title',tooltip_list[i] );
@@ -78,10 +81,10 @@ Table.prototype.setHeaderRow = function ( header_list,tooltip_list )  {
 
 Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
 
-  var col_cnt = 0;
+  let col_cnt = 0;
   if (header)  {
-    var tableRow   = this.getCell ( row,-1 );
-    var headerCell = document.createElement('th');
+    let tableRow   = this.getCell ( row,-1 );
+    let headerCell = document.createElement('th');
     headerCell.innerHTML = header;
     headerCell.setAttribute ( 'class','table-blue-vh' );
     __set_tooltip ( headerCell,tooltip );
@@ -92,20 +95,25 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
   }
 
   for (let i=0;i<cell_list.length;i++)  {
-    var cell = this.getCell ( row,col_cnt++ );
+    let cell = this.getCell ( row,col_cnt++ );
     $(cell).empty();
     cell.rowSpan = 1;
     cell.colSpan = 1;
     if (alt_bool)
           cell.setAttribute ( 'class','table-blue-alt' );
     else  cell.setAttribute ( 'class','table-blue-td'  );
-    cell.innerHTML = cell_list[i];
+    if (Array.isArray(cell_list[i]))  {
+      cell.innerHTML = cell_list[i][0];
+      __set_tooltip ( cell,cell_list[i][1] );
+    } else
+      cell.innerHTML = cell_list[i];
   }
 
 }
 
+
 Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
-  var cell = this.getCell ( row,col );
+  let cell = this.getCell ( row,col );
   $(cell).empty();
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
@@ -114,6 +122,12 @@ Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false
   else  cell.setAttribute ( 'class','table-blue-td'  );
   cell.innerHTML = text;
 }
+
+
+Table.prototype.setTooltip = function ( tooltip,row,col )  {
+  __set_tooltip ( this.getCell(row,col),tooltip );
+}
+
 
 Table.prototype.setWidget = function ( widget,row,col,alt_bool )  {
 let cell = this.getCell ( row,col );
@@ -130,6 +144,7 @@ let cell = this.getCell ( row,col );
   return cell;
 }
 
+
 Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
 let label = new Label ( text );
 let cell = this.getCell ( row,col );
@@ -145,19 +160,113 @@ let cell = this.getCell ( row,col );
 }
 
 
+Table.prototype.setCellCSS = function ( css,row,col )  {
+  if (row<this.element.rows.length)  {
+    let cells = this.element.rows[row].cells;
+    if (col<cells.length)
+       $(cells[col]).css ( css );
+  }
+}
+
+
 Table.prototype.setColumnCSS = function ( css,col,start_row )  {
-  for (var i=start_row;i<this.element.rows.length;i++)
+  for (let i=start_row;i<this.element.rows.length;i++)
     if (col<this.element.rows[i].cells.length)
        $(this.element.rows[i].cells[col]).css ( css );
 }
 
 
 Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
-  for (var i=start_row;i<this.element.rows.length;i++)
-    for (var j=start_col;j<this.element.rows[i].cells.length;j++)
+  for (let i=start_row;i<this.element.rows.length;i++)
+    for (let j=start_col;j<this.element.rows[i].cells.length;j++)
        $(this.element.rows[i].cells[j]).css ( css );
 }
 
+Table.prototype.addSignalHandler = function ( signal,onReceive ) {
+  this.element.addEventListener(signal, function (e) {
+    onReceive(e.target);
+  }, false);
+}
+
+
+Table.prototype.setMouseHoverHighlighting = function ( start_row,start_col ) {
+  for (let i=start_row;i<this.element.rows.length;i++)
+    if (i!=this.selectedRow)  {
+      let cells = this.element.rows[i].cells;
+      this.element.rows[i].addEventListener('mouseover', () => {
+        for (let j=start_col;j<cells.length;j++)
+          cells[j].classList.add('table-blue-highlight');
+      });
+      this.element.rows[i].addEventListener('mouseout', () => {
+        for (let j=start_col;j<cells.length;j++)
+          cells[j].classList.remove('table-blue-highlight');
+      });
+    }
+}
+
+Table.prototype.selectRow = function ( rowNo,start_col )  {
+  if (this.selectedRow>=0)  {
+    let cells = this.element.rows[this.selectedRow].cells;
+    for (let j=start_col;j<cells.length;j++)
+      cells[j].classList.remove('table-blue-select');
+  }
+  if ((rowNo>=0) && (rowNo<this.element.rows.length))  {
+    this.selectedRow = rowNo;
+    let cells = this.element.rows[this.selectedRow].cells;
+    for (let j=start_col;j<cells.length;j++)  {
+      cells[j].classList.remove('table-blue-highlight');
+      cells[j].classList.add('table-blue-select');
+    }
+  }
+}
+
+Table.prototype.getSelectedRowData = function()  {
+  let rowData = null;
+  if ((this.selectedRow>=0) && (this.selectedRow<this.element.rows.length))  {
+    let cells = this.element.rows[this.selectedRow].cells;
+    rowData   = [];
+    for (let j=0;j<cells.length;j++)
+      rowData.push ( cells[j].innerHTML );
+  }
+  return rowData;
+}
+
+Table.prototype.selectByRowData = function ( rowData,startCol )  {
+  let selRow = -1;
+  if (rowData)  {
+    for (let i=0;(i<this.element.rows.length) && (selRow<0);i++)  {
+      let cells = this.element.rows[i].cells;
+      let match = toUpperCase;
+      for (let j=0;(j<cells.length) && match;j++)
+        match = (cells[j].innerHTML==rowData[j]);
+      if (match)
+        selRow = i;
+    }
+    if (selRow>=0)
+      this.selectRow ( selRow,startCol );
+  }
+}
+
+Table.prototype.getTableData = function()  {
+  let tdata = [];
+  for (let i=0;i<this.element.rows.length;i++)  {
+    let cells = this.element.rows[i].cells;
+    let rdata = [];
+    for (let j=0;j<cells.length;j++)
+      rdata.push ( cells[j].innerHTML );
+    tdata.push ( rdata );
+  }
+  return tdata;
+}
+
+Table.prototype.getRowHeight = function ( rowNo )  {
+  let rowHeight = 0;
+  for (let i=rowNo;i<this.element.rows.length;i++)
+    rowHeight += $(this.element.rows[1]).outerHeight();
+  if (rowHeight>0)
+    return rowHeight/(this.element.rows.length-rowNo);
+  return  29.1953;
+}
 
 // -------------------------------------------------------------------------
 // TableCell class
@@ -204,7 +313,7 @@ TableRow.prototype = Object.create ( Widget.prototype );
 TableRow.prototype.constructor = TableRow;
 
 TableRow.prototype.addCell = function ( text )  {
-var td;
+let td;
   if ((typeof(text)!='undefined') && (text!=null))
         td = new TableCell ( text.toString() );
   else  td = new TableCell ( '&nbsp;' );
@@ -283,10 +392,10 @@ function TableScroll ( topCaption,bottomCaption,header_list,tooltip_list )  {
   this.table.addWidget ( this.thead );
   this.table.addWidget ( this.tbody );
 
-  var trow = new TableRow();
-  for (var i=0;i<header_list.length;i++)  {
-    var th    = new TableHeaderCell ( '' );
-    var thdiv = new Widget ( 'div' );
+  let trow = new TableRow();
+  for (let i=0;i<header_list.length;i++)  {
+    let th    = new TableHeaderCell ( '' );
+    let thdiv = new Widget ( 'div' );
     th.setAttribute ( 'class','table-blue-hh' );
     thdiv.setAttribute ( 'label',header_list[i] );
     th.addWidget ( thdiv );
@@ -294,7 +403,7 @@ function TableScroll ( topCaption,bottomCaption,header_list,tooltip_list )  {
       th.setTooltip ( tooltip_list[i] );
     trow.addWidget ( th );
   }
-  var th = new TableHeaderCell ( '' );
+  let th = new TableHeaderCell ( '' );
   th.element.className = 'scrollbarhead';
   this.thead.addWidget ( trow );
 
@@ -304,15 +413,15 @@ TableScroll.prototype = Object.create ( Widget.prototype );
 TableScroll.prototype.constructor = TableScroll;
 
 TableScroll.prototype.setHeaderFontSize = function ( size )  {
-var trow = this.thead.child[0];
-  for (var i=0;i<trow.child.length;i++)
+let trow = this.thead.child[0];
+  for (let i=0;i<trow.child.length;i++)
     trow.child[i].setFontSize ( size );
 }
 
 TableScroll.prototype.setHeaderNoWrap = function ( col )  {
-var trow = this.thead.child[0];
+let trow = this.thead.child[0];
   if (col<0)  {
-    for (var i=0;i<trow.child.length;i++)
+    for (let i=0;i<trow.child.length;i++)
       trow.child[i].element.setAttribute ( 'style','white-space: nowrap' );
   } else if (col<trow.child.length)
     trow.child[col].element.setAttribute ( 'style','white-space: nowrap' );
@@ -321,18 +430,18 @@ var trow = this.thead.child[0];
 
 TableScroll.prototype.addRow = function ( header,tooltip,cell_list,alt_bool )  {
 
-  var trow = new TableRow();
+  let trow = new TableRow();
 
   if (header)  {
-    var th = new TableHeaderCell ( header );
+    let th = new TableHeaderCell ( header );
     th.setAttribute ( 'class','table-blue-vh' );
     if (tooltip)
       th.setTooltip ( tooltip );
     trow.addWidget  ( th );
   }
 
-  for (var i=0;i<cell_list.length;i++)  {
-    var td = new TableCell ( cell_list[i] );
+  for (let i=0;i<cell_list.length;i++)  {
+    let td = new TableCell ( cell_list[i] );
     if (alt_bool)  td.setAttribute ( 'class','table-blue-alt' );
              else  td.setAttribute ( 'class','table-blue-td'  );
     trow.addWidget ( td );
@@ -396,29 +505,29 @@ TableSort.prototype = Object.create ( Widget.prototype );
 TableSort.prototype.constructor = TableSort;
 
 TableSort.prototype.setHeaders = function ( header_list )  {
-var trow = new TableRow();
-  for (var i=0;i<header_list.length;i++)
+let trow = new TableRow();
+  for (let i=0;i<header_list.length;i++)
     trow.addWidget ( new TableHeaderCell(header_list[i]) );
   this.head.addWidget ( trow );
 }
 
 TableSort.prototype.setHeaderFontSize = function ( size )  {
-var trow = this.head.child[0];
-  for (var i=0;i<trow.child.length;i++)
+let trow = this.head.child[0];
+  for (let i=0;i<trow.child.length;i++)
     trow.child[i].setFontSize ( size );
 }
 
 TableSort.prototype.setHeaderNoWrap = function ( col )  {
-var trow = this.head.child[0];
+let trow = this.head.child[0];
   if (col<0)  {
-    for (var i=0;i<trow.child.length;i++)
+    for (let i=0;i<trow.child.length;i++)
       trow.child[i].element.setAttribute ( 'style','white-space: nowrap' );
   } else if (col<trow.child.length)
     trow.child[col].element.setAttribute ( 'style','white-space: nowrap' );
 }
 
 TableSort.prototype.setHeaderColWidth = function ( col,width )  {
-var trow = this.head.child[0];
+let trow = this.head.child[0];
   trow.child[col].element.style.width = width;
   //if (this.body.child.length>0)
   //  this.body.child[col].element.style.width = width;
@@ -438,22 +547,22 @@ TableSort.prototype.selectRow = function ( trow )  {
     // the requested row need to be selected (0 is not selectable)
     if (this.selectedRow)  {
       // deselect curently selected row
-      var cell = this.selectedRow.child;
-      for (var i=0;i<cell.length;i++)
+      let cell = this.selectedRow.child;
+      for (let i=0;i<cell.length;i++)
         $(cell[i].element).css('background',cell[i].css0);
       this.selectedRow.selected = -1;
     }
     // note and select the requested row
     this.selectedRow = trow;
-    var cell = this.selectedRow.child;
-    for (var i=0;i<cell.length;i++)
+    let cell = this.selectedRow.child;
+    for (let i=0;i<cell.length;i++)
       $(cell[i].element).css('background','lightblue');
     this.selectedRow.selected = 1;
   }
 }
 
 TableSort.prototype.addRow = function()  {
-var tr = new TableRow();
+let tr = new TableRow();
   this.body.addWidget ( tr );
   (function(table,trow)  {
     trow.addOnClickListener ( function(){
@@ -532,17 +641,17 @@ TableSort.prototype.createTable = function ( onSorted_func )  {
 
 */
 
-  var child = this.body.child;
-  for (var i=0;i<child.length;i++)  {
-    var childi = child[i].child;
-    for (var j=0;j<childi.length;j++)
+  let child = this.body.child;
+  for (let i=0;i<child.length;i++)  {
+    let childi = child[i].child;
+    for (let j=0;j<childi.length;j++)
       childi[j].css0 = $(childi[j].element).css("background");
   }
 
   /*
   this.head.element.className = 'fixthead';
-  var hrow = this.head.child[0];
-  for (var j=0;j<child[0].length;j++)
+  let hrow = this.head.child[0];
+  for (let j=0;j<child[0].length;j++)
     hrow.child[j].element.style.width = child[0][j].element.style.width;
 */
 
@@ -554,8 +663,8 @@ TableSort.prototype.fixHeader = function()  {
 
     $(this.head.element).addClass ('fixthead');
 
-    var hrow = this.head.child[0].child;
-    var trow = this.body.child[0].child;
+    let hrow = this.head.child[0].child;
+    let trow = this.body.child[0].child;
 
     if (this.head_height<=0)  {
       this.head_height = Math.round($(this.head.element).outerHeight());
@@ -567,19 +676,11 @@ TableSort.prototype.fixHeader = function()  {
 
     this.head.setWidth_px ( this.body.width_px() );
 
-    for (var j=0;j<hrow.length;j++)
+    for (let j=0;j<hrow.length;j++)
       $(hrow[j].element).outerWidth ( $(trow[j].element).outerWidth() );
 
-    for (var j=0;j<hrow.length;j++)
+    for (let j=0;j<hrow.length;j++)
       $(trow[j].element).outerWidth ( $(hrow[j].element).outerWidth() );
-
-/*
-    var hwidth = [];
-    vat twidth = [];
-    for (var j=0;j<hrow.length;j++)
-
-
-*/
 
   }
 
@@ -600,9 +701,511 @@ TableSort.prototype.getSortList = function()  {
 }
 
 TableSort.prototype.applySortList = function ( sortList,block_callback )  {
-var onSorted_func = this.onsorted;
+let onSorted_func = this.onsorted;
   if (block_callback)
     this.onsorted = null;
   $(this.table.element).trigger("sorton",[sortList]);
   this.onsorted = onSorted_func;
+}
+
+
+// -------------------------------------------------------------------------
+// TablePages class:  table with sortable columns and pages
+
+function TablePages()  {
+  Grid.call ( this,'' );
+  this.table        = null;
+  this.tdesc        = null;
+  this.tdata        = null;
+  this.paginator    = null;
+  this.header_list  = [];
+  this.tooltip_list = [];
+  this.sort_list    = [];
+  this.filter       = null;
+  this.filter_mode  = null; // substring|wildcard
+  this.startRow     = 0;    // 1 if horizontal headers are there
+  this.startCol     = 0;    // 1 if vertical headers are there
+  this.startIndex   = 0;    // first currently displayed record
+  this.endIndex     = 0;    // last currently displayed record + 1
+  this.sortCol      = 0;    // currently sorted column
+  this.pageSize     = 20;
+  this.crPage       = 1;
+  this.paginate     = true; // if false, full list is displayed
+  this.style        = null;
+}
+
+TablePages.prototype = Object.create ( Grid.prototype );
+TablePages.prototype.constructor = TablePages;
+
+
+TablePages.prototype._form_table = function ( tdesc )  {
+
+  this.tdesc = tdesc;
+
+  if ('sortCol' in tdesc)
+        this.sortCol = tdesc.sortCol;
+  else  this.sortCol = -1;
+
+  this.startRow     = 1;
+  this.header_list  = [];
+  this.tooltip_list = [];
+  this.sort_list    = [];
+  for (let i=0;i<tdesc.columns.length;i++)  
+    if ('header' in tdesc.columns[i])  {
+      this.header_list .push ( tdesc.columns[i].header  );
+      this.tooltip_list.push ( tdesc.columns[i].tooltip );
+      this.sort_list   .push ( tdesc.columns[i].sort    );
+    }
+  if (this.header_list.length<tdesc.columns.length)  {
+    this.header_list  = [];
+    this.tooltip_list = [];
+    this.sort_list    = [];
+    this.sortCol      = -1;  // no sorting without headers
+    this.startRow     = 0;
+  }
+
+  this.vheaders = null;
+  this.startCol = 0;
+  if ('vheaders' in tdesc)  {
+    this.vheaders = tdesc.vheaders;
+    if (this.vheaders)
+      this.startCol = 1;
+  }
+
+  this.pageSize = 20;
+  if ('page_size' in tdesc)
+    this.pageSize = tdesc.page_size;
+
+  this.style = null;
+  if ('style' in tdesc)
+    this.style = tdesc.style;
+
+}
+
+
+TablePages.prototype.sortData = function()  {
+  this.tdata = sortObjects ( this.tdata,this.sortCol-this.startCol,
+                                        this.sort_list[this.sortCol] );
+}
+
+
+TablePages.prototype._fill_table = function ( startIndex )  {
+
+  this.startIndex = startIndex;
+  this.endIndex   = Math.min ( this.tdata.length,startIndex+this.pageSize );
+
+  this.table = new Table();
+  this.setWidget ( this.table,0,0,1,1 );
+
+  let header0 = '';
+  if (this.sortCol>=this.startCol)  {
+    header0 = this.header_list[this.sortCol];
+    let sh  = this.header_list[this.sortCol].split('<br>');
+    if (this.sort_list[this.sortCol])
+          sh[0] += '&nbsp;&darr;';
+    else  sh[0] += '&nbsp;&uarr;';
+    this.header_list[this.sortCol] = sh.join('<br>');
+  }
+
+  if (this.header_list.length==this.tdesc.columns.length)  {
+    this.table.setHeaderRow ( this.header_list,this.tooltip_list );
+    if (this.sortCol>=0)  {
+      this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
+      this.header_list[this.sortCol] = header0;
+    }
+  }
+
+  let row   = 0;
+  let ncols = this.header_list.length-this.startCol;
+  for (let i=this.startIndex;i<this.endIndex;i++)  {
+    row++;
+    if (this.vheaders)
+      this.table.setRow ( ''+(i+1),'',this.tdata[i].slice(0,ncols),row,row % 2 );
+    else
+      this.table.setRow ( this.tdata[i][0],'',this.tdata[i].slice(1,ncols),row,row % 2 );
+  }
+
+  let self = this;
+
+  this.table.addSignalHandler ( 'click',function(target){
+    const row = target.closest('tr');
+    if (row.rowIndex>=self.startRow)  {
+      if ('onclick' in self.tdesc)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>) 
+        self.table.selectRow ( -1,1 );  // deselect
+        self.table.selectRow ( row.rowIndex,1 );
+        self.tdesc.onclick   ( self.tdata[uindex-1] );
+      }
+    } else {
+      let th = target.closest('th');
+      if (th && (self.sortCol>=0)) {
+        let colNo = 0;  // find header column which wasElement clicked
+        for (let i=0;(i<self.header_list.length) && (!colNo);i++)  {
+          let prefix = self.header_list[i].split('<')[0].split('&')[0];
+          if (th.innerHTML.startsWith(prefix))
+            colNo = i;
+        }
+        if (colNo>=self.startCol)  {
+          if (colNo==self.sortCol)
+            self.sort_list[colNo] = !self.sort_list[colNo];
+          self.sortCol = colNo;
+          self.sortData();
+          if (('onsort' in self.tdesc) && self.paginator.paginate)  {
+            let showRec = self.tdesc.onsort ( self.tdata );
+            if (showRec>=0)  {
+              // self.crPage = Math.floor(showRec/self.tdesc.page_size+1);
+              self.crPage = Math.floor(showRec/self.pageSize+1);
+              if (self.paginator)
+                    self.paginator.showPage ( self.crPage );
+              else  self._fill_table ( self.startIndex );
+              if ('onpage' in self.tdesc)
+                self.tdesc.onpage ( self.crPage );
+            } else
+              self._fill_table ( self.startIndex );
+          } else
+            self._fill_table ( self.startIndex );
+        }
+      }
+    }
+  });
+
+  if ('ondblclick' in this.tdesc)  {
+    this.table.addSignalHandler ( 'dblclick',function(target){
+      // Ensure the click happened inside a table row (skip headers)
+      // if (target.tagName === "TD") {
+      const row = target.parentElement; // The <tr> containing the clicked <td>
+      if (row.rowIndex>=self.startRow)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+        self.table.selectRow  ( row.rowIndex,1 );
+        self.tdesc.ondblclick ( self.tdata[uindex-1],function(){
+                                  self.table.selectRow ( -1,1 );  // deselect
+                                });
+      }
+    });
+  }
+
+  if ('oncontext' in this.tdesc)  {
+    this.table.addSignalHandler ( 'contextmenu',function(target){
+      // Ensure the click happened inside a table row (skip headers)
+      // if (target.tagName === "TD") {
+      const row = target.parentElement; // The <tr> containing the clicked <td>
+      if (row.rowIndex>=self.startRow)  {
+        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+        self.table.selectRow ( row.rowIndex,1 );
+        self.tdesc.oncontext ( self.table,self.tdata[uindex-1],function(){
+                                  self.table.selectRow ( -1,1 );  // deselect
+                                });
+      }
+    });
+  }
+
+  this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
+
+  for (let i=0;i<this.tdesc.columns.length;i++)  {
+    if ((this.startRow>0) && ('hstyle' in this.tdesc.columns[i]))
+      this.table.setCellCSS ( this.tdesc.columns[i].hstyle,0,i );
+    if (this.tdesc.columns[i].style)
+      this.table.setColumnCSS ( this.tdesc.columns[i].style,i,this.startRow );
+  }
+
+  if (this.style)
+    this.table.setAllColumnCSS ( this.style,this.startRow,this.startCol );
+
+  if (this.tdesc.mouse_hover)
+    this.table.setMouseHoverHighlighting ( this.startRow,this.startCol );
+
+  if ('onpage' in this.tdesc)
+    this.tdesc.onpage ( this.crPage );
+
+}
+
+
+TablePages.prototype._filter_data = function ( tdesc )  {
+  if (!this.filter)  {
+    this.tdata = tdesc.rows;
+  } else  {
+    // Apply filter to table data
+    let regex = null;
+    if (this.filter_mode=='wildcard')  {
+      const escPattern   = this.filter.replace ( /[-[\]{}()+.,\\^$|#\s]/g, "\\$&" );
+      // Replace * with .* (zero or more characters) and ? with . (exactly one character)
+      const regexPattern = "^" + 
+                escPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
+      regex = new RegExp ( regexPattern,'i'  );  // regex for testing strings
+    } else
+      regex = new RegExp ( this.filter, 'gi' );
+    this.tdata  = [];
+    let seltext = null;
+    for (let i=0;i<tdesc.rows.length;i++)  {
+      let match = false;
+      let row   = [];
+      for (let j=0;j<tdesc.columns.length-this.startCol;j++)  {
+        let line    = tdesc.rows[i][j];
+        let listval = Array.isArray(line);
+        if (listval)
+          line = line[0];
+        seltext = line.toString().replace ( regex, 
+                  match => `<span style="color:#D2042D;">${match}</span>` );
+        if (seltext.length>line.length)
+          match = true;
+        if (listval)  {
+          let st = [seltext]; 
+          for (let k=1;k<tdesc.rows[i][j].length;k++)
+            st.push ( tdesc.rows[i][j][k] );
+          row.push ( st );
+        } else
+          row.push ( seltext );
+      }
+      if (match)  {
+        for (let j=row.length;j<tdesc.rows[i].length;j++)
+          row.push ( tdesc.rows[i][j] );
+        this.tdata.push ( row );
+      }
+    }
+    this.table.selectedRow = -1;
+  }
+}
+
+
+TablePages.prototype.makeTable = function ( tdesc )  {
+//
+// tdesc = {
+//   columns : [   
+//     { header  : text, // must be absent in all columns for no headers
+//       hstyle  : { 'text-align' : 'center' },  // optional
+//       tooltip : tooltip,
+//       style   : { 'text-align' : 'right', 'width' : '80px', ... },
+//       sort    : true  // initial sorting, true for ascending
+//     }
+//     ...
+//   ],
+//   rows     : [
+//     [d11,d12,...],   // possibly [[d11,tooltip11],d12,...]
+//     ...
+//   ],
+//   vheaders : 'row',  // null|'row'
+//   style    : { cursor' : 'pointer', 'white-space' : 'nowrap', ... }, 
+//                                           // general css for data columns
+//   sortCol     : 0,   // should be absent for no sorting
+//   mouse_hover : true,
+//   paginate    : true, // optional, initial pagination mode
+//   page_size   : 20,   // 0 for no pages
+//   paginate    : true, // optional, initial pagination mode
+//   page_size   : 20,   // 0 for no pages
+//   start_page  : 1,    // optional
+//   onclick     : function(rowData){}
+//   ondblclick  : function(rowData,callback_func){}
+//   oncontext   : function(target,rowData,callback_func){}
+//   showonstart : function(rowData){ return true/false }
+//   onsort      : function(tdata){ return index to show for page change, or -1 }
+//   onpage      : function(pageNo){}
+// }
+
+  let selRowData = null;
+  this.paginate  = true;
+  if (this.table)  {
+    this.table.getSelectedRowData();
+    this.table.selectedRow = -1;
+  }
+  if ('paginate' in tdesc)
+    this.paginate = tdesc.paginate;
+
+  this._form_table  ( tdesc );
+  this._filter_data ( tdesc );
+
+  if (this.sortCol>=this.startCol)
+    this.sortData();
+
+  this.crPage   = 'start_page' in tdesc ? tdesc.start_page : 1;
+  let pageSize0 = this.pageSize;
+  if (!this.paginate)
+    this.pageSize = this.tdata.length;
+  this._fill_table ( 0 );
+
+  this.table.selectByRowData ( selRowData,this.startCol );
+
+  if (pageSize0<this.tdata.length)  {    
+    let self = this;
+    if ('showonstart' in tdesc)  {
+      let showIndex = -1;
+      for (let i=0;(i<this.tdata.length) && (showIndex<0);i++)
+        if (tdesc.showonstart(this.tdata[i]))
+          showIndex = i;
+      if (showIndex>=0)
+        this.crPage = Math.floor(showIndex/this.pageSize+1);
+    }
+    this.paginator = new Paginator ( this.tdata.length,pageSize0,7,
+                                     this.crPage,this.paginate,
+      function(pageNo,pageSize,paginate){
+        self.crPage   = pageNo;
+        self.pageSize = pageSize;
+        self.paginate = paginate;
+        self._fill_table ( self.pageSize*(pageNo-1) );
+      });
+    this.setWidget ( this.paginator,1,0,1,1 );
+  } else if (this.paginator)  {
+    this.setLabel ( '&nbsp;',1,0,1,1 );
+    this.paginator = null;
+  }
+
+}
+
+
+TablePages.prototype.setPageSize = function ( page_size )  {
+  let psize = Math.max ( 1,page_size );
+  if (psize!=this.tdesc.page_size)  {
+    let showRow   = Math.max ( this.startRow,this.table.selectedRow );
+    let showIndex = this.startIndex + showRow - this.startRow;
+    this.tdesc.page_size  = Math.min   ( psize,this.tdata.length );
+    this.tdesc.start_page = Math.floor ( showIndex/psize ) + 1;
+    if (this.paginator)
+      this.tdesc.paginate = this.paginator.paginate; 
+    this.makeTable ( this.tdesc );
+  }
+}
+
+
+TablePages.prototype.setFilter = function ( filter,filter_mode='substring' )  {
+  if (filter!=this.filter)  {
+    this.filter      = filter;
+    this.filter_mode = filter_mode.toLowerCase();
+    this.makeTable ( this.tdesc );
+  }
+}
+
+
+TablePages.prototype.getTableState = function()  {
+  return  {
+    paginate  : this.paginator ? this.paginator.paginate : true,
+    pageSize  : this.pageSize,
+    crPage    : this.crPage,
+    sortCol   : this.sortCol,
+    sort_list : this.sort_list
+  };
+}
+
+
+TablePages.prototype.selectRow = function ( rowNo,start_col )  {
+  this.table.selectRow ( rowNo,start_col );
+}
+
+
+TablePages.prototype.getSelectedRowData = function()  {
+  return this.table.getSelectedRowData();
+}
+
+
+TablePages.prototype.selectByRowData = function ( rowData,startCol )  {
+  return this.table.selectByRowData ( rowData,startCol );
+}
+
+
+TablePages.prototype.getRowHeight = function()  {
+  if (this.table)
+    return  this.table.getRowHeight ( this.startRow );
+  return  29.1953;
+}
+
+
+TablePages.prototype.setContextMenu = function ( contextmenu_func,cellNo=2 )  {
+  for (let i=this.startRow;i<this.table.element.rows.length;i++)  {
+    let row         = this.table.element.rows[i];
+    let contextMenu = contextmenu_func ( i,row,this.tdata[i-this.startRow] );
+    let cell        = row.cells[cellNo];
+    cell.insertBefore ( contextMenu.element,cell.childNodes[0] );
+  }
+}
+
+TablePages.prototype.setOnShowAllListener = function ( listener_func )  {
+// listener_func() - no parameters
+  if (this.paginator)
+    this.paginator.setOnShowAllListener ( listener_func );
+}
+
+
+// -------------------------------------------------------------------------
+// TableSearchDialog class
+
+function TableSearchDialog ( title,tablePages,offset_x,offset_y,
+                             onClose_func=null,
+                             filter_mode='substring' )  {
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title',title );
+  document.body.appendChild ( this.element );
+
+  this.tablePages  = tablePages;
+  this.filter_mode = filter_mode;
+
+  let grid = new Grid('');
+  this.addWidget ( grid );
+
+  let tooltip = 'Search template, case-insensitive.';
+  if (this.filter_mode=='wildcard')
+    tooltip = 'Search template, case-insensitive, full-word match. For partial ' +
+              'matches, use <span style="font-family:courier">*</span> and ' +
+              '<span style="font-family:courier">?</span> wildcards, e.g., ' +
+              '<span style="font-family:courier">*name??</span>.';
+
+  let col = 0;
+  grid.setLabel ( 'Filter:',0,col++,1,1 );
+  this.filter  = grid.setInputText('',0,col++,1,1).setWidth('160px')
+                    .setWidth('220px')
+                    .setStyle('text','','',tooltip );
+  let find_btn = null;
+  if (this.filter_mode=='wildcard')
+    find_btn = grid.setButton ( 'Find' ,image_path('find' ),0,col++,1,1 );
+  let close_btn = grid.setButton ( 'Close',image_path('close'),0,col++,1,1 );
+  for (let i=0;i<col;i++)
+    grid.setVerticalAlignment ( 0,i,'middle' );
+
+  let self = this;
+
+  if (find_btn)  {
+    find_btn.addOnClickListener ( function(){
+      self.tablePages.setFilter ( self.filter.getValue(),self.filter_mode );
+    });
+  } else  {
+    this.filter.addOnInputListener ( function(){
+      self.tablePages.setFilter ( self.filter.getValue(),self.filter_mode );
+    });
+  }
+
+  close_btn.addOnClickListener ( function(){
+    self.tablePages.setFilter ( '',self.filter_mode );
+    $(self.element).dialog ( 'close' );
+  });
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 90,
+    width     : 'auto',
+    position  : { my: "left top", at: "left+" + offset_x + " top+" + offset_y, of: window },
+    modal     : false,
+    closeOnEscape: false,
+    open      : function ( event,ui ) {
+      //hide close button.
+      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+    },
+    buttons   : {}
+  });
+
+  this.setBackgroundColor ( '#F8F8F8' );
+
+  if (onClose_func)
+    $(this.element).on('dialogclose',function(event,ui){
+      onClose_func();
+    });
+
+}
+
+TableSearchDialog.prototype = Object.create(Widget.prototype);
+TableSearchDialog.prototype.constructor = TableSearchDialog;
+
+TableSearchDialog.prototype.setTable = function ( tablePages )  {
+  this.tablePages = tablePages;
+}
+
+TableSearchDialog.prototype.applyFilter = function()  {
+  this.tablePages.setFilter ( this.filter.getValue(),this.filter_mode );
 }

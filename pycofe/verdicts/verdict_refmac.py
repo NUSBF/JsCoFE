@@ -407,7 +407,7 @@ def calculate ( meta ) :
         verdict_message += "Good job! Overall quality of the structure is rather reasonable " +\
                            "but could be further improved"
     elif verdict_score>=34:
-        verdict_message += "Fair enough. Overall quality of the structure could be better, "+\
+        verdict_message += "Fair. Overall quality of the structure could be better, "+\
                            "either part of structure is missing or geometrical quality is poor"
     else:
         verdict_message += "Not good enough. Overall quality of the structure is low. " \

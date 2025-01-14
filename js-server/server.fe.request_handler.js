@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.24   <--  Date of Last Modification.
+ *    08.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -242,10 +242,6 @@ let response = null;
 
     case cmd.fe_reqtype.runJob :
           rj.runJob ( loginData,data,callback_func );
-       break;
-
-    case cmd.fe_reqtype.replayJob :
-          rj.replayJob ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.checkJobs :

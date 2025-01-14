@@ -11,6 +11,7 @@ images_png_new/
 package-lock.json
 node_modules/
 cofe-browser/node_modules/
+cofe-browser/npm_install.sh
 settings.json
 .bzr
 .bzrignore

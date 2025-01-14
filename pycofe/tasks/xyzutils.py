@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    11.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2020-2024
 #
 # ============================================================================
 #
@@ -27,7 +27,7 @@
 #  python native imports
 import os
 import json
-import time
+# import time
 
 import gemmi
 
@@ -195,7 +195,7 @@ class XyzUtils(basic.TaskDriver):
 
         log = []
 
-        mmcifout = ixyz.lessDataId ( ixyz.getMMCIFFileName() )
+        mmcifout = ixyz.lessDataId ( os.path.basename(mmcifin) )
         self.outputFName = os.path.splitext(mmcifout)[0]
 
         pdbout = ixyz.lessDataId ( ixyz.getPDBFileName() )  # may be None
@@ -462,9 +462,13 @@ class XyzUtils(basic.TaskDriver):
 
                         if stype:
                             if len(st)>1:
-                                seqname = self.getOFName ( "_" + model.name + "." + chain.name )
+                                # seqname = str(os.path.basename(self.outputFName).split('_', 1)[-1]) + str("_" + model.name + "." + chain.name)
+                                seqname = os.path.basename(self.getOFName ( "_" + model.name + "." + chain.name ))
                             else:
-                                seqname = self.getOFName ( "_" + chain.name )
+                                #fixed path issue in seqname 03/01/2025
+                                seqname = os.path.basename(self.getOFName ( "_" + chain.name))
+                                # seqname = str(os.path.basename(self.outputFName).split('_', 1)[-1]) + str("_" + chain.name)
+                            # self.stderr ( seqname )
                             seqout  = seqname + ".fasta"
                             dtype_sequence.writeSeqFile ( os.path.join(self.importDir(),seqout),
                                                           seqname,seqline )

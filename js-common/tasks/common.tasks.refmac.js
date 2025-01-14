@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    16.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  RefMac Task Class
+ *  **** Content :  Refmac Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi,
@@ -158,88 +158,6 @@ function TaskRefmac()  {
               value    : 'ISOT',
               position : [0,0,1,1]
             },
-            TLS : { 
-              type     : 'combobox',
-              keyword  : 'none',
-              label    : 'TLS groups',
-              tooltip  : 'Translation-Libration-Screw parameterisation',
-              range    : ['none|None','auto|Automatic'],
-              value    : 'none',
-              showon   : {'BFAC':['ISOT']},
-              position : [1,0,1,1]
-            },
-
-            TLS_CYCLES : { 
-              type     : 'integer',
-              keyword  : 'none',
-              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Number of TLS cycles',
-              tooltip  : 'Number of TLS refinement cycles',
-              range    : [0,'*'],
-              value    : '5',
-              showon   : {'TLS':['auto']},
-              position : [2,2,1,1]
-            },
-
-            TLSOUT_ADDU : { 
-              type     : 'combobox',
-              keyword  : 'none',
-              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Add TLS contribution to B-factors',
-              tooltip  : 'Add TLS contribution to output B-factors (only for analysis and deposition)',
-              range    : ['yes|Yes','no|No'],
-              value    : 'no',
-              showon   : {'TLS':['auto']},
-              position : [3,2,1,1]
-            },
-            TLSOUT_ADDU_1 : { 
-              type     : 'label',
-              keyword  : 'none',
-              label    : '(only for analysis and deposition)',
-              showon   : {'TLS':['auto']},
-              position : [3,5,1,3]
-            },
-
-            RESET_B : { 
-              type     : 'combobox',
-              keyword  : 'none',
-              label    : 'Reset all B-factors at start',
-              tooltip  : 'Reset all B-factors at start',
-              range    : ['yes|Yes','no|No'],
-              value    : 'no',
-              showon   : {'TLS':['none']},
-              position : [4,0,1,1]
-            },
-            RESET_B_VAL : { 
-              type     : 'real',
-              keyword  : 'none',
-              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
-              tooltip  : 'to fixed value',
-              range    : [0,'*'],
-              value    : '30.0',
-              showon   : {'TLS':['none'],'RESET_B':['yes']},
-              position : [5,2,1,1]
-            },
-
-            RESET_B_TLS : { 
-              type     : 'combobox',
-              keyword  : 'none',
-              label    : 'Reset all B-factors at start',
-              tooltip  : 'Reset all B-factors at start',
-              range    : ['yes|Yes','no|No'],
-              value    : 'yes',
-              showon   : {'TLS':['auto']},
-              position : [6,0,1,1]
-            },
-            RESET_B_TLS_VAL : { 
-              type     : 'real',
-              keyword  : 'none',
-              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
-              tooltip  : 'to fixed value',
-              range    : [0,'*'],
-              value    : '30.0',
-              showon   : {'TLS':['auto'],'RESET_B_TLS':['yes']},
-              position : [7,2,1,1]
-            },
-
             SCALING : { 
               type     : 'combobox',
               keyword  : 'none',
@@ -247,7 +165,7 @@ function TaskRefmac()  {
               tooltip  : 'Solvent model type',
               range    : ['SIMPLE|Simple','BULK|Bulk'],
               value    : 'SIMPLE',
-              position : [8,0,1,1]
+              position : [1,0,1,1]
             },
             SOLVENT_MASK : { 
               type     : 'combobox',
@@ -256,7 +174,7 @@ function TaskRefmac()  {
               tooltip  : 'Specify whether to use an explicit solvent mask',
               range    : ['explicit|Yes','no|No'],
               value    : 'explicit',
-              position : [9,0,1,1]
+              position : [2,0,1,1]
             },
             SOLVENT_CUSTOM : { 
               type     : 'combobox',
@@ -266,7 +184,7 @@ function TaskRefmac()  {
               range    : ['no|No','yes|Yes'],
               value    : 'no',
               showon   : {'SOLVENT_MASK':['explicit']},
-              position : [10,2,1,1]
+              position : [3,2,1,1]
             },
             SOLVENT_CUSTOM_VDW : { 
               type     : 'real',
@@ -276,7 +194,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '1.4',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [11,4,1,1]
+              position : [4,4,1,1]
             },
             SOLVENT_CUSTOM_ION : { 
               type     : 'real',
@@ -286,7 +204,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [12,4,1,1]
+              position : [5,4,1,1]
             },
             SOLVENT_CUSTOM_SHRINK : { 
               type     : 'real',
@@ -296,7 +214,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [13,4,1,1]
+              position : [6,4,1,1]
             }
         }
     },
@@ -483,9 +401,133 @@ function TaskRefmac()  {
     },
     sec4 : {
         type     : 'section',
-        title    : 'Output',
+        title    : 'TLS Refinement and B-factors',
         open     : false,
         position : [3,0,1,5],
+        contains : {
+
+            TLS : { 
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : 'TLS groups',
+              tooltip  : 'Translation-Libration-Screw parameterisation',
+              range    : ['none|None',
+                          'auto|Automatic',
+                          'explicit|Explicit TLS group definitions'
+                         ],
+              value    : 'none',
+              showon   : {'BFAC':['ISOT']},
+              position : [0,0,1,1]
+            },
+            TLS_CYCLES : { 
+              type     : 'integer',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Number of TLS cycles',
+              tooltip  : 'Number of TLS refinement cycles',
+              range    : [0,'*'],
+              value    : '5',
+              hideon   : {'TLS':['none']},
+              position : [1,2,1,1]
+            },
+
+            TLSOUT_ADDU : { 
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Add TLS contribution to B-factors',
+              tooltip  : 'Add TLS contribution to output B-factors (only for analysis and deposition)',
+              range    : ['yes|Yes','no|No'],
+              value    : 'no',
+              hideon   : {'TLS':['none']},
+              position : [2,2,1,1]
+            },
+            TLSOUT_ADDU_1 : { 
+              type     : 'label',
+              keyword  : 'none',
+              label    : '(only for analysis and deposition)',
+              lwidth   : '80%',
+              hideon   : {'TLS':['none']},
+              position : [2,5,1,3]
+            },
+
+            TLS_GROUPS_LABEL_1 : {
+              type     : 'label',
+              keyword  : 'none',
+              lwidth   : 800,
+              label    : '<div style="font-size:14px;">&nbsp;<br>' +
+                        'Set TLS group definitions in the input field below (consult ' +
+                        '<a href="https://www.ccp4.ac.uk/html/refmac5/files/tls.html" ' +
+                        'target="_blank"><i>Refmac reference</i></a> for more details).' +
+                        '<sub>&nbsp;</sub></div>',
+              showon   : {'TLS':['explicit']},
+              position : [3,2,1,5]
+            },
+            TLS_GROUPS : {
+              type     : 'aceditor_',  // can be also 'textarea'
+              keyword  : 'none',       // optional
+              tooltip  : '',           // mandatory
+              iwidth   : 800,          // optional
+              iheight  : 320,          // optional
+              value    : '',           // mandatory
+              showon   : {'TLS':['explicit']},
+              position : [4,2,1,5]     // mandatory
+            },
+            TLS_GROUPS_LABEL_2 : {
+              type     : 'label',
+              keyword  : 'none',
+              label    : '&nbsp;',
+              showon   : {'TLS':['explicit']},
+              position : [5,2,1,5]
+            },
+
+            RESET_B : { 
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : 'Reset all B-factors at start',
+              tooltip  : 'Reset all B-factors at start',
+              range    : ['yes|Yes','no|No'],
+              value    : 'no',
+              showon   : {'TLS':['none']},
+              position : [6,0,1,1]
+            },
+            RESET_B_VAL : { 
+              type     : 'real',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
+              tooltip  : 'to fixed value',
+              range    : [0,'*'],
+              value    : '30.0',
+              showon   : {'TLS':['none'],'RESET_B':['yes']},
+              position : [7,2,1,1]
+            },
+
+            RESET_B_TLS : { 
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : 'Reset all B-factors at start',
+              tooltip  : 'Reset all B-factors at start',
+              range    : ['yes|Yes','no|No'],
+              value    : 'yes',
+              showon   : {'TLS':['auto','explicit']},
+              position : [8,0,1,1]
+            },
+            RESET_B_TLS_VAL : { 
+              type     : 'real',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
+              tooltip  : 'to fixed value',
+              range    : [0,'*'],
+              value    : '30.0',
+              showon   : {'TLS':['auto','explicit'],'RESET_B_TLS':['yes']},
+              position : [9,2,1,1]
+            }
+
+        }
+    },
+    sec5 : {
+        type     : 'section',
+        title    : 'Output',
+        open     : false,
+        position : [4,0,1,5],
         contains : {
             RIDING_HYDROGENS : { type   : 'combobox',
               keyword  : 'none',
@@ -516,11 +558,11 @@ function TaskRefmac()  {
             }
         }
     },
-    sec5 : {
+    sec6 : {
         type     : 'section',
         title    : 'Advanced',
         open     : false,
-        position : [4,0,1,5],
+        position : [5,0,1,5],
         contains : {
             EXPERIMENT : { type   : 'combobox',
               keyword  : 'none',
@@ -594,37 +636,6 @@ function TaskRefmac()  {
               showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL'],'H_REFINE_HD':['ALL','POLAR']},
               position : [4,3,1,1]
             },
-            /*
-            RES_LIMIT_MIN : { type   : 'real_',
-              keyword  : 'none',
-              label    : 'Use resolution limits',
-              tooltip  : 'low resolution limit',
-              range    : [0,'*'],
-              value    : '',
-              default  : 'default',
-              position : [1,0,1,1]
-            },
-            RES_LIMIT_MAX : { type   : 'real_',
-              keyword  : 'none',
-              label    : 'to',
-              tooltip  : 'high resolution limit',
-              range    : [0,'*'],
-              value    : '',
-              default  : 'default',
-              position : [1,3,1,1]
-            },
-            */
-            //   KEYWORDS: {
-            //      type        : 'textarea_',  // can be also 'textarea'
-            //      keyword     : 'none',       // optional
-            //      tooltip     : 'Advanced keywords',  // mandatory
-            //      placeholder : 'Type additional keywords here', // optional
-            //      nrows       : 5,         // optional
-            //      ncols       : 90,        // optional
-            //      iwidth      : 500,       // optional
-            //      value       : '',        // mandatory
-            //      position    : [2,0,1,6]  // mandatory
-            //   }
             KEYWORDS_LBL : {
               type     : 'label',
               keyword  : 'none',
@@ -661,7 +672,7 @@ TaskRefmac.prototype.icon           = function()  { return 'task_refmac'; }
 TaskRefmac.prototype.clipboard_name = function()  { return '"Refmac"';    }
 
 TaskRefmac.prototype.currentVersion = function()  {
-let version = 6;  // change to refmacat
+let version = 7;  // tls refinement
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -676,7 +687,7 @@ TaskRefmac.prototype.canShare = function()  {
   return ['xyz','mtz','lib'];
 }
 
-TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
 // hotButtons return list of buttons added in JobDialog's toolBar.
 function RefmacHotButton()  {
@@ -695,6 +706,18 @@ TaskRefmac.prototype.checkKeywords = function ( keywords )  {
 if (!__template)  {
   //  for client side
 
+  TaskRefmac.prototype.layParameters = function ( grid,row,col )  {
+    if (('TLS_GROUPS' in this.parameters.sec4.contains) && 
+        (!this.parameters.sec4.contains.TLS_GROUPS.value))  {
+      let item = this.getInputItem ( grid.inpDataRef,'revision' );
+      if (item && (item.dt.length>0) && ('tls_groups' in item.dt[0]))  {
+        this.parameters.sec4.contains.TLS.value = 'explicit';
+        this.parameters.sec4.contains.TLS_GROUPS.value = item.dt[0].tls_groups;
+      }
+    }
+    TaskTemplate.prototype.layParameters.call ( this,grid,row,col );
+  }
+
   // sets task parameters from given standard input file, represented as 
   // refkeys = { id: id, keywords: keywords } where keywords is list of lines 
   // in task's stdin
@@ -705,7 +728,8 @@ if (!__template)  {
   let sec3   = this.parameters.sec3.contains;
   let sec4   = this.parameters.sec4.contains;
   let sec5   = this.parameters.sec5.contains;
-  let ncsr =0;
+  let sec6   = this.parameters.sec6.contains;
+  let ncsr   = 0;
   let advkwd = [];
     for (let i=0;i<lines.length;i++)  {
       let words = lines[i].trim().split(/\s+/);
@@ -728,29 +752,29 @@ if (!__template)  {
                         }
                       break;
           case 'REFI' : if (w1=='BREF')                          
-                        sec2.BFAC.value = words[2].toUpperCase().substring(0,4);
+                        sec4.BFAC.value = words[2].toUpperCase().substring(0,4);
 
                         else if (w1=='TLSC')  {
-                          sec2.TLS.value = 'auto';
-                          sec2.TLS_CYCLES.value = w2;
+                          sec4.TLS.value = 'auto';
+                          sec4.TLS_CYCLES.value = w2;
                         }
                         else advkwd.push ( lines[i] );
                         break;
           case 'BFAC' : if (w1=='SET')  {
-                          if (sec2.TLS.value=='none')
-                                sec2.RESET_B_VAL.value     = w2;
-                          else  sec2.RESET_B_TLS_VAL.value = w2;
+                          if (sec4.TLS.value=='none')
+                                sec4.RESET_B_VAL.value     = w2;
+                          else  sec4.RESET_B_TLS_VAL.value = w2;
                         }
                       break;
           case 'TLSO' : if (w1=='ADDU')  {
-                          sec2.TLS.value         = 'auto';
-                          sec2.TLSOUT_ADDU.value = 'yes';
+                          sec4.TLS.value         = 'auto';
+                          sec4.TLSOUT_ADDU.value = 'yes';
                         }
                       break;
           case 'MAPC' : if (w1=='SHAR')  {
-                          sec4.MAP_SHARPEN.value = 'yes';
-                          if (w2)  sec4.MAP_SHARPEN_B.value = w2;
-                             else  sec4.MAP_SHARPEN_B.value = 'default';
+                          sec5.MAP_SHARPEN.value = 'yes';
+                          if (w2)  sec5.MAP_SHARPEN_B.value = w2;
+                             else  sec5.MAP_SHARPEN_B.value = 'default';
                         }
                       break;
           case 'MAKE' : if (w1=='HYDR')  {
@@ -762,11 +786,11 @@ if (!__template)  {
                           sec3.MKLINKS.value = words[2].toUpperCase();
                         }
 
-                          // No, Yes
-                          if (w1=='HOUT')  
-                            sec4.RIDING_HYDROGENS.value == words[2].toUpperCase().substring(0,1)
+                        // No, Yes
+                        if (w1=='HOUT')  
+                          sec5.RIDING_HYDROGENS.value == words[2].toUpperCase().substring(0,1)
 
-                          //DEFAULT|Default','YES|Yes','NO|No
+                        //DEFAULT|Default','YES|Yes','NO|No
 
                       break;
 
@@ -798,16 +822,16 @@ if (!__template)  {
                       // if str(sec3.NCSR.value) == 'yes':
                       // stdin.append ('NCSR ' + str(sec3.NCSR_TYPE.value) )
           case 'SOUR' : if (w1=='ELEC')  {
-                        sec5.EXPERIMENT.value = 'electron';
+                        sec6.EXPERIMENT.value = 'electron';
                         if (w2.toUpperCase()=='MB')
-                              sec5.FORM_FACTOR.value = 'mb';
-                        else  sec5.FORM_FACTOR.value = 'gaussian';
+                              sec6.FORM_FACTOR.value = 'mb';
+                        else  sec6.FORM_FACTOR.value = 'gaussian';
                       }
                       if (w1=='NEUT')  {
-                        sec5.EXPERIMENT.value = 'neutron';
+                        sec6.EXPERIMENT.value = 'neutron';
                       }
                       if (w1=='XRAY')  {
-                        sec5.EXPERIMENT.value = 'xray';
+                        sec6.EXPERIMENT.value = 'xray';
                       }
 
                     break;
@@ -883,8 +907,10 @@ if (!__template)  {
       sec3.NCSR.value = "no" 
     };
 
-    sec5.KEYWORDS.value = advkwd.join('\n');
+    sec6.KEYWORDS.value = advkwd.join('\n');
+
     return 1;  // all Ok, else -1 (incompatibility)
+  
   }
 
   /*
@@ -931,8 +957,12 @@ if (!__template)  {
     if (phases.length>0)  {
       let hkl = this.input_data.getData('revision')[0].HKL;
       if (hkl.useHKLSet!='F')
-        input_msg = '<b><i>external phases cannot be used with twin or SAD refinement</i></b>';
+        input_msg += '<b><i>external phases cannot be used with twin or SAD refinement</i></b>';
     }
+
+    if ((this.parameters.sec4.contains.TLS.value=='explicit') &&
+        (!this.parameters.sec4.contains.TLS_GROUPS.value.trim()))
+      input_msg += '<b><i>TLS group definitions must be provided</i></b>';
 
     return input_msg;
 

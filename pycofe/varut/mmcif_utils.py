@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.24   <--  Date of Last Modification.
+#    08.11.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,8 +110,19 @@ def clean_mmcif ( mmcif_infile_path,mmcif_outfile_path ):
         return True
     return False
 
-
-
+def check_xyz_format ( file_path ):
+    try:
+        # Attempt to read the file as a structure
+        st = gemmi.read_structure ( file_path )        
+        # Check if format is 'pdb'
+        if st.format == gemmi.Format.Pdb:
+            return 'pdb'
+        elif st.format == gemmi.Format.Mmcif:
+            return 'mmcif'
+        else:
+            return False
+    except:
+        return 'misformatted'
 
 
 

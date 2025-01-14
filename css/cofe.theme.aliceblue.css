@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.05.24   <--  Date of Last Modification.
+ *    10.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Style Sheets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, M. Fando  2024
+ *  (C) E. Krissinel, M. Fando  2024-2025
  *
  *  =================================================================
  *
@@ -47,6 +47,30 @@
   background-repeat   : no-repeat;
   background-position : left center;
   /* height: 100vh; */
+}
+
+
+.flash-panel  {
+  position         : absolute;
+  left             : 0px;
+/*  bottom           : -1px;  this does not work in some cases, therefore ugly 'top' */
+  top              : 0px;
+  /* width            : 100px; */
+  margin-top       : 0px;
+  margin-left      : 0px;
+  margin-right     : 0px;
+  margin-bottom    : 0px;
+  padding-top      : 4px;
+  padding-left     : 8px;
+  padding-bottom   : 4px;
+  padding-right    : 8px;
+  /* height           : 16px; */
+  /* background-color : rgb(240, 250, 255); */
+  background-color : rgb(254, 251, 251);
+  border-top       : 1px solid rgb(254, 251, 251);
+  box-shadow       : 0px 8px 16px 0px black;
+/*  box-shadow: 10px 10px lightblue; */
+/*  background-color : rgba(240,250,255,0.67); */
 }
 
 

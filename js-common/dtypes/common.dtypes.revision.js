@@ -978,7 +978,7 @@ if (!__template_d)  {
       this.Options.phasing_sel = customGrid.phasing_sel.getValue();
     if (this.ASU)  {
       this.ASU.ha_type = customGrid.ha_type.getValue().trim();
-      if (!this.ASU.ha_type)
+      if ((!this.ASU.ha_type) && this.dataId)  // dataId is not set in Workflow Creator
         msg += '|<b><i>Main anomalous scatterer must be given</i></b>';
       if (customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {

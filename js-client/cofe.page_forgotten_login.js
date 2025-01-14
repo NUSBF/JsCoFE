@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ function ForgottenLoginPage ( sceneId )  {
   this.grid.setVerticalAlignment ( 0,1,'middle' );
   this.grid.setCellSize          ( '10%','',0,1,1,1 );
   this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  // this.makeLogoPanel             ( 1,0,3 );
 
   // make login panel
   let panel = new Grid('');

@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    13.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Server Command Definitions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ===========================================================================
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.003 [08.11.2024]';   // for update
+const jsCoFE_version = '1.8.005 [13.01.2025]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -89,6 +89,7 @@ const fe_command = {
   upload            : '=upload',         // upload request, hard-coded in gui.upload.js
   jobFinished       : '=job_finished',   // request to accept data from finished job
   cloudRun          : '=cloud_run',      // run job from command prompt on client
+  cloudFetch        : '=cloud_fetch',    // fetch job(s) from command prompt on client
   checkSession      : '=check_session',  // request to check session status
   authResponse      : '=auth_response',  // process from software authorisation server
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
@@ -151,7 +152,6 @@ const fe_reqtype = {
   saveJobFile         : '-saveJobFile',       // request to save file in job directory
   saveJobFiles        : '-saveJobFiles',      // request to save files in job directory
   runJob              : '-runJob',            // request to run job
-  replayJob           : '-replayJob',         // request to replay job
   stopJob             : '-stopJob',           // request to stop job
   webappEndJob        : '-webappEndJob',      // request to conclude a webapp job
   checkJobs           : '-checkJobs',         // request to check on jobs' state
@@ -268,6 +268,24 @@ const __special_url_tag    = 'xxJsCoFExx';
 const __special_fjsafe_tag = 'xxFJSafexx';
 const __special_client_tag = 'xxClientxx';
 
+var __response_timing = {
+  time_min : 1.0e30,
+  time_sum : 0.0,
+  n_sum    : 0,
+  time_max : 0.0
+};
+
+function __log_response_timing ( dt )  {
+  __response_timing.time_min  = Math.min ( __response_timing.time_min,dt );
+  __response_timing.time_sum += dt;
+  __response_timing.n_sum++;
+  __response_timing.time_max  = Math.max ( __response_timing.time_max,dt );
+}
+
+function getResponseTiming()  {
+  return __response_timing;
+}
+
 function Response ( status,message,data,measure_time_label=null )  {
   this._type   = 'Response';
   this.version = appVersion();
@@ -291,9 +309,14 @@ Response.prototype.send = function ( server_response )  {
       const duration = performance.now() - startTime; // Convert to milliseconds
       console.log ( ' ... response for "' + this.measure_time_label +
                     '" sent in ' + duration.toFixed(3) + 'ms' );
+      if (server_response.t_received)
+        __log_response_timing ( performance.now()-server_response.t_received );
     });
   } else
-    server_response.end ( JSON.stringify(this) );
+    server_response.end ( JSON.stringify(this), () => {
+      if (server_response.t_received)
+        __log_response_timing ( performance.now()-server_response.t_received );
+    });
 }
 
 function sendResponse ( server_response, status,message,data,measure_time_label=null )  {
@@ -313,9 +336,14 @@ function sendResponseMessage ( server_response,message,mimeType,measure_time_lab
       const duration = performance.now() - startTime; // Convert to milliseconds
       console.log ( ' ... response for "' + measure_time_label +
                     '" sent in ' + duration.toFixed(3) + 'ms' );
+      if (server_response.t_received)
+        __log_response_timing ( performance.now()-server_response.t_received );
     });
   } else
-    server_response.end ( message );
+    server_response.end ( message, () => {
+      if (server_response.t_received)
+        __log_response_timing ( performance.now()-server_response.t_received );
+    });
 }
 
 function Request ( request,token,data )  {
@@ -374,11 +402,11 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.endJobFName          = endJobFName;
   module.exports.endJobFName1         = endJobFName1;
   module.exports.ncMetaFileName       = ncMetaFileName;
+  module.exports.getResponseTiming    = getResponseTiming;
   module.exports.Response             = Response;
   module.exports.sendResponse         = sendResponse;
   module.exports.sendResponseMessage  = sendResponseMessage;
   module.exports.Request              = Request;
   module.exports.registerClass        = registerClass;
-  module.exports.registerClass       = registerClass;
   module.exports.makeNewInstance      = makeNewInstance;
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -51,7 +51,7 @@ function AccountPage ( sceneId )  {
     });
   else if (__user_role==role_code.localuser)
     this.addMenuItem ( 'System info','system_info',function(){
-      saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
+      makeAdminPage ( sceneId );
     });
   this.addLogoutToMenu ( function(){ logout(sceneId,0); } );
 
@@ -61,7 +61,7 @@ function AccountPage ( sceneId )  {
   this.grid.setCellSize          ( '50%','',1,1,1,1 );
   this.grid.setCellSize          ( '25%','',1,2,1,1 );
 //  this.grid.setCellSize          ( '','80pt',2,1,1,3 );
-  this.makeLogoPanel             ( 2,0,3 );
+  // this.makeLogoPanel             ();
 
 //  let response = {};  // will keep user data
   let userData = {};  // will keep user data
@@ -357,16 +357,15 @@ function AccountPage ( sceneId )  {
         .setFontSize ( '90%' ).setFontItalic(true);
 
   let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
-  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy CloudRun Id to clipboard' );
+  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
   cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
-  cloudrun_copy_btn.addOnClickListener ( function(){
-    copyToClipboard ( cloudrun_inp.getValue() );
+  cloudrun_copy_btn.addOnClickListener ( function(event){
+    copyToClipboard ( cloudrun_inp.getValue(),event.target.getBoundingClientRect() );
   });
 
   let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
   cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
-                            'security reasons). Note that your CloudRun scripts ' +
-                            'will need to be updated with the new Id.' );
+                            'security reasons)' );
   cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
   cloudrun_btn.addOnClickListener ( function(){
     cloudrun_inp.setValue ( getRandomToken() );
@@ -559,7 +558,7 @@ function AccountPage ( sceneId )  {
       pswd_inp.setStyle    ( 'password','','Your password','' );
       pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
       inputBox.setText ( '','msg_confirm' );
-      ibx_grid  = inputBox.grid;
+      let ibx_grid  = inputBox.grid;
       ibx_grid .setWidget  ( new Label(
         '<h2>Delete My Account</h2>' +
         'Your account will be deleted, are you sure?<p>' +

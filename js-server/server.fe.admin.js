@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ const user    = require('./server.fe.user');
 const rj      = require('./server.fe.run_job');
 const ustats  = require('./server.fe.usagestats')
 // const utils   = require('./server.utils');
+const cache   = require('./server.cache');
 const cmd     = require('../js-common/common.commands');
 const ud      = require('../js-common/common.data_user');
 
@@ -124,6 +125,8 @@ function getNCData ( ncInfo,callback_func )  {
 function getAdminData ( loginData,data,callback_func )  {
 // the 'data' parameter must be where it is
 
+  // cache.printMemoryReport();
+
   let t0 = performance.now()
   let adminData = {};
 
@@ -149,6 +152,14 @@ function getAdminData ( loginData,data,callback_func )  {
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
       let dt = performance.now()-t0;
       log.standard ( 3,'admin data collected in ' + dt.toFixed(3) + 'ms' );
+      let response_timing = cmd.getResponseTiming();
+      anl.setPerformance ( 'Server response time, ms',
+        response_timing.time_sum,response_timing.n_sum,
+        response_timing.time_min,response_timing.time_max 
+      );
+      adminData.memoryReport = cache.memoryReport(); 
+      adminData.performance  = anl.getFEAnalytics().performance;
+      anl.logPerformance ( 'Collecting Admin Data, ms',dt,1 );
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData,'getAdminData') );
     });
     //_getNCData ( adminData,callback_func );
@@ -156,7 +167,6 @@ function getAdminData ( loginData,data,callback_func )  {
   }
 
 }
-
 
 function getAnalytics ( loginData,data )  {
 let uData = user.readUserData ( loginData );
