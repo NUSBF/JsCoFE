@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    12.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Initiation of Cloud projects from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -22,7 +22,7 @@
  *
  *    node js-utils/cloudrun.js -c command_file
  *
- * where task_file may be also the standard input:
+ * where command_file may be also provided via the standard input:
  *
  *    node js-utils/cloudrun.js -i <<eof
  *    ..commands..
@@ -32,17 +32,22 @@
  *
  *    node js-utils/cloudrun.js -t task
  *
+ * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref or
+ * dimple.
+ *
  * Obtaining help:
  *
  *    node js-utils/cloudrun.js
  *    node js-utils/cloudrun.js -h
  *
- * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref or
- * dimple.
- *
  * Commands (hash # may be used for comments, anything on the right from # is
  * ignored):
  *
+ *   VERSION  1.0    # script version for backward compatibility
+ *   DEBUG    OFF    # ON/OFF
+ *   COMMENTS ON     # ON/OFF
+ *   WID      wId    # (optional) workflow ID for cloudrun's import mode
+ * 
  *   URL         https://ccp4cloud.server    # mandatory
  *   USER        user_login                  # mandatory
  *   CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory
@@ -90,9 +95,6 @@ const task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
 const task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
 const task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
 
-// let conf   = require('../js-server/server.configuration');
-// let cmd    = require('../js-common/common.commands');
-
 
 // ==========================================================================
 
@@ -120,6 +122,7 @@ function printInstructions()  {
     '~~~~~~',
     '',
     '    node js-utils/cloudrun.js -c command_file',
+    '    in CCP4: cloudrun -c command_file',
     '',
     'where "command_file" is path to file with keyworded instructions. Alternatively,',
     'instructions can be read from standard input:',
@@ -128,14 +131,21 @@ function printInstructions()  {
     '    ..commands..',
     '    eof',
     '',
+    '    in CCP4:',
+    '    cloudrun -i <<eof',
+    '    ..commands..',
+    '    eof',
+    '',
     'Template command files can be generated as follows:',
     '',
     '    node js-utils/cloudrun.js -t task',
+    '    in CCP4: cloudrun -t task',
     '',
     'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref,',
     'or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
+    '    in CCP4: cloudrun -h',
     '',
     'prints these instructions.',
     '',
@@ -159,6 +169,11 @@ function printTemplate ( task )  {
     '#',
     '#  Edit instructions below this line as necessary:',
     '# _____________________________________________________________________________',
+    '#',
+    '# VERSION  1.0    # (optional) script version for backward compatibility',
+    '# DEBUG    OFF    # (optional) ON/OFF',
+    '# COMMENTS ON     # (optional) ON/OFF',
+    '# WID      wId    # (optional) workflow ID for import mode',
     '#',
     'URL         https://ccp4cloud.server    # mandatory',
     '#',
@@ -291,7 +306,7 @@ function printTemplate ( task )  {
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already), runs the "Hop-On Import" task (project',
           '# initiation from phased structure) followed by the Auto-REL automatic',
-          'refinement workflow.'
+          'refinement workflow (without ligand fitting).'
         ].concat(msg);
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
@@ -310,7 +325,7 @@ function printTemplate ( task )  {
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz      # reflection data (mandatory)',
           'XYZ         /path/to/apo.pdb      # model',
-          'LIGAND      /path/to/file.cif     # ligand (optional)',
+          'LIGAND      /path/to/file.cif     # ligand(s) (optional, if present in model)',
           '#',
           '# providing sequence is optional and may be used if a close, but',
           '# not 100% structure homologue is used, in which case the resulting',

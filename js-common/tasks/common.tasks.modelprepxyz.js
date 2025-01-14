@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    21.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,8 @@ function TaskModelPrepXYZ()  {
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','~mmcif_only'],
-                     'DataXYZ'      :['~mmcif_only']},  // data type(s) and subtype(s)
+                     'DataXYZ'      :['~mmcif_only'],
+                     'DataModel'    :['~mmcif_only']},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
       tooltip     : 'Specify coordinate data set(s) to be prepared as ' +
                     'model(s) for Molecular Replacement. The model(s) ' +

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,7 +35,7 @@ function LocalLoginPage ( sceneId )  {
   this.grid.setVerticalAlignment   ( 0,1,'middle'     );
   this.grid.setHorizontalAlignment ( 0,1,'center'     );
   this.grid.setCellSize            ( '45%','',0,2,1,1 );
-  this.makeLogoPanel               ( 1,0,3 );
+  // this.makeLogoPanel               ( 1,0,3 );
 
   let panel = new Grid('');
   panel.setWidth      ( '300pt' );

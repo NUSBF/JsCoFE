@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.06.24   <--  Date of Last Modification.
+ *    06.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MrParse Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskMrParse()  {
   this._type = 'TaskMrParse';
   this.name  = 'mrparse';
   this.setOName ( '*' );  // default output file name template
-  this.title = 'Find and prepare MR models with MrParse';
+  this.title = 'Find structure homologs with MrParse';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
@@ -69,8 +69,8 @@ function TaskMrParse()  {
                 MAX_HITS : {
                        type     : 'integer',
                        keyword  : 'max_hits',
-                       label    : 'Maximum number of models to take from each database searched',
-                       tooltip  : 'Specify the number of models to generate from each database searched' +
+                       label    : 'Maximum number of homologs to take from each database searched',
+                       tooltip  : 'Specify the number of homologs to generate from each database searched' +
                                   '(from 1 to 40).',
                        range    : [1,40],
                        value    : 5,
@@ -82,7 +82,8 @@ function TaskMrParse()  {
                         label    : 'Databases to search',
                         tooltip  : 'Choose from PDB, AlphaFold DB or All' +
                                    'keeping hits in the list of matches. ',
-                        range    : ['all|ALL', 'pdb|PDB', 'esmfold|ESMFold', 'afdb|AFDB'],
+                        // range    : ['all|ALL', 'pdb|PDB', 'esmfold|ESMFold', 'afdb|AFDB'],
+                        range    : ['all|ALL','pdb|PDB','afdb|AFDB'],
                         value    : 'all',
                         iwidth   : 100,
                         position : [2,0,1,1]
@@ -119,7 +120,7 @@ TaskMrParse.prototype.clipboard_name = function()  { return '"MrParse"';    }
 
 TaskMrParse.prototype.desc_title     = function()  {
 // this appears under task title in the task list
-  return 'finds relevant PDB/AFDB structures and prepares MR search models from them';
+  return 'finds structural homologs in PDB/AFDB using a given sequence';
 }
 
 // TaskMrParse.prototype.taskDescription = function()  {
@@ -136,7 +137,9 @@ TaskMrParse.prototype.currentVersion = function()  {
 
 TaskMrParse.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['mrparse', 'molecular','replacement','mr', 'model','preparation','mp', 'alphafold','alphafold2','af', 'af2'] );
+  // return this.__check_keywords ( keywords,['mrparse', 'molecular','replacement','mr', 'model','preparation','mp', 'alphafold','alphafold2','af', 'af2'] );
+  return this.__check_keywords ( keywords,['mrparse', 'structural','homologs',
+              'mr','model','preparation','alphafold','alphafold2','af', 'af2'] );
 }
 
 // This function is called at cloning jobs and should do copying of all

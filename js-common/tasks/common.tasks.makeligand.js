@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -180,7 +180,7 @@ function TaskMakeLigand()  {
                       position  : [6,1,1,7],
                     },
                 NUMINITCONFORMERS : { 
-                      type     : 'real_',
+                      type     : 'integer_',
                       keyword  : 'NUMINITCONFORMERS',
                       label    : 'Number of initial conformers to try',
                       align     : 'left',
@@ -244,10 +244,14 @@ if (!__template)  {
 
   TaskMakeLigand.prototype.collectInput = function ( inputPanel )  {
 
-    let msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let ignore_keys = null;
+    if (!('job_dialog' in inputPanel))
+      ignore_keys = ['SMILES','CODE3'];
+    let msg = TaskTemplate.prototype.collectInput.call ( 
+                                              this,inputPanel,ignore_keys );
 
     let ligCode = this.parameters.sec1.contains.CODE.value;
-    if (this.parameters.sec1.contains.SOURCE_SEL.value=='M')
+    if (this.parameters.sec1.contains.SOURCE_SEL.value=='M')  
       ligCode = this.parameters.sec1.contains.CODE3.value;
 
     if (__coot_reserved_codes.indexOf(ligCode)>=0)

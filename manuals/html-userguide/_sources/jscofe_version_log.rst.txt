@@ -23,6 +23,8 @@ CCP4 Cloud Version Log
 
     #. Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised
 
+    #. Fixed bug in job despatch with fasttrack flag equal zero
+
 
 **Version 1.8.001** 
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    02.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,7 +43,7 @@ function TaskPrivateer()  {
 
   this.input_dtypes = [{      // input data types
       // data_type : {'DataRevision':['xyz','ligands']}, // data type(s) and subtype(s)
-      data_type : {'DataRevision':['xyz','~mmcif_only']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 0,          // minimum data version allowed

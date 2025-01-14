@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,8 +32,10 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   __electron_find_text_dialog  = null;
 
   // clear the page first
-  $(document.body).empty().addClass('main-page');
+  $(document.body).empty(); //.addClass('main-page');
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
+
+  this.makeLogoPanel();
 
   checkBrowser();
   checkAnnouncement();
@@ -68,6 +70,9 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // console.log ( ' >>>> p1 ' + window.innerHeight );
   // console.log ( ' >>>> p1 ' + this.grid.height_px() );
   // this.grid.setHeight ( 'v100%' );
+  $(this.grid.element).css ({ 
+    'height' : 'calc(100vh - 32px)'
+  });
 
   this.getUserRation();
 
@@ -141,7 +146,7 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 
 }
 
-BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
+BasePage.prototype.makeLogoPanel = function()  {
 // This panel runs at the bottom of all pages
 
   if (!__setup_desc)  return;
@@ -160,13 +165,11 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       }(__setup_desc.partners[i]))
     }
 
-  // let logoPanel = this.grid.setPanel ( row,col,1,colSpan );
-
   let logoPanel = new Widget('div');
-  $(logoPanel.element).appendTo('body');
+  $(logoPanel.element).appendTo(document.body);
   let logoGrid  = new Grid ( '' );
   logoPanel.addWidget ( logoGrid );
-  // let logoGrid = this.grid.setGrid ( '',row,col,1,colSpan );
+
   let c = 0;
   logoGrid.setLabel ( '&nbsp;Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
            .setFontSize ( '75%' ).setNoWrap()
@@ -178,6 +181,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     if (i<__setup_desc.partners.length-1)
       logoGrid.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
   }
+
   logoGrid.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
           .setFontSize ( '75%' ).setNoWrap()
           .setVerticalAlignment('middle');
@@ -185,24 +189,10 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   logoGrid.setCellSize            ( '50%','', 0,c );
   logoGrid.setHorizontalAlignment ( 0,c,'right'   );
   logoGrid.setVerticalAlignment   ( 0,c,'middle'  );
-  this.grid.setVerticalAlignment  ( row,col,'middle'   );
-  this.grid.setCellSize           ( '','30px', row,col );
-  // logoGrid.setHeight_px ( 16 );
-  // $(logoPanel.element).addClass   ( 'logo-panel'  );
+  
   logoPanel.addClass   ( 'logo-panel'  );
-  // $(logoPanel.element).css ({
-  //   // 'position'         : 'absolute',
-  //   // 'left'             : '0px',
-  //   // 'bottom'           : '0px',
-  //   'top'           : window.innerHeight-34 + 'px',
-  //   // 'padding'          : '0px',
-  //   // 'margin'           : '0px',
-  //   // // 'height'           : '16px',
-  //   // 'border'           : '1px solid lightgray',
-  //   // 'background-color' : 'rgba(240,250,255,0.67)'
-  // });
-}
 
+}
 
 BasePage.prototype.getUserRation = function()  {
 

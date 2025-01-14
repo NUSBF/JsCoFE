@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.04.24   <--  Date of Last Modification.
+#    05.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@ import pyrvapi
 from   pycofe.varut  import jsonut
 from   pycofe.varut  import rvapi_utils
 from   pycofe.dtypes import dtype_template
+from   pycofe.proc   import analyse_structure
 
 # ============================================================================
 
@@ -265,47 +266,95 @@ def put_molprobity_section ( body,revision ):
         "rms_angles"       : 0.0,
         "molp_score"       : 0.0
     }
+
+    meta_s = analyse_structure.analyze_structure ( xyzpath )
+    meta["natoms_overall"] = meta_s["overall_atoms"]
+    meta["natoms_macro"]   = meta_s["macromolecular_atoms"]
+    meta["natoms_HD"]      = meta_s["hydrogen_atoms"]
+    meta["natoms_ligand"]  = meta_s["ligand_atoms"]
+    meta["natoms_water"]   = meta_s["water_atoms"]
+    meta["n_chains"]       = meta_s["n_chains"]
+    meta["n_models"]       = meta_s["n_models"]
+    meta["bfac_overall"]   = meta_s["avg_b"]
+    meta["bfac_macro"]     = meta_s["avg_macro_b"]
+    meta["bfac_ligand"]    = meta_s["avg_ligand_b"]
+    meta["bfac_water"]     = meta_s["avg_water_b"]
+
     flg = ''
     with (open(molprobity_log,"r")) as fstd:
         for line in fstd:
             body.file_stdout.write ( line )
-            if "============ Geometry restraints =============" in line:
+            if   "============ Geometry restraints =============" in line:
                 key = 0
-            elif key==1:
+            elif "============ Model properties ================" in line:
+                key = 1
+                # =============================== Model properties ==============================
+                #
+                #    Number of:
+                #      all atoms      : 877
+                #      H or D atoms   : 0
+                #      chains         : 3
+                #      a.a. residues  : 95
+                #      nucleotides    : 0
+                #      water          : 78
+                #      other (ligands): 1
+                #    Ligands: NUT:1
+            elif "================ Summary =====================" in line:
+                key = 2
+            elif key==1:  # Model properties
                 try:
-                    lst = line.split()
-                    if len(lst)>2:
-                        if lst[0]=="Number":
-                            if flg == 'overall':
-                                meta["natoms_overall"] = int(lst[4])
-                            if flg == 'macro':
-                                meta["natoms_macro"] = int(lst[4])
-                            if flg == 'ligand':
-                                meta["natoms_ligand"] = int(lst[4])
-                            if flg == 'water':
-                                meta["natoms_water"] = int(lst[4])
-                        elif 'B_' in lst[0]:
-                            if flg == 'overall':
-                                meta["bfac_overall"] = float(lst[3])
-                            if flg == 'macro':
-                                meta["bfac_macro"] = float(lst[3])
-                            if flg == 'ligand':
-                                meta["bfac_ligand"] = float(lst[3])
-                            if flg == 'water':
-                                meta["bfac_water"] = float(lst[3])
-                    else:
-                        if "Overall" in line:
-                            flg = 'overall'
-                        elif 'Macromolecules' in line:
-                            flg = 'macro'
-                        elif 'Ligands' in line:
-                            flg = 'ligand'
-                        elif 'Waters' in line:
-                            flg = 'water'
+                    kval = [val.strip() for val in line.split(':')]
+                    if len(kval)>=2:
+                        # if kval[0]=="all atoms":
+                        #     meta["natoms_overall"] = int(kval[1])
+                        # elif kval[0]=="H or D atoms":
+                        #     meta["natoms_HD"] = int(kval[1])
+                        # if kval[0]=="chains":
+                            # meta["nchains"] = int(kval[1])
+                        if kval[0]=="a.a. residues":
+                            meta["nres_AA"] = int(kval[1])
+                        elif kval[0]=="nucleotides":
+                            meta["nres_NA"] = int(kval[1])
+                        # elif kval[0]=="water":
+                        #     meta["natoms_water"] = int(kval[1])
+                        elif kval[0]=="other (ligands)":
+                            meta["nligands"] = int(kval[1])
+                        elif kval[0]=="Ligands":
+                            meta["ligands"] = ":".join(kval[1])  # list of ligands
+
+                    # lst = line.split()
+                    # if len(lst)>2:
+                    #     if lst[0]=="Number":
+                    #         if flg == 'overall':
+                    #             meta["natoms_overall"] = int(lst[4])
+                    #         if flg == 'macro':
+                    #             meta["natoms_macro"] = int(lst[4])
+                    #         if flg == 'ligand':
+                    #             meta["natoms_ligand"] = int(lst[4])
+                    #         if flg == 'water':
+                    #             meta["natoms_water"] = int(lst[4])
+                    #     elif 'B_' in lst[0]:
+                    #         if flg == 'overall':
+                    #             meta["bfac_overall"] = float(lst[3])
+                    #         if flg == 'macro':
+                    #             meta["bfac_macro"] = float(lst[3])
+                    #         if flg == 'ligand':
+                    #             meta["bfac_ligand"] = float(lst[3])
+                    #         if flg == 'water':
+                    #             meta["bfac_water"] = float(lst[3])
+                    # else:
+                    #     if "Overall" in line:
+                    #         flg = 'overall'
+                    #     elif 'Macromolecules' in line:
+                    #         flg = 'macro'
+                    #     elif 'Ligands' in line:
+                    #         flg = 'ligand'
+                    #     elif 'Waters' in line:
+                    #         flg = 'water'
                 except:
                     pass
 
-            elif key==2:
+            elif key==2:  # Summary
                 lst = line.split()
                 if len(lst)>2:
                     if lst[0]=="Ramachandran":
@@ -324,10 +373,6 @@ def put_molprobity_section ( body,revision ):
                         meta["rms_angles"] = float(lst[-1])
                     elif lst[0]=="MolProbity":
                         meta["molp_score"] = float(lst[3])
-            elif "============ Model properties ================" in line:
-                key = 1
-            elif "================ Summary =====================" in line:
-                key = 2
 
 
 
@@ -423,27 +468,35 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
         table_id = body.getWidgetId ( "tableOne_table" )
 
-        tableDict =  { 'title': "Table 1. Diffraction data collection and refinement statistics.",
-            'state': 0,                    # -1,0,1, -100,100
-            'class': "table-blue",         # "table-blue" by default
-            'css'  : "text-align:left;",  # "text-align:rigt;" by default
+        tableDict =  { 
+            'title'       : "Table 1. Diffraction data collection and refinement statistics.",
+            'state'       : 0,                    # -1,0,1, -100,100
+            'class'       : "table-blue",         # "table-blue" by default
+            'css'         : "text-align:left;",  # "text-align:rigt;" by default
+            'alt_row_css' : "background:#EAF2D3;text-align:left;",
             'horzHeaders' :  [],
-            'rows' : []
+            'rows'        : []
         }
-        tableDict['rows'].append({'header':{'label': 'Wavelength', 'tooltip': ''},
+
+        indent = "&nbsp;&nbsp;&nbsp;&nbsp;"
+
+        tableDict['rows'].append({'header':{'label': 'DATA COLLECTION', 'tooltip': ''},
+                                  'data': ['']})
+        
+        tableDict['rows'].append({'header':{'label': indent + 'Wavelength', 'tooltip': ''},
                                   'data': ['%0.3f' % wavelength]})
 
         # try:
-        tableDict['rows'].append({'header': {'label': 'Space group', 'tooltip': ''},
-                              'data': [str(hkl.dataset.HM)]})
+        tableDict['rows'].append({'header': {'label': indent + 'Space group', 'tooltip': ''},
+                                  'data': [str(hkl.dataset.HM)]})
         if len(hkl.dataset.DCELL) >= 6:
             unitcell = 'a=%0.2f, b=%0.2f, c=%0.2f, <br>&alpha;=%0.2f, &beta;=%0.2f, &gamma;=%0.2f' % \
             (hkl.dataset.DCELL[0], hkl.dataset.DCELL[1], hkl.dataset.DCELL[2],
              hkl.dataset.DCELL[3], hkl.dataset.DCELL[4], hkl.dataset.DCELL[5])
         else:
             unitcell = ''
-        tableDict['rows'].append({'header': {'label': 'Unit cell', 'tooltip': ''},
-                              'data': [unitcell]})
+        tableDict['rows'].append({'header': {'label': indent + 'Unit cell', 'tooltip': ''},
+                                  'data': [unitcell]})
         # except Exception as inst:
         #     body.stderrln (str(type(inst))+ '\n')  # the exception instance
         #     body.stderrln (str(inst.args)+ '\n')  # arguments stored in .args
@@ -455,136 +508,144 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         if "ResolutionLow" in table1.keys() and "ResolutionHigh" in table1.keys():
             if "ResolutionLowO" in table1.keys() and "ResolutionHighO" in table1.keys():
                 unmergedDataFlag = True
-                tableDict['rows'].append({'header': {'label': 'Resolution range', 'tooltip': ''},
-                                      'data': ['%0.2f - %0.2f (%0.2f-%0.2f)' %
+                tableDict['rows'].append({'header': {'label': indent + 'Resolution range', 'tooltip': ''},
+                                          'data': ['%0.2f - %0.2f (%0.2f-%0.2f)' %
                                                (table1['ResolutionLow'], table1['ResolutionHigh'],
                                                 table1['ResolutionLowO'], table1['ResolutionHighO'])]})
             else:
-                tableDict['rows'].append({'header': {'label': 'Resolution range', 'tooltip': ''},
-                                      'data': ['%0.2f - %0.2f' %
+                tableDict['rows'].append({'header': {'label': indent + 'Resolution range', 'tooltip': ''},
+                                          'data': ['%0.2f - %0.2f' %
                                                (table1['ResolutionLow'], table1['ResolutionHigh'])]})
 
         if "TotalReflections" in table1.keys():
             if "TotalReflectionsO" in table1.keys():
-                tableDict['rows'].append({'header': {'label': 'Total reflections', 'tooltip': ''},
-                                      'data': ['%d (%d)' % (table1['TotalReflections'], table1['TotalReflectionsO'])]})
+                tableDict['rows'].append({'header': {'label': indent + 'Total reflections', 'tooltip': ''},
+                                          'data': ['%d (%d)' % (table1['TotalReflections'], table1['TotalReflectionsO'])]})
             else:
-                tableDict['rows'].append({'header': {'label': 'Total reflections', 'tooltip': ''},
-                                      'data': ['%d' % (table1['TotalReflections'])]})
+                tableDict['rows'].append({'header': {'label': indent + 'Total reflections', 'tooltip': ''},
+                                          'data': ['%d' % (table1['TotalReflections'])]})
 
         if "UniqueReflections" in table1.keys():
             if "UniqueReflectionsO" in table1.keys():
-                tableDict['rows'].append({'header': {'label': 'Unique reflections', 'tooltip': ''},
-                                      'data': ['%d (%d)' % (table1['UniqueReflections'], table1['UniqueReflectionsO'])]})
+                tableDict['rows'].append({'header': {'label': indent + 'Unique reflections', 'tooltip': ''},
+                                          'data': ['%d (%d)' % (table1['UniqueReflections'], table1['UniqueReflectionsO'])]})
             else:
-                tableDict['rows'].append({'header': {'label': 'Unique reflections', 'tooltip': ''},
-                                      'data': ['%d' % (table1['UniqueReflections'])]})
+                tableDict['rows'].append({'header': {'label': indent + 'Unique reflections', 'tooltip': ''},
+                                          'data': ['%d' % (table1['UniqueReflections'])]})
 
         if "Multiplicity" in table1.keys() and "MultiplicityO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Multiplicity', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Multiplicity', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['Multiplicity'], table1['MultiplicityO'])]})
 
         if "Completeness" in table1.keys() and "CompletenessO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Completeness', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Completeness', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['Completeness'], table1['CompletenessO'])]})
 
         if "meanIsigI" in table1.keys() and "meanIsigIO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'mean(I) / sig(I)', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'mean(I) / sig(I)', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['meanIsigI'], table1['meanIsigIO'])]})
 
         if "WilsonB" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Wilson B-factor', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Wilson B-factor', 'tooltip': ''},
                                       'data': ['%0.2f' % (table1['WilsonB'])]})
 
         if "Rmerge" in table1.keys() and "RmergeO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Rmerge', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rmerge', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['Rmerge'], table1['RmergeO'])]})
 
         if "Rmeas" in table1.keys() and "RmeasO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Rmeas', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rmeas', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['Rmeas'], table1['RmeasO'])]})
 
         if "Rpim" in table1.keys() and "RpimO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'Rpim', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rpim', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['Rpim'], table1['RpimO'])]})
 
         if "CChalf" in table1.keys() and "CChalfO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': 'CChalf', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'CChalf', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['CChalf'], table1['CChalfO'])]})
 
         if (refmacResults):
-            tableDict['rows'].append({'header': {'label': 'Reflections in refinement', 'tooltip': ''},
+
+
+            if ('natoms_overall' in meta.keys()):
+
+                tableDict['rows'].append({'header':{'label': 'MODEL PROPERTIES', 'tooltip': ''},
+                                        'data': ['']})
+
+                tableDict['rows'].append({'header': {'label': indent + 'Number of models', 'tooltip': ''},
+                                          'data': ['%d' % meta['n_models']]})
+                tableDict['rows'].append({'header': {'label': indent + 'Number of chains', 'tooltip': ''},
+                                          'data': ['%d' % meta['n_chains']]})
+                tableDict['rows'].append({'header': {'label': indent + 'Overall number of atoms (non-H)', 'tooltip': ''},
+                                          'data': ['%d' % meta['natoms_overall']]})
+                tableDict['rows'].append({'header': {'label': indent + indent + 'in macromolecules', 'tooltip': ''},
+                                          'data': ['%d' % meta['natoms_macro']]})
+                tableDict['rows'].append({'header': {'label': indent + indent + 'in ligands', 'tooltip': ''},
+                                          'data': ['%d' % meta['natoms_ligand']]})
+                tableDict['rows'].append({'header': {'label': indent + indent + 'in solvent', 'tooltip': ''},
+                                          'data': ['%d' % meta['natoms_water']]})
+                tableDict['rows'].append({'header': {'label': indent + 'Overall number of H-D atoms', 'tooltip': ''},
+                                          'data': ['%d' % meta['natoms_HD']]})
+
+            tableDict['rows'].append({'header':{'label': 'REFINEMENT', 'tooltip': ''},
+                                      'data': ['']})
+            tableDict['rows'].append({'header': {'label': indent + 'Reflections in refinement', 'tooltip': ''},
                                       'data': ['%d' % refmacResults.nrefAll]})
-            tableDict['rows'].append({'header': {'label': 'Reflections in free set', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Reflections in free set', 'tooltip': ''},
                                       'data': ['%d' % refmacResults.nrefFree]})
-            tableDict['rows'].append({'header': {'label': 'Rwork', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rwork', 'tooltip': ''},
                                       'data': ['%0.4f' % refmacResults.getFinalRfact()]})
-            tableDict['rows'].append({'header': {'label': 'Rfree', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rfree', 'tooltip': ''},
                                       'data': ['%0.4f' % refmacResults.getFinalRfree()]})
-            tableDict['rows'].append({'header': {'label': 'FSC average', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'FSC average', 'tooltip': ''},
                                       'data': ['%0.4f' % refmacResults.getFinalFSCaver()]})
-            tableDict['rows'].append({'header': {'label': 'RMSD bonds', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'RMSD bonds', 'tooltip': ''},
                                       'data': ['%0.4f' % refmacResults.getFinalrmsBOND()]})
-            tableDict['rows'].append({'header': {'label': 'RMSD angles', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'RMSD angles', 'tooltip': ''},
                                       'data': ['%0.4f' % refmacResults.getFinalrmsANGL()]})
 
         if ('rama_favored' in meta.keys()) and ('rama_outliers' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'Ramachandran favoured (%)', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Ramachandran favoured (%)', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['rama_favored']]})
             try:
                 allowed = 100.0 - (float(meta['rama_favored']) +  meta['rama_outliers'])
             except:
                 allowed = 0.0
-            tableDict['rows'].append({'header': {'label': 'Ramachandran allowed (%)', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Ramachandran allowed (%)', 'tooltip': ''},
                                       'data': ['%0.1f' % allowed]})
-            tableDict['rows'].append({'header': {'label': 'Ramachandran outliers (%)', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Ramachandran outliers (%)', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['rama_outliers']]})
 
         if ('rota_outliers' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'Rotamer outliers', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Rotamer outliers', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['rota_outliers']]})
 
         if ('clashscore' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'Clash score', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Clash score', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['clashscore']]})
 
         if ('molp_score' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'MolProbity score', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'MolProbity score', 'tooltip': ''},
                                       'data': [str(meta['molp_score'])]})
 
-        if ('natoms_overall' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'Overall number of atoms (non-H)', 'tooltip': ''},
-                                      'data': ['%d' % meta['natoms_overall']]})
-
-        if ('natoms_macro' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   in macromolecules', 'tooltip': ''},
-                                      'data': ['%d' % meta['natoms_macro']]})
-
-        if ('natoms_ligand' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   in ligands', 'tooltip': ''},
-                                      'data': ['%d' % meta['natoms_ligand']]})
-
-        if ('natoms_water' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   in solvent', 'tooltip': ''},
-                                      'data': ['%d' % meta['natoms_water']]})
-
         if ('bfac_overall' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': 'Average B-factor', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'Average B-factor', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['bfac_overall']]})
 
         if ('bfac_macro' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   for macromolecules', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + indent + 'for macromolecules', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['bfac_macro']]})
 
         if ('bfac_ligand' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   for ligands', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + indent + 'for ligands', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['bfac_ligand']]})
 
         if ('bfac_water' in meta.keys()):
-            tableDict['rows'].append({'header': {'label': '   for solvent', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + indent + 'for solvent', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['bfac_water']]})
 
-        rvapi_utils.makeTable(tableDict, table_id, reportPanelId, 0, 0, 1, 1)
+        rvapi_utils.makeTable ( tableDict, table_id, reportPanelId, 0,0,1,1 )
         if unmergedDataFlag:
             body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
         else:
@@ -596,7 +657,8 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         csvTable = rvapi_utils.makeCSVTable ( tableDict ) \
                               .replace("&alpha;","alpha") \
                               .replace("&beta;" ,"beta")  \
-                              .replace("&gamma;","gamma")
+                              .replace("&gamma;","gamma") \
+                              .replace("&nbsp;","")
         # csvTable is a string, containing CSV output (lines are separated via proper OS line separator)
         # body.stderr(csvTable)
 
@@ -649,7 +711,7 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
         if refmacXML:
             if os.path.exists(refmacXML):
                 refmacResults = RefmacXMLLog(refmacXML)
-        put_Tab1_section(body, revision, meta, refmacResults)
+        put_Tab1_section ( body, revision, meta, refmacResults )
 
         if edmeta:
             for key in edmeta:

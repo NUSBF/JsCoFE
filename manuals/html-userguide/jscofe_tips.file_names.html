@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,14 @@
   
   
     <title>2.5.9. File name customisation &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +106,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -132,7 +133,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "_static/versions.json",
+    var json_loc = "versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -439,8 +440,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-tips-file-names--page-root"><span class="section-number">2.5.9. </span>File name customisation<a class="headerlink" href="#jscofe-tips-file-names--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="file-name-customisation">
+<h1 id="jscofe-tips-file-names--page-root"><span class="section-number">2.5.9. </span>File name customisation<a class="headerlink" href="#jscofe-tips-file-names--page-root" title="Link to this heading">¶</a></h1>
 <p>CCP4 Cloud generates names for data objects and files automatically, using the following pattern:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">JJJJ</span><span class="o">-</span><span class="n">NN</span><span class="p">]</span> <span class="n">outputID</span> <span class="o">/</span><span class="nb">type</span><span class="o">/</span><span class="n">specs</span>
 </pre></div>
@@ -449,34 +450,40 @@
 <p>Usually, automatic naming is all what you need, yet, you may find it useful to customise object names for extra annotation and easier data identification in big projects, or when downloading data files for custom processing outside CCP4 Cloud context.</p>
 <p>Object names may be customised in two ways.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Changing object names is not possible if task is already running or has finished.</p>
+<p class="admonition-title">Note</p>
+<p>Changing object names is not possible if task is already running or has finished.</p>
 </div>
 <p><strong>Changing object Id</strong></p>
 <p>In most tasks, <code class="docutils literal notranslate"><span class="pre">outputId</span></code> is customisable and is used for naming all data objects produced by the task (a few exceptions include import tasks, where <code class="docutils literal notranslate"><span class="pre">outputId</span></code> follows the imported file names and, therefore, is different for different objects). By default, <code class="docutils literal notranslate"><span class="pre">output</span> <span class="pre">ID</span></code> is set to the name of the main program used in the task; it can be found in the <em>Input tab</em> of the <em>Job Dialog</em>. For example, using default naming in <em>Refmac</em> task:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_default.png"><img alt="_images/refmac_fname_default.png" class="align-center" src="_images/refmac_fname_default.png" style="width: 471.20000000000005px; height: 88.0px;"/></a>
+<a class="reference internal image-reference" href="_images/refmac_fname_default.png"><img alt="_images/refmac_fname_default.png" class="align-center" src="_images/refmac_fname_default.png" style="width: 471.20000000000005px; height: 88.0px;"/>
+</a>
 <p>produces file names like these:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_default_out.png"><img alt="_images/refmac_fname_default_out.png" class="align-center" src="_images/refmac_fname_default_out.png" style="width: 308.8px; height: 116.0px;"/></a>
+<a class="reference internal image-reference" href="_images/refmac_fname_default_out.png"><img alt="_images/refmac_fname_default_out.png" class="align-center" src="_images/refmac_fname_default_out.png" style="width: 308.8px; height: 116.0px;"/>
+</a>
 <p>If <em>output ID</em> is changed before running the task, for example:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_custom.png"><img alt="_images/refmac_fname_custom.png" class="align-center" src="_images/refmac_fname_custom.png" style="width: 471.20000000000005px; height: 88.0px;"/></a>
+<a class="reference internal image-reference" href="_images/refmac_fname_custom.png"><img alt="_images/refmac_fname_custom.png" class="align-center" src="_images/refmac_fname_custom.png" style="width: 471.20000000000005px; height: 88.0px;"/>
+</a>
 <p>then the resulting file names will look like:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_custom_out.png"><img alt="_images/refmac_fname_custom_out.png" class="align-center" src="_images/refmac_fname_custom_out.png" style="width: 308.8px; height: 122.4px;"/></a>
+<a class="reference internal image-reference" href="_images/refmac_fname_custom_out.png"><img alt="_images/refmac_fname_custom_out.png" class="align-center" src="_images/refmac_fname_custom_out.png" style="width: 308.8px; height: 122.4px;"/>
+</a>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <em>job description</em> field was also changed in the above example. This fields corresponds to job title in the Project’s <em>Job Tree</em>. Changing job description is possible for jobs in preparation or finished jobs, but not while a job is running.</p>
+<p class="admonition-title">Note</p>
+<p>The <em>job description</em> field was also changed in the above example. This fields corresponds to job title in the Project’s <em>Job Tree</em>. Changing job description is possible for jobs in preparation or finished jobs, but not while a job is running.</p>
 </div>
 <p><strong>Setting the Output Id Prefix</strong></p>
 <p>This customisation is useful if results from a series of alike projects are downloaded and processed out of Cloud context. In order to associate downloaded files with a particular project, sequence, ligand etc., output IDs can be prepended with a chosen ID. For doing this, choose <em>Project settings</em> item from the Main menu if the <em>Project page</em>. The following prompt will appear:</p>
-<a class="reference internal image-reference" href="_images/project_setings_prefix.png"><img alt="_images/project_setings_prefix.png" class="align-center" src="_images/project_setings_prefix.png" style="width: 405.29999999999995px; height: 108.5px;"/></a>
+<a class="reference internal image-reference" href="_images/project_setings_prefix.png"><img alt="_images/project_setings_prefix.png" class="align-center" src="_images/project_setings_prefix.png" style="width: 405.29999999999995px; height: 108.5px;"/>
+</a>
 <p>after which the default <em>output id</em> will be automatically prefixed with the chosen value, for example:</p>
-<a class="reference internal image-reference" href="_images/refmac_fname_prefixed.png"><img alt="_images/refmac_fname_prefixed.png" class="align-center" src="_images/refmac_fname_prefixed.png" style="width: 434.40000000000003px; height: 81.60000000000001px;"/></a>
+<a class="reference internal image-reference" href="_images/refmac_fname_prefixed.png"><img alt="_images/refmac_fname_prefixed.png" class="align-center" src="_images/refmac_fname_prefixed.png" style="width: 434.40000000000003px; height: 81.60000000000001px;"/>
+</a>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Automatic prefixing will work only for newly created (not cloned or already created) jobs.</p>
+<p class="admonition-title">Note</p>
+<p>Automatic prefixing will work only for newly created (not cloned or already created) jobs.</p>
 </div>
 <p>For extra convenience, automatic prefixing with <em>project ID</em> may be set in <em>My Account</em> page (look for <em>Use project name as default prefix</em> checkbox in <em>Preferences</em>), in which case it will be applied to all projects until cancelled.</p>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-
+</section>
 
 
           </article>
@@ -497,7 +504,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">2.5.8. </span>End of Job Notifications </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">2.5.8. </span>End of Job Notifications </span>
               </div>
             </a>
           
@@ -507,7 +514,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">2.5.10. </span>Using AlphaFold2 and Rosetta models </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">2.5.10. </span>Using AlphaFold2 and Rosetta models </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -521,7 +528,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

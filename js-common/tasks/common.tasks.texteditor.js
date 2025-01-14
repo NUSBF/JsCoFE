@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    20.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -258,18 +258,6 @@ if (!__template)  {
     if (inputPanel.grid.aceinit)
       inputPanel.grid.aceditor.setReadOnly ( disable_bool );
   }
-
-  
-  // TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
-  
-  //   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-  
-  //   // send to server fspec and aceditor
-  //   this.getSelectedFile ( inputPanel.grid );
-  
-  //   return input_msg;
-  
-  // }
   
   TaskTextEditor.prototype.doRun = function ( inputPanel,run_func )  {
 

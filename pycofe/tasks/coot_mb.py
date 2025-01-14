@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.10.24   <--  Date of Last Modification.
+#    08.11.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -430,7 +430,8 @@ class Coot(coot_ce.CootCE):
             # else:
             #     fn,fext = os.path.splitext ( f )
 
-            fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            # fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
+            # fn,fext = os.path.splitext ( fname )
 
             # shutil.copy2 ( fname,"inspect.txt" )
 
@@ -451,7 +452,8 @@ class Coot(coot_ce.CootCE):
             # coot_pdb   = None
             coot_mmcif = self.getMMCIFOFName()
             # coot_xyz   = coot_mmcif
-            if fext.upper()!=".PDB":
+            # if fext.upper()!=".PDB":
+            if mmcif_utils.check_xyz_format(fname)=="mmcif":
                 # coot_mmcif = self.getMMCIFOFName()
                 shutil.copy2 ( fname,coot_mmcif )
             else:

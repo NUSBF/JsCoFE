@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    03.12.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2024
 #
 # ============================================================================
 #
@@ -218,10 +218,11 @@ class EditRevision(asudef.ASUDef):
             if "xyz" in edit_list or "phases" in edit_list or "lig" in edit_list:
                 # redefine structure
 
-                if not xyz_fpath and not mtz_fpath and len(lig_codes)<=0:
+                if not xyz_fpath and not mtz_fpath:
+                    if lig_codes and len(lig_codes)>0:
 
-                    self.putMessage  ( "<h3>Structure was removed</h3>" )
-                    revision.removeStructure()
+                        self.putMessage  ( "<h3>Structure was removed</h3>" )
+                        revision.removeStructure()
 
                 else:
 

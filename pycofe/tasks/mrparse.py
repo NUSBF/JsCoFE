@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.03.24   <--  Date of Last Modification.
+#    06.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2025
 #
 # ============================================================================
 #
@@ -31,7 +31,6 @@ import json
 
 #  application imports
 from . import basic
-from   pycofe.varut   import rvapi_utils
 
 
 # ============================================================================
@@ -63,6 +62,17 @@ class MrParse(basic.TaskDriver):
         model.simtype = "cardon";
         return
 
+    def putFoundMessage ( self,seq ):
+        # self.putMessage ( "<i><b>Prepared models are associated " +\
+        #                   "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+        # self.putTitle ( "MR models prepared from PDB structures" )
+        self.putMessage ( "<i><b>Found homologs are associated " +\
+                            "with sequence:&nbsp;" + seq.dname + ".<p>" +
+                            "NOTE: process chosen homologs with one of " +
+                            "MR model preparation tasks for using them " +
+                            "in Molecular Replacement tasks.</b></i>" )
+        return
+
 
     # ------------------------------------------------------------------------
 
@@ -87,9 +97,9 @@ class MrParse(basic.TaskDriver):
                 return
 
             reflections_mtz = "__reflections.mtz"
-            FreeRColumn = hkl.getFreeRColumn()
-            hklin = hkl.getHKLFilePath(self.inputDir())
-            colin = [cols[0],cols[1],FreeRColumn]
+            FreeRColumn     = hkl.getFreeRColumn()
+            hklin           = hkl.getHKLFilePath(self.inputDir())
+            colin           = [cols[0],cols[1],FreeRColumn]
             self.sliceMTZ ( hklin,colin,reflections_mtz,
                             ["F","SIGF",FreeRColumn] )
 
@@ -109,10 +119,10 @@ class MrParse(basic.TaskDriver):
             database = "pdb"
             if not isLocalPDB:
                 self.fail ( "<h3>Data confidentiality conflict.</h3>" +\
-                        "This task requires access to PDB archive, which is not " +\
-                        "installed locally while transmission of sequence data to " +\
-                        "external servers is blocked by CCP4 Cloud configuration.",
-                        "No local PDB archive" )
+                    "This task requires access to PDB archive, which is not " +\
+                    "installed locally while transmission of sequence data to " +\
+                    "external servers is blocked by CCP4 Cloud configuration.",
+                    "No local PDB archive" )
                 return
 
         # make command-line parameters for mrparse
@@ -175,7 +185,7 @@ class MrParse(basic.TaskDriver):
             self.putMessage1 (
                 "mrparse_report",
                 "<iframe src=\"../" + mrparse_dir + "/mrparse.html\" " +\
-                "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
+                "style=\"display:block;border:none;position:absolute;top:50px;left:0;width:100vw;height:90%;overflow-x:auto;\"></iframe>",
                 0 )
 
             self.insertTab ( "mrparse_log","MrParse Log",
@@ -184,6 +194,8 @@ class MrParse(basic.TaskDriver):
                              os.path.join("..",mrparse_dir,"phaser1.log"),False )
 
             self.flush()
+
+            nmodels = 0
 
             try:
                 with open(os.path.join(mrparse_dir,"homologs.json"),"r") as json_file:
@@ -212,17 +224,22 @@ class MrParse(basic.TaskDriver):
 
             if len(homologs)>0:
 
+                homologs = sorted ( homologs, 
+                                    key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                    reverse=True )
+
                 for i in range(len(homologs)):
                     if homologs[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
-                        model = self.registerModel ( seq,fpath,checkout=True )
+                        # model = self.registerModel ( seq,fpath,checkout=True )
+                        model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
-                            if nhomologs<1:
-                                self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                  "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                                self.putTitle ( "MR models prepared from PDB structures" )
+                            if nmodels<1:
+                                self.putFoundMessage ( seq )
+                                self.putTitle ( "Structural homologs from the PDB" )
                             else:
                                 self.putMessage ( "&nbsp;" )
+                            nmodels   += 1
                             nhomologs += 1
                             self.putMessage ( "<h3>Model #" + str(nhomologs) + ": " + model.dname + "</h3>" )
                             model.addDataAssociation ( seq.dataId )
@@ -246,18 +263,23 @@ class MrParse(basic.TaskDriver):
 
             if len(afmodels)>0:
 
+                afmodels = sorted ( afmodels, 
+                                    key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                    reverse=True )
+
                 for i in range(len(afmodels)):
                     if afmodels[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,afmodels[i]["pdb_file"] )
-                        model = self.registerModel ( seq,fpath,checkout=True )
+                        # model = self.registerModel ( seq,fpath,checkout=True )
+                        model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
-                            if nafmodels<1:
-                                if nhomologs<1:
-                                    self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                      "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                                self.putTitle ( "MR models prepared from AFDB structures" )
+                            if nmodels<1:
+                                self.putFoundMessage ( seq )
+                                # self.putTitle ( "MR models prepared from AFDB structures" )
+                                self.putTitle ( "Structural homologs from AFDB" )
                             else:
                                 self.putMessage ( "&nbsp;" )
+                            nmodels   += 1
                             nafmodels += 1
                             self.putMessage ( "<h3>Model #" + str(nhomologs+nafmodels) + ": " +\
                                               model.dname + "</h3>" )
@@ -281,19 +303,23 @@ class MrParse(basic.TaskDriver):
 
             if len(esmmodels)>0:
 
+                esmmodels = sorted ( esmmodels, 
+                                     key=lambda obj: float(obj.get("seq_ident","0.0")), 
+                                     reverse=True )
+
                 for i in range(len(esmmodels)):
                     if esmmodels[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,esmmodels[i]["pdb_file"] )
-                        model = self.registerModel ( seq,fpath,checkout=True )
+                        # model = self.registerModel ( seq,fpath,checkout=True )
+                        model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
-                            if nesmmodels<1:
-                                if nhomologs<1:
-                                    if nafmodels<1:
-                                        self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                         "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                                self.putTitle ( "MR models prepared from ESMFold structures" )
+                            if nmodels<1:
+                                self.putFoundMessage ( seq )
+                                # self.putTitle ( "MR models prepared from ESMFold structures" )
+                                self.putTitle ( "Structural homologs from ESMFold" )
                             else:
                                 self.putMessage ( "&nbsp;" )
+                            nmodels    += 1
                             nesmmodels += 1
                             self.putMessage ( "<h3>Model #" + str(nhomologs+nafmodels+nesmmodels) + ": " +\
                                               model.dname + "</h3>" )
@@ -318,7 +344,8 @@ class MrParse(basic.TaskDriver):
             if len(homologs)<1 and len(afmodels)<1 and len(esmmodels)<1:
                 self.putTitle ( "No MR models were prepared" )
                 self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : " no suitable PDB, AFDB or ESMFold homologs found"
+                #   "summary_line" : " no suitable PDB, AFDB or ESMFold homologs found"
+                  "summary_line" : " no suitable PDB or AFDB homologs found"
                 }
 
             if nhomologs+nafmodels+nesmmodels>0:
@@ -331,8 +358,10 @@ class MrParse(basic.TaskDriver):
                     summary_line += "from AFDB"
                 else:
                     summary_line += "(PDB:" + str(nhomologs) +\
-                                    ", AFDB:" + str(nafmodels) +\
-                                    ", ESMFold:" + str(nesmmodels) + ")"
+                                    ", AFDB:" + str(nafmodels) + ")"
+                    # summary_line += "(PDB:" + str(nhomologs) +\
+                    #                 ", AFDB:" + str(nafmodels) +\
+                    #                 ", ESMFold:" + str(nesmmodels) + ")"
                 self.generic_parser_summary["mrparse"] = {
                   "summary_line" : summary_line
                 }

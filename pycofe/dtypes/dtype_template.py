@@ -107,6 +107,7 @@ class DType(jsonut.jObject):
 
     def lessDataId ( self,fname ):
         # returns fname without dataId prefix if there is any
+        # NOTE: assumed file name rather than file path!
         if len(fname)<9:
             return fname
         if fname[0:4].isdigit() and fname[5:7].isdigit() and fname[4]=="-" and fname[7]=="_":

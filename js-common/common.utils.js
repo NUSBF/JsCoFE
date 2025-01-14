@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.24   <--  Date of Last Modification.
+ *    14.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,6 +114,31 @@ function strip_html_tags ( S )  {
   //return S.replace(/(<\?[a-z]*(\s[^>]*)?\?(>|$)|<!\[[a-z]*\[|\]\]>|<!DOCTYPE[^>]*?(>|$)|<!--[\s\S]*?(-->|$)|<[a-z?!\/]([a-z0-9_:.])*(\s[^>]*)?(>|$))/gi, '');
 }
 
+function highlightSubstringMatches ( text, substring, color )  {
+  if (!text || !substring) return text; // Return original text if input is invalid  
+  // Create a regex to find all occurrences of the substring, case-insensitive
+  const regex = new RegExp ( substring, 'gi' );
+  // Replace occurrences with a span that adds the color
+  const highlightedText = text.replace ( regex, 
+                    match => `<span style="color: ${color}">${match}</span>` );
+  return highlightedText;
+}
+
+function highlightWildcardMatches ( text, pattern, color )  {
+  if (!text || !pattern) return text;
+  // Escape special regex characters, except for '*' and '?'
+  const escapedPattern = pattern.replace(/[-[\]{}()+.,\\^$|#]/g, '\\$&');
+  // Convert '*' to '.*' and '?' to '.' for regex
+  const regexPattern = escapedPattern
+      .replace(/\*/g, '.*')
+      .replace(/\?/g, '.');
+  // Create a case-insensitive regex
+  const regex = new RegExp(regexPattern, 'gi');
+  // Replace matches with highlighted spans
+  const highlightedText = text.replace(regex, match => `<span style="color: ${color}">${match}</span>`);
+  return highlightedText;
+}
+
 function startsWith ( str,substr )  {
   return (str.lastIndexOf(substr,0) === 0);  // for old JS engines (jsrview)
 }
@@ -149,6 +174,49 @@ function isValidURL(url) {
   return pattern.test(url);
 }
 
+// function sortObjects ( array, field, ascending=true )  {
+//   return array.sort((a, b) => {
+//     let valueA = a[field];
+//     let valueB = b[field];
+//     if (Array.isArray(valueA))  {
+//       if (valueA.length>0)  valueA = valueA[0];
+//                       else  valueA = '';
+//     }
+//     if (Array.isArray(valueB))  {
+//       if (valueB.length>0)  valueB = valueB[0];
+//                       else  valueB = '';
+//     }
+//     if (valueA < valueB) return ascending ? -1 : 1;
+//     if (valueA > valueB) return ascending ? 1 : -1;
+//     return 0; // If values are equal
+//   });
+// }
+
+
+function sortObjects ( array, field, ascending=true )  {
+  return array.sort((a, b) => {
+    let valueA = a[field];
+    let valueB = b[field];
+    if (Array.isArray(valueA))
+      valueA = valueA.length>0 ? strip_html_tags(valueA[0].toString()).trim() : '';
+    if (Array.isArray(valueB))
+      valueB = valueB.length>0 ? strip_html_tags(valueB[0].toString()).trim() : '';
+    const numA = parseFloat(valueA);
+    const numB = parseFloat(valueB);  
+    if ( !isNaN(valueA) && !isNaN(numA) && valueA !== '' &&
+         !isNaN(valueB) && !isNaN(numB) && valueB !== '' )  {
+      // Compare as numbers
+      if (numA < numB) return ascending ? -1 :  1;
+      if (numA > numB) return ascending ?  1 : -1;
+      return 0;
+    }
+    // Compare lexicographically
+    if (valueA < valueB) return ascending ? -1 :  1;
+    if (valueA > valueB) return ascending ?  1 : -1;
+    return 0;
+  });
+}
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
@@ -166,4 +234,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.startsWith     = startsWith;
   module.exports.round          = round;
   module.exports.getDateString  = getDateString;
+  module.exports.sortObjects    = sortObjects;
 }

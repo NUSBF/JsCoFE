@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.07.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,10 +81,10 @@ function LoginPage ( sceneId )  {
   let tip_lbl = this.grid.setLabel ( '',mrow,0,1,3 ).setFontSize('80%');
   this.grid.setHorizontalAlignment ( mrow,0,'center' );
   this.grid.setVerticalAlignment   ( mrow,0,'top'    );
-  this.grid.setCellSize            ( '','20px',mrow++,0,1,3 );
-  this.grid.setCellSize            ( '','3px', mrow++,0,1,3 );
+  this.grid.setCellSize            ( '','32px',mrow++,0,1,3 );
+  // this.grid.setCellSize            ( '','3px', mrow++,0,1,3 );
 
-  this.makeLogoPanel               ( mrow,0,3 );
+  // this.makeLogoPanel               ( mrow,0,3 );
 
   if (!__mobile_device)  {
     //  Fetch and display random tip of the day
@@ -107,7 +107,7 @@ function LoginPage ( sceneId )  {
           '</i></span>'
         );
       }
-    },1000);
+    },500);
   }
 
   // put logo

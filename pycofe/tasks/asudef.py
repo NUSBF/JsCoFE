@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.01.24   <--  Date of Last Modification.
+#    12.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,15 +19,17 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
 
 #  python native imports
+import sys
 import os
 from   xml.dom import minidom
 import json
+import subprocess
 # import math
 
 #  ccp4-python imports
@@ -465,6 +467,7 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
                 "ncopies"    : ncopies1,
                 "nc"         : nc0,
                 "sol"        : sol1,
+                "sol_pred"   : getattr(hkl,"solvent_predicted",0.0),
                 "resolution" : hkl.getHighResolution(raw=True)
             },secId=secId,title=title )
         else:
@@ -635,8 +638,58 @@ class ASUDef(basic.TaskDriver):
             for i in range(len(seq)):
                 seq[i].ncopies_auto = False  # do not adjust
 
+        target_sol   = "50.0"  # default fallback
+        solcont_pred = 0.0
+        target_sel   = self.getParameter(sec0.TARGET_SEL)
+        if target_sel=="P":
+            solpred_script = os.path.join ( os.environ["CCP4"],"lib","python3.9",
+                                            "site-packages","mrbump","tools",
+                                            "predict_solvent_content.py" )
+            if not os.path.exists(solpred_script):
+                self.putMessage ( 
+                    "<i><b>NOTE: The solvent content prediction software is not " +\
+                    "installed.</b> A default estimate of 50% solvent content " +\
+                    "is being used instead. To specify a different target, " +\
+                    "select the “hypothesized” option.</i><br>&nbsp;" )
+            else:
+                # run predict_solvent_content
+                rc = 0
+                try:
+                    solpred_stdout = open ( "solpred.out",'w' )
+                    p = subprocess.Popen ( [solpred_script,
+                                            hkl.getHKLFilePath(self.inputDir())],
+                                            shell=False,stdout=solpred_stdout,
+                                            stderr=self.file_stderr )
+                    if sys.platform.startswith("win"):
+                        rc = p.wait()
+                    else:
+                        rc = os.wait4(p.pid,0)
+                    solpred_stdout.close()
+                    if not rc or not rc[1]:
+                        with open("solpred.out","r") as f:
+                            solpred_log  = f.read()
+                            solcont_pred = float(solpred_log.split(":")[1].strip())
+                            target_sol   = str(solcont_pred)
+                            self.putMessage ( 
+                                "<b>AI-predicted solvent content: " +\
+                                target_sol + "%</b><br>&nbsp;" )
+                            rc = 0
+                except:
+                    rc = 2
+                if rc:
+                    self.putMessage ( 
+                        "<i><b>WARNING: Solvent content prediction failed.</b> " +\
+                        "A default estimate of 50% solvent content " +\
+                        "is being used instead. To specify a different target, " +\
+                        "select the “hypothesized” option.</i><br>&nbsp;" )
+                    target_sol   = "50.0"  # default fallback
+                    solcont_pred = 0.0
+        else:
+            target_sol = self.getParameter(sec0.TARGET_SOL)
+
+        hkl.solvent_predicted = solcont_pred
         revision = makeRevision ( self,hkl,seq,
-                                  self.getParameter(sec0.TARGET_SOL),
+                                  target_sol,
                                   self.getParameter(sec1.COMPOSITION_SEL),
                                   self.getParameter(sec1.ESTIMATE_SEL),
                                   self.getParameter(sec1.NRES),
