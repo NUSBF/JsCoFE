@@ -1,57 +1,77 @@
 .. _custom_workflows:
 
 =======================================
-Custom (user-created) project workflows
+Custom (User-Created) Project Workflows
 =======================================
 
-CCP4 Cloud projects can be developed automatically, using one of pre-defined
-:ref:`automatic workflows <workflows_guide>`, as well as *custom workflows*,
-defined by user.
+CCP4 Cloud projects can be developed automatically using one of the predefined 
+:ref:`automatic workflows <workflows_guide>`, as well as *custom workflows* 
+created by the user.
 
 .. _custom_workflows_use:
 
 --------------------------------------------------
-What are custom workflows and how one can use them
+What Are Custom Workflows, and How Can You Use Them?
 --------------------------------------------------
 
-Custom workflow is a script (*WScript*) describing tasks that need to be 
-performed and the order of their invocation, *i.e.*, the workflow algorithm.
-The script is placed in a plain text file with extension ``.wscript``,
-which can be created by most text editors, such as *vim*, *nano*, *notepad*
-(Windows), *TextEdit* (Mac) and similar. Make sure that you save file as
-"plain text" when using advanced editors such as *MS Word*, *Libre Office*
-(not recommended).
+A custom workflow is a script (*WScript*) that outlines the tasks to be performed 
+and the sequence of their execution, *i.e.*, the workflow algorithm. This script 
+is stored in a plain text file with the extension ``.wscript``, which can be created 
+using most text editors, such as *vim*, *nano*, *notepad* (Windows), *TextEdit* (Mac), 
+and similar programs. If you're using advanced editors like *MS Word* or *LibreOffice* 
+(not recommended), ensure the file is saved as "plain text."
 
-Custom workflow can be started in one of 3 ways:
+You can initiate a custom workflow in one of three ways:
 
-* Import ``.wscript`` file with other needed files, such as ``.mtz``
-  (reflections, phases), ``.pdb``, ``.mmcif`` (structure models),
-  ``.cif`` (ligand descriptions), ``.lib`` (restraint libraries),
-  ``.seq``, in a *single* import task. After importing, the task will
-  start workflow automatically if *WScript* is correct and all necessary 
-  data files are provided 
+* **Import a ``.wscript`` file along with other necessary files**  
+  Files such as ``.mtz`` (reflections, phases), ``.pdb``, ``.mmcif`` (structure models), 
+  ``.cif`` (ligand descriptions), ``.lib`` (restraint libraries), and ``.seq`` can be 
+  included in a *single* import task. If the *WScript* is correct and all required data 
+  files are provided, the workflow will start automatically upon import.
 
-* Add ``.wscript`` files to the set of data files in
-  :ref:`CloudRun command file <cloudrun>` (use generic :ref:`FILE <cloudrun_FILE>`
-  keyword), choose :ref:`import <cloudrun_TASK>` task and execute the
-  ``CloudRun`` utility. All file will be uploaded to CCP4 Cloud, project
-  created and workflow started automatically
+* **Add ``.wscript`` files to the data set in a :ref:`CloudRun command file <cloudrun>`**  
+  Use the generic :ref:`FILE <cloudrun_FILE>` keyword, select the :ref:`import <cloudrun_TASK>` 
+  task, and execute the ``CloudRun`` utility. All files will be uploaded to CCP4 Cloud, 
+  a project will be created, and the workflow will start automatically.
 
-* Add *WScript* to the *My Workflows* list in the *Workflows* tab of the
-  *Task List*, after which it can be used as any other task in the
-  system.
+* **Add *WScript* to the *My Workflows* list**  
+  In the *Workflows* tab of the *Task List*, you can include the *WScript* in your 
+  *My Workflows* list, allowing it to be used as a standard task in the system.
 
 
 -------------------------------------
-Writing the Workflow script (WScript)
+Writing the Workflow Script (WScript)
 -------------------------------------
 
-The main idea behind workflows is to automate operations when the same project (or branch of a project) needs to be repeated many (100s) times with  different input data, and **WScript** is limited to that purpose.
+The main purpose of workflows is to automate operations when the same project 
+(or a branch of a project) needs to be repeated multiple times (potentially 
+hundreds) with different input data. **WScript** is specifically designed for 
+this purpose.
 
-The easiest way to create a **WScript** file is through using **Workflow Creator** in CCP4 Cloud. Login in your account and open **Task List** in any project.
-Then open tab **Workflows**, scroll it to section **My Workflows** in the end and push button **Add workflow**. This will launch **Workflow Creator** window with a template script loaded. It makes a good sense to save the newly created workflow in your personal library, therefore give it a unique *Workflow ID* on top of the dialog window. For easier workflow identification in **My Workflows** library, you may also change the colour of the workflow icon – simply click on it and choose from available options. Now you can save the script – it will appear in the **My Workflows** section of the **Task List**. You can run it as any other task now, but doing so will result in an empty **Job Dialog**, because we only saved a template, which does nothing.
+The easiest way to create a **WScript** file is by using the 
+**Workflow Creator** in CCP4 Cloud. Log in to your account, open the 
+**Task List** in any project, and navigate to the **Workflows** tab. Scroll 
+to the **My Workflows** section at the bottom and click the **Add Workflow** 
+button. This opens the **Workflow Creator** window with a template script 
+loaded.
 
-Let's give it a useful content now. Click on **Edit** button on the right from  the just created workflow in **My Workflows**, this opens **Workflow Creator** again, with the previous content looking something like this: ::
+It is a good idea to save the newly created workflow in your personal library. 
+Assign a unique *Workflow ID* at the top of the dialog window. To make the 
+workflow easier to identify in your **My Workflows** library, you can also 
+change the color of the workflow icon by clicking on it and selecting from 
+the available options. Once done, save the script. It will now appear in the 
+**My Workflows** section of the **Task List**. While you can run it as any 
+other task, doing so with the template alone will result in an empty 
+**Job Dialog**, as the template does not perform any tasks.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Adding Functionality to the Workflow
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To give the workflow useful functionality, click the **Edit** button next to 
+the newly created workflow in the **My Workflows** section. This will reopen 
+the **Workflow Creator**, displaying the content of the template script, 
+which may look like this: ::
 
     #
     # * THIS IS A WORKFLOW SCRIPT TEMPLATE
@@ -99,7 +119,7 @@ Let's give it a useful content now. Click on **Edit** button on the right from  
 
     # !PAR_INTEGER nCycles  # variable name to be used in workflow's expressions
     #    LABEL     Number of cycles
-    #    TOOLTIP   Number of refiniement cycles
+    #    TOOLTIP   Number of refinement cycles
     #    IWIDTH    40        # (optional) input field width is set to 40 pixels
     #    RANGE     0 50      # (optional) allowed min/max values
     #    DEFAULT   10        # (optional) default integer value
@@ -135,17 +155,20 @@ Let's give it a useful content now. Click on **Edit** button on the right from  
     # ==========================================================================
     # Workflow run body
 
-In **WScript** lines, everything on the right from the hash "#" sign is a comment and may be safely deleted. Perhaps you may want to delete first few lines from the template, but in general, the more comments you make in the script, the more 
-understandable and maintainable it is. You can use spaces to your aesthetic 
-preferences; where there must be a space separator, any number of spaces can be
-used. 
+In **WScript**, all text following the hash "#" symbol is a comment and can be 
+safely removed if desired. While you may delete some of the initial template 
+lines, it is generally recommended to keep ample comments in the script. 
+Comments make the script more understandable and easier to maintain.
 
-**WScript** is based on single-line statements, containing keywords and values.
-Keywords, which normally start **WScript** statements, are case-insensitive.
-Values, on contrary, should be specified with respect to upper/lower case. Full
-list of keywords is given in the end of this document.
+You can format the script with spaces according to your aesthetic preferences. 
+When spaces are required as separators, any number of spaces is acceptable. 
 
-We will create new workflow in several steps now.
+**WScript** relies on single-line statements containing keywords and values. 
+Keywords, which usually begin **WScript** statements, are case-insensitive. 
+In contrast, values must respect case sensitivity. A full list of keywords is 
+provided at the end of this document.
+
+We will now proceed to create a new workflow in several steps.
 
 .. _simple_mr_workflow:
 
@@ -153,13 +176,15 @@ We will create new workflow in several steps now.
 Simple MR Workflow
 ~~~~~~~~~~~~~~~~~~
 
-As first example, let's write a simple workflow, which takes reflection data,
-structure template, sequence and solves structure with Molecular Replacement
-using Molrep.
+As a first example, let’s create a simple workflow that takes reflection data, 
+a structure template, and a sequence to solve a structure using Molecular 
+Replacement with Molrep.
 
-Firstly, remove unnecessary lines and put a reasonable annotation in the
-header section of the **WScript** file, so that it starts with this
-workflow header: ::
+**Setting Up the Workflow Header**
+
+To begin, remove any unnecessary lines and add meaningful annotations to the 
+header section of the **WScript** file. The workflow header should look like 
+this: ::
 
     #
     # -----------------------------------------------------
@@ -185,11 +210,13 @@ workflow header: ::
 
     ALLOW_UPLOAD       # create file upload widgets if started from project root
 
-You may save the workflow now and check how its description changed in
-**My Workflows** list. Re-open it again by pushing the relevant **Edit** button.
+You can now save the workflow and check its updated description in the 
+**My Workflows** list. Reopen it by clicking the relevant **Edit** button.
 
-Secondly, specify data, which workflow will use, in **WScript**'s' input data
-section (just append these statements to the script): ::
+**Specifying Input Data**
+
+Next, define the data required by the workflow in the **WScript** input data 
+section. Append the following statements to the script: ::
 
     # ==========================================================================
     # Input data section. List all data required, "!" specifies mandatory items.
@@ -198,54 +225,53 @@ section (just append these statements to the script): ::
     !DATA XYZ  TYPES protein
     !DATA SEQ  TYPES protein
 
-These statements mean that the workflow requires 3 mandatory items: reflection 
-data (HKL), search model (XYZ, must be protein chain(s)) and sequence (SEQ, 
-also of aminoacid type). In order to understand what these statements do, save 
-the script and create a new task with it from the root of your project – you
-should see input fields for data files. To check further, run Cloud's 
-**File Import** task and import all needed files, then append your workflow as
-the next task – you should see selectors for imported data. You can even run 
-the workflows now; it will fail immediately though because we did not specify 
-any tasks in the **WScript** file yet.
+These lines indicate that the workflow requires three mandatory inputs: 
+reflection data (HKL), a search model (XYZ, which must be a protein chain), 
+and a sequence (SEQ, also of the amino acid type). 
 
-We now want to make a sequence of at least 5 tasks:
+To see how this works, save the script and create a new task from the root of 
+your project. Input fields for these data files should appear. For further 
+verification, run the Cloud’s **File Import** task to import the necessary 
+files, then append your workflow as the next task. You will see selectors for 
+the imported data. Although you can run the workflow at this stage, it will 
+fail because no tasks have been defined in the **WScript** yet.
 
-- prepare MR model
-- define ASU
-- run Molrep
-- re-build model with, e.g., Modelcraft
-- refine with Refmac
+**Defining the Workflow Tasks**
 
-Re-open molrep workflow script in **Workflow Cretor** again. In the bottom of 
-the dialog window, click button **Add task** and select *"Model Preparation XYZ"*
-in the combobox found in the header. This populates the dialog window with
-default task options like in original task interfaces. Choose options that you
-want to change, set their values, and push **Add to workflow** button. This
-will append the following construct: ::
+We now aim to create a sequence of at least five tasks:
+
+1. Prepare the MR model.
+2. Define the ASU.
+3. Run Molrep.
+4. Rebuild the model using, for example, Modelcraft.
+5. Refine the structure with Refmac.
+
+Reopen the Molrep workflow script in the **Workflow Creator**. At the bottom 
+of the dialog window, click **Add Task**, then select *"Model Preparation XYZ"* 
+from the dropdown menu in the header. The dialog will populate with default task 
+options similar to those in the original task interfaces. Adjust the options as 
+needed, set their values, and click **Add to Workflow**. This will append the 
+following block to the script: ::
 
     @MODELPREPXYZ
         RUN ModelPrepXYZ
 
-to the end of the script if you did not change anything in task parameters.
-If a non-default parameter value were chosen, *e.g.*, if you changed
-*"Modification protocol"* for *"PDB Clip"*, then the construct would
-look slightly different: ::
+If you modify a task parameter (e.g., change *"Modification protocol"* to 
+*"PDB Clip"*), the block will appear slightly different: ::
 
     @MODELPREPXYZ
         PARAMETER MODIFICATION_SEL D  # Modification protocol
         RUN ModelPrepXYZ
 
-These examples give an idea of how CCP4 Cloud tasks are described in custom 
-workflows. Each task is represented by a block of lines, which starts with
-*RUN NAME* and finishes with *RUN* statement. *RUN NAME* must be a unique
-alphanumeric identifier starting with *"@"* symbol. Other lines between
-*RUN NAME* and *RUN* statements may contain values for task parameters,
-and only non-default parameters should be specified for brevity. See more
-details in the :ref:`wscript_reference` below.
+This demonstrates how CCP4 Cloud tasks are described in custom workflows. Each 
+task is defined by a block of lines starting with a unique alphanumeric 
+identifier preceded by the "@" symbol (e.g., `@MODELPREPXYZ`). The block ends 
+with the `RUN` statement. Only non-default parameter values need to be specified 
+to keep the script concise. For more details, refer to the :ref:`wscript_reference` 
+section.
 
-Similarly to the *"Model Preparation XYZ"* task, you can now add 
-*"ASU Definition"*, *"Molrep"*, *"Modelcraft"* and *"Refmac"* tasks to the
-workflow, in that order. The resulting **WScript** will look like
+Following this approach, you can now add tasks for *"ASU Definition"*, *"Molrep"*, 
+*"Modelcraft"*, and *"Refmac"*, in that order. The final **WScript** will resemble 
 the following: ::
 
     #
@@ -306,48 +332,54 @@ the following: ::
         RUN Refmac
     #
 
-This makes a completely functional workflow, which you can run now by any of
-the three methods described in :ref:`custom_workflows_use` (you need to
-copy-paste **WScript** from **Workflow Creator** into external file with 
-``.wscript`` extension for using it with the **Import** task or **CloudRun**
-utility).
+**Running the Workflow**
+
+This script defines a fully functional workflow. You can now run it using any 
+of the three methods described in :ref:`custom_workflows_use`. If you want to 
+use it with the **Import** task or **CloudRun** utility, copy and paste the 
+**WScript** from the **Workflow Creator** into an external file with the 
+``.wscript`` extension.
 
 .. note::
-   Unlike in manually-developed CCP4 Cloud projects, where a user cannot
-   create a task if there is no suitable data for it, workflows do not
-   check or control that task order is correct from the data flow point of 
-   view. Therefore, you should have a good understanding of task order
-   suitable for your purposes, or, better, take it from a manually developed
-   project representing your workflow in design.
+   Unlike manually developed CCP4 Cloud projects, where tasks cannot be created 
+   without suitable data, workflows do not enforce task order or data flow 
+   correctness. It is essential to understand the proper task sequence for your 
+   objectives or to base it on a manually developed project that represents your 
+   intended workflow design.
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Conditional statements and other advanced operations
+Conditional Statements and Other Advanced Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-At the moment, our molrep workflow is quite straightforward in respect to its 
-input data and algorithm. We may wish to make it more flexible. For example, it would be good if you can take both merged and unmerged reflection data on input, optimize refinement parameters and, optionally, prepare file for PDB deposition from the best results achieved.
+Our current Molrep workflow is straightforward in terms of input data and 
+algorithm. To enhance its flexibility, we can modify it to:
 
-**Conditions based on availability of data**
+- Accept both merged and unmerged reflection data as input.  
+- Optimize refinement parameters.  
+- Optionally prepare files for PDB deposition based on the best results achieved.
 
-Let's start from optional unmerged reflections input. We can instruct the
-workflow to accept both merged and unmerged reflections by modifying the
-corresponding ``DATA`` statement as below: ::
+**Conditions Based on Data Availability**
+
+Let’s begin by enabling the workflow to accept optional unmerged reflection data. 
+Update the ``DATA`` statement as follows: ::
 
     !DATA HKL UNMERGED
     !DATA XYZ  TYPES protein
     !DATA SEQ  TYPES protein
 
-Now we need scale and merge unmerged reflections with *"Aimless"* task, which
-should be run before merged reflections are used, *i.e.*, before 
-*"ASU Definition"* or even *"Model Preparation XYZ"*. To do that, open
-workflow's **WScript** in **Workflow Creator**, place cursor on line just
-above the ``@MODELPREPXYZ`` line and push **Insert task** button, then select 
-*"Aimless"* task in new window and push **Insert in workflow** button. This
-should modify the beginning of workflow body as below: ::
+Next, include the *"Aimless"* task to scale and merge unmerged reflections before 
+they are used. This task must be placed before *ASU Definition* or 
+*Model Preparation XYZ*. To do this:
+
+1. Open the workflow's **WScript** in **Workflow Creator**.  
+2. Place the cursor on the line above the ``@MODELPREPXYZ`` line.  
+3. Click **Insert Task**, select the *"Aimless"* task, and click **Insert in Workflow**.
+
+The workflow body will be updated as follows: ::
 
     # ==========================================================================
-    # Workflow run body
+    # Workflow Run Body
 
     @AIMLESS
         DATA      ds0  unmerged
@@ -362,11 +394,10 @@ should modify the beginning of workflow body as below: ::
         RUN ASUDef
     #
 
-This fragment will work fine if workflow receives unmerged reflections on input. 
-However, if, instead, already scaled and merged reflections are supplied,
-the *"Aimless"* task will fail and workflow stop. In order to skip invocation
-of *"Aimless"* task if no data is available, put ``IFDATA`` statement into
-task's description: ::
+If the workflow receives unmerged reflections, this configuration works fine. 
+However, if merged reflections are supplied, the *"Aimless"* task will fail. 
+To handle this, add an ``IFDATA`` statement to conditionally run the *"Aimless"* 
+task: ::
 
     @AIMLESS
         IFDATA    unmerged
@@ -375,11 +406,10 @@ task's description: ::
     #
 
 .. note::
-   in ``IFDATA`` statement, ``unmerged`` must be in lower case.
+   In the ``IFDATA`` statement, ``unmerged`` must be in lowercase.
 
-Now, the workflow will work with both merged and unmerged reflection data. If a
-task needs to be run when data *is not* available, use ``IFNOTDATA`` instead.
-For example, an equivalent (but less obvious) solution could be ::
+To perform a task only when data is unavailable, use the ``IFNOTDATA`` statement. 
+For example: ::
 
     @AIMLESS
         IFNOTDATA hkl
@@ -388,169 +418,128 @@ For example, an equivalent (but less obvious) solution could be ::
     #
 
 .. note::
-   data names in ``IFDATA`` and ``IFNOTDATA`` statements are given by the
-   lower-case versions of the corresponding data types used in ``DATA``
-   statements, i.e., ``hkl``, ``unmerged``, ``xyz``, ``seq`` and so on.
-   See :ref:`wscript_reference`  for details.
+   Data names in ``IFDATA`` and ``IFNOTDATA`` correspond to the lowercase 
+   versions of their types in ``DATA`` statements (e.g., ``hkl``, ``unmerged``, 
+   ``xyz``, ``seq``). Refer to :ref:`wscript_reference` for more details.
 
 **Looping and Branching**
 
-Sometimes, a task needs to be run with same data but varying parameters. In 
-CCP4 Cloud terms, this is equivalent to cloning task with suitable modification
-of parameter(s) of interest. For example, imagine that you wish to repeat
-*"Refmac"* task with suggested parameters until no suggestions are generated or
-number of runs exceeds a certain number (let's say, 5). The following fragment
-gives an idea of how this may be programmed in **WScript**: ::
+Some tasks may need to run repeatedly with varying parameters. For example, you 
+might want the *"Refmac"* task to iterate until no suggested parameters remain 
+or until the number of runs exceeds a certain limit (e.g., 5). The following 
+fragment demonstrates this: ::
 
-    # Initialise loop control parameters
+    # Initialize loop control parameters
 
-    let iter   = 1     # iteration serial number
-    let iter0  = 0     # iteration number of result with the lowest Rfree
-    let Rfree0 = 1.0   # the lowest Rfree achieved
+    let iter   = 1     # Iteration serial number
+    let iter0  = 0     # Iteration with the lowest Rfree
+    let Rfree0 = 1.0   # Lowest Rfree achieved
 
-    @REFINE-OPT[iter]  # [iter] modifies the RUN NAME implicitly to make it unique
-        USE_SUGGESTED_PARAMETERS   # use suggested parameters or defaults if none
+    @REFINE-OPT[iter]  # [iter] modifies the RUN NAME to ensure uniqueness
+        USE_SUGGESTED_PARAMETERS   # Use suggested parameters or defaults if none
         RUN       Refmac
 
-    # capture iteration number with the lowest Rfree achieved
-    let iter0 = iter; Rfree0 = Rfree  if  Rfree<Rfree0
+    # Capture iteration with the lowest Rfree
+    let iter0 = iter; Rfree0 = Rfree  if  Rfree < Rfree0
     let iter  = iter + 1
 
-    # keep iterating if conditions are met and pass otherwise
-    repeat @REFINE-OPT while suggested>0 and iter<5 
+    # Continue iterating if conditions are met
+    repeat @REFINE-OPT while suggested > 0 and iter < 5 
 
-    # continue further down from iteration with the lowest Rfree
+    # Branch to iteration with the lowest Rfree
     branch @REFINE-OPT[iter0]
 
-In this fragment, workflow allocates 3 variables ``iter``, ``iter0`` and
-``Rfree0`` and uses predefined variables ``Rfree`` (achieved *R_free*) and
-``suggested`` (the number of suggested changes to *Refmac* parameters).
-You may replace ``@REFMAC`` run construct with this entire fragment in our
-molrep workflow and re-run it to see the result.
+In this example:
 
-The ``branch`` statement specifies results from which particular task will be 
-taken for further processing. In this example, results with lowest *R_free*
-will be chosen. To see this, append another task, such as 
-*"PDB Validation Report"* to the workflow and re-run it.
+- ``Rfree`` is a predefined variable representing the achieved *R_free*.  
+- ``suggested`` is the number of suggested parameter changes for *Refmac*.  
 
+By appending a task such as *"PDB Validation Report"*, the results from the 
+iteration with the lowest *R_free* will be used.
 
-**Workflow parameters**
+**Workflow Parameters**
 
-Suppose now that we want to introduce workflow parameters, which a user could manipulate as in any other task. For example, let the user set a resolution cut-off in **Aimless** and decide whether to run the **Modelcraft** task. For this, add input of real-number parameter and a checkbox in
-:ref:`wscript_reference_input_parameters`: ::
+Workflow parameters allow users to adjust settings such as resolution cutoff or 
+task inclusion. To add user-configurable parameters, define them in the 
+**Workflow Parameters Section**: ::
 
-    # ==========================================================================
-    # Workflow parameters section. List all parameters required, "!" specifies
-    # mandatory items.
-
-    PAR_REAL      resHigh   # variable name to be used in workflow's expressions
+    PAR_REAL      resHigh   # Internal variable for resolution cutoff
         LABEL     High resolution cut-off (&Aring;)
-        TOOLTIP   High resolution cut-off, angstrom
-        IWIDTH    40        # input field width is set to 40 pixels
-        RANGE     0.1 5.0   # allowed min/max values
-        DEFAULT   1.5       # default value
+        TOOLTIP   Specify the high-resolution cutoff in angstroms
+        IWIDTH    40
+        RANGE     0.1 5.0
+        DEFAULT   1.5
 
-    PAR_CHECK     runModelcraft # variable name to be used in workflow's expressions
+    PAR_CHECK     runModelcraft  # Internal variable for Modelcraft inclusion
         LABEL     Re-build model
-        TOOLTIP   Check if phased model should be re-built
+        TOOLTIP   Enable phased model rebuilding
         DEFAULT   Checked
 
-Save **WScript**, create a new molrep workflow task and check how graphical
-widgets for parameters look like.
-
-When workflow is started, it assigns input parameters (either given by user or
-read from *DEFAULT* fields) to internal variables specified in *PAR_XXX* 
-statements. In the above example, two variables: *resHigh* and *runModelcraft*
-will be created for high-resolution cutoff (real) and flag for running
-*Modelcraft* (boolean *True/False*), respectively. In order to use these flags,
-remove *Aimless* task from the workflow and re-insert it in the same place
-with **Workflow Creator**. When selecting *Aimless* in the task menu, specify
-a non-default value for the high-resolution cut-off, for example, 1.4A. This
-will give code fragment as follows: ::
-
-    @AIMLESS
-        DATA      ds0  unmerged
-        PARAMETER RESO_HIGH 1.4  # high resolution cut-off (&Aring;)
-        RUN Aimless
-
-Now specify place the internal variable from the resolution cut-off widget 
-instead of "1.4" and restore the ``IFDATA`` statement: ::
+These parameters create graphical widgets in the workflow interface. For instance, 
+the ``resHigh`` variable can set the resolution cutoff for *Aimless*: ::
 
     @AIMLESS
         IFDATA    unmerged
         DATA      ds0  unmerged
-        PARAMETER RESO_HIGH resHigh  # high resolution cut-off (&Aring;)
+        PARAMETER RESO_HIGH resHigh  # High-resolution cutoff (&Aring;)
         RUN Aimless
     #
 
-.. note::
-   Where a variable is used, any function can be used as well. For example,
-   one can put ``2*resHigh``, ``max(1.5,resHigh)`` and similar expressions 
-   instead of ``resHigh`` in the above **WScript** fragment.
-
-As for the *Modelcraft*, we need simply to indicate that the task should be
-run if ``runModelcraft`` is ``True``: ::
+For the *Modelcraft* task, use the ``runModelcraft`` flag: ::
 
     @MODELCRAFT
         IF runModelcraft
         RUN ModelCraft
-
-The final **WScript** for our molrep workflow reads as follows: ::
-
-    #
-    # -----------------------------------------------------
-    # Molecular Replacement with Molrep
-    # -----------------------------------------------------
-    # Sun Dec 31 2023
     #
 
-    VERSION  1.0    # script version for backward compatibility
-    DEBUG    OFF    # ON/OFF
-    COMMENTS ON     # ON/OFF
+.. note::
+   Variables can include expressions (e.g., ``2 * resHigh`` or ``max(1.5, resHigh)``).
+
+**Final Workflow Example**
+
+Below is the complete **WScript** for the enhanced Molrep workflow: ::
 
     # ==========================================================================
-    # Workflow header
+    # Workflow Header
 
-    # General workflow descriptors
-    NAME     molrep workflow         # to show in Job Tree
-    ONAME    mrp_wflow               # to use for naming output files
-    TITLE    Molrep-based Workflow   # to display in Task List
-    DESC     takes HKL, XYZ and SEQ and solves structure with Molrep # to display in Task List
-    ICON     Maraschino              # (optional) workflow icon colour
-    KEYWORDS molrep workflow         # for using in A-Z keyword search
+    NAME     Molrep Workflow
+    ONAME    mrp_wflow
+    TITLE    Molrep-based Workflow
+    DESC     Solves structure using Molrep
+    ICON     Maraschino
+    KEYWORDS molrep workflow
 
-    ALLOW_UPLOAD       # create file upload widgets if started from project root
+    ALLOW_UPLOAD
 
     # ==========================================================================
-    # Input data section. List all data required, "!" specifies mandatory items.
+    # Input Data Section
 
     !DATA HKL
     !DATA XYZ  TYPES protein
     !DATA SEQ  TYPES protein
 
     # ==========================================================================
-    # Workflow parameters section. List all parameters required, "!" specifies
-    # mandatory items.
+    # Workflow Parameters Section
 
-    PAR_REAL     resHigh   # variable name to be used in workflow's expressions
+    PAR_REAL      resHigh
         LABEL     High resolution cut-off (&Aring;)
-        TOOLTIP   High resolution cut-off, angstrom
-        IWIDTH    40        # input field width is set to 40 pixels
-        RANGE     0.1 5.0   # allowed min/max values
-        DEFAULT   1.5       # default real value
+        TOOLTIP   Specify resolution cutoff in angstroms
+        IWIDTH    40
+        RANGE     0.1 5.0
+        DEFAULT   1.5
 
-    PAR_CHECK     runModelcraft # variable name to be used in workflow's expressions
+    PAR_CHECK     runModelcraft
         LABEL     Re-build model
-        TOOLTIP   Check if phased model should be re-built
+        TOOLTIP   Enable phased model rebuilding
         DEFAULT   Checked
 
     # ==========================================================================
-    # Workflow run body
+    # Workflow Run Body
 
     @AIMLESS
         IFDATA    unmerged
         DATA      ds0  unmerged
-        PARAMETER RESO_HIGH resHigh  # high resolution cut-off (&Aring;)
+        PARAMETER RESO_HIGH resHigh
         RUN Aimless
     #
 
@@ -571,34 +560,28 @@ The final **WScript** for our molrep workflow reads as follows: ::
         RUN ModelCraft
     #
 
-    # Initialise loop control parameters
+    # Looping and Refinement
 
-    let iter   = 1     # iteration serial number
-    let iter0  = 0     # iteration number of result with the lowest Rfree
-    let Rfree0 = 1.0   # the lowest Rfree achieved
+    let iter   = 1
+    let iter0  = 0
+    let Rfree0 = 1.0
 
-    @REFINE-OPT[iter]  # [iter] modifies the RUN NAME implicitly to make it unique
-        USE_SUGGESTED_PARAMETERS   # use suggested parameters or defaults if none
-        RUN       Refmac
+    @REFINE-OPT[iter]
+        USE_SUGGESTED_PARAMETERS
+        RUN Refmac
 
-    # capture iteration number with the lowest Rfree achieved
-    let iter0 = iter; Rfree0 = Rfree  if  Rfree<Rfree0
+    let iter0 = iter; Rfree0 = Rfree  if  Rfree < Rfree0
     let iter  = iter + 1
 
-    # keep iterating if conditions are met and pass otherwise
-    repeat @REFINE-OPT while suggested>0 and iter<5 
-
-    # continue further down from iteration with the lowest Rfree
+    repeat @REFINE-OPT while suggested > 0 and iter < 5
     branch @REFINE-OPT[iter0]
-
-    #
 
     @PDBVAL
         RUN PDBVal
     #
 
 .. note::
-   Workflows with input parameters cannot be used in *Import* task and in the
+   Workflows with input parameters cannot be used in the *Import* task or 
    *CloudRun* utility.
 
 
@@ -606,12 +589,18 @@ The final **WScript** for our molrep workflow reads as follows: ::
 Custom Workflow Library
 -----------------------
 
-CCP4 Cloud comes with a library of custom workflows, which give **WScript** 
-examples for few typical scenarios. They can be also used as templates for
-your own developments. Just open **Workflow Creator**, push **Library**
-button and select a suitable **WScript**. It can be further modified to your
-needs as any text file.
+CCP4 Cloud includes a library of custom workflows, providing **WScript** examples 
+for a variety of common scenarios. These workflows serve as practical starting 
+points and templates for your own custom developments.
 
+To access and use these workflows:
+
+1. Open the **Workflow Creator**.  
+2. Click the **Library** button.  
+3. Browse and select a suitable **WScript** template.  
+
+Once selected, the **WScript** can be customized to fit your specific requirements. 
+Simply edit it as you would any text file.
 
 .. _wscript_reference:
 
@@ -619,35 +608,35 @@ needs as any text file.
 WScript Reference
 -----------------
 
-**WScript** file consists of four **sections**, which must follow order presented
-in this Reference. Each section contains a specific set of **WScript** 
+**WScript** file consists of four **sections**, which must follow the order 
+presented in this reference. Each section contains a specific set of **WScript** 
 statements; no statement from one section can appear in another one. Section 
-separators are not used; **WScript** recognises sections automatically. Only
-:ref:`wscript_reference_input_parameters` can be empty.
+separators are not used; **WScript** recognizes sections automatically. 
+Only :ref:`wscript_reference_input_parameters` can be empty.
 
 All **WScript** **statements** occupy a single line. Statements start with a 
-case-insensitive primary key, which may be followed by additional case-insensitive
-key(s) and values. Any number of consecutive spaces is equivalent to one space,
-except when these spaces occur in string-type values. Part of line starting
-from hash sign "#" is considered as a comment and is ignored; empty lines are
-ignored, too.
+case-insensitive primary key, which may be followed by additional case-insensitive 
+key(s) and values. Any number of consecutive spaces is equivalent to one space, 
+except when these spaces occur in string-type values. Part of a line starting 
+from a hash sign "#" is considered a comment and is ignored; empty lines are 
+ignored too.
 
-Some **WScript** constructs are made of several statements, which must be
-placed on consecutive lines (comments and empty lines ignored). Such constructs
-have mandatory leading and trailing statements, other statements can be placed
+Some **WScript** constructs are made of several statements, which must be placed 
+on consecutive lines (comments and empty lines ignored). Such constructs have 
+mandatory leading and trailing statements, while other statements can be placed 
 in arbitrary order.
 
-**WScript** supports pre-defined and user-defined variables, which can hold
-real, integer, boolean and string values. String literals must be double-quoted
-(*e.g.*, "this is a string literal"), boolean literals are case-sensitive
-``True`` and ``False``. Pre-defined variables get their values from completed
+**WScript** supports pre-defined and user-defined variables, which can hold real, 
+integer, boolean, and string values. String literals must be double-quoted 
+(*e.g.*, "this is a string literal"), and boolean literals are case-sensitive 
+(`True` and `False`). Pre-defined variables get their values from completed 
 tasks; see details in :ref:`wscript_reference_predefined_variables`.
 
-Wherever variable's value is used, any in-line expression can be placed instead,
-which may also include other variables; reference to variable's value should be
-viewed as a computable trivial expression made of a single variable. See
-available functions, constants and operators in
-:ref:`wscript_reference_expression_syntax`.
+Wherever a variable's value is used, any in-line expression can be placed instead, 
+which may also include other variables. A reference to a variable's value should 
+be viewed as a computable trivial expression made of a single variable. See 
+available functions, constants, and operators 
+in :ref:`wscript_reference_expression_syntax`.
 
 .. _wscript_reference_header:
 

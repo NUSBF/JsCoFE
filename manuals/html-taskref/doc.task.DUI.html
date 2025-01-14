@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Interactive Image Processing with DIALS/DUI &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -469,151 +470,136 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="interactive-image-processing-with-dials-dui">
-<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Permalink to this headline">¶</a></h1>
 <p>DIALS (Diffraction Integration for Advanced Light Sources) is a software project for the analysis of crystallographic diffraction images. DIALS processing on CCP4 Cloud may be performed by either running the individual tools (spot finding, indexing, refinement, integration, symmetry, scaling, exporting to MTZ) using the graphical user interface DUI, or by automated processing with xia2.</p>
 <p>You can click <a class="reference external" href="https://dials.github.io/documentation/tutorials/processing_in_detail_betalactamase_dui.html" rel="noopener noreferrer" target="_blank">here</a> to learn more about processing with DUI.</p>
 <p>Interactive Image Processing with DUI includes next steps:</p>
-<section id="import">
-<h2 id="import">Import<a class="headerlink" href="#import" title="Link to this heading">¶</a></h2>
+
+<h2 id="import">Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>import image data files into a format that can be used within DIALS.</strong></p>
-</div></blockquote>
+<div><strong>import image data files into a format that can be used within DIALS.</strong></div></blockquote>
 <p>If all the images in the dataset are consistent, then the dataset is imported and initial models for the “Beam”, “Scan” and “Detector” are created. The images are now also displayed within the <strong>“Image”</strong> tab.</p>
-</section>
-<section id="find">
-<h2 id="find">Find<a class="headerlink" href="#find" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="find">Find<a class="headerlink" href="#find" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>locate spots on some or all of the data</strong></p>
-</div></blockquote>
+<div><strong>locate spots on some or all of the data</strong></div></blockquote>
 <p>The first “real” task in any processing using DIALS is the spot finding. This program tries to find strong spots on a sequence of images. Spot finding will be done against each logically grouped set of images given. Strong pixels will be found on each image and spots will be formed from connected components.</p>
 <p>Spot-finding, like most of the other processing steps in DUI, presents user parameters at two levels of detail. The <strong>“Simple”</strong> tab contains the basic parameters that are the most commonly changed. The <strong>“Advanced”</strong> tab contains all of those again, plus other parameters that may be required for expert use with challenging data sets. Once the job is finished, the image viewer will display small blue boxes around the pixels that have been marked as strong.</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">is</span> <span class="pre">also</span> <span class="pre">useful</span> <span class="pre">to</span> <span class="pre">click</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Report</span> <span class="pre">View”</span> <span class="pre">tab</span> <span class="pre">and</span> <span class="pre">scroll</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">“Analysis</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">reflections”.</span> <span class="pre">This</span> <span class="pre">shows</span> <span class="pre">a</span> <span class="pre">graph</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">spots</span> <span class="pre">found</span> <span class="pre">per</span> <span class="pre">image.</span></code></p>
-</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">is</span> <span class="pre">also</span> <span class="pre">useful</span> <span class="pre">to</span> <span class="pre">click</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Report</span> <span class="pre">View”</span> <span class="pre">tab</span> <span class="pre">and</span> <span class="pre">scroll</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">“Analysis</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">reflections”.</span> <span class="pre">This</span> <span class="pre">shows</span> <span class="pre">a</span> <span class="pre">graph</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">strong</span> <span class="pre">spots</span> <span class="pre">found</span> <span class="pre">per</span> <span class="pre">image.</span></code></div></blockquote>
 <p><em>If you see the number of strong spots drop off over the dataset, or otherwise show large variability, we may start to worry about issues such as radiation damage or a poorly-centered crystal.</em></p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">If</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">case</span> <span class="pre">where</span> <span class="pre">spot-finding</span> <span class="pre">has</span> <span class="pre">gone</span> <span class="pre">badly,</span> <span class="pre">it</span> <span class="pre">may</span> <span class="pre">be</span> <span class="pre">helpful</span> <span class="pre">to</span> <span class="pre">debug</span> <span class="pre">using</span> <span class="pre">the</span> <span class="pre">"image</span> <span class="pre">viewer"</span> <span class="pre">and</span> <span class="pre">"reciprocal</span> <span class="pre">lattice</span> <span class="pre">viewer",</span> <span class="pre">which</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">launched</span> <span class="pre">via</span> <span class="pre">buttons</span> <span class="pre">shown</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">“Tools”</span> <span class="pre">tab.</span></code></p>
 <blockquote>
 <div><div class="toggle-header docutils container">
-<p><strong>more about reciprocal lattice viewer</strong></p>
-</div>
+<strong>more about reciprocal lattice viewer</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
-<div><p>This viewer displays the strong spots in 3D, after mapping them from their detector positions to reciprocal space. In a favourable case you should be able to see the crystal’s reciprocal lattice by eye in the strong spot positions. Some practice may be needed in rotating the lattice to an orientation that shows off the periodicity in reciprocal lattice positions.</p>
-</div></blockquote>
+<div>This viewer displays the strong spots in 3D, after mapping them from their detector positions to reciprocal space. In a favourable case you should be able to see the crystal’s reciprocal lattice by eye in the strong spot positions. Some practice may be needed in rotating the lattice to an orientation that shows off the periodicity in reciprocal lattice positions.</div></blockquote>
 </div>
 </div></blockquote>
 </div></blockquote>
-</section>
-<section id="index">
-<h2 id="index">Index<a class="headerlink" href="#index" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>determining a crystal model which explains the position of the found spots (may optionally involve choices about lattice or space group)</strong></p>
-</div></blockquote>
+<div><strong>determining a crystal model which explains the position of the found spots (may optionally involve choices about lattice or space group)</strong></div></blockquote>
 <p>This program attempts to perform autoindexing on strong spots after spot finding. If one or more lattices are identified given the input list of strong spots, then the crystal orientation and experimental geometry are refined to minimize the differences between the observed and predicted spot centroids.</p>
 <p>The simple parameters allow only to select between different <strong>“Indexing Methods”</strong>, the default of which is the 3D FFT algorithm. The other options are the 1D FFT (DPS) algorithm and a special version of the 3D FFT called real space grid search, which is particularly useful for narrow wedges containing multiple lattices, but requires a known cell and space group to be set under the “Advanced” parameters.</p>
 <p><em>By default the program searches for a primitive lattice, and then proceeds with refinement in space group P1. If the unit cell and space group parameters are set, then the program will only accept solutions which are consistent with these parameters. Space group constraints will be enforced in refinement as appropriate.</em></p>
 <p><em>The RMSDs at the start of each cycle start off worse than at the end of the previous cycle, because the best fit model for lower resolution data is being applied to higher resolution reflections. As long as each macrocycle shows a reduction in RMSDs then refinement is doing its job of extending the applicability of the model out to a new resolution limit, until eventually the highest resolution strong spots have been included.</em></p>
-</section>
-<section id="lattice">
-<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>finding a Bravais lattice</strong></p>
-</div></blockquote>
+<div><strong>finding a Bravais lattice</strong></div></blockquote>
 <p>Full refinement of the crystal and experimental geometry parameters will be performed (by default) in all Bravais settings that are consistent with the input primitive unit cell. A table is printed containing various information for each potential Bravais setting, including the metric fit (a measure of the deviation from the triclinic cell), the root-mean-square-deviations (rmsd), in mm, between the observed and predicted spot centroids, the refined unit cell parameters in each Bravais setting, and the change of basis operator to transform from the triclinic cell to each Bravais setting.</p>
 <p><em>If Bravais lattice unknown before indexing, we can determine likely candidates - by taking the results of the P1 autoindexing, and running refinement with all of the possible Bravais settings applied. You can then choose your preferred solution. Run this without altering any of the defaults, as they are suitable for the majority of data sets.Once the job has run, a window will pop up containing scoring data and the unit cell for each Bravais setting.</em></p>
-</section>
-<section id="refine">
-<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>improving the model</strong></p>
-</div></blockquote>
+<div><strong>improving the model</strong></div></blockquote>
 <p>The model is already refined during indexing, but we can also add explicit refinement steps here. This is beneficial because it will use all reflections in refinement rather than a subset, uses a more sophisticated outlier rejection algorithm and will later allow us to fit a scan-varying model of the crystal.</p>
 <p>In the <strong>“Report View”</strong> we can see plots of how the cell and orientation changes during the scan.</p>
 <blockquote>
 <div><div class="toggle-header docutils container">
-<p><strong>Other useful plots in the report are:</strong></p>
-</div>
+<strong>Other useful plots in the report are:</strong></div>
 <div class="toggle-content docutils container">
 <ul class="simple">
-<li><p>Difference between observed and calculated centroids vs phi, which shows how the average residuals in each of X, Y, and φ vary as a function of φ. If scan-varying refinement has been successful in capturing the real changes during the scan then we would expect these plots to be straight lines.</p></li>
-<li><p>Centroid residuals in X and Y, in which the X, Y residuals are shown directly. The key point here is to look for a globular shape centred at the origin.</p></li>
-<li><p>Difference between observed and calculated centroids in X and Y, which show the difference between predicted and observed reflection positions in either X or Y as functions of detector position. From these plots it is very easy to see whole tiles that are worse than their neighbours, and whether those tiles might be simply shifted or slightly rotated compared to the model detector.</p></li>
+<li>Difference between observed and calculated centroids vs phi, which shows how the average residuals in each of X, Y, and φ vary as a function of φ. If scan-varying refinement has been successful in capturing the real changes during the scan then we would expect these plots to be straight lines.</li>
+<li>Centroid residuals in X and Y, in which the X, Y residuals are shown directly. The key point here is to look for a globular shape centred at the origin.</li>
+<li>Difference between observed and calculated centroids in X and Y, which show the difference between predicted and observed reflection positions in either X or Y as functions of detector position. From these plots it is very easy to see whole tiles that are worse than their neighbours, and whether those tiles might be simply shifted or slightly rotated compared to the model detector.</li>
 </ul>
 </div>
 </div></blockquote>
-</section>
-<section id="integration">
-<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>recording how many counts in each spot, subtract background, usually fit reflection profiles.</strong></p>
-</div></blockquote>
+<div><strong>recording how many counts in each spot, subtract background, usually fit reflection profiles.</strong></div></blockquote>
 <p>This program is used to integrate the reflections on the diffraction images. The program will output a set of integrated reflections and an experiment list with additional profile model data.</p>
 <p><em>Mostly, the default parameters are fine for Pilatus data, which will perform XDS-like 3D profile fitting while using a generalized linear model in order to fit a Poisson-distributed background model.</em></p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">possible</span> <span class="pre">to</span> <span class="pre">have</span> <span class="pre">adjusted</span> <span class="pre">the</span> <span class="pre">resolution</span> <span class="pre">limits</span> <span class="pre">using</span> <span class="pre">parameters</span> <span class="pre">d_min</span> <span class="pre">and</span> <span class="pre">d_max</span> <span class="pre">under</span> <span class="pre">prediction</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">**“Advanced”**</span> <span class="pre">parameters</span> <span class="pre">tab.</span></code></p>
-</div></blockquote>
+<div><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">possible</span> <span class="pre">to</span> <span class="pre">have</span> <span class="pre">adjusted</span> <span class="pre">the</span> <span class="pre">resolution</span> <span class="pre">limits</span> <span class="pre">using</span> <span class="pre">parameters</span> <span class="pre">d_min</span> <span class="pre">and</span> <span class="pre">d_max</span> <span class="pre">under</span> <span class="pre">prediction</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">**“Advanced”**</span> <span class="pre">parameters</span> <span class="pre">tab.</span></code></div></blockquote>
 <p>After these jobs are finished, the reflections are ‘post-processed’, which includes the application of the LP correction to the intensities. Then summary tables are printed giving quality statistics first by frame, and then by resolution bin.</p>
 <blockquote>
 <div><div class="toggle-header docutils container">
-<p>more about <strong>Report View</strong></p>
-</div>
+more about <strong>Report View</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p>The <strong>“Report View”</strong> now contains additional plots under the <strong>“Analysis of reflection intensities”</strong> and <strong>“Analysis of reference profiles”</strong> sections. It is worth checking through these, particularly paying attention to the following:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Reflection and reference correlations binned in X/Y. These are useful companions to the plots of centroid residual as a function of detector position above. Whereas the above plots show systematic errors in the positions and orientations of tiles of a multi-panel detector, these plots indicate what effect that (and any other position-specific systematic error) has on the integrated data quality. The first of these plots shows the correlation between reflections and their reference profiles for all reflections in the dataset. The second shows only the correlations between the strong reference reflections and their profiles (thus these are expected to be higher and do not extend to such high resolution).</p></li>
-<li><p>Distribution of I/Sigma vs Z. This reproduces the IσIIσI information versus frame number given in the log file in a graphical form. Here we see that IσIIσI is fairly flat over the whole dataset, which we might use as an indication that there were no bad frames, not much radiation damage occurred and that scale factors are likely to be fairly uniform.</p></li>
+<li>Reflection and reference correlations binned in X/Y. These are useful companions to the plots of centroid residual as a function of detector position above. Whereas the above plots show systematic errors in the positions and orientations of tiles of a multi-panel detector, these plots indicate what effect that (and any other position-specific systematic error) has on the integrated data quality. The first of these plots shows the correlation between reflections and their reference profiles for all reflections in the dataset. The second shows only the correlations between the strong reference reflections and their profiles (thus these are expected to be higher and do not extend to such high resolution).</li>
+<li>Distribution of I/Sigma vs Z. This reproduces the IσIIσI information versus frame number given in the log file in a graphical form. Here we see that IσIIσI is fairly flat over the whole dataset, which we might use as an indication that there were no bad frames, not much radiation damage occurred and that scale factors are likely to be fairly uniform.</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">At</span> <span class="pre">this</span> <span class="pre">point</span> <span class="pre">we</span> <span class="pre">could</span> <span class="pre">export</span> <span class="pre">the</span> <span class="pre">integrated</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">in</span> <span class="pre">MTZ</span> <span class="pre">format</span></code></p>
 </div></blockquote>
-</section>
-<section id="symmetry">
-<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Permalink to this headline">¶</a></h2>
 <p>This program implements the methods of <strong>POINTLESS</strong> <a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">[Evans_2011]</a>  for scoring and determination of Laue group symmetry.
 The program takes as input a set of one or more integrated experiments and reflections.</p>
 <p><strong>Stages of space group determination in POINTLESS</strong> :</p>
 <ol class="arabic simple">
-<li><p>from the cell dimensions, determine the maximum possible lattice symmetry, with some tolerance ( <code class="docutils literal notranslate"><span class="pre">ignoring</span> <span class="pre">any</span> <span class="pre">input</span> <span class="pre">symmetry</span></code> )</p></li>
-<li><p>for each possible rotation operator, score potentially related observations pairs for agreement ( <code class="docutils literal notranslate"><span class="pre">correlation</span> <span class="pre">coefficients</span> <span class="pre">and</span> <span class="pre">R-factor</span></code> )</p></li>
-<li><p>score all possible combinations of operators to determine the point group ( <code class="docutils literal notranslate"><span class="pre">point</span> <span class="pre">groups</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">P1</span></code> )</p></li>
-<li><p>score axial systematic absences to detect screw axes, hence space group ( <code class="docutils literal notranslate"><span class="pre">axial</span> <span class="pre">observations</span> <span class="pre">are</span> <span class="pre">sometimes</span> <span class="pre">unobserved</span></code> )</p></li>
+<li>from the cell dimensions, determine the maximum possible lattice symmetry, with some tolerance ( <code class="docutils literal notranslate"><span class="pre">ignoring</span> <span class="pre">any</span> <span class="pre">input</span> <span class="pre">symmetry</span></code> )</li>
+<li>for each possible rotation operator, score potentially related observations pairs for agreement ( <code class="docutils literal notranslate"><span class="pre">correlation</span> <span class="pre">coefficients</span> <span class="pre">and</span> <span class="pre">R-factor</span></code> )</li>
+<li>score all possible combinations of operators to determine the point group ( <code class="docutils literal notranslate"><span class="pre">point</span> <span class="pre">groups</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">maximum</span> <span class="pre">down</span> <span class="pre">to</span> <span class="pre">P1</span></code> )</li>
+<li>score axial systematic absences to detect screw axes, hence space group ( <code class="docutils literal notranslate"><span class="pre">axial</span> <span class="pre">observations</span> <span class="pre">are</span> <span class="pre">sometimes</span> <span class="pre">unobserved</span></code> )</li>
 </ol>
 <p><strong>Symmetry determination with POINTLESS</strong> :</p>
 <ol class="arabic simple">
-<li><dl class="simple">
-<dt>score individual symmetry operators in the maximum lattice group</dt><dd><p>comparing pairs of observations related by each possible rotational operator, using correlation coefficients and R-factors on normalized intensities | E | <sup>2</sup></p>
-</dd>
+<li><dl class="first docutils">
+<dt>score individual symmetry operators in the maximum lattice group</dt><dd>comparing pairs of observations related by each possible rotational operator, using correlation coefficients and R-factors on normalized intensities | E | <sup>2</sup></dd>
 </dl>
 </li>
-<li><p><strong>score possible point groups</strong></p></li>
-<li><p><strong>space group from axial systematic absences</strong></p></li>
+<li><strong>score possible point groups</strong></li>
+<li><strong>space group from axial systematic absences</strong></li>
 </ol>
 <p>Once the job is finished, check the <strong>“Log Text”</strong> output. <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">most</span> <span class="pre">important</span> <span class="pre">part</span> <span class="pre">here</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">table</span> <span class="pre">printed</span> <span class="pre">at</span> <span class="pre">the</span> <span class="pre">end.</span></code></p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>space group is only a hypothesis until the structure has been determined and satisfactorily refined</p>
+<p class="first admonition-title">Note</p>
+<p class="last">space group is only a hypothesis until the structure has been determined and satisfactorily refined</p>
 </div>
-</section>
-<section id="scale">
-<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>correction for experimental effects i.e. beam intensity, illuminated volume, sample absorption etc.</strong></p>
-</div></blockquote>
+<div><strong>correction for experimental effects i.e. beam intensity, illuminated volume, sample absorption etc.</strong></div></blockquote>
 <p>This program performs scaling on integrated datasets, which attempts to improve the internal consistency of the reflection intensities by correcting for various experimental effects.
 By default, a physically motivated scaling model is used, with a scale, decay (B-factor) and absorption correction. If the input files contain multiple datasets, all data will be scaled against a common target of unique reflection intensities.</p>
 <p>A scaling.html file is also generated, containing interactive plots of merging statistics and scaling model plots.</p>
-</section>
-<section id="export">
-<h2 id="export">Export<a class="headerlink" href="#export" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="export">Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p><strong>exporting the results of dials processing in various formats.</strong></p>
-</div></blockquote>
+<div><strong>exporting the results of dials processing in various formats.</strong></div></blockquote>
 <p>The output formats currently supported are:</p>
 <p><strong>MTZ</strong> format exports the files as an unmerged mtz file, ready for input to downstream programs such as Pointless and Aimless. For exporting integrated, but unscaled data, the required input is a models.expt file and an integrated.refl file. For exporting scaled data, the required input is a models.expt file and a scaled.pickle file, also passing the option intensity=scale.</p>
 <p><strong>NXS</strong> format exports the files as an NXmx file. The required input is a models.expt file and an integrated.refl file.</p>
@@ -623,15 +609,14 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
 <p><strong>MOSFLM</strong> format exports the files as an index.mat mosflm-format matrix file and a mosflm.in file containing basic instructions for input to mosflm. The required input is an models.expt file.</p>
 <p><strong>XDS</strong> format exports a models.expt file as XDS.INP and XPARM.XDS files. If a reflection pickle is given it will be exported as a SPOT.XDS file.</p>
 <blockquote>
-<div><p>for more information please visit: <a class="reference external" href="https://dials.github.io/index.html" rel="noopener noreferrer" target="_blank">https://dials.github.io/index.html</a></p>
-</div></blockquote>
+<div>for more information please visit: <a class="reference external" href="https://dials.github.io/index.html" rel="noopener noreferrer" target="_blank">https://dials.github.io/index.html</a></div></blockquote>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">Evans, P. (2006). Acta Cryst. D62, 72-82.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">Evans, P. R. (2011) Acta Cryst. D67, 282-292.</a></p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
 <p>This article uses materials from  <a class="reference external" href="https://dials.github.io/documentation/tutorials/index.html" rel="noopener noreferrer" target="_blank">tutorials</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -676,7 +661,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

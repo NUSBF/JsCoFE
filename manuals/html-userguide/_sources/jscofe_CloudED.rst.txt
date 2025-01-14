@@ -1,31 +1,32 @@
 =================================
-CCP4 Cloud education capabilities
+CCP4 Cloud Education Capabilities
 =================================
 
-CCP4 Cloud is not only a powerful tool for maintaining crystallographic projects 
-in CCP4 but also a platform for gaining knowledge about CCP4 tasks you are running.
+CCP4 Cloud is not only a powerful tool for managing crystallographic projects 
+but also an excellent platform for learning about the CCP4 tasks you are running.
 
 --------------------
-CCP4 Cloud tutorials
+CCP4 Cloud Tutorials
 --------------------
 
-On the My Projects page toolbox, you can find a **Tutorial** |tutorials| icon. 
-Click on it and you can import Tutorials or Demo projects of interest to 
-your :ref:`project page<myprojects>`
+On the **My Projects** page toolbox, you will find the **Tutorial** |tutorials| icon. 
+Clicking on it allows you to import tutorials or demo projects of interest to your 
+:ref:`project page<myprojects>`.
 
 **Tutorials** include examples designed to demonstrate structure solution 
 techniques in CCP4 Cloud. Tutorials are presented as seed projects with 
-pre-loaded data, which can be imported into the account. Each tutorial has 
-instructions that will guide you through the required project development stages. 
+pre-loaded data, which can be imported into your account. Each tutorial includes 
+step-by-step instructions to guide you through the required project development stages.
 
-Please find a list of all tutorials available `here <../html-tutorials/doc.tutorials.html>`__
+You can find a list of all available tutorials `here <../html-tutorials/doc.tutorials.html>`__.
 
 .. |tutorials| image:: images/demoprj.png
     :width: 16
     :height: 16
 
-**Demo projects** represent already developed :ref:`job tree<job-tree>`. 
+**Demo projects** represent already developed :ref:`job trees<job-tree>`.
 
+--------------
 Task Reference
 --------------
 
@@ -33,35 +34,31 @@ Task Reference
     :width: 16
     :height: 16
     
-All tasks runnable in CCP4 cloud have to have **reference documentation**. The 
-task documentation you can find by clicking the **Task documentation** |reference| 
-button on the Job dialog window
+All tasks runnable in CCP4 Cloud include **reference documentation**. You can 
+access task documentation by clicking the **Task Documentation** |reference| 
+button in the Job dialog window.
 
      .. image:: images/src-userguide_images_job_dialog_Ref.png
          :scale: 50 %
          :align: center 
 
-The main purpose of task documentation is to gain knowledge of CCP4 task 
-capabilities and to improve your experience of using CCP4 tasks. Task 
-documentation not only will guide you on more efficient ways to use the 
-whole potential of CCP4 tasks but also help you to enrich a knowledge base 
-about ways is used to accomplish the task.
+The main purpose of task documentation is to provide knowledge about CCP4 task 
+capabilities and to enhance your experience with CCP4 tasks. Task documentation 
+not only guides you in utilizing tasks more effectively but also expands your 
+knowledge base about methods used to complete tasks.
 
 .. tip::
-        Please read another CCP4 Cloud task documentation by pressing 
-        on **Contents** on your upright corner of the window. The content 
-        page contains all available list task documentation 
+        You can access additional CCP4 Cloud task documentation by clicking 
+        **Contents** in the upper-right corner of the window. The contents page 
+        includes a list of all available task documentation.
 
 +++++++++++++++++++++++++
-Questions and suggestions
+Questions and Suggestions
 +++++++++++++++++++++++++
 
-At the very end of both User Guide and Task documentation contents pages, 
-you can find a `CCP4 Cloud Reception`_. By clicking it you will redirect 
-to a mail form in which you can write your question and suggestion about 
-work in CCP4 cloud or/and quality and preferences you have about task 
-documentation content.
-
+At the end of both the User Guide and Task Documentation contents pages, 
+you will find the `CCP4 Cloud Reception`_. By clicking it, you will be redirected 
+to a mail form where you can submit questions or suggestions about working 
+in CCP4 Cloud, as well as feedback on task documentation content.
 
 .. _CCP4 Cloud Reception: mariya.fando@gmail.com?Subject=CCP4%20Cloud%20question
-         

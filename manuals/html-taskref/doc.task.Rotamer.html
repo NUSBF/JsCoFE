@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>ROTAMER &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -374,20 +375,20 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="rotamer">
-<h1 id="doc-task-rotamer--page-root">ROTAMER<a class="headerlink" href="#doc-task-rotamer--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-rotamer--page-root">ROTAMER<a class="headerlink" href="#doc-task-rotamer--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This program reads a protein coordinate file in PDB format and lists all amino acids whose side chain torsion angles deviate more than a user-defined threshold from the <a class="reference external" href="https://www.ccp4.ac.uk/html/rotamer_table.html" rel="noopener noreferrer" target="_blank">rotamers</a> of the <a class="reference external" href="http://www2.denizyuret.com/ref/lovell/ref5.pdf" rel="noopener noreferrer" target="_blank">Penultimate Rotamer Library</a></p>
 <p>An amino acid is listed if at least one side chain torsion angle deviates more than a user-defined threshold <code class="docutils literal notranslate"><span class="pre">delt</span></code>  from the equivalent one of the nearest rotamer. An amino acid is listed if at least one side chain torsion angle deviates more than a user-defined threshold DELT  from the equivalent one of the nearest rotamer. Empirically, the following two-step procedure to find the nearest rotamer seems to work quite reasonably, producing only a few false negatives or false positives: The first step is to choose a subset of potential nearest rotamers in a hierarchical order going from the first side chain torsion angle Chi(1) to the last side chain torsion angle Chi(n). For a side chain with four Chi-angles, first, all rotamers deviating less than the user-defined threshold in Chi(1) are chosen, then of those all rotamers that deviate less in Chi(2) are chosen, then of those all rotamers that deviate less in Chi(3) are chosen, and finally of those all rotamers that deviate less in Chi(4) are chosen. If a subset for Chi(i) is empty, the subset for the previous Chi(i-1) is chosen and the hierarchical search is terminated. If the subset for Chi(1) is empty, simply all rotamers are chosen as a “subset”. The second step is to find the nearest rotamer out of the previously chosen subset of rotamers. Here, the nearest rotamer is the one with the minimum sum over the absolute Delta-Chi(i) values.</p>
 <p>To list all amino acids with at least one side chain <strong>torsion angle</strong> deviating more than <strong>40°</strong> from its nearest rotamer type <code class="docutils literal notranslate"><span class="pre">delt</span> <span class="pre">40</span></code></p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The task uses XYZ data from the chosen input object and does not create any output data objects. All output is found in the <em>Main Log</em> tab and may be downloaded as a text file using
+<p class="first admonition-title">Note</p>
+<p class="last">The task uses XYZ data from the chosen input object and does not create any output data objects. All output is found in the <em>Main Log</em> tab and may be downloaded as a text file using
 the <em>Download</em> button provided in the main <em>Report</em> tab.</p>
 </div>
 <p>read more <a class="reference external" href="https://www.ccp4.ac.uk/html/rotamer.html" rel="noopener noreferrer" target="_blank">here</a></p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://www.researchgate.net/publication/12456653_The_Penultimate_Rotamer_Library#:~:text=10.1002/1097%2D0134(20000815)40%3A3%3C389%3A%3AAID%2DPROT50%3E3.0.CO%3B2%2D2" rel="noopener noreferrer" target="_blank">Lovell, S.C., Word, J.M., Richardson, J.S. &amp; Richardson, D.C. “The penultimate rotamer library”, Proteins: Structure, Function and Genetics, Vol.40, 389-408 (2000).</a></p>
-</section>
+
 
 
           </article>
@@ -432,7 +433,7 @@ the <em>Download</em> button provided in the main <em>Report</em> tab.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

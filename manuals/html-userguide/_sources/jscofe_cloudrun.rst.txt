@@ -1,327 +1,86 @@
 .. _cloudrun:
 
 ==================================================
-Starting CCP4 Cloud projects from the command line
+Starting CCP4 Cloud Projects from the Command Line
 ==================================================
 
-CCP4 Cloud projects can be initiated and executed from the command line, which may be useful in many scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, automatically to the specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by custom script to save time for manipulations with CCP4 Cloud's graphical interface.
+CCP4 Cloud projects can be initiated and executed from the command line, which can be useful in various scenarios. For instance, during a data collection session at a synchrotron beamline, you might send reflection data, sequences, and optional structural homolog or ligand descriptions directly to a specified CCP4 Cloud account, automatically initiating an appropriate structure solution workflow. Additionally, large series of structure solution projects can be started using custom scripts, saving time otherwise spent navigating CCP4 Cloud's graphical interface.
 
 .. note::
-  Functionality, described in this article, requires local CCP4 setup version 8.0.003 or higher.
-
+  The functionality described in this article requires a local CCP4 setup version 8.0.003 or higher.
 
 ----------------
-CloudRun utility
+CloudRun Utility
 ----------------
 
-CloudRun utility, included in `CCP4 Software Suite <https://www.ccp4.ac.uk/download/>`_, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, **use CCP4 Console** on Windows): ::
+The CloudRun utility, included in the `CCP4 Software Suite <https://www.ccp4.ac.uk/download/>`_, can create projects, upload data, and start an automatic structure solution workflow in a single step, as shown below (CCP4 8.0.003+ environment assumed on Linux/Mac OSX; **use CCP4 Console** on Windows): ::
 
   $ cloudrun -c command_file
 
-where ``command_file`` is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may also be used: ::
+Here, ``command_file`` is a text file containing instructions in keyword-value pairs (described below). Alternatively, you can provide these instructions directly using the following syntax: ::
 
   $ cloudrun -i <<eof
   keyword value
   .......
   eof 
 
-in which case the set of keyword-value pairs is supplied in the standard input stream.
+In this case, the set of keyword-value pairs is supplied via the standard input stream.
 
-The set of instructions in ``command_file`` depends on the required task and can be obtained with the following command: ::
+The content of ``command_file`` depends on the required task, which can be generated using this command: ::
 
   $ cloudrun -t task > command_file
 
-where ``task`` is one of:
+where ``task`` is one of the following:
 
-  - ``import``: create standard project, `import data <../html-taskref/doc.task.Import.html>`_ and stop 
-  - ``hop-on``: create `hop-on <../html-taskref/doc.task.Migrate.html>`_ project, import data and stop
-  - ``auto-af2``: create standard project, import data and start `workflow <../html-taskref/doc.task.WFlowAFMR.html>`__ based on structure prediction with AlphaFold-2
-  - ``auto-mr``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`__ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
-  - ``auto-ep``: create standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
-  - ``auto-ref``: create standard project, import data and start `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_ , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules
-  - ``dimple``: create standard project, import data and start `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for fast ligand blob identification and fitting
+  - ``import``: Creates a standard project, `imports data <../html-taskref/doc.task.Import.html>`_, and stops.
+  - ``hop-on``: Creates a `hop-on <../html-taskref/doc.task.Migrate.html>`_ project, imports data, and stops.
+  - ``auto-af2``: Creates a standard project, imports data, and starts a `workflow <../html-taskref/doc.task.WFlowAFMR.html>`_ based on AlphaFold-2 structure prediction.
+  - ``auto-mr``: Creates a standard project, imports data, and starts the `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ using the `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines.
+  - ``auto-ep``: Creates a standard project, imports data, and starts the `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_, leveraging the `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline.
+  - ``auto-ref``: Creates a standard project, imports data, and starts the `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_, performing automatic structure refinement with Refmac parameter optimization and water molecule fitting.
+  - ``dimple``: Creates a standard project, imports data, and starts the `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for rapid ligand blob identification and fitting.
 
 Example: ::
 
   $ cloudrun -t auto-af2 > auto-af2.com
   $ cat auto-af2.com
-  # CloudRun template command file for auto-af2 task.
+  # CloudRun template command file for the auto-af2 task.
   #
-  # The task uploads files specified, creates CCP4 Cloud Project (if it
-  # does not exist already) and starts the "Auto-AFMR" workflow (this
-  # requires an AlphaFold (or OpenFold or ColabFold) to be installed 
-  # in CCP4 Cloud).
+  # The task uploads specified files, creates a CCP4 Cloud Project (if it
+  # does not already exist), and starts the "Auto-AFMR" workflow (this
+  # requires AlphaFold, OpenFold, or ColabFold to be installed in CCP4 Cloud).
   #
-  # Notes: a) hash indicates a comment b) line order is insignificant
-  #        c) CloudRun tasks are added at Project's root.
+  # Notes: a) Lines starting with "#" are comments.
+  #        b) The order of lines is insignificant.
+  #        c) CloudRun tasks are added at the Project's root.
   #
   URL         https://ccp4cloud.server    # mandatory
   #
-  # User authentication: either in-line specification
+  # User authentication: Specify either inline or via a file.
   #
   USER        user_login                  # mandatory
   CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"
   #
-  # or reading user_login and aaaa-bbbb-cccc-dddd (in that order)
-  # from a file:
+  # Alternatively, provide credentials via a file:
   # AUTH_FILE   /path/to/auth.dat         # mandatory
   #
   PROJECT     project_id                  # mandatory
-  TITLE       Optional Project Title      # used only if project is created
-  FOLDER      Optional Project Folder     # used only if project is created
+  TITLE       Optional Project Title      # used only if creating a project
+  FOLDER      Optional Project Folder     # used only if creating a project
   TASK        auto-af2                    # mandatory
-  TASK_NAME   Optional Task Name          # if not given, default name is used
+  TASK_NAME   Optional Task Name          # default name is used if omitted
   #
   HKL         /path/to/hkl.mtz               # reflection data
   SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence
   #
-  # Either SMILES or LIG_CODE should be used for optional ligand description,
-  # but not both.
+  # Provide either SMILES or LIG_CODE for optional ligand description, but not both.
   #
-  SMILES      smiles-string  # ligand smiles string, not enquoted
-  LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
+  SMILES      smiles-string  # ligand SMILES string (not quoted)
+  LIG_CODE    ATP            # 3-character ligand code (e.g., ATP)
   $
 
-**The use of CloudRun utility is capped by the maximum number of runs per day** (*configurable*).
+**The use of the CloudRun utility is capped by the maximum number of runs per day** (*configurable*).
 
-.. important:: The remaining number of available runs is shown in CCP4 Cloud pages only if it is less than the maximum. 
+.. important:: The remaining number of available runs is displayed on CCP4 Cloud pages only if it is below the maximum.
 
-.. note:: The CloudRun quota may be adjusted by CCP4 Cloud administrator for individual users.
-
-
----------------------
-Command file keywords
----------------------
-
-**URL**
-    *(mandatory)* 
-    
-    CCP4 Cloud server URL, for example: ::
-    
-        URL   https://cloud.ccp4.ac.uk
-
-
-**USER**
-    *(mandatory unless* `AUTH_FILE`_ *is used)*
-    
-    CCP4 Cloud's user account name, for example: ::
-    
-        USER   my.user.name
-
-**CLOUDRUN_ID**
-    *(mandatory unless* `AUTH_FILE`_ *is used)*
-    
-    CloudRun Id is unique for each user: ::
-    
-        CLOUDRUN_ID   aaaa-bbbb-cccc-dddd 
-
-    **The CloudRun ID may be found in the users's "My Account" page** in CCP4 Cloud. The page 
-    also allows a user to change their CloudRun ID if necessary.  
-
-.. _AUTH_FILE:
-
-
-**AUTH_FILE**
-
-
-
-    *(mandatory if USER and CLOUDRUN_ID keywords are not used)* 
-    
-    Path to file with user authorisation information, for example: ::
-    
-        AUTH_FILE   /path/to/auth.dat
-
-    where ``/path/to/auth.dat`` should contain user's login name and Cloudrun Id, in that order,
-    for example: ::
-
-        my.user.name   aaaa-bbbb-cccc-dddd 
-
-    .. note:: Using ``AUTH_FILE`` instead of keyword pair ``USER`` and ``CLOUDRUN_ID`` is recommended 
-       if a collection of cloudrun scripts should be maintained and/or exchanged between users.
-
-**PROJECT**
-    *(mandatory)* 
-    
-    Project Id, where the data should be imported, for example: ::
-    
-        PROJECT   cloudrun-amr
-
-**TITLE**
-    *(mandatory for new projects)* 
-    
-    Project title, which is used for creating new project, for example: ::
-    
-        TITLE   Auto-MR Project started with CloudRun utility
-
-**FOLDER**
-    *(optional, used only for new projects)* 
-    
-    Project folder in which the new project should be placed, for example: ::
-    
-        FOLDER   CloudRun projects
-
-    Folder names or paths can have spaces. Embedded project structure can be
-    created using slash-separated paths, for example: ::
-
-        FOLDER   CloudRun projects/Project 1
-
-    If folder path starts with slash, then it is placed as a sibling to
-    *"My Projects"* folder, otherwise it will be created with *"My Projects"*
-    as a root node. If ``FOLDER`` keyword is absent, the new project will be 
-    created in *"My Projects"*.
-
-.. _cloudrun_TASK:
-
-**TASK**
-    *(optional)* 
-    
-    The task that should be performed after data is uploaded. 
-    
-    Can be one of ``import``, ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on``, ``auto-ref`` or ``dimple``,
-    as described above.
-    
-    Example: ::
-
-        TASK  auto-mr 
-
-    .. note:: if ``TASK`` is not given, ``import`` is assumed.     
-    
-**HA_TYPE**
-
-    *(must be given for auto-ep task)* 
-    
-    Atom type of main anomalous scatterer, for example: ::
-    
-        HA_TYPE   Se
-    
-
-.. _cloudrun_FILE:
-
-**FILE**
-    *(required)* 
-    
-    Path to file that should be uploaded, for example: ::
-    
-        FILE   /path/to/file/my_file.mtz 
-
-    The following files extensions are acceptable: ``.mtz``, ``.pdb``, ``.seq``, ``.fasta``,
-    ``.pir``, ``.cif``.
-
-    .. note::
-        CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet confusion
-        may arise when complex MTZ file (combining several datasets and/or phases), non-protein sequences or CIF files are
-        uploaded. In order to avoid possible ambiguity, use specific keywords described below. 
-
-**HKL**
-    Path to MTZ or CIF file with reflection data, for example: ::
-    
-        HKL  /path/to/file.mtz
-
-**PHASES**
-    Path to MTZ file with phases, for example: ::
-    
-        PHASES  /path/to/file.mtz
-
-    Phases are usually required in the ``hop-on`` task.
-
-**SEQ_PROTEIN**
-    Path to file with aminoacid sequence(s), for example: ::
-    
-        SEQ_PROTEIN  /path/to/file_protein.seq 
-        
-    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``.
-    
-    .. note::
-        The file may contain several aminoacid sequences in FASTA/PIR formats, but it **must not** include nucleic acid 
-        sequence(s)
-
-**SEQ_DNA**
-    Path to file with DNA sequence, for example: ::
-    
-        SEQ_DNA    /path/to/file_dna.seq
-
-    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. 
-    
-    .. note:: Only DNA sequence(s) must be found in the file.
-
-**SEQ_RNA**
-    Path to file with RNA sequence, for example: ::
-    
-        SEQ_RNA    /path/to/file_rna.seq
-
-    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. 
-    
-    .. note:: Only RNA sequence(s) must be found in the file.
-
-**XYZ**
-    Path to file with macromolecular atomic model, for example: ::
-    
-        XYZ    /path/to/file_xyz.pdb
-
-    Acceptable file extensions include ``.pdb`` and ``.cif``.
-
-**LIGAND**
-    File with ligand descriptors (crystallographic restraints), for example: ::
-    
-        LIGAND   /path/to/file_ligand.cif
-
-    Both single-ligand (``.cif``) and multiple-ligand ("libraries", ``.lib``) files are acceptable.
-
-**SMILES**
-    SMILES string for generating ligand descriptors. For example, benzene is specified as follows: ::
-    
-        SMILES   C1=CC=CC=C1
-
-**LIG_CODE**
-    3-character ligand code. For example: ::
-    
-        LIG_CODE  ATP
-
-    .. note::
-        ``SMILES`` and ``LIG_CODE`` are mutually exclusive and can be used only for describing a single
-        ligand that should be fitted in a structure solution workflow. For ``hop-on`` and ``import``
-        tasks, use ``LIGAND`` keyword instead.
-
-**LOAD_PROJECT**
-    Instruction to load project, created by CloudRun utility, in browser (by default, ``NO``). For example: ::
-
-        LOAD_PROJECT  YES
-
-    .. note::
-        The project will be loaded in browser only if browser was displaying the *Project List Page* when
-        the CloudRun utility was run.
-
-
--------
-Example
--------
-
-The following commands will import data and start automatic Molecular Replacement workflow including the
-generation of AlphaFold-2 model and ligand fitting, for solving MDM2 Protein bound to Nutlin molecule
-from the standard set of CCP4 examples: ::
-
-  $ source /path/to/ccp4-8.0/bin/ccp4.setup-sh
-  $ export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
-  $ cp $CDEMODATA/mdm2/mdm2_unmerged.mtz .
-  $ cp $CDEMODATA/mdm2/4hg7.seq .
-  $ cloudrun -i <<eof
-  URL         https://cloud.ccp4.ac.uk
-  USER        my.ccp4.cloud.login
-  CLOUDRUN_ID aaaa-bbbb-cccc-dddd
-  PROJECT     cloudrun_mdm2
-  TITLE       Solving MDM2 Protein bound to Nutlin molecule for testing CloudRun
-  TASK        auto-af2
-  HKL         mdm2_unmerged.mtz
-  SEQ_PROTEIN 4hg7.seq
-  SMILES      COc1ccc(C2=N[C@H]([C@H](N2C(=O)N2CCNC(=O)C2)c2ccc(Cl)cc2)c2ccc(Cl)cc2)c(OC(C)C)c1
-  eof
-
-.. note::
-  Use your actual CCP4 Cloud login name and cloudrun id in ``USER`` and ``CLOUDRUN_ID`` fields; both can be found in 
-  "My Account" page in CCP4 Cloud.
-
-.. note::
-  AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
-  CCP4 Cloud instance is supported by CCP4 (https://cloud.ccp4.ac.uk), but it may be unavailable on other servers.
-  In this case, this example is solvable by changing TASK from ``auto-af2`` to ``auto-mr``.
-
+.. note:: The CloudRun quota may be adjusted by the CCP4 Cloud administrator for individual users.

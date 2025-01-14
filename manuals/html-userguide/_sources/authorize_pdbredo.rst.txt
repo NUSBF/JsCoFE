@@ -1,41 +1,33 @@
 :orphan:
 
 =======================================
-Authorisation instructions for PDB-REDO
+Authorization Instructions for PDB-REDO
 =======================================
 
-CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, you need to be authorised by the corresponding software provider. You can do that at **My Account** page.
+CCP4 Cloud provides access to third-party software that is not covered by the CCP4 license. To use this software, you must be authorized by the respective software provider. You can manage this authorization on the **My Account** page.
 
     .. image:: images/My_account_Authorizations.png
             :scale: 40 %
             :align: center
 
+--------------- 
+PDB-REDO Tokens 
+--------------- 
 
+To generate a token, please `register <https://pdb-redo.eu/register>`_ or `log in <https://pdb-redo.eu/login>`_ to your PDB-REDO account. Once logged in, you can create PDB-REDO tokens on the `Token page <https://pdb-redo.eu/token>`_.
 
-
----------------
-PDB-REDO Tokens
----------------
-
-
-In order to generate token, please, `register <https://pdb-redo.eu/register>`_ or `login <https://pdb-redo.eu/login>`_ to your PDB-REDO account. After login you can generate PDB-REDO tokens on the `Token page <https://pdb-redo.eu/token>`_
-
-Here you should provide the Token name (can be any) and click generate (**1**).
+On the Token page, provide a name for your token (any name will suffice) and click **Generate** (**1**).
 
 .. image:: images/pdb-redo_aut_1.png
            :align: center
            :scale: 35 %
 
-
-Once Token is generated, please copy the Token-ID(**2**), Token-Secret (**3**) and Expiry date (**4**)to the corresponding lines in CCP4 Cloud's Software Authorisations page and press |authorisation| **request authentication** button (**5**)
-
+Once the token is generated, copy the **Token-ID** (**2**), **Token-Secret** (**3**), and **Expiry Date** (**4**) to the corresponding fields on CCP4 Cloud's Software Authorizations page. Then, click the |authorisation| **Request Authentication** button (**5**).
 
 .. image:: images/pdb-redo_aut_2.png
            :align: center
-
 
 .. |authorisation| image:: images/authorisation.png
         :width: 16
         :height: 16
 
-          
