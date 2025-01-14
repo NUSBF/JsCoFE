@@ -1,7 +1,7 @@
 
-========================================================================
+=======================================================================
 Transferring Projects Between Remote and Local CCP4 Cloud Installations
-========================================================================
+=======================================================================
 
 **Export projects from the web CCP4 Cloud** by using the |Export| button on the "My Projects" page.
 
@@ -31,9 +31,9 @@ Transferring Projects Between Remote and Local CCP4 Cloud Installations
 
 .. image:: images/aps_4.png
 
-++++++++++++++++++++++
++++++++++++++++
 Important Notes
-++++++++++++++++++++++
++++++++++++++++
 
 .. note:: You can export projects from a local installation using the |Export| button and later re-import them to the CCP4 Cloud server once it is available.
 

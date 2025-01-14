@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Prepare MR Ensemble from Models &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -431,14 +432,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="prepare-mr-ensemble-from-models">
-<h1 id="doc-task-ensembler--page-root">Prepare MR Ensemble from Models<a class="headerlink" href="#doc-task-ensembler--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-ensembler--page-root">Prepare MR Ensemble from Models<a class="headerlink" href="#doc-task-ensembler--page-root" title="Permalink to this headline">¶</a></h1>
 <p><strong>MR Ensembles</strong> are superposed sets of sufficiently similar MR models. Using MR Ensembles instead of individual MR models usually leads to a higher success rate of Molecular Replacement. Both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> accept MR Ensembles likewise MR models. This task forms MR Ensemble from given models, by multiple superposing them with the <a class="reference internal" href="doc.task.Gesamt.html"><span class="doc">GESAMT</span></a> software</p>
-<section id="trim-levels">
-<h2 id="trim-levels">Trim levels<a class="headerlink" href="#trim-levels" title="Link to this heading">¶</a></h2>
+
+<h2 id="trim-levels">Trim levels<a class="headerlink" href="#trim-levels" title="Permalink to this headline">¶</a></h2>
 <p>By default, the task will generate untrimmed ensemble, made of unmodified models, and ensembles with models trimmed to 100%, 80%, 60%, and 40% best matching residues, as identified via multiple structure alignment. You may change the set of trim levels by giving a comma-separated list of new trim values.</p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -483,7 +484,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

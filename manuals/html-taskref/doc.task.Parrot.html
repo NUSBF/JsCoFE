@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Density Modification with Parrot &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -382,99 +383,95 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="density-modification-with-parrot">
-<h1 id="doc-task-parrot--page-root">Density Modification with Parrot<a class="headerlink" href="#doc-task-parrot--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-parrot--page-root">Density Modification with Parrot<a class="headerlink" href="#doc-task-parrot--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744490903947X" rel="noopener noreferrer" target="_blank">Parrot</a> is the Density modification software is used to improve initial phase estimates to produce a more interpretable electron density map. The minimum required inputs are the protein sequence, a set of observations, and a set of phases. Density modification can be incorporated in model building and refinement, leading to many more models automatically built.</p>
 <blockquote>
 <div><p><strong>apply prior information about protein electron density maps to the experimental map</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Solvent flatness prior: the density in solvent regions is close to constant</p></li>
-<li><p>Histogram similarity prior: the histograms of protein density maps are similar</p></li>
-<li><p>NCS prior: the density in NCS related regions should be very similar</p></li>
+<li>Solvent flatness prior: the density in solvent regions is close to constant</li>
+<li>Histogram similarity prior: the histograms of protein density maps are similar</li>
+<li>NCS prior: the density in NCS related regions should be very similar</li>
 </ul>
 </div></blockquote>
 </div></blockquote>
-<section id="the-principal-differences-of-parrot">
-<h2 id="the-principal-differences-of-parrot">The principal differences of Parrot<a class="headerlink" href="#the-principal-differences-of-parrot" title="Link to this heading">¶</a></h2>
+
+<h2 id="the-principal-differences-of-parrot">The principal differences of Parrot<a class="headerlink" href="#the-principal-differences-of-parrot" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Problem-specific histogram simulation using a known structure.</strong></p></li>
-<li><p><strong>Use of prior phase information in the calculation of figures of merit and map coefficients.</strong></p></li>
-<li><p><strong>Application of anisotropy correction to the data.</strong></p></li>
-<li><dl class="simple">
-<dt><strong>Pairwise weighted noncrystallographic symmetry averaging.</strong></dt><dd><p><a class="reference external" href="https://doi.org/10.1107/S0907444995008754" rel="noopener noreferrer" target="_blank">weighted NCS averaging</a> deal with a case in which different parts of the structure obeyed the NCS relationships to different degrees. Instead of having values of 0 (for unrelated regions of the map) or 1 (for NCS-related regions of the map), this mask could take values in a continuous range between 0 and 1 representing different levels of agreement. In regions where the mask value was less than 1, the weight of the NCS-related density would be less than the weight of the original density at that position in the map. Introduction of multiple masks allows for the case where some pairs of molecules may be more similar than others.</p>
-</dd>
+<li><strong>Problem-specific histogram simulation using a known structure.</strong></li>
+<li><strong>Use of prior phase information in the calculation of figures of merit and map coefficients.</strong></li>
+<li><strong>Application of anisotropy correction to the data.</strong></li>
+<li><dl class="first docutils">
+<dt><strong>Pairwise weighted noncrystallographic symmetry averaging.</strong></dt><dd><a class="reference external" href="https://doi.org/10.1107/S0907444995008754" rel="noopener noreferrer" target="_blank">weighted NCS averaging</a> deal with a case in which different parts of the structure obeyed the NCS relationships to different degrees. Instead of having values of 0 (for unrelated regions of the map) or 1 (for NCS-related regions of the map), this mask could take values in a continuous range between 0 and 1 representing different levels of agreement. In regions where the mask value was less than 1, the weight of the NCS-related density would be less than the weight of the original density at that position in the map. Introduction of multiple masks allows for the case where some pairs of molecules may be more similar than others.</dd>
 </dl>
 </li>
 </ul>
-</section>
-<section id="parrot-stages">
-<h2 id="parrot-stages">Parrot stages<a class="headerlink" href="#parrot-stages" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="parrot-stages">Parrot stages<a class="headerlink" href="#parrot-stages" title="Permalink to this headline">¶</a></h2>
 <p>The calculation involves the following steps:</p>
 <ul class="simple">
-<li><p>Perform an anisotropy correction on the input structure factors.</p></li>
-<li><p>(Optional) Estimate the solvent content from the sequence.</p></li>
-<li><p>(Optional) Calculate NCS operators from heavy-atom coordinates or from an atomic model.</p></li>
-<li><p>Cycle over the following steps a specified number of times.</p></li>
+<li>Perform an anisotropy correction on the input structure factors.</li>
+<li>(Optional) Estimate the solvent content from the sequence.</li>
+<li>(Optional) Calculate NCS operators from heavy-atom coordinates or from an atomic model.</li>
+<li>Cycle over the following steps a specified number of times.</li>
 </ul>
 <blockquote>
 <div><div class="toggle-header docutils container">
-<p><strong>detailed</strong></p>
-</div>
+<strong>detailed</strong></div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><ul class="simple">
-<li><p>Simulate electron-density histograms for the ordered region of the asymmetric unit using a known structure.</p></li>
-<li><p>Calculate an electron-density map using centroid phases and weights based on the current phase probability distributions.</p></li>
-<li><p>Calculate a solvent mask covering the required volume of the unit cell.</p></li>
-<li><p>(Optional) Prepare an NCS map consisting of the contributions from other NCS copies to each position in the asymmetric unit.</p></li>
-<li><dl class="simple">
-<dt>Prepare a perturbed map from the initial map by adding a small random signal.</dt><dd><p>the perturbation calculation is performed in real rather than reciprocal space</p>
-</dd>
+<li>Simulate electron-density histograms for the ordered region of the asymmetric unit using a known structure.</li>
+<li>Calculate an electron-density map using centroid phases and weights based on the current phase probability distributions.</li>
+<li>Calculate a solvent mask covering the required volume of the unit cell.</li>
+<li>(Optional) Prepare an NCS map consisting of the contributions from other NCS copies to each position in the asymmetric unit.</li>
+<li><dl class="first docutils">
+<dt>Prepare a perturbed map from the initial map by adding a small random signal.</dt><dd>the perturbation calculation is performed in real rather than reciprocal space</dd>
 </dl>
 </li>
-<li><p>Density-modify the initial map by applying the NCS contributions, <strong>solvent flattening</strong> and <strong>histogram matching</strong>.</p></li>
-<li><p>Density-modify the perturbed map by applying the NCS contributions, <strong>solvent flattening</strong> and <strong>histogram matching</strong>.</p></li>
-<li><p>Compare the two modified maps to estimate the gamma correction required.</p></li>
-<li><p>Apply the gamma correction to the modified unperturbed map.</p></li>
-<li><p>Back-transform to obtain a set of modified magnitudes and phases.</p></li>
-<li><p>Calculate an error model by optimizing the likelihood of the observed data given the calculated data and error model parameters (i.e. a σA-type calculation).</p></li>
-<li><p>Use the error model to calculate updated <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/ccp4wiki/wiki32.html#:~:text=Since%20Hendrickson%2DLattman%20coefficients%20can,description%20of%20such%20a%20distribution.&amp;text=The%20A%20and%20B%20coefficients,atan(B%2FA)." rel="noopener noreferrer" target="_blank">Hendrickson–Lattman coefficients</a> and 2mFo − DFc-type map coefficients.</p></li>
+<li>Density-modify the initial map by applying the NCS contributions, <strong>solvent flattening</strong> and <strong>histogram matching</strong>.</li>
+<li>Density-modify the perturbed map by applying the NCS contributions, <strong>solvent flattening</strong> and <strong>histogram matching</strong>.</li>
+<li>Compare the two modified maps to estimate the gamma correction required.</li>
+<li>Apply the gamma correction to the modified unperturbed map.</li>
+<li>Back-transform to obtain a set of modified magnitudes and phases.</li>
+<li>Calculate an error model by optimizing the likelihood of the observed data given the calculated data and error model parameters (i.e. a σA-type calculation).</li>
+<li>Use the error model to calculate updated <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/ccp4wiki/wiki32.html#:~:text=Since%20Hendrickson%2DLattman%20coefficients%20can,description%20of%20such%20a%20distribution.&amp;text=The%20A%20and%20B%20coefficients,atan(B%2FA)." rel="noopener noreferrer" target="_blank">Hendrickson–Lattman coefficients</a> and 2mFo − DFc-type map coefficients.</li>
 </ul>
 </div></blockquote>
 </div>
 </div></blockquote>
-<dl class="simple">
-<dt><strong>Histogram matching</strong>:</dt><dd><p><em>depended on the use of a standard library of protein histograms calculated from known structures</em></p>
-</dd>
+<dl class="docutils">
+<dt><strong>Histogram matching</strong>:</dt><dd><em>depended on the use of a standard library of protein histograms calculated from known structures</em></dd>
 </dl>
 <ul class="simple">
-<li><p>The structure factors and phases from the refined model for the reference structure are read into the program, along with the structure factors for the unsolved work structure.</p></li>
-<li><p>The resolution of the reference structure is truncated to match the work structure.</p></li>
-<li><p>The reference-structure data are rescaled with a resolution-dependent scale function (using a smooth-spline scaling following the method of [Cowtan, 2002] ) to match the scale of the work structure data; this resolution-dependent scaling effectively matches the Wilson B factors.</p></li>
+<li>The structure factors and phases from the refined model for the reference structure are read into the program, along with the structure factors for the unsolved work structure.</li>
+<li>The resolution of the reference structure is truncated to match the work structure.</li>
+<li>The reference-structure data are rescaled with a resolution-dependent scale function (using a smooth-spline scaling following the method of [Cowtan, 2002] ) to match the scale of the work structure data; this resolution-dependent scaling effectively matches the Wilson B factors.</li>
 </ul>
 <p>The effect of the resolution-dependence of the figures of merit is also simulated by creating synthetic figures of merit for the rescaled reference structure factors, matching the resolution distribution for the work structure factors. These synthetic figures of merit are used as weights in the calculation of the electron-density map for the reference structure.</p>
 <p>The known atomic model for the reference structure is then used to calculate a solvent mask and electron-density histograms from the protein region of the simulated map. The resulting histogram may then be used as a target histogram for histogram matching the work map.</p>
 <p><strong>Solvent flattening</strong>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The likely solvent regions in the map are identified by looking at local variance map</p></li>
-<li><p>The density in these regions is flattened</p></li>
-<li><p>If a solvent region was identified correctly, its flattening should remove noise from the map, improving the phases</p></li>
+<li>The likely solvent regions in the map are identified by looking at local variance map</li>
+<li>The density in these regions is flattened</li>
+<li>If a solvent region was identified correctly, its flattening should remove noise from the map, improving the phases</li>
 </ul>
 </div></blockquote>
 <p>After the application of techniques such as solvent flattening and histogram matching to the electron density, an inverse Fourier transform is used to obtain a new set of magnitudes and phases. These are then used to update the phase probability distributions arising from the original experimental phasing calculation. An estimate of the reliability of the modified phases is made on the basis of the agreement between the modified magnitudes and the ob­served structure factors. The reasoning behind this approach comes from analogy with the problem of calculating map coefficients using a partial structure including both errors and missing atoms and is based on the fact that the size of the discrepancy in the structure-factor magnitudes is a good indicator of the error in the phases. Once an estimate of the error in the phases has been obtained, a phase probability distribution is constructed from the modified phase and estimated error. This phase probability distribution is multiplied by the experimental phase probability distribution to provide an updated distribution.</p>
-</section>
-<section id="basic-options">
-<h2 id="basic-options">Basic options<a class="headerlink" href="#basic-options" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="basic-options">Basic options<a class="headerlink" href="#basic-options" title="Permalink to this headline">¶</a></h2>
 <p>The most important option is the number of cycles of density modification to perform. <code class="docutils literal notranslate"><span class="pre">By</span> <span class="pre">default</span></code>, a conservative value of <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">cycles</span></code> is chosen to limit the bias which is introduced by running too many cycles.</p>
 <p>Parrot can optionally perform non-crystallographic symmetry (<strong>NCS</strong>) averaging. The <strong>NCS rotations and translations</strong> are be determined from a set of atomic coordinates. These may be from the coordinates of the anomalous scatters or heavy atoms in the case of experimental phasing, or from an initial molecular replacement model or incomplete partial model in the case of either molecular replacement or experimental phasing. To use <strong>NCS averaging</strong>, select <code class="docutils literal notranslate"><span class="pre">Model</span> <span class="pre">for</span> <span class="pre">NCS</span> <span class="pre">detection</span></code> =&gt; <code class="docutils literal notranslate"><span class="pre">Macromolecular</span> <span class="pre">model</span></code>. When <strong>NCS</strong> is being used (or occasionally when the solvent content is very high) bias is less of a problem and <strong>more cycles may be performed</strong>.</p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889802013420" rel="noopener noreferrer" target="_blank">Cowtan, K. (2002). J. Appl. Cryst. 35, 655-663.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444995008754" rel="noopener noreferrer" target="_blank">Abrahams, J. P. &amp; Leslie, A. G. W. (1996). Acta Cryst. D52, 30–42.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744490903947X" rel="noopener noreferrer" target="_blank">Cowtan, K. (2010) Recent developments in classical density modification. Acta Cryst. D66: 470-478.</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -519,7 +516,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

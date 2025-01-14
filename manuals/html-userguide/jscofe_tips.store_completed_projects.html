@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,14 +47,13 @@
   
   
     <title>2.5.16. How to store completed projects &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/jquery.js?v=5d32c60e"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -133,7 +132,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "versions.json",
+    var json_loc = "_static/versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -358,7 +357,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -372,14 +371,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -393,7 +392,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -440,8 +439,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="how-to-store-completed-projects">
-<h1 id="jscofe-tips-store-completed-projects--page-root"><span class="section-number">2.5.16. </span>How to store completed projects<a class="headerlink" href="#jscofe-tips-store-completed-projects--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="jscofe-tips-store-completed-projects--page-root"><span class="section-number">2.5.16. </span>How to store completed projects<a class="headerlink" href="#jscofe-tips-store-completed-projects--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Projects in CCP4 cloud can be exported and stored as compressed file archives using the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button
 above the <em>Project List</em>. Exported archives can be re-imported later using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button found
 in the same place.</p>
@@ -450,16 +449,16 @@ or for transferring data to another CCP4 Cloud setup.</p>
 <p>Beware that projects usually grow to a considerable size, from 100s MBs to few GBs. You will be
 advised about project size before downloading.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Web-only and Remote modes share same projects, while the Desktop mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between Desktop and server modes is through the explicit Export/Import procedure.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Web-only and Remote modes share same projects, while the Desktop mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between Desktop and server modes is through the explicit Export/Import procedure.</p>
 </div>
 <p>The <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="desktop" src="_images/ccp4cloud_desktop.png" style="width: 16px; height: 16px;"/></a> ccp4cloud-desktop mode may be conveniently used for collecting projects finished in Web-only/Remote modes. <strong>After transferring projects to the</strong> <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="desktop" src="_images/ccp4cloud_desktop.png" style="width: 16px; height: 16px;"/></a> <strong>Desktop mode, they may be deleted in the server (remote) Cloud area in order to release the online disk space quota for new projects.</strong></p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.</p>
 </div>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-</section>
+
 
 
           </article>
@@ -504,7 +503,7 @@ advised about project size before downloading.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

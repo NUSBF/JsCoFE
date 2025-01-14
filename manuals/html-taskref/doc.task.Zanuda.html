@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Space Group Validation with Zanuda &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -406,23 +407,24 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="space-group-validation-with-zanuda">
-<h1 id="doc-task-zanuda--page-root">Space Group Validation with Zanuda<a class="headerlink" href="#doc-task-zanuda--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-zanuda--page-root">Space Group Validation with Zanuda<a class="headerlink" href="#doc-task-zanuda--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S1399004714014795" rel="noopener noreferrer" target="_blank">Zanuda</a>  was developed to automate the validation of space group in case of the presence of pseudosymmetry and twinning. The program can be used to restore the correct space group in structures which were intentionally solved in low symmetry space groups including P1 (highest symmetry =  the smallest cell volume). The validation is based on the results of a series of refinements in space groups, which are compatible with the observed unit cell parameters.</p>
 <p>If the pseudosymmetry is very close to an exact crystallographic symmetry, the structure can be solved and partially refined in the <strong>wrong space group</strong>. Typically in such false structures all or some of the <em>pseudosymmetry operations are treated as crystallographic symmetry operations and vice versa</em>. Such misassignment is not uncommon when the structure is solved by molecular replacement (MR) and <code class="docutils literal notranslate"><span class="pre">it</span> <span class="pre">becomes</span> <span class="pre">apparent,</span> <span class="pre">when</span> <span class="pre">the</span> <span class="pre">R-free</span> <span class="pre">ceases</span> <span class="pre">to</span> <span class="pre">decrease</span> <span class="pre">at</span> <span class="pre">about</span> <span class="pre">35%</span> <span class="pre">or</span> <span class="pre">even</span> <span class="pre">at</span> <span class="pre">a</span> <span class="pre">higher</span> <span class="pre">value,</span> <span class="pre">and</span> <span class="pre">no</span> <span class="pre">further</span> <span class="pre">model</span> <span class="pre">rebuilding</span> <span class="pre">and</span> <span class="pre">refinement</span> <span class="pre">can</span> <span class="pre">improve</span> <span class="pre">it.</span></code> At this point the electron density map remains imperfect (breaks in the main chain electron density, poor solvent peaks) while does not suggest any particular ways of model improvement.</p>
 <p>In case of space group validation with Zanuda was made the next assumptions:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The pseudosymmetry operations, if any, are close enough to exact symmetry operations and, therefore, refinement converges to the global minimum when wrong symmetry constraints are removed and correct constraints are imposed.</p></li>
-<li><p>The errors in individual macromolecules do not hinder the difference between pseudosymmetry and crystallographic symmetry, i.e. the model is already refined well enough (R-free around or below 40%). <code class="docutils literal notranslate"><span class="pre">However</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">assumed</span> <span class="pre">that</span> <span class="pre">this</span> <span class="pre">refinement</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">performed</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">true</span> <span class="pre">space</span> <span class="pre">group</span></code>.</p></li>
+<li>The pseudosymmetry operations, if any, are close enough to exact symmetry operations and, therefore, refinement converges to the global minimum when wrong symmetry constraints are removed and correct constraints are imposed.</li>
+<li>The errors in individual macromolecules do not hinder the difference between pseudosymmetry and crystallographic symmetry, i.e. the model is already refined well enough (R-free around or below 40%). <code class="docutils literal notranslate"><span class="pre">However</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">assumed</span> <span class="pre">that</span> <span class="pre">this</span> <span class="pre">refinement</span> <span class="pre">has</span> <span class="pre">been</span> <span class="pre">performed</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">true</span> <span class="pre">space</span> <span class="pre">group</span></code>.</li>
 </ul>
 </div></blockquote>
 <p>The search for a minimum free energy and, as a consequence, the regular packing of molecules in a crystal lattice often leads to a symmetric relationship between the molecules. A characteristic of a crystal is that it has unit translations in three dimensions, also called three-dimensional translational symmetry, corresponding to the repetition of the unit cells. Application of the symmetry operators, such as rotation, reflection, or inversion, leaves the entire crystal unchanged if the space group was chosen right. There are 230 different ways to combine the allowed symmetry operations in a crystal, leading to 230 space groups. They can be found in the <a class="reference external" href="https://it.iucr.org/Ac/" rel="noopener noreferrer" target="_blank">International Tables for Crystallography</a>
 Only 65 space groups are “biological”. The reason is that in protein crystals, the application of mirror planes and inversion centers (centers of symmetry) would change the asymmetry of the amino acids: An l-amino acid would become a d-amino acid, but these are never found in proteins.</p>
 <p><strong>How do we deduce the Space Group in practice?</strong></p>
 <ul>
-<li><p>We start in reciprocal space (point group)</p></li>
-<li><p>We go all way back from symmetry in reciprocal space to crystal space group</p>
+<li><p class="first">We start in reciprocal space (point group)</p>
+</li>
+<li><p class="first">We go all way back from symmetry in reciprocal space to crystal space group</p>
 <blockquote>
 <div><p>Data processing gives values of the unit cell parameters</p>
 <p>Lattice symmetry is derived from the unit cell parameters</p>
@@ -432,18 +434,18 @@ Only 65 space groups are “biological”. The reason is that in protein crystal
 </div></blockquote>
 </li>
 </ul>
-<section id="point-group">
-<h2 id="point-group">Point Group<a class="headerlink" href="#point-group" title="Link to this heading">¶</a></h2>
+
+<h2 id="point-group">Point Group<a class="headerlink" href="#point-group" title="Permalink to this headline">¶</a></h2>
 <p>In three dimensional objects, such as crystals, symmetry elements may be present in several different combinations.  In fact, in crystals there are 32 possible combinations of symmetry elements.  These operations can be thus combined to form a group of symmetry operations. These groups of operations are called <strong>point groups</strong> because the symmetry elements of these operations all pass through a single point of the object.Examples for point group symmetry operations are <strong>rotation axes</strong>, <strong>inversion axes</strong>, and <strong>mirror planes</strong>. <code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">case</span> <span class="pre">of</span> <span class="pre">point</span> <span class="pre">group</span> <span class="pre">you</span> <span class="pre">have</span> <span class="pre">a</span> <span class="pre">point</span> <span class="pre">to</span> <span class="pre">which</span> <span class="pre">all</span> <span class="pre">symmetry</span> <span class="pre">operations</span> <span class="pre">go</span> <span class="pre">through</span></code> with a net result that the actual molecule does not change.</p>
 <p>More about <strong>Symmetry in Crystallography</strong> you can find <a class="reference external" href="http://xrayweb.chem.ou.edu/notes/symmetry.html" rel="noopener noreferrer" target="_blank">here</a></p>
-</section>
-<section id="pseudosymmetry">
-<h2 id="pseudosymmetry">Pseudosymmetry<a class="headerlink" href="#pseudosymmetry" title="Link to this heading">¶</a></h2>
+
+
+<h2 id="pseudosymmetry">Pseudosymmetry<a class="headerlink" href="#pseudosymmetry" title="Permalink to this headline">¶</a></h2>
 <p>Crystals have an ordered internal arrangement of atoms i.e. the atoms are arranged in a symmetrical fashion on a three-dimensional network referred to as a lattice.
 Symmetry operator defines a rotation and a translation of the crystal such that each atom in the repositioned copy matches a certain atom in the original. <strong>Pseudo-symmetry operations</strong> are defined similarly, except that the coordinates of matching atoms are not required to coincide exactly. Therefore, it is convenient to define a <strong>pseudo-symmetry space group (PSSG)</strong> which contains both all of the operations from the crystal space group and all of the pseudo-symmetry operations.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Noncrystallographic symmetry (NCS) and pseudo-symmetry are different concepts. An NCS operation is local and is defined by the best overlap of two NCS-related molecules after applying the NCS operation to one of them. In contrast, the pseudo-symmetry operation is global and is defined by the best match between the entire crystal and its transformed copy. Thus, the NCS operation and the pseudo-symmetry operation relating the same two molecules are in general different operations and may coincide only in special cases.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Noncrystallographic symmetry (NCS) and pseudo-symmetry are different concepts. An NCS operation is local and is defined by the best overlap of two NCS-related molecules after applying the NCS operation to one of them. In contrast, the pseudo-symmetry operation is global and is defined by the best match between the entire crystal and its transformed copy. Thus, the NCS operation and the pseudo-symmetry operation relating the same two molecules are in general different operations and may coincide only in special cases.</p>
 </div>
 <p><strong>Crystallographic symmetry</strong>: symmetry is <strong>global</strong> and <strong>exact</strong></p>
 <p><strong>Generic Non-Crystallographic Symmetry (NCS)</strong>: symmetry is    <strong>local</strong> and <strong>approximate</strong></p>
@@ -456,8 +458,8 @@ Symmetry operator defines a rotation and a translation of the crystal such that 
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
 <p>This article uses materials provided by Andrey Lebedev.</p>
 <p>More about <strong>space group validation with Zanuda</strong> you can find <a class="reference external" href="https://www.ccp4.ac.uk/newsletters/newsletter48/articles/Zanuda/zanuda.html" rel="noopener noreferrer" target="_blank">here</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -502,7 +504,7 @@ Symmetry operator defines a rotation and a translation of the crystal such that 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
