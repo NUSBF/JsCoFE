@@ -4,164 +4,102 @@
 CCP4 Cloud Archive
 ==================
 
-CCP4 Cloud projects can be archived for long-term storage, free access and 
-making external references. This article describes the archiving procedure and
-working with archived projects. 
+CCP4 Cloud allows users to archive projects for long-term storage, easy access, and external referencing. This article outlines the procedure for archiving projects and working with archived ones.
 
 .. note::
-  Functionality, described in this article, requires appropriate
-  CCP4 Cloud configuration.
-
+   The functionality described in this article requires appropriate CCP4 Cloud configuration.
 
 ---------------------------------
-General description and use cases
+General Description and Use Cases
 ---------------------------------
 
-CCP4 Cloud archive is a collection of projects referenced by stable identifiers,
-Archive IDs. Upon archiving, the project is moved to a designated area in CCP4 Cloud 
-storage, and the corresponding disk quota is released for the project owner. Archived
-projects are frozen in their state at the time of archiving; no jobs can be deleted
-from them. `However, new jobs and project branches can be added and the project author
-can archive thus revised projects under the same Archive ID. <#revising-projects-in-ccp4-cloud-archive>`__
+CCP4 Cloud Archive is a repository of projects, each referenced by a stable identifier known as an Archive ID. When a project is archived, it is moved to a designated area in CCP4 Cloud storage, and the corresponding disk quota is freed up for the project owner. Archived projects are "frozen" in the state they were in at the time of archiving, meaning no jobs can be deleted from them. However, new jobs and project branches can be added, and the project owner can re-archive the revised project under the same Archive ID. See the section on `revising projects in CCP4 Cloud Archive <#revising-projects-in-ccp4-cloud-archive>`_ for more details.
 
+The primary purpose of project archiving is to provide supplementary data for scientific publications and other reports, allowing researchers to cite the corresponding Archive ID for structure solutions. Archived projects can also be shared to disseminate experiences and best practices in structure determination, particularly in challenging cases, and to support general educational efforts. In institutional or laboratory settings, CCP4 Cloud archives can serve to organize work results, preserve data, and document the history of extensive structural studies.
 
-The main purpose of project archiving is to provide supplementary information
-for scientific publications and other reports, where structure solution may be 
-demonstrated by quoting the corresponding Archive ID. Projects may also be archived for sharing structure solution experience and practices, especially in difficult cases, and for general education purposes. In institutional or laboratory setups, CCP4 Cloud archives may be used for organising work results 
-and preserving data and the history of extended structural studies.
-
-Any CCP4 Cloud user can access archived projects in read-only mode with Archive ID.
-
+Any CCP4 Cloud user can access archived projects in a read-only mode using the Archive ID.
 
 ----------------
-Before archiving
+Before Archiving
 ----------------
 
-Archiving a structure solution project is similar to publishing an article. Once
-published, reversing is difficult. Therefore, take a little time to go through
-the following checklist.
+Archiving a structure solution project is akin to publishing an article: once archived, it cannot be easily reversed. Therefore, take some time to review the following checklist before proceeding.
 
-#. Make sure you have a case for archiving. In general, your project must be
-   finished. Do not archive random trials, exercises, tutorials or intermediate
-   results. A good example of a finished project is one that resulted in PDB
-   deposition and obtaining a PDB code for your structure.
+#. Ensure that you have a valid case for archiving. In general, only completed projects should be archived. Avoid archiving random trials, exercises, tutorials, or intermediate results. A good example of a finished project is one that has been deposited to the PDB and has received a PDB code for your structure.
 
-#. Follow general rules, accepted for publishing in your organisation. If you 
-   have collaborators on the project, inform them of intended archiving and acquire
-   their consent. If you are not the PI, consider whether the principal decision on
-   archiving should be taken by your PI.
+#. Follow the publishing protocols accepted in your organization. If you have collaborators, inform them of your intent to archive the project and obtain their consent. If you are not the Principal Investigator (PI), consider whether the final decision on archiving should be made by the PI.
 
 #. Prepare your project for archiving:
 
-        *It's advisable to clone your project and do all the manipulation needed on its copy*
+   *It's advisable to clone your project and perform any necessary manipulations on the copy.*
 
-    - Make sure that your **project does not contain running jobs**. Either wait 
-      for all jobs to finish or terminate and remove them from the project
+    - Ensure that your **project does not contain any running jobs**. Wait for all jobs to finish or terminate and remove them from the project.
 
-    - **Unshare the project** with your collaborators in order to exclude accidental
-      start of new jobs
+    - **Unshare the project** with your collaborators to avoid accidental job starts.
 
-    - **Remove jobs and project branches that do not relate to the final result**
-      and do not add clarity about how the structure was solved. In most cases,
-      you may leave only one branch starting from the project root and ending with the
-      deposition task, the results of which were used for PDB deposition. 
+    - **Remove any jobs or project branches that do not contribute to the final result** or help clarify how the structure was solved. Typically, only one branch should remain, starting from the project root and ending with the deposition task, whose results were used for the PDB deposition.
 
-    - Add remarks in unobvious places and edit job titles to help others understand
-      your project by other people. As a general rule, the project should look
-      like a story about solving your structure. **Remember, you will not be able
-      to change anything in your project once archived**.
+    - Add detailed remarks and edit job titles to clarify the purpose of each part of the project for future users. As a general rule, the project should narrate the process of solving your structure. **Remember, once archived, you will not be able to modify the project.**
 
-#. **Choose a suitable Archive ID**, which may include capital numbers, digits and
-   periods and be no longer than 8 characters. If you have deposited your
-   structure to the PDB, **the PDB code could be the best choice**. Another good
-   alternative may be the **UniProt accession code** for the crystallised sequence.
-   Beware that chosen Archive ID may be already taken, so think of alternatives.
-   **If you do not specify the Archive ID at the time of archiving, a random one will be 
-   generated.**
+#. **Choose an appropriate Archive ID**, which may include uppercase letters, digits, and periods, and should not exceed 8 characters. If you have deposited your structure to the PDB, **the PDB code is the best choice**. Alternatively, the **UniProt accession code** for the crystallized sequence can also work well. Note that the Archive ID you choose may already be in use, so consider possible alternatives. **If no Archive ID is specified at the time of archiving, a random ID will be generated.**
 
-#. Prepare annotation data:
+#. Prepare your annotation data:
 
-    - **list of your collaborators** (names and, if appropriate, e-mail addresses).
-      Remember, you are responsible for paying due credit to everybody who made
-      a contribution to your project
+    - A **list of collaborators**, including names and, if applicable, email addresses. Ensure you give appropriate credit to everyone who contributed to the project.
 
-    - **list of related PDB or UniProt codes**, so that your project could appear in 
-      context searches
+    - A **list of related PDB or UniProt codes**, so that your project can be discovered in context-based searches.
 
-    - **list of related publications** (only DOIs are required)
+    - A **list of related publications**, with DOIs provided.
 
-    - **list of suitable keywords** for archive searches
-
+    - A **list of relevant keywords** for easier searching of your archived project.
 
 -------------------
-Archiving procedure
+Archiving Procedure
 -------------------
 
 .. note::
-  Projects can be archived only by their owners, who originally created them,
-  from folders in **My Projects** area 
+   Only the project owner, who originally created the project, can archive it from the **My Projects** folder.
 
-The archiving procedure may be started in one of the following ways:
+The archiving procedure can be initiated in one of the following ways:
 
-- by moving project into **Projects archived by me** folder
+- By moving the project to the **Projects archived by me** folder.
+- By moving the project to the **CCP4 Cloud Archive** folder.
+- By right-clicking on the project in the **Project List** and selecting **Archive** from the drop-down menu.
 
-- by moving project into **CCP4 Cloud Archive** folder
-
-- by right-clicking on project line in **Project List** and choosing **Archive**
-  from the drop-down menu.
-
-Any of these actions will produce a dialogue window with detailed instructions.
-After setting all necessary data, push the **Archive** button, which starts the
-archiving procedure. 
-
-.. note::  During archiving, no operations with the project are permitted, for which you will be logged out and your account suspended. Wait for the procedure to finish (approximately a minute per gigabyte of the project's data), and log in again. 
-
-Your archived project is now in the **Projects archived by me** folder.
-
-
-----------------------------------------
-Accessing projects in CCP4 Cloud Archive
-----------------------------------------
-
-Projects, archived by you, are listed in the **Projects archived by me** folder.
-They cannot be removed.
-
-In order to access projects archived by others, change to the **CCP4 Cloud Archive** folder, press the **Access** button and follow the instructions in the archive access dialogue. Requested projects will be listed in the same folder, and can be delisted when necessary.
-
-Archived projects can be opened and viewed as any other projects in CCP4 Cloud. However, they are locked so that they cannot be changed by non-owners. 
-
-Project owners can revise archived projects as described below.
-
-
----------------------------------------
-Revising projects in CCP4 Cloud Archive
----------------------------------------
-
-Archived projects are supposed to be found in their original state "forever", 
-in order to correspond to the content of associated PDB entry or published
-article/report. In exceptional cases, PDB entries may be revised; likewise,
-published studies may be amended or even withdrawn. Therefore, archived projects 
-may also require revision **in exceptional cases**.
-
-Archived projects may be revised by cloning them, making necessary changes 
-in the clone and re-archiving. This can be done an unlimited number of times,
-and doing this does not affect your archive quota. The following points should 
-be taken into account:
-
-- **No jobs can be deleted from what was previously archived**, and only new
-  jobs can be added
-
-- Whenever a new branch is started in the previously archived project, it is 
-  automatically annotated with a revision number. Revision counter advances 
-  automatically when the project is archived
-
-- Re-archiving does not allow for changing the Archive ID
-
-- Archived projects can be cloned and extended by any user, but only project
-  the owner can re-archive them.
+Any of these actions will open a dialogue window with detailed instructions. After filling in all the necessary information, click the **Archive** button to start the archiving process.
 
 .. note::
-  Cloned projects retain ownership information. 
+   During archiving, no operations can be performed on the project. You will be logged out, and your account will be suspended. Wait for the procedure to finish (approximately one minute per gigabyte of project data) before logging back in.
 
+Once the archiving process is complete, your project will appear in the **Projects archived by me** folder.
 
+----------------------------------------
+Accessing Projects in CCP4 Cloud Archive
+----------------------------------------
 
+Projects that you have archived are listed in the **Projects archived by me** folder. These projects cannot be deleted.
+
+To access projects archived by others, navigate to the **CCP4 Cloud Archive** folder, click the **Access** button, and follow the instructions in the archive access dialogue. Requested projects will appear in the same folder, and they can be delisted when necessary.
+
+Archived projects can be opened and viewed just like any other project in CCP4 Cloud. However, they are locked, meaning that only the project owner can make changes.
+
+Project owners can revise archived projects as outlined below.
+
+---------------------------------------
+Revising Projects in CCP4 Cloud Archive
+---------------------------------------
+
+Archived projects are meant to remain in their original state "forever" to preserve the content of the associated PDB entry or published article/report. In exceptional cases, PDB entries may be revised, and published studies may be amended or even retracted. As such, archived projects can also be revised in **exceptional cases**.
+
+Revisions to archived projects can be made by cloning the project, making the necessary changes in the clone, and then re-archiving it. This can be done an unlimited number of times without affecting your archive quota. However, the following points should be noted:
+
+- **Jobs cannot be deleted** from previously archived projects; only new jobs can be added.
+
+- Whenever a new branch is started in the archived project, it is automatically annotated with a revision number. The revision counter will increase each time the project is re-archived.
+
+- Re-archiving does not allow changing the Archive ID.
+
+- Archived projects can be cloned and extended by any user, but only the project owner can re-archive them.
+
+.. note::
+   Cloned projects retain ownership information.

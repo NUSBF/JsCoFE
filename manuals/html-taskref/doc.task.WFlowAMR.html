@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Automatic Molecular Replacement Workflow &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -339,28 +340,28 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="automatic-molecular-replacement-workflow">
-<h1 id="doc-task-wflowamr--page-root">Automatic Molecular Replacement Workflow<a class="headerlink" href="#doc-task-wflowamr--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-wflowamr--page-root">Automatic Molecular Replacement Workflow<a class="headerlink" href="#doc-task-wflowamr--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_automated_workflows.html" rel="noopener noreferrer" target="_blank">here</a></p>
 <p>The <em>Automatic MR Workflow</em> includes the following stages:</p>
 <ul class="simple">
-<li><p>import of reflection dataset, target sequence and, optionally, ligand description</p></li>
-<li><p>checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</p></li>
-<li><p>preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></p></li>
-<li><p>Molecular Replacement with either <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></p></li>
-<li><dl class="simple">
+<li>import of reflection dataset, target sequence and, optionally, ligand description</li>
+<li>checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</li>
+<li>preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></li>
+<li>Molecular Replacement with either <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></li>
+<li><dl class="first docutils">
 <dt>if a solution is found, either by <em>Simbad</em>, <em>MrBump</em> or <em>MoRDa</em>:</dt><dd><ul>
-<li><p>model building with <a class="reference external" href="./doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">Modelcraft</a></p></li>
-<li><p>structure refinement</p></li>
-<li><p><a class="reference internal" href="doc.task.MakeLigand.html#ligands-built"><span class="std std-ref">ligand fitting</span></a> (if ligand is given)</p></li>
-<li><p>solvent modelling</p></li>
-<li><p>deposition package preparation</p></li>
+<li>model building with <a class="reference external" href="./doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">Modelcraft</a></li>
+<li>structure refinement</li>
+<li><a class="reference internal" href="doc.task.MakeLigand.html#ligands-built"><span class="std std-ref">ligand fitting</span></a> (if ligand is given)</li>
+<li>solvent modelling</li>
+<li>deposition package preparation</li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
-</section>
+
 
 
           </article>
@@ -405,7 +406,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

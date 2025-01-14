@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,14 +47,13 @@
   
   
     <title>2.5.14. Project Tree Marker &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/jquery.js?v=5d32c60e"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -133,7 +132,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "versions.json",
+    var json_loc = "_static/versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -358,7 +357,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -372,14 +371,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -393,7 +392,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -440,8 +439,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="project-tree-marker">
-<h1 id="jscofe-tips-tree-marker--page-root"><span class="section-number">2.5.14. </span>Project Tree Marker<a class="headerlink" href="#jscofe-tips-tree-marker--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="jscofe-tips-tree-marker--page-root"><span class="section-number">2.5.14. </span>Project Tree Marker<a class="headerlink" href="#jscofe-tips-tree-marker--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Marker tool is accessible via <a class="reference internal" href="_images/highlight_branch.png"><img alt="marker" src="_images/highlight_branch.png" style="width: 16px; height: 16px;"/></a> button in the vertical toolbar located
 on the left-hand side of the <em>Project Page</em>. The button toggles highlighting of
 the project branch that contains the currently selected job. The branch is traced
@@ -450,19 +449,19 @@ of the job having maximal job number in the branch.</p>
 <p>Marker tool is useful for navigating in large projects with extensive branching.
 Main use cases include the following:</p>
 <ul class="simple">
-<li><p>inferring on the pre-history of the currently selected job, which also suggests
-what data from upstream jobs is available</p></li>
-<li><p>trimming the <em>Project tree</em>, <em>e.g.,</em> before archiving, by removing branches not
-leading to final result</p></li>
-<li><p>finding the last job: just select the root node and click on the marker tool
-button.</p></li>
+<li>inferring on the pre-history of the currently selected job, which also suggests
+what data from upstream jobs is available</li>
+<li>trimming the <em>Project tree</em>, <em>e.g.,</em> before archiving, by removing branches not
+leading to final result</li>
+<li>finding the last job: just select the root node and click on the marker tool
+button.</li>
 </ul>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To remove highlighting, just click the marker button again,</p>
+<p class="first admonition-title">Note</p>
+<p class="last">To remove highlighting, just click the marker button again,</p>
 </div>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-</section>
+
 
 
           </article>
@@ -507,7 +506,7 @@ button.</p></li>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

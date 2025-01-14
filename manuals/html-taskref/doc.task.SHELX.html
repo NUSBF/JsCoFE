@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>SHELXCD &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -351,32 +352,28 @@
             
   <p id="shelx">The programs <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html" rel="noopener noreferrer" target="_blank">SHELXC, SHELXD and SHELXE</a> are designed to provide experimental phasing of macromolecules by the <em>MAD</em> (multi-wavelength anomalous dispersion), <em>SAD</em> (single-wavelength anomalous dispersion), <em>SIR</em> (single isomorphous replacement), <em>SIRAS</em> (combined SAD and SIR) and <em>RIP</em> (phasing based on radiation-induced changes in the structure) methods.</p>
 <p><strong>SHELXC</strong> is designed to provide a simple and fast way of setting up the files for the programs <a class="reference external" href="https://doi.org/10.1107/S0907444902011678" rel="noopener noreferrer" target="_blank">SHELXD</a> (heavy atom location) and <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/" rel="noopener noreferrer" target="_blank">SHELXE</a> (phasing and density modification).</p>
-<section id="shelxcd">
-<h1 id="doc-task-shelx--page-root">SHELXCD<a class="headerlink" href="#doc-task-shelx--page-root" title="Link to this heading">¶</a></h1>
+
+<h1 id="doc-task-shelx--page-root">SHELXCD<a class="headerlink" href="#doc-task-shelx--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The program SHELXC provides a statistical analysis of the input data, estimates the marker-atom structure factors F<sub>A</sub>and the phase shifts α and sets up the files for SHELXD which are used for solving the substructure (i.e. locating the marker atoms).</p>
 <p>SHELXC outputs a file <code class="docutils literal notranslate"><span class="pre">_fa.hkl</span></code> containing h, k, l, F<sub>A</sub>, σ(FA) and the phase shift α for use by SHELXD for substructure solution and by SHELXE for calculating starting phases for the density modification and a file <code class="docutils literal notranslate"><span class="pre">_fa.ins</span></code> containing the crystal data and instructions for running SHELXD. <code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">α</span> <span class="pre">estimates</span> <span class="pre">are</span> <span class="pre">only</span> <span class="pre">required</span> <span class="pre">for</span> <span class="pre">SHELXE</span></code>. SHELXD writes a <code class="docutils literal notranslate"><span class="pre">_fa.res</span></code> file in SHELX format for the best substructure solution, which in turn is read by SHELXE. <em>Content of outputs files you can find at</em> <code class="docutils literal notranslate"><span class="pre">Main</span> <span class="pre">Log</span></code> <em>window.</em></p>
 <p>In general the critical parameters for locating heavy atoms with SHELXD are:</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">1.</span></code> In difficult cases it may be necessary to run more trials</dt><dd><p>(say 50000)</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">2.</span></code> <strong>Number of sites</strong></dt><dd><p>requested should be within about 20% of the true value.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">3.</span></code> <strong>Resolution cutoff.</strong></dt><dd><p>The resolution at which the data are truncated, e.g. where the internal CC (CC1/2) between the signed anomalous differences of two randomly chosen reflection subsets falls below 30%.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">4.</span></code> <strong>Minimum distance between atoms</strong></dt><dd><p>In the case of a soak, the rejection of sites on special positions should be switched off.</p>
-</dd>
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">1.</span></code> In difficult cases it may be necessary to run more trials</dt><dd>(say 50000)</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">2.</span></code> <strong>Number of sites</strong></dt><dd>requested should be within about 20% of the true value.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">3.</span></code> <strong>Resolution cutoff.</strong></dt><dd>The resolution at which the data are truncated, e.g. where the internal CC (CC1/2) between the signed anomalous differences of two randomly chosen reflection subsets falls below 30%.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">4.</span></code> <strong>Minimum distance between atoms</strong></dt><dd>In the case of a soak, the rejection of sites on special positions should be switched off.</dd>
 </dl>
 <p>more information you can find <a class="reference external" href="https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD" rel="noopener noreferrer" target="_blank">here</a></p>
-</section>
-<section id="shelxe">
-<h1 id="shelxe">SHELXE<a class="headerlink" href="#shelxe" title="Link to this heading">¶</a></h1>
+
+
+<h1 id="shelxe">SHELXE<a class="headerlink" href="#shelxe" title="Permalink to this headline">¶</a></h1>
 <p>The program <a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html" rel="noopener noreferrer" target="_blank">SHELXE</a> was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases <a class="reference external" href="https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml" rel="noopener noreferrer" target="_blank">[Sheldrick, 2002]</a>. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure</p>
 <p>SHELXE autotracing algorithm is primarily designed to obtain a toehold in maps with very poor starting phases, e.g. with a mean phase error greater than 60°. The tracing of a polyalanine backbone, combining the phases from the trace with the experimental phases and repeating the density modification iteratively. The tracing proceeds as follows.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Find potential α-helices in the density and try to extend them at both ends. Then find other potential tripeptides and try to extend them at both ends in the same way.</p></li>
-<li><p>Tidy up and splice the traces as required, applying any necessary symmetry operations.</p></li>
-<li><p>Use the traced residues to estimate phases, combine these with the initial phase information using σA weights and then restart the density modification. The refinement of one B value per residue provides a further opportunity to suppress wrongly traced residues.</p></li>
+<li>Find potential α-helices in the density and try to extend them at both ends. Then find other potential tripeptides and try to extend them at both ends in the same way.</li>
+<li>Tidy up and splice the traces as required, applying any necessary symmetry operations.</li>
+<li>Use the traced residues to estimate phases, combine these with the initial phase information using σA weights and then restart the density modification. The refinement of one B value per residue provides a further opportunity to suppress wrongly traced residues.</li>
 </ul>
 </div></blockquote>
 <p>The global cycle consists of density modification followed by autotracing include 20 cycles by default. This is usually a good choice, but it might be worth increasing if the solvent content is very high.</p>
@@ -384,9 +381,9 @@
 <blockquote>
 <div><p><strong>Criteria to tell if phasing worked:</strong></p>
 <ol class="arabic simple">
-<li><p>Correct hand (naturally occurring proteins consist of l-amino acids (i.e. left-handed amino acids) and right-handed α-helices) shows better contrast, especially at early cycles of density modification.</p></li>
-<li><p>Correct hand has higher map correlation coefficient throughout resolution range.</p></li>
-<li><p>A reasonable poly-ALA trace (average 10 residues per chain) and a CC &gt; 25%</p></li>
+<li>Correct hand (naturally occurring proteins consist of l-amino acids (i.e. left-handed amino acids) and right-handed α-helices) shows better contrast, especially at early cycles of density modification.</li>
+<li>Correct hand has higher map correlation coefficient throughout resolution range.</li>
+<li>A reasonable poly-ALA trace (average 10 residues per chain) and a CC &gt; 25%</li>
 </ol>
 </div></blockquote>
 <p>You can find more information about SHELXE  <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/" rel="noopener noreferrer" target="_blank">here</a></p>
@@ -396,7 +393,7 @@
 <p><a class="reference external" href="https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html" rel="noopener noreferrer" target="_blank">Sheldrick, G.M. (2008). “A short history of SHELX”, Acta Crystallogr. D64, 112-122</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/" rel="noopener noreferrer" target="_blank">Thorn, A. and Sheldrick, G.M. (2013) Extending molecular-replacement solutions with SHELXE. Acta Cryst D69, 2251-2256.</a></p>
 <p>look also <a class="reference external" href="http://shelx.uni-goettingen.de/" rel="noopener noreferrer" target="_blank">http://shelx.uni-goettingen.de/</a></p>
-</section>
+
 
 
           </article>
@@ -441,7 +438,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

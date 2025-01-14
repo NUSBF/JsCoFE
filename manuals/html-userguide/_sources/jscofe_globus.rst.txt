@@ -1,6 +1,6 @@
-===========================================
+==========================================
 Transferring data to CCP4 Cloud via Globus
-===========================================
+==========================================
 
 Globus is a system that allows the transfer of large amounts of data via a web based GUI. Many synchrotrons and other facilities make their data available via Globus. CCP4 Cloud has a Globus Endpoint allowing transfer of your data from experiments directly into CCP4 Cloud for processing.
 

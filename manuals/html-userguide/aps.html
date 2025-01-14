@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,14 +47,13 @@
   
   
     <title>Transferring Projects Between Remote and Local CCP4 Cloud Installations &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/jquery.js?v=5d32c60e"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -131,7 +130,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = "versions.json",
+    var json_loc = "_static/versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -198,7 +197,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -212,14 +211,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -233,7 +232,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -287,66 +286,61 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="transferring-projects-between-remote-and-local-ccp4-cloud-installations">
-<h1 id="aps--page-root">Transferring Projects Between Remote and Local CCP4 Cloud Installations<a class="headerlink" href="#aps--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="aps--page-root">Transferring Projects Between Remote and Local CCP4 Cloud Installations<a class="headerlink" href="#aps--page-root" title="Permalink to this headline">¶</a></h1>
 <p><strong>Export projects from the web CCP4 Cloud</strong> by using the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button on the “My Projects” page.</p>
 <ol class="arabic simple">
-<li><p>Select the project you wish to export by left-clicking on it.</p></li>
+<li>Select the project you wish to export by left-clicking on it.</li>
 </ol>
 <img alt="_images/aps_1.png" src="_images/aps_1.png"/>
 <ol class="arabic simple" start="2">
-<li><p>Click the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button.</p></li>
-<li><p>Click the download button.</p></li>
+<li>Click the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button.</li>
+<li>Click the download button.</li>
 </ol>
-<a class="reference internal image-reference" href="_images/aps_2.png"><img alt="_images/aps_2.png" src="_images/aps_2.png" style="width: 450.40000000000003px; height: 230.8px;"/>
-</a>
+<a class="reference internal image-reference" href="_images/aps_2.png"><img alt="_images/aps_2.png" src="_images/aps_2.png" style="width: 450.40000000000003px; height: 230.8px;"/></a>
 <ol class="arabic simple" start="4">
-<li><p>Choose a folder to save the CCP4 Cloud project.</p></li>
-<li><p>After downloading the project to your local machine, locate the cloud icon in the Activities or Software menu (depending on your Linux version). Click on the <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="desktop" src="_images/ccp4cloud_desktop.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud desktop icon or type <code class="docutils literal notranslate"><span class="pre">ccp4cloud-desktop.sh</span></code> in the terminal.</p></li>
-<li><p>Upload the project to the <a class="reference internal" href="_images/setup_local.png"><img alt="local" src="_images/setup_local.png" style="width: 20px; height: 20px;"/></a> local CCP4 Cloud installation using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button above the project list.</p></li>
+<li>Choose a folder to save the CCP4 Cloud project.</li>
+<li>After downloading the project to your local machine, locate the cloud icon in the Activities or Software menu (depending on your Linux version). Click on the <a class="reference internal" href="_images/ccp4cloud_desktop.png"><img alt="desktop" src="_images/ccp4cloud_desktop.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud desktop icon or type <code class="docutils literal notranslate"><span class="pre">ccp4cloud-desktop.sh</span></code> in the terminal.</li>
+<li>Upload the project to the <a class="reference internal" href="_images/setup_local.png"><img alt="local" src="_images/setup_local.png" style="width: 20px; height: 20px;"/></a> local CCP4 Cloud installation using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button above the project list.</li>
 </ol>
 <ol class="arabic simple" start="7">
-<li><p>Once imported, you can continue working on your project locally.</p></li>
+<li>Once imported, you can continue working on your project locally.</li>
 </ol>
 <img alt="_images/aps_4.png" src="_images/aps_4.png"/>
-<section id="important-notes">
-<h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading">¶</a></h2>
+
+<h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can export projects from a local installation using the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button and later re-import them to the CCP4 Cloud server once it is available.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">You can export projects from a local installation using the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button and later re-import them to the CCP4 Cloud server once it is available.</p>
 </div>
 <div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Log in to the <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud Remote and delete (or rename) all previously exported projects.</p>
+<p class="first admonition-title">Warning</p>
+<p class="last">Log in to the <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud Remote and delete (or rename) all previously exported projects.</p>
 </div>
 <p>To log in, go to <a class="reference external" href="https://cloud.ccp4.ac.uk/" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk/</a> or locate the cloud icon in the Activities or Software menu. Click on the <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud Remote icon or type <code class="docutils literal notranslate"><span class="pre">ccp4cloud-remote.sh</span></code> in the terminal.</p>
 <p><strong>To delete a project</strong>:
 - Select the project (left-click) in the project list.
 - Click the <a class="reference internal" href="_images/delete.png"><img alt="delete" src="_images/delete.png" style="width: 16px; height: 16px;"/></a> delete button.</p>
 <blockquote>
-<div><p>Be cautious: deleted projects cannot be restored.</p>
-</div></blockquote>
+<div>Be cautious: deleted projects cannot be restored.</div></blockquote>
 <p><strong>To rename a project</strong>:
 - Select the project (left-click) in the project list.
 - Click the <a class="reference internal" href="_images/renameprj.png"><img alt="rename" src="_images/renameprj.png" style="width: 16px; height: 16px;"/></a> rename button.</p>
 <blockquote>
-<div><p>Ensure you change the Project ID, as duplicate IDs are not allowed in your CCP4 Cloud account.</p>
-</div></blockquote>
-<a class="reference internal image-reference" href="_images/aps_6.png"><img alt="_images/aps_6.png" src="_images/aps_6.png" style="width: 820.0px; height: 529.0px;"/>
-</a>
-<a class="reference internal image-reference" href="_images/aps_5.png"><img alt="_images/aps_5.png" src="_images/aps_5.png" style="width: 733.0px; height: 246.0px;"/>
-</a>
+<div>Ensure you change the Project ID, as duplicate IDs are not allowed in your CCP4 Cloud account.</div></blockquote>
+<a class="reference internal image-reference" href="_images/aps_6.png"><img alt="_images/aps_6.png" src="_images/aps_6.png" style="width: 820.0px; height: 529.0px;"/></a>
+<a class="reference internal image-reference" href="_images/aps_5.png"><img alt="_images/aps_5.png" src="_images/aps_5.png" style="width: 733.0px; height: 246.0px;"/></a>
 <p>Once renamed or deleted, you can re-import projects back to the CCP4 Cloud server:</p>
 <ol class="arabic simple">
-<li><p>Click the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button.</p></li>
-<li><p>Click the download button.</p></li>
-<li><p>Choose a folder to save the CCP4 Cloud project.</p></li>
-<li><p>Go to <a class="reference external" href="https://cloud.ccp4.ac.uk/" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk/</a> or locate the cloud icon in the Activities or Software menu. Click on the <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud Remote icon or type <code class="docutils literal notranslate"><span class="pre">ccp4cloud-remote.sh</span></code> in the terminal.</p></li>
-<li><p>Upload the project to your CCP4 Cloud server account using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button.</p></li>
-<li><p>Once imported, you can continue working on your project on the server.</p></li>
+<li>Click the <a class="reference internal" href="_images/export.png"><img alt="Export" src="_images/export.png" style="width: 16px; height: 16px;"/></a> button.</li>
+<li>Click the download button.</li>
+<li>Choose a folder to save the CCP4 Cloud project.</li>
+<li>Go to <a class="reference external" href="https://cloud.ccp4.ac.uk/" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk/</a> or locate the cloud icon in the Activities or Software menu. Click on the <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 25px; height: 25px;"/></a> CCP4 Cloud Remote icon or type <code class="docutils literal notranslate"><span class="pre">ccp4cloud-remote.sh</span></code> in the terminal.</li>
+<li>Upload the project to your CCP4 Cloud server account using the <a class="reference internal" href="_images/task_import.png"><img alt="Import" src="_images/task_import.png" style="width: 16px; height: 16px;"/></a> button.</li>
+<li>Once imported, you can continue working on your project on the server.</li>
 </ol>
-</section>
-</section>
+
+
 
 
           </article>
@@ -367,7 +361,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

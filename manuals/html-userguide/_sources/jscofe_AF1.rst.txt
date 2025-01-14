@@ -1,117 +1,104 @@
 :orphan:
 
 ==============================================
-AlphaFold and structure solution in CCP4 Cloud
+AlphaFold and Structure Solution in CCP4 Cloud
 ==============================================
 
-`AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RosettaFold <https://robetta.bakerlab.org/>`_ predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR). This article describes AlphaFold implementation and the use of predicted models, regardless of their origin, in CCP4 Cloud. Good news are, CCP4 Cloud automates most operations with predicted models, and using them has very differences from models prepared from experimentally determined structures.
+`AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RosettaFold <https://robetta.bakerlab.org/>`_ predicted models are widely recognized as reliable structural templates for Molecular Replacement (MR). This article describes the integration of AlphaFold in CCP4 Cloud and how predicted models—regardless of their origin—are utilized in the platform. The good news is that CCP4 Cloud automates most processes involving predicted models, making their use nearly identical to that of models derived from experimentally determined structures.
 
 ---------------------------------------------
 AlphaFold and Automatic Molecular Replacement
 ---------------------------------------------
 
-The easiest way of solving structure in CCP4 is through using one of automatic MR pipelines: MrBump, MorDA or BALBES. They find structural homologs by sequence search, prepare them as MR search models (templates) by removing structural features that are less likely to be found in target structure, and then try them for MR.
+The simplest method for solving structures in CCP4 is by using one of the automatic MR pipelines: MrBump, MorDA, or BALBES. These pipelines identify structural homologs through sequence searches, prepare them as MR search models (templates) by removing unlikely structural features, and then perform MR.
 
-MrBump will find structural homologs in both PDB and AlphaFold Database (AFDB) from the EBI, completely automatically. ModDA and BALBES do not offer this functionality at present.
+MrBump can automatically search both the PDB and the AlphaFold Database (AFDB) from the EBI for structural homologs. Currently, MorDA and BALBES do not offer this functionality.
 
 -----------------------------------------
 AlphaFold and Automated Project Workflows
 -----------------------------------------
 
-CCP4 Cloud projects can be developed automatically using Automated Project Workflows (APWs). They perform typical sequence of tasks and user's actions depending on available data. Automatic project development is available for Auto-MR (WAMR), MR with model (WSMR), auto-EP (WAEP), MR with model prediction (WAFMR) and Dimple MR (WDMR).
+CCP4 Cloud supports the automatic development of projects through Automated Project Workflows (APWs). These workflows execute a standard sequence of tasks based on the available data. Automatic project workflows are available for Auto-MR (WAMR), MR with model (WSMR), auto-EP (WAEP), MR with model prediction (WAFMR), and Dimple MR (WDMR).
 
-WAMR uses MrBump as the structure solution element, and will use AlphaFold-predicted models from AFDB completely automatically.
-
-WAFMR uses AlphaFold through the Structure Prediction task for generating MR template, which is then feed in Phaser. This process is completely automatic and does not need any intervention from the user.
-
-WSMR requires a template MR model on input. Either a model derived from experimentally determined or AlphaFold predicted structure can be used, without any additional actions from the user.
+- **WAMR** uses MrBump as the structure solution component and can automatically incorporate AlphaFold-predicted models from the AFDB.
+- **WAFMR** utilizes AlphaFold through the Structure Prediction task to generate MR templates, which are then fed into Phaser. This process is fully automated and requires no user intervention.
+- **WSMR** requires a template MR model as input. This can be either an experimentally determined model or one predicted by AlphaFold, with no additional steps needed from the user.
 
 .. note::
-    In difference of standard PDB files, predicted models contain confidence scores (pLLDT in AlphaFold case and rmsd estimates in case of RoseTTAFold), placed in B-factor column. This confuses MR programs, and, therefore, the scores must be recalculated as B-factors. Everywhere in CCP4 Cloud, this recalculation is done completely automatically and seamlessly for the user. If a predicted model is imported into project, conversion to B-factors will be confirmed in the import summary table.
-
+    Unlike standard PDB files, predicted models contain confidence scores (e.g., pLLDT in AlphaFold and RMSD estimates in RosettaFold), which are stored in the B-factor column. This can confuse MR programs, as they expect B-factor data. Therefore, the scores must be recalculated as B-factors. CCP4 Cloud handles this recalculation seamlessly, ensuring the user does not need to intervene. If a predicted model is imported into a project, this conversion to B-factors is confirmed in the import summary table.
 
 ------------------------------------------
 AlphaFold and Manual Molecular Replacement
 ------------------------------------------
 
-When automatic approaches fail, solution may be still obtainable through custom manipulation with MR models and MR programs (Phaser, Molrep and pipelines based on them (Slice-n-Dice, MorDA)). This approach requires more effort but gives access to various program parameters that can improve chances for solution. You will need to perform the following steps.
+When automatic methods fail, a solution may still be attainable through custom manipulation of MR models and MR programs (Phaser, Molrep, and related pipelines such as Slice-n-Dice and MorDA). This approach requires more user involvement but provides greater control over program parameters, which can enhance the chances of a successful solution. The following steps will guide you through this process.
 
-
-
-
-
-AlphaFold2 integration in CCP4 Cloud for different stages of a structure determination process.
+AlphaFold2 integration in CCP4 Cloud is also supported for different stages of the structure determination process.
 
 .. include:: jscofe_tips.AlphaFold.rst
     :start-line: 4
     :end-line: 24
 
 -----------------------------------
-Generate or obtain predicted models
+Generate or Obtain Predicted Models
 -----------------------------------
 
-Not only CCP4 Cloud allows `import <../html-taskref/doc.task.Import.html>`__ of predicted models but it also allows to generate models for further use in molecular replacement programs (`Phaser <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_)
+CCP4 Cloud not only allows you to `import <../html-taskref/doc.task.Import.html>`_ predicted models but also enables the generation of models for subsequent use in molecular replacement programs like `Phaser <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_.
 
-In order to **generate models** CCP4 Cloud offers a following tasks:
+To **generate models**, CCP4 Cloud provides the following tasks:
 
-#. `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 for generating structure models from a given sequence.
+#. `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 to generate structure models from a given sequence.
 
     .. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
          :align: center
 
+    After importing or generating the model, the `Prepare MR Model(s) from Coordinate Data <../html-taskref/doc.task.ModelPrepXYZ.html>`_ task prepares the MR search model(s) using the predicted models.
 
+#. `Find and Prepare MR Models with MrParse <../html-taskref/doc.task.MrParse.html>`_ task identifies structural homologs suitable for creating MR search models from the PDB and **AlphaFold2 Database**. The relevant structures are selected based on sequence alignment using `PHMMER <http://hmmer.org/>`_ software.
 
-    After importing or generating the model using `Prepare MR Model(s) from Coordinate data <../html-taskref/doc.task.ModelPrepXYZ.html>`_ task prepares MR search model(s) using predicted models.
+#. `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_ task uses `MrBump <../html-taskref/doc.task.MrBump.html>`__ software to create the `MR Ensemble <../html-taskref/doc.task.Ensembler.html>`_ from the given structural homologs. MR Ensembles are obtained through alignment and truncation procedures using homologous structures found in the PDB and **AlphaFold2 Database** via sequence-based search.
 
-#. `Find and prepare MR models with MrParse <../html-taskref/doc.task.MrParse.html>`_ task identifies structural homologs, suitable for making MR search models, in the PDB and **AlphaFold2 Data Base**. Relevant structures are selected on the basis of sequence alignment with `PHMMER <http://hmmer.org/>`_ software.
-
-#. `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_ task uses `MrBump <../html-taskref/doc.task.MrBump.html>`__ software to make the `MR Ensemble <../html-taskref/doc.task.Ensembler.html>`_ from given structural homologs. MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and **AlphaFold2 DataBase** with a sequence-based search.
-
-#. `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_ task uses `MrBump <../html-taskref/doc.task.MrBump.html>`__ software to prepare `MR Ensemble <../html-taskref/doc.task.Ensembler.html>`_ for the given target sequence. The process is completely automatic and includes finding suitable structure homologs in the PDB and, optionally, **AlphaFold2 DataBase**, trimming them, and bringing in the best superposition.
-
+#. `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_ task uses `MrBump <../html-taskref/doc.task.MrBump.html>`__ software to prepare the `MR Ensemble <../html-taskref/doc.task.Ensembler.html>`_ for the target sequence. This process is fully automated, including the search for suitable homologs in the PDB and **AlphaFold2 Database**, trimming them, and generating the best superposition.
 
 -----------------------
-Process predicted model
+Process Predicted Model
 -----------------------
 
-Inaccuracy in domain-domain orientations is often a key limitation when using predicted models for MR. `Split MR model with Slice-n-Dice <../html-taskref/doc.task.Slice.html>`_ task allows to slice of predicted models into distinct structural units which are then can be placed in an automatic MR pipeline.
-
+Inaccuracies in domain-domain orientations are often a limiting factor when using predicted models for MR. The `Split MR Model with Slice-n-Dice <../html-taskref/doc.task.Slice.html>`_ task allows you to split predicted models into distinct structural units, which can then be placed in an automatic MR pipeline.
 
 -------------------------------
 Automated Molecular Replacement
 -------------------------------
 
-Automated Molecular Replacement pipelines **search for homologous structures in n PDB and AlphaFold DataBase**, **create a set of suitable search models** from the template structures, **perform molecular replacement**, and **test the solutions** with some rounds of restrained refinement.
+Automated Molecular Replacement pipelines **search for homologous structures in the PDB and AlphaFold Database**, **create a set of suitable search models** from the template structures, **perform molecular replacement**, and **test the solutions** through several rounds of restrained refinement.
 
-The following Automated Molecular Replacement in CCP4 cloud support AlphaFold DataBase search:
+The following Automated Molecular Replacement tasks in CCP4 Cloud support searching the AlphaFold Database:
 
-#. `MrBump's <../html-taskref/doc.task.MrBump.html>`__ model search is obtained with an alignment and truncation procedure using homologues structures found in the `PDB <https://www.rcsb.org/>`_ and `AlphaFold DataBase <https://doi.org/10.1038/s41586-021-03819-2>`_ with a sequence-based search.
+#. `MrBump's <../html-taskref/doc.task.MrBump.html>`__ model search procedure uses alignment and truncation steps to identify homologous structures from the `PDB <https://www.rcsb.org/>`_ and the `AlphaFold Database <https://doi.org/10.1038/s41586-021-03819-2>`_ via sequence-based search.
 
-#. `MR with model splitting using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ task designed to pre-process `AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RosettaFold <https://robetta.bakerlab.org/>`_ models by removing low confidence regions and converting confidence scores into predicted B-factors. It also slices predicted models into distinct structural units and then automatically places the slices using `Phaser <../html-taskref/doc.task.Phaser.html>`_. The slicing step can use AlphaFold2’s predicted aligned error (PAE) or can operate via a variety of Cɑ atom clustering algorithms, extending applicability to structures of any origin. **Slice-n-Dice helps to deal with inaccuracy in domain-domain orientations of predicted models.**
+#. `MR with Model Splitting Using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ task preprocesses `AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RosettaFold <https://robetta.bakerlab.org/>`_ models by removing low-confidence regions and converting confidence scores into predicted B-factors. It then slices predicted models into distinct structural units, which are automatically placed using `Phaser <../html-taskref/doc.task.Phaser.html>`. This step can use AlphaFold2’s predicted aligned error (PAE) or a variety of Cɑ atom clustering algorithms, making it applicable to structures of any origin. **Slice-n-Dice helps address inaccuracies in domain-domain orientations of predicted models.**
 
-#. `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ automatically pre-process an Alphafold or RoseTTAFold model by eliminating unstructured and disconnected areas and verifies MR solution.
+#. `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ task automatically preprocesses an AlphaFold or RosettaFold model by eliminating unstructured and disconnected regions and verifying the MR solution.
 
 ----------
 Refinement
 ----------
 
-As a final step in the process of solving a macromolecular crystal structure, refinement is carried out to maximize the agreement between the model and the X-ray data. In order to perform structure refinement at low resolution (lower than around 3 Å) it is necessary to use as much available information about macromolecules as possible. `Low-Resolution Refinement with Lorestr <../html-taskref/doc.task.Lorestr.html>`_ task uses **AlphaFold2 DataBase** to identify homologues and then Lorestr uses them in order to determine the set of most appropriate refinement parameters. 
+The final step in macromolecular crystal structure determination is refinement, which aims to maximize the agreement between the model and the X-ray data. For low-resolution refinement (typically below 3 Å), it is essential to use all available structural information. The `Low-Resolution Refinement with Lorestr <../html-taskref/doc.task.Lorestr.html>`_ task leverages the **AlphaFold2 Database** to identify homologs, which are then used to determine the most appropriate refinement parameters.
 
 -------------------
-Automatic workflows
+Automatic Workflows
 -------------------
 
-In order to understand how AlphaFold2 can be implemented in a structure solution CCP4 Clouds offers an automatic project **workflow: Molecular Replacement with AlphaFold Model** which starts with data import and then uses `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ and `MR with model splitting using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ tasks to automatically create the structure solution project automatically. The result may be further improved with the elementary tasks in manual mode, allowing finer control over the task's parameters.
+To demonstrate how AlphaFold2 can be implemented in structure solution, CCP4 Cloud offers an automatic project **workflow: Molecular Replacement with AlphaFold Model**. This workflow starts with data import and then uses the `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ and `MR with Model Splitting Using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ tasks to automatically create the structure solution project. The resulting structure can then be further refined using manual tasks for more control over parameters.
 
 ---------
 Tutorials
 ---------
 
-
-We also recommend to use `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ tutorial to learn on practice how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
-
+We also recommend using the `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ tutorial to learn how to create ensembles for Molecular Replacement with the `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
 
 **ACKNOWLEDGEMENTS**
 
-This article uses materials kindly provided by Dr. Ronan Keegan, whose help is greatly appreciated.
+This article incorporates materials kindly provided by Dr. Ronan Keegan, whose assistance is greatly appreciated.

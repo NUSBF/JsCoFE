@@ -11,9 +11,9 @@ CCP4 Cloud AlphaFold Utilities
     :start-line: 4
     :end-line: 24
 
------------------------------------
+----------------------------------------
 Generating or Importing Predicted Models
------------------------------------
+----------------------------------------
 
 CCP4 Cloud not only supports the `import <../html-taskref/doc.task.Import.html>`__ of predicted models but also facilitates their generation for use in molecular replacement programs like `Phaser <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_.
 
@@ -33,9 +33,9 @@ To **generate models**, CCP4 Cloud provides the following tasks:
 
 #. The `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_ task uses `MrBump <../html-taskref/doc.task.MrBump.html>`__ to automatically prepare an `MR Ensemble <../html-taskref/doc.task.Ensembler.html>`_ from a target sequence. This task includes identifying suitable structural homologs in the PDB and, optionally, the **AlphaFold2 Database**, trimming them, and superimposing the best candidates.
 
------------------------
+---------------------------
 Processing Predicted Models
------------------------
+---------------------------
 
 Inaccuracies in domain-domain orientations can limit the effectiveness of predicted models for MR. The `Split MR Model with Slice-n-Dice <../html-taskref/doc.task.Slice.html>`_ task allows predicted models to be divided into distinct structural units, which can then be placed in an automated MR pipeline.
 

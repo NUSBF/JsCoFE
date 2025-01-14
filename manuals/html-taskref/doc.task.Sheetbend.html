@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,12 +47,13 @@
   
   
     <title>Post-MR model correction with Sheetbend &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script src="_static/documentation_options.js?v=d13700ae"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -437,20 +438,20 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="post-mr-model-correction-with-sheetbend">
-<h1 id="doc-task-sheetbend--page-root">Post-MR model correction with Sheetbend<a class="headerlink" href="#doc-task-sheetbend--page-root" title="Link to this heading">¶</a></h1>
+  
+<h1 id="doc-task-sheetbend--page-root">Post-MR model correction with Sheetbend<a class="headerlink" href="#doc-task-sheetbend--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html" rel="noopener noreferrer" target="_blank">SHEETBEND</a> performs model morphing by <a class="reference external" href="https://journals.iucr.org/d/issues/2020/12/00/di5041/" rel="noopener noreferrer" target="_blank">shift-field refinement</a>. This is a very fast form of preliminary refinement which can be applied as a precursor to conventional refinement. It can be applied at any resolutions, and when used at low resolution is particularly suited to correcting large shifts in secondary structure elements in molecular replacement. Sheetbend can also be used to refine B factors.</p>
-<section id="output">
-<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
+
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The program outputs an R-factor and free R-factor at the start of each cycle (can be found in <strong>Main Log</strong> tab)</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>R-factors are based on the reflections used for a given cycle, which may change if the resolution changes from cycle to cycle. Values are therefore not comparable from cycle to cycle unless the resolution is unchanged. As a result the values are only really useful for evaluating radius settings using the same resolution settings.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">R-factors are based on the reflections used for a given cycle, which may change if the resolution changes from cycle to cycle. Values are therefore not comparable from cycle to cycle unless the resolution is unchanged. As a result the values are only really useful for evaluating radius settings using the same resolution settings.</p>
 </div>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798320013170" rel="noopener noreferrer" target="_blank">Cowtan, K., Metcalfe, S. &amp; Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020)</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -495,7 +496,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
