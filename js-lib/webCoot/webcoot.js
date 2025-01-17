@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    16.08.24   <--  Date of Last Modification.
+ *    17.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -291,7 +291,7 @@ if (window.addEventListener) {
 
 function launchApp ( params )  {
 
-  moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
+  moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix + '/baby-gru' );
 
   moorhenWrapper.setRootId     ( rootId     );
   moorhenWrapper.setInputFiles ( params.inputFiles );
