@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.10.25   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1069,6 +1069,9 @@ let dataBox = this.harvestTaskData ( 1,[] );
 JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   if (!task.hasOwnProperty('task_chain'))
+    return;
+
+  if (('submitter' in task) && task.submitter && (task.submitter!=__login_id))
     return;
 
   if (task.task_chain.length<=0)  {
