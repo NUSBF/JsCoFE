@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function TaskWFlowREL()  {
   this._type       = 'TaskWFlowREL';
   this.name        = 'Refinement and ligand fitting automatic workflow';
   this.setOName ( 'ccp4go_autorel' );  // default output file name template
-  this.title       = 'Workflow: Automated refinement and ligand fitting';
+  this.title       = 'Workflow: Automated Refinement and Ligand Fitting';
   this.autoRunId   = 'auto-REL';
 
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
