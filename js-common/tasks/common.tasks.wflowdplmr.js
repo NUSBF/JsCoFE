@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dimple MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev, 2023-2024
+ *  (C) M. Fando, E. Krissinel, A. Lebedev, 2023-2025
  *
  *  =================================================================
  *
@@ -156,7 +156,7 @@ TaskWFlowDPLMR.prototype.icon           = function()  { return 'task_wflowdplmr'
 TaskWFlowDPLMR.prototype.clipboard_name = function()  { return '"DPLMR Workflow"'; }
 
 TaskWFlowDPLMR.prototype.desc_title     = function()  {
-  return 'data import, ASU definition, Dimple MR, refinement, ligand fitting and PDB deposition';
+  return 'data import, ASU definition, Dimple MR, refinement, ligand fitting and PDB validation report';
 }
 
 //TaskWFlowDPLMR.prototype.canRunInAutoMode = function() { return true; }

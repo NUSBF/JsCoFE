@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Automatic MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskWFlowAMR()  {
   this._type      = 'TaskWFlowAMR';
   this.name       = 'MR automatic workflow';
   this.setOName ( 'ccp4go_automr' );  // default output file name template
-  this.title      = 'Workflow: Automatic Molecular Replacement with MrBump or MoRDa';
+  this.title      = 'Workflow: Molecular Replacement with MrBump or MoRDa';
   this.autoRunId  = 'auto-MR';
 
   //this.ha_type = '';
@@ -153,7 +153,7 @@ TaskWFlowAMR.prototype.icon           = function()  { return 'task_wflowamr';  }
 TaskWFlowAMR.prototype.clipboard_name = function()  { return '"AMR Workflow"'; }
 
 TaskWFlowAMR.prototype.desc_title     = function()  {
-  return 'data import, ASU definition, automatic MR, refinement, ligand fitting and PDB deposition';
+  return 'data import, ASU definition, automatic MR, refinement, ligand fitting and PDB validation report';
 }
 
 //TaskWFlowAMR.prototype.canRunInAutoMode = function() { return true; }
