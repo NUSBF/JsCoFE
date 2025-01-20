@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    20.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2025
 #
 # ============================================================================
 #
@@ -140,6 +140,8 @@ def getContext ( contextName ):
     global auto_meta
     log('calling getContext: "%s"' % (contextName))
     return auto_meta.context.custom.get_field ( contextName )
+
+
 
 # def loadContext():
 #     global auto_meta

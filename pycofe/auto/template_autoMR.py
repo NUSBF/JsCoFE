@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    20.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  Auto-MR workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2022
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2025
 #
 # ============================================================================
 #
@@ -83,27 +83,26 @@ def makeNextTask ( crTask,data ):
             return
 
 
-
     elif crTask._type=="TaskSimbad":
         if crTask.autoRunName == 'simbadFull':
             # Full search SIMBAD at the very end
-            if float(data["Rfree"])>0.5:
+            if float(data["Rfree"])>0.5 and data["revision"]:
                 strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
                 strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
                           'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
                           'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
                 auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                 return
-            elif float(data["Rfree"])<0.4:
+            elif float(data["Rfree"])<0.4 and data["revision"]:
                 strTree = 'Please carefully check SIMBAD results; it could be a contaminant rather than your target protein! (click for more details)'
                 strText = 'SIMBAD has found a solution of your structure and this is definitely good news.\n' + \
                           'However, SIMBAD has performed full database search, including contaminants database (those are proteins which are ' + \
                           'relatively often purified by mistake instead of protein of interest).\n' + \
                           'Please carefully examine SIMBAD report to make sure you are currently not solving structure of some contaminant protein.\n'
                 auto_tasks.remark("rem_sorry4", strTree, 7, strText, crTask.autoRunName)  # 7 - Gold - yellow
-                auto_api.addContext("build_parent", crTask.autoRunName)
-                auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.modelcraft("modelcraftAfterSimbad", data["revision"], crTask.autoRunName)
+                parent = auto_api.addContext("build_parent", crTask.autoRunName)
+                revision = auto_api.addContext("build_revision", data["revision"])
+                auto_tasks.modelcraft("modelcraftAfterSimbad", revision, parent)
                 return
             else:
                 # 0.4 < Rfree < 0.5
@@ -136,6 +135,8 @@ def makeNextTask ( crTask,data ):
                 # running MRBUMP from ASU task
                 revision = auto_api.getContext("starting_asu_revision")
                 parent = auto_api.getContext("asu_task_name")
+                # auto_api.log("parent: %s" % parent)
+                # auto_api.log("revision: %s" % revision)
                 auto_tasks.mrbump('mrbump', revision, parent, 5)
                 return
             else:
@@ -358,9 +359,9 @@ def makeNextTask ( crTask,data ):
         # auto_tasks.remark("rem_mrbComment", strTree, 5, strText, crTask.autoRunName)  # 5 - Cyan
 
         # auto_tasks.mrbump('mrbump', data['revision'], crTask.autoRunName, 5)
-        auto_api.addContext("starting_asu_revision", data["revision"])
-        auto_api.addContext("asu_task_name", crTask.autoRunName)
-        auto_tasks.simbad("simbad", "L", data['revision'], crTask.autoRunName)
+        revision = auto_api.addContext("starting_asu_revision", data["revision"])
+        parent = auto_api.addContext("asu_task_name", crTask.autoRunName)
+        auto_tasks.simbad("simbad", "L", revision, parent)
         return
 
 
@@ -373,6 +374,8 @@ def makeNextTask ( crTask,data ):
                 # running Morda from ASU task
                 revision = auto_api.getContext("starting_asu_revision")
                 parent = auto_api.getContext("asu_task_name")
+                parentTask = crTask.autoRunName
+                revision = data["revision"]
                 if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
                     os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
                     auto_tasks.morda("morda", revision, parent)
