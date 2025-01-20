@@ -371,6 +371,7 @@ class Simbad(asudef.ASUDef):
                             revision = idata
                         else:
                             # create structure revision with empty asymmetric unit
+                            # this code is unreachable
                             revision = dtype_revision.DType ( -1 )
 
                         # set revision data and register
@@ -392,14 +393,16 @@ class Simbad(asudef.ASUDef):
                     # Verdict section
 
                     if LLG and TFZ :
-                        if not idata and not revision: # if ASU was not defined, make next task
+                        # if not idata and not revision: # if ASU was not defined, make next task
+                        if not revision or not revision.ASU or revision.ASU.nRes==0:
+                            # if ASU was not defined, make next task
                             auto.makeNextTask ( self,{
-                            "revision" : None,
-                            "Rfactor"  : Rfactor,
-                            "Rfree"    : Rfree,
-                            "LLG"      : LLG,
-                            "TFZ"      : TFZ
-                        })
+                                "revision" : None,
+                                "Rfactor"  : Rfactor,
+                                "Rfree"    : Rfree,
+                                "LLG"      : LLG,
+                                "TFZ"      : TFZ
+                            })
                         else:
                             auto.makeNextTask ( self,{
                                 "revision" : revision,
