@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.12.24   <--  Date of Last Modification.
+ *    20.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -1603,12 +1603,16 @@ if (!dbx)  {
           // sort by decreasing data Id and increasing serial nubers
           for (let j=0;j<ddndata.length;j++)  {
             for (let k=j+1;k<ddndata.length;k++)  {
-              // names start with data id like [0002-03]
-              let namej = ddndata[j][0].split('-');
-              let namek = ddndata[k][0].split('-');
-              // if (ddndata[j][0]<ddndata[k][0])  {
+              // names start with data id like [0002-03], R0003.01
+              let namej = ddndata[j][0].startsWith('[') ?
+                                       ddndata[j][0].slice(1).split('-') :
+                                       ddndata[j][0].slice(1).split('.');
+              let namek = ddndata[k][0].startsWith('[') ?
+                                       ddndata[k][0].slice(1).split('-') :
+                                       ddndata[k][0].slice(1).split('.');
               if ((namej[0]<namek[0]) || 
-                  ((namej[0]==namek[0]) && (namej[1]>namek[1]))) {
+                  ((namej[0]==namek[0]) && (namej[1].slice(0,2)>namek[1].slice(0,2)))) {
+              // if (ddndata[j][0].slice(1)<ddndata[k][0].slice(1))  {
                 let item   = ddndata[j];
                 ddndata[j] = ddndata[k];
                 ddndata[k] = item;
