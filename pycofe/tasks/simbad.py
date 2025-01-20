@@ -354,7 +354,8 @@ class Simbad(asudef.ASUDef):
                     self.rvrow += 5
 
                     make_asu = False  # hardcoded switch
-                    if not idata and make_asu:
+                    # if not idata and make_asu:
+                    if not idata or make_asu:
                         # Import sequences from the structure and create an
                         # ASU-containing structure revision.
                         #    secId="0" activates drawing of the GaugeWidget on the
