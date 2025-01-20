@@ -430,9 +430,9 @@ class Simbad(asudef.ASUDef):
                     if Rfree:
                             self.generic_parser_summary["simbad"] = {
                                 "summary_line" : "best model: " + result0["name"] +\
-                                                ", LLG=" + LLG + " TFZ=" + TFZ +\
-                                                " R="  + Rfactor +\
-                                                " R<sub>free</sub>=" + Rfree,
+                                                 ", LLG=" + LLG + " TFZ=" + TFZ +\
+                                                 " R="  + Rfactor +\
+                                                 " R<sub>free</sub>=" + Rfree,
                                 "R_factor"     : Rfactor,
                                 "R_free"       : Rfree
                             }
