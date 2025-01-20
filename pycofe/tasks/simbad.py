@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.24   <--  Date of Last Modification.
+#    20.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi, Maria Fando 2017-2025
 #
 # ============================================================================
 #
@@ -50,6 +50,7 @@ from   pycofe.dtypes   import dtype_revision
 from   pycofe.verdicts import verdict_simbad
 from   pycofe.auto     import auto
 from   pycofe.proc     import xyzmeta
+from   varut          import signal
 
 
 # ============================================================================
@@ -251,6 +252,7 @@ class Simbad(asudef.ASUDef):
         #      }
         #   ]
         # }
+        
 
         rvapi_meta  = pyrvapi.rvapi_get_meta()
         simbad_meta = None
@@ -382,51 +384,67 @@ class Simbad(asudef.ASUDef):
                                 "for model building. Use SIMBAD after <i>ASU definition</i> " +\
                                 "task, or run <i>Edit Structure Revision</i> to get ASU " +\
                                 "complete.</span>" )
+                            
 
                     have_results = True  # may be continued manually
 
                     # Verdict section
 
-                    if LLG and TFZ:
-                        verdict_meta = {
-                            "sol"        : revision.ASU.solvent,
-                            "resolution" : revision.HKL.getHighResolution(raw=True),
-                            "nasu"       : revision.getNofASUMonomers(),
-                            "fllg"       : float ( LLG   ),
-                            "ftfz"       : float ( TFZ   ),
-                            "rfree"      : float ( Rfree )
-                        }
-                        verdict_simbad.putVerdictWidget ( self,verdict_meta,verdict_row,secId="0" )
-
-                        if Rfree:
-                            self.generic_parser_summary["simbad"] = {
-                                "summary_line" : "best model: " + result0["name"] +\
-                                                 ", LLG=" + LLG + " TFZ=" + TFZ +\
-                                                 " R="  + Rfactor +\
-                                                 " R<sub>free</sub>=" + Rfree,
-                                "R_factor"     : Rfactor,
-                                "R_free"       : Rfree
-                            }
-
-                        auto.makeNextTask ( self,{
-                            "revision" : revision,
+                    if LLG and TFZ :
+                        if not idata: # if ASU was not defined, make next task
+                            auto.makeNextTask ( self,{
+                            "revision" : None,
                             "Rfactor"  : Rfactor,
                             "Rfree"    : Rfree,
                             "LLG"      : LLG,
                             "TFZ"      : TFZ
                         })
+                        else:
+                            auto.makeNextTask ( self,{
+                                "revision" : revision,
+                                "Rfactor"  : Rfactor,
+                                "Rfree"    : Rfree,
+                                "LLG"      : LLG,
+                                "TFZ"      : TFZ
+                            })
+                        try: # if verdict fails task still pass data on
+                            verdict_meta = {
+                                "sol"        : revision.ASU.solvent,
+                                "resolution" : revision.HKL.getHighResolution(raw=True),
+                                "nasu"       : revision.getNofASUMonomers(),
+                                "fllg"       : float ( LLG   ),
+                                "ftfz"       : float ( TFZ   ),
+                                "rfree"      : float ( Rfree )
+                            }
+                            verdict_simbad.putVerdictWidget ( self,verdict_meta,verdict_row,secId="0" )
+
+                            
+                        except:
+                            self.putMessage ( "<b>Program error:</b> <i>verdict failed</i>" )
+                            self.stderrln   ( "Verdict failed" )
+
+                    if Rfree:
+                            self.generic_parser_summary["simbad"] = {
+                                "summary_line" : "best model: " + result0["name"] +\
+                                                ", LLG=" + LLG + " TFZ=" + TFZ +\
+                                                " R="  + Rfactor +\
+                                                " R<sub>free</sub>=" + Rfree,
+                                "R_factor"     : Rfactor,
+                                "R_free"       : Rfree
+                            }
+                        
 
                     else:  # cannot be continued in a workflow
                         self.generic_parser_summary["simbad"] = {
                             "summary_line" : "solution not found"
                         }
-                        # auto.makeNextTask ( self,{
-                        #     "revision" : None,
-                        #     "Rfactor"  : "1",
-                        #     "Rfree"    : "1",
-                        #     "LLG"      : "0",
-                        #     "TFZ"      : "0"
-                        # })
+                        auto.makeNextTask ( self,{
+                            "revision" : None,
+                            "Rfactor"  : "1",
+                            "Rfree"    : "1",
+                            "LLG"      : "0",
+                            "TFZ"      : "0"
+                        })
 
                     # else:
                     #     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
@@ -459,9 +477,10 @@ class Simbad(asudef.ASUDef):
         # elif hkl:
         else:
             self.putTitle ( "No Suitable Models Found" )
-
+           
         if os.path.exists("morda"):
             shutil.rmtree ( "morda",ignore_errors=True )
+        
 
         if not have_results or not revision:
             auto.makeNextTask ( self,{
@@ -474,8 +493,20 @@ class Simbad(asudef.ASUDef):
 
         # close execution logs and quit
         self.success ( have_results )
-        return
+        return revision
 
+    def onException(self):
+        
+        self.stdoutln ( "onExeption" )
+        auto.makeNextTask ( self,{
+                    "revision" : None,
+                    "Rfactor"  : "1",
+                    "Rfree"    : "1",
+                    "LLG"      : "0",
+                    "TFZ"      : "0"
+                }) 
+        self.putMessage ( "<b>Program error:</b> <i>uncaught exception</i>" )
+        return
 
 # ============================================================================
 
@@ -483,3 +514,4 @@ if __name__ == "__main__":
 
     drv = Simbad ( "",os.path.basename(__file__),{} )
     drv.start()
+    
