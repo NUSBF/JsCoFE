@@ -14,9 +14,6 @@
 # ============================================================================
 #
 
-import os
-import math
-
 from pycofe.proc     import verdict
 from pycofe.verdicts import verdict_asudef
 
