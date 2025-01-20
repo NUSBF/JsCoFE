@@ -392,7 +392,7 @@ class Simbad(asudef.ASUDef):
                     # Verdict section
 
                     if LLG and TFZ :
-                        if not idata: # if ASU was not defined, make next task
+                        if not idata and not revision: # if ASU was not defined, make next task
                             auto.makeNextTask ( self,{
                             "revision" : None,
                             "Rfactor"  : Rfactor,
