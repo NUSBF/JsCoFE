@@ -70,6 +70,21 @@
       "title"   : "Storing Completed Projects",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.store_completed_projects.html"
+    },{
+      "summary" : "Discover how easy it is to transfer your data via Globus to CCP4 Cloud! Learn more <a>here</a>.",
+      "title"   : "Transferring data to CCP4 Cloud via Globus",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_globus.html"
+    }, {
+      "summary" : "Excited to Fetch Diffraction Images from WWW repositories? Discover how <a>here</a>.",
+      "title"   : "Fetching Diffraction Images",
+      "doc"     : "manuals/html-taskref",
+      "link"    : "doc.task.FetchData.html"
+    },{
+      "summary" : "Eager to push your data to the cloud? Learn how <a>here</a>.",
+      "title"   : "Pushing Data to the Cloud",
+      "doc"     : "manuals/html-taskref",
+      "link"    : "doc.task.PushToCloud.html"
     }
   ]
 }
