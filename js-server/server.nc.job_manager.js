@@ -1287,11 +1287,15 @@ function ncRunJob ( job_token,meta )  {
                         // the script is supposed to retun only jobID, but
                         // escape just in case
                         try {
-                          let slurm_output_split = slurm_output.split(' ');
                           jobEntry.pid = -1;
-                          for (let i=0;(i<slurm_output_split.length) && (jobEntry.pid<0);i++)
-                            if (comut.isInteger(slurm_output_split[i]))
-                              jobEntry.pid = parseInt ( slurm_output_split[i] );
+                          // remove LF from slurm output and split by space
+                          let slurm_output_split = slurm_output.replace('\n','').split(' ');
+                          // extract Job ID from last array item and try and parse to an integer
+                          let job_id = parseInt(slurm_output_split[slurm_output_split.length-1]);
+                          // if it parsed as an integer, set the jobEntry.pid
+                          if (comut.isInteger(job_id))
+                            jobEntry.pid = job_id;
+
                           log.standard ( 7,'task '    + task.id + ' submitted, ' +
                                            'name='    + jobName +
                                            ', pid='   + jobEntry.pid +
@@ -1500,7 +1504,7 @@ function _stop_job ( jobEntry )  {
                       utils.spawn ( 'qdel',pids,{} );
                 break;
 
-      case 'SLURM'  : pids = ['kill',jobEntry.pid];
+      case 'SLURM'  : pids = [jobEntry.pid];
                       subjobs = utils.readString (
                                       path.join(jobEntry.jobDir,'subjobs'));
                       if (subjobs)
