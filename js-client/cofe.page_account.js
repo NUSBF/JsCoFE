@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -608,7 +608,6 @@ function AccountPage ( sceneId )  {
                 '<p>You are logged out now.' );
               stopSessionChecks();
               reloadBrowser();
-              // makeLoginPage ( sceneId );
             }
           },null,'persist' );
 

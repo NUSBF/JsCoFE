@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.07.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Archive Dialog (archives given project)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2024
+ *  (C) E. Krissinel, A. Lebedev 2022-2025
  *
  *  =================================================================
  *
@@ -97,7 +97,6 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
           text  : 'Cancel', 
           click : function() {
                     if (self.archiving_started)
-                          // makeLoginPage ( __current_page.sceneId );
                           logout ( __current_page.element.id,3 );
                     else  $( this ).dialog( "close" );
                   }
@@ -118,7 +117,6 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
           text  : 'Close', 
           click : function() {
                     if (self.archiving_started)
-                          // makeLoginPage ( __current_page.sceneId );
                           logout ( __current_page.element.id,3 );
                     else  $( this ).dialog( "close" );
                   }

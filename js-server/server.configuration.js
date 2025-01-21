@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.11.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -553,6 +553,7 @@ function CCP4DirName()  {
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
     "update_notifications" : false,  // optional notification on CCP4 updates
+    "make_devel"       : "YES",  // optional, makes devel user at 1st start if YES
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "tmp_dir"          : null, // optional; when null then storage/tmp is used
@@ -601,10 +602,6 @@ function CCP4DirName()  {
                      "diskReserve" : 10000
                    }
     },
-    // REDUNDANT, NOT USED:
-    // "facilitiesPath"   : "./cofe-facilities",
-    // "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
-    // "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {  // optional item, may be null or missing
       "arpwarp" : {
         "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
