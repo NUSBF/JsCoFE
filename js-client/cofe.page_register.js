@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -155,7 +155,6 @@ function RegisterPage ( sceneId )  {
     back_btn = new Button       ( 'Back to User Login',image_path('login') );
     back_btn.addOnClickListener ( function(){ 
       reloadBrowser();
-      // makeLoginPage(sceneId); 
     });
   } else  {
     back_btn = new Button       ( 'Back to Admin Page',image_path('admin') );
