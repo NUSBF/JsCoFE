@@ -108,7 +108,9 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
   // Get user data object and generate a temporary password
   let pwd = '';
   if (userData.login=='devel')
-    pwd = 'devel';
+    pwd = 'devel';  // default initial password at first start
+  else if (userData.login=='admin')
+    pwd = 'admin';  // default initial password at first start
   else if (('localuser' in fe_server) && (userData.login==ud.__local_user_id))
     pwd = ud.__local_user_id;
   else if (userData.pwd.length>0)
@@ -119,11 +121,12 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
   log.standard ( 1,'making new user, login: ' + userData.login );
   log.standard ( 1,'    temporary password: ' + pwd );
   userData.pwd    = hashPassword ( pwd );
-  userData.action = ud.userdata_action.chpwd;
+  userData.action = ud.userdata_action.chpwd;  // request to change password at login
 
   userData.helpTopics = [];
 
-  if (userData.login=='admin')                  userData.role = ud.role_code.admin;
+  if (userData.login=='devel')                  userData.role = ud.role_code.developer;
+  else if (userData.login=='admin')             userData.role = ud.role_code.admin;
   else if (userData.login==ud.__local_user_id)  userData.role = ud.role_code.localuser;
                                           else  userData.role = ud.role_code.user;
   userData.knownSince = Date.now();
@@ -601,14 +604,27 @@ function readUserLoginHash()  {
   __userLoginHash = new UserLoginHash();
 
   if (!__userLoginHash.read())  {
-    let userData = new ud.UserData();
     if (!('localuser' in fe_server))  {
-      userData.name    = 'Developer';
+      // make first user(s) in server (not local) setup
+      let userData = new ud.UserData();
+      if (('make_devel' in fe_server) && 
+          (fe_server.make_devel.toUpperCase()=='YES'))  {
+        userData.name    = 'Developer';
+        userData.email   = conf.getEmailerConfig().maintainerEmail;
+        userData.login   = 'devel';
+        userData.pwd     = 'devel';
+        userData.licence = 'academic';
+        // userData.role    = ud.role_code.user;
+        userData.role    = ud.role_code.developer;
+        makeNewUser ( userData,function(response){} );
+        userData = new ud.UserData();
+      }
+      userData.name    = 'Admin';
       userData.email   = conf.getEmailerConfig().maintainerEmail;
-      userData.login   = 'devel';
-      userData.pwd     = 'devel';
+      userData.login   = 'admin';
+      userData.pwd     = 'admin';
       userData.licence = 'academic';
-      userData.role    = ud.role_code.user;
+      userData.role    = ud.role_code.admin;
       makeNewUser ( userData,function(response){} );
     }
     updateHash = true;
