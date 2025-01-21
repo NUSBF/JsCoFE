@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -1082,21 +1082,23 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   let alt = false;
   let n   = 0;
   for (let title in pdata)  {
-    let t = pdata[title].time/pdata[title].weight;
-    perf_table.setRow ( title,'',[
-        pdata[title].time_min.toFixed(2),
-        t.toFixed(2),
-        pdata[title].time_max.toFixed(2)
-      ],++n,alt );
-    alt = !alt;
-    if (title.startsWith('Server'))  {
-      perf_table.setRow ( 'Server request time, ms',
-          'Time between sending request and receiving a response in browser',[
-          __request_timing.time_min.toFixed(2),
-          (__request_timing.time_sum/__request_timing.n_sum).toFixed(2),
-          __request_timing.time_max.toFixed(2)
+    if (pdata[title].time_min && pdata[title].time_max)  {
+      let t = pdata[title].time/pdata[title].weight;
+      perf_table.setRow ( title,'',[
+          pdata[title].time_min.toFixed(2),
+          t.toFixed(2),
+          pdata[title].time_max.toFixed(2)
         ],++n,alt );
       alt = !alt;
+      if (title.startsWith('Server'))  {
+        perf_table.setRow ( 'Server request time, ms',
+            'Time between sending request and receiving a response in browser',[
+            __request_timing.time_min.toFixed(2),
+            (__request_timing.time_sum/__request_timing.n_sum).toFixed(2),
+            __request_timing.time_max.toFixed(2)
+          ],++n,alt );
+        alt = !alt;
+      }
     }
   }
 
