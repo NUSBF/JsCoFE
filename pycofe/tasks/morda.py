@@ -15,7 +15,7 @@
 #     ccp4-python morda.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    jobManager    is either SHELL or SGE
+#    jobManager    is SHELL, SLURM or SGE
 #    jobDir     is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -26,11 +26,11 @@
 #               may be missing even if job is run by SGE, so it should be
 #               checked upon using command line length. queueName=='-' means
 #               the same as "no name", but should be given if nSubJobs need
-#               to be specified.
+#               to be specified. Also applies to SLURM.
 #    nSubJobs   optional parameter giving the maximum number of subjobs that
 #               can be launched by the task. This parameter may be missing
 #               even if job is run by SGE, so it should be checked upon using
-#               comman line length
+#               comman line length. Also applies to SLURM.
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
@@ -83,14 +83,15 @@ class Morda(basic.TaskDriver):
         #    if sys.argv[4]!="-":
         #        queueName = sys.argv[4]
 
-        if self.jobManager == "SGE":
+        if self.jobManager in ("SGE", "SLURM"):
             nSubJobs = self.getCommandLineParameter ( "nproc" )
             if not nSubJobs:
-                nSubJobs = "0"
+                nSubJobs = "1"
             #if len(sys.argv)>5:
             #    nSubJobs = sys.argv[5]
         else:
             nSubJobs = "4"
+        self.file_stdout.write("Maximum of %s parallel subjobs\n" %nSubJobs)
 
         # end temporary fix
 
@@ -128,6 +129,7 @@ class Morda(basic.TaskDriver):
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
+                "--slurm" if self.jobManager == "SLURM" else
                 "--sge" if self.jobManager == "SGE" else "--mp",
                 "--tmpdir",tmp_dir,
                 "-f",cad_mtz,
