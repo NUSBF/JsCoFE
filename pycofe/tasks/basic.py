@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.09.24   <--  Date of Last Modification.
+#    20.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2025
 #
 # ============================================================================
 #
@@ -2434,6 +2434,9 @@ class TaskDriver(object):
 
     # ============================================================================
 
+    def onException(self):
+        return
+    
     def success ( self,have_results,hidden_results=False ):
         self.putCitations()
         if self.task:
@@ -2496,22 +2499,30 @@ class TaskDriver(object):
             self.run()
 
         except signal.Success as s:
+            
             signal_obj = s
 
         except signal.NoResults as s:
+            self.onException()
             signal_obj = s
 
         except signal.HiddenResults as s:
+            self.onException()
             signal_obj = s
 
         except signal.JobFailure as s:
+            
+            self.onException()
+              # just to make extra space after report
             signal_obj = s
 
         except signal.CofeSignal as s:
+            self.onException()
             self.python_fail_tab()
             signal_obj = s
 
         except:
+            self.onException()
             self.python_fail_tab()
             signal_obj = signal.JobFailure()
 
@@ -2545,5 +2556,5 @@ class TaskDriver(object):
                 "</div>",
                 0,col=1 )
         self.flush()
-
+        
         signal_obj.quitApp()

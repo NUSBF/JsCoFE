@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.11.24   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi,
- *      M. Fando 2016-2024
+ *      M. Fando 2016-2025
  *
  *  ==========================================================================
  *
@@ -752,8 +752,7 @@ if (!__template)  {
                         }
                       break;
           case 'REFI' : if (w1=='BREF')                          
-                        sec4.BFAC.value = words[2].toUpperCase().substring(0,4);
-
+                          sec2.BFAC.value = words[2].toUpperCase().substring(0,4);
                         else if (w1=='TLSC')  {
                           sec4.TLS.value = 'auto';
                           sec4.TLS_CYCLES.value = w2;
