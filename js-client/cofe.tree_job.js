@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.10.25   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -956,31 +956,42 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
 let reftask = null;  // reference task
 let refkeys = null;  // reference keywords
-  for (let i=0;(i<branch_task_list.length) && (!reftask) && (!refkeys);i++)  {
-    if (task._type==branch_task_list[i]._type)
-      reftask = branch_task_list[i];
-    else if ('data' in branch_task_list[i].output_data)  {
-      let data = branch_task_list[i].output_data.data;
-      for (let item_key in data)  {
-        let item_list = data[item_key];
-        if (Array.isArray(item_list))  {
-          for (let j=0;j<item_list.length;j++)  {
-            let item = item_list[j];
-            if (('refkeys' in item) && (task._type in item.refkeys))
-              refkeys = item.refkeys[task._type];
+  try {
+    for (let i=0;(i<branch_task_list.length) && (!reftask) && (!refkeys);i++)  {
+      if (task._type==branch_task_list[i]._type)
+        reftask = branch_task_list[i];
+      else if ('data' in branch_task_list[i].output_data)  {
+        let data = branch_task_list[i].output_data.data;
+        for (let item_key in data)  {
+          let item_list = data[item_key];
+          if (Array.isArray(item_list))  {
+            for (let j=0;j<item_list.length;j++)  {
+              let item = item_list[j];
+              if (('refkeys' in item) && (task._type in item.refkeys))
+                refkeys = item.refkeys[task._type];
+            }
           }
         }
       }
     }
+    if (reftask)  {
+      if (reftask.version<task.currentVersion())
+        return -1;  // version clash, stop
+      task.parameters = jQuery.extend ( true,{},reftask.parameters );
+      // task.copyParameters ( reftask );
+      return 1;  // reference task found and parameters copied, Ok
+    } else if (refkeys)
+      return task.set_refkeys_parameters ( refkeys );
+  } catch(e)  {
+    // window.setTimeout ( function(){
+    //   new MessageBox ( 'Cannot copy task parameters',
+    //     '<div style="width:400px;"><h2>Cannot task parameters</h2>' +
+    //     'The parameters of the last task cannot be copied. This may occur ' +
+    //     'if the task was created with an incompatible version of ' + appName() + 
+    //     ' or due to a potential bug.','msg_warning' );   
+    // },1000);
+    return -11111;
   }
-  if (reftask)  {
-    if (reftask.version<task.currentVersion())
-      return -1;  // version clash, stop
-    task.parameters = jQuery.extend ( true,{},reftask.parameters );
-    // task.copyParameters ( reftask );
-    return 1;  // reference task found and parameters copied, Ok
-  } else if (refkeys)
-    return task.set_refkeys_parameters ( refkeys );
   return 0;  // reference task or keys not found, Ok
 }
 
@@ -1012,11 +1023,12 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
                   new MessageBox ( 'Cannot copy job parameters',
                     '<div style="width:500px;"</div>' +
                     '<h2>Cannot copy parameters from previous job.</h2>' +
-                    'The previous job was created with a lower version of ' +
+                    'The previous job was created with an older version of ' +
                     appName() + ' and its parameters cannot be copied into ' +
-                    'the new one.<p>Please add the job with default parameters, ' +
-                    'using "<i>Add Job</i>" button from the control bar, and set ' +
-                    'parameters manually.</div>',
+                    'the new job in current version.<p>' +
+                    'To proceed, please add the job with default parameters ' +
+                    'by clicking the "<i>Add Job</i>" button in the control ' +
+                    'bar, and then set the parameters manually.</div>',
                     'msg_stop' );
                   if (onAdd_func)
                     onAdd_func ( -5,null,null );
@@ -1069,6 +1081,9 @@ let dataBox = this.harvestTaskData ( 1,[] );
 JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   if (!task.hasOwnProperty('task_chain'))
+    return;
+
+  if (('submitter' in task) && task.submitter && (task.submitter!=__login_id))
     return;
 
   if (task.task_chain.length<=0)  {

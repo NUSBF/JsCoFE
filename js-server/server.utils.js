@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.24   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,7 +61,7 @@
  *        function spawn            ( exeName,args,options )  
  *        function padDigits        ( number,digits ) 
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -930,6 +930,26 @@ let signal = readString ( path.join(jobDir,signal_file_name) );
 }
 
 
+function getJobSignalCode_async ( jobDir,callback_func,ntry=20,n=0 )  {
+// This function performs 'ntry' attempts to read the signal file, which may be
+// necessary if file system has a noticeable latency (e.g., NFS). Time intervals
+// start from 100ms and increase by 25ms on each iteration.
+  if (n<=ntry)  {
+    setTimeout ( function(){
+      let signal = readString ( path.join(jobDir,signal_file_name) );
+        if (signal)  {
+          let sigl = signal.split('\n');
+          if (sigl.length>1)
+                callback_func ( parseInt(sigl[sigl.length-1]) );
+          else  callback_func ( 300  );
+        } else
+          getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+      },n==0 ? 0 : 75 + n*25 );
+  } else
+    callback_func ( 301 );
+}
+
+
 // ===========================================================================
 
 
@@ -1225,50 +1245,51 @@ function setGracefulQuit()  {
 
 // ==========================================================================
 // export for use in node
-module.exports.configureCache        = configureCache;
-module.exports.fileExists            = fileExists;
-module.exports.fileStat              = fileStat;
-module.exports.isSymbolicLink        = isSymbolicLink;
-module.exports.dirExists             = dirExists;
-module.exports.fileSize              = fileSize;
-module.exports.removeFile            = removeFile;
-module.exports.makeSymLink           = makeSymLink;
-module.exports.readString            = readString;
-module.exports.readObject            = readObject;
-module.exports.readClass             = readClass;
-module.exports.writeString           = writeString;
-module.exports.appendString          = appendString;
-module.exports.writeObject           = writeObject;
-module.exports.copyFile              = copyFile;
-module.exports.moveFile              = moveFile;
-module.exports.flushDirCache         = flushDirCache;
-module.exports.moveDir               = moveDir;
-module.exports.moveDirAsync          = moveDirAsync;
-module.exports.copyDirAsync          = copyDirAsync;
-module.exports.copyDirSync           = copyDirSync;
-module.exports.mkDir                 = mkDir;
-module.exports.mkDir_check           = mkDir_check;
-module.exports.mkDir_anchor          = mkDir_anchor;
-module.exports.mkPath                = mkPath;
-module.exports.cleanDir              = cleanDir;
-module.exports.cleanDirExt           = cleanDirExt;
-module.exports.removeSymLinks        = removeSymLinks;
-module.exports.removePathAsync       = removePathAsync;
-module.exports.removePath            = removePath;
-module.exports.getDirectorySize      = getDirectorySize;
-module.exports.searchTree            = searchTree;
-module.exports.removeFiles           = removeFiles;
-module.exports.writeJobReportMessage = writeJobReportMessage;
-module.exports.jobSignalExists       = jobSignalExists;
-module.exports.removeJobSignal       = removeJobSignal;
-module.exports.writeJobSignal        = writeJobSignal;
-module.exports.getJobSignalCode      = getJobSignalCode;
-module.exports.clearRVAPIreport      = clearRVAPIreport;
-module.exports.getMIMEType           = getMIMEType;
-module.exports.capData               = capData;
-module.exports.send_file             = send_file;
-module.exports.receiveRequest        = receiveRequest;
-module.exports.killProcess           = killProcess;
-module.exports.spawn                 = spawn;
-module.exports.padDigits             = padDigits;
-module.exports.setGracefulQuit       = setGracefulQuit;
+module.exports.configureCache         = configureCache;
+module.exports.fileExists             = fileExists;
+module.exports.fileStat               = fileStat;
+module.exports.isSymbolicLink         = isSymbolicLink;
+module.exports.dirExists              = dirExists;
+module.exports.fileSize               = fileSize;
+module.exports.removeFile             = removeFile;
+module.exports.makeSymLink            = makeSymLink;
+module.exports.readString             = readString;
+module.exports.readObject             = readObject;
+module.exports.readClass              = readClass;
+module.exports.writeString            = writeString;
+module.exports.appendString           = appendString;
+module.exports.writeObject            = writeObject;
+module.exports.copyFile               = copyFile;
+module.exports.moveFile               = moveFile;
+module.exports.flushDirCache          = flushDirCache;
+module.exports.moveDir                = moveDir;
+module.exports.moveDirAsync           = moveDirAsync;
+module.exports.copyDirAsync           = copyDirAsync;
+module.exports.copyDirSync            = copyDirSync;
+module.exports.mkDir                  = mkDir;
+module.exports.mkDir_check            = mkDir_check;
+module.exports.mkDir_anchor           = mkDir_anchor;
+module.exports.mkPath                 = mkPath;
+module.exports.cleanDir               = cleanDir;
+module.exports.cleanDirExt            = cleanDirExt;
+module.exports.removeSymLinks         = removeSymLinks;
+module.exports.removePathAsync        = removePathAsync;
+module.exports.removePath             = removePath;
+module.exports.getDirectorySize       = getDirectorySize;
+module.exports.searchTree             = searchTree;
+module.exports.removeFiles            = removeFiles;
+module.exports.writeJobReportMessage  = writeJobReportMessage;
+module.exports.jobSignalExists        = jobSignalExists;
+module.exports.removeJobSignal        = removeJobSignal;
+module.exports.writeJobSignal         = writeJobSignal;
+module.exports.getJobSignalCode       = getJobSignalCode;
+module.exports.getJobSignalCode_async = getJobSignalCode_async;
+module.exports.clearRVAPIreport       = clearRVAPIreport;
+module.exports.getMIMEType            = getMIMEType;
+module.exports.capData                = capData;
+module.exports.send_file              = send_file;
+module.exports.receiveRequest         = receiveRequest;
+module.exports.killProcess            = killProcess;
+module.exports.spawn                  = spawn;
+module.exports.padDigits              = padDigits;
+module.exports.setGracefulQuit        = setGracefulQuit;

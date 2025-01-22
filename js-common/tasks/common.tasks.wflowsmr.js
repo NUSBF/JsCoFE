@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Single Model MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -169,7 +169,7 @@ TaskWFlowSMR.prototype.icon           = function()  { return 'task_wflowsmr';  }
 TaskWFlowSMR.prototype.clipboard_name = function()  { return '"SMR Workflow"'; }
 
 TaskWFlowSMR.prototype.desc_title     = function()  {
-  return 'data import, ASU definition, phaser MR, refinement, ligand fitting and PDB deposition';
+  return 'data import, ASU definition, phaser MR, refinement, ligand fitting and PDB validation report';
 }
 
 //TaskWFlowSMR.prototype.canRunInAutoMode = function() { return true; }

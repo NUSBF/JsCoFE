@@ -1,1 +1,0 @@
-throw new Error("Dummy worker.js file should never be used");

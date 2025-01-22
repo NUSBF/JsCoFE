@@ -1,23 +1,18 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    13.07.21   <--  Date of Last Modification.
+#    20.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR SIMBAD TASK
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2025
 #
 # ============================================================================
 #
-
-import os
-import math
 
 from pycofe.proc     import verdict
 from pycofe.verdicts import verdict_asudef
@@ -106,8 +101,8 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,secId="" ):
         "title": "Phasing summary",
         "state": 0, "class": "table-blue", "css": "text-align:right;",
         "rows" : [
-            { "header": { "label": "Solvent %%", "tooltip": "Solvent percent"},
-              "data"  : [ str(verdict_meta["sol"]) ]},
+            { "header": { "label": "Solvent %", "tooltip": "Solvent percent"},
+              "data"  : [ str(round(verdict_meta["sol"],1)) ]},
             { "header": { "label": "LLG", "tooltip": "Log-Likelihood Gain score"},
               "data"  : [ str(verdict_meta["fllg"]) ]},
             { "header": { "label": "TFZ", "tooltip": "Translation Function Z-score"},

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,7 +40,7 @@
  *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
  *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -494,9 +494,12 @@ function checkJobsOnTimer()  {
         // we do not save changed registry here -- this will be done in
         // ncJobFinished() before asynchronous send to FE
         */
-        let code = utils.getJobSignalCode ( jobEntry.jobDir );
-        // whichever the code is, wrap-up the job
-        ncJobFinished ( job_token,code );
+        // let code = utils.getJobSignalCode ( jobEntry.jobDir );
+        // // whichever the code is, wrap-up the job
+        // ncJobFinished ( job_token,code );
+        utils.getJobSignalCode_async ( jobEntry.jobDir,function(code){
+          ncJobFinished ( job_token,code );
+        });
       } else if (crTime-jobEntry.startTime>pulseLifeTime)  {
         // check pulse
         let progress = utils.fileSize ( path.join(jobEntry.jobDir,'_stdout.log') );
@@ -1176,25 +1179,27 @@ function ncRunJob ( job_token,meta )  {
                       // crashed) and then resumed.
                       job.on ( 'close',function(returncode){
 
-                        let code = utils.getJobSignalCode ( jobEntry.jobDir );
+                        // let code = utils.getJobSignalCode ( jobEntry.jobDir );
+                        utils.getJobSignalCode_async ( jobEntry.jobDir,function(code){
+                          if (code)
+                            log.debug ( 103,'[' + comut.padDigits(task.id,4) +
+                                            '] code=' + code );
+                          if (stdout)
+                            log.debug ( 104,'[' + comut.padDigits(task.id,4) +
+                                            '] stdout=' + stdout );
+                          if (stderr)
+                            log.debug ( 105,'[' + comut.padDigits(task.id,4) +
+                                            '] stderr=' + stderr );
+  
+                          if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
+  //                          if ((code!=0) && (code!=203) && (code!=204))
+                            if (code && (code!=203) && (code!=204) && (code!=205))
+                              writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
+                            if (jobEntry.jobStatus!=task_t.job_code.exiting)
+                              ncJobFinished ( job_token,code );
+                          }  
 
-                        if (code)
-                          log.debug ( 103,'[' + comut.padDigits(task.id,4) +
-                                          '] code=' + code );
-                        if (stdout)
-                          log.debug ( 104,'[' + comut.padDigits(task.id,4) +
-                                          '] stdout=' + stdout );
-                        if (stderr)
-                          log.debug ( 105,'[' + comut.padDigits(task.id,4) +
-                                          '] stderr=' + stderr );
-
-                        if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
-//                          if ((code!=0) && (code!=203) && (code!=204))
-                          if (code && (code!=203) && (code!=204) && (code!=205))
-                            writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
-                          if (jobEntry.jobStatus!=task_t.job_code.exiting)
-                            ncJobFinished ( job_token,code );
-                        }
+                        });
 
                       });
                   break;
@@ -1282,11 +1287,15 @@ function ncRunJob ( job_token,meta )  {
                         // the script is supposed to retun only jobID, but
                         // escape just in case
                         try {
-                          let slurm_output_split = slurm_output.split(' ');
                           jobEntry.pid = -1;
-                          for (let i=0;(i<slurm_output_split.length) && (jobEntry.pid<0);i++)
-                            if (comut.isInteger(slurm_output_split[i]))
-                              jobEntry.pid = parseInt ( slurm_output_split[i] );
+                          // remove LF from slurm output and split by space
+                          let slurm_output_split = slurm_output.replace('\n','').split(' ');
+                          // extract Job ID from last array item and try and parse to an integer
+                          let job_id = parseInt(slurm_output_split[slurm_output_split.length-1]);
+                          // if it parsed as an integer, set the jobEntry.pid
+                          if (comut.isInteger(job_id))
+                            jobEntry.pid = job_id;
+
                           log.standard ( 7,'task '    + task.id + ' submitted, ' +
                                            'name='    + jobName +
                                            ', pid='   + jobEntry.pid +
@@ -1495,7 +1504,7 @@ function _stop_job ( jobEntry )  {
                       utils.spawn ( 'qdel',pids,{} );
                 break;
 
-      case 'SLURM'  : pids = ['kill',jobEntry.pid];
+      case 'SLURM'  : pids = [jobEntry.pid];
                       subjobs = utils.readString (
                                       path.join(jobEntry.jobDir,'subjobs'));
                       if (subjobs)
