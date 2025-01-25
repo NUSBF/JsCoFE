@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    25.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -909,7 +909,7 @@ let cfg = conf.getServerConfig();
   // may fail
   task.cleanJobDir ( jobEntry.jobDir );
 
-  if (jobEntry.sendTrials==cfg.maxSendTrials) {
+  if ((jobEntry.sendTrials==cfg.maxSendTrials) || (jobEntry.push_back!='YES')) {
 
     log.debug2 ( 101,'put status' );
 
@@ -1051,7 +1051,7 @@ let cfg = conf.getServerConfig();
 
     } else  {
 
-      // just prepare jobball for fetching by FE
+      // just prepare jobball for fetching by FE (this NC was used as 'REMOTE')
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
       // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},

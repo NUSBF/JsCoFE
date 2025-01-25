@@ -325,7 +325,7 @@ let nc_servers = conf.getNCConfigs();
         delete feJobRegister.token_map[index];
         were_changes = true;
       
-      } else if (jobEntry && (!check_jobs[index].status!=task_t.job_code.running))  {
+      } else if (jobEntry && (check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
         (function(server_no,job_entry){
@@ -348,6 +348,7 @@ let nc_servers = conf.getNCConfigs();
             // Check whether this is a signal response or a possible zip file
             // this is redundant in view of preliminary checks, but we leave
             // this code for safety
+            console.log ( ' >>>>> filePath=' + filePath )
             if (utils.fileSize(filePath)<1000)  {  // likely a signal
               let rdata = utils.readObject ( filePath );
               if (rdata)  {
