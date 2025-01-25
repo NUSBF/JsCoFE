@@ -1073,6 +1073,8 @@ let cfg = conf.getServerConfig();
             let taskDataPath2 = path.join ( jobEntry.jobDir,task_t.jobDataFName );
             let task2 = utils.readClass ( taskDataPath2 );
             console.log ( ' >>>>> state 2.1 = ' + task2.state )
+            console.log ( ' >>>>> state 2.1 = ' + jobballSize )
+            console.log ( ' >>>>> state 2.1 = ' + jobballPath )
           } // else  {
           // errors
           // }
@@ -1971,7 +1973,7 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
     console.log ( ' >>>>> state 3.1 = ' + task3.state )
 
     let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
-    // console.log ( 'jobballPath=' + jobballPath );
+    console.log ( ' >>>>> jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){
