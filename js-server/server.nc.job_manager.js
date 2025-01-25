@@ -909,6 +909,8 @@ let cfg = conf.getServerConfig();
   // may fail
   task.cleanJobDir ( jobEntry.jobDir );
 
+  console.log ( ' >>>>> p1')
+
   if ((jobEntry.sendTrials==cfg.maxSendTrials) || (jobEntry.push_back!='YES')) {
 
     log.debug2 ( 101,'put status' );
@@ -945,6 +947,8 @@ let cfg = conf.getServerConfig();
 
     // write job metadata back to job directory
     utils.writeObject ( taskDataPath,task );
+
+    console.log ( ' >>>>> p2 ' + task.state)
 
   }
 
