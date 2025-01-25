@@ -348,7 +348,6 @@ let nc_servers = conf.getNCConfigs();
             // Check whether this is a signal response or a possible zip file
             // this is redundant in view of preliminary checks, but we leave
             // this code for safety
-            console.log ( ' >>>>> filePath=' + filePath )
             if (utils.fileSize(filePath)<1000)  {  // likely a signal
               let rdata = utils.readObject ( filePath );
               if (rdata)  {

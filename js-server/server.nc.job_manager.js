@@ -853,9 +853,10 @@ let cfg = conf.getServerConfig();
   // In such case, the job registry entry is already marked as 'exiting', so
   // that nothing else should interefere with the job.
 
-  jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
-                                                 // is called directly from
-                                                 // job listener in SHELL mode
+  if (jobEntry.push_back=='YES')
+    jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
+                                                   // is called directly from
+                                                   // job listener in SHELL mode
 // *** for debugging
 //if (!jobEntry.endTime)  __use_fake_fe_url = true;
   if (!jobEntry.endTime)  {
@@ -909,9 +910,7 @@ let cfg = conf.getServerConfig();
   // may fail
   task.cleanJobDir ( jobEntry.jobDir );
 
-  console.log ( ' >>>>> p1')
-
-  if ((jobEntry.sendTrials==cfg.maxSendTrials) || (jobEntry.push_back!='YES')) {
+  if ((jobEntry.sendTrials==cfg.maxSendTrials) || (jobEntry.push_back=='NO')) {
 
     log.debug2 ( 101,'put status' );
 
@@ -947,8 +946,6 @@ let cfg = conf.getServerConfig();
 
     // write job metadata back to job directory
     utils.writeObject ( taskDataPath,task );
-
-    console.log ( ' >>>>> p2 ' + task.state)
 
   }
 
@@ -1066,6 +1063,9 @@ let cfg = conf.getServerConfig();
         function(errs,jobballPath,jobballSize){
           if (jobballSize>0)  {
             jobEntry.sendTrials = 0;  // indicate that it's ready
+            jobEntry.jobStatus  = task_t.job_code.exiting;
+            writeNCJobRegister();
+            console.log ( ' >>>>> job status changed')
           } // else  {
           // errors
           // }
@@ -1364,7 +1364,7 @@ function ncRunJob ( job_token,meta )  {
 
     }
 
-    // put a mark in joon entry
+    // put a mark in job entry
     jobEntry.jobStatus = task_t.job_code.running;
 
     writeNCJobRegister();
@@ -1943,6 +1943,8 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   // log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
 
   let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
+
+  console.log ( ' >>>>> job status = ' + jobEntry.jobStatus )
 
   if (!jobEntry)  {
 
