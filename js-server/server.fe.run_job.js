@@ -378,6 +378,14 @@ let nc_servers = conf.getNCConfigs();
                                 ', filesize='  + jobballSize  +
                                 ', job_token=' + job_entry.job_token );
                 } else  {
+
+          console.log ( ' >>>>> 5.1 ' + jobDir)
+          console.log ( ' >>>>> 5.1 ' + jobballSize)
+          let taskDataPath5 = path.join ( jobDir,task_t.jobDataFName );
+          let task5 = utils.readClass ( taskDataPath5 );
+          console.log ( ' >>>>> state 5.1 = ' + task5.state )
+
+
                   let meta = utils.readObject ( path.join(jobDir,cmd.ncMetaFileName) );
                   if (meta)
                     _place_job_results ( job_entry.job_token,code,'',meta,null );
