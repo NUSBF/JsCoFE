@@ -61,7 +61,7 @@ const request   = require('request');
 //  load application modules
 const emailer   = require('./server.emailer');
 const utils     = require('./server.utils');
-const cache     = require('./server.cache');
+// const cache     = require('./server.cache');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const conf      = require('./server.configuration');
@@ -377,7 +377,6 @@ let nc_servers = conf.getNCConfigs();
                                 ', filesize='  + jobballSize  +
                                 ', job_token=' + job_entry.job_token );
                 } else  {
-                  cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
                   let meta = utils.readObject ( path.join(jobDir,cmd.ncMetaFileName) );
                   if (meta)
                     _place_job_results ( job_entry.job_token,code,'',meta,null );
@@ -1639,7 +1638,6 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     send_dir.receiveDir ( jobDir,server_request,
       function(code,errs,meta){
-        cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
         _place_job_results ( job_token,code,errs,meta,server_response );
       });
 
