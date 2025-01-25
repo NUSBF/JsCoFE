@@ -36,14 +36,16 @@ const request    = require('request'   );
 const formidable = require('formidable');
 const path       = require('path'      );
 const fs         = require('fs-extra'  );
-const crypto     = require('crypto'    );
+// const crypto     = require('crypto'    );
 const archiver   = require('archiver'  );
 const zl         = require('zip-lib'   );
 
 //  load application modules
-const conf  = require('./server.configuration'      );
-const cmd   = require('../js-common/common.commands');
-const utils = require('./server.utils'              );
+const cmd    = require('../js-common/common.commands'            );
+const task_t = require('../js-common/tasks/common.tasks.template');
+const conf   = require('./server.configuration'                  );
+const cache  = require('./server.cache'                          );
+const utils  = require('./server.utils'                          );
 
 //  prepare log
 const log   = require('./server.log').newLog(13);
@@ -368,12 +370,18 @@ function unpackDir ( packPath,dirPath,remove_pack_bool,onReady_func )  {
       setTimeout ( function(){  // dedicated thread required on Windows
         if (remove_pack_bool)
           utils.removeFile ( packPath );
+        // this flushes job metadata cache, which only makes sense and is 
+        // necessary for job directories, but is harmless in all other cases
+        cache.removeItem ( path.join(dirPath,task_t.jobDataFName) );
         onReady_func ( 0,packSize );
       },0 );
     }, function (err) {
       setTimeout ( function(){  // dedicated thread required on Windows
         if (remove_pack_bool)
           utils.removeFile ( packPath );
+        // this flushes job metadata cache, which only makes sense and is 
+        // necessary for job directories, but is harmless in all other cases
+        cache.removeItem ( path.join(dirPath,task_t.jobDataFName) );
         onReady_func ( err,packSize );
       },0 );
     });
@@ -389,7 +397,6 @@ function unpackDir ( packPath,dirPath,remove_pack_bool,onReady_func )  {
 
 // ==========================================================================
 
-// function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 function receiveDir ( jobDir,server_request,onFinish_func )  {
 
   // make structure to keep download metadata
@@ -410,14 +417,13 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
   let tmpDir = conf.getTmpFileName();
 
   // store all uploads in the /uploads directory
-  // if (!utils.fileExists(tmpDir))  {
-    if (!utils.mkDir(tmpDir))  {
-      if (onFinish_func)
-        onFinish_func ( 'err_dirnotexist','err_makedir',upload_meta );  // file renaming errors
-      log.error ( 9,'upload directory ' + tmpDir + ' cannot be created' );
-      return;
-    }
-  // }
+  if (!utils.mkDir(tmpDir))  {
+    cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
+    if (onFinish_func)
+      onFinish_func ( 'err_dirnotexist','err_makedir',upload_meta );  // file renaming errors
+    log.error ( 9,'upload directory ' + tmpDir + ' cannot be created' );
+    return;
+  }
 
   // store all uploads in temporary directory
 
@@ -452,6 +458,9 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
         if (upload_meta.hasOwnProperty('dirpath'))  {
 
           fs.copy ( upload_meta.dirpath,jobDir,function(err){
+            // this flushes job metadata cache, which only makes sense and is 
+            // necessary for job directories, but is harmless in all other cases
+            cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
             if (onFinish_func)
               onFinish_func ( 0,errs,upload_meta );  //  integer code : unpacking was run
             if (!err)
@@ -488,8 +497,8 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
             // unpack all service jobballs (their names start with double underscore)
             // and clean them out
-            // unpackDir ( jobDir,tmpDir, function(code,packSize){
             unpackDir ( packPath,jobDir,true, function(code,packSize){
+              // cache is flushed in unpackDir
               if (onFinish_func)
                 onFinish_func ( code,errs,upload_meta );  //  integer code : unpacking was run
               if (!code)  {
@@ -509,6 +518,9 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
           } else if (onFinish_func)  {
             utils.removePath ( tmpDir );
+            // this flushes job metadata cache, which only makes sense and is 
+            // necessary for job directories, but is harmless in all other cases
+            cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
             onFinish_func ( 'err_rename',errs,upload_meta );  // file renaming errors
           }
 
@@ -516,6 +528,9 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
       } else  {
         utils.removePath ( tmpDir );
+        // this flushes job metadata cache, which only makes sense and is 
+        // necessary for job directories, but is harmless in all other cases
+        cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
         if (onFinish_func)
           onFinish_func ( 'err_dirnotexist',errs,upload_meta );  // file renaming errors
         log.error ( 17,'target directory ' + jobDir + ' does not exist' );
@@ -523,6 +538,9 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
 
     } else if (onFinish_func)  {
       utils.removePath ( tmpDir );
+      // this flushes job metadata cache, which only makes sense and is 
+      // necessary for job directories, but is harmless in all other cases
+      cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
       onFinish_func ( 'err_transmission',errs,upload_meta );  // data transmission errors
     }
 
@@ -534,6 +552,9 @@ function receiveDir ( jobDir,server_request,onFinish_func )  {
   } catch(err) {
     errs += 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
     log.error ( 18,'receive directory parse errors: ' + err );
+    // this flushes job metadata cache, which only makes sense and is 
+    // necessary for job directories, but is harmless in all other cases
+    cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
     if (onFinish_func)
       onFinish_func ( 'err_parsing',errs,upload_meta );  // file renaming errors
   }
