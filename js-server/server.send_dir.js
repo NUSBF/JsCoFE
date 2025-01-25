@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.24   <--  Date of Last Modification.
+ *    25.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -378,25 +378,7 @@ function unpackDir ( packPath,dirPath,remove_pack_bool,onReady_func )  {
       },0 );
     });
 
-  // zl.extract ( packPath,unpack_dir )
-  //   .then(function() {
-  //     setTimeout ( function(){  // dedicated thread required on Windows
-  //       __after_unzip ( unpack_dir,dirPath,tmpDir,packPath,
-  //                       cleanTmpDir,remove_pack_bool,function(e){
-  //         onReady_func ( 0,packSize );
-  //       });
-  //     },0 );
-  //   }, function (err) {
-  //     setTimeout ( function(){  // dedicated thread required on Windows
-  //       __after_unzip ( unpack_dir,dirPath,tmpDir,packPath,
-  //                       cleanTmpDir,remove_pack_bool,function(e){
-  //         onReady_func ( err,packSize );
-  //       });
-  //     },0 );
-  //   });
-
 }
-
 
 // function unpackDir ( dirPath,cleanTmpDir, onReady_func )  {
 // // unpack all service jobballs (their names start with double underscore)
@@ -404,7 +386,6 @@ function unpackDir ( packPath,dirPath,remove_pack_bool,onReady_func )  {
 //   let packPath = getPackPath ( dirPath );
 //   unpackDir1 ( dirPath,packPath,cleanTmpDir,true,onReady_func );
 // }
-
 
 // ==========================================================================
 

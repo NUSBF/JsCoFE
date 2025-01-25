@@ -1055,11 +1055,6 @@ let cfg = conf.getServerConfig();
       // just prepare jobball for fetching by FE (this NC was used as 'REMOTE')
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
-      // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
-
-      console.log ( ' >>>>> p1.1 = ' + taskDataPath)
-      let task1 = utils.readClass ( taskDataPath );
-      console.log ( ' >>>>> state 1.1 = ' + task1.state )
     
       send_dir.packDir  ( jobEntry.jobDir, { 
           compression : 5,
@@ -1070,11 +1065,6 @@ let cfg = conf.getServerConfig();
             jobEntry.sendTrials = 0;  // indicate that it's ready
             jobEntry.jobStatus  = task_t.job_code.exiting;
             writeNCJobRegister();
-            let taskDataPath2 = path.join ( jobEntry.jobDir,task_t.jobDataFName );
-            let task2 = utils.readClass ( taskDataPath2 );
-            console.log ( ' >>>>> state 2.1 = ' + task2.state )
-            console.log ( ' >>>>> state 2.1 = ' + jobballSize )
-            console.log ( ' >>>>> state 2.1 = ' + jobballPath )
           } // else  {
           // errors
           // }
@@ -1968,12 +1958,7 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   
   } else  {
 
-    let taskDataPath3 = path.join ( jobEntry.jobDir,task_t.jobDataFName );
-    let task3 = utils.readClass ( taskDataPath3 );
-    console.log ( ' >>>>> state 3.1 = ' + task3.state )
-
     let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
-    console.log ( ' >>>>> jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){
@@ -1982,15 +1967,6 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
           else
             log.standard ( 105,'task ' + jobEntry.task_id + ' fetched back by FE, token:' +
                                post_data_obj.job_token );
-
-          let taskDataPath4 = path.join ( jobEntry.jobDir,task_t.jobDataFName );
-          let task4 = utils.readClass ( taskDataPath4 );
-          console.log ( ' >>>>> state 3.2 = ' + task4.state )
-                           
-          // // if (!rc)  // no errors
-          // //   ncJobRegister.removeJob ( post_data_obj.job_token );
-          // Jobs are deleted by a separate command from FE, after checking on
-          // transmission and unoacking errors
         }
       );
     }
