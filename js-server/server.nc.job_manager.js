@@ -1056,6 +1056,11 @@ let cfg = conf.getServerConfig();
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
       // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
+
+      console.log ( ' >>>>> p1.1 = ' + taskDataPath)
+      let task1 = utils.readClass ( taskDataPath );
+      console.log ( ' >>>>> state 1.1 = ' + task1.state )
+    
       send_dir.packDir  ( jobEntry.jobDir, { 
           compression : 5,
           destination : send_dir.getPackPath ( jobEntry.jobDir )
@@ -1065,7 +1070,9 @@ let cfg = conf.getServerConfig();
             jobEntry.sendTrials = 0;  // indicate that it's ready
             jobEntry.jobStatus  = task_t.job_code.exiting;
             writeNCJobRegister();
-            console.log ( ' >>>>> job status changed')
+            let taskDataPath2 = path.join ( jobEntry.jobDir,task_t.jobDataFName );
+            let task2 = utils.readClass ( taskDataPath2 );
+            console.log ( ' >>>>> state 2.1 = ' + task2.state )
           } // else  {
           // errors
           // }
@@ -1943,8 +1950,6 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   // log.detailed ( 10,'stop object ' + JSON.stringify(post_data_obj) );
 
   let jobEntry = ncJobRegister.getJobEntry ( post_data_obj.job_token );
-
-  console.log ( ' >>>>> job status = ' + jobEntry.jobStatus )
 
   if (!jobEntry)  {
 
