@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.12.24   <--  Date of Last Modification.
+ *    25.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -369,7 +369,6 @@ let nc_servers = conf.getNCConfigs();
 
             let jobDir = prj.getJobDirPath ( job_entry.loginData,job_entry.project,
                                              job_entry.jobId );
-            // send_dir.unpackDir1 ( jobDir,filePath,null,true,
             send_dir.unpackDir ( filePath,jobDir,true,
               function(code,jobballSize){
                 if (code)  {
@@ -378,14 +377,7 @@ let nc_servers = conf.getNCConfigs();
                                 ', filesize='  + jobballSize  +
                                 ', job_token=' + job_entry.job_token );
                 } else  {
-
-          console.log ( ' >>>>> 5.1 ' + jobDir)
-          console.log ( ' >>>>> 5.1 ' + jobballSize)
-          let taskDataPath5 = path.join ( jobDir,task_t.jobDataFName );
-          let task5 = utils.readClass ( taskDataPath5 );
-          console.log ( ' >>>>> state 5.1 = ' + task5.state )
-
-
+                  cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
                   let meta = utils.readObject ( path.join(jobDir,cmd.ncMetaFileName) );
                   if (meta)
                     _place_job_results ( job_entry.job_token,code,'',meta,null );
