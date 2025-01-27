@@ -63,8 +63,8 @@
  *   JOB  remark  The end
  *   JOB  rfree
  *
- * Jobs are fetched zipped directory 'cloud_fetch', which can contain one or
- * more job directories satisfying job specifications. Job types are the same 
+ * Jobs are fetched as a zipped directory 'cloud_fetch', which can contain one
+ * or more job directories satisfying job specifications. Job types are the same 
  * as in custom workflows.
  * 
  */

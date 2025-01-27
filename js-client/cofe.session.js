@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2024
+ *  (C) E. Krissinel, A. Lebedev 2020-2025
  *
  *  =================================================================
  *
@@ -268,11 +268,11 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               switch (page_switch)  {
 
-                case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
-                            makeAdminPage ( sceneId );
-                          else if ((!__local_setup) && (userData.action!=userdata_action.none) &&
+                case 0 :  if ((!__local_setup) && (userData.action!=userdata_action.none) &&
                                    (userData.login!=__local_user_id))
                             makeAccountPage ( sceneId );
+                          else if ((__user_role==role_code.admin) && (userData.login=='admin'))
+                            makeAdminPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
                               __current_folder = data.currentFolder;
