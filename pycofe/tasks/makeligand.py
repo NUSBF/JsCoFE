@@ -87,6 +87,7 @@ class MakeLigand(basic.TaskDriver):
                 lig_path = os.path.join ( os.environ["CCP4"],"lib","data","monomers",
                                           code[0].lower(),code + ".cif" )
             xyzPath  = code + ".pdb"
+            cifPath  = code + ".cif"
 
             if os.path.isfile(lig_path):
                 # make AceDrg command line
@@ -164,10 +165,12 @@ class MakeLigand(basic.TaskDriver):
                     self.runApp ( "acedrg.bat",cmd,logType="Main" )
                 else:
                     self.runApp ( "acedrg",cmd,logType="Main" )
-                if not os.path.exists(xyzPath):
-                    cifPath  = code + ".cif"
-                    if not os.path.exists(cifPath):
-                        cifPath = code + "_final.cif"
+                cifPath  = code + ".cif"
+                if not os.path.exists(cifPath):
+                    cifPath = code + "_final.cif"
+                if not os.path.exists(cifPath):
+                    cifPath = code + "_mol_0.cif"
+                if os.path.exists(xyzPath):
                     cif = gemmi.cif.read_file ( cifPath )
                     st  = gemmi.make_structure_from_chemcomp_block ( cif["comp_" + code] )
                     while len(st)>1:  # because of gemmi bug
