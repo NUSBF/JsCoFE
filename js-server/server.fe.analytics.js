@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Analytics
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2024
+ *  (C) E. Krissinel, A. Lebedev 2022-2025
  *
  *  ==========================================================================
  *
@@ -371,14 +371,16 @@ FEAnalytics.prototype.setPerformance = function ( title,time,weight,
 
 
 FEAnalytics.prototype.logPerformance = function ( title,time,weight )  {
-  if (title in this.performance)  {
-    this.performance[title].time   += time;
-    this.performance[title].weight += weight;
-    let t = time/weight;
-    this.performance[title].time_min = Math.min(this.performance[title].time_min,t);
-    this.performance[title].time_max = Math.max(this.performance[title].time_max,t);
-  } else  {
-    this.setPerformance ( title,time,weight,time/weight,time/weight );
+  if (weight)  {
+    if (title in this.performance)  {
+      this.performance[title].time   += time;
+      this.performance[title].weight += weight;
+      let t = time/weight;
+      this.performance[title].time_min = Math.min(this.performance[title].time_min,t);
+      this.performance[title].time_max = Math.max(this.performance[title].time_max,t);
+    } else  {
+      this.setPerformance ( title,time,weight,time/weight,time/weight );
+    }
   }
 }
 

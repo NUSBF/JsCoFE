@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.12.24   <--  Date of Last Modification.
+ *    25.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -61,7 +61,7 @@ const request   = require('request');
 //  load application modules
 const emailer   = require('./server.emailer');
 const utils     = require('./server.utils');
-const cache     = require('./server.cache');
+// const cache     = require('./server.cache');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const conf      = require('./server.configuration');
@@ -325,7 +325,7 @@ let nc_servers = conf.getNCConfigs();
         delete feJobRegister.token_map[index];
         were_changes = true;
       
-      } else if (jobEntry && (!check_jobs[index].status!=task_t.job_code.running))  {
+      } else if (jobEntry && (check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
         (function(server_no,job_entry){
@@ -369,7 +369,6 @@ let nc_servers = conf.getNCConfigs();
 
             let jobDir = prj.getJobDirPath ( job_entry.loginData,job_entry.project,
                                              job_entry.jobId );
-            // send_dir.unpackDir1 ( jobDir,filePath,null,true,
             send_dir.unpackDir ( filePath,jobDir,true,
               function(code,jobballSize){
                 if (code)  {
@@ -1639,7 +1638,6 @@ function getJobResults ( job_token,server_request,server_response )  {
 
     send_dir.receiveDir ( jobDir,server_request,
       function(code,errs,meta){
-        cache.removeItem ( path.join(jobDir,task_t.jobDataFName) );
         _place_job_results ( job_token,code,errs,meta,server_response );
       });
 
