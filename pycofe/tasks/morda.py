@@ -15,8 +15,8 @@
 #     ccp4-python morda.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    jobManager    is SHELL, SLURM or SGE
-#    jobDir     is path to job directory, having:
+#    jobManager    is SHELL, SLURM, SCRIPT or SGE
+#    jobDir        is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
@@ -75,21 +75,13 @@ class Morda(basic.TaskDriver):
 
         # get "extra" command line arguments
 
-        # temporary fix:
-
         queueName = self.getCommandLineParameter ( "queue" )
-        #queueName = "";
-        #if len(sys.argv)>4:
-        #    if sys.argv[4]!="-":
-        #        queueName = sys.argv[4]
 
         nSubJobs = "4"  # works for running in SHELL
         if self.jobManager in ["SGE","SCRIPT","SLURM"]:
             nSubJobs = self.getCommandLineParameter ( "ncores" )
             if not nSubJobs:
                 nSubJobs = "1"
-
-        # end temporary fix
 
         # Prepare morda job
         # fetch input data
@@ -126,7 +118,8 @@ class Morda(basic.TaskDriver):
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
                 "--slurm" if self.jobManager == "SLURM" else
-                "--sge" if self.jobManager == "SGE" else "--mp",
+                "--sge"   if self.jobManager == "SGE"   else 
+                "--mp",
                 "--tmpdir",tmp_dir,
                 "-f",cad_mtz,
                 "-s",self.morda_seq(),
