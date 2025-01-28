@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    28.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,17 +19,19 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import shutil
+# import shutil
 
 #  application imports
 from . import basic
+from pycofe.verdicts import verdict_morda
+from pycofe.auto     import auto,auto_workflow
 
 
 # ============================================================================
@@ -90,6 +92,8 @@ class Balbes(basic.TaskDriver):
 
         have_results = False
 
+        row0 = self.rvrow + 1
+
         pdb_path = os.path.join ( workDir,"results","refmac_final_result.pdb" )
 
         structure = self.finaliseStructure ( pdb_path,self.outputFName,hkl,None,
@@ -100,6 +104,43 @@ class Balbes(basic.TaskDriver):
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
             have_results = True
+
+            rfactor = float ( self.generic_parser_summary["refmac"]["R_factor"] )
+            rfree   = float ( self.generic_parser_summary["refmac"]["R_free"]   )
+
+            # Verdict section
+
+            verdict_meta = {
+                # "nfitted0" : nfitted0,
+                "nfitted"  : structure.getNofPolymers(),
+                "nasu"     : revision.getNofASUMonomers(),
+                "rfree"    : rfree,
+                "rfactor"  : rfactor
+            }
+            verdict_morda.putVerdictWidget ( self,verdict_meta,row0 )
+
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                        "data" : {
+                            "revision" : [revision]
+                        },
+                        "scores" :  {
+                            "Rfactor"  : rfactor,
+                            "Rfree"    : rfree
+                        }
+                })
+
+            else:  # pre-coded workflow framework
+                auto.makeNextTask ( self,{
+                    "revision" : revision,
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                }, log=self.file_stderr)
+
+        else:
+            self.putMessage ( "<h3>Structure cannot be formed</h3>" )
+
 
         # this will go in the project tree job's line
         if not have_results:
