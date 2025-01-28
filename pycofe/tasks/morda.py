@@ -83,6 +83,8 @@ class Morda(basic.TaskDriver):
             if not nSubJobs:
                 nSubJobs = "1"
 
+        self.stdoutln ( "\n >>>>> " + nSubJobs + " parallel threads will be used\n" )
+
         # Prepare morda job
         # fetch input data
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
