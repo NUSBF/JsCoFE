@@ -109,8 +109,13 @@ class FindMySequence(basic.TaskDriver):
 
         jsonout = os.path.join(self.outputDir(), 'results.json')
 
-        cmd=["--mtzin", mtzin, "--labin", f"{istruct.FWT},{istruct.PHWT}",
-                "--modelin", modelin, '--jsonout', jsonout, '--tophits', tophits, "--select", selstr]
+        cmd=[ "--mtzin"  , mtzin, 
+              "--labin"  , f"{istruct.FWT},{istruct.PHWT}",
+              "--modelin", modelin, 
+              "--jsonout", jsonout, 
+              "--tophits", tophits, 
+              "--select" , selstr
+            ]
 
         if uid:
             self.putMessage ( f"<h3> Downloading protoeomic sequences for {uid} </h3>" )
