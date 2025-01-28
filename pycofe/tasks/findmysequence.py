@@ -122,9 +122,7 @@ class FindMySequence(basic.TaskDriver):
             self.flush()
             fasta_file = download_proteome_from_unbiprot(uid=uid, datadir=self.outputDir())
             cmd.extend(['--db', fasta_file])
-        elif "AFDB_SEQDB" in os.environ:
-            if os.path.isfile(os.environ["AFDB_SEQDB"]):
-                cmd += [ "--db", os.environ["AFDB_SEQDB"] ]
+
 
         self.putMessage ( "<h3> Querying sequence database </h3>" )
         self.flush()
