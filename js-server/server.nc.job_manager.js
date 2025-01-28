@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    25.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -853,9 +853,10 @@ let cfg = conf.getServerConfig();
   // In such case, the job registry entry is already marked as 'exiting', so
   // that nothing else should interefere with the job.
 
-  jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
-                                                 // is called directly from
-                                                 // job listener in SHELL mode
+  if (jobEntry.push_back=='YES')
+    jobEntry.jobStatus = task_t.job_code.exiting;  // this works when ncJobFinished()
+                                                   // is called directly from
+                                                   // job listener in SHELL mode
 // *** for debugging
 //if (!jobEntry.endTime)  __use_fake_fe_url = true;
   if (!jobEntry.endTime)  {
@@ -909,7 +910,7 @@ let cfg = conf.getServerConfig();
   // may fail
   task.cleanJobDir ( jobEntry.jobDir );
 
-  if (jobEntry.sendTrials==cfg.maxSendTrials) {
+  if ((jobEntry.sendTrials==cfg.maxSendTrials) || (jobEntry.push_back=='NO')) {
 
     log.debug2 ( 101,'put status' );
 
@@ -1051,10 +1052,10 @@ let cfg = conf.getServerConfig();
 
     } else  {
 
-      // just prepare jobball for fetching by FE
+      // just prepare jobball for fetching by FE (this NC was used as 'REMOTE')
       jobEntry.sendTrials = -10;
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
-      // send_dir.packDir  ( jobEntry.jobDir,'*',null,{ compression:5},
+    
       send_dir.packDir  ( jobEntry.jobDir, { 
           compression : 5,
           destination : send_dir.getPackPath ( jobEntry.jobDir )
@@ -1062,6 +1063,8 @@ let cfg = conf.getServerConfig();
         function(errs,jobballPath,jobballSize){
           if (jobballSize>0)  {
             jobEntry.sendTrials = 0;  // indicate that it's ready
+            jobEntry.jobStatus  = task_t.job_code.exiting;
+            writeNCJobRegister();
           } // else  {
           // errors
           // }
@@ -1360,7 +1363,7 @@ function ncRunJob ( job_token,meta )  {
 
     }
 
-    // put a mark in joon entry
+    // put a mark in job entry
     jobEntry.jobStatus = task_t.job_code.running;
 
     writeNCJobRegister();
@@ -1956,7 +1959,6 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
   } else  {
 
     let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
-    // console.log ( 'jobballPath=' + jobballPath );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){
@@ -1965,11 +1967,6 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
           else
             log.standard ( 105,'task ' + jobEntry.task_id + ' fetched back by FE, token:' +
                                post_data_obj.job_token );
-
-          // // if (!rc)  // no errors
-          // //   ncJobRegister.removeJob ( post_data_obj.job_token );
-          // Jobs are deleted by a separate command from FE, after checking on
-          // transmission and unoacking errors
         }
       );
     }
