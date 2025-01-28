@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.09.24   <--  Date of Last Modification.
+#    28.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -83,14 +83,11 @@ class Morda(basic.TaskDriver):
         #    if sys.argv[4]!="-":
         #        queueName = sys.argv[4]
 
-        if self.jobManager == "SGE":
-            nSubJobs = self.getCommandLineParameter ( "nproc" )
+        nSubJobs = "4"  # works for running in SHELL
+        if self.jobManager in ["SGE","SCRIPT","SLURM"]:
+            nSubJobs = self.getCommandLineParameter ( "ncores" )
             if not nSubJobs:
-                nSubJobs = "0"
-            #if len(sys.argv)>5:
-            #    nSubJobs = sys.argv[5]
-        else:
-            nSubJobs = "4"
+                nSubJobs = "1"
 
         # end temporary fix
 
