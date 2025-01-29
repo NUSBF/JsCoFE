@@ -1178,8 +1178,8 @@ function TableSearchDialog ( title,tablePages,offset_x,offset_y,
 
   $(this.element).dialog({
     resizable : false,
-    height    : 90,
-    width     : 'auto',
+    height    : 99,
+    width     : 420,
     position  : { my: "left top", at: "left+" + offset_x + " top+" + offset_y, of: window },
     modal     : false,
     closeOnEscape: false,

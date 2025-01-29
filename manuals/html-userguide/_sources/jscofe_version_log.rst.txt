@@ -5,23 +5,7 @@ CCP4 Cloud Version Log
 
 **Version 1.8.005** 
 
-    *Released with CCP4 v.9.0.005*
-
-    #. Log verbosity controlled through FE configuration and environmental variable
-
-    #. File cache introduced to mitigate latency effects on NFS systems
-
-    #. ZIP levels in data transfer protocols are now optimised for speed
-
-    #. Temporary directopries configured separately for FE and NC servers
-
-    #. Added verdicts for ``Molrep``, ``MoRDa`` and ``MrBump``
-
-    #. Restore mechanism after ``Coot`` failures is streamlined
-
-    #. Fixed bag in ``Coot`` tasks causeing result write failure due to format confusion
-
-    #. Warning given ar regeneration of CloudRunId
+    *Released with CCP4 v.9.0.007*
 
     #. Inactivity-based logout introduced
 
@@ -45,7 +29,49 @@ CCP4 Cloud Version Log
 
     #. Fixed bugs in *Workflow Creator* preventing addition of certain tasks to workflows
 
-    #. ``CloudFetch`` utility for fetching jobs from command line
+    #. Added the ``CloudFetch`` utility for fetching jobs from command line
+
+    #. Verdict section added to ``Balbes`` task
+
+    #. Fixed bug in ``Simbad`` resulting in non-passing ASU definition on subsequent tasks in certain circumstances
+
+    #. Fixed bug preventing regular task ending on file systems with unusually high latency 
+
+    #. Fixed bug preventing running jobs with last used parameters in some circumstances
+
+    #. Fixed bug causing duplication task chains in shared projects (e.g. Remac after Coot)
+
+    #. AI-based solvent prediction added to the ``ASU Definition`` task 
+
+    #. B-factor statistics re-introduced in Table 1
+
+    #. ``MrParse`` task now outputs XYZ, rather than MR Model, data type
+
+    #. ``Moorhen`` updated to version 0.14.1
+
+    #. Showing only image ranges in Cloud file browser is now clarified
+
+
+
+**Version 1.8.004** 
+
+    *Released with CCP4 v.9.0.006*
+
+    #. Log verbosity controlled through FE configuration and environmental variable
+
+    #. File cache introduced to mitigate latency effects on NFS systems
+
+    #. ZIP levels in data transfer protocols are now optimised for speed
+
+    #. Temporary directopries configured separately for FE and NC servers
+
+    #. Added verdicts for ``Molrep``, ``MoRDa`` and ``MrBump``
+
+    #. Restore mechanism after ``Coot`` failures is streamlined
+
+    #. Fixed bag in ``Coot`` tasks causeing result write failure due to format confusion
+
+    #. Warning given at regeneration of CloudRunId
 
 
 

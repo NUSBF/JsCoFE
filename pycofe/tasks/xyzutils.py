@@ -54,7 +54,7 @@ class XyzUtils(basic.TaskDriver):
         type  = ""
         cdesc = None
         for i in range(len(meta)):
-            if str(meta[i].model)==model.name:
+            if str(meta[i].model)==model.num:
                 cdesc = meta[i].chains
                 for j in range(len(cdesc)):
                     if cdesc[j].id==chain.name:

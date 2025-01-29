@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    28.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -139,7 +139,7 @@ TaskMorda.prototype.checkKeywords = function ( keywords )  {
 }
 
 TaskMorda.prototype.getNCores = function ( ncores_available )  {
-  return Math.min(4,ncores_available);
+  return Math.min(8,ncores_available);
 }
 
 if (!__template)  {

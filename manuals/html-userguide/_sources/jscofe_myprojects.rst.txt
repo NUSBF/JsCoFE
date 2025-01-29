@@ -6,7 +6,7 @@ My Projects
 First Time
 ----------
 
-This is the first page you see after logging in. If this is your first time using CCP4 Cloud, you have likely logged in with a temporary password sent after registration. Although the temporary password does not expire, you may want to change it to something memorable. 
+This is the first page you see after logging in. If this is your first time using CCP4 Cloud, you have likely logged in with a temporary password sent after registration. Although the temporary password does not expire, you may want to change it to something memorable.
 
 To update your password:
 1. Click the Menu icon: |menu| in the top-left corner of the page.
@@ -110,7 +110,7 @@ To export a project:
 To import a project:
 1. Use the |Import| button above the list to upload the archive to your CCP4 Cloud account.
 
-**Exporting Projects:** 
+**Exporting Projects:**
 - Useful for saving disk space, personal archiving, or transferring data to another CCP4 Cloud setup.
 - Be mindful of project size, which can range from hundreds of megabytes to several gigabytes. The size will be shown before download.
 
@@ -125,11 +125,10 @@ After Work
 To end your session:
 1. Click the Menu or the |logout| button in the top-right corner.
 
-Logging out ensures all your projects and data remain intact. 
+Logging out ensures all your projects and data remain intact.
 
 .. Note::
    Jobs running in the background will continue even after you log out.
 
 .. Note::
    CCP4 Cloud does not support multiple logins for the same user. Logging in from another session will terminate any active session.
-
