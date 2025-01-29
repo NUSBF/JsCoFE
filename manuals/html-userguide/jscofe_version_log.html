@@ -293,16 +293,8 @@
 <h1 id="jscofe-version-log--page-root"><span class="section-number">12. </span>CCP4 Cloud Version Log<a class="headerlink" href="#jscofe-version-log--page-root" title="Permalink to this headline">¶</a></h1>
 <p><strong>Version 1.8.005</strong></p>
 <blockquote>
-<div><p><em>Released with CCP4 v.9.0.005</em></p>
+<div><p><em>Released with CCP4 v.9.0.007</em></p>
 <ol class="arabic simple">
-<li>Log verbosity controlled through FE configuration and environmental variable</li>
-<li>File cache introduced to mitigate latency effects on NFS systems</li>
-<li>ZIP levels in data transfer protocols are now optimised for speed</li>
-<li>Temporary directopries configured separately for FE and NC servers</li>
-<li>Added verdicts for <code class="docutils literal notranslate"><span class="pre">Molrep</span></code>, <code class="docutils literal notranslate"><span class="pre">MoRDa</span></code> and <code class="docutils literal notranslate"><span class="pre">MrBump</span></code></li>
-<li>Restore mechanism after <code class="docutils literal notranslate"><span class="pre">Coot</span></code> failures is streamlined</li>
-<li>Fixed bag in <code class="docutils literal notranslate"><span class="pre">Coot</span></code> tasks causeing result write failure due to format confusion</li>
-<li>Warning given ar regeneration of CloudRunId</li>
 <li>Inactivity-based logout introduced</li>
 <li>Cache and Performance stats added to the Administration Page</li>
 <li>List of projects and list of users redesigned</li>
@@ -314,7 +306,31 @@
 <li>Some regexp validations are removed for Forefox due to bugs in the browser</li>
 <li><code class="docutils literal notranslate"><span class="pre">MrParse</span></code> results sorted by sequence Id</li>
 <li>Fixed bugs in <em>Workflow Creator</em> preventing addition of certain tasks to workflows</li>
-<li><code class="docutils literal notranslate"><span class="pre">CloudFetch</span></code> utility for fetching jobs from command line</li>
+<li>Added the <code class="docutils literal notranslate"><span class="pre">CloudFetch</span></code> utility for fetching jobs from command line</li>
+<li>Verdict section added to <code class="docutils literal notranslate"><span class="pre">Balbes</span></code> task</li>
+<li>Fixed bug in <code class="docutils literal notranslate"><span class="pre">Simbad</span></code> resulting in non-passing ASU definition on subsequent tasks in certain circumstances</li>
+<li>Fixed bug preventing regular task ending on file systems with unusually high latency</li>
+<li>Fixed bug preventing running jobs with last used parameters in some circumstances</li>
+<li>Fixed bug causing duplication task chains in shared projects (e.g. Remac after Coot)</li>
+<li>AI-based solvent prediction added to the <code class="docutils literal notranslate"><span class="pre">ASU</span> <span class="pre">Definition</span></code> task</li>
+<li>B-factor statistics re-introduced in Table 1</li>
+<li><code class="docutils literal notranslate"><span class="pre">MrParse</span></code> task now outputs XYZ, rather than MR Model, data type</li>
+<li><code class="docutils literal notranslate"><span class="pre">Moorhen</span></code> updated to version 0.14.1</li>
+<li>Showing only image ranges in Cloud file browser is now clarified</li>
+</ol>
+</div></blockquote>
+<p><strong>Version 1.8.004</strong></p>
+<blockquote>
+<div><p><em>Released with CCP4 v.9.0.006</em></p>
+<ol class="arabic simple">
+<li>Log verbosity controlled through FE configuration and environmental variable</li>
+<li>File cache introduced to mitigate latency effects on NFS systems</li>
+<li>ZIP levels in data transfer protocols are now optimised for speed</li>
+<li>Temporary directopries configured separately for FE and NC servers</li>
+<li>Added verdicts for <code class="docutils literal notranslate"><span class="pre">Molrep</span></code>, <code class="docutils literal notranslate"><span class="pre">MoRDa</span></code> and <code class="docutils literal notranslate"><span class="pre">MrBump</span></code></li>
+<li>Restore mechanism after <code class="docutils literal notranslate"><span class="pre">Coot</span></code> failures is streamlined</li>
+<li>Fixed bag in <code class="docutils literal notranslate"><span class="pre">Coot</span></code> tasks causeing result write failure due to format confusion</li>
+<li>Warning given at regeneration of CloudRunId</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.8.003</strong></p>

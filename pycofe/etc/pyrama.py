@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    29.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #
 #  Reference data should be in 'rama_data' subdirectory relative to this file.
 #
-#  Adopted in present form by Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Adopted in present form by Eugene Krissinel, Andrey Lebedev, Maria Fando 2019-2025
 #
 # ============================================================================
 #
@@ -158,7 +158,7 @@ def calc_ramachandran ( file_name_list ):
                             #phi = max ( -180.0,min(179.0,phi) )
                             #psi = max ( -180.0,min(179.0,psi) )
 
-                            litem = [ model.name,chain.name,str(res.seqid.num),
+                            litem = [ model.num,chain.name,str(res.seqid.num),
                                       res.name,res.seqid.icode,phi,psi ]
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:

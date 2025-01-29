@@ -1,37 +1,62 @@
 =======================================
-What are *XYZ*, *Model* and *Ensemble*?
+What are *XYZ*, *Model*, and *Ensemble*?
 =======================================
 
-**XYZ**, **Model** and **Ensemble** are related, but not identical, types of data in CCP4 Cloud.
+**XYZ**, **Model**, and **Ensemble** are related but distinct types of data in CCP4 Cloud:
 
-  **XYZ** is a simple type, which corresponds to bare atomic coordinates, commonly obtained from PDB or mmCIF-formatted files.
+- **XYZ**  
+  A simple data type representing bare atomic coordinates, typically sourced from PDB or mmCIF-formatted files.
 
-  **Model** is a complex type, used to represent search models for Molecular Replacement (MR). It includes XYZ coordinates of one or several macromolecular chains linked to target sequence(s) that these chains relate to, along with the corresponding similarity scores, such as sequence identity and estimated r.m.s.d..
+- **Model**  
+  A complex data type used to represent search models for Molecular Replacement (MR). 
+  It includes:
 
-  **Ensemble** is another complex data type used in MR tasks, which represents sets of closely related Models, superposed on each other and truncated to the same length (if necessary).
+  - XYZ coordinates of one or more macromolecular chains  
+  - Target sequence(s) that the chains relate to  
+  - Corresponding similarity scores, such as sequence identity and estimated r.m.s.d.
 
-    **Models** and **Ensembles** **can be used** in `Phaser-MR <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_ tasks, while **XYZs cannot be**.
+- **Ensemble**  
+  Another complex data type used in MR tasks, representing sets of closely related
+  *Models*. These are:
 
-Models and Ensembles are prepared from XYZ and/or Sequence data with the following tasks, found in the `Molecular Replacement <../html-taskref/Molecular_Replacement.html>`_ section of the `Task List <jscofe_tasklist.html>`_:
+  - Superposed on each other  
+  - Truncated to the same length, if necessary  
 
-    * `Find and Prepare MR Models with MrParse <../html-taskref/doc.task.MrParse.html>`_
+**Models** and **Ensembles** can be used in `Phaser-MR <../html-taskref/doc.task.Phaser.html>`_ 
+and `Molrep <../html-taskref/doc.task.Molrep.html>`_ tasks, while **XYZs cannot be used** 
+directly.
 
-    * `Prepare MR Model(s) from Coordinate data <../html-taskref/doc.task.ModelPrepXYZ.html>`_
+------------------------------
+*Model* and *Ensemble* Preparation
+------------------------------
 
-    * `Prepare MR Model(s) from Alighnment data <../html-taskref/doc.task.ModelPrepAlgn.html>`_
+Models and Ensembles are prepared from XYZ and/or Sequence data using the following tasks 
+found in the `Molecular Replacement <../html-taskref/Molecular_Replacement.html>`_ section 
+of the `Task List <jscofe_tasklist.html>`_:
 
-    * `Prepare MR Ensemble from Model(s) <../html-taskref/doc.task.Ensembler.html>`_
-
-    * `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_
-
-    * `Prepare MR Ensemble from Coordinate data <../html-taskref/doc.task.EnsemblePrepXYZ.html>`_
-
-    * `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_
+- `Find and Prepare MR Models with MrParse <../html-taskref/doc.task.MrParse.html>`_  
+- `Prepare MR Model(s) from Coordinate data <../html-taskref/doc.task.ModelPrepXYZ.html>`_  
+- `Prepare MR Model(s) from Alignment data <../html-taskref/doc.task.ModelPrepAlgn.html>`_  
+- `Prepare MR Ensemble from Model(s) <../html-taskref/doc.task.Ensembler.html>`_  
+- `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_  
+- `Prepare MR Ensemble from Coordinate data <../html-taskref/doc.task.EnsemblePrepXYZ.html>`_  
+- `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_
 
 --------------------------------------------------------------------
-Why XYZ data cannot be used in Molecular Replacement tasks directly?
+Why Can't XYZ Data Be Used Directly in Molecular Replacement Tasks?
 --------------------------------------------------------------------
 
-The main reason for disallowing the direct use of XYZ (*i.e.,* bare PDB or mmCIF files) in CCP4 Cloud's MR tasks is to make the model preparation step mandatory and unavoidable. This procedure includes trimming XYZ data for achieving best similarity with the target sequence. Model preparation should always be done before using structure templates in Molecular Replacement. This may seem to be redundant and even annoying in some cases, but in general, the preparatory step significantly improves chances for successful Molecular Replacement.
+The direct use of XYZ data (*i.e.,* bare PDB or mmCIF files) in CCP4 Cloud's MR tasks 
+is disallowed for a crucial reason:  
 
-  .. note:: trimming structure templates may be switched off in model preparation tasks, if necessary.
+**Model preparation must be a mandatory step to ensure optimal similarity with the target sequence.**  
+
+This preparation step involves trimming XYZ data, which:
+
+- Improves the chances of successful Molecular Replacement  
+- Tailors the structure template for better alignment with the target sequence
+
+Although this requirement may occasionally seem redundant or inconvenient, it is generally beneficial for achieving accurate results.
+
+.. note::  
+   Trimming of structure templates may be switched off in model preparation tasks if necessary.
