@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.24   <--  Date of Last Modification.
+#    29.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskiy 2017-2024
+#                Oleg Kovalevskiy 2017-2025
 #
 # ============================================================================
 #
@@ -467,7 +467,7 @@ class Refmac(basic.TaskDriver):
                                           structure )
 
                 # make anomolous ED map widget
-                if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
+                if hkl.isAnomalous() and str(hkl.useHKLSet) not in {"TI", "TF"}:
 
                     self.putMessage ( "&nbsp;" )
                     anomsec_id = self.getWidgetId ( "anomsec" )
