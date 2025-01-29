@@ -1,0 +1,31 @@
+=======================================
+Linking Findmysequence to local databases
+=======================================
+
+----------------------------
+Findmysequence search in CCP4 Cloud
+----------------------------
+
+In CCP4 Cloud, *findmysequence* can be used to identify the sequence of a 
+structure from a given electron density map. It is useful when the sequence is
+unknown or the crystal structure appears to differ from the assumed sequence. 
+It uses various sequence databases to assist with identifying the unknown target
+sequence. For example, in CCP4 Cloud we can set it to use the `EBI 
+AlphaFold Database`_ (*EBI-AFDB*). A local versions of the *EBI-AFDB* sequence 
+listings (~92GBs) can be used to enable this.
+
+.. _EBI AlphaFold Database: https://alphafold.ebi.ac.uk
+
+------------------------------------------
+Configuring Findmysequence to use local resources
+------------------------------------------
+
+**1 A local copy of the EBI-AFDB sequence listing file (sequences.fasta)**
+
+This file, containing the complete list of the sequences of the 
+predictions in the *EBI-AFDB*, is available for download from the `AFDB ftp site`_. 
+Setting the **AFDB_SEQDB** environment variable in start-nc.sh to point at the
+file's location on the local file system will enable findmysequnce to search the 
+entire *EBI-AFDB* for hits.
+
+.. _AFDB ftp site: https://ftp.ebi.ac.uk/pub/databases/alphafold/
