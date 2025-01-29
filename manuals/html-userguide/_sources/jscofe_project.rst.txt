@@ -4,71 +4,70 @@
 Project Management
 ==================
 
-----------------
-Basic principles
-----------------
+--------------------
+Basic Principles
+--------------------
 
-Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.
+Projects in CCP4 Cloud are designed to track the structure solution process, allowing you to review it at any time.
 
 .. _job-tree:
 
-Apart from straightforward cases, structure solution involves repeating certain actions and branching due to decision-making or exploration of a range of parameters. Correspondingly, **project structure in CCP4 Cloud is a tree**, rather than a linear (chronological) list of jobs.
+In complex cases, structure solutions may require repeated actions and branching due to decision-making or parameter exploration. Therefore, **project structures in CCP4 Cloud form a tree**, rather than a simple chronological list of jobs.
 
-*Projects Trees* are built with a few basic operations, associated with the first five buttons in the vertical toolbar on the left-hand side of the screen:
+*Project Trees* are built using several basic operations, accessible via the first five buttons on the vertical toolbar on the left side of the screen:
 
 .. Note::
-    all buttons are duplicated by items in the dropdown context menu, which is displayed upon right-clicking on a job line in the *Tree*
+    All buttons are also available through a dropdown context menu, displayed by right-clicking on a job line in the *Tree*.
 
 .. |addjob| image:: images/add.png
     :width: 18
     :height: 18   
     
-|addjob| **Add a job**. The new job will be added as a child to one currently selected in the *Tree*. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat the addition of jobs to the same node will result in *Project Tree* branching.
+|addjob| **Add a Job:**  
+This adds a new job as a child to the currently selected job in the *Tree*. Pressing this button opens a task list automatically. Adding multiple jobs to the same node results in *Project Tree* branching.
 
 .. Note::
-    the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the *Project Tree*. You may find this particularly useful in the model building and refinement stage when a number of similar-type jobs need to be run in multiple successions
-
+    The context menu allows adding a job with parameters previously set in the same job type earlier in the *Project Tree*.  
+    This is particularly useful during model building and refinement, where similar jobs need to run in multiple successions.
 
 .. |clonejob| image:: images/clonejob.png
     :width: 18
     :height: 18
     
-|clonejob| **Clone job**. The new job will be added as a sibling to one currently selected in the *Tree*, initialised with the same data and input parameters. Job dialog for the cloned job will be opened automatically, and you can change the input before running the job.
- 
- 
+|clonejob| **Clone a Job:**  
+This creates a sibling job to the currently selected one, initialized with the same data and parameters. The job dialog for the cloned job opens automatically, allowing changes before execution.
+
 .. |delete| image:: images/delete.png
     :width: 18
     :height: 18
 
-|delete| **Delete job**. The currently selected job and all jobs found in the tree branch descending from it will be deleted after confirmation. 
+|delete| **Delete a Job:**  
+Deletes the selected job and all jobs in its branch after confirmation.
 
 .. Warning::
-    Once deleted, jobs cannot be restored.
-
+    Deleted jobs cannot be restored.
 
 .. |stack| image:: images/job_stack.png
     :width: 18
     :height: 18
 
-|stack| **Stack/Unstack jobs**. Excessively long project branches can be optimised (shortened) by stacking jobs in their *linear sections* (i.e., sections where each job has exactly one ancestor and one descendant). A typical example of such a section is given by the succession of model building and refinement jobs leading to a completed structure; these sections may reach tens and hundreds of jobs, which may be found inconvenient to work with. Stacking jobs are placed in a stack, which substitutes all of them in the branch. When necessary, the folder can be expanded back (unstacked).
+|stack| **Stack/Unstack Jobs:**  
+Long project branches can be optimized by stacking jobs in linear sections (where each job has exactly one ancestor and one descendant). A typical example is a sequence of model building and refinement jobs, which can span dozens or even hundreds of jobs. Stacking collapses these jobs into a single stack for easier management.
 
-Stacking can be done in two ways:
+Stacking options:
 
-1. Select all jobs to be stacked and click on the |stack| button in the toolbar.
-
-.. Note::
-    unless selected jobs represent a continuous linear section of the project branch, the |stack| button is disabled
+1. Select all jobs to be stacked and click the |stack| button.  
 
 .. Note::
-    it is possible to include a previously stacked folder in the selection, in which case it will be merged with the new one
+    The |stack| button is disabled if the selected jobs do not form a continuous linear section.
 
-2. Select a job in a *linear section* of the project branch and click the |stack| button. The GUI will automatically identify boundaries of the *linear section*, and make lists of jobs, suitable for stacking, that are ancestors or descendants of the selected one. If one of the lists is empty, the other is used for stacking. If both lists are not empty, the user is asked which one, or both, should be used.
+2. Select a job in a *linear section* and click the |stack| button.  
+   The system will identify suitable ancestors and descendants for stacking. If both lists are non-empty, you will be prompted to choose which one (or both) to use.
 
 .. Note::
-    automatically identified *linear sections* are constrained by either project branching or previously created stack folders
+    Automatically detected *linear sections* are constrained by branching points or existing stacks.
 
-For unstacking jobs, select the stack folder and click the |stack| button.
-
+To unstack jobs, select the stack folder and click the |stack| button.
 
 .. |remark| image:: images/task_remark.png
     :width: 18
@@ -78,64 +77,66 @@ For unstacking jobs, select the stack folder and click the |stack| button.
     :width: 18
     :height: 18
 
-|remark| **Remarks** are used for general annotation and can be placed in any place of the Projects. Remarks can be sticky (denoted by a pin dot in the icon: |remark_s|) and non-sticky. Sticky remarks make a pair with their parent jobs and are moved and deleted synchronously with them. Unlike all other items in the *Project Tree*, remarks can be deleted without deleting their descendants.
+|remark| **Remarks:**  
+Remarks provide annotations anywhere in the project. They can be sticky (with a pin icon: |remark_s|) or non-sticky. Sticky remarks remain linked to their parent jobs and are moved or deleted synchronously. Unlike other *Tree* items, remarks can be deleted without affecting descendants.
 
------------------
-Managing the jobs
------------------
- 
-The following buttons in the toolbar **do not change the Project Tree**:
- 
+-----------------------
+Managing the Jobs
+-----------------------
+
+The following toolbar buttons **do not change the Project Tree:**  
+
 .. |openjob| image:: images/openjob.png
     :width: 18
     :height: 18
     
-|openjob| **Open Job** dialog for the currently selected job. Alternatively, double click the corresponding line in the *Project Tree*. Job dialogs are used for setting the job's input data and parameters, and for running them.
- 
+|openjob| **Open Job Dialog:**  
+Opens the job dialog for the selected job. You can also double-click the corresponding job line in the *Project Tree*. The job dialog is used for setting input data, parameters, and executing the job.
+
 .. |stop| image:: images/stop.png
     :width: 18
     :height: 18
     
-|stop| **Stop** the currently selected job. This button is active only when a job is running. **Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone**.
+|stop| **Stop a Job:**  
+Stops the currently running job. Once stopped, jobs cannot be resumed or restarted. However, you can clone the stopped job and run the clone.
 
--------------------
-Branch highlighting
--------------------
+----------------------
+Branch Highlighting
+----------------------
 
 .. |highlight| image:: images/highlight_branch.png
     :width: 18
     :height: 18
 
-In complex projects, it may be difficult to trace branches of interest. This may be helped by branch highlighting. Select a job and click the |highlight| button in the toolbar (or the corresponding item in the context right-click menu). This will highlight all ancestors of the selected job to the project origin, and the descending branch which contains the most recent job. In order to clear the highlighting, click the |highlight| button again.
+In complex projects, tracing specific branches can be challenging. Branch highlighting helps with this. Select a job and click the |highlight| button (or use the context menu). This highlights all ancestors of the selected job up to the project origin, as well as the descending branch leading to the most recent job.
 
-.. note:
-    in order to find the most recent job in the project, select the project root and click the |highlight| button
+To clear highlighting, click the |highlight| button again.
 
-
+.. Note::
+    To find the most recent job in a project, select the project root and click the |highlight| button.
 
 .. _refresh-project:
 
--------
+--------
 Refresh
--------
+--------
 
-Nobody and nothing is perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the |refresh| button to refresh the Project Page. |refresh| simply reloads the project data and re-initialises internal page functions.
+If the Project Page stops working due to connection errors or a hidden bug, click the |refresh| button to reload the project data and reinitialize internal functions.
 
 .. Note::
-    this action is different from that of the browser's Refresh button; the latter will log you out.
- 
+    This action is different from the browser's Refresh button, which logs you out.
+
 .. |refresh| image:: images/refresh.png
     :width: 16
     :height: 16
-    
 
--------------------
-Project development
--------------------
+------------------------
+Project Development
+------------------------
 
-You can start developing your first Project right after creating it. In most cases, you should start with a task from the "Data Import" section of the *Task List* at the root of the *Project Tree* in order to import available data (reflection datasets, sequences, structure homologs, ligand descriptions *, etc.*), and then add computational jobs which use the imported data, as appropriate.
+You can start developing a project immediately after creating it. Most projects begin with a task from the "Data Import" section of the *Task List* at the root of the *Project Tree*. This imports available data (reflection datasets, sequences, structure homologs, ligand descriptions, etc.), which can then be used in computational jobs.
 
-*You can create and run any number of jobs simultaneously, however, a child job cannot use its parent's job output until the parent job is completed.*
- 
-CCP4 Cloud is not prescriptive about how you should grow and branch your *Project Tree*. **It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid the most common mistakes and confusion.**
+*Multiple jobs can run simultaneously, but a child job cannot use its parent's output until the parent is complete.*
+
+CCP4 Cloud is flexible in how you grow and branch your *Project Tree*. **However, understanding CCP4 Cloud's data management principles is highly recommended to avoid common mistakes and confusion.**  
 **Please read the corresponding documentation.**

@@ -1,12 +1,22 @@
+
 ====================
 Work with CCP4 Cloud
 ====================
 
-This article is designed to describe how to start a project and load the data in CCP4 Cloud.
+This article describes how to start a project and load data in CCP4 Cloud.
 
-The `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account should be created or/and CCP4 Software Suite version 7.1 and above must be installed (download `here <https://www.ccp4.ac.uk/download/>`_).
+To begin, ensure that you have a `CCP4 Cloud account <https://cloud.ccp4.ac.uk/>`_ 
+or have installed the **CCP4 Software Suite (version 7.1 and above)** 
+(`Download here <https://www.ccp4.ac.uk/download/>`_).
 
-`Creating an account on CCP4Cloud remote <https://www.youtube.com/embed/oZeaD54oovs>`_
+`Creating an account on CCP4 Cloud <https://www.youtube.com/embed/oZeaD54oovs>`_
+
+.. .. raw:: html
+
+..    <iframe width="560" height="315" src="https://www.youtube.com/embed/oZeaD54oovs" 
+..    title="YouTube video player" frameborder="0" 
+..    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+..    allowfullscreen></iframe>
 
 .. .. raw:: html
 
@@ -15,136 +25,100 @@ The `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account should be created or/and C
 .. .. youtube:: oZeaD54oovs
 ..    :align: center
 
-
 ------------------
 Starting a Project
 ------------------
 
-In CCP4 Cloud, work is arranged in `Projects <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_myprojects.html>`_. 
+Step-by-step instructions on how to start a project in CCP4 Cloud can be found `here <https://scribehow.com/shared/Creating_project_and_importing_data_in_CCP4_Cloud__v2Gymj96RbarVwSOwL7C6Q>`_.
+
+In CCP4 Cloud, work is organized into `Projects <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_myprojects.html>`_.
 
 .. |addjob| image:: images/add.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
-Press |addjob| button in the button line above the list, and create your first project. You will need to specify a short project name, and a more descriptive title in the dialog appeared.
+Press the |addjob| button above the project list to create your first project. Specify a short project name and a more descriptive title when prompted.
 
-The CCP4 Cloud provides 3 projects initialisation modes:
+Manual mode
++++++++++++
 
-++++++++++++++
-Autostart mode
-++++++++++++++
+Standard mode provides full manual access to operating all tasks in the 
+CCP4 Cloud `task list <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_tasklist.html>`_.
+The system learns your preferences in the course of your work and will
+suggest new tasks in accordance with your habits. Automatically suggested tasks
+appear in the Suggested tab of the *Task list*.
 
-.. image:: images/autostart.gif
-   :align: center
-   :scale: 40 %
-
-
-Autostart mode is designed for starting with one of `automatic workflows <https://cloud.ccp4.ac.uk/manuals/html-taskref/Workflows.html>`_ featuring structure solution scenarios in CCP4 Cloud, and optimised list of essential tasks for structure completion which can be switched to the full list at any point.
-
-Once added the Cloud will provide you a choice of the project templates:
-
-    #. Automatic Molecular Replacement with MrBump or MoRDa
-
-    #. Molecular Replacement with AlphaFold Model
-    
-    #. Simple Molecular Replacement with Search Model
-
-    #. Automated Experimental Phasing with Crank-2
-
-    #. Dimple Refinement and Ligand Fitting
-
-.. image:: images/T0_001_autostart.png
-   :align: center
-   :scale: 50 %
+CCP4 Cloud includes several `data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Import.html>`__ tasks:
 
 
-After the template was picked the workflow would ask you to upload the data. You may choose **CCP4 Cloud storage** in **Import data from** if you have no data, yet want to practice working in the Cloud.
+1. `Data Import <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Import.html>`_
+2. `Import Sequence(s) by Copy-Paste <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportSeqCP.html>`_
+3. `Import from PDB/AFDB <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportPDB.html>`_
+4. `Import from Cloud Storage <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CloudImport.html>`_
+5. `Import & Replace <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportReplace.html>`_
+6. `Hop on CCP4 Cloud <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Migrate.html>`_
+7. `Fetch Diffraction Images from WWW repositories <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.FetchData.html>`_
+8. `Push to Cloud Storage <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.PushToCloud.html>`_
+
+
+Automated Structure Solution
++++++++++++++++++++++++++++++
+
+Project plans correlate to existing `automatic workflows <https://cloud.ccp4.ac.uk/manuals/html-taskref/Workflows.html>`_
+
+Available project plans include:
+
+1. **Molecular Replacement using AlphaFold model**
+2. **Molecular Replacement using structure databases**
+3. **Molecular Replacement using a known model**
+4. **Automatic Experimental Phasing**
+
+After selecting a plan, you will be prompted to upload data. If you have no data but wish to practice, choose **CCP4 Cloud storage** under **Import data from**.
 
 `Automation in CCP4 Cloud: Workflows <https://www.youtube.com/v/ph2rxQSYiE0>`_
 
-.. .. youtube:: ph2rxQSYiE0
-..    :align: center
+Import already solved structure for completion
+++++++++++++++++++++++++++++++++++++++++++++++
 
-+++++++++++++
-Standard mode 
-+++++++++++++
+This plan allows for a quick start from a phased (possibly partially built and refined) 
+structure or heavy-atom substructure for further refinement and model building.
+This mode features a task list optimized to essential tasks for structure completion
+(can be switched to the full list). You can switch to the full task list at any time.
 
-.. image:: images/standart_mode.gif
-   :align: center
-   :scale: 40 %
-
-Standard mode is designed for operating all CCP4 Cloud tasks manually, with access to the full `task list <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_tasklist.html>`_ by default. The Cloud learns your preferences and suggests tasks as it accumulates knowledge about your habits. Those tasks will show up in the Suggested task tab
-
-Cloud has several `data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Import.html>`__ tasks:
-
-.. image:: images/T0_001_data_import.png
-   :align: center
-   :scale: 80 %
-
-#. `Data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Import.html>`__ 
-
-#. `Import Sequence(s) by Copy-Paste <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportSeqCP.html>`_
-
-#. `Import from PDB/AFDB <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportPDB.html>`_
-
-#. `Import from Cloud Storage <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CloudImport.html>`_
-
-#. `Import & Replace <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportReplace.html>`_
-
-#. `Hop on CCP4 Cloud <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Migrate.html>`_
-
-
-+++++++++++
-Hop On mode 
-+++++++++++
-
-
-Hop On mode is designed for a quick start from a phased (possibly partially built and refined) structure or heavy-atom substructure, for further refinement and model building, with the optimised list of essential tasks for structure completion (can be switched to the full list). 
-
-It will direct you to `Hop on task <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Migrate.html>`_ there you are expected to provide reflection data, phases, atomic coordinates and ligand description if you have any.
+You will be directed to the `Hop on task <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Migrate.html>`_, 
+where you should provide reflection data, phases, atomic coordinates, and ligand descriptions 
+(if available).
 
 .. image:: images/T0_001_hop_on.png
    :align: center
    :scale: 70 %
 
 --------------------
-CCP4 Cloud tutorials
+CCP4 Cloud Tutorials
 --------------------
 
-Tutorials include examples designed to demonstrate structure solution techniques in CCP4 Cloud. Tutorials are presented as seed projects with pre-loaded data, which can be imported into the account. Each tutorial has instructions that will guide you through the required project development stages. 
+Tutorials demonstrate structure solution techniques in CCP4 Cloud. They are presented as
+seed projects with pre-loaded data and include instructions that will guide you through 
+the required project development stages. Tutorials can be imported into the account as 
+new projects.
 
-Tutorials can be added by following the links below:
+**Available Tutorials:**
 
-`Data processing and SAD phasing <../demo_project.html?cmount=Tutorials&project=T1_001.%20Data%20processing%20and%20SAD%20phasing.ccp4cloud>`_
+- `Data Processing and SAD Phasing <../demo_project.html?cmount=Tutorials&project=T1_001.%20Data%20processing%20and%20SAD%20phasing.ccp4cloud>`_
+- `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_
+- `The Multi-domain Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_002.%20The%20%25multidomain%20Molecular%20Replacement.ccp4cloud>`_
+- `Structure Prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_
+- `Protein-ligand Structure Determination by Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_004.%20Protein-ligand%20structure%20determination%20by%20Molecular%20Replacement.ccp4cloud>`_
+- `MR with Predicted Model <../demo_project.html?cmount=Tutorials&project=T2_005.%20MR%20with%20predicted%20model.ccp4cloud>`_
+- `Determining the Structure of Twinned Crystals Using Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_006.%20Determining%20the%20Structure%20of%20Twinned%20Crystals%20Using%20Molecular%20Replacement.ccp4cloud>`_
+- `GerE: SAD and MR-SAD Phasing <../demo_project.html?cmount=Tutorials&project=T3_002.%20GerE%20SAD%20and%20MR-SAD%20Phasing.ccp4cloud>`_
+- `Beta-Lactamase Experimental Phasing <../demo_project.html?cmount=Tutorials&project=T3_004.%20Beta-Lactamase%20Experimental%20Phasing.ccp4cloud>`_
+- `Simple Refinement <../demo_project.html?cmount=Tutorials&project=T4_001.%20Simple%20Refinement.ccp4cloud>`_
+- `Twin Refinement <../demo_project.html?cmount=Tutorials&project=T4_002.%20Twin%20Refinement>`_
+- `Ligand Dictionary Generation, Fitting & Refinement <../demo_project.html?cmount=Tutorials&project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&%20Refinement.ccp4cloud>`_
+- `Paired Refinement with PaiRef <../demo_project.html?cmount=Tutorials&project=T4_004.%20Paired%20refinement%20with%20PaiRef.ccp4cloud>`_
+- `Ligand Fitting with CCP4Cloud and Coot <../demo_project.html?cmount=Tutorials&project=T4_005.%20Ligand%20fitting%20with%20CCP4Cloud%20and%20Coot.ccp4cloud>`_
+- `Fix up the Cyclin-Dependent Kinase with Moorhen <../demo_project.html?cmount=Tutorials&project=T4_006.%20Fix%20up%20the%20Cyclin-Dependent%20Kinase%20with%20Moorhen.ccp4cloud>`_
+- `Automated Model Building in CCP4 Cloud <../demo_project.html?cmount=Tutorials&project=T5_002.%20Automated%20model%20building%20in%20CCP4%20Cloud.ccp4cloud>`_
+- `Starting PISA <../demo_project.html?cmount=Tutorials&project=T5_001.%20Starting%20PISA.ccp4cloud>`_
 
-`Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_
-
-`The multi-domain Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_002.%20The%20%25multidomain%20Molecular%20Replacement.ccp4cloudt=>`_
-
-`Structure prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_
-
-`Protein-ligand structure determination by Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_004.%20Protein-ligand%20structure%20determination%20by%20Molecular%20Replacement.ccp4cloud>`_
-
-`MR with predicted model <../demo_project.html?cmount=Tutorials&project=T2_005.%20MR%20with%20predicted%20model.ccp4cloud>`_
-
-`Determining the Structure of Twinned Crystals Using Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_006.%20Determining%20the%20Structure%20of%20Twinned%20Crystals%20Using%20Molecular%20Replacement.ccp4cloud>`_
-
-`GerE: SAD and MR-SAD Phasing <../demo_project.html?cmount=Tutorials&project=T3_002.%20GerE%20SAD%20and%20MR-SAD%20Phasing.ccp4cloud>`_
-
-`Beta-Lactamase Experimental Phasing <../demo_project.html?cmount=Tutorials&project=T3_004.%20Beta-Lactamase%20Experimental%20Phasing.ccp4cloud>`_
-
-`Refinement using REFMAC5 - Part 1: Simple Refinement <../demo_project.html?cmount=Tutorials&project=T4_001.%20Simple%20Refinement.ccp4cloud>`_
-
-`Refinement using REFMAC5 - Part 2: Twin Refinement <../demo_project.html?cmount=Tutorials&project=T4_002.%20Twin%20Refinement>`_
-
-`Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement <../demo_project.html?cmount=Tutorials&project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&%20Refinement.ccp4cloud>`_
-
-`Paired refinement with PaiRef <../demo_project.html?cmount=Tutorials&project=T4_004.%20Paired%20refinement%20with%20PaiRef.ccp4cloud>`_
-
-`Ligand fitting with CCP4Cloud and Coot <../demo_project.html?cmount=Tutorials&project=T4_005.%20Ligand%20fitting%20with%20CCP4Cloud%20and%20Coot.ccp4cloud>`_
-
-`Moorhen Tutorial 1: Fix up the Cyclin-Dependent Kinase <../demo_project.html?cmount=Tutorials&project=T4_006.%20Fix%20up%20the%20Cyclin-Dependent%20Kinase%20with%20Moorhen.ccp4cloud>`_
-
-`Automated model building in CCP4 Cloud <../demo_project.html?cmount=Tutorials&project=T5_002.%20Automated%20model%20building%20in%20CCP4%20Cloud.ccp4cloud>`_
-
-`Starting PISA <../demo_project.html?cmount=Tutorials&project=T5_001.%20Starting%20PISA.ccp4cloud>`_
