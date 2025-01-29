@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    29.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #
 #  Reference data should be in 'rama_data' subdirectory relative to this file.
 #
-#  Adopted in present form by Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Adopted in present form by Eugene Krissinel, Andrey Lebedev, Maria Fando 2019-2025
 #
 # ============================================================================
 #
