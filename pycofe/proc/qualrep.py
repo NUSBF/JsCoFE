@@ -212,7 +212,7 @@ def put_ramaplot_section ( body,structure ):
         for i in range(len(reslist.outliers)):
             body.setTableVertHeader ( tableId,i,str(i+1),"" )
             litem = reslist.outliers[i]
-            resid = "/" + "/".join(litem[0:3]) + "(" + litem[3] + ")"
+            resid = "/" + "/".join(map(str,litem[0:3])) + "(" + litem[3] + ")"
             if litem[4].strip():
                 resid += "." + litem[4]
             body.putTableString ( tableId,resid,"",i,0 )
