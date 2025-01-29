@@ -158,8 +158,12 @@ def calc_ramachandran ( file_name_list ):
                             #phi = max ( -180.0,min(179.0,phi) )
                             #psi = max ( -180.0,min(179.0,psi) )
 
-                            litem = [ model.num,chain.name,str(res.seqid.num),
-                                      res.name,res.seqid.icode,phi,psi ]
+                            try:
+                                litem = [ model.num,chain.name,str(res.seqid.num),
+                                          res.name,res.seqid.icode,phi,psi ]
+                            except:
+                                litem = [ model.name,chain.name,str(res.seqid.num),
+                                          res.name,res.seqid.icode,phi,psi ]
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:
                                 outliers[aa_type]["x"].append(phi)
