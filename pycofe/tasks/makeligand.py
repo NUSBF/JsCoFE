@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.01.25   <--  Date of Last Modification.
+#    31.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -42,6 +42,22 @@ from  pycofe.auto   import auto,auto_workflow
 class MakeLigand(basic.TaskDriver):
 
     def smiles_file_path(self): return "smiles.smi"
+
+    def find_output_file ( self,code ):
+        cifPath  = code + ".cif"
+        if not os.path.exists(cifPath):
+            cifPath = os.path.join ( code+"_TMP",cifPath )
+            if not os.path.exists(cifPath):
+                cifPath = code + "_final.cif"
+                if not os.path.exists(cifPath):
+                    cifPath = os.path.join ( code+"_TMP",cifPath )
+                    if not os.path.exists(cifPath):
+                        cifPath = code + "_mol_0.cif"
+                        if not os.path.exists(cifPath):
+                            cifPath = os.path.join ( code+"_TMP",cifPath )
+                            if not os.path.exists(cifPath):
+                                cifPath = None
+        return cifPath
 
     # ------------------------------------------------------------------------
 
@@ -165,12 +181,8 @@ class MakeLigand(basic.TaskDriver):
                     self.runApp ( "acedrg.bat",cmd,logType="Main" )
                 else:
                     self.runApp ( "acedrg",cmd,logType="Main" )
-                cifPath  = code + ".cif"
-                if not os.path.exists(cifPath):
-                    cifPath = code + "_final.cif"
-                if not os.path.exists(cifPath):
-                    cifPath = code + "_mol_0.cif"
-                if os.path.exists(xyzPath):
+                cifPath = self.find_output_file ( code )
+                if not os.path.exists(xyzPath):
                     cif = gemmi.cif.read_file ( cifPath )
                     st  = gemmi.make_structure_from_chemcomp_block ( cif["comp_" + code] )
                     while len(st)>1:  # because of gemmi bug
@@ -183,7 +195,8 @@ class MakeLigand(basic.TaskDriver):
             if code0: # long ligand code, hack output
                 with open(cifPath,"r") as fin:
                     cifdata = fin.read().replace ( code,code0 )
-                    cifPath = code0 + ".cif"
+                    cifPath = self.find_output_file ( code0 )
+                    # cifPath = code0 + ".cif"
                     with open (cifPath,"w") as fout:
                         fout.write ( cifdata )
                 with open(xyzPath,"r") as fin:
