@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.01.25   <--  Date of Last Modification.
+#    01.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -271,13 +271,13 @@ def put_molprobity_section ( body,revision ):
     meta["natoms_overall"] = meta_s["overall_atoms"]
     meta["natoms_macro"]   = meta_s["macromolecular_atoms"]
     meta["natoms_HD"]      = meta_s["hydrogen_atoms"]
-    meta["natoms_ligand"]  = meta_s["ligand_atoms"]
+    meta["natoms_ligand"]  = meta_s["ligand_atoms_str"]
     meta["natoms_water"]   = meta_s["water_atoms"]
     meta["n_chains"]       = meta_s["n_chains"]
     meta["n_models"]       = meta_s["n_models"]
     meta["bfac_overall"]   = meta_s["avg_b"]
     meta["bfac_macro"]     = meta_s["avg_macro_b"]
-    meta["bfac_ligand"]    = meta_s["avg_ligand_b"]
+    meta["bfac_ligand"]    = meta_s["avg_ligand_b_str"]
     meta["bfac_water"]     = meta_s["avg_water_b"]
 
     flg = ''
@@ -495,7 +495,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
              hkl.dataset.DCELL[3], hkl.dataset.DCELL[4], hkl.dataset.DCELL[5])
         else:
             unitcell = ''
-        tableDict['rows'].append({'header': {'label': indent + 'Unit cell', 'tooltip': ''},
+        tableDict['rows'].append({'header': {'label': indent + 'Cell dimensions', 'tooltip': ''},
                                   'data': [unitcell]})
         # except Exception as inst:
         #     body.stderrln (str(type(inst))+ '\n')  # the exception instance
@@ -508,7 +508,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         if "ResolutionLow" in table1.keys() and "ResolutionHigh" in table1.keys():
             if "ResolutionLowO" in table1.keys() and "ResolutionHighO" in table1.keys():
                 unmergedDataFlag = True
-                tableDict['rows'].append({'header': {'label': indent + 'Resolution range', 'tooltip': ''},
+                tableDict['rows'].append({'header': {'label': indent + 'Resolution', 'tooltip': ''},
                                           'data': ['%0.2f - %0.2f (%0.2f-%0.2f)' %
                                                (table1['ResolutionLow'], table1['ResolutionHigh'],
                                                 table1['ResolutionLowO'], table1['ResolutionHighO'])]})
@@ -542,7 +542,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
                                       'data': ['%0.2f (%0.2f)' % (table1['Completeness'], table1['CompletenessO'])]})
 
         if "meanIsigI" in table1.keys() and "meanIsigIO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': indent + 'mean(I) / sig(I)', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'I / &sigma;I', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['meanIsigI'], table1['meanIsigIO'])]})
 
         if "WilsonB" in table1.keys():
@@ -562,7 +562,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
                                       'data': ['%0.2f (%0.2f)' % (table1['Rpim'], table1['RpimO'])]})
 
         if "CChalf" in table1.keys() and "CChalfO" in table1.keys():
-            tableDict['rows'].append({'header': {'label': indent + 'CChalf', 'tooltip': ''},
+            tableDict['rows'].append({'header': {'label': indent + 'CC&frac12;', 'tooltip': ''},
                                       'data': ['%0.2f (%0.2f)' % (table1['CChalf'], table1['CChalfO'])]})
 
         if (refmacResults):
@@ -582,7 +582,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
                 tableDict['rows'].append({'header': {'label': indent + indent + 'in macromolecules', 'tooltip': ''},
                                           'data': ['%d' % meta['natoms_macro']]})
                 tableDict['rows'].append({'header': {'label': indent + indent + 'in ligands', 'tooltip': ''},
-                                          'data': ['%d' % meta['natoms_ligand']]})
+                                          'data': [meta['natoms_ligand']]})
                 tableDict['rows'].append({'header': {'label': indent + indent + 'in solvent', 'tooltip': ''},
                                           'data': ['%d' % meta['natoms_water']]})
                 tableDict['rows'].append({'header': {'label': indent + 'Overall number of H-D atoms', 'tooltip': ''},
@@ -590,6 +590,8 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
             tableDict['rows'].append({'header':{'label': 'REFINEMENT', 'tooltip': ''},
                                       'data': ['']})
+            tableDict['rows'].append({'header': {'label': indent + 'Resolution', 'tooltip': ''},
+                                      'data': ['%0.2f - %0.2f' % (refmacResults.resolution_low,refmacResults.resolution_high)]})
             tableDict['rows'].append({'header': {'label': indent + 'Reflections in refinement', 'tooltip': ''},
                                       'data': ['%d' % refmacResults.nrefAll]})
             tableDict['rows'].append({'header': {'label': indent + 'Reflections in free set', 'tooltip': ''},
@@ -639,7 +641,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
         if ('bfac_ligand' in meta.keys()):
             tableDict['rows'].append({'header': {'label': indent + indent + 'for ligands', 'tooltip': ''},
-                                      'data': ['%0.1f' % meta['bfac_ligand']]})
+                                      'data': [meta['bfac_ligand']]})
 
         if ('bfac_water' in meta.keys()):
             tableDict['rows'].append({'header': {'label': indent + indent + 'for solvent', 'tooltip': ''},
@@ -654,11 +656,14 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
                                             "resolution shell)</p>", 1,
                              col=0)
 
-        csvTable = rvapi_utils.makeCSVTable ( tableDict ) \
-                              .replace("&alpha;","alpha") \
-                              .replace("&beta;" ,"beta")  \
-                              .replace("&gamma;","gamma") \
-                              .replace("&nbsp;","")
+        csvTable = rvapi_utils.makeCSVTable ( tableDict )  \
+                              .replace("&alpha;" ,"alpha") \
+                              .replace("&beta;"  ,"beta" ) \
+                              .replace("&gamma;" ,"gamma") \
+                              .replace("&sigma;" ,"sigma") \
+                              .replace("&frac12;","1/2"  ) \
+                              .replace("<br>"    ,""     ) \
+                              .replace("&nbsp;"  ,""     )
         # csvTable is a string, containing CSV output (lines are separated via proper OS line separator)
         # body.stderr(csvTable)
 
@@ -671,10 +676,14 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         body.putDownloadButton ( csvOutFPath,"Download in CSV format",
                                  reportPanelId,2,0 )
 
-        rtfTable = rvapi_utils.makeRTFTable ( tableDict ) \
-                              .replace("&alpha;","alpha") \
-                              .replace("&beta;" ,"beta")  \
-                              .replace("&gamma;","gamma")
+        rtfTable = rvapi_utils.makeRTFTable ( tableDict )     \
+                              .replace("&alpha;" ,r"\u945?")  \
+                              .replace("&beta;"  ,r"\u946?")  \
+                              .replace("&gamma;" ,r"\u947?")  \
+                              .replace("&sigma;" ,r"\u963?")  \
+                              .replace("&frac12;",r"\u189?")  \
+                              .replace("<br>"    ,r"\nline")  \
+                              .replace("&nbsp;"  ," "      )
         rtfOutFPath = os.path.join ( body.outputDir(),
                                 dtype_template.makeFileName ( body.job_id,
                                     body.dataSerialNo,body.getOFName("_Table1.rtf")) )
@@ -722,14 +731,17 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
 
 # REFMAC XML log parser
 class RefmacXMLLog:
+  
   def __init__(self, fileName):
-    self.successfullyLoaded = False
-    self.ncyc = 0
+    self.successfullyLoaded  = False
+    self.resolution_low      = 0
+    self.resolution_high     = 0
+    self.ncyc                = 0
     self.successfullyRefined = False
-    self.twin = False
-    self.cycles = []
-    self.nrefAll = 0
-    self.nrefFree = 0
+    self.twin                = False
+    self.cycles              = []
+    self.nrefAll             = 0
+    self.nrefFree            = 0
 
     try:
       xmlRoot = ET.parse(fileName).getroot()
@@ -738,18 +750,20 @@ class RefmacXMLLog:
         self.twin = True
 
       try:
-        self.nrefAll = int(xmlRoot.find('Overall_stats').find('n_reflections_all').text.strip())
+        self.nrefAll  = int(xmlRoot.find('Overall_stats').find('n_reflections_all' ).text.strip())
         self.nrefFree = int(xmlRoot.find('Overall_stats').find('n_reflections_free').text.strip())
+        self.resolution_low  = float(xmlRoot.find('Overall_stats').find('resolution_low' ).text.strip())
+        self.resolution_high = float(xmlRoot.find('Overall_stats').find('resolution_high').text.strip())
       except:
         pass
 
 
       for cycles in xmlRoot.find('Overall_stats').find('stats_vs_cycle'):
         cycle = {
-          'Ncyc': int(cycles.find('cycle').text.strip()),
+          'Ncyc' : int(cycles.find('cycle').text.strip()),
           'Rfact': float(cycles.find('r_factor').text.strip()),
           'Rfree': float(cycles.find('r_free').text.strip())
-          }
+        }
 
         if cycles.find('rmsBOND').text.strip()[0] != '*':
           cycle['rmsBOND'] = float(cycles.find('rmsBOND').text.strip())

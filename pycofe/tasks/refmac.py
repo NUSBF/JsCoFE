@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.25   <--  Date of Last Modification.
+#    01.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -574,13 +574,12 @@ class Refmac(basic.TaskDriver):
                 have_results = True
 
                 rvrow0 = self.rvrow
-                # meta = qualrep.quality_report ( self,revision )
+                # meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
                 try:
                     meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
                     # self.stderr ( " META=" + str(meta) )
                     if "molp_score" in meta:
                         self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
-
                 except:
                     meta = None
                     self.stderr ( " *** validation tools or molprobity failure" )
