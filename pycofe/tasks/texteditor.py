@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.03.24   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2025
 #
 # ============================================================================
 #
@@ -132,7 +132,7 @@ class TextEditor(basic.TaskDriver):
         elif object._type==dtype_ligand.dtype():
             self.putMessage ( "<b>Edited data:</b> ligand descriptions" )
             olig = self.finaliseLigand ( object.code,object.getPDBFilePath(self.inputDir()),
-                                         ufname,title="Ligand Structure" )
+                                         None,ufname,title="Ligand Structure" )
             if olig:
                 summary_line = "ligand descriptions edited"
                 have_results = True

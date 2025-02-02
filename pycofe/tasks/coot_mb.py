@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.24   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -361,7 +361,7 @@ class Coot(coot_ce.CootCE):
                         if libPath==ligCIF:
                             shutil.copy2 ( libPath,"ligands.lib" )
                             libPath = "ligands.lib"
-                        ligand_coot = self.finaliseLigand ( newLigCode,ligPDB,ligCIF )
+                        ligand_coot = self.finaliseLigand ( newLigCode,ligPDB,None,ligCIF )
                     else:
                         self.putMessage (
                             "<b>New ligand was generated with generic " +\
@@ -375,7 +375,7 @@ class Coot(coot_ce.CootCE):
                         if libPath==f:
                             shutil.copy2 ( libPath,"ligands.lib" )
                             libPath = "ligands.lib"
-                        ligand_coot = self.finaliseLigand ( "LIG","acedrg-LIG.pdb",f )
+                        ligand_coot = self.finaliseLigand ( "LIG","acedrg-LIG.pdb",None,f )
 
             elif fu.endswith(".PDB") or fu.endswith(".CIF"):
                 mt = os.path.getmtime(f)

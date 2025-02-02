@@ -195,8 +195,7 @@ class MakeLigand(basic.TaskDriver):
             if code0: # long ligand code, hack output
                 with open(cifPath,"r") as fin:
                     cifdata = fin.read().replace ( code,code0 )
-                    cifPath = self.find_output_file ( code0 )
-                    # cifPath = code0 + ".cif"
+                    cifPath = code0 + ".cif"
                     with open (cifPath,"w") as fout:
                         fout.write ( cifdata )
                 with open(xyzPath,"r") as fin:
@@ -204,18 +203,21 @@ class MakeLigand(basic.TaskDriver):
                     xyzPath = code0 + ".pdb"
                     with open (xyzPath,"w") as fout:
                         fout.write ( xyzdata )
-                block = gemmi.cif.read(cifPath)[-1]
-                if block.find_values('_chem_comp_atom.x'):
-                    mmcifPath = code0 + ".mmcif"
-                    # XYZ coordinates are found in dictionary, just copy
-                    # them over
-                    st = gemmi.make_structure_from_chemcomp_block ( block )
-                    st[0][0][0].seqid = gemmi.SeqId('1')
-                    st.make_mmcif_document().write_file ( mmcifPath )
-                    # shutil.copy ( mmcifPath,xyzPath )
                 code = code0
-    
-            ligand = self.finaliseLigand ( code,xyzPath,cifPath )
+
+            # create ligand coordinate file in mmCIF (to replace PDB for long 
+            # ligand codes)
+            block = gemmi.cif.read(cifPath)[-1]
+            if block.find_values('_chem_comp_atom.x'):
+                mmcifPath = code + ".mmcif"
+                # XYZ coordinates are found in dictionary, just copy
+                # them over
+                st = gemmi.make_structure_from_chemcomp_block ( block )
+                st[0][0][0].seqid = gemmi.SeqId('1')
+                st.make_mmcif_document().write_file ( mmcifPath )
+                # shutil.copy ( mmcifPath,xyzPath )
+
+            ligand = self.finaliseLigand ( code,xyzPath,mmcifPath,cifPath )
             # if mmcifPath:
             #     fname = os.path.splitext(ligand.getLibFileName())[0] + ".mmcif"
             #     ligand.setFile ( fname,dtype_template.file_key["mmcif"] )
