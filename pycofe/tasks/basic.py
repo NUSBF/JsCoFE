@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.25   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1678,7 +1678,7 @@ class TaskDriver(object):
             return None
 
 
-    def finaliseLigand ( self,code,xyzPath,cifPath,openState_bool=False,
+    def finaliseLigand ( self,code,xyzPath,mmcifPath,cifPath,openState_bool=False,
                               title="Ligand Structure" ):
 
         ligand = None
@@ -1688,7 +1688,7 @@ class TaskDriver(object):
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
 
-            ligand = self.registerLigand ( xyzPath,cifPath )
+            ligand = self.registerLigand ( xyzPath,mmcifPath,cifPath )
             if ligand:
                 if title!="":
                     self.putTitle ( title )
@@ -1984,9 +1984,9 @@ class TaskDriver(object):
         return structure
 
 
-    def registerLigand ( self,xyzPath,cifPath,copy_files=False ):
+    def registerLigand ( self,xyzPath,mmcifPath,cifPath,copy_files=False ):
         self.dataSerialNo += 1
-        ligand = dtype_ligand.register ( xyzPath,cifPath,
+        ligand = dtype_ligand.register ( xyzPath,mmcifPath,cifPath,
                                          self.dataSerialNo ,self.job_id,
                                          self.outputDataBox,self.outputDir(),
                                          copy=copy_files )

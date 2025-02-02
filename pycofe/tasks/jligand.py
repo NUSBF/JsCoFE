@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -179,7 +177,7 @@ class JLigand(basic.TaskDriver):
                 code = comp_id[0]
                 args = ["convert", "--from=mmcif", cifout, pdbout]
                 self.runApp("gemmi", args, logType="Main", quitOnError=True)
-                ligand = self.finaliseLigand ( code,pdbout,cifout )
+                ligand = self.finaliseLigand ( code,pdbout,None,cifout )
                 del pdbout
                 if ligand:
                     cifreg = os.path.join(self.outputDir(), ligand.getLibFileName())
