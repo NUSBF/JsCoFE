@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    03.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  MR with Alpha Fold model workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2025
 #
 # ============================================================================
 #
@@ -75,7 +75,7 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type=="TaskSlice":
-        auto_api.addContext("modelsForPhaser", data['models'])
+        auto_api.addContext("modelsForPhaser", data['model'])
         auto_tasks.phaserAllModels('phaser', crTask.autoRunName)
         return
 
