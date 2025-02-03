@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.08.24   <--  Date of Last Modification.
+ *    03.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Web-Coot Model Building Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2023-2024
+ *  (C) E. Krissinel, A. Lebedev 2023-2025
  *
  *  =================================================================
  *
@@ -195,8 +195,9 @@ if (!__template)  {
     let istruct    = this.input_data.data['revision'][0];
     let isubstruct = null;
     if (istruct._type=='DataRevision')  {
-      istruct    = this.input_data.data['revision'][0].Structure;
-      isubstruct = this.input_data.data['revision'][0].Substructure;
+      if (istruct.Options.load_all)
+        isubstruct = this.input_data.data['revision'][0].Substructure;
+      istruct = this.input_data.data['revision'][0].Structure;
     }
 
     let viewSettings = null;

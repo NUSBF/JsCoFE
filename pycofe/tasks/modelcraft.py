@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.24   <--  Date of Last Modification.
+#    03.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2025
 #
 # ============================================================================
 #
@@ -430,7 +430,7 @@ class ModelCraft(basic.TaskDriver):
                     structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
                     structure.setXYZSubtype    ()
                     structure.addPhasesSubtype ()
-                    structure.copyLabels       ( istruct )
+                    # structure.copyLabels       ( istruct )
                     structure.setRefmacLabels  ( None    )
                     structure.copyLigands      ( istruct )
                     #structure.FP         = istruct.FP

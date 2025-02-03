@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.01.25   <--  Date of Last Modification.
+ *    03.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -3493,18 +3493,22 @@ if (!dbx)  {
                   let dest_file = prj.getInputFilePath  ( jobDir   ,fname );
                   try {
                     fs.copySync ( src_file,dest_file );
+                    // console.log ( ' >>> copied: ' + src_file +
+                    //               ' -> ' + dest_file +
+                    //               ' object: ' + td[i]._type + ' : ' + td[i].dname );
                   } catch (err) {
-                    console.log ( ' *** cannot copy file ' + src_file +
-                                '\n                   to ' + dest_file +
-                                '\n           for object ' + td[i]._type + ' : ' + td[i].dname );
-                    console.log ( '     error: ' + err) ;
+                    console.log ( ' *** TaskTemplate: file copy fail src=' + src_file +
+                                  ' dest=' + dest_file + ' object=' + td[i]._type + 
+                                  ':' + td[i].dname );
+                    console.log ( ' *** error: ' + err) ;
                   }
                 }
               }
             }
           }
         } else {
-          console.log ( ' *** empty data object in ' + this._type + '.makeInputData,dtype=' + dtype );
+          console.log ( ' *** TaskTemplate: empty data object in ' + this._type + 
+                        '.makeInputData,dtype=' + dtype );
         }
     }
     // let dboxPath = path.join ( jobDir,'input','databox.meta' );
