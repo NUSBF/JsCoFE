@@ -641,7 +641,9 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskMigrate       (),
     'Upload to Cloud Storage',
     new TaskFetchData     (),
-    new TaskPushToCloud   ()
+    new TaskPushToCloud   (),
+    ' ------------------- ',
+    new TaskImportSerial()
   ];
 
   if (__cloud_storage)
