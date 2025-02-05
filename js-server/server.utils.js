@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    05.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,53 +13,54 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *        function configureCache   ( ncache )
- *        function fileExists       ( fpath )
- *        function isSymbolicLink   ( fpath )
- *        function dirExists        ( fpath )
- *        function fileSize         ( fpath )
- *        function removeFile       ( fpath ) 
- *        function readString       ( fpath )  
- *        function makeSymLink      ( pathToTarget,pathToOrigin )  
- *        function readObject       ( fpath )  
- *        function readClass        ( fpath )
- *        function writeString      ( fpath,data_string )  
- *        function appendString     ( fpath,data_string )  
- *        function writeObject      ( fpath,dataObject )  
- *        function copyFile         ( old_path,new_path )  
- *        function moveFile         ( old_path,new_path )  
- *        function copyDirAsync     ( old_path,new_path,overwrite_bool,
- *                                    callback_func )  
- *        function copyDirSync      ( source,destination )
- *        function mkDir_check      ( dirPath )  
- *        function mkDir_anchor     ( dirPath )  
- *        function mkPath           ( dirPath )  
- *        function removePathAsync  ( dir_path )  
- *        function removePath       ( dir_path )  
- *        function moveDir          ( old_path,new_path,overwrite_bool )  
- *        function moveDirAsync     ( old_path,new_path,overwrite_bool,
- *                                    callback_func )  
- *        function cleanDir         ( dir_path ) 
- *        function cleanDirExt      ( dir_path,fext )  
- *        function removeSymLinks   ( dir_path )  
- *        function getDirectorySize ( dir_path )  
- *        function searchTree       ( dir_path,filename,matchKey ) 
- *        function removeFiles      ( dir_path,extList ) 
- *        function killProcess      ( pid )  
+ *        function configureCache    ( ncache )
+ *        function fileExists        ( fpath )
+ *        function isSymbolicLink    ( fpath )
+ *        function dirExists         ( fpath )
+ *        function fileSize          ( fpath )
+ *        function removeFile        ( fpath ) 
+ *        function readString        ( fpath )  
+ *        function makeSymLink       ( pathToTarget,pathToOrigin )  
+ *        function readObject        ( fpath )  
+ *        function readClass         ( fpath )
+ *        function writeString       ( fpath,data_string )  
+ *        function appendString      ( fpath,data_string )  
+ *        function writeObject       ( fpath,dataObject )  
+ *        function copyFile          ( old_path,new_path )  
+ *        function moveFile          ( old_path,new_path )  
+ *        function copyDirAsync      ( old_path,new_path,overwrite_bool,
+ *                                     callback_func )  
+ *        function copyDirSync       ( source,destination )
+ *        function mkDir_check       ( dirPath )  
+ *        function mkDir_anchor      ( dirPath )  
+ *        function mkPath            ( dirPath )  
+ *        function removePathAsync   ( dir_path )  
+ *        function removePath        ( dir_path )  
+ *        function moveDir           ( old_path,new_path,overwrite_bool )  
+ *        function moveDirAsync      ( old_path,new_path,overwrite_bool,
+ *                                     callback_func )  
+ *        function cleanDir          ( dir_path ) 
+ *        function cleanDirExt       ( dir_path,fext )  
+ *        function removeSymLinks    ( dir_path )  
+ *        function getDirectorySize  ( dir_path )  
+ *        function searchTree        ( dir_path,filename,matchKey ) 
+ *        function removeFiles       ( dir_path,extList ) 
+ *        function killProcess       ( pid )  
  *        function writeJobReportMessage ( jobDirPath, message, updating_bool )  
- *        function jobSignalExists  ( jobDir ) 
- *        function removeJobSignal  ( jobDir ) 
- *        function writeJobSignal   ( jobDir,signal_name,signal_message,signal_code )  
- *        function getJobSignalCode ( jobDir )  
- *        function clearRVAPIreport ( jobDirPath,taskFileName )  
- *        function getMIMEType      ( path )  
- *        function capData          ( data,n )  
- *        function send_file        ( fpath,server_response,mimeType,
- *                                    deleteOnDone,capSize,persistance,
- *                                    nofile_callback,onDone_callback=null )  
- *        function receiveRequest   ( server_request,onFinish_func )
- *        function spawn            ( exeName,args,options )  
- *        function padDigits        ( number,digits ) 
+ *        function jobSignalExists   ( jobDir ) 
+ *        function removeJobSignal   ( jobDir ) 
+ *        function writeJobSignal    ( jobDir,signal_name,signal_message,signal_code )  
+ *        function getJobSignalCode  ( jobDir )  
+ *        function clearRVAPIreport  ( jobDirPath,taskFileName )  
+ *        function getMIMEType       ( path )  
+ *        function capData           ( data,n )  
+ *        function send_file         ( fpath,server_response,mimeType,
+ *                                     deleteOnDone,capSize,persistance,
+ *                                     nofile_callback,onDone_callback=null )  
+ *        function receiveRequest    ( server_request,onFinish_func )
+ *        function spawn             ( exeName,args,options )  
+ *        function padDigits         ( number,digits ) 
+ *        function getServerResponse ( url,callback )
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
@@ -73,6 +74,8 @@ const fs            = require('fs-extra');
 const path          = require('path');
 const child_process = require('child_process');
 const formidable    = require('formidable');
+const http          = require('http');
+const https         = require('https');
 
 const class_map     = require('./server.class_map');
 const task_t        = require('../js-common/tasks/common.tasks.template');
@@ -1243,6 +1246,42 @@ function setGracefulQuit()  {
   // });
 }
 
+function getServerResponse ( url,callback,timeout=500 )  {
+// Example usage
+// getResponse('https://jsonplaceholder.typicode.com/todos/1', (err, data) => {
+//   if (err) {
+//     console.error('Error:', err.message);
+//   } else {
+//     console.log('Response:', data);
+//   }
+// });
+  const client = url.startsWith('https') ? https : http;
+  let data = '';
+  const req = client.get ( url, (res) => {
+    // Accumulate data chunks
+    res.on('data', (chunk) => {
+      data += chunk;
+    });
+    // Handle the end of the response
+    res.on('end', () => {
+      callback ( null,data );
+    });
+  });
+
+  // Handle network errors
+  req.on('error', (err) => {
+    callback ( err,data );
+  });
+  
+  // Set timeout
+  req.setTimeout ( timeout, () => {
+    req.abort(); // Abort the request on timeout
+    callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+  });
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.configureCache         = configureCache;
@@ -1293,3 +1332,4 @@ module.exports.killProcess            = killProcess;
 module.exports.spawn                  = spawn;
 module.exports.padDigits              = padDigits;
 module.exports.setGracefulQuit        = setGracefulQuit;
+module.exports.getServerResponse      = getServerResponse;
