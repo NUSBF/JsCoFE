@@ -753,7 +753,7 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
 
-        rData.my_workflows    = utils.readObject ( getWorkflowsFName(userData) );
+        rData.my_workflows = utils.readObject ( getWorkflowsFName(userData) );
         if (!rData.my_workflows)
           rData.my_workflows = [];
 
@@ -768,9 +768,16 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
         // });
 
-        conf.getServerEnvironment ( function(environ_server){
-          rData.environ_server = environ_server;
-          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+        rData.remoteJobServer = {
+          url : conf.getRemoteJobsServerURL()
+        }
+        conf.checkRemoteJobsServerURL ( rData.remoteJobServer.url,function(text){
+          rData.remoteJobServer.status = text;
+          console.log ( ' >>>>>> rurl=' + JSON.stringify(rData.remoteJobServer) );
+          conf.getServerEnvironment ( function(environ_server){
+            rData.environ_server = environ_server;
+            callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+          });  
         });
 
       } else  {
