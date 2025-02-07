@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    10.01.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -765,45 +765,45 @@ Grid.prototype.addPopupButton = function ( text, icon_uri, row, col, rowSpan, co
   return button;
 }
 
-Grid.prototype.setRadioSet = function (row, col, rowSpan, colSpan) {
+Grid.prototype.setRadioSet = function ( row, col, rowSpan, colSpan ) {
   let radio = new RadioSet();
   this.setWidget(radio, row, col, rowSpan, colSpan);
   this.setNoWrap(row, col);
   return radio;
 }
 
-Grid.prototype.setLabel = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.setLabel = function ( text, row, col, rowSpan, colSpan ) {
   let label = new Label(text);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.addLabel = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.addLabel = function ( text, row, col, rowSpan, colSpan ) {
   let label = new Label(text);
   this.addWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.setIconLabel = function (text, icon_uri, row, col, rowSpan, colSpan) {
+Grid.prototype.setIconLabel = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
   let label = new IconLabel(text, icon_uri);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.setInputText = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.setInputText = function ( text, row, col, rowSpan, colSpan ) {
   let input = new InputText(text);
   this.setWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
 
-Grid.prototype.addInputText = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.addInputText = function ( text, row, col, rowSpan, colSpan ) {
   let input = new InputText(text);
   this.addWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
 
-Grid.prototype.setTextArea = function (text, placeholder, nrows, ncols,
-  row, col, rowSpan, colSpan) {
+Grid.prototype.setTextArea = function ( text, placeholder, nrows, ncols,
+                                        row, col, rowSpan, colSpan )  {
   let textarea = new TextArea(text, placeholder, nrows, ncols);
   this.setWidget(textarea, row, col, rowSpan, colSpan);
   return textarea;
@@ -1024,7 +1024,7 @@ IconLabel.prototype.setIconLabel = function (text, icon_uri) {
   }
 }
 
-IconLabel.prototype.setBackground = function (icon_uri) {
+IconLabel.prototype.setBackground = function ( icon_uri ) {
   if (icon_uri.length > 0)
     $(this.element).css({ 'background-image': 'url("' + icon_uri + '")' });
 }
@@ -1033,19 +1033,19 @@ IconLabel.prototype.setBackground = function (icon_uri) {
 // -------------------------------------------------------------------------
 // InputText class
 
-function InputText(text) {
+function InputText ( text ) {
   Widget.call(this, 'input');
   this.element.setAttribute('type', 'text');
   this.element.setAttribute('value', text);
 }
 
-InputText.prototype = Object.create(Widget.prototype);
+InputText.prototype = Object.create ( Widget.prototype );
 InputText.prototype.constructor = InputText;
 
 InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, autocomplete=null ) {
-  if (placeholder) this.element.setAttribute('placeholder', placeholder);
-  if (tooltip) this.setTooltip(tooltip);
-  if (type) this.element.setAttribute('type', type);
+  if (placeholder) this.element.setAttribute ( 'placeholder', placeholder );
+  if (tooltip) this.setTooltip ( tooltip );
+  if (type) this.element.setAttribute ( 'type', type );
   if (pattern) {
     if ((pattern == 'integer') || (pattern == 'integer_'))
       this.element.setAttribute ( 'pattern', '^(-?[0-9]+\d*)$|^0$' );
@@ -1061,23 +1061,23 @@ InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, a
   return this;
 }
 
-InputText.prototype.setType = function (type) {
-  if (type) this.element.setAttribute('type', type);
+InputText.prototype.setType = function ( type ) {
+  if (type) this.element.setAttribute ( 'type', type );
   return this;
 }
 
-InputText.prototype.setReadOnly = function (yn_bool) {
+InputText.prototype.setReadOnly = function ( yn_bool ) {
   this.element.readOnly = yn_bool;
   return this;
 }
 
-InputText.prototype.setMaxInputLength = function (maxlength_int) {
-  this.element.setAttribute('maxlength', maxlength_int);
+InputText.prototype.setMaxInputLength = function ( maxlength_int ) {
+  this.element.setAttribute ( 'maxlength', maxlength_int );
   return this;
 }
 
 
-InputText.prototype.setDisabled = function (disable_bool) {
+InputText.prototype.setDisabled = function ( disable_bool ) {
   this.element.disabled = disable_bool;
   return this;
 }
@@ -1087,7 +1087,7 @@ InputText.prototype.getValue = function () {
   return this.element.value;
 }
 
-InputText.prototype.setValue = function (text) {
+InputText.prototype.setValue = function ( text ) {
   return this.element.value = text;
 }
 
@@ -1098,11 +1098,11 @@ InputText.prototype.addOnInputListener = function ( listener_func )  {
 }
 */
 
-InputText.prototype.setOnEnterListener = function (socket_function) {
+InputText.prototype.setOnEnterListener = function ( socket_function ) {
   (function (self) {
-    $(self.element).keypress(function (e) {
+    $(self.element).keypress ( function (e) {
       if (e.keyCode == 13)
-        socket_function(self.getValue());
+        socket_function ( self.getValue() );
     });
   }(this))
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,7 @@
  *   function getNofCommunicatingIFrames()
  *   function onWindowMessage           ( event )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -708,7 +708,6 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
     status            : 'waiting',
     type              : 'command',
     id                : __server_queue_id++,
-    // cmd               : cmd,
     request_type      : cmd,
     data_obj          : data_obj,
     t_requested       : performance.now(),

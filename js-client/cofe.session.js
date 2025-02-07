@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,12 +214,32 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
+              __remote_login_id    = userData.remote_login;
+              __remote_cloudrun_id = userData.remote_cloudrun_id;
 
               if (response.data.onlogin_message)  {
                 window.setTimeout ( function(){
                   new MessageBox ( 'Information',response.data.onlogin_message,
                                    'msg_information' );
                 },1000);
+              }
+
+              __remote_environ_server = [];
+              if (__remoteJobServer.status=='FE')  {
+                let rud = new UserData();
+                rud.login       = __remote_login_id;
+                rud.cloudrun_id = __remote_cloudrun_id;              
+                serverCommand ( __remoteJobServer.url + '/' + fe_command.extGetFEData,
+                                rud,'Remote FE request',function(response){
+                  if (response)  {
+                    __remote_environ_server = response.data.environ_server;
+                  } else  {
+                    new MessageBox ( 'Get Remote FE Info Error',
+                      'Unknown error: <b>' + response.status + '</b><p>' +
+                      'when trying to fetch remote FE data.', 'msg_error' );
+                  }
+                  return true;          
+                });
               }
 
               if (!__local_service)  {
