@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -63,11 +63,13 @@ function UserData()  {
   this.name          = '';
   this.email         = '';
   this.login         = '';
+  this.remote_login  = '';
   this.globusId      = '';
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
   this.cloudrun_id   = '';
+  this.remote_cloudrun_id = '';
   this.knownSince    = '';  // date
   this.lastSeen      = '';  // date
   this.role          = role_code.user;
@@ -118,6 +120,11 @@ let msg = '';
     return msg;
 
   uData.version = 1;  // with new checks, update this number and above
+
+  if (!uData.hasOwnProperty('remote_login'))  {
+    uData.remote_login       = '';
+    uData.remote_cloudrun_id = '';
+  }
 
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
   if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';

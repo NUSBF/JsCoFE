@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -186,13 +186,16 @@ function start ( callback_func )  {
             rj.cloudFetch ( server_request,server_response );
           break;
 
+        case cmd.fe_command.extGetFEData :
+            pp.processPOSTData ( server_request,server_response,rj.getFEData,feConfig.state );
+          break;
+
         case cmd.fe_command.checkSession :
             pp.processPOSTData ( server_request,server_response,user.checkSession,feConfig.state );
           break;
 
         case cmd.fe_command.control :
             pp.processPOSTData ( server_request,server_response,function(data){
-              //console.log ( ' >>>> control ' + JSON.stringify(data) );
               cmd.sendResponse ( server_response,cmd.fe_retcode.ok,controlSignal(data),'' );
             },'active' );
           break;

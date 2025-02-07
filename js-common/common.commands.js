@@ -94,7 +94,8 @@ const fe_command = {
   authResponse      : '=auth_response',  // process from software authorisation server
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
   checkAnnouncement : '=checkannouncement', // get service announcements
-  control           : '=control'         // group of server service functions
+  control           : '=control',        // group of server service functions
+  extGetFEData      : '=ext_getfedata'   // getting FE data for running remote jobs
 };
 
 

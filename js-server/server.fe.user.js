@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.11.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *
  *    function hashPassword     ( pwd )
@@ -134,7 +134,7 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   // Check that we're having a new login name
   let userFilePath = getUserDataFName ( userData );
-  log.standard ( 1,'        user data path: ' + userFilePath );
+  log.standard ( 2,'        user data path: ' + userFilePath );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -145,7 +145,7 @@ function _make_new_user ( userData,callback_func )  {  // gets UserData object
 
   } else if (utils.writeObject(userFilePath,userData))  {
 
-    log.standard ( 2,'new user login: ' + userData.login + ' -- created' );
+    log.standard ( 3,'new user login: ' + userData.login + ' -- created' );
 
     response = prj.makeNewUserProjectsDir ( userData );
 
@@ -253,8 +253,8 @@ function makeNewUser ( userData,callback_func )  {  // gets UserData object
              Math.round(volume.free)        + ' MB free at '      +
              vconf[volume.name].diskReserve + ' MB reserved)';
 
-      log.standard ( 3,msg );
-      log.error    ( 3,msg );
+      log.standard ( 4,msg );
+      log.error    ( 4,msg );
 
       callback_func (
         new cmd.Response ( cmd.fe_retcode.regFailed,
@@ -297,7 +297,7 @@ function recoverUserLogin ( userData,callback_func )  {  // gets UserData object
 
   // Get user data object and generate a temporary password
 
-  log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
+  log.standard ( 5,'recover user login for ' + userData.email + ' at ' +
                    fe_server.userDataPath );
 
   let files = fs.readdirSync ( fe_server.userDataPath );
@@ -682,7 +682,7 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
     pwd = userData.pwd;
   }
   let ulogin = userData.login;
-  log.standard ( 5,'user login ' + ulogin );
+  log.standard ( 6,'user login ' + ulogin );
 
   // Check that we're having a new login name
   let userFilePath = getUserDataFName ( userData );
@@ -768,17 +768,10 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
         // });
 
-        rData.remoteJobServer = {
-          url : conf.getRemoteJobsServerURL()
-        }
-        conf.checkRemoteJobsServerURL ( rData.remoteJobServer.url,function(text){
-          rData.remoteJobServer.status = text;
-          console.log ( ' >>>>>> rurl=' + JSON.stringify(rData.remoteJobServer) );
-          conf.getServerEnvironment ( function(environ_server){
-            rData.environ_server = environ_server;
-            callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
-          });  
-        });
+        conf.getServerEnvironment ( function(environ_server){
+          rData.environ_server = environ_server;
+          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
+        });  
 
       } else  {
         log.error ( 41,'Login name/password mismatch:' );
@@ -1057,7 +1050,7 @@ function getUserRation ( loginData,data,callback_func )  {
 function saveHelpTopics ( loginData,userData )  {
   let response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 6,'user save help topics ' + loginData.login );
+  log.standard ( 7,'user save help topics ' + loginData.login );
 
   // Check that we're having a new login name
   let userFilePath = getUserDataFName ( loginData );
@@ -1092,7 +1085,7 @@ function saveHelpTopics ( loginData,userData )  {
 
 function userLogout ( loginData )  {
 
-  log.standard ( 7,'user logout ' + loginData.login );
+  log.standard ( 8,'user logout ' + loginData.login );
 
   if (['devel',ud.__local_user_id].indexOf(loginData.login)<0)
     __userLoginHash.removeUser ( loginData.login );
@@ -1114,13 +1107,16 @@ function updateUserData ( loginData,userData )  {
   // if (userData.login!='devel')  {
     uData.pwd = hashPassword ( pwd );
     notify    = true;
-    log.standard ( 8,'update user data, login ' + loginData.login );
+    log.standard ( 9,'update user data, login ' + loginData.login );
   } else  {
     // can only change some records without password 
     uData = readUserData ( loginData );
     if (uData)  {
-      if (userData.login==ud.__local_user_id)
-        uData.cloudrun_id = userData.cloudrun_id;
+      ud.checkUserData ( uData );
+      if (userData.login==ud.__local_user_id)  {
+        uData.remote_login       = userData.remote_login;
+        uData.remote_cloudrun_id = userData.remote_cloudrun_id;
+      }
       if ('helpTopics' in userData)
         uData.helpTopics = userData.helpTopics;
       if ('authorisation' in userData)  
@@ -1165,8 +1161,8 @@ function updateUserData_admin ( loginData,userData )  {
   let response     = null;  // must become a cmd.Response object to return
   let userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 9,'update ' + userData.login +
-                   '\' account settings by admin, login: ' + loginData.login );
+  log.standard ( 10,'update ' + userData.login +
+                    '\' account settings by admin, login: ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
 
@@ -1317,7 +1313,7 @@ function updateUserData_admin ( loginData,userData )  {
 function deleteUser ( loginData,userData )  {
   let response = null;  // must become a cmd.Response object to return
 
-  log.standard ( 10,'delete user, login ' + loginData.login );
+  log.standard ( 11,'delete user, login ' + loginData.login );
 
   let pwd = userData.pwd;
   userData.pwd = hashPassword ( pwd );
@@ -1380,7 +1376,7 @@ function deleteUser_admin ( loginData,userData )  {
   let response     = null;  // must become a cmd.Response object to return
   let userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 11,'delete user ' + userData.login +
+  log.standard ( 12,'delete user ' + userData.login +
                     ' by admin, login ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
@@ -1470,7 +1466,7 @@ function retireUser_admin ( loginData,meta )  {
   let uData      = readUserData ( userData );
   let sLoginData = getUserLoginData ( meta.successor );
 
-  log.standard ( 16,'retire user ' + userData.login +
+  log.standard ( 13,'retire user ' + userData.login +
                     ' by admin, login ' + loginData.login );
 
   // sanity checks
@@ -1641,8 +1637,8 @@ function resetUser_admin ( loginData,userData )  {
   let fe_server    = conf.getFEConfig();
   let userFilePath = getUserDataFName ( loginData );
 
-  log.standard ( 141,'reset pasword for user ' + userData.login +
-                     ' by admin, login ' + loginData.login );
+  log.standard ( 16,'reset pasword for user ' + userData.login +
+                    ' by admin, login ' + loginData.login );
 
   if (utils.fileExists(userFilePath))  {
     let uaData = utils.readObject ( userFilePath );
@@ -1675,8 +1671,8 @@ function resetUser_admin ( loginData,userData )  {
                             'please investigate.' )
                       );
           } else  {
-            log.standard ( 143,'Password for user ' + userData.login +
-                               ' reset by admin, pwd=' + pwd );
+            log.standard ( 17,'Password for user ' + userData.login +
+                              ' reset by admin, pwd=' + pwd );
             response = new cmd.Response ( cmd.fe_retcode.ok,uData.name,
               emailer.sendTemplateMessage ( uData,
                         cmd.appName() + ' Login Password Reset',
@@ -1729,7 +1725,7 @@ function _send_mail_to_all_users ( subject,message,user_list,count )  {
 
     emailer.send ( user_list[count].email,subject,
                    message.replace('&lt;User Name&gt;',user_list[count].name) );
-    log.standard ( 12,'Message sent to ' + user_list[count].name + ' at ' +
+    log.standard ( 18,'Message sent to ' + user_list[count].name + ' at ' +
                      user_list[count].email );
     if (count<user_list.length-1)
       setTimeout ( function(){
@@ -1854,7 +1850,7 @@ function manageDormancy ( loginData,params )  {
               ddata.deleted_users++;
               ddata.disk_freed += users[i].ration.storage_used;
               if (!ddata.checkOnly)  {
-                log.standard ( 131,'dormant user ' + users[i].login + ' deleted' );
+                log.standard ( 19,'dormant user ' + users[i].login + ' deleted' );
               }
             }
           } else  {
@@ -1890,7 +1886,7 @@ function manageDormancy ( loginData,params )  {
                                   });
                       },delay);
                     }(uiData,reason_msg,timer_delay))
-                    log.standard ( 132,'user ' + users[i].login + ' made dormant (' +
+                    log.standard ( 20,'user ' + users[i].login + ' made dormant (' +
                                        ndays + ' days inactivity, ' +
                                        users[i].ration.jobs_total + ' jobs)' );
                   } else  {
@@ -1942,7 +1938,6 @@ function saveMyWorkflows ( loginData,params )  {
 // ===========================================================================
 
 function getInfo ( inData,callback_func )  {
-  let response  = null;  // must become a cmd.Response object to return
   let fe_server = conf.getFEConfig();
 
   if (fe_server)  {
@@ -1993,15 +1988,28 @@ function getInfo ( inData,callback_func )  {
     if (client_conf) rData.local_service = client_conf.externalURL;
                 else rData.local_service = null;
 
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',rData );
+    rData.remoteJobServer = { 
+      url    : conf.getRemoteJobsServerURL(), 
+      status : 'nourl' 
+    };
+    if (rData.remoteJobServer.url)  {
+      conf.checkRemoteJobsServerURL ( rData.remoteJobServer.url,function(text){
+        rData.remoteJobServer.status = text;
+        if (text=='FE')
+          log.standard ( 21,'remote server responded on ' + rData.remoteJobServer.url );
+        else
+          log.standard ( 21,'remote server not responded on ' + rData.remoteJobServer.url );
+        callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rData ) );
+      });
+    } else  {
+      callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rData ) );
+    }
 
   } else  {
 
-    response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
+    callback_func ( new cmd.Response ( cmd.fe_retcode.unconfigured,'','' ) );
 
   }
-
-  callback_func ( response );
 
 }
 
@@ -2165,6 +2173,7 @@ function authResponse ( server_request,server_response )  {
 // export for use in node
 module.exports.__announcementFile   = __announcementFile;
 module.exports.__userDataExt        = __userDataExt;
+module.exports.__suspend_prefix     = __suspend_prefix;
 module.exports.userLogin            = userLogin;
 module.exports.checkSession         = checkSession;
 module.exports.userLogout           = userLogout;
@@ -2178,7 +2187,7 @@ module.exports.getUserLoginData     = getUserLoginData;
 module.exports.getUserRation        = getUserRation;
 module.exports.readUsersData        = readUsersData;
 module.exports.getUserData          = getUserData;
-//module.exports.getUserDataFName     = getUserDataFName;
+module.exports.getUserDataFName     = getUserDataFName;
 module.exports.saveHelpTopics       = saveHelpTopics;
 module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;

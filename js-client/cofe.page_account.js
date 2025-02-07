@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,6 +97,11 @@ function AccountPage ( sceneId )  {
   let cloudrun_pnl = null;
   let globus_inp   = null;
 
+  let remote_login_lbl    = null;
+  let remote_cloudrun_lbl = null;
+  let remote_login_inp    = null;
+  let remote_cloudrun_inp = null;
+
   if (full_list)  {
     user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
     email_lbl    = new Label     ( 'E-mail:'     );
@@ -114,11 +119,16 @@ function AccountPage ( sceneId )  {
     pwd1_inp     = new InputText ( '' );
     cloudrun_inp = new InputText ( '' );
     globus_inp   = new InputText ( '' );
+  } else  {
+    remote_login_lbl    = new Label     ( 'Login name:&nbsp;'  ).setNoWrap();
+    remote_cloudrun_lbl = new Label     ( 'CloudRun Id:&nbsp;' ).setNoWrap();
+    remote_login_inp    = new InputText ( __remote_login_id    );
+    remote_cloudrun_inp = new InputText ( __remote_cloudrun_id );
   }
   let authoris_lbl = null;
   // let authorisation_dic = {};
   if (__auth_software)  {
-    authoris_lbl = new Label ( 'Software authorisations:' ).setNoWrap();
+    authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
   }
 
@@ -166,14 +176,24 @@ function AccountPage ( sceneId )  {
     login_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt').setReadOnly(true);
     pwd_inp     .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
     pwd1_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
-    cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('110pt').setHeight('26px');
-    cloudrun_inp.setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
+    cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('110pt').setHeight('26px')
+                .setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
                                'from command prompt. It should be changed periodically ' +
                                'for security reasons. Press button on the left to ' +
                                'generate new CloudRun Id.' );  
     globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('234pt');
+  } else  {
+    remote_login_lbl   .setFontSize ( '112%' );
+    remote_cloudrun_lbl.setFontSize ( '112%' );
+    remote_login_inp   .setFontSize ( '112%' ).setWidth('100%')
+                       .setTooltip  ( 'Login user name on remote ' + appName() + 
+                                      ' server' ); 
+    remote_cloudrun_inp.setFontSize ( '90%' ).setWidth('100%').setHeight('16pt')
+                       .setStyle    ( null, null, 'XXXX-XXXX-XXXX-XXXX',
+                                      'CloudRun Id for user\'s account on remote ' +
+                                      appName() + 
+                                      ' server (available from user settings).' );  
   }
-
 
   let row = 0;
   panel.setWidget              ( title_lbl   ,row,0,1,4   );
@@ -226,14 +246,43 @@ function AccountPage ( sceneId )  {
     // panel.setCellSize  ( '96pt','',row,0   );
     // panel.setVerticalAlignment ( row,0,'middle' );
     // panel.setVerticalAlignment ( row,1,'middle' );
-    panel.setLabel ( '&nbsp;',row,1,1,3 );
-    panel.setCellSize  ( '96pt','',row,0   );
-    if (__auth_software)  {
-      panel.setWidget ( authoris_lbl,row+1,0,1,2 );
-      panel.setCellSize  ( '96pt','',row+1,0   );
-      panel.setVerticalAlignment ( row+1,0,'middle' );
-      panel.setVerticalAlignment ( row+1,1,'middle' );
+    let row1 = row;
+    if (__remoteJobServer.status=='FE')  {
+      panel.setLabel ( '<i>Remote job server:</i>',row1++,0,1,3 )
+           .setFontSize('95%');
+      panel.setInputText ( __remoteJobServer.url,row1++,0,1,4 )
+           .setReadOnly(true).setFontItalic(true).setFontSize('95%')
+           .setWidth('100%').setDisabled(true);
+      panel.setLabel    ( '',row1,0,1,3 );
+      panel.setCellSize ( '','3pt',row1++,0 );
+      let rpanel = panel.setGrid ('',row1++,0,1,4 );
+      rpanel.setWidget ( remote_login_lbl   ,0,0,1,1 );
+      rpanel.setWidget ( remote_login_inp   ,0,1,1,1 );
+      rpanel.setWidget ( remote_cloudrun_lbl,1,0,1,1 );
+      rpanel.setWidget ( remote_cloudrun_inp,1,1,1,1 );
+      rpanel.setVerticalAlignment ( 0,0,'middle' );
+      rpanel.setVerticalAlignment ( 1,0,'middle' );
+      row1 += 2;
+      // panel.setVerticalAlignment ( row,0,'middle' );
+    } else  {
+      panel.setLabel ( '<b>Remote job server not configured</b>',row1++,0,1,3 )
+           .setNoWrap();
+      panel.setLabel ( '<i>Check settings in ' + appName() + ' configurator</i>',
+                       row1++,0,1,4 ).setNoWrap();
     }
+    panel.setCellSize  ( '96pt','',row,0 );
+    if (__auth_software)  {
+      for (let r=row1;r<row+9;r++)
+        panel.setLabel ( '&nbsp;',r,0,1,3 );
+      panel.setCellSize  ( '','72pt',row+8,0 );
+      panel.setWidget ( authoris_lbl,row+9,0,1,2 );
+      // panel.setCellSize  ( '96pt','',row+1,0   );
+      panel.setVerticalAlignment ( row+9,0,'middle' );
+      panel.setVerticalAlignment ( row+9,1,'middle' );
+    }
+    // panel.setLabel ( '&nbsp;',row+2,1,1,3 );
+    // panel.setCellSize  ( '96pt','',row+2,0 );
+    // panel.setWidth_px ( 196 );
 
   }
 
@@ -413,7 +462,9 @@ function AccountPage ( sceneId )  {
         feedback_btn.setButton ( feedback,image_path('feedback') );
       });
     });
-  }
+
+  } else
+    row += 8;
 
   let authoris_btn = null;
   if (__auth_software)  {
@@ -435,8 +486,9 @@ function AccountPage ( sceneId )  {
   }
 
   row++;
-  if (full_list)  panel.setCellSize  ( '','12pt',row++,0 );
-            else  panel.setCellSize  ( '','142pt',row++,0 );
+  // if (full_list)  panel.setCellSize  ( '','12pt',row++,0 );
+  //           else  panel.setCellSize  ( '','12pt',row++,0 );
+  panel.setCellSize  ( '','12pt',row++,0 );
   //panel.setWidget   ( new HLine('2pt'), row++,0,1,4 );
   panel.setHLine     ( 2, row++,0, 1,4 );
   panel.setCellSize  ( '','12pt',row++,0 );
@@ -518,7 +570,12 @@ function AccountPage ( sceneId )  {
         userData.feedback    = feedback_btn.getText ();
         userData.cloudrun_id = cloudrun_inp.getValue();
         userData.globusId    = globus_inp  .getValue();
-      }  
+      } else  {
+        userData.remote_login       = remote_login_inp   .getValue();
+        userData.remote_cloudrun_id = remote_cloudrun_inp.getValue();
+        __remote_login_id           = userData.remote_login;
+        __remote_cloudrun_id        = userData.remote_cloudrun_id;
+      }
       userData.action = userdata_action.none;
 
       __user_settings.onlogin        = onlogin_sel.getValue();
@@ -655,6 +712,9 @@ function AccountPage ( sceneId )  {
       licence_btn .setDisabled ( false );
       feedback_btn.setDisabled ( false );
       delete_btn  .setDisabled ( false );
+    } else if ('remote_login' in userData)  {
+      remote_login_inp   .setValue ( userData.remote_login       );
+      remote_cloudrun_inp.setValue ( userData.remote_cloudrun_id );
     }
 
     if (authoris_btn)

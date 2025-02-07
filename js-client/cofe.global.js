@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -86,21 +86,25 @@ var __fe_url          =         // front-end url as returned by the server (not 
                         document.location.host     +
                         document.location.pathname;
 
-var __auth_software   = null;   // software authorisation data
-var __user_authorisation = null;  // user authorisation data
-var __environ_server  = [];     // list of key environmental variables on NCs
-var __environ_client  = [];     // list of key environmental variables on Client
-var __my_workflows    = [];     // user defined workflows
+var __auth_software         = null;  // software authorisation data
+var __user_authorisation    = null;  // user authorisation data
+var __environ_server        = [];    // list of key environmental variables on NCs
+var __environ_client        = [];    // list of key environmental variables on Client
+var __remoteJobServer       = { url: null, status: 'nourl' };
+var __remote_environ_server = [];    // list of key environmental variables on NCs
+var __remote_login_id       = '';
+var __remote_cloudrun_id    = '';
+var __my_workflows          = [];    // user defined workflows
 
-var __clipboard       = { task: null };     // clipboard for copy-pasting jobs
+var __clipboard             = { task: null };  // clipboard for copy-pasting jobs
 
-var __tips            = null;   // tips loaded from FE (optional), used in login page
+var __tips                  = null;  // tips loaded from FE (optional), used in login page
 
-var __mobile_device   = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
-var __iOS_device      = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
-                        (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
-                         /MacIntel/.test(navigator.platform));
-var __any_mobile_device = __mobile_device || __iOS_device;
+var __mobile_device      = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+var __iOS_device         = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+                           (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
+                            /MacIntel/.test(navigator.platform));
+var __any_mobile_device  = __mobile_device || __iOS_device;
 
 const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
 const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
