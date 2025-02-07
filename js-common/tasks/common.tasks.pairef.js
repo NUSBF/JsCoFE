@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PaiRef task class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev, M. Fando  2023-2024
+ *  (C) M. Fando, E. Krissinel, A. Lebedev, M. Fando  2023-2025
  *
  *  =================================================================
  *
@@ -285,6 +285,7 @@ else    registerClass ( 'TaskPaiRef',TaskPaiRef,TaskTemplate.prototype );
 
 TaskPaiRef.prototype.icon           = function()  { return 'task_pairef'; }
 TaskPaiRef.prototype.clipboard_name = function()  { return '"PaiRef"';    }
+TaskPaiRef.prototype.canRunRemotely = function()  { return true;          }
 
 //  Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. jsCoFE framework

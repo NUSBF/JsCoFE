@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -281,6 +281,7 @@ else    registerClass ( 'TaskSimbad',TaskSimbad,TaskTemplate.prototype );
 
 TaskSimbad.prototype.icon           = function()  { return 'task_simbad'; }
 TaskSimbad.prototype.clipboard_name = function()  { return '"Simbad"';    }
+TaskSimbad.prototype.canRunRemotely = function()  { return true;          }
 
 TaskSimbad.prototype.desc_title     = function()  {
 // this appears under task title in the task list

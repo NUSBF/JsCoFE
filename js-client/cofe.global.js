@@ -94,6 +94,7 @@ var __remoteJobServer       = { url: null, status: 'nourl' };
 var __remote_environ_server = [];    // list of key environmental variables on NCs
 var __remote_login_id       = '';
 var __remote_cloudrun_id    = '';
+var __remote_tasks          = { 'TaskStructurePrediction' : true };
 var __my_workflows          = [];    // user defined workflows
 
 var __clipboard             = { task: null };  // clipboard for copy-pasting jobs

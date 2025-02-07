@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ModelCraft Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2025
  *
  *  ==========================================================================
  *
@@ -238,6 +238,7 @@ else    registerClass ( 'TaskModelCraft',TaskModelCraft,TaskTemplate.prototype )
 
 TaskModelCraft.prototype.icon           = function() { return 'task_modelcraft'; }
 TaskModelCraft.prototype.clipboard_name = function()  { return '"Modelcraft"';   }
+TaskModelCraft.prototype.canRunRemotely = function()  { return true;             }
 
 TaskModelCraft.prototype.desc_title     = function()  {
   return 'automatic model building of polypeptides and polynucleotides';

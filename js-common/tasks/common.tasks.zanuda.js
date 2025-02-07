@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Zanuda Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -106,6 +106,7 @@ else    registerClass ( 'TaskZanuda',TaskZanuda,TaskTemplate.prototype );
 
 TaskZanuda.prototype.icon           = function()  { return 'task_zanuda'; }
 TaskZanuda.prototype.clipboard_name = function()  { return '"Zanuda"';    }
+TaskZanuda.prototype.canRunRemotely = function()  { return true;          }
 
 TaskZanuda.prototype.currentVersion = function()  {
   var version = 1;

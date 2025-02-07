@@ -1289,7 +1289,7 @@ function getRemoteJobsServerURL()  {
   let url = null;
   if (nc_servers)
     nc_servers.forEach ( function(config){
-      if (config.exeType.toUpperCase()=='REMOTE')
+      if (config.in_use && (config.exeType.toUpperCase()=='REMOTE'))
         url = config.externalURL;
     });
 
