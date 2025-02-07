@@ -1116,6 +1116,7 @@ function updateUserData ( loginData,userData )  {
       if (userData.login==ud.__local_user_id)  {
         uData.remote_login       = userData.remote_login;
         uData.remote_cloudrun_id = userData.remote_cloudrun_id;
+        uData.remote_tasks       = userData.remote_tasks;
       }
       if ('helpTopics' in userData)
         uData.helpTopics = userData.helpTopics;

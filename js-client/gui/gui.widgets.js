@@ -1296,7 +1296,7 @@ function Button ( text, icon_uri, type='button' )  {
 Button.prototype = Object.create(Widget.prototype);
 Button.prototype.constructor = Button;
 
-Button.prototype._set_button = function (text, icon_uri) {
+Button.prototype._set_button = function ( text, icon_uri ) {
   this.div.innerHTML = text.toString();
   $(this.div).css({ 'white-space': 'nowrap' });
   // if (text)  this.div.innerHTML = text;
@@ -1324,12 +1324,12 @@ Button.prototype.getText = function () {
   return this.div.innerHTML;
 }
 
-Button.prototype.setButton = function (text, icon_uri) {
+Button.prototype.setButton = function ( text, icon_uri ) {
   this._set_button(text, icon_uri);
   return this;
 }
 
-Button.prototype.setIndicator = function (indicon_uri, location) {
+Button.prototype.setIndicator = function ( indicon_uri, location ) {
   // indicator is a small icon overlaying the button and placed
   // in the specified location:
   //     0 : top-left

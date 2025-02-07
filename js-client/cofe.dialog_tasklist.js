@@ -119,10 +119,26 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
-let dockMenu;
+let icon    = 'dock_';
+let iwidth  = '0px';
+
+  if (__remoteJobServer.status=='FE')  {
+    iwidth = '14px';
+    icon  += 'remote_';
+    if (!task_obj.canRunRemotely())            icon += '0';
+    else if (//(task_obj._type in __remote_tasks) &&
+             (__remote_environ_server.length>0) && 
+              __remote_tasks[task_obj._type])  icon += '2';
+                                        else   icon += '1';
+  }
+  if (in_dock)  icon += '2';
+          else  icon += '1';
+
+  let dockMenu = new Menu ( '',image_path(icon),false,8,iwidth );
 
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
+    // dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
+    // dockMenu = new Menu('',image_path('dock_2'),false,8); //,'14px');
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
@@ -131,7 +147,7 @@ let dockMenu;
       self.setDockMenu ( task_obj,grid,row );
     });
   } else  {
-    dockMenu = new Menu('',image_path('dock_ind'),false,8);
+    // dockMenu = new Menu('',image_path('dock_1'),false,8);
     dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
@@ -146,7 +162,8 @@ let dockMenu;
     new HelpBox ( '',task_obj.getHelpURL(),null );
   });
 
-  grid.setWidget ( dockMenu,row,0,1,1 )
+  grid.setWidget ( dockMenu,row,0,1,1 );
+
 }
 
 // function __show_task_help ( help_url )  {

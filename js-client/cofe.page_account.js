@@ -561,6 +561,8 @@ function AccountPage ( sceneId )  {
 
     } else  {
 
+      let restart = false;
+
       if (full_list)  {
         userData.name        = user_inp    .getValue();
         userData.email       = email_inp   .getValue();
@@ -571,10 +573,14 @@ function AccountPage ( sceneId )  {
         userData.cloudrun_id = cloudrun_inp.getValue();
         userData.globusId    = globus_inp  .getValue();
       } else  {
-        userData.remote_login       = remote_login_inp   .getValue();
-        userData.remote_cloudrun_id = remote_cloudrun_inp.getValue();
-        __remote_login_id           = userData.remote_login;
-        __remote_cloudrun_id        = userData.remote_cloudrun_id;
+        restart = 
+        __remote_login_id           = remote_login_inp   .getValue();
+        __remote_cloudrun_id        = remote_cloudrun_inp.getValue();
+        restart = (userData.remote_login!=__remote_login_id) ||
+                  (userData.remote_cloudrun_id!=__remote_cloudrun_id);
+        userData.remote_login       = __remote_login_id;
+        userData.remote_cloudrun_id = __remote_cloudrun_id;
+        userData.remote_tasks       = __remote_tasks;
       }
       userData.action = userdata_action.none;
 
@@ -603,10 +609,18 @@ function AccountPage ( sceneId )  {
               '<p>You are logged out now, please login again.', 'msg_information');
           stopSessionChecks();
           makeLoginPage ( sceneId );
+        } else if (restart)  {
+          new MessageBoxF ( accLbl,
+            '<div style="width:240px;"><h2>Settings saved</h2>' +
+            'Restart required.</div>',
+            'Restart',function(){
+              reloadBrowser();
+            },true, 'msg_information' );
         } else  {
           makeProjectListPage ( sceneId );
         }
       },null,'persist' );
+
     }
 
   });

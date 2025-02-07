@@ -77,6 +77,9 @@ function UserData()  {
   this.volume        = '***';  // where users projects are kept
   this.helpTopics    = [];
   this.authorisation = {};
+  this.remote_tasks  = {
+    'TaskStructurePrediction' : true
+  };
   this.settings      = {
     onlogin        : on_login.all_projects,  // place to land on login
     viewers_size   : [1.40,0.97],     // width, height
@@ -116,14 +119,17 @@ let msg = '';
   if (uData.login==__local_user_id)
     uData.role = role_code.localuser;
 
-  if (('version' in uData) && (uData.version==1))
+  if (('version' in uData) && (uData.version==2))
     return msg;
 
-  uData.version = 1;  // with new checks, update this number and above
+  uData.version = 2;  // with new checks, update this number and above
 
   if (!uData.hasOwnProperty('remote_login'))  {
     uData.remote_login       = '';
     uData.remote_cloudrun_id = '';
+    uData.remote_tasks       = {
+      'TaskStructurePrediction' : true
+    };
   }
 
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;

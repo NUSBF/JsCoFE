@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.02.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -187,6 +187,9 @@ TaskTemplate.prototype.doPackSuffixes      = function() { return [''];     }
 
 TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
 // TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
+
+// this function is used to schedule tasks on a different instance of CCP4 Cloud 
+TaskTemplate.prototype.canRunRemotely      = function() { return false;    }
 
 TaskTemplate.prototype.sendsOut = function()  {
 // Lists data which tasks may send to external web-servers, such as PDB, AFDB, PDB-REDO
@@ -722,11 +725,15 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
+    let env = __environ_server;
+    if (this.canRunRemotely() && (__remoteJobServer.status=='FE') &&
+        __remote_tasks[this._type])
+      env = __remote_environ_server;
     return this._is_task_available ( appName(),
       __exclude_tasks,__local_service,__any_mobile_device,__cloud_storage,
       __treat_private,isProtectedConnection(),__maintainerEmail,__client_version,
       __environ_client,__local_user,__user_authorisation,__auth_software,
-      __user_guide_base_url,__local_setup,__environ_server );
+      __user_guide_base_url,__local_setup,env );
   }
 
 

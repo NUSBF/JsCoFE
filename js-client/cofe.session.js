@@ -216,6 +216,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __user_authorisation = userData.authorisation;
               __remote_login_id    = userData.remote_login;
               __remote_cloudrun_id = userData.remote_cloudrun_id;
+              __remote_tasks       = userData.remote_tasks;
 
               if (response.data.onlogin_message)  {
                 window.setTimeout ( function(){
@@ -225,7 +226,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               }
 
               __remote_environ_server = [];
-              if (__remoteJobServer.status=='FE')  {
+              if ((__remoteJobServer.status=='FE') && __remote_login_id 
+                                                   && __remote_cloudrun_id)  {
                 let rud = new UserData();
                 rud.login       = __remote_login_id;
                 rud.cloudrun_id = __remote_cloudrun_id;              
