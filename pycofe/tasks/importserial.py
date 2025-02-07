@@ -42,17 +42,27 @@ class ImportSerial(import_task.Import):
 
     # ------------------------------------------------------------------------
 
-    def run(self):
+    def run(self): #This is how the apps are ran
 
-        self.putMessage ( "<b>This is FIRST TRY. HELLO!!!</b>" )
+        self.putMessage ( "<b>This is FIRST TRY. HELLO!!!</b>" ) #Display message to the user in the output
 
-        hklin1 = os.path.join ( self.importDir(),self.task.file_select[0].path )
-        hklin2 = os.path.join ( self.importDir(),self.task.file_select[1].path )
+        hklin1 = os.path.join ( self.importDir(),self.task.file_select[0].path ) # Creates the import button functionality
+        hklin2 = os.path.join ( self.importDir(),self.task.file_select[1].path ) # this calls the object with id hklin2 in importserial.js
         hklin3 = os.path.join ( self.importDir(),self.task.file_select[2].path )
+        cellfile = os.path.join ( self.importDir(),self.task.file_select[3].path ) 
+        referencefile = os.path.join ( self.importDir(),self.task.file_select[4].path )   
 
-        self.putMessage ( str(hklin1) + " : " + (" exsists" if os.path.isfile(hklin1) else " does not exist") )
-        self.putMessage ( str(hklin2) + " : " + (" exsists" if os.path.isfile(hklin2) else " does not exist") )
-        self.putMessage ( str(hklin3) + " : " + (" exsists" if os.path.isfile(hklin3) else " does not exist") )
+        self.putMessage (str(hklin1) + " : " + (" exists" if os.path.isfile(hklin1) else " does not exist") )
+        self.putMessage ( "\n" + str(hklin2) + " : " + (" exists" if os.path.isfile(hklin2) else " does not exist") )
+        self.putMessage ( "\n" + str(hklin3) + " : " + (" exists" if os.path.isfile(hklin3) else " does not exist") )
+        self.putMessage ( "\n" + str(cellfile) + " : " + (" exists" if os.path.isfile(hklin4) else " does not exist") )
+        self.putMessage ( "\n" + str(referencefile) + " : " + (" exists" if os.path.isfile(hklin4) else " does not exist") )
+
+        # Prepare makeligand input
+        # fetch input data
+
+        sec1 = (self.task.parameters.sec1.contains) #Call section 1 containing all the parameters
+        sec2 = self.task.parameters.sec2.contains #Call section 2
 
 
         self.flush()
@@ -73,5 +83,5 @@ class ImportSerial(import_task.Import):
 
 if __name__ == "__main__":
 
-    drv = ImportSerial ( "",os.path.basename(__file__),{} )
+    drv = ImportSerial ( "",os.path.basename(__file__),{} ) #Call the number cruncher driver
     drv.start()
