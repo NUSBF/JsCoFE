@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.02.25   <--  Date of Last Modification.
+#    08.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -230,7 +230,7 @@ def put_iris_section ( body,revision ):
     structure = revision.Structure
 
     sec_id    = body.getWidgetId ( "irissec"  )
-    body.putSection ( sec_id,"IRIS Validation",openState_bool=False )
+    body.putSection ( sec_id,"Iris Validation",openState_bool=False )
 
     xyzin     = structure.getXYZFilePath ( body.outputDir() )
     hklin     = hkl.getHKLFilePath ( body.inputDir() )
@@ -272,6 +272,8 @@ def put_iris_section ( body,revision ):
     body.putMessage1 ( sec_id,"<iframe src=\"iris_report.html\" " +\
         "style=\"border:none;width:900px;height:600px;\"></iframe>",
         0 )
+    
+    body.addCitation ( 'iris' )
 
     return
 
