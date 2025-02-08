@@ -21,6 +21,9 @@ import xml.etree.ElementTree as ET
 
 #  ccp4-python imports
 import pyrvapi
+import gemmi
+from   iris_validation.graphics import Panel
+from   iris_validation.metrics  import metrics_model_series_from_files
 
 #from   pycofe.etc  import pyrama
 from   pycofe.varut  import jsonut
@@ -218,6 +221,57 @@ def put_ramaplot_section ( body,structure ):
             body.putTableString ( tableId,resid,"",i,0 )
             body.putTableString ( tableId,str(round(litem[5],1)),"",i,1 )
             body.putTableString ( tableId,str(round(litem[6],1)),"",i,2 )
+
+    return
+
+def put_iris_section ( body,revision ):
+
+    hkl       = body.makeClass ( revision.HKL )
+    structure = revision.Structure
+
+    sec_id    = body.getWidgetId ( "irissec"  )
+    body.putSection ( sec_id,"IRIS Validation",openState_bool=False )
+
+    xyzin     = structure.getXYZFilePath ( body.outputDir() )
+    hklin     = hkl.getHKLFilePath ( body.inputDir() )
+
+    tmp_mmcif = "_tmp.mmcif"
+    tmp_mtz   = "_tmp.mtz"
+
+    st = gemmi.read_structure ( xyzin )
+    st.remove_ligands_and_waters()
+    st.remove_empty_chains()
+    st.make_mmcif_document().write_file ( tmp_mmcif )
+
+    cols = hkl.getMeanColumns()
+    FreeRColumn = hkl.getFreeRColumn()
+    body.sliceMTZ ( hklin,[cols[0],cols[1],FreeRColumn],
+                    tmp_mtz,["F","SIGF",FreeRColumn] )
+
+    model_series = metrics_model_series_from_files (
+        model_paths       = (tmp_mmcif,tmp_mmcif), 
+        reflections_paths = (tmp_mtz,tmp_mtz),
+        sequence_paths    = (None, None),
+        distpred_paths    = (None, None),
+        model_json_paths  = (None, None),
+        run_covariance    = False,
+        calculate_rama_z  = False,
+        run_molprobity    = False,
+        multiprocessing   = False
+    )
+    panel = Panel (
+        model_series.get_raw_data(),
+        custom_labels = dict ( Latest="Latest", Previous="Previous" )
+    )
+    # panel.dwg.attribs["style"] += " margin-top: -40px;"
+    html_str = panel.dwg.tostring()
+    with open(os.path.join(body.reportDir(),"iris_report.html"),"w") as f:
+        f.write ( html_str )
+        f.write ( '\n')
+
+    body.putMessage1 ( sec_id,"<iframe src=\"iris_report.html\" " +\
+        "style=\"border:none;width:900px;height:600px;\"></iframe>",
+        0 )
 
     return
 
@@ -714,6 +768,7 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
             edmeta = None
         meta   = put_molprobity_section ( body,revision )
         put_ramaplot_section ( body,revision.Structure )
+        put_iris_section     ( body,revision  )
 
         # body.stderrln ( " XXXXX " + str(meta) )
 
