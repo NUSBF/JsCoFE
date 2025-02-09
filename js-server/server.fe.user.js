@@ -1116,7 +1116,7 @@ function updateUserData ( loginData,userData )  {
       if (userData.login==ud.__local_user_id)  {
         uData.remote_login       = userData.remote_login;
         uData.remote_cloudrun_id = userData.remote_cloudrun_id;
-        uData.remote_tasks       = userData.remote_tasks;
+        // uData.remote_tasks       = userData.remote_tasks;
       }
       if ('helpTopics' in userData)
         uData.helpTopics = userData.helpTopics;
@@ -1124,6 +1124,8 @@ function updateUserData ( loginData,userData )  {
         uData.authorisation = userData.authorisation;
       if ('settings' in userData)
         uData.settings = userData.settings;
+      if ('remote_tasks' in userData)
+        uData.remote_tasks = userData.remote_tasks;
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                     'User file cannot be read.','' );
