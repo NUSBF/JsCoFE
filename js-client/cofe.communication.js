@@ -973,6 +973,19 @@ let c = 0;
 }
 
 
+function saveUserData ( title )  {
+  let userData                = new UserData();
+  userData.login              = __login_id;
+  userData.pwd                = '';  // can save only some records without password
+  userData.remote_login       =  __remote_login_id;
+  userData.remote_cloudrun_id = __remote_cloudrun_id;
+  userData.settings           = __user_settings;
+  userData.remote_tasks       = __remote_tasks;
+  serverRequest ( fe_reqtype.updateUserData,userData,
+                  title,function(response){} );
+}
+
+
 if (window.addEventListener) {
   window.addEventListener ( 'message', onWindowMessage, false );
 } else if (window.attachEvent) {
@@ -1101,13 +1114,14 @@ function onWindowMessage ( event ) {
 
   } else if (edata.command=='saveWebCootPreferences')  {
 
-    let userData   = new UserData();
-    userData.login = __login_id;
-    userData.pwd   = '';  // can save only some records without password
-    __user_settings.webcoot_pref = edata.data;
-    userData.settings  = __user_settings;
-    serverRequest ( fe_reqtype.updateUserData,userData,
-                    'WebCoot preferences update',function(response){} );
+    saveUserData ( 'WebCoot preferences update' );
+    // let userData   = new UserData();
+    // userData.login = __login_id;
+    // userData.pwd   = '';  // can save only some records without password
+    // __user_settings.webcoot_pref = edata.data;
+    // userData.settings  = __user_settings;
+    // serverRequest ( fe_reqtype.updateUserData,userData,
+    //                 'WebCoot preferences update',function(response){} );
 
   }
 
@@ -1119,3 +1133,24 @@ function onWindowMessage ( event ) {
     //     window[data.func].call(null, data.message);
     // }
 }
+
+var remote_jobs_server_code = {
+  not_configured : 'not_configured',  // url not configured
+  not_accessible : 'not_accessible',  // no valid response from remote jobs server  
+  not_connected  : 'not_connected',   // no user credentials
+  not_responding : 'not_responding',  // wrong remote credentials
+  ok             : 'ok'
+};
+
+function getRemoteFEStatus()  {
+  if (!__remoteJobServer.url)
+    return remote_jobs_server_code.not_configured;
+  if (__remoteJobServer.status!='FE')
+    return remote_jobs_server_code.not_accessible;
+  if ((!__remote_login_id) || (!__remote_cloudrun_id))
+    return remote_jobs_server_code.not_connected;
+  if (__remote_environ_server.length<=0)
+    return remote_jobs_server_code.not_responding;
+  return remote_jobs_server_code.ok;
+}
+

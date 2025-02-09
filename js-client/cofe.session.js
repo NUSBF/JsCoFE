@@ -179,6 +179,21 @@ function checkAnnouncement()  {
 
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
+  function _no_remote_server_message()  {
+    new MessageBox ( 'Remote jobs server is not connected',
+      '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
+      'The connection to the remote jobs server is fully configured, but the ' +
+      'server is not connected.' +
+      '<p>This may be due to incorrect user credentials (login name or ' +
+      'CloudRun ID) in the Settings, or an internet connectivity issue.' +
+      '<p><b>All jobs will run on your computer.</b>' +
+      '<p><i style="font-size:85%">To stop receiving this message, either ' +
+      'disable the remote server in the ' + appName() + ' configuration ' +
+      'utility or clear the login name and CloudRun ID in the Settings.' +
+      '</i></div>', 
+      'msg_information' );
+  }
+
   let ud   = new UserData();
   ud.login = user_login_name;
   ud.pwd   = user_password;
@@ -230,18 +245,18 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                                                    && __remote_cloudrun_id)  {
                 let rud = new UserData();
                 rud.login       = __remote_login_id;
-                rud.cloudrun_id = __remote_cloudrun_id;              
+                rud.cloudrun_id = __remote_cloudrun_id;
                 serverCommand ( __remoteJobServer.url + '/' + fe_command.extGetFEData,
                                 rud,'Remote FE request',function(response){
-                  if (response)  {
+                  if (response && (response.status==fe_retcode.ok))
                     __remote_environ_server = response.data.environ_server;
-                  } else  {
-                    new MessageBox ( 'Get Remote FE Info Error',
-                      'Unknown error: <b>' + response.status + '</b><p>' +
-                      'when trying to fetch remote FE data.', 'msg_error' );
-                  }
+                  if (__remote_environ_server.length<=0)
+                    _no_remote_server_message();
                   return true;          
                 });
+              } else if (__remoteJobServer.url && __remote_login_id 
+                                               && __remote_cloudrun_id)  {
+                _no_remote_server_message();
               }
 
               if (!__local_service)  {
