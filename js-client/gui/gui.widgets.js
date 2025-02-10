@@ -381,10 +381,16 @@ Widget.prototype.setNoWrap = function() {
   return this;
 }
 
-Widget.prototype.addWidget = function ( widget ) {
-  this.child.push(widget);
-  this.element.appendChild(widget.element);
+Widget.prototype.addWidget = function ( widget )  {
+  this.child.push ( widget );
+  this.element.appendChild ( widget.element );
   widget.parent = this;
+  return this;
+}
+
+Widget.prototype.setWidget = function ( widget )  {
+  this.removeAllChildren();
+  this.addWidget ( widget );
   return this;
 }
 
@@ -399,9 +405,9 @@ Widget.prototype.removeChild = function ( widget ) {
   let child = [];
   for (let i = 0; i < this.child.length; i++)
     if (this.child[i].id == widget.id) {
-      this.element.removeChild(widget.element);
+      this.element.removeChild ( widget.element );
     } else {
-      child.push(this.child[i]);
+      child.push ( this.child[i] );
     }
   this.child = child;
   return this;
@@ -409,7 +415,7 @@ Widget.prototype.removeChild = function ( widget ) {
 
 Widget.prototype.removeAllChildren = function () {
   while (this.element.firstChild)
-    this.element.removeChild(this.element.firstChild);
+    this.element.removeChild ( this.element.firstChild );
   this.child = [];
   return this;
 }
