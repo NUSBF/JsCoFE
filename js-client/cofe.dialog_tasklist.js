@@ -143,9 +143,9 @@ let remote  = 0;
             .addOnClickListener(function(){
       __current_page.dock.removeTask ( task_obj._type );
       __current_page.dock.show();
-      dockMenu.setMenuIcon ( image_path('dock_ind') );
-      self.setDockMenu ( task_obj,grid,row );
+      // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'1') );
       self.saveDialogState();
+      self.setDockMenu ( task_obj,grid,row );
       self.makeLists ( 1 );
     });
   } else  {
@@ -153,8 +153,9 @@ let remote  = 0;
             .addOnClickListener(function(){
       __current_page.dock.addTaskClass ( task_obj );
       __current_page.dock.show();
-      dockMenu.setMenuIcon ( image_path('dock_ind_sel') );
+      // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'2') );
       self.saveDialogState();
+      self.setDockMenu ( task_obj,grid,row );
       self.makeLists ( 1 );
     });
   }
@@ -190,7 +191,13 @@ let remote  = 0;
       if (!msg)  {
         self.saveDialogState();
         __remote_tasks[task_obj._type] = true;
-        self.makeLists ( 0 );
+        if (self.tabs_full.getActiveTabNo()==0)
+          self.makeLists ( 0 );
+        else  {
+          // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'2'+icon.slice(-1)) );
+          self.setDockMenu     ( task_obj,grid,row );
+          self.makeLists ( 1 );
+        }
         saveUserData ( 'Remote tasks list' );  
       } else
         new MessageBox ( 'Cannot run remote jobs',
@@ -203,7 +210,13 @@ let remote  = 0;
       self.saveDialogState();
       if (task_obj._type in __remote_tasks)
         delete __remote_tasks[task_obj._type];
-      self.makeLists ( 0 );
+      if (self.tabs_full.getActiveTabNo()==0)
+        self.makeLists ( 0 );
+      else  {
+        // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'1'+icon.slice(-1)) );
+        self.setDockMenu ( task_obj,grid,row );
+        self.makeLists ( 1 );
+      }
       saveUserData ( 'Remote tasks list' );
     });
   }
@@ -359,7 +372,7 @@ TaskListDialog.prototype.makeLists = function ( key )  {
     this.makeSuggestedList ( this.tabf_suggested.grid );
 
   if ((!key) || (this.tabs_full.getTabNo(this.tabf_fulllist)!=activeTabNo))
-    this.makeFullList      ( this.tabf_fulllist .grid );
+    this.makeFullList      ( this.tabf_fulllist.grid  );
 
   if ((!key) || (this.tabs_full.getTabNo(this.tabf_workflows)!=activeTabNo))
     this.makeWorkflowsList ( this.tabf_workflows.grid );
@@ -387,10 +400,6 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   this.tabf_AtoZ      = this.tabs_full.addTab ( 'A-Z'      ,'A-Z'      ==active_tab );
   this._setting_wf    = false;
   this.makeLists ( 0 );
-  // this.makeSuggestedList ( this.tabf_suggested.grid );
-  // this.makeFullList      ( this.tabf_fulllist .grid );
-  // this.makeWorkflowsList ( this.tabf_workflows.grid );
-  // this.makeAtoZList      ( this.tabf_AtoZ.grid      );
 
   if (__user_settings.tasklist_state)  {
     // Wire up tab scrolling: trace and restore
@@ -908,7 +917,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskSeqAlign  (),
     new TaskSymMatch  ()
   ],true);
-  
+
   if (this.navail==1)
     this.section0.open();
   else if (section1)
