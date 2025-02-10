@@ -23,7 +23,7 @@ import time
 
 #  ccp4-python imports
 import pyrvapi
-import pyrvapi_ext.parsers
+# import pyrvapi_ext.parsers
 
 #  application imports
 from   pycofe.varut  import command
