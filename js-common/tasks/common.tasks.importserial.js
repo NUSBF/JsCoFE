@@ -52,31 +52,40 @@ function TaskImportSerial()  {
       tooltip     : '[Mandatory] Path to HKL Merged data file ', //tooltip is hover over the label in the UI
       inputId     : 'hklin',  // input Id for referencing input fields
       path        : '',
-      min         : 1,          // minimum acceptable number of data instances
+      min         : 0,          // minimum acceptable number of data instances (change to 1 after debug)
       max         : 1
     },{
-      file_types  : '.hkl1,.hkl2', // data type(s) and subtype(s)
+      file_types  : '.hkl1,', // data type(s) and subtype(s)
       label       : 'Half data set .HKL1 file', // label for input dialog
       tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
-      inputId     : 'hklin2',   // input Id for referencing input fields
+      inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
       min         : 0   ,      // minimum acceptable number of data instances
-      max         : 2
-    },
-    ,{
+      max         : 1
+    },{
+      file_types  : '.hkl2', // data type(s) and subtype(s)
+      label       : 'Half data set .HKL2 file', // label for input dialog
+      tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
+      inputId     : 'halfdataset2',   // input Id for referencing input fields
+      path        : '',
+      min         : 0   ,      // minimum acceptable number of data instances
+      max         : 1
+    },{
       file_types: '.cell',
       label     : 'Cell file',
       tooltip   : '[Mandatory] Path to .CELL file ',
       inputId     : 'cellfile', // input Id for referencing input fields
       path        : '',
-      min         : 1,   //Minimum files required  
+      min         : 0,   //Minimum files required    (change to 1 after debug)
       max         : 1
     },{
       file_types: '.pdb,.mmcif,.mtz',
       label     : 'Reference file',
       tooltip   : '[Optional]Path to PDB or mmCIF file or MTZ file to import  spacegroup and unit cell parameters',
-      inputId     : 'referencefile', // input Id for referencing input fields
+      inputId     : 'reference', // input Id for referencing input fields
       path        : '',
+      label2    : '<span style="font-size:85%;color:maroon;"><i>Reference file (PDB, mmCIF or MTZ)  ' +
+                                ' to provide spacegroup and unit cell </i></span>',
       min         : 0,   //Minimum files required 
       showon      : {SOURCE_SEL:['R']}, //Check if this call is available ***
       max         : 1
@@ -121,91 +130,96 @@ function TaskImportSerial()  {
     },
 
     sec1 :  { type     : 'section', //creates segmented sections inside the user interface
-              title    : 'Space Group, Unit Cell Parameters',  //name this for section title
-              open     : false,  // true for the section to be initially open
+              title    : 'Data required for CrystFel',  //name this for section title
+              open     : true,  // true for the section to be initially open
               position : [1,0,1,8],
               contains : {
 
-                SOURCE_SEL : {
-                  type     : 'combobox',
-                  label    : '<b><i>Data Input Preference&nbsp;</i></b>', //Name of title beside the combobox &nbsp = extra space
-                  tooltip  : 'Source for the Space Group and Unit Cell Parameters',
-                  range    : ['R|Reference File',
-                              'SU|Space Group and Unit Cell Parameters',                   //This is the values available inside the dropdown list
+                // SOURCE_SEL : {
+                //   type     : 'combobox',
+                //   label    : '<b><i>Data required for CrystFel &nbsp;</i></b>', //Name of title beside the combobox &nbsp = extra space
+                //   tooltip  : 'Source for the Space Group and Unit Cell Parameters',
+                //   range    : ['R|Reference File',
+                //               'SU|Space Group and Unit Cell Parameters',                   //This is the values available inside the dropdown list
           
-                            ],
-                  value    : 'R',
-                  position : [2,2,1,1]
-                },
-                REFERENCEFILE : {
-                  // keyword   : 'smiles',
-                  // label     : '<i> Reference File </i>',
-                  // tooltip   : '(Optional) Reference File  ',
+                //             ],
+                //   value    : 'R',
+                //   position : [2,2,1,1]
+                // },
+                // REFERENCEFILE : {
+                //   // keyword   : 'smiles',
+                //   // label     : '<i> Reference File </i>',
+                //   // tooltip   : '(Optional) Reference File  ',
+                //   value     : '',
+                //   position  : [3,2,1,1],
+                //   iwidth    : 200,            
+                //   type: 'file',
+                //   label     : 'Reference file',
+                //   tooltip   : '[Optional]Path to PDB or mmCIF file or MTZ file to import  spacegroup and unit cell parameters',
+                //   // inputId     : 'referencefile', // input Id for referencing input fields
+                //   path        : '',
+                //   min         : 0,   //Minimum files required 
+                //   showon      : {SOURCE_SEL:['R']}, //Check if this call is available ***
+                //   max         : 1
+                // },
+
+                WAVELENGTH : {
+                  type      : 'real_',   // empty string not allowed (change to no _ after debugging)
+                  label     : '<i> <b> Wavelength </b> </i>',
+                  tooltip   : ' (Mandatory) Wavelength (only for data from CrystFEL) ',
+                  align     : "left",
+                  inputId     : 'wavelength', // input Id for referencing input fields
                   value     : '',
-                  position  : [3,2,1,1],
-                  iwidth    : 200,            
-                  type: 'file',
-                  label     : 'Reference file',
-                  tooltip   : '[Optional]Path to PDB or mmCIF file or MTZ file to import  spacegroup and unit cell parameters',
-                  inputId     : 'referencefile', // input Id for referencing input fields
-                  path        : '',
-                  min         : 0,   //Minimum files required 
-                  showon      : {SOURCE_SEL:['R']}, //Check if this call is available ***
-                  max         : 1
+                  range     : [0.00,2.00], //check the range of the high resolution cutoff
+                  position  : [2,2,1,1], // grid-row, grid-column ,
                 },
-                
+
                 SPACEGROUP : {
-                  type      : 'string',   // empty string not allowed
+                  type      : 'string_',   // empty string not allowed
                   label     : '<b><i> Space Group </b></i>',
                   tooltip   : ' (Mandatory) Required Specification of Space Group ',
                   value     : '',
+                  inputId     : 'spacegroup', // input Id for referencing input fields
                   position  : [3,2,1,1],
-                  showon    : {SOURCE_SEL:['SU']},
                   maxlength : 5,       // largest identified protein space group
-                  
                 },
+
                 UNITCELLPARAMETERS : {
-                  type      : 'string',   // empty string not allowed
+                  type      : 'string_',   // empty string not allowed (change to no _ after debugging)
                   label     : '<b><i> Unit Cell Parameters </b></i>',
                   tooltip   : '(Mandatory) Required Specification of Unit Cell Parameters ',
+                  label2    : '<span style="font-size:85%;color:maroon;"><i>Unit cell parameters ' +
+                                ' divided by spaces, e.g. 60 50 40 90 90 90 </i></span>',
                   align     : "left",
                   value     : '',
+                  iwidth    : 200,
+                  inputId     : 'cell', // input Id for referencing input fields
                   position  : [4,2,2,5],
-                  showon    : {SOURCE_SEL:['SU']}
                   // maxlength : 5  //determine if their is a restraint already
                 },
-            },
+            }, //posibly require a ,
             
           },
 
 
     sec2 :  { type     : 'section',
-    title    : 'Wavelength, Dmin, Dmax',
-    open     : false,  // true for the section to be initially open
+    title    : 'Resolution cutoff',
+    open     : true,  // true for the section to be initially open
     position : [2,0,1,8],
     contains : {
-      WAVELENGTH : {
-        type      : 'real',   // empty string not allowed
-        label     : '<i> <b> Wavelength </b> </i>',
-        tooltip   : ' (Mandatory) Wavelength (only for data from CrystFEL) ',
-        align     : "left",
-        value     : '',
-        iwidth    : 100,
-        range     : [0.00,2.00], //check the range of the high resolution cutoff
-        position  : [0,1,1,7], // grid-row, grid-column ,
-       
-      },
       DMIN : {
         type      : 'real_',   // empty string allowed
         label     : '<i> <b> High-resolution cutoff </b> </i>',
         tooltip   : '(Optional) High-resolution cutoff for data',
         default   : '',
+        // inputId     : 'dmin', // input Id for referencing input fields
         value     : '',
         iwidth    : 100,
         range     : [0.00,2.00], //check the range of the high resolution cutoff
         maxlength : 3,       // maximum input length
         lwidth2   : '100%',
         position  : [2,1,1,7],
+        inputId     : 'dmin' // input Id for referencing input fields
       
           },
       DMAX : {
@@ -214,14 +228,16 @@ function TaskImportSerial()  {
         tooltip   : '(Optional) Low-resolution cutoff for data',
         default   : '',
         value     : '',
+        // inputId     : 'dmax', // input Id for referencing input fields
         iwidth    : 100,
         range     : [0.00,2.00], //check the range of the high resolution cutoff
         maxlength : 3,       // maximum input length
         lwidth2   : '100%',
         position  : [3,1,1,7],
+        inputId     : 'dmax' // input Id for referencing input fields
       },
      
-    }
+    },
   }
 
     
