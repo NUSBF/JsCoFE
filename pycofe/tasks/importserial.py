@@ -46,29 +46,101 @@ class ImportSerial(import_task.Import):
 
         self.putMessage ( "<b>This is FIRST TRY. HELLO!!!</b>" ) #Display message to the user in the output
 
-        hklin1 = os.path.join ( self.importDir(),self.task.file_select[0].path ) # Creates the import button functionality
-        hklin2 = os.path.join ( self.importDir(),self.task.file_select[1].path ) # this calls the object with id hklin2 in importserial.js
-        hklin3 = os.path.join ( self.importDir(),self.task.file_select[2].path )
+        hklin = os.path.join ( self.importDir(),self.task.file_select[0].path ) # Creates the import button functionality
+        halfdataset1 = os.path.join ( self.importDir(),self.task.file_select[1].path )  #can't have a - in the name
+        halfdataset2 = os.path.join ( self.importDir(),self.task.file_select[2].path )  
         cellfile = os.path.join ( self.importDir(),self.task.file_select[3].path ) 
-        referencefile = os.path.join ( self.importDir(),self.task.file_select[4].path )   
+        reference = os.path.join ( self.importDir(),self.task.file_select[4].path )   
 
-        self.putMessage (str(hklin1) + " : " + (" exists" if os.path.isfile(hklin1) else " does not exist") )
-        self.putMessage ( "\n" + str(hklin2) + " : " + (" exists" if os.path.isfile(hklin2) else " does not exist") )
-        self.putMessage ( "\n" + str(hklin3) + " : " + (" exists" if os.path.isfile(hklin3) else " does not exist") )
-        self.putMessage ( "\n" + str(cellfile) + " : " + (" exists" if os.path.isfile(hklin4) else " does not exist") )
-        self.putMessage ( "\n" + str(referencefile) + " : " + (" exists" if os.path.isfile(hklin4) else " does not exist") )
+        self.putMessage (str(hklin) + " : " + (" exists" if os.path.isfile(hklin) else " does not exist") )
+        self.putMessage ( "\n" + str(halfdataset1) + " : " + (" exists" if os.path.isfile(halfdataset1) else " does not exist") )
+        self.putMessage ( "\n" + str(halfdataset2) + " : " + (" exists" if os.path.isfile(halfdataset2) else " does not exist") )
+        self.putMessage ( "\n" + str(cellfile) + " : " + (" exists" if os.path.isfile(cellfile) else " does not exist") )
+        self.putMessage ( "\n" + str(reference) + " : " + (" exists" if os.path.isfile(reference) else " does not exist") )
 
-        # Prepare makeligand input
+        # Prepare import serial input
         # fetch input data
 
-        sec1 = (self.task.parameters.sec1.contains) #Call section 1 containing all the parameters
+        
+        # --------------------------- Retrieving input data-------------------------------
+
+        # Prepare import serial input
+        # fetch input data from js file using inputID
+
+        # hklin               = self.makeClass ( self.input_data.data.hklin             [0] )
+        # half-dataset1       = self.makeClass ( self.input_data.data. half-dataset1    [0] )
+        # half-dataset2       = self.makeClass ( self.input_data.data. half-dataset1    [0] )
+        # reference           = self.makeClass ( self.input_data.data.reference         [0] )
+        # cellfile            = self.makeClass ( self.input_data.data.cellfile          [0] )
+        # cell            = self.makeClass ( self.input_data.data.cell                  [0] )
+        # wavelength          = self.makeClass ( self.input_data.data.wavelength        [0] )
+        # spacegroup          = self.makeClass ( self.input_data.data.spacegroup        [0] )
+        # dmin                = self.makeClass ( self.input_data.data.dmin              [0] ) 
+        # dmax                = self.makeClass ( self.input_data.data.dmax              [0] )
+
+
+        sec1 = self.task.parameters.sec1.contains #Call section 1 containing all the parameters
         sec2 = self.task.parameters.sec2.contains #Call section 2
+
+        wavelength = self.getParameter ( sec1.WAVELENGTH ).strip()
+        if wavelength: # If there is wavelength user input
+            wavelength = str(wavelength)
+
+        spacegroup = self.getParameter ( sec1.SPACEGROUP ).strip()
+        if spacegroup: # If there is spacegroup user input
+            spacegroup = str(spacegroup)
+
+        cell = self.getParameter ( sec1.UNITCELLPARAMETERS ).strip()
+        if cell: # If there is cell user input
+            cell = str(cell)
+
+        dmin = self.getParameter ( sec2.DMIN ).strip()
+        if cell: # If there is High-resolution cutoff user input
+            cell = str(dmin)
+
+        dmax = self.getParameter ( sec2.DMAX ).strip()
+        if cell: # If there is Low-resolution cutoff user input
+            cell = str(dmax)
+
+
+        
+      # ------------------------------- Display the value of the data to the output -----------------------
+
+
+        self.putMessage( "\n" + " Wavelength is "+ str(wavelength) )
+        self.putMessage( "\n" + " Spacegroup is "+ str(spacegroup) )
+        self.putMessage( "\n" + " Unit cell parameters are "+ str(cell) )
+        self.putMessage( "\n" + " High Resolution Cutoff is "+ str(dmin) )
+        self.putMessage( "\n" + " Low Resolution Cutoff is "+ str(dmax) )
+        
+        
+         
+
+        # --------------------------- cmd option keywords-------------------------------
+
+        # cmd = [
+        #     "-m"         , "pairef",
+        #     "--ccp4cloud",
+        #     "--project"  , self.pairefProject(),
+        #     "--XYZIN"    , xyzin,
+        #     "--HKLIN"    , hklin,
+        #     "-r"         , ",".join(resList[1:]),
+        #     "-i"         , str(resList[0])
+        # ]
+
+
+
+
+
+
+        #------------------------------------------------------------------------------
+      
 
 
         self.flush()
 
         have_results = True
-        summary_line = "first try"
+        summary_line = "imported and merged: MTZ "  # line inside the cloud next to the job tree --imported and merged: MTZ 
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
