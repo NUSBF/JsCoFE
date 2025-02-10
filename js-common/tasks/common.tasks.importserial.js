@@ -169,6 +169,7 @@ function TaskImportSerial()  {
                   tooltip   : ' (Mandatory) Wavelength (only for data from CrystFEL) ',
                   align     : "left",
                   inputId     : 'wavelength', // input Id for referencing input fields
+                  keyword : "wavelength", //user for keyword option in cmd 
                   value     : '',
                   range     : [0.00,2.00], //check the range of the high resolution cutoff
                   position  : [2,2,1,1], // grid-row, grid-column ,
@@ -180,6 +181,7 @@ function TaskImportSerial()  {
                   tooltip   : ' (Mandatory) Required Specification of Space Group ',
                   value     : '',
                   inputId     : 'spacegroup', // input Id for referencing input fields
+                  keyword : "spacegroup", //user for keyword option in cmd 
                   position  : [3,2,1,1],
                   maxlength : 5,       // largest identified protein space group
                 },
@@ -191,6 +193,7 @@ function TaskImportSerial()  {
                   label2    : '<span style="font-size:85%;color:maroon;"><i>Unit cell parameters ' +
                                 ' divided by spaces, e.g. 60 50 40 90 90 90 </i></span>',
                   align     : "left",
+                  keyword   : "cell",
                   value     : '',
                   iwidth    : 200,
                   inputId     : 'cell', // input Id for referencing input fields
@@ -212,7 +215,7 @@ function TaskImportSerial()  {
         label     : '<i> <b> High-resolution cutoff </b> </i>',
         tooltip   : '(Optional) High-resolution cutoff for data',
         default   : '',
-        // inputId     : 'dmin', // input Id for referencing input fields
+        keyword   : "dmin",
         value     : '',
         iwidth    : 100,
         range     : [0.00,2.00], //check the range of the high resolution cutoff
@@ -228,7 +231,7 @@ function TaskImportSerial()  {
         tooltip   : '(Optional) Low-resolution cutoff for data',
         default   : '',
         value     : '',
-        // inputId     : 'dmax', // input Id for referencing input fields
+        keyword   : "dmax",
         iwidth    : 100,
         range     : [0.00,2.00], //check the range of the high resolution cutoff
         maxlength : 3,       // maximum input length
