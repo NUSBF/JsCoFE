@@ -265,7 +265,7 @@ Widget.prototype.height_px = function() {
   return $(this.element).outerHeight();
 }
 
-Widget.prototype.getBoundingRect = function() {
+Widget.prototype.getBoundingClientRect = function() {
   return this.element.getBoundingClientRect();
 }
 
@@ -572,6 +572,10 @@ Widget.prototype.addSignalHandler = function (signal, onReceive) {
 
 Widget.prototype.click = function () {
   this.element.click();
+}
+
+Widget.prototype.getBoundingClientRect = function ()  {
+  return this.element.getBoundingClientRect();
 }
 
 

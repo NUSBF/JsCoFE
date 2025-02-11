@@ -141,22 +141,26 @@ let remote  = 0;
   if (in_dock)  {
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
       __current_page.dock.removeTask ( task_obj._type );
       __current_page.dock.show();
       // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'1') );
       self.saveDialogState();
       self.setDockMenu ( task_obj,grid,row );
-      self.makeLists ( 1 );
+      self.makeLists   ( 1 );
+      showFlashMessage ( 'Removed from Task Dock',rect,self );
     });
   } else  {
     dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
       __current_page.dock.addTaskClass ( task_obj );
       __current_page.dock.show();
       // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'2') );
       self.saveDialogState();
       self.setDockMenu ( task_obj,grid,row );
-      self.makeLists ( 1 );
+      self.makeLists   ( 1 );
+      showFlashMessage ( 'Task can be used from Task Dock now',rect,self );
     });
   }
 
@@ -189,17 +193,19 @@ let remote  = 0;
         default : ;
       }
       if (!msg)  {
+        let rect = dockMenu.button.getBoundingClientRect();
         self.saveDialogState();
         __remote_tasks[task_obj._type] = true;
         if (self.tabs_full.getActiveTabNo()==0)
           self.makeLists ( 0 );
         else  {
           // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'2'+icon.slice(-1)) );
-          self.setDockMenu     ( task_obj,grid,row );
-          self.makeLists ( 1 );
+          self.setDockMenu ( task_obj,grid,row );
+          self.makeLists   ( 1 );
         }
-        saveUserData ( 'Remote tasks list' );  
-      } else
+        saveUserData     ( 'Remote tasks list' );
+        showFlashMessage ( 'Task will run on server',rect,self );
+   } else
         new MessageBox ( 'Cannot run remote jobs',
             '<div style="width:420px;"><h2>Cannot run jobs remotely</h2>' +
             msg + '</div>','msg_stop' );
@@ -207,6 +213,7 @@ let remote  = 0;
   } else if (remote==2)  {
     dockMenu.addItem('Run task locally',image_path('remote_off'))
             .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
       self.saveDialogState();
       if (task_obj._type in __remote_tasks)
         delete __remote_tasks[task_obj._type];
@@ -215,9 +222,10 @@ let remote  = 0;
       else  {
         // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'1'+icon.slice(-1)) );
         self.setDockMenu ( task_obj,grid,row );
-        self.makeLists ( 1 );
+        self.makeLists   ( 1 );
       }
-      saveUserData ( 'Remote tasks list' );
+      saveUserData     ( 'Remote tasks list' );
+      showFlashMessage ( 'Task will run on your computer',rect,self );
     });
   }
 
