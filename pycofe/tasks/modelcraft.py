@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.02.25   <--  Date of Last Modification.
+#    11.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -160,9 +160,8 @@ class ModelCraft(basic.TaskDriver):
             "carbs"   : [],
             "ligands" : [],
             "buffers" : []
-                            }
+        }
                
-
         mres = 0
         for s in seq:
             s1     = self.makeClass ( s )
@@ -216,6 +215,10 @@ class ModelCraft(basic.TaskDriver):
         else:  #  molecular replacement
             cmd += [ "--model",xyz_model_path ]
 
+        libin = istruct.getLibFilePath ( self.inputDir() )
+        if libin:
+            cmd += [ "--restraints",libin ]
+
         # else:  #  molecular replacement
         #     if istruct.getXYZFilePath(self.inputDir()) != None:
         #         cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
@@ -238,9 +241,7 @@ class ModelCraft(basic.TaskDriver):
             cmd += ["--cycles",self.getParameter(sec1.NCYCLES_MAX),
                     "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES)]
 
-        cmd += [
-            "--directory"       ,self.modelcraft_tmp()
-        ]
+        cmd += [ "--directory",self.modelcraft_tmp() ]
 
         if hkl.detwin:
             cmd += [ "--twinned" ]
@@ -257,8 +258,6 @@ class ModelCraft(basic.TaskDriver):
             cmd += [ "--disable-waters" ]
         if self.getCheckbox(sec2.ROTAMER_FIT):
             cmd += [ "--disable-side-chain-fixing" ]
-        
-        
 
         rvrow0 = self.rvrow
         gridId = self.putWaitMessageLF ( "Building in progress ...",
@@ -348,15 +347,16 @@ class ModelCraft(basic.TaskDriver):
             os.rename ( mmcifout,xyzin )
             xyzout = mmcifout   # refmac output cif (refmac wants ".pdb" anyway)
             # mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
-            cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-                    "xyzin" ,xyzin,
-                    "hklout",mtzout,
-                    "xyzout",xyzout,
-                    "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+            cmd = [ 
+                "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+                "xyzin" ,xyzin,
+                "hklout",mtzout,
+                "xyzout",xyzout,
+                "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex)
+            ]
 
-            # libin = istruct.getLibFilePath ( self.inputDir() )
-            # if libin:
-            #     cmd += ["libin",libin]
+            if libin:
+                cmd += ["libin",libin]
 
             # Prepare report parser
 
@@ -420,6 +420,7 @@ class ModelCraft(basic.TaskDriver):
                                     pdbout,
                                     None,
                                     mtzout,
+                                    libin,
                                     leadKey = 1,
                                     refiner = "refmac" 
                                 )
