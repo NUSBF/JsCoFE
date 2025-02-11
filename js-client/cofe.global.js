@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    11.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -508,20 +508,18 @@ function replaceStylesheets ( href_pattern,href )  {
 function showFlashMessage ( flash_text,rect,widget=null )  {
   if (rect)  {
     let flashPanel = new Widget('div');
-    if (widget)
-          $(flashPanel.element).appendTo(widget.element);
-    else  $(flashPanel.element).appendTo(document.body);
-    flashPanel.addClass ( 'flash-panel' );
+    let left = rect.left;
+    let top  = rect.top;
     if (widget)  {
+      $(flashPanel.element).appendTo(widget.element);
       let rect0 = widget.getBoundingClientRect();
-      let left  = rect.left - rect0.left;
-      let top   = rect.top  - rect0.top;
-      flashPanel.element.style.left = `${left + rect.width/2}px`;
-      flashPanel.element.style.top  = `${top - 10}px`;
-    } else  {
-      flashPanel.element.style.left = `${rect.left + rect.width/2}px`;
-      flashPanel.element.style.top  = `${rect.top - 10}px`;
-    }
+      left -= rect0.left;
+      top  -= rect0.top;
+    } else
+      $(flashPanel.element).appendTo(document.body);
+    flashPanel.addClass ( 'flash-panel' );
+    flashPanel.element.style.left = `${left + rect.width/2}px`;
+    flashPanel.element.style.top  = `${top  - 10}px`;
     flashPanel.setFontSize   ( '86%' )
               .setFontItalic ( true  )
               .setText   ( flash_text );
