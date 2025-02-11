@@ -58,7 +58,7 @@ class ImportSerial(import_task.Import):
         self.putMessage ( "\n" + str(halfdataset2) + " : " + (" exists" if os.path.isfile(halfdataset2) else " does not exist") )
         self.putMessage ( "\n" + str(cellfile) + " : " + (" exists" if os.path.isfile(cellfile) else " does not exist") )
         self.putMessage ( "\n" + str(reference) + " : " + (" exists" if os.path.isfile(reference) else " does not exist") )
-
+        
         # --------------------------- cmd option keywords-------------------------------
 
         cmd = [
@@ -72,24 +72,40 @@ class ImportSerial(import_task.Import):
         # Prepare import serial input
         # fetch input data from js file using inputID
 
-        # hklin               = self.makeClass ( self.input_data.data.hklin             [0] )
-        # half-dataset1       = self.makeClass ( self.input_data.data. half-dataset1    [0] )
-        # half-dataset2       = self.makeClass ( self.input_data.data. half-dataset1    [0] )
-        # reference           = self.makeClass ( self.input_data.data.reference         [0] )
-        # cellfile            = self.makeClass ( self.input_data.data.cellfile          [0] )
-        # cell                = self.makeClass ( self.input_data.data.cell              [0] )
-        # wavelength          = self.makeClass ( self.input_data.data.wavelength        [0] )
-        # spacegroup          = self.makeClass ( self.input_data.data.spacegroup        [0] )
-        # dmin                = self.makeClass ( self.input_data.data.dmin              [0] ) 
-        # dmax                = self.makeClass ( self.input_data.data.dmax              [0] )
-
-
         sec1 = self.task.parameters.sec1.contains #Call section 1 containing all the parameters
         sec2 = self.task.parameters.sec2.contains #Call section 2
 
         self.putMessage(" ") #Spacing , remove later
         self.putMessage("<b><h3> Cmd Parameter Keywords and Value </h3></b> ") #Heading , remove later
         self.putMessage(" ") #Spacing , remove later
+
+
+        # Retrieve the keywords from file input 
+
+        # If .hkl1 or .hkl2 file was provided
+        if os.path.isfile(halfdataset1) or os.path.isfile(halfdataset2) : 
+            cmd += [ "--half-dataset"]
+
+        #If .hkl1 file was provided
+        if os.path.isfile(halfdataset1):
+            cmd += [ str(halfdataset1) ]
+            self.putMessage(str(cmd)) 
+
+        #If .hkl2 file was provided
+        if os.path.isfile(halfdataset2):
+            cmd += [ str(halfdataset2) ]
+            self.putMessage(str(cmd))        
+
+        #If cell file was provided
+        if os.path.isfile(cellfile):
+            cmd += [ "--cellfile", str(cellfile) ]
+            self.putMessage(str(cmd))
+
+        #If reference file was provided
+        if os.path.isfile(reference):
+            cmd += [ "--reference", str(reference) ]
+            self.putMessage(str(cmd))
+
 
         wavelength = self.getParameter ( sec1.WAVELENGTH ).strip()
         if wavelength: # If there is wavelength user input
@@ -121,35 +137,13 @@ class ImportSerial(import_task.Import):
             cmd += [ "--dmax", str(dmax) ]
             self.putMessage(str(cmd)) 
 
-         #retrieve the keywords from file input 
-
-        #If .hkl1 file was provided
-        if os.path.isfile(halfdataset1) != '':
-            cmd += [ "--hkl1", str(halfdataset1) ]
-            self.putMessage(str(cmd)) 
-
-        #If .hkl2 file was provided
-        if os.path.isfile(halfdataset2) != '':
-            cmd += [ "--hkl2",str(halfdataset2) ]
-            self.putMessage(str(cmd))        
-
-        #If cell file was provided
-        if os.path.isfile(cellfile) != '':
-            cmd += [ "--cellfile", str(cellfile) ]
-            self.putMessage(str(cmd))
-
-        #If reference file was provided
-        if os.path.isfile(reference) != '':
-            cmd += [ "--reference", str(reference) ]
-            self.putMessage(str(cmd))
-
-
 
         self.putMessage("<b>Import Serial cmd command :</b>" + " ".join(cmd))
 
         self.putMessage(" ") #Spacing , remove later
-        
-      # ------------------------------- Display the value of the data to the output -----------------------
+
+
+         # ------------------------------- Display the value of the data to the output -----------------------
 
         self.putMessage("<b><h3> Parameters Input Value </h3></b> ") #Heading , remove later
         self.putMessage(" ") #Spacing , remove later
