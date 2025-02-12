@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    12.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,7 +61,8 @@ function start ( callback_func )  {
   log.standard ( 1,'FE: url=' + feConfig.url() );
   for (let i=0;i<ncConfigs.length;i++)
     log.standard ( 2,'NC[' + i + ']: type=' + ncConfigs[i].exeType +
-                     ' url=' + ncConfigs[i].url() );
+                     ' url=' + ncConfigs[i].url() + 
+                     (ncConfigs[i].in_use ? '' : ' not in use') );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
 
   utils.configureCache ( feConfig.cache );

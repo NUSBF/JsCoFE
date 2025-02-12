@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    12.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Local (on-desktop) jsCoFE launcher
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -135,7 +135,8 @@ if (forceStart)  {
   startFE = feConfig.isLocalHost;
   startNC = [];
   for (let i=0;i<ncConfigs.length;i++)
-    startNC.push ( (ncConfigs[i].exeType=='CLIENT') || ncConfigs[i].isLocalHost );
+    startNC.push ( ncConfigs[i].in_use && (ncConfigs[i].exeType!='REMOTE') && 
+                   ((ncConfigs[i].exeType=='CLIENT') || ncConfigs[i].isLocalHost) );
 }
 
 if (feProxyConfig)  {
