@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.25   <--  Date of Last Modification.
+ *    12.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1152,7 +1152,8 @@ function assignPorts ( assigned_callback )  {
             break;
 
       case 2: if (n<nc_servers.length)  {
-                if (nc_servers[n].isLocalHost && (nc_servers[n].port>0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port>0) &&
+                    nc_servers[n].in_use && (nc_servers[n].exeType!='REMOTE'))
                       set_server ( nc_servers[n],function(){ setServer(2,n+1); } );
                 else  setServer(2,n+1);
               } else
@@ -1172,7 +1173,8 @@ function assignPorts ( assigned_callback )  {
             break;
 
       case 5: if (n<nc_servers.length)  {
-                if (nc_servers[n].isLocalHost && (nc_servers[n].port<=0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port<=0) &&
+                    nc_servers[n].in_use && (nc_servers[n].exeType!='REMOTE'))
                       set_server ( nc_servers[n],function(){ setServer(5,n+1); } );
                 else  setServer(5,n+1);
               } else

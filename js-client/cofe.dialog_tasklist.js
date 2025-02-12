@@ -116,7 +116,7 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 // ===========================================================================
 
-TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
+TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row,setall,idlen )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
 let icon    = 'dock_';
@@ -146,7 +146,7 @@ let remote  = 0;
       __current_page.dock.show();
       // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'1') );
       self.saveDialogState();
-      self.setDockMenu ( task_obj,grid,row );
+      self.setDockMenu ( task_obj,grid,row,setall,idlen );
       self.makeLists   ( 1 );
       showFlashMessage ( 'Removed from Task Dock',rect,self );
     });
@@ -158,7 +158,7 @@ let remote  = 0;
       __current_page.dock.show();
       // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'2') );
       self.saveDialogState();
-      self.setDockMenu ( task_obj,grid,row );
+      self.setDockMenu ( task_obj,grid,row,setall,idlen );
       self.makeLists   ( 1 );
       showFlashMessage ( 'Task can be used from Task Dock now',rect,self );
     });
@@ -200,7 +200,8 @@ let remote  = 0;
           self.makeLists ( 0 );
         else  {
           // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'2'+icon.slice(-1)) );
-          self.setDockMenu ( task_obj,grid,row );
+          // self.setDockMenu ( task_obj,grid,row,setall,idlen );
+          self.setTask     ( task_obj,grid,row,setall,idlen );
           self.makeLists   ( 1 );
         }
         saveUserData     ( 'Remote tasks list' );
@@ -221,7 +222,8 @@ let remote  = 0;
         self.makeLists ( 0 );
       else  {
         // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'1'+icon.slice(-1)) );
-        self.setDockMenu ( task_obj,grid,row );
+        // self.setDockMenu ( task_obj,grid,row,setall,idlen );
+        self.setTask     ( task_obj,grid,row,setall,idlen );
         self.makeLists   ( 1 );
       }
       saveUserData     ( 'Remote tasks list' );
@@ -268,7 +270,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   // let dock_btn = grid.setIconLabel ( '',image_path('dock_small'),row,0,1,1 )
   //               .setSize_px ( 54,40 );
 
-  this.setDockMenu ( task_obj,grid,row );
+  this.setDockMenu ( task_obj,grid,row,setall,idlen );
 
   let btn = grid.setButton  ( '',image_path(task_obj.icon()),row,1,1,1 )
                 .setSize_px ( 54,40 );
