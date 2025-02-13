@@ -52,7 +52,7 @@ function TaskImportSerial()  {
       tooltip     : '[Mandatory] Path to HKL Merged data file ', //tooltip is hover over the label in the UI
       inputId     : 'hklin',  // input Id for referencing input fields
       path        : '',
-      min         : 0,          // minimum acceptable number of data instances (change to 1 after debug)
+      min         : 1,          // minimum acceptable number of data instances (change to 1 after debug)
       max         : 1
     },{
       file_types  : '.hkl1,', // data type(s) and subtype(s)
@@ -60,7 +60,7 @@ function TaskImportSerial()  {
       tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
       inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
-      min         : 0   ,      // minimum acceptable number of data instances
+      min         : 1   ,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types  : '.hkl2', // data type(s) and subtype(s)
@@ -68,7 +68,7 @@ function TaskImportSerial()  {
       tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
       inputId     : 'halfdataset2',   // input Id for referencing input fields
       path        : '',
-      min         : 0   ,      // minimum acceptable number of data instances
+      min         : 1   ,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types: '.cell',
@@ -210,6 +210,9 @@ TaskImportSerial.prototype.taskDescription = function()  {
     return 'Upload and import .hkl, .mtz, .cell files from your device to merge and convert to MTZ Format ';
   }
 
+
+// empty work directory cleaner
+TaskImportSerial.prototype.cleanJobDir = function ( keywords )  {}
     
 
 // *EK* Can ImportSerial work on Windows?
@@ -245,6 +248,21 @@ if (!__template)  {
 
   // reserved function name
   TaskImportSerial.prototype.runButtonName = function()  { return 'Import'; }
+
+  TaskImportSerial.prototype.collectInput = function ( inputPanel )  {
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    // let hkl = this.input_data.getData('hkl')[0];
+    let cell_file = this.file_select[3].path;
+    if (!cell_file)
+      input_msg += '|<b><i>Fun fin fin</i></b>';
+
+    console.log ( ' >>>> ' + input_msg)
+
+    return input_msg;
+
+  }
+
+
 
 } else  {
   // for server side

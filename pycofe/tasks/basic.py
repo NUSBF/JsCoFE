@@ -1213,6 +1213,14 @@ class TaskDriver(object):
 
 
     def runApp ( self,appName,cmd,logType="Main",quitOnError=True,env=None,work_dir="." ):
+        # appName  -- name of application to run 
+        # cmd      -- list of command-line parameters
+        # logType  -- which log to use for standard output ( Main|Service|Error ) not really
+        #             sure that using Error is a good idea 
+        # quitOnError -- whether task drived should quit if an error occurs
+        # env      -- a modified copy of os.environ, if necessary 
+        # work_dir -- working directory; using current directory "." is always
+        #             the best idea
 
         input_script = None
         if self.file_stdin:

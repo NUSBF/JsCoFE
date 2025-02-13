@@ -27,8 +27,16 @@
 #  python native imports
 import os
 
+
+import pyrvapi
+
+#from   pycofe.etc  import pyrama
+from   pycofe.varut  import rvapi_utils
+
+
 #  application imports
 from   pycofe.tasks  import import_task
+from   pycofe.proc    import import_filetype, import_merged
 # from   pycofe.auto   import auto
 
 # ============================================================================
@@ -61,8 +69,10 @@ class ImportSerial(import_task.Import):
         
         # --------------------------- cmd option keywords-------------------------------
 
+        outputMTZFName = "project_dataset.mtz"
+
         cmd = [
-            "-m"         , "import_serial",
+            # "-m"         , "import_serial",
             "--hklin"    , hklin,
         ]
 
@@ -156,21 +166,75 @@ class ImportSerial(import_task.Import):
         
 
        #-----------------------------------Run the import_serial task--------------------------------
-    #    if sys.platform.startswith("win"):
-    #         self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
-    #     else:
-    #         self.runApp ( "ccp4-python",cmd,logType="Main" )
-
-
+        self.runApp ( "import_serial",cmd,logType="Main" )
 
         #------------------------------------------------------------------------------
       
+
+        # reportPanelId = self.getWidgetId ( "tableOne_report" )
+        # pyrvapi.rvapi_add_panel  ( reportPanelId,self.report_page,0,0,1,1 )
+        # table_id = self.getWidgetId ( "tableOne_table" )
+
+        # tableDict =  { 
+        #     'title'       : "Table 1. Diffraction data collection and refinement statistics.",
+        #     'state'       : 0,                    # -1,0,1, -100,100
+        #     'class'       : "table-blue",         # "table-blue" by default
+        #     'css'         : "text-align:left;",  # "text-align:rigt;" by default
+        #     'alt_row_css' : "background:#EAF2D3;text-align:left;",
+        #     'horzHeaders' :  [],
+        #     'rows'        : []
+        # }
+
+        # indent = "&nbsp;&nbsp;&nbsp;&nbsp;"
+
+        # tableDict['rows'].append({'header':{'label': 'DATA COLLECTION', 'tooltip': ''},
+        #                           'data': ['']})
+        
+        # tableDict['rows'].append({'header':{'label': indent + 'Wavelength', 'tooltip': ''},
+        #                           'data': ['%0.3f' % wavelength]})
+
+        # rvapi_utils.makeTable ( tableDict, table_id, reportPanelId, 0,0,1,1 )
 
 
         self.flush()
 
         have_results = True
         summary_line = "imported and merged: MTZ "  # line inside the cloud next to the job tree --imported and merged: MTZ 
+
+        self.addCitation ( "import_serial" )
+
+        # check solution and register data
+        have_results = False
+        summary_line = ""
+        if os.path.isfile(outputMTZFName):
+
+            self.putTitle ( "Output Data" )
+
+            # make list of files to import
+            self.resetFileImport()
+            self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
+
+            self.import_dir = "./"
+            hkl = import_merged.run ( self,"Reflection dataset",importPhases="" )
+
+            if len(hkl)>0:
+
+                have_results = True
+
+                # for i in range(len(hkl)):
+                #     new_hkl[i].new_spg      = hkl.new_spg.replace(" ","")
+                #     # Do not overwrite dataStats; they should be correct!
+                #     # new_hkl[i].dataStats    = hkl.dataStats
+                #     new_hkl[i].aimless_meta = hkl.aimless_meta
+
+                # self.generic_parser_summary["change_reso"] = {'SpaceGroup':hkl.new_spg}
+
+                # summary_line = "new resolution limits: Res=" + \
+                #                new_hkl[0].getHighResolution()   + \
+                #                "&mdash;" + str(res_low) + " &Aring;"
+
+                summary_line = "imported"
+
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
