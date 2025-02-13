@@ -95,7 +95,7 @@ const fe_command = {
   getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
   checkAnnouncement : '=checkannouncement', // get service announcements
   control           : '=control',        // group of server service functions
-  extGetFEData      : '=ext_getfedata'   // getting FE data for running remote jobs
+  remoteCheckIn     : '=remote_checkin'  // check in a user for running remote jobs
 };
 
 

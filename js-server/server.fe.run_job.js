@@ -2244,87 +2244,6 @@ function cloudFetch ( server_request,server_response )  {
 }
 
 
-// ===========================================================================
-// Remote job framework
-
-function getFEData ( userData,callback_func )  {
-// This function is called by external request, once at Cloud Local login.
-// It returns FE data necessary for running remote jobs, into Cloud Local's 
-// session.
-// Expected userData = { login: login, cloudrun_id: cloudrun_id } 
-  let response     = null;  // must become a cmd.Response object to return
-  let fe_server    = conf.getFEConfig();
-  let userFilePath = user.getUserDataFName ( userData );
-
-  if (utils.fileExists(userFilePath))  {
-
-    let uData = utils.readObject ( userFilePath );
-
-    let ulogin      = userData.login;
-    let cloudrun_id = userData.cloudrun_id;
-
-    if (uData)  {
-
-      ud.checkUserData ( uData );
-
-      if (uData.login.startsWith(user.__suspend_prefix))  {
-        // for example, user's data is being moved to different disk
-        // don't confirm
-
-        response  = new cmd.Response ( cmd.fe_retcode.suspendedLogin,'','' );
-
-      } else if ((uData.login==ulogin) && (uData.cloudrun_id==cloudrun_id))  {
-
-        let rData = {}; // return data object
-
-        // record that user was there
-        uData.lastSeen = Date.now();
-
-        // do not log user login event though
-        // anl.getFEAnalytics().userLogin ( uData );
-
-        if (uData.dormant && (!fe_server.dormancy_control.strict))  {
-          // A non-strict dormancy only limits user disk space and is removed 
-          // automatically when user logins. Therefore, remove dormancy here.
-          uData.dormant = 0;
-        }
-
-        if (!utils.writeObject(userFilePath,uData))
-          log.error ( 44,'cannot write user data at ' + userFilePath );
-
-        if (fe_server.hasOwnProperty('description'))
-              rData.setup_desc = fe_server.description;
-        else  rData.setup_desc = null;
-
-        conf.getServerEnvironment ( function(environ_server){
-          rData.environ_server = environ_server;
-          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rData ) );
-        });  
-
-      } else  {
-        log.error ( 41,'Login name/cloudrun_id mismatch:' );
-        log.error ( 41,' ' + ulogin + ':' + cloudrun_id );
-        log.error ( 41,' ' + uData.login + ':' + uData.cloudrun_id );
-        response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
-      }
-
-    } else  {
-      log.error ( 42,'User file: ' + userFilePath + ' cannot be read.' );
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                      'User file cannot be read.','' );
-    }
-
-  } else  {
-    log.error ( 43,'User file: ' + userFilePath + ' not found.' );
-    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
-  }
-
-  if (response)
-    callback_func ( response );
-
-}
-
-
 // ==========================================================================
 // export for use in node
 module.exports.readFEJobRegister   = readFEJobRegister;
@@ -2342,4 +2261,3 @@ module.exports.checkJobs           = checkJobs;
 module.exports.wakeZombieJobs      = wakeZombieJobs;
 module.exports.cloudRun            = cloudRun;
 module.exports.cloudFetch          = cloudFetch;
-module.exports.getFEData           = getFEData;

@@ -1064,12 +1064,14 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       dlg.stop_btn.setVisible ( false );
                     dlg.hide();
 
-                  } else  {
+                  } else  {  // ordinay NC including REMOTE
+
                     dlg.task.postSubmit();
                     dlg.loadReport();
                     dlg.radioSet.selectButton ( 'output' );
                     onRun_func ( dlg );
                     dlg.enableCloseButton ( true );
+                  
                   }
 
                 });
