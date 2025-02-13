@@ -1514,7 +1514,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               let job_token = newJobToken();
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-                          function(jtoken){} );
+                         function(jtoken){} );
 
             }
     
