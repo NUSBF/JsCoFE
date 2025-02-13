@@ -126,14 +126,14 @@ class ImportSerial(import_task.Import):
             self.putMessage(str(cmd)) 
 
         dmin = self.getParameter ( sec2.DMIN ).strip()
-        if cell: # If there is High-resolution cutoff user input
-            cell = str(dmin)
+        if dmin: # If there is High-resolution cutoff user input
+            dmin = str(dmin)
             cmd += [ "--dmin", str(dmin) ]
             self.putMessage(str(cmd)) 
 
         dmax = self.getParameter ( sec2.DMAX ).strip()
-        if cell: # If there is Low-resolution cutoff user input
-            cell = str(dmax)
+        if dmax: # If there is Low-resolution cutoff user input
+            dmax = str(dmax)
             cmd += [ "--dmax", str(dmax) ]
             self.putMessage(str(cmd)) 
 
@@ -155,7 +155,11 @@ class ImportSerial(import_task.Import):
         self.putMessage( "\n" + " <b>Low Resolution Cutoff is </b>"+ str(dmax) )
         
 
-       
+       #-----------------------------------Run the import_serial task--------------------------------
+    #    if sys.platform.startswith("win"):
+    #         self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+    #     else:
+    #         self.runApp ( "ccp4-python",cmd,logType="Main" )
 
 
 
@@ -183,3 +187,7 @@ if __name__ == "__main__":
 
     drv = ImportSerial ( "",os.path.basename(__file__),{} ) #Call the number cruncher driver
     drv.start()
+
+
+
+
