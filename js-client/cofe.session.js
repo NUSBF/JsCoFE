@@ -246,7 +246,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 let rud = new UserData();
                 rud.login       = __remote_login_id;
                 rud.cloudrun_id = __remote_cloudrun_id;
-                serverCommand ( __remoteJobServer.url + '/' + fe_command.extGetFEData,
+                serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
                                 rud,'Remote FE request',function(response){
                   if (response && (response.status==fe_retcode.ok))
                     __remote_environ_server = response.data.environ_server;

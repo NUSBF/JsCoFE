@@ -187,8 +187,8 @@ function start ( callback_func )  {
             rj.cloudFetch ( server_request,server_response );
           break;
 
-        case cmd.fe_command.extGetFEData :
-            pp.processPOSTData ( server_request,server_response,rj.getFEData,feConfig.state );
+        case cmd.fe_command.remoteCheckIn :
+            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
           break;
 
         case cmd.fe_command.checkSession :
