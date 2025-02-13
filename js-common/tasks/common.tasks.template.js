@@ -97,7 +97,8 @@ function TaskTemplate()  {
   this.setOName ( 'template' );  // default output file name template
   this.uoname       = '';        // output file name template given by user
   this.state        = job_code.new;  // 'new', 'running', 'finished'
-  this.nc_type      = 'ordinary'; // required Number Cruncher type
+  this.nc_type      = 'ordinary'; // required Number Cruncher type, one of
+                        // [ordinary|client|client-storage|browser-secure|browser]
   this.fasttrack    = false;  // no fasttrack requirements
   this.inputMode    = input_mode.standard;  // 'standard', 'root'
   this.autoRunName  = '';     // job id in automatic workflow
