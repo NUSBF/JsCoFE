@@ -1538,6 +1538,7 @@ function getExcludedTasks()  {
 function checkOnUpdate ( callback_func )  {
   try {
     if ('CCP4' in process.env)  {
+      log.standard ( 7,'checking for new updates' );
       let ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists(ccp4um))  {
         let job = utils.spawn ( ccp4um,['-check-silent'],{} );
@@ -1548,16 +1549,18 @@ function checkOnUpdate ( callback_func )  {
           // console.log ( ' >>>> code=' + code );
         });
       } else  {
+        log.error ( 7,'ccp4um not found for checking on updates' );
         setTimeout ( function(){
-          callback_func ( 255 );  // <254:  number of updates available
+          callback_func ( 255 );   // <254:  number of updates available
                                    //  254:  CCP4 release
                                    //  255:  no connection
         },10);
       }
     }
   } catch(e)  {
+    log.error ( 8,'ccp4 environment not found for checking on updates' );
     setTimeout ( function(){
-      callback_func ( 255 );  // <254:  number of updates available
+      callback_func ( 255 );   // <254:  number of updates available
                                //  254:  CCP4 release
                                //  255:  no connection
     },10);
