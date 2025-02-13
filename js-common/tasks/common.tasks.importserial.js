@@ -97,32 +97,8 @@ function TaskImportSerial()  {
   this.input_dtypes  = [];
 
   this.parameters = { // *EK* parameters to be defined as necessary
-  //  MR_ENGINE : { type     : 'combobox',
-  //                keyword  : '',
-  //                label    : '<b><i>Auto-MR solver</i></b>',
-  //                tooltip  : 'Choose between MrBump and MoRDa auto-MR pipelines ' +
-  //                           'to use. If MoRDa is not available, MrBump will be used.',
-  //                range    : ['mrbump|MrBump',
-  //                            'morda|MoRDa'
-  //                           ],
-  //                value    : 'mrbump',
-  //                iwidth   : 140,
-  //                position : [0,0,1,3]
-  //              },
-  //  MB_ENGINE : { type     : 'combobox',
-  //                keyword  : '',
-  //                label    : '<b><i>Model builder</i></b>',
-  //                tooltip  : 'Choose between CCP4Build and Buccaneer for model ' +
-  //                           'building steps.',
-  //                range    : ['ccp4build|CCP4Build',
-  //                            'buccaneer|Buccaneer'
-  //                           ],
-  //                value    : 'ccp4build',
-  //                iwidth   : 140,
-  //                position : [1,0,1,3]
-  //              }
 
-    SPACER : {  //Empty spacer spacer does
+    SPACER : {  //Empty spacer
       type     : 'label',
       keyword  : 'none',
       label    : '&nbsp',
@@ -135,34 +111,6 @@ function TaskImportSerial()  {
               position : [1,0,1,8],
               contains : {
 
-                // SOURCE_SEL : {
-                //   type     : 'combobox',
-                //   label    : '<b><i>Data required for CrystFel &nbsp;</i></b>', //Name of title beside the combobox &nbsp = extra space
-                //   tooltip  : 'Source for the Space Group and Unit Cell Parameters',
-                //   range    : ['R|Reference File',
-                //               'SU|Space Group and Unit Cell Parameters',                   //This is the values available inside the dropdown list
-          
-                //             ],
-                //   value    : 'R',
-                //   position : [2,2,1,1]
-                // },
-                // REFERENCEFILE : {
-                //   // keyword   : 'smiles',
-                //   // label     : '<i> Reference File </i>',
-                //   // tooltip   : '(Optional) Reference File  ',
-                //   value     : '',
-                //   position  : [3,2,1,1],
-                //   iwidth    : 200,            
-                //   type: 'file',
-                //   label     : 'Reference file',
-                //   tooltip   : '[Optional]Path to PDB or mmCIF file or MTZ file to import  spacegroup and unit cell parameters',
-                //   // inputId     : 'referencefile', // input Id for referencing input fields
-                //   path        : '',
-                //   min         : 0,   //Minimum files required 
-                //   showon      : {SOURCE_SEL:['R']}, //Check if this call is available ***
-                //   max         : 1
-                // },
-
                 WAVELENGTH : {
                   type      : 'real_',   // empty string not allowed (change to no _ after debugging)
                   label     : '<i> <b> Wavelength </b> </i>',
@@ -171,7 +119,6 @@ function TaskImportSerial()  {
                   inputId     : 'wavelength', // input Id for referencing input fields
                   keyword : "wavelength", //user for keyword option in cmd 
                   value     : '',
-                  range     : [0.00,2.00], //check the range of the high resolution cutoff
                   position  : [2,2,1,1], // grid-row, grid-column ,
                 },
 
@@ -198,7 +145,6 @@ function TaskImportSerial()  {
                   iwidth    : 200,
                   inputId     : 'cell', // input Id for referencing input fields
                   position  : [4,2,2,5],
-                  // maxlength : 5  //determine if their is a restraint already
                 },
             }, //posibly require a ,
             
@@ -218,8 +164,6 @@ function TaskImportSerial()  {
         keyword   : "dmin",
         value     : '',
         iwidth    : 100,
-        range     : [0.00,2.00], //check the range of the high resolution cutoff
-        maxlength : 3,       // maximum input length
         lwidth2   : '100%',
         position  : [2,1,1,7],
         inputId     : 'dmin' // input Id for referencing input fields
@@ -233,8 +177,6 @@ function TaskImportSerial()  {
         value     : '',
         keyword   : "dmax",
         iwidth    : 100,
-        range     : [0.00,2.00], //check the range of the high resolution cutoff
-        maxlength : 3,       // maximum input length
         lwidth2   : '100%',
         position  : [3,1,1,7],
         inputId     : 'dmax' // input Id for referencing input fields
