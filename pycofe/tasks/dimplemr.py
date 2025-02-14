@@ -281,7 +281,7 @@ class DimpleMR(basic.TaskDriver):
                 self.stderr ( " *** validation tools failure" )
                 self.rvrow = rvrow0 + 6
 
-            if meta:
+            if meta and meta["meta_complete"]:
                 verdict_meta = {
                     "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
                     "params"     : None, # will be read from log file
@@ -316,6 +316,11 @@ class DimpleMR(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters": suggestedParameters
                     }, log=self.file_stderr)
+
+            elif self.stopWorkflow():
+                self.putMessage ( "&nbsp;<h3>Workflow stopped</h3>" +\
+                                 "<i>Workflow is stopped due to failures in the " +\
+                                 "quality assessment (check Log tabs).</i>" )
 
         # close execution logs and quit
         self.success ( have_results )
