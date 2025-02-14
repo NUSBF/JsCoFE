@@ -587,7 +587,7 @@ class Refmac(basic.TaskDriver):
 
                 suggestedParameters = {}
 
-                if meta:
+                if meta and meta["meta_complete"]:
                     verdict_meta = {
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
                         "params" : {
@@ -636,6 +636,7 @@ class Refmac(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters" : suggestedParameters
                     }, log=self.file_stderr)
+
 
         else:
             self.putTitle ( "No Output Generated" )

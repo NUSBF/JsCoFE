@@ -531,6 +531,7 @@ class Buster(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["buster"]["R_free"]
                     }, log=self.file_stderr)
 
+
         # remove this because it contains soft links not good for copying
 
         #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_model.cif"),"BUSTER_model.cif" )

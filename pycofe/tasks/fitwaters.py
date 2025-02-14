@@ -430,10 +430,11 @@ class FitWaters(basic.TaskDriver):
                 rvrow0 = self.rvrow
                 # meta = qualrep.quality_report ( self,revision )
                 try:
-                    meta = qualrep.quality_report ( self,revision )
-                    # self.stderr ( " META=" + str(meta) )
-                    if "molp_score" in meta:
-                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+                    qualrep.quality_report ( self,revision )
+                    # meta = qualrep.quality_report ( self,revision )
+                    # # self.stderr ( " META=" + str(meta) )
+                    # if "molp_score" in meta:
+                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
 
                 except:
                     meta = None
