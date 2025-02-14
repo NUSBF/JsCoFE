@@ -273,13 +273,13 @@ class DimpleMR(basic.TaskDriver):
             have_results = True
 
             rvrow0 = self.rvrow
-            meta = qualrep.quality_report ( self,revision )
-            # try:
-            #     meta = qualrep.quality_report ( self,revision )
-            # except:
-            #     meta = None
-            #     self.stderr ( " *** validation tools failure" )
-            #     self.rvrow = rvrow0 + 6
+            # meta = qualrep.quality_report ( self,revision )
+            try:
+                meta = qualrep.quality_report ( self,revision )
+            except:
+                meta = None
+                self.stderr ( " *** validation tools failure" )
+                self.rvrow = rvrow0 + 6
 
             if meta:
                 verdict_meta = {
