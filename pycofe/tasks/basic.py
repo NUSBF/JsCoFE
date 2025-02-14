@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.25   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1246,6 +1246,14 @@ class TaskDriver(object):
         self.outputDataBox.putCitations ( self.citation_list )
         return
 
+
+    def stopWorkflow(self):
+        if os.path.isfile("auto.meta"):
+            with open("auto.meta","w") as f:
+                f.write ( "{}" )
+            self.stdoutln ( "\n ***** WORKFLOW IS STOPPED\n" )
+            return True
+        return False
 
     # ============================================================================
 

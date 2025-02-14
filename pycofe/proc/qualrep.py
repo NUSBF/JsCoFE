@@ -309,6 +309,18 @@ def put_molprobity_section ( body,revision ):
 
     body.stdoutln ( "\n >>>>> xyz file for mol[rpbity: " + str(xyzpath) + "\n" )
 
+    meta = {
+        "meta_complete"    : True,
+        "rama_outliers"    : 0.0,
+        "rama_favored"     : 0.0,
+        "rota_outliers"    : 0.0,
+        "cbeta_deviations" : 0.0,
+        "clashscore"       : 0.0,
+        "rms_bonds"        : 0.0,
+        "rms_angles"       : 0.0,
+        "molp_score"       : 0.0
+    }
+
     cmd_molp = [xyzpath,"percentile=True","allow_polymer_cross_special_position=True"]
 
     body.file_stdout  = open ( molprobity_log,"w" )
@@ -321,6 +333,7 @@ def put_molprobity_section ( body,revision ):
             body.runApp ( "molprobity.clashscore",[xyzpath],logType="Service" )
             body.runApp ( "molprobity.molprobity",cmd_molp ,logType="Main"    )
     except:
+        meta["meta_complete"] = False
         body.putMessage1 ( grid_id,"<h3>There were errors</h3>" +\
                            "<i>Molprobity failed, check messages in Errors tab.</i>" +\
                            "<p>&nbsp;",
@@ -334,16 +347,6 @@ def put_molprobity_section ( body,revision ):
     body.file_stdout1 = fstdout1
 
     key  = 0
-    meta = {
-        "rama_outliers"    : 0.0,
-        "rama_favored"     : 0.0,
-        "rota_outliers"    : 0.0,
-        "cbeta_deviations" : 0.0,
-        "clashscore"       : 0.0,
-        "rms_bonds"        : 0.0,
-        "rms_angles"       : 0.0,
-        "molp_score"       : 0.0
-    }
 
     meta_s = analyse_structure.analyze_structure ( xyzpath )
     meta["natoms_overall"] = meta_s["overall_atoms"]
@@ -791,7 +794,7 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
                 refmacResults = RefmacXMLLog(refmacXML)
         put_Tab1_section ( body, revision, meta, refmacResults )
 
-        if edmeta:
+        if edmeta and meta:
             for key in edmeta:
                 meta[key] = edmeta[key]
 

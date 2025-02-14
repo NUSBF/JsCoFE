@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.01.25   <--  Date of Last Modification.
+ *    14.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1354,7 +1354,11 @@ let projectName = jobEntry.project;
 let pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
 let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
-  if (auto_meta)  {
+  if (auto_meta && (Object.keys(auto_meta).length))  { // empty meta can be used
+                        // to stop the workflow from python layer. Note that
+                        // just removing meta in python does not do the trick 
+                        // because the file persists on FE and must be
+                        // overwritten, rather than removed.
 
     // let projectData = prj.readProjectData ( loginData,projectName );
     let projectDesc = prj.readProjectDesc ( loginData,projectName );
