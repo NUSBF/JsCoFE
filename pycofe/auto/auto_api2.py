@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2025
 #
 # ============================================================================
 #
@@ -104,11 +104,12 @@ def initAutoMeta():
         pass
     return
 
-def writeAutoMeta():
+def writeAutoMeta ( body ):
     global auto_meta
     if auto_meta:
         with open(auto_meta_fname(),"w") as json_file:
             json.dump ( auto_meta,json_file )
+        body.keepWorkflow()
     return
 
 def getContext ( contextName ):

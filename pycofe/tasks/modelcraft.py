@@ -513,7 +513,6 @@ class ModelCraft(basic.TaskDriver):
             else:
                 self.putTitle ( "No Output Generated" )
 
-
         # close execution logs and quit
         self.success ( have_results )
         return

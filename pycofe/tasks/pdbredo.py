@@ -651,14 +651,15 @@ class Pdbredo(basic.TaskDriver):
                 rvrow0 = self.rvrow
                 # meta = qualrep.quality_report ( self,revision )
                 try:
+                    qualrep.quality_report(self, revision)
                     # meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
-                    meta = qualrep.quality_report(self, revision)
-                    self.stdoutln ( str(meta) )
-                    if "molp_score" in meta:
-                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+                    # meta = qualrep.quality_report(self, revision)
+                    # self.stdoutln ( str(meta) )
+                    # if "molp_score" in meta:
+                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
 
                 except:
-                    meta = None
+                    # meta = None
                     self.stderr(" *** validation tools failure")
                     self.rvrow = rvrow0 + 6
 

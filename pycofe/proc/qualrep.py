@@ -366,6 +366,7 @@ def put_molprobity_section ( body,revision ):
     nclash  = 0
 
     if not os.path.isfile(clashscore_log):
+        meta["meta_complete"] = False
         body.putMessage1 ( grid_id,"<i>Clash scores were not calculated</i>",
                            grid_row,col=0 )
         grid_row += 1
@@ -396,6 +397,7 @@ def put_molprobity_section ( body,revision ):
 
 
     if not os.path.isfile(molprobity_log):
+        meta["meta_complete"] = False
         body.putMessage1 ( grid_id,"<i>Molprobity log file was not produced</i>",
                            grid_row,col=0 )
         grid_row += 1
@@ -467,6 +469,7 @@ def put_molprobity_section ( body,revision ):
 
     molprob_out = "molprobity.out"
     if not os.path.isfile(molprob_out):
+        meta["meta_complete"] = False
         body.putMessage1 ( grid_id,"&nbsp;<p><i>Molprobity output file was not produced</i>",
                            grid_row,col=0 )
         grid_row += 1
@@ -487,6 +490,7 @@ def put_molprobity_section ( body,revision ):
 
     coot_script = "molprobity_coot.py"
     if not os.path.isfile(coot_script):
+        meta["meta_complete"] = False
         body.putMessage1 ( grid_id,"<i>Coot script was not produced</i>",
                            grid_row,col=0 )
         grid_row += 1

@@ -140,6 +140,9 @@ class TaskDriver(object):
     input_data    = None
     outputFName   = ""
 
+    # flag to stop workflow in case of errors
+    stop_workflow = True  
+
     # report parsers
     log_parser    = None
     generic_parser_summary = {}
@@ -1247,13 +1250,23 @@ class TaskDriver(object):
         return
 
 
-    def stopWorkflow(self):
-        if os.path.isfile("auto.meta"):
+    def keepWorkflow ( self ):
+        self.stop_workflow = False
+        return
+
+
+    def stopWorkflow ( self,amend_report=True ):
+        if self.task.autoRunId and self.stop_workflow and os.path.isfile("auto.meta"):
             with open("auto.meta","w") as f:
                 f.write ( "{}" )
             self.stdoutln ( "\n ***** WORKFLOW IS STOPPED\n" )
+            if amend_report:
+                self.putMessage ( "&nbsp;<h3>Workflow stopped</h3>" +\
+                                  "<i>Workflow is stopped due to failure(s) in " +\
+                                  "Quality Assessment (check Log tabs).</i>" )
             return True
         return False
+
 
     # ============================================================================
 
@@ -2446,6 +2459,9 @@ class TaskDriver(object):
         return
     
     def success ( self,have_results,hidden_results=False ):
+
+        self.stopWorkflow ( amend_report=True )
+
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -2456,7 +2472,9 @@ class TaskDriver(object):
         self.rvrow += 1
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         self.outputDataBox.save ( self.outputDir() )
+        
         self.flush()
+        
         if have_results:
             if hidden_results:
                 raise signal.HiddenResults()
@@ -2464,8 +2482,10 @@ class TaskDriver(object):
                 raise signal.Success()
         else:
             raise signal.NoResults()
+        
 
     def fail ( self,pageMessage,signalMessage ):
+        self.stopWorkflow ( amend_report=True )
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -2481,6 +2501,7 @@ class TaskDriver(object):
         self.file_stdout1.write ( msg + "\n" )
         self.file_stderr .write ( msg + "\n" )
         raise signal.JobFailure ( signalMessage )
+
 
     def python_fail_tab ( self ):
         trace = ''.join( traceback.format_exception( *sys.exc_info() ) )
@@ -2500,6 +2521,8 @@ class TaskDriver(object):
         page_id = self.traceback_page_id()
         pyrvapi.rvapi_add_tab ( page_id, "Error Trace", True )
         pyrvapi.rvapi_set_text ( msg, page_id, 0, 0, 1, 1 )
+        return
+
 
     def start(self):
 
