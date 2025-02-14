@@ -241,8 +241,8 @@ class Privateer(basic.TaskDriver):
                 # try:
                 #     qualrep.quality_report ( self,revision )
                 # except:
-                #     self.stderr ( " *** molprobity failure" )
-                #     self.rvrow = rvrow0
+                #     self.stderr ( " *** validation tools failure" )
+                #     self.rvrow = rvrow0 + 6
 
                 # auto.makeNextTask ( self,{
                 #     "revision" : revision,

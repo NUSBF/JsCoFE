@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2025
 #
 # ============================================================================
 #
@@ -381,8 +381,8 @@ class CombStructure(basic.TaskDriver):
                 try:
                     qualrep.quality_report ( self,revision )
                 except:
-                    self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0
+                    self.stderr ( " *** validation tools failure" )
+                    self.rvrow = rvrow0 + 6
 
         else:
             self.putTitle ( "No Output Generated" )

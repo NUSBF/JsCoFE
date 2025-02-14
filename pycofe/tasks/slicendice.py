@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.06.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022-2024
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -225,8 +225,8 @@ class SliceNDice(basic.TaskDriver):
                         meta = qualrep.quality_report ( self,revision )
                     except:
                         meta = None
-                        self.stderr ( " *** molprobity failure" )
-                        self.rvrow = rvrow0
+                        self.stderr ( " *** validation tools failure" )
+                        self.rvrow = rvrow0 + 6
 
                     if meta and splitId:
                         verdict_meta = {

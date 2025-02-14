@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2025
 #
 # ============================================================================
 #
@@ -273,12 +273,13 @@ class DimpleMR(basic.TaskDriver):
             have_results = True
 
             rvrow0 = self.rvrow
-            try:
-                meta = qualrep.quality_report ( self,revision )
-            except:
-                meta = None
-                self.stderr ( " *** molprobity failure" )
-                self.rvrow = rvrow0
+            meta = qualrep.quality_report ( self,revision )
+            # try:
+            #     meta = qualrep.quality_report ( self,revision )
+            # except:
+            #     meta = None
+            #     self.stderr ( " *** validation tools failure" )
+            #     self.rvrow = rvrow0 + 6
 
             if meta:
                 verdict_meta = {

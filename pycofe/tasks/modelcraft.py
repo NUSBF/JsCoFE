@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.02.25   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -471,8 +471,8 @@ class ModelCraft(basic.TaskDriver):
                                 metrics["EDCC"] = qrmeta["EDCC"]
                             self.stderrln ( str(qrmeta) )
                         except:
-                            self.stderr ( " *** molprobity failure" )
-                            self.rvrow = rvrow0
+                            self.stderr ( " *** validation tools failure" )
+                            self.rvrow = rvrow0 + 6
 
                     rvrow0     = self.rvrow
                     self.rvrow = verdict_rvrow

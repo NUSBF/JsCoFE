@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2025
 #
 # ============================================================================
 #
@@ -358,8 +358,8 @@ class ArpWarp(basic.TaskDriver):
                     if "molp_score" in meta:
                         self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
                 except:
-                    self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0
+                    self.stderr ( " *** validation tools failure" )
+                    self.rvrow = rvrow0 + 6
 
                 auto.makeNextTask ( self,{
                     "revision" : revision,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.05.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2024
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -659,8 +659,8 @@ class Pdbredo(basic.TaskDriver):
 
                 except:
                     meta = None
-                    self.stderr(" *** validation tools or molprobity failure")
-                    self.rvrow = rvrow0 + 4
+                    self.stderr(" *** validation tools failure")
+                    self.rvrow = rvrow0 + 6
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
