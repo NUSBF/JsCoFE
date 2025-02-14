@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2025
 #
 # ============================================================================
 #
@@ -456,8 +456,8 @@ class CCP4Build(basic.TaskDriver):
                                 meta["metrics"][i]["clashscore"] = qrmeta["clashscore"]
                             except:
                                 qrmeta = None
-                                self.stderr ( " *** molprobity failure" )
-                            self.rvrow = rvrow0
+                                self.stderr ( " *** validation tools failure" )
+                            self.rvrow = rvrow0 + 6
 
                         else:
                             self.putMessage ( "<i>Cannot make structure for " +\
