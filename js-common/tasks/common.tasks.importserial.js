@@ -48,7 +48,7 @@ function TaskImportSerial()  {
 
   this.file_select = [{
       file_types  : '.hkl', // data type(s) and subtype(s)
-      label       : 'Merged HKL file', // label for input dialog
+      label       : 'Merged HKL ', // label for input dialog
       tooltip     : '[Mandatory] Path to HKL Merged data file ', //tooltip is hover over the label in the UI
       inputId     : 'hklin',  // input Id for referencing input fields
       path        : '',
@@ -56,7 +56,7 @@ function TaskImportSerial()  {
       max         : 1
     },{
       file_types  : '.hkl1,', // data type(s) and subtype(s)
-      label       : 'Half data set .HKL1 file', // label for input dialog
+      label       : 'Half data set .HKL1 ', // label for input dialog
       tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
       inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
@@ -64,7 +64,7 @@ function TaskImportSerial()  {
       max         : 1
     },{
       file_types  : '.hkl2', // data type(s) and subtype(s)
-      label       : 'Half data set .HKL2 file', // label for input dialog
+      label       : 'Half data set .HKL2 ', // label for input dialog
       tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
       inputId     : 'halfdataset2',   // input Id for referencing input fields
       path        : '',
@@ -87,7 +87,6 @@ function TaskImportSerial()  {
       label2    : '<span style="font-size:85%;color:maroon;"><i>Reference file (PDB, mmCIF or MTZ)  ' +
                                 ' to provide spacegroup and unit cell </i></span>',
       min         : 0,   //Minimum files required 
-      showon      : {SOURCE_SEL:['R']}, //Check if this call is available ***
       max         : 1
     }
     
@@ -143,10 +142,10 @@ function TaskImportSerial()  {
                   keyword   : "cell",
                   value     : '',
                   iwidth    : 200,
-                  inputId     : 'cell', // input Id for referencing input fields
+                  inputId     :"cell", // input Id for referencing input fields
                   position  : [4,2,2,5],
                 },
-            }, //posibly require a ,
+            }, 
             
           },
 
@@ -251,16 +250,43 @@ if (!__template)  {
 
   TaskImportSerial.prototype.collectInput = function ( inputPanel )  {
     let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    // let hkl = this.input_data.getData('hkl')[0];
+    let hkl = this.input_data.getData('hkl')[0];
+
+     //Unit cell parameter validation with cell file, ref file, input
     let cell_file = this.file_select[3].path;
-    if (!cell_file)
-      input_msg += '|<b><i>Fun fin fin</i></b>';
+    let ref_file = this.file_select[4].path;
+    let cell = this.parameters.sec1.contains.UNITCELLPARAMETERS.value.trim(); //retriaval of params
+    if (!cell_file && !cell &&!ref_file){
+      input_msg += '|<b><i>Missing unit cell parameters from either cell file, reference file or input</i></b>';
+    } else if (cell_file && cell){
+        input_msg += '|<b><i>Cell file already contains unit cell parameters</i></b>';
+    } else if (ref_file && cell){
+      input_msg += '|<b><i>Reference file already contains unit cell parameters</i></b>';
+    }
+
+    //Wavelength validation
+    let wavelength = this.parameters.sec1.contains.WAVELENGTH.value;
+    if (!wavelength){
+      input_msg += '|<b><i>Missing wavelength</i></b>';
+    }
+
+    //Spacegroup validation with ref file
+    let spacegroup = this.parameters.sec1.contains.SPACEGROUP.value;
+    if (!ref_file && !spacegroup){
+      input_msg += '|<b><i>Missing spacegroup from either Reference file or input</i></b>';
+    }else if (ref_file && spacegroup){
+      input_msg += '|<b><i>Reference file already contains spacegroup</i></b>';
+    }
+    
+   
 
     console.log ( ' >>>> ' + input_msg)
 
     return input_msg;
 
   }
+
+ 
 
 
 

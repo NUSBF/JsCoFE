@@ -130,9 +130,11 @@ class ImportSerial(import_task.Import):
             self.putMessage(str(cmd))  
 
         cell = self.getParameter ( sec1.UNITCELLPARAMETERS ).strip()
-        if cell: # If there is cell user input
+        if cell: # If there is cell user input, split each input into a string for 6 args
             cell = str(cell)
-            cmd += [ "--cell", str(cell) ]
+            splitcell = cell.split()
+            cmd += [ "--cell"]
+            cmd.extend(splitcell)
             self.putMessage(str(cmd)) 
 
         dmin = self.getParameter ( sec2.DMIN ).strip()
