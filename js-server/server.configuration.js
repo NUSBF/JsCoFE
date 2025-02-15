@@ -1541,7 +1541,19 @@ function checkOnUpdate ( callback_func )  {
       log.standard ( 7,'checking for new updates' );
       let ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists(ccp4um))  {
-        let job = utils.spawn ( ccp4um,['-check-silent'],{} );
+        let cmd     = ['-check-silent'];
+        let vfpath  = path.join ( process.env.CCP4,'lib','ccp4','MAJOR_MINOR' );
+        let sfpath  = path.join ( process.env.CCP4,'restore','timestamp' );
+        let version = utils.readString ( vfpath );
+        let stamp   = utils.readString ( sfpath );
+        if (!version)
+          log.warning ( 7,'version file not found at ' + vfpath );
+        if (!stamp)
+          log.warning ( 8,'stamp file not found at '   + sfpath );
+        if (version && stamp)
+          cmd = cmd.concat([ '--stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
+        log.standard ( 8,'running ' + ccp4um + ' ' + cmd.join(' ') );
+        let job = utils.spawn ( ccp4um,cmd,{} );
         job.on ( 'close',function(code){
           callback_func ( code );  // <254:  number of updates available
                                    //  254:  CCP4 release
