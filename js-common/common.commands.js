@@ -152,8 +152,8 @@ const fe_reqtype = {
   saveJobData         : '-saveJobData',       // request to save job data
   saveJobFile         : '-saveJobFile',       // request to save file in job directory
   saveJobFiles        : '-saveJobFiles',      // request to save files in job directory
-  runJob              : '-runJob',            // request to run job
-  stopJob             : '-stopJob',           // request to stop job
+  runJob              : '-feRunJob',          // request to run job
+  stopJob             : '-feStopJob',         // request to stop job
   webappEndJob        : '-webappEndJob',      // request to conclude a webapp job
   checkJobs           : '-checkJobs',         // request to check on jobs' state
   wakeZombieJobs      : '-wakeZombieJobs',    // request to send zombie jobs to FE
@@ -216,9 +216,9 @@ const fe_retcode = {
 const nc_command = {
   stop            : 'stop',            // quit the server
   countBrowser    : '-countBrowser',   // request to advance browser start counter
-  runJob          : '-runJob',         // request to upload job data and run the job
-  stopJob         : '-stopJob',        // request to stop a running job
-  wakeZombieJobs  : '-wakeZombieJobs',  // request to send zombi jobs to FE
+  runJob          : '-ncRunJob',       // request to upload job data and run the job
+  stopJob         : '-ncStopJob',      // request to stop a running job
+  wakeZombieJobs  : '-wakeZombieJobs', // request to send zombi jobs to FE
   selectDir       : '-selectDir',      // request to select directory (local service)
   selectFile      : '-selectFile',     // request to select file (local service)
   selectImageDir  : '-selectImageDir', // request to select image directory (local service)

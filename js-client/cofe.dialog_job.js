@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -995,6 +995,11 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                 dlg.task.state = job_code.running;
                 dlg.outputPanel.clear();
                 dlg.setDlgState();
+
+                dlg.task.run_remotely = (dlg.task.nc_type=='ordinary')     && 
+                                        dlg.task.canRunRemotely()          &&
+                                        (__remote_environ_server.length>0) && 
+                                        __remote_tasks[dlg.task._type];
 
                 dlg.requestServer ( fe_reqtype.runJob,function(rdata){
 

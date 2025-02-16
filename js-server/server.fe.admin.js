@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Admin Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -53,6 +53,7 @@ function getNCData ( ncInfo,callback_func )  {
 
   let cfg = conf.getNCConfig(ncInfo.length);
 
+  // if ((cfg.name=='client') || (cfg.exeType=='REMOTE'))  {
   if (cfg.name=='client')  {
 
     ncInfo.push ( null );
@@ -80,6 +81,8 @@ function getNCData ( ncInfo,callback_func )  {
         //console.log ( JSON.stringify(body) );
 
         if ((!error) && (response.statusCode==200))  {
+          if (cfg.exeType=='REMOTE')
+            body.data.config = cfg;
           ncInfo.push ( body.data );
         } else  {
           let nci = {
