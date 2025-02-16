@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -954,6 +954,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
           } else
             njobs++;
         startDate = small_font(nci.config.startDate);
+      } else if (nci.config.exeType=='REMOTE')  {
+        state = 'disconnected';
       } else  {
         state = 'dead';
       }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.02.25   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -721,6 +721,25 @@ let nc_number0     = -1;  // NC with maximal capacity
 
 }
 
+
+function ncGetInfo_remote ( server_request,server_response )  {
+//  This function imitates NC behaviour for 'REMOTE' NC framework
+
+  let ncInfo = {};
+  ncInfo.config         = conf.getServerConfig();
+  ncInfo.jobRegister    = {};
+  ncInfo.jobRegister.launch_count = 0;
+  ncInfo.jobRegister.job_map      = {};
+  ncInfo.ccp4_version   = conf.CCP4Version();
+  ncInfo.jscofe_version = cmd.appVersion();
+  ncInfo.environ        = conf.environ_server;
+
+  let response = new cmd.Response ( cmd.nc_retcode.ok,'',ncInfo );
+  response.send ( server_response );
+
+}
+
+
 function selectNumberCruncher ( task )  {
   if (conf.getFEConfig().job_despatch=="opt_comm")
         return selectNC_by_order    ( task );
@@ -826,6 +845,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           meta.user_name = uData.name;
           meta.email     = uData.email;
         }
+        // if (nc_cfg.exeType=='REMOTE')
+        //   meta.cloudrun_id = uData.remote_cloudrun_id;
       }
 
       send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
@@ -2019,7 +2040,7 @@ function cloudRun ( server_request,server_response )  {
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
-                                    function(jtoken){
+                                     function(jtoken){
                             let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {
                               jobEntry.cloudrun = true;
@@ -2251,6 +2272,7 @@ module.exports.writeFEJobRegister  = writeFEJobRegister;
 module.exports.cleanFEJobRegister  = cleanFEJobRegister;
 module.exports.getEFJobEntry       = getEFJobEntry;
 module.exports.setNCCapacityChecks = setNCCapacityChecks;
+module.exports.ncGetInfo_remote    = ncGetInfo_remote;
 module.exports.runJob              = runJob;
 module.exports.readJobStats        = readJobStats;
 module.exports.stopJob             = stopJob;

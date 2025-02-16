@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.25   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -244,6 +244,10 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.ignore :
+          break;
+
+        case cmd.nc_command.getNCInfo :
+            rj.ncGetInfo_remote ( server_request,server_response );
           break;
 
         default :

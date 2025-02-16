@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -170,6 +170,7 @@ function start()  {
       // Parse the server request command
       let url_parse = url.parse(server_request.url);
       let url_path  = url_parse.pathname;
+      // console.log ( ' url_path=' + url_path );
       if (url_path.length>0)  {
         // remove leading slash and proxy forward-to-client tag
         // command = url_path.substr(1);

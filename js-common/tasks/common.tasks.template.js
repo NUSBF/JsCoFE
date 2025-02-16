@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -169,7 +169,7 @@ TaskTemplate.prototype.taskDescription = function()  {
   // return 'Task description in small font which will appear under the task title in Task Dialog';
 }
 TaskTemplate.prototype.clipboard_name = function()  {
-  return 'task';
+  return '"' + this._type + '"';
 }
 
 // task.platforms() identifies suitable platforms:
