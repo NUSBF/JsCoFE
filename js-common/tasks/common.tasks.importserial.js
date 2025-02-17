@@ -60,7 +60,7 @@ function TaskImportSerial()  {
       tooltip     : '(Optional) Specify half-data-set merge .HKL1',
       inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
-      min         : 1   ,      // minimum acceptable number of data instances
+      min         : 0   ,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types  : '.hkl2', // data type(s) and subtype(s)
@@ -68,7 +68,7 @@ function TaskImportSerial()  {
       tooltip     : '(Optional) Specify half-data-set merge .HKL2',
       inputId     : 'halfdataset2',   // input Id for referencing input fields
       path        : '',
-      min         : 1   ,      // minimum acceptable number of data instances
+      min         : 0   ,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types: '.cell',
