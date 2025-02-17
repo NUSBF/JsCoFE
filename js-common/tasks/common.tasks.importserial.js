@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.02.25   <--  Date of Last Modification.
+ *    17.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,7 @@ function TaskImportSerial()  {
   this.file_select = [{
       file_types  : '.hkl', // data type(s) and subtype(s)
       label       : 'Merged HKL ', // label for input dialog
-      tooltip     : '[Mandatory] Path to HKL Merged data file ', //tooltip is hover over the label in the UI
+      tooltip     : 'Specify merged hkl file from CrystFEL', //tooltip is hover over the label in the UI
       inputId     : 'hklin',  // input Id for referencing input fields
       path        : '',
       min         : 1,          // minimum acceptable number of data instances (change to 1 after debug)
@@ -57,7 +57,7 @@ function TaskImportSerial()  {
     },{
       file_types  : '.hkl1,', // data type(s) and subtype(s)
       label       : 'Half data set .HKL1 ', // label for input dialog
-      tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
+      tooltip     : '(Optional) Specify half-data-set merge .HKL1',
       inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
       min         : 1   ,      // minimum acceptable number of data instances
@@ -65,7 +65,7 @@ function TaskImportSerial()  {
     },{
       file_types  : '.hkl2', // data type(s) and subtype(s)
       label       : 'Half data set .HKL2 ', // label for input dialog
-      tooltip     : '[Optional] Path to .HKL1 Half-Merged data set',
+      tooltip     : '(Optional) Specify half-data-set merge .HKL2',
       inputId     : 'halfdataset2',   // input Id for referencing input fields
       path        : '',
       min         : 1   ,      // minimum acceptable number of data instances
@@ -73,7 +73,7 @@ function TaskImportSerial()  {
     },{
       file_types: '.cell',
       label     : 'Cell file',
-      tooltip   : '[Mandatory] Path to .CELL file ',
+      tooltip   : '(Optional) Specify Cell file from CrystFEL ',
       inputId     : 'cellfile', // input Id for referencing input fields
       path        : '',
       min         : 0,   //Minimum files required    (change to 1 after debug)
@@ -81,7 +81,7 @@ function TaskImportSerial()  {
     },{
       file_types: '.pdb,.mmcif,.mtz',
       label     : 'Reference file',
-      tooltip   : '[Optional]Path to PDB or mmCIF file or MTZ file to import  spacegroup and unit cell parameters',
+      tooltip   : '[Optional] Path to PDB or mmCIF file or MTZ file to provide spacegroup and unit cell parameters',
       inputId     : 'reference', // input Id for referencing input fields
       path        : '',
       label2    : '<span style="font-size:85%;color:maroon;"><i>Reference file (PDB, mmCIF or MTZ)  ' +
@@ -112,8 +112,8 @@ function TaskImportSerial()  {
 
                 WAVELENGTH : {
                   type      : 'real_',   // empty string not allowed (change to no _ after debugging)
-                  label     : '<i> <b> Wavelength </b> </i>',
-                  tooltip   : ' (Mandatory) Wavelength (only for data from CrystFEL) ',
+                  label     : '<i> <b> Wavelength (Å) </b> </i>',
+                  tooltip   : 'Wavelength in Å',
                   align     : "left",
                   inputId     : 'wavelength', // input Id for referencing input fields
                   keyword : "wavelength", //user for keyword option in cmd 
@@ -124,7 +124,7 @@ function TaskImportSerial()  {
                 SPACEGROUP : {
                   type      : 'string_',   // empty string not allowed
                   label     : '<b><i> Space Group </b></i>',
-                  tooltip   : ' (Mandatory) Required Specification of Space Group ',
+                  tooltip   : ' Provide a target space group',
                   value     : '',
                   inputId     : 'spacegroup', // input Id for referencing input fields
                   keyword : "spacegroup", //user for keyword option in cmd 
@@ -135,7 +135,7 @@ function TaskImportSerial()  {
                 UNITCELLPARAMETERS : {
                   type      : 'string_',   // empty string not allowed (change to no _ after debugging)
                   label     : '<b><i> Unit Cell Parameters </b></i>',
-                  tooltip   : '(Mandatory) Required Specification of Unit Cell Parameters ',
+                  tooltip   : 'Provide a target Unit Cell Parameters ',
                   label2    : '<span style="font-size:85%;color:maroon;"><i>Unit cell parameters ' +
                                 ' divided by spaces, e.g. 60 50 40 90 90 90 </i></span>',
                   align     : "left",
@@ -155,31 +155,33 @@ function TaskImportSerial()  {
     open     : true,  // true for the section to be initially open
     position : [2,0,1,8],
     contains : {
-      DMIN : {
-        type      : 'real_',   // empty string allowed
-        label     : '<i> <b> High-resolution cutoff </b> </i>',
-        tooltip   : '(Optional) High-resolution cutoff for data',
-        default   : '',
-        keyword   : "dmin",
-        value     : '',
-        iwidth    : 100,
-        lwidth2   : '100%',
-        position  : [2,1,1,7],
-        inputId     : 'dmin' // input Id for referencing input fields
-      
-          },
       DMAX : {
         type      : 'real_',   // empty string allowed
         label     : '<i> <b> Low-resolution cutoff </b> </i>',
-        tooltip   : '(Optional) Low-resolution cutoff for data',
+        tooltip   : '(Optional) Low-resolution cutoff (Å)',
         default   : '',
         value     : '',
         keyword   : "dmax",
         iwidth    : 100,
         lwidth2   : '100%',
-        position  : [3,1,1,7],
+        position  : [2,1,1,7],
         inputId     : 'dmax' // input Id for referencing input fields
       },
+      DMIN : {
+        type      : 'real_',   // empty string allowed
+        label     : '<i> <b> High-resolution cutoff </b> </i>',
+        tooltip   : '(Optional) High-resolution cutoff (Å)',
+        default   : '',
+        keyword   : "dmin",
+        value     : '',
+        iwidth    : 100,
+        lwidth2   : '100%',
+        position  : [3,1,1,7],
+        inputId     : 'dmin' // input Id for referencing input fields
+      
+          },
+      
+      
      
     },
   }
@@ -197,7 +199,7 @@ else    registerClass ( 'TaskImportSerial',TaskImportSerial,TaskTemplate.prototy
 
 // ===========================================================================
 
-TaskImportSerial.prototype.icon           = function()  { return 'task_wflowafmr';  }  // *EK* make new icon
+TaskImportSerial.prototype.icon           = function()  { return 'task_importserial';  }  // *EK* make new icon
 TaskImportSerial.prototype.clipboard_name = function()  { return '"Import Serial"'; }
 
 TaskImportSerial.prototype.desc_title     = function()  {  // *EK* edit description
