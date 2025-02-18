@@ -212,10 +212,51 @@
       
         
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#jscofe-tasklist--page-root" class="md-nav__link">2.3. Task List</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#task-organization" class="md-nav__link">2.3.1. Task Organization</a>
+        </li>
+        <li class="md-nav__item"><a href="#folder-indicators" class="md-nav__link">2.3.2. Folder Indicators</a>
+        </li>
+        <li class="md-nav__item"><a href="#task-availability" class="md-nav__link">2.3.3. Task Availability</a>
+        </li>
+        <li class="md-nav__item"><a href="#starting-a-task" class="md-nav__link">2.3.4. Starting a Task</a>
+        </li></ul>
+            </nav>
+        </li>
   </ul>
 </nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#task-organization" class="md-nav__link">2.3.1. Task Organization</a>
       
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#folder-indicators" class="md-nav__link">2.3.2. Folder Indicators</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#task-availability" class="md-nav__link">2.3.3. Task Availability</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#starting-a-task" class="md-nav__link">2.3.4. Starting a Task</a>
+      
+    
+    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -258,49 +299,56 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
+      <a href="jscofe_synchweb.html" class="md-nav__link">6. Upload Files to CCP4 Cloud from ISPyB</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">7. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">8. Custom (User-Created) Project Workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">9. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">10. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">11. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">12. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">13. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -316,7 +364,20 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#jscofe-tasklist--page-root" class="md-nav__link">2.3. Task List</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#task-organization" class="md-nav__link">2.3.1. Task Organization</a>
+        </li>
+        <li class="md-nav__item"><a href="#folder-indicators" class="md-nav__link">2.3.2. Folder Indicators</a>
+        </li>
+        <li class="md-nav__item"><a href="#task-availability" class="md-nav__link">2.3.3. Task Availability</a>
+        </li>
+        <li class="md-nav__item"><a href="#starting-a-task" class="md-nav__link">2.3.4. Starting a Task</a>
+        </li></ul>
+            </nav>
+        </li>
   </ul>
 </nav>
               </div>
@@ -328,28 +389,39 @@
             
   
 <span id="id1"></span><h1 id="jscofe-tasklist--page-root"><span class="section-number">2.3. </span>Task List<a class="headerlink" href="#jscofe-tasklist--page-root" title="Permalink to this headline">¶</a></h1>
-<p id="tasklist">The Task List contains all tasks runnable in CCP4 Cloud and is used to select one
-of them for insertion in the <em>Job Tree</em>, further configuration (choice of
-input data and parameters), and starting a job.</p>
-<p>All tasks are grouped into several folders. In each folder, relevant tasks are
-listed as separate entries with a task button containing an icon on the left and the task
-title on the right.</p>
-<p>Each folder’s name contains a number in brackets, showing how many tasks from
-that folder can be run at a given point in CCP4 Cloud’s Project. This point
-corresponds to the selected job in the <strong>Job Tree</strong> right behind
-the <strong>Task List</strong>:</p>
+<p id="tasklist">The <strong>Task List</strong> in CCP4 Cloud presents all available tasks that can be executed for structure solution projects. It enables users to insert tasks into the <em>Job Tree</em>, configure inputs and parameters, and start jobs efficiently.</p>
+
+<h2 id="task-organization"><span class="section-number">2.3.1. </span>Task Organization<a class="headerlink" href="#task-organization" title="Permalink to this headline">¶</a></h2>
+<p>Tasks are categorized into several folders, each containing related tasks for streamlined navigation. Each task entry includes a button with an icon on the left and the task title on the right.</p>
+
+
+<h2 id="folder-indicators"><span class="section-number">2.3.2. </span>Folder Indicators<a class="headerlink" href="#folder-indicators" title="Permalink to this headline">¶</a></h2>
+<p>The folder name displays a number in brackets, representing the count of runnable tasks at the current point in the project. This point corresponds to the job selected in the <strong>Job Tree</strong>, located directly behind the <strong>Task List</strong>:</p>
 <a class="reference internal image-reference" href="_images/task_list_1.png"><img alt="_images/task_list_1.png" class="align-center" src="_images/task_list_1.png" style="width: 634.4000000000001px; height: 436.8px;"/></a>
-<p>If you open a folder of interest, you will see tasks that <strong>cannot be run</strong>,
-presented with titles dimmed and the corresponding task button framed in <strong>red</strong>.
-A task cannot be run if there is insufficient data for it at the given point
-in the Project. You can see which data is missing by pressing the corresponding
-task button – a summary of the required and available data for the task will be shown.</p>
-<p>If a task is runnable (with icons framed in either <strong>green (no data ambiguity)</strong> or
-<strong>amber (data may need to be selected before the run)</strong>), then pressing the task
-button will add it as a child of the highlighted node of the <em>Job Tree</em> and open
-its <em>Job Dialog</em>. In the dialog, you may need to select input data, modify the job
-parameters, and finally start the job by pressing the <em>“Run”</em> button in
-the <em>Job Dialog’s</em> toolbar.</p>
+
+
+<h2 id="task-availability"><span class="section-number">2.3.3. </span>Task Availability<a class="headerlink" href="#task-availability" title="Permalink to this headline">¶</a></h2>
+<p>When you open a folder, tasks may be either runnable or unavailable:</p>
+<ul class="simple">
+<li><strong>Unavailable Tasks:</strong>
+Titles appear dimmed, and the task button is framed in <strong>red</strong>. These tasks cannot be run due to insufficient data at the current project point. Click the task button to view a detailed summary of the required and available data.</li>
+<li><strong>Runnable Tasks:</strong>
+Tasks are framed in either <strong>green (no data ambiguity)</strong> or <strong>amber (data selection may be required before execution)</strong>.</li>
+</ul>
+
+
+<h2 id="starting-a-task"><span class="section-number">2.3.4. </span>Starting a Task<a class="headerlink" href="#starting-a-task" title="Permalink to this headline">¶</a></h2>
+<p>To execute a task:</p>
+<ol class="arabic simple">
+<li>Select a runnable task by clicking its button.</li>
+<li>The task will be added as a child of the highlighted node in the <em>Job Tree</em>.</li>
+<li>The <em>Job Dialog</em> will open, where you can:
+- Select input data.
+- Modify job parameters as needed.
+- Start the job by pressing the <em>“Run”</em> button in the <em>Job Dialog</em> toolbar.</li>
+</ol>
+<p>By following these steps, you can efficiently manage and execute tasks within your CCP4 Cloud project.</p>
+
 
 
 

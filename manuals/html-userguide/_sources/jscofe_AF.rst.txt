@@ -23,7 +23,7 @@ To **generate models**, CCP4 Cloud provides the following tasks:
 
     .. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
-         :align: centre
+         :align: center
 
     After importing or generating a model, the `Prepare MR Model(s) from Coordinate Data <../html-taskref/doc.task.ModelPrepXYZ.html>`_ task prepares MR search models from the predicted structures.
 

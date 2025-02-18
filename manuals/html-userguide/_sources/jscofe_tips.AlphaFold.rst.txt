@@ -1,27 +1,23 @@
-===================================
-Using AlphaFold2 and Rosetta models
-===================================
+=======================================
+Using AlphaFold2 and RoseTTAFold Models
+=======================================
 
-CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. `Import <../html-taskref/doc.task.Import.html>`_ task puts a notice of conversion in the *Import Summary* table, other tasks, such as `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `MrParse <../html-taskref/doc.task.MrParse.html>`_, do that silently.
+CCP4 Cloud tasks automatically recognize AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or RMSD estimates (RoseTTAFold) into B-factors. The `Import <../html-taskref/doc.task.Import.html>`_ task provides a notice of this conversion in the *Import Summary* table, while other tasks, such as `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `MrParse <../html-taskref/doc.task.MrParse.html>`_, perform the conversion silently.
 
 .. note::
-        It is important to convert pLLDT scores and rmsd estimates, placed in B-factor columns of predicted models, into B-factors. Without that, best parts of the model will get the lowest weight in Molecular Replacement, which significantly decreases chances for solution. All is done automatically, you are fully set.
-
+   It is essential to convert pLDDT scores and RMSD estimates, which are stored in the B-factor columns of predicted models, into actual B-factors. Without this conversion, the best parts of the model would receive the lowest weight in Molecular Replacement, significantly reducing the chances of obtaining a solution. This process is fully automated, so no manual intervention is required.
 
 .. toggle-header::
-       :header:  **pLDDT cut**
-                
-                AlphaFold produces a per-residue estimate of its confidence score, called **pLDDT**, ranging from 0 to 100. This option sets the minimum level of **pLDDT** of selected residues.
-                
-                * **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
-                
-                * **70 < pLDDT < 90** residues are expected to be positioned reasonably well (generally, a good backbone prediction).
-                
-                * **50 < pLDDT < 70** corresponds to residues modelled with low confidence, which should be treated with caution.
-                
-                * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
+   :header: **pLDDT Cut**
 
+   AlphaFold generates a per-residue confidence estimate called **pLDDT**, which ranges from 0 to 100. This option sets the minimum threshold for selecting residues based on their pLDDT scores:
 
-:doc:`All CCP4 Cloud tips <jscofe_tips>` 
+   * **pLDDT > 90**: Residues are expected to be positioned with high accuracy. These models are suitable for applications requiring high precision, such as characterizing binding sites.
 
+   * **70 < pLDDT < 90**: Residues are expected to be positioned reasonably well, generally providing a good backbone prediction.
 
+   * **50 < pLDDT < 70**: Residues are modeled with low confidence and should be treated with caution.
+
+   * **pLDDT < 50**: Residues should not be interpreted. These scores strongly indicate disorder, suggesting that the region is either unstructured under physiological conditions or becomes structured only as part of a complex.
+
+:doc:`All CCP4 Cloud Tips <jscofe_tips>` 

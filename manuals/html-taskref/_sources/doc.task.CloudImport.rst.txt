@@ -4,8 +4,6 @@ Import from Cloud Storage
 
 This task allows browsing CCP4 Cloud storage and importing files from it. 
 
-.. note:: Files on the Cloud storage can be placed only by respective CCP4 Cloud maintainers.
-
 Please contact `CCP4 Cloud maintainers`_  if you need to place data on the CCP4 Cloud storage for educational purpose
 
-.. _CCP4 Cloud maintainers: mailto:mariya.fando@gmail.com?Subject=CCP4%20Cloud%20storage&cc=ccp4_cloud@listserv.stfc.ac.uk
+.. _CCP4 Cloud maintainers: mailto:ccp4_cloud@listserv.stfc.ac.uk?Subject=CCP4%20Cloud%20storage&
