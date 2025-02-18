@@ -32,7 +32,7 @@
  *     selectNumberCruncher ( task )
  *     ncSelectAndCheck     ( nc_counter,task,callback_func )
  *     _run_job             ( loginData,task,job_token,ownerLoginData,
- *                            shared_logins, callback_func )
+ *                            shared_logins,run_remotely, callback_func )
  *     runJob               ( loginData,data, callback_func )
  *     webappEndJob         ( loginData,data, callback_func )
  *     stopJob              ( loginData,data )
@@ -786,7 +786,10 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
 
 // ===========================================================================
 
-function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callback_func )  {
+function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+                    run_remotely, callback_func )  {
+
+  console.log ( ' >>>>>> run_remotely = ' + run_remotely );
 
   ncSelectAndCheck ( conf.getNumberOfNCs(),task,function(nc_number){
 
@@ -1067,6 +1070,7 @@ function runJob ( loginData,data, callback_func )  {
     // job for ordinary NC, pack and send all job directory to number cruncher
 
     _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+               data.run_remotely,  // remote/own NC comes from JobDialog
       function(jtoken){
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
       });
@@ -1109,6 +1113,7 @@ function webappEndJob ( loginData,data, callback_func )  {
   task.nc_type ='ordinary';
 
   _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+             false,  // webapps run only on own NCs
     function(jtoken){
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
     });
@@ -1535,6 +1540,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               let job_token = newJobToken();
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+                         false, // temporary workflows run only on own NCs
                          function(jtoken){} );
 
             }
@@ -2040,6 +2046,7 @@ function cloudRun ( server_request,server_response )  {
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
+                                     false, // temoporary cloudrun runs only on own NCs
                                      function(jtoken){
                             let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {

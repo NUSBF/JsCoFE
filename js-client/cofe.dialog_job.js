@@ -517,7 +517,11 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
     this.task.job_dialog_data.viewed = true;
     this.job_edited = true;
   }
-  data.update_tree = this.job_edited && data.is_shared;
+  data.update_tree  = this.job_edited && data.is_shared;
+  data.run_remotely = (__remote_environ_server.length>0) && 
+                         (this.task.nc_type=='ordinary') &&  
+                              this.task.canRunRemotely() && 
+                         __remote_tasks[this.task._type];
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
 }
 
@@ -995,11 +999,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                 dlg.task.state = job_code.running;
                 dlg.outputPanel.clear();
                 dlg.setDlgState();
-
-                dlg.task.run_remotely = (dlg.task.nc_type=='ordinary')     && 
-                                        dlg.task.canRunRemotely()          &&
-                                        (__remote_environ_server.length>0) && 
-                                        __remote_tasks[dlg.task._type];
 
                 dlg.requestServer ( fe_reqtype.runJob,function(rdata){
 
