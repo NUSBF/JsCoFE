@@ -23,7 +23,7 @@
 // ============================================================================
 // name and version tag
 
-function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
+function appName()  { return 'CCP4 Cloud'; }   // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
 const jsCoFE_version = '1.8.005 [18.02.2025]';   // for update
