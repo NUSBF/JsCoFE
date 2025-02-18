@@ -2,61 +2,71 @@
 AlphaFold and RoseTTAFold models in CCP4 Cloud
 ==============================================
 
-`AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RoseTTAFold <https://robetta.bakerlab.org/>`_ predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR). This article describes AlphaFold implementation and the use of predicted models, regardless of their origin, in CCP4 Cloud.
+`AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RoseTTAFold <https://robetta.bakerlab.org/>`_ predicted models are widely recognized as valuable structure templates for Molecular Replacement (MR). This article describes the implementation of AlphaFold and the use of predicted models, regardless of their source, in CCP4 Cloud.
 
 -------------------------------------------------
 Using structure predictions from external sources
 -------------------------------------------------
 
-Predicted models can be used in CCP4 Cloud in exactly the same way as models derived from experimentally determined structures (*taken from PDB or elsewhere*). The only difference between them is that **structure prediction software puts pLLDT scores (AlphaFold) or RMSD estimates (RoseTTAFold) in place of B-factors**. This misguides MR programs regarding the regions with low or high reliability, and, therefore, the **scores must be recalculated as B-factors**. This must be done at the model preparation step.
+Predicted models can be used in CCP4 Cloud in the same way as models derived from experimentally determined structures (*such as those from the PDB or other databases*). The primary difference is that **structure prediction software assigns pLDDT scores (AlphaFold) or RMSD estimates (RoseTTAFold) in place of B-factors**. This can mislead MR programs regarding the regions with low or high reliability. Therefore, **these scores must be recalculated as B-factors** during the model preparation step.
 
-As a result, all models are treated in the same way in CCP4 Cloud. For example, the `Prepare MR Model(s) from Coordinate data <../html-taskref/doc.task.ModelPrepXYZ.html>`_ task prepares MR search model(s) for further use in molecular replacement programs (`Phaser <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_).
+As a result, all models are treated uniformly in CCP4 Cloud. For example, the `Prepare MR Model(s) from Coordinate Data <../html-taskref/doc.task.ModelPrepXYZ.html>`_ task prepares MR search models for use in molecular replacement programs such as `Phaser <../html-taskref/doc.task.Phaser.html>`_ and `Molrep <../html-taskref/doc.task.Molrep.html>`_.
 
-Just like PDB models, predicted models are automatically scanned, acquired, and analyzed in automatic pipelines: `MrBump <../html-taskref/doc.task.MrBump.html>`_, `Find and prepare MR models with MrParse <../html-taskref/doc.task.MrParse.html>`_, `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_, `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_, and `Low-Resolution Refinement with Lorestr <../html-taskref/doc.task.Lorestr.html>`_ directly from the AlphaFold Database (AFDB) at the EBI.
+Like PDB models, predicted models are automatically scanned, acquired, and analyzed in automatic pipelines such as:  
+
+- `MrBump <../html-taskref/doc.task.MrBump.html>`_
+- `Find and prepare MR models with MrParse <../html-taskref/doc.task.MrParse.html>`_
+- `Prepare MR Ensemble with CCP4mg <../html-taskref/doc.task.EnsemblePrepMG.html>`_
+- `Prepare MR Ensemble from Sequence <../html-taskref/doc.task.EnsemblePrepSeq.html>`_
+- `Low-Resolution Refinement with Lorestr <../html-taskref/doc.task.Lorestr.html>`_
+
+These pipelines can directly fetch models from the AlphaFold Database (AFDB) at the EBI.
 
 ----------------------------------
 Structure prediction in CCP4 Cloud
 ----------------------------------
 
-In addition to importing predicted models as files obtained from AlphaFold and RoseTTAFold servers, and fetching them from AFDB, CCP4 Cloud includes the `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 (in `Openfold <https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb>`_ or `ColabFold <https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb>`_ implementation) for generating structure models from the given sequence:
+In addition to importing predicted models obtained from AlphaFold and RoseTTAFold servers or fetching them from AFDB, CCP4 Cloud provides the `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task. This task uses AlphaFold-2 (through `OpenFold <https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb>`_ or `ColabFold <https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb>`_) to generate structure models from a given sequence.
 
     .. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
          :align: center
 
-The task produces coordinate data, which should be prepared (trimmed) as MR model before using in MR programs such as `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_. As an exception, predicted coordinates can be used in `Slice <../html-taskref/doc.task.Slice.html>`_ and `Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ directly, without a preliminary model preparation step. These tasks are useful in cases when noticeable conformations in MR models are expected (for example, predicted models cannot provide an exact hinge state or a twist between domains). Both Slice and Slice-n-Dice attempt to split the given model into a predefined number of conservative domains, and, in addition, Slice-n-Dice attempts to molecularly replace them separately with `Phaser <../html-taskref/doc.task.Phaser.html>`_.
+The task produces coordinate data, which should be prepared (trimmed) as an MR model before use in MR programs like `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_. An exception is when predicted coordinates are used directly in tasks such as `Slice <../html-taskref/doc.task.Slice.html>`_ and `Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_, which do not require prior model preparation. These tasks are particularly useful when conformational variability in MR models is expected (e.g., hinge states or twists between domains). Both tasks attempt to split the given model into conservative domains, and `Slice-n-Dice` also attempts molecular replacement for each domain using `Phaser <../html-taskref/doc.task.Phaser.html>`_.
 
 .. note::
-    `MoRDA <../html-taskref/doc.task.Morda.html>`_ and `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ provide functionality similar to Slice-n-Dice. They can use models directly and split models into domains which will be used for further MR.
+    `MoRDA <../html-taskref/doc.task.Morda.html>`_ and `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ offer similar functionality to Slice-n-Dice, allowing direct use of models and domain splitting for MR.
 
 ------------------------------
 After MR with predicted models
 ------------------------------
 
-Post-phasing steps in structure solution are not different for MR with predicted or from-the-PDB models.
+Post-phasing steps in structure solution are the same for both predicted and experimentally derived models.
 
-Predicted models usually have a very high sequence similarity with the target structure: 100% if a structure was generated from the given sequence, and very close to 100% if the structure was obtained from AFDB. Nevertheless, structure rebuilding with `Modelcraft <../html-taskref/doc.task.Modelcraft.html>`_, `CCP4 Build <../html-taskref/doc.task.CCP4Build.html>`_, `Buccaneer <../html-taskref/doc.task.Buccaneer.html>`_, or `Arp/wArp <../html-taskref/doc.task.ArpWArp.html>`_ is usually required after phasing because parts of the model are often removed at the model preparation stage due to the low confidence score (equivalent to high B-factors). Even if the structure was phased using Slice-n-Dice without the model preparation step, not all domains may get fitted.
+Predicted models often have very high sequence similarity with the target structure: 100% if generated directly from the sequence, and nearly 100% when obtained from AFDB. Nevertheless, structure rebuilding is typically necessary using tools such as `Modelcraft <../html-taskref/doc.task.Modelcraft.html>`_, `CCP4 Build <../html-taskref/doc.task.CCP4Build.html>`_, `Buccaneer <../html-taskref/doc.task.Buccaneer.html>`_, or `Arp/wArp <../html-taskref/doc.task.ArpWArp.html>`_. This is because low-confidence regions (equivalent to high B-factors) are often removed during model preparation. 
 
-Building a structure includes cycles of manual corrections in Coot followed by refinement with a software of choice, `Refmac <../html-taskref/doc.task.Refmac.html>`_ or `Buster <../html-taskref/doc.task.Buster.html>`_. In low resolutions, the process is stabilized by using external restraints generated by Prosmart (part of the Refmac task) from homologous structures. This is conveniently automated by `Lorester <../html-taskref/doc.task.Lorester.html>`_, which can automatically acquire suitable structure homologs from both PDB and AFDB.
+Even when phasing is done using `Slice-n-Dice` without model preparation, not all domains may be properly fitted.
+
+Structure building typically involves cycles of manual corrections in `Coot`, followed by refinement with software such as `Refmac <../html-taskref/doc.task.Refmac.html>`_ or `Buster <../html-taskref/doc.task.Buster.html>`_. For low-resolution data, the process can be stabilized by using external restraints generated by Prosmart (available in the Refmac task) from homologous structures. This process is conveniently automated by `Lorestr <../html-taskref/doc.task.Lorestr.html>`_, which can automatically acquire homologous structures from both PDB and AFDB.
 
 -----------------------------------------------------
 Using predicted models in automatic project workflows
 -----------------------------------------------------
 
-CCP4 Cloud projects can be developed automatically using Automated Project Workflows (APWs), which perform a sequence of tasks corresponding to a typical user's actions depending on available data.
+CCP4 Cloud projects can be developed automatically using Automated Project Workflows (APWs), which execute a series of tasks corresponding to typical user actions based on available data.
 
-APW **Molecular Replacement with AlphaFold Model** develops MR projects based on structure prediction done in CCP4 Cloud. It starts with data import and then uses `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ and `MR with model splitting using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ tasks to obtain a phased structure, which is then automatically rebuilt and refined. The result may be further improved with the elementary tasks in manual mode, allowing finer control over the task's parameters.
+The **Molecular Replacement with AlphaFold Model** APW develops MR projects based on structure prediction done in CCP4 Cloud. It begins with data import, followed by `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ and `MR with model splitting using Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ tasks to obtain a phased structure, which is then automatically rebuilt and refined. The result can be further improved using elementary tasks in manual mode for finer parameter control.
 
-Another APW: **Automatic Molecular Replacement with MrBump or MoRDa** uses MrBump for solving structure, which looks for suitable models in both the PDB and AFDB, followed by automatic model building, refinement, and optional ligand fitting.
+Another APW: **Automatic Molecular Replacement with MrBump or MoRDa**, utilizes MrBump to solve the structure by searching for suitable models in both the PDB and AFDB. This is followed by automatic model building, refinement, and optional ligand fitting.
 
-Predicted models also can be used in APW: **Simple Molecular Replacement with Search Model** which prepares the model and runs `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_, followed by automatic model building, refinement, and optional ligand fitting.
+Predicted models can also be used in the **Simple Molecular Replacement with Search Model** APW, which prepares the model and runs `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_, followed by automatic model building, refinement, and optional ligand fitting.
 
 ---------
 Tutorials
 ---------
 
-CCP4 Cloud comes with a set of tutorials. The `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ and `Structure prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_ tutorials can be a nice practice on how to create the ensembles for Molecular Replacement with the `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
+CCP4 Cloud comes with a variety of tutorials. The `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ and `Structure Prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_ tutorials provide valuable hands-on practice for creating MR search ensembles using the `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
 
 **ACKNOWLEDGEMENTS**
 
-This article uses materials kindly provided by Dr. Ronan Keegan, whose help is greatly appreciated.
+This article incorporates materials kindly provided by Dr. Ronan Keegan, whose contributions are greatly appreciated.

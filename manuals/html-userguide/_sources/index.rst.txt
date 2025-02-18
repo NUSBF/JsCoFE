@@ -16,6 +16,7 @@ User Guide
    jscofe_workflows
    jscofe_cloudrun
    jscofe_globus
+   jscofe_synchweb
    jscofe_i1toCloud
    jscofe_custom_workflows
    jscofe_archive

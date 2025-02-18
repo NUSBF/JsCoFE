@@ -6,32 +6,39 @@ Task List
 
 .. _tasklist:
 
-The Task List contains all tasks runnable in CCP4 Cloud and is used to select one
-of them for insertion in the *Job Tree*, further configuration (choice of
-input data and parameters), and starting a job.
+The **Task List** in CCP4 Cloud presents all available tasks that can be executed for structure solution projects. It enables users to insert tasks into the *Job Tree*, configure inputs and parameters, and start jobs efficiently.
 
-All tasks are grouped into several folders. In each folder, relevant tasks are
-listed as separate entries with a task button containing an icon on the left and the task
-title on the right.
+Task Organization
+------------------
+Tasks are categorized into several folders, each containing related tasks for streamlined navigation. Each task entry includes a button with an icon on the left and the task title on the right.
 
-Each folder's name contains a number in brackets, showing how many tasks from
-that folder can be run at a given point in CCP4 Cloud's Project. This point
-corresponds to the selected job in the **Job Tree** right behind
-the **Task List**:
+Folder Indicators
+------------------
+The folder name displays a number in brackets, representing the count of runnable tasks at the current point in the project. This point corresponds to the job selected in the **Job Tree**, located directly behind the **Task List**:
 
 .. image:: images/task_list_1.png
     :scale: 40 %
     :align: center
 
-If you open a folder of interest, you will see tasks that **cannot be run**,
-presented with titles dimmed and the corresponding task button framed in **red**.
-A task cannot be run if there is insufficient data for it at the given point
-in the Project. You can see which data is missing by pressing the corresponding
-task button -- a summary of the required and available data for the task will be shown.
+Task Availability
+------------------
+When you open a folder, tasks may be either runnable or unavailable:
 
-If a task is runnable (with icons framed in either **green (no data ambiguity)** or
-**amber (data may need to be selected before the run)**), then pressing the task
-button will add it as a child of the highlighted node of the *Job Tree* and open
-its *Job Dialog*. In the dialog, you may need to select input data, modify the job
-parameters, and finally start the job by pressing the *"Run"* button in
-the *Job Dialog's* toolbar.
+- **Unavailable Tasks:**  
+  Titles appear dimmed, and the task button is framed in **red**. These tasks cannot be run due to insufficient data at the current project point. Click the task button to view a detailed summary of the required and available data.
+
+- **Runnable Tasks:**  
+  Tasks are framed in either **green (no data ambiguity)** or **amber (data selection may be required before execution)**.  
+
+Starting a Task
+---------------
+To execute a task:
+
+1. Select a runnable task by clicking its button.  
+2. The task will be added as a child of the highlighted node in the *Job Tree*.  
+3. The *Job Dialog* will open, where you can:
+   - Select input data.
+   - Modify job parameters as needed.
+   - Start the job by pressing the *"Run"* button in the *Job Dialog* toolbar.  
+
+By following these steps, you can efficiently manage and execute tasks within your CCP4 Cloud project.
