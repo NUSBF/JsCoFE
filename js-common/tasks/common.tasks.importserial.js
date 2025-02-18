@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.25   <--  Date of Last Modification.
+ *    18.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,7 +60,7 @@ function TaskImportSerial()  {
       tooltip     : '(Optional) Specify half-data-set merge .HKL1',
       inputId     : 'halfdataset1',   // input Id for referencing input fields
       path        : '',
-      min         : 0   ,      // minimum acceptable number of data instances
+      min         : 0,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types  : '.hkl2', // data type(s) and subtype(s)
@@ -68,7 +68,7 @@ function TaskImportSerial()  {
       tooltip     : '(Optional) Specify half-data-set merge .HKL2',
       inputId     : 'halfdataset2',   // input Id for referencing input fields
       path        : '',
-      min         : 0   ,      // minimum acceptable number of data instances
+      min         : 0,      // minimum acceptable number of data instances
       max         : 1
     },{
       file_types: '.cell',
@@ -252,7 +252,7 @@ if (!__template)  {
 
   TaskImportSerial.prototype.collectInput = function ( inputPanel )  {
     let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    let hkl = this.input_data.getData('hkl')[0];
+    // let hkl = this.input_data.getData('hkl')[0];
 
      //Unit cell parameter validation with cell file, ref file, input
     let cell_file = this.file_select[3].path;
