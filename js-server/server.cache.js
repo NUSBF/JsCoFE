@@ -215,6 +215,7 @@ function configureCache ( ncache )  {
   cache_enabled = (ncache>0);
   if (cache_enabled)  {
     log.standard ( 1,'metadata cache is turned on' );
+    cache_list[projectListFName].setMaxSize ( ncache               );
     cache_list[projectDescFName].setMaxSize ( nprj_per_user*ncache );
     cache_list[projectDataFName].setMaxSize ( nprj_per_user*ncache );
     cache_list[jobDataFName]    .setMaxSize ( njobs_per_prj*ncache );
