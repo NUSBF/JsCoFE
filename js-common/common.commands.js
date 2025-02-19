@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    18.02.25   <--  Date of Last Modification.
+ *    19.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -86,7 +86,8 @@ const fe_command = {
   login             : '=login',          // register a new user
   recoverLogin      : '=recover_login',  // recover login details
   request           : '=request',        // general request to server
-  upload            : '=upload',         // upload request, hard-coded in gui.upload.js
+  upload            : '=upload',         // upload request, key hard-coded in gui.upload.js
+  allocateJob       : '=allocate_job',   // request to allocate remote job
   jobFinished       : '=job_finished',   // request to accept data from finished job
   cloudRun          : '=cloud_run',      // run job from command prompt on client
   cloudFetch        : '=cloud_fetch',    // fetch job(s) from command prompt on client
@@ -268,6 +269,7 @@ function activityIcon()  {
 const __special_url_tag    = 'xxJsCoFExx';
 const __special_fjsafe_tag = 'xxFJSafexx';
 const __special_client_tag = 'xxClientxx';
+const __special_rfe_tag    = 'xxRFExx';
 
 var __response_timing = {
   time_min : 1.0e30,
@@ -399,6 +401,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.__special_url_tag    = __special_url_tag;
   module.exports.__special_fjsafe_tag = __special_fjsafe_tag;
   module.exports.__special_client_tag = __special_client_tag;
+  module.exports.__special_rfe_tag    = __special_rfe_tag;
   module.exports.projectFileExt       = projectFileExt;
   module.exports.endJobFName          = endJobFName;
   module.exports.endJobFName1         = endJobFName1;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    19.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -174,6 +174,10 @@ function start ( callback_func )  {
         case cmd.fe_command.upload :
             uh.handleUpload ( server_request,server_response );
           break;
+
+        case cmd.fe_command.allocateJob :
+            pp.processPOSTData ( server_request,server_response,rj.allocateJob,feConfig.state );
+        break;
 
         case cmd.fe_command.jobFinished :
             rj.getJobResults ( c.job_token,server_request,server_response );
