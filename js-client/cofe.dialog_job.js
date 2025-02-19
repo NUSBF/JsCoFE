@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    20.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,17 +28,17 @@
 // JobDialog class
 
 var job_dialog_reason = {
-  rename_node     : 'rename_node',     // rename job node
-  set_node_icon   : 'set_node_icon',   // set    job node icon
-  reset_node      : 'reset_node',      // reset  job node label
-  select_node     : 'select_node',     // select job node
-  stop_job        : 'stop_job',        // stop job
-  end_job         : 'end_job',         // end job gracefully
-  webapp_finish   : 'webapp_finish',   // finish webapp job
-  tree_updated    : 'tree_updated',    // job tree should be updated
-  add_job         : 'add_job',         // add job from task list
-  clone_job       : 'clone_job',       // clone job
-  run_job         : 'run_job'          // run job
+  rename_node   : 'rename_node',     // rename job node
+  set_node_icon : 'set_node_icon',   // set    job node icon
+  reset_node    : 'reset_node',      // reset  job node label
+  select_node   : 'select_node',     // select job node
+  stop_job      : 'stop_job',        // stop job
+  end_job       : 'end_job',         // end job gracefully
+  webapp_finish : 'webapp_finish',   // finish webapp job
+  tree_updated  : 'tree_updated',    // job tree should be updated
+  add_job       : 'add_job',         // add job from task list
+  clone_job     : 'clone_job',       // clone job
+  run_job       : 'run_job'          // run job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -366,7 +366,7 @@ JobDialog.prototype.setDlgState = function()  {
 
 }
 
-JobDialog.prototype.getDlgSize = function ()  {
+JobDialog.prototype.getDlgSize = function()  {
   if (!__any_mobile_device)  {
     this.task.job_dialog_data.width  = this.width_px ();
     this.task.job_dialog_data.height = this.height_px();
@@ -377,7 +377,7 @@ JobDialog.prototype.getDlgSize = function ()  {
 }
 
 
-JobDialog.prototype.onDlgResize = function ()  {
+JobDialog.prototype.onDlgResize = function()  {
 
   //if (__any_mobile_device)
   //  return;
@@ -410,32 +410,30 @@ JobDialog.prototype.onDlgResize = function ()  {
     this.task.inputPanelResize ( this.inputPanel,panelWidth,panelHeight );
   }
 
-  if (this.outputPanel)
+  if (this.outputPanel)  {
+    // console.log ( ' >>>>> op w=' + panelWidth + ':' + panelHeight );
     this.outputPanel.setSize_px ( panelWidth,panelHeight );
+  }
 
 }
 
 
-JobDialog.prototype.setDlgSize = function()  {
+JobDialog.prototype.setDlgSize = function ( touch=0 )  {
   if (__any_mobile_device)  {
-    this.setSize_px ( this.initialWidth,this.initialHeight );
+    this.setSize_px ( this.initialWidth-touch,this.initialHeight-touch );
   } else  {
     if (this.task.job_dialog_data.height<=0)  {
       this.task.job_dialog_data.width  = this.width_px();
       this.task.job_dialog_data.height = this.initialHeight;
     }
-    this.setSize_px ( this.task.job_dialog_data.width,this.task.job_dialog_data.height );
+    this.setSize_px ( this.task.job_dialog_data.width-touch,
+                      this.task.job_dialog_data.height-touch );
   }
   this.onDlgResize();
 }
 
 JobDialog.prototype.close = function()  {
   this.delete();
-  // if (this._created)  {
-  //   // $(this.element).dialog ( 'close' );
-  //   $(this.element).dialog( 'destroy' );
-  //   this._created = false;
-  // }
 }
 
 
@@ -447,23 +445,36 @@ JobDialog.prototype.show = function()  {
   $(this.element).parent().show();
 }
 
-
 JobDialog.prototype.loadReport = function()  {
+
   if (this.outputPanel)  {  // check because the function may be called from outside
+  
     let reportURL;
     if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
         __local_service && this.task.job_dialog_data.job_token)  {
-      reportURL = __special_url_tag + '/' +
+      reportURL = __local_service + '/' + __special_url_tag + '/' +
                   this.task.job_dialog_data.job_token + '/' +
                   this.task.getLocalReportPath();
-      reportURL = __local_service + '/' + reportURL;
-      //reportURL = __special_client_tag + '/' + reportURL;
     } else
       reportURL = this.task.getReportURL();
-    if (__local_service)
-      reportURL += '?local_service';
+    // if (__local_service)
+    //   reportURL += '?local_service';
+    // if (__local_service)
+    //   reportURL += '?' + performance.now();
+
+    // // if (__local_service)  {
+    // //   // this is to force reload after coot in local mode, magic or a bug
+    // //   // side effect: screwed reports in task created by running workflows
+    // //   this.setDlgSize (  1 );  
+    // //   this.outputPanel.loadPage ( reportURL );
+    // //   this.setDlgSize ( -1 );
+    // // } else
+    //   this.outputPanel.loadPage ( reportURL );
+
     this.outputPanel.loadPage ( reportURL );
+
   }
+
 }
 
 JobDialog.prototype.reloadReport = function()  {
@@ -513,7 +524,7 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
 
 JobDialog.prototype.saveJobData = function()  {
   let dlg = this;
-  this.requestServer   ( fe_reqtype.saveJobData,function(rdata){
+  this.requestServer ( fe_reqtype.saveJobData,function(rdata){
     if (rdata.project_missing)  {
       new MessageBoxF ( 'Project not found',
           '<h3>Project "' + dlg.tree.projectData.desc.name +
@@ -529,8 +540,6 @@ JobDialog.prototype.saveJobData = function()  {
   });
 }
 
-
-//window.document.__base_url_cache = {};
 
 JobDialog.prototype.addToolBarButton = function ( gap,icon,tooltip )  {
 //  if (gap)

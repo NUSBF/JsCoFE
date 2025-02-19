@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.07.24   <--  Date of Last Modification.
+#    08.11.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -155,7 +155,7 @@ class Xia2(basic.TaskDriver):
         rvrow0 = self.rvrow
         self.putWaitMessageLF ( "Image processing in progress ..." )
 
-        rc = self.runApp ( "xia2",cmd,logType="Main",env=environ )
+        rc = self.runApp ( "xia2",cmd,logType="Main",quitOnError=False,env=environ )
 
         # remove progress spinner
         self.putMessage1 ( self.report_page_id()," ",rvrow0 )

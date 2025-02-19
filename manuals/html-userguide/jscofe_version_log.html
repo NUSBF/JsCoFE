@@ -104,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -198,7 +198,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -212,14 +212,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -233,7 +233,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -291,6 +291,72 @@
             
   
 <h1 id="jscofe-version-log--page-root"><span class="section-number">12. </span>CCP4 Cloud Version Log<a class="headerlink" href="#jscofe-version-log--page-root" title="Permalink to this headline">¶</a></h1>
+<p><strong>Version 1.8.005</strong></p>
+<blockquote>
+<div><p><em>Released with CCP4 v.9.0.007</em></p>
+<ol class="arabic simple">
+<li>Inactivity-based logout introduced</li>
+<li>Cache and Performance stats added to the Administration Page</li>
+<li>List of projects and list of users redesigned</li>
+<li>Multiple code optimisations</li>
+<li>CloudRun notifications enforced in live projects</li>
+<li><code class="docutils literal notranslate"><span class="pre">Xia-2</span></code> progress indicator is removed at job failure</li>
+<li><em>“devel”</em> user is not created in local mode</li>
+<li>Fixed bug causing finished tasks to open with showing their <em>Input</em> panel</li>
+<li>Some regexp validations are removed for Forefox due to bugs in the browser</li>
+<li><code class="docutils literal notranslate"><span class="pre">MrParse</span></code> results sorted by sequence Id</li>
+<li>Fixed bugs in <em>Workflow Creator</em> preventing addition of certain tasks to workflows</li>
+<li>Added the <code class="docutils literal notranslate"><span class="pre">CloudFetch</span></code> utility for fetching jobs from command line</li>
+<li>Verdict section added to <code class="docutils literal notranslate"><span class="pre">Balbes</span></code> task</li>
+<li>Fixed bug in <code class="docutils literal notranslate"><span class="pre">Simbad</span></code> resulting in non-passing ASU definition on subsequent tasks in certain circumstances</li>
+<li>Fixed bug preventing regular task ending on file systems with unusually high latency</li>
+<li>Fixed bug preventing running jobs with last used parameters in some circumstances</li>
+<li>Fixed bug causing duplication task chains in shared projects (e.g. Remac after Coot)</li>
+<li>AI-based solvent prediction added to the <code class="docutils literal notranslate"><span class="pre">ASU</span> <span class="pre">Definition</span></code> task</li>
+<li>B-factor statistics re-introduced in Table 1</li>
+<li><code class="docutils literal notranslate"><span class="pre">MrParse</span></code> task now outputs XYZ, rather than MR Model, data type</li>
+<li><code class="docutils literal notranslate"><span class="pre">Moorhen</span></code> updated to version 0.14.1</li>
+<li>Showing only image ranges in Cloud file browser is now clarified</li>
+</ol>
+</div></blockquote>
+<p><strong>Version 1.8.004</strong></p>
+<blockquote>
+<div><p><em>Released with CCP4 v.9.0.006</em></p>
+<ol class="arabic simple">
+<li>Log verbosity controlled through FE configuration and environmental variable</li>
+<li>File cache introduced to mitigate latency effects on NFS systems</li>
+<li>ZIP levels in data transfer protocols are now optimised for speed</li>
+<li>Temporary directopries configured separately for FE and NC servers</li>
+<li>Added verdicts for <code class="docutils literal notranslate"><span class="pre">Molrep</span></code>, <code class="docutils literal notranslate"><span class="pre">MoRDa</span></code> and <code class="docutils literal notranslate"><span class="pre">MrBump</span></code></li>
+<li>Restore mechanism after <code class="docutils literal notranslate"><span class="pre">Coot</span></code> failures is streamlined</li>
+<li>Fixed bag in <code class="docutils literal notranslate"><span class="pre">Coot</span></code> tasks causeing result write failure due to format confusion</li>
+<li>Warning given at regeneration of CloudRunId</li>
+</ol>
+</div></blockquote>
+<p><strong>Version 1.8.003</strong></p>
+<blockquote>
+<div><p><em>Released with CCP4 v.9.0.005</em></p>
+<ol class="arabic simple">
+<li>Retired tasks are not added into the list of tasks in Workflow Creator</li>
+<li>Fixed bug preventing project page updating right after data import</li>
+<li>Fixed bug causing logout on hitting the Return key or wrong password</li>
+<li>Login page announcements are now manageable from Administration Page</li>
+<li>Configuration of Number Crunchers for FE server optimised</li>
+<li>Universal CPU/GPU queues introduced</li>
+<li>Cosmetic improvements</li>
+<li><code class="docutils literal notranslate"><span class="pre">.nxs</span></code> files made available for <code class="docutils literal notranslate"><span class="pre">Xia-2</span></code> task</li>
+<li>Input sanity checks enforced in <code class="docutils literal notranslate"><span class="pre">Crank-2</span> <span class="pre">MAD</span></code></li>
+<li>Cofe-browser memorises last login details</li>
+<li>Retired tasks made non-clonable and non-copy-pastable</li>
+<li>Failed jobs are put in safe with original job names</li>
+<li>Sequences are cleaned of illigal symbols before structure prediction</li>
+<li>FE-NC data transfer through common file system is now specific to NC</li>
+<li>Remote type of Number Crunchers introduced for using in local setups</li>
+<li>CCP4 Cloud shutdown is optimised in cofe-browser</li>
+<li>Administration (System) page now available in local mode</li>
+<li>CloudRun puts data and version stamps in log files</li>
+</ol>
+</div></blockquote>
 <p><strong>Version 1.8.002</strong></p>
 <blockquote>
 <div><p><em>Released with CCP4 v.9.0.004</em></p>
@@ -299,10 +365,11 @@
 <li>CCP4 programs can now use all available CPU cores in local/desktop mode</li>
 <li>Default packing criterion in Phaser task adjusted</li>
 <li>Corrected data requirements for automatic workflows</li>
-<li>Introduced pre-defdined pland for project development, project creation dialog changed accordingly</li>
+<li>Introduced pre-defdined plans for project development, project creation dialog changed accordingly</li>
 <li>Moorhen updated to latest version available</li>
 <li>WScript added with advanced branching options and possibility to run tasks in parallel</li>
 <li>Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised</li>
+<li>Fixed bug in job despatch with fasttrack flag equal zero</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.8.001</strong></p>
@@ -943,7 +1010,7 @@ files and ligand dictionaries</li>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">11. </span>Troubleshooting </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">11. </span>Troubleshooting </span>
               </div>
             </a>
           
@@ -956,7 +1023,7 @@ files and ligand dictionaries</li>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

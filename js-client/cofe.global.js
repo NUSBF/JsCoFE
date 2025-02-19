@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -132,6 +132,7 @@ var __any_mobile_device = __mobile_device || __iOS_device;
 
 
 var __browser_checked = false;
+var __browser_brand   = '';
 
 function isSafari()  {
   if (window.safari!==undefined)
@@ -140,6 +141,11 @@ function isSafari()  {
           navigator.userAgent &&
           navigator.userAgent.indexOf('CriOS') == -1 &&
           navigator.userAgent.indexOf('FxiOS') == -1;
+}
+
+function isFirefox() {
+  return navigator.userAgentData?.brands.some(brand => brand.brand === 'Firefox') ||
+         navigator.userAgent.toLowerCase().includes('firefox');
 }
 
 function isQtWebEngine() {
@@ -157,6 +163,10 @@ function checkBrowser()  {
   //       '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
   //   );
   __browser_checked = true;
+  if (isSafari())
+    __browser_brand = 'Safari';
+  if (isFirefox())
+    __browser_brand = 'Firefox';
   return;
 }
 
@@ -489,14 +499,34 @@ function replaceStylesheets ( href_pattern,href )  {
       this.href = href_n;
   });
 }
+ 
+function showFlashMessage ( flash_text,rect )  {
+  if (rect)  {
+    let flashPanel = new Widget('div');
+    $(flashPanel.element).appendTo(document.body);
+    flashPanel.addClass ( 'flash-panel' );
+    flashPanel.element.style.left = `${rect.left + rect.width/2}px`;
+    flashPanel.element.style.top  = `${rect.top - 10}px`;
+    flashPanel.setFontSize   ( '86%' )
+              .setFontItalic ( true  )
+              .setText   ( flash_text );
+    window.setTimeout ( function(){
+      flashPanel.delete();
+    },2000);
+  }
+}
 
-function copyToClipboard ( text )  {
-  
+function copyToClipboard ( text,rect )  {
+ 
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    
-    navigator.clipboard.writeText(text).then(function(){},
+
+    navigator.clipboard.writeText(text).then(
+      function(){
+        showFlashMessage ( 'Copied!',rect ); // event.target.getBoundingClientRect() );
+      },
       function(err) {
-        console.error('Could not copy text: ', err);
+        showFlashMessage ( 'Copy failed',rect );
+        console.error ( 'Could not copy text: ', err );
       });
 
   } else {
@@ -515,13 +545,17 @@ function copyToClipboard ( text )  {
 
     try {
       let successful = document.execCommand('copy');
+      if (successful)  showFlashMessage ( 'Copied!',rect );
+                 else  showFlashMessage ( 'Copy failed',rect );
       let msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: Copying text command was ' + msg);
+      console.log ( 'Fallback: Copying text command was ' + msg );
     } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
+      showFlashMessage ( 'Copy failed',rect );
+      console.error ( 'Fallback: Oops, unable to copy', err );
     }
 
     document.body.removeChild(textArea);
+  
   }
 
 }

@@ -142,7 +142,10 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
                                seq=str(polymer.make_one_letter_sequence()),
                                size=psize,
                                natoms=natoms))
-        xyz.append(dict(model=int(model.name), chains=chains))
+        try:
+            xyz.append(dict(model=int(model.name), chains=chains))
+        except:
+            xyz.append(dict(model=int(model.num), chains=chains))
 
     return dict ( cryst=cryst, xyz=xyz, ligands=[], natoms=natoms )
 

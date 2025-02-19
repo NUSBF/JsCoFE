@@ -1,4 +1,24 @@
 
+/*
+ *  ========================================================================
+ *
+ *    19.11.24   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  ------------------------------------------------------------------------
+ *
+ *  **** Module  :  css/gui.tables.css
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Stylesheets for "blue" tables
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel 2024
+ *
+ *  ========================================================================
+ *
+ */
+
 
 .table-blue {
   font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -12,7 +32,7 @@
   /*font-size       : 1em;*/
   font-size       : 16px;
   font-style      : italic;
-  text-align      : center;
+  text-align      : left;
   vertical-align  : middle;
   border          : 1px solid #488090;
   padding         : 5px 9px 4px 9px;
@@ -34,30 +54,40 @@
   white-space     : nowrap;
 }
 .table-blue-td, .table-blue td {
-  font-size       : 15px!important;
-  /*font-size       : 1em;*/
   font-family     : "Courier";
-  text-decoration : none;
-  font-weight     : normal;
+  font-size       : 15px !important;
+  /*font-size       : 1em;*/
+  /* text-decoration : none; */
+  /* font-weight     : normal; */
   font-style      : normal;
   text-align      : right;
-  vertical-align  : middle;
-  border          : 1px solid #488090;
-  padding         : 3px 9px 2px 9px;
-}
-.table-blue-alt {
-  font-size       : 15px!important;
-  /*font-size       : 1em;*/
-  font-family     : "Courier";
-  text-decoration : none;
-  font-weight     : normal;
-  font-style      : normal;
-  text-align      : right;
-  vertical-align  : middle;
+  vertical-align  : middle !important;
   border          : 1px solid #488090;
   padding         : 5px 9px 4px 9px;
+}
+.table-blue-alt {
+  /* font-size       : 15px!important; */
+  /*font-size       : 1em;*/
+  /* font-family     : "Courier";
+  text-decoration : none;
+  font-weight     : normal;
+  font-style      : normal;
+  text-align      : right;
+  vertical-align  : middle;
+  border          : 1px solid #488090;
+  padding         : 5px 9px 4px 9px; */
   background-color: #EAF2D3;
 }
+.table-blue-highlight {
+  background-color: #e1e1e1 !important; /* Highlight color */
+}
+.table-blue-select {
+  background-color: #c8e2ff !important; /* Select color */
+}
+
+/* .table-highlightable:hover {
+    background-color: #f1f1f1 !important;
+} */
 
 
 .label-blue-vh {

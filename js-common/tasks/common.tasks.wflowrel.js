@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function TaskWFlowREL()  {
   this._type       = 'TaskWFlowREL';
   this.name        = 'Refinement and ligand fitting automatic workflow';
   this.setOName ( 'ccp4go_autorel' );  // default output file name template
-  this.title       = 'Workflow: Automated refinement and ligand fitting';
+  this.title       = 'Workflow: Automated Refinement and Ligand Fitting';
   this.autoRunId   = 'auto-REL';
 
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
@@ -196,22 +196,6 @@ if (!__template)  {
   TaskWFlowREL.prototype.customDataClone = function ( cloneMode,task )  {
     this.autoRunId0 = '';   // for Job Dialog
   }
-
-  // TaskMakeLigand.prototype.collectInput = function ( inputPanel )  {
-
-  //   var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-
-  //   var ligCode = this.parameters.CODE.value;
-  //   if (this.parameters.SOURCE_SEL.value=='M')
-  //     ligCode = this.parameters.CODE3.value;
-
-  //   if (__coot_reserved_codes.indexOf(ligCode)>=0)
-  //     msg += '|<b>ligand code ' + ligCode + ' is reserved by Coot for own ' +
-  //            'purposes and cannot be used</b>';
-
-  //   return msg;
-
-  // }
 
 } else  {
   // for server side

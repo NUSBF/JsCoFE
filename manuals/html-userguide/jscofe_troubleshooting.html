@@ -105,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -199,7 +199,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -213,14 +213,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -234,7 +234,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -255,7 +255,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-troubleshooting--page-root" class="md-nav__link">11. Troubleshooting</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -312,7 +312,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-troubleshooting--page-root" class="md-nav__link">11. Troubleshooting</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -348,7 +348,7 @@
 </div>
 
 <h2 id="some-tasks-cannot-be-created-or-added-to-the-job-tree"><a class="toc-backref" href="#id2"><span class="section-number">11.1. </span>Some tasks cannot be created or added to the job tree</a><a class="headerlink" href="#some-tasks-cannot-be-created-or-added-to-the-job-tree" title="Permalink to this headline">¶</a></h2>
-<p>If a task cannot be created and added to the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, its icon in the <a class="reference internal" href="jscofe_tasklist.html#task-list"><span class="std std-ref">Task List</span></a> is shown in a red frame and the corresponding list entry is grayed. Clicking on the red-framed icon does not start <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a> for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:</p>
+<p>If a task cannot be created and added to the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, its icon in the <a class="reference internal" href="jscofe_tasklist.html#task-list"><span class="std std-ref">Task List</span></a> is shown in a red frame and the corresponding list entry is grayed. Clicking on the red-framed icon does not start <span class="xref std std-ref">Job dialog</span> for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:</p>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt><strong>not all input data, needed for the task, is available</strong></dt><dd>Tasks see data produced by its ancestors in the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>. Quite possibly, you need to import missing data or run another task to create the data needed. For example, <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a>, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selections in <a class="reference internal" href="jscofe_project.html#job-tree"><span class="std std-ref">Job Tree</span></a> (hold “<em>Ctrl</em>” (Windows, Linux) or “<em>Apple</em>” (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for making the new task.</dd>
@@ -383,7 +383,7 @@
 <p>Occasionally, this may happen due to 4 reasons:</p>
 <ul class="simple">
 <li><dl class="first docutils">
-<dt><strong>job takes considerable time and only seems to be stalled</strong></dt><dd>Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the “<strong>Main Log</strong>” tab of the <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a>. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may <a class="reference internal" href="#stop-job"><span class="std std-ref">stop it</span></a>.</dd>
+<dt><strong>job takes considerable time and only seems to be stalled</strong></dt><dd>Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the “<strong>Main Log</strong>” tab of the <span class="xref std std-ref">Job dialog</span>. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may <a class="reference internal" href="#stop-job"><span class="std std-ref">stop it</span></a>.</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
@@ -400,7 +400,7 @@
 </li>
 </ul>
 <p id="stop-job"><strong>Stopping a job</strong></p>
-<p>If you wish to stop a job, just press the “<strong>Stop</strong>” button in its <a class="reference internal" href="jscofe_jobdialog.html#job-dialog"><span class="std std-ref">Job dialog</span></a>. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes a job from the project but <em>does not actually delete or stop it</em>.</p>
+<p>If you wish to stop a job, just press the “<strong>Stop</strong>” button in its <span class="xref std std-ref">Job dialog</span>. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes a job from the project but <em>does not actually delete or stop it</em>.</p>
 
 
 <span id="cant-clone"></span><h2 id="ccp4-cloud-says-that-the-task-cannot-be-cloned"><a class="toc-backref" href="#id4"><span class="section-number">11.3. </span>CCP4 Cloud says that the task cannot be cloned</a><a class="headerlink" href="#ccp4-cloud-says-that-the-task-cannot-be-cloned" title="Permalink to this headline">¶</a></h2>
@@ -437,7 +437,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">10.3. </span>What is <em>Structure Revision</em>? </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">10.3. </span>What is <em>Structure Revision</em>? </span>
               </div>
             </a>
           
@@ -447,7 +447,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">12. </span>CCP4 Cloud Version Log </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">12. </span>CCP4 Cloud Version Log </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -461,7 +461,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

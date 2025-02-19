@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2024
+ *  (C) E. Krissinel, A. Lebedev 2020-2025
  *
  *  =================================================================
  *
@@ -268,11 +268,11 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               switch (page_switch)  {
 
-                case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
-                            makeAdminPage ( sceneId );
-                          else if ((!__local_setup) && (userData.action!=userdata_action.none) &&
+                case 0 :  if ((!__local_setup) && (userData.action!=userdata_action.none) &&
                                    (userData.login!=__local_user_id))
                             makeAccountPage ( sceneId );
+                          else if ((__user_role==role_code.admin) && (userData.login=='admin'))
+                            makeAdminPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
                               __current_folder = data.currentFolder;
@@ -468,17 +468,34 @@ function checkSession0 ( sceneId )  {
               let signal = rdata.data.split(':');
               if (signal.length==2)  {
                 switch (__current_page._type)  {
-                  case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')
-                                              __current_page.reloadProjectList();
-                                            else if (signal[0]=='cloudrun_switch_to_project')
-                                              __current_page.loadProject ( signal[1] );
+                  case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')  {
+                                             __current_page.reloadProjectList();
+                                           } else if (signal[0]=='cloudrun_switch_to_project')  {
+                                             new QuestionBox ( 'CloudRun job submitted',
+                                               '<div style="width:400px"><h2>CloudRun job submitted</h2>' +
+                                               'A CloudRun job was just submitted in your account and ' +
+                                               'it now starts in project <b>' + signal[1] +
+                                               '</b>.<p>Would you like to open this project now?</div>',
+                                                 [{ name    : 'Yes',
+                                                    onclick : function(){
+                                                                __current_page.loadProject ( signal[1] );
+                                                                $(self.element).dialog ( 'close' );
+                                                              }
+                                                  },{
+                                                    name    : 'No',
+                                                    onclick : function(){
+                                                                $(self.element).dialog ( 'close' );
+                                                              }
+                                                  }
+                                                 ],'msg_confirm' );
+                                           }
                                           break;
                   case 'ProjectPage'     : if (__current_page.getProjectName()==signal[1])  {
-                                              __current_page.reloadProject();
-                                              break;
-                                            }
+                                             __current_page.reloadProject();
+                                             break;
+                                           }
                   default : if (signal[0]=='cloudrun_switch_to_project')
-                      new MessageBox ( 'CloudRun submitted',
+                      new MessageBox ( 'CloudRun job submitted',
                         '<div style="width:400px"><h2>CloudRun job submitted</h2>' +
                         'A CloudRun job was just submitted in your account and ' +
                         'it now starts in project <b>' + signal[1] +

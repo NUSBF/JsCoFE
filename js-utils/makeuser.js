@@ -58,15 +58,6 @@ function makeUser ( idata )  {
     case 'c' :
     case 'commercial' : userData.licence = ud.licence_code.commercial; break;
   }
-  /*
-  switch (idata.role.toLowerCase())  {
-    default:
-    case 'u' :  case 'user'      : userData.role = ud.role_code.user;      break;
-    case 'a' :  case 'admin'     : userData.role = ud.role_code.admin;     break;
-    case 'd' :  case 'developer' : userData.role = ud.role_code.developer; break;
-  }
-  userData.action = ud.userdata_action.chpwd;
-  */
 
   //console.log ( userData);
   console.log ( ' --- make new user' );

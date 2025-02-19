@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    22.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,7 @@
  *     function cloneProject            ( loginData,data   )
  *     function checkCloneProject       ( loginData,projectName )
  *     function _import_project         ( loginData,tempdir,prjDir,chown_key,duplicate_key )
- *     function getProjectTmpDir        ( loginData,make_clean  )
+ *     function getProjectTmpDir        ( loginData,make_clean,suffix  )
  *     function importProject           ( loginData,upload_meta )
  *     function startDemoImport         ( loginData,meta   )
  *     function startSharedImport       ( loginData,meta   )
@@ -103,6 +103,7 @@ const path      = require('path');
 //  load application modules
 const emailer   = require('./server.emailer');
 const conf      = require('./server.configuration');
+const anl       = require('./server.fe.analytics');
 const utils     = require('./server.utils');
 const send_dir  = require('./server.send_dir.js');
 const ration    = require('./server.fe.ration');
@@ -130,7 +131,6 @@ const userKnowledgeFName = 'knowledge.meta';
 const projectDataFName   = 'project.meta';
 const projectDescFName   = 'project.desc';
 const jobDirPrefix       = 'job_';
-const replayDir          = 'replay';
 // const treeNodeFName      = 'tree.node'
 
 // ===========================================================================
@@ -174,16 +174,9 @@ function getUserKnowledgePath ( loginData )  {
 function getProjectDirPath ( loginData,projectName )  {
 // path to directory containing project 'projectName' of user with
 // given login data
-  let n = projectName.lastIndexOf(':'+replayDir);
-  if (n>0)
-    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
-                       loginData.login + userProjectsExt,
-                       projectName.slice(0,n) + projectExt,
-                       replayDir );
-  else
-    return path.join ( conf.getFEConfig().getVolumeDir(loginData),
-                       loginData.login + userProjectsExt,
-                       projectName + projectExt );
+  return path.join ( conf.getFEConfig().getVolumeDir(loginData),
+                      loginData.login + userProjectsExt,
+                      projectName + projectExt );
 }
 
 function getProjectDataPath ( loginData,projectName )  {
@@ -264,7 +257,7 @@ function getJobDataPath ( loginData,projectName,jobId )  {
 
 // ===========================================================================
 
-function writeProjectData ( loginData,projectData,putTimeStamp )  {
+function writeProjectData ( loginData,projectData,putTimeStamp,force_sync=false )  {
   if (!projectData)
     return false;
   if (putTimeStamp)  {
@@ -273,16 +266,20 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
   }
   projectData.desc.ccp4cloud_version = cmd.appVersion();  // CCP4 Cloud version
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
-                      projectData.desc );
+                      projectData.desc,force_sync );
 
 // pd.printProjectTree ( ' >>>write_project_data',projectData );
 
   return utils.writeObject ( getProjectDataPath(loginData,projectData.desc.name),
-                             projectData );
+                             projectData,force_sync );
 }
 
 function checkProjectDescData ( projectDesc,loginData )  {
-let update = false;
+
+  if (('version' in projectDesc) && (projectDesc.version==1))
+    return false;
+
+  projectDesc.version = 1; // with new checks, update here and above simultaneously 
 
   if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
     // backward compatibility on 11.01.2020
@@ -293,12 +290,12 @@ let update = false;
       email  : uData.email,
       labels : {}
     };
-    update = true;  // update project metadata
+    // update = true;  // update project metadata
   }
 
   if ((!('timestamp' in projectDesc)) || (!projectDesc.timestamp))  {
     projectDesc.timestamp = Date.now();
-    update = true;
+    // update = true;
   }
 
   if ((!('share' in projectDesc)) ||
@@ -320,50 +317,50 @@ let update = false;
           };
       delete projectDesc.owner.share;
     }
-    update = true;
+    // update = true;
   } else  {
     for (let slogin in projectDesc.share)
       if (projectDesc.share[slogin].permissions=='rw')  {
         projectDesc.share[slogin].permissions = pd.share_permissions.run_own;
-        update = true;
+        // update = true;
       }
   }
   
   for (let login in projectDesc.share)
     if (projectDesc.share[login].labels.constructor===Array)  {
       projectDesc.share[login].labels = {};
-      update = true;
+      // update = true;
     }
   
   if ((!('labels' in projectDesc.owner)) ||
       (projectDesc.owner.labels.constructor===Array))  {
     projectDesc.owner.labels = {};  // was not used before writing this, so empty
-    update = true;
+    // update = true;
   }
   
   if ('labels' in projectDesc)  {
     delete projectDesc.labels;
-    update = true;
+    // update = true;
   }
   
   if ('keeper' in projectDesc.owner)  {
     delete projectDesc.owner.keeper;
-    update = true;
+    // update = true;
   }
   
   if ('is_shared' in projectDesc.owner)  {
     delete projectDesc.owner.is_shared;
-    update = true;
+    // update = true;
   }
   
   if (!('autorun' in projectDesc))  {
     projectDesc.autorun = false;
-    update = true;
+    // update = true;
   }
 
   if ((!('ccp4cloud_version' in projectDesc)) || (!projectDesc.ccp4cloud_version))  {
     projectDesc.ccp4cloud_version = cmd.appVersion();
-    update = true;
+    // update = true;
   }
   
   let f0name = pd.getProjectAuthor ( projectDesc );
@@ -373,28 +370,29 @@ let update = false;
   else  f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
-    update = true;
+    // update = true;
   }
   
-  if (projectDesc.folderPath.toLowerCase().startsWith('tutorials'))  {
+  if (projectDesc.folderPath.toLowerCase().startsWith('tutorials') &&
+      (!projectDesc.folderPath.startsWith(pd.folder_path.tutorials)))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
-    update = true;
+    // update = true;
   }
   
   if ([pd.folder_path.all_projects,pd.folder_path.shared,pd.folder_path.joined]
           .indexOf(projectDesc.folderPath)>=0)  {
     projectDesc.folderPath = f0name;  // virtual project folder path
-    update = true;
+    // update = true;
   }
   
   let flist = projectDesc.folderPath.split('/');
   
   if (flist.length<=0)  {
     flist.push ( f0name );
-    update   = true;
+    // update   = true;
   } else if (flist[0]=='My Projects')  {
     flist[0] = f0name;
-    update   = true;
+    // update   = true;
   }
 
   projectDesc.folderPath = flist.join('/');
@@ -408,50 +406,56 @@ let update = false;
   
   if (!('archive' in projectDesc))  {
     projectDesc.archive = null;
-    update = true;
+    // update = true;
   }
   
   // if (update) 
   //   console.log ( ' >>>>>>> update project description after check' )
 
-
-  return update;  // no changes
+  return true;  // update project metadata
 
 }
 
 
 function checkProjectData ( projectData,loginData )  {
-let update = false;
+// let update = false;
+
+  if (('version' in projectData) && (projectData.version==1))
+    return false;
+
+  projectData.version = 1; // with new checks, update here and above simultaneously 
 
   if ('jobCount' in projectData)  {
     projectData.desc.jobCount = projectData.jobCount;
     delete projectData.jobCount;
-    update = true;
+    // update = true;
   }
 
   if ('timestamp' in projectData)  {
     delete projectData.timestamp;
-    update = true;
+    // update = true;
   }
 
   if (!projectData.settings)  {
     projectData.settings = {};
-    update = true;
+    // update = true;
   }
 
   if (!projectData.settings.hasOwnProperty('prefix_key'))  {
     projectData.settings.prefix_key = 0;   // 0: default; 1: custom
     projectData.settings.prefix     = '';  // custom
-    update = true;
+    // update = true;
   }
 
-  if (checkProjectDescData(projectData.desc,loginData))
-    update = true;
+  checkProjectDescData ( projectData.desc,loginData );
+
+  // if (checkProjectDescData(projectData.desc,loginData))
+  //   update = true;
 
   // if (update) 
   //   console.log ( ' >>>>>>> update project data after check' )
 
-  return update;
+  return true;
 
 }
 
@@ -488,16 +492,24 @@ function readProjectDesc ( loginData,projectName )  {
 }
 
 
-function writeProjectList ( loginData,projectList )  {
+function writeProjectList ( loginData,projectList,force_sync=false )  {
   let userProjectsListPath = getUserProjectListPath ( loginData );
-  return utils.writeObject ( userProjectsListPath,projectList );
+  let projects = projectList.projects;
+  projectList.projects = [];  // make file slimmer
+  let rc = utils.writeObject ( userProjectsListPath,projectList,force_sync );
+  projectList.projects = projects;
+  return rc;
 }
 
 
-function readProjectList ( loginData )  {
+function readProjectList ( loginData,mode=0 )  {
+// mode = 0 : read, compose and rewrite 
+//      = 1 : read and compose, do not rewrite
+//      = 2 : read only, do not compose and rewrite
+  let t0 = performance.now();
   let userProjectsListPath = getUserProjectListPath ( loginData );
   let pList = utils.readClass ( userProjectsListPath );
-  if (pList)  {
+  if (pList && (mode<2))  {
     // read all project descriptions anew
     // think how to make this more smart in future
     pList.projects = [];
@@ -522,22 +534,11 @@ function readProjectList ( loginData )  {
         if (pdesc)
           pList.projects.push ( pdesc );
       }
-    // if ((pList.folders[0].path=='My Projects') ||
-    //     (pList.folders[1].type!=pd.folder_type.shared))
-
-    // if ((typeof pList.currentFolder==='string') ||
-    //     (pList.currentFolder instanceof String))
-    // let currentFolder = null;
-    // if ('currentFolder' in pList)
-    //   currentFolder = pList.currentFolder;
-    // pList.seedFolders  ( loginData.login );  // to be commented
     pList.resetFolders ( loginData.login );
-    // if (currentFolder)  {
-    //   currentFolder = pList.findFolder ( currentFolder.path );
-    //   if (currentFolder)
-    //     pList.setCurrentFolder ( currentFolder );
-    // }
-    writeProjectList   ( loginData,pList );
+    // if (mode<1)
+    //   writeProjectList ( loginData,pList,true );
+    anl.logPerformance ( 'Reading Project List, ms/project',performance.now()-t0,
+                         pList.projects.length );
   }
   return pList;
 }
@@ -705,22 +706,14 @@ let response = null;  // must become a cmd.Response object to return
 
     let projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
-    if (writeProjectData(loginData,projectData,true))  {
-      if (utils.mkDir(path.join(projectDirPath,replayDir))) {
-        let pname = projectData.desc.name;
-        projectData.desc.name = projectData.desc.name + ':' + replayDir;
-        if (writeProjectData(loginData,projectData,true))
+    if (writeProjectData(loginData,projectData,true,true))
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
-        projectData.desc.name = pname;
-      }
-    }
-    if (!response)
-      response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00017] Project data cannot be written.','' );
+    else  response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                        '[00017] Project data cannot be written.','' );
 
   } else  {
 
-    response  = new cmd.Response ( cmd.fe_retcode.mkDirError,
+    response = new cmd.Response ( cmd.fe_retcode.mkDirError,
             '[00018] Cannot create Project Directory',
             emailer.send ( conf.getEmailerConfig().maintainerEmail,
                   'CCP4 Create Project Dir Fails',
@@ -832,13 +825,7 @@ let response = null;  // must become a cmd.Response object to return
 
   log.detailed ( 8,'save project list, login ' + loginData.login );
 
-  // Get users' projects list file name
-  //let userProjectsListPath = getUserProjectListPath ( loginData );
-
-//  if (utils.fileExists(userProjectsListPath))  {
-//    let pList = utils.readObject ( userProjectsListPath );
-
-  let pList = readProjectList ( loginData );
+  let pList = readProjectList ( loginData,1 );
   if (pList)  {
 
     // create new projects
@@ -867,16 +854,7 @@ let response = null;  // must become a cmd.Response object to return
     }
 
     if (!response)  {
-      //let userProjectsListPath = getUserProjectListPath ( loginData );
-      //if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
       if (writeProjectList(loginData,newProjectList))  {
-        // let rdata = {};
-        // if (disk_space_change!=0.0)  {
-        //   // save on reading files if ration does not change; see related
-        //   // comments above
-        //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-        //   // clearJobs() only to decrease the amount of transmitted data
-        // }
         response = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
       } else
         response = new cmd.Response ( cmd.fe_retcode.writeError,
@@ -1126,75 +1104,71 @@ function finishFailedJobExport ( loginData,fjdata )  {
 
 function getProjectData ( loginData,data )  {
 
-  let response = getProjectList ( loginData );
-  if (response.status!=cmd.fe_retcode.ok)
-    return response;
+  let t0 = performance.now();
+  let response = null;
 
-  log.detailed ( 11,'get current project data (' + response.data.current +
-                    '), login ' + loginData.login );
+  // read project list to get the name of current project
+  let userProjectsListPath = getUserProjectListPath ( loginData );
+  let projectList = utils.readObject ( userProjectsListPath );
 
-  // Get users' projects list file name
-  let projectList    = response.data;
-  let projectName    = projectList.current;  // projectID or archiveID
-  let archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
-                       (projectList.currentFolder.type==pd.folder_type.cloud_archive);
-
-  // check that current project exists
-  let pdesc = null;
-  if (archive_folder)  {
-    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
-      if (projectList.projects[i].archive && 
-          (projectList.projects[i].archive.id==projectName))
-        pdesc = projectList.projects[i];
-  }
-  if (!pdesc)  {
-    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
-      if (projectList.projects[i].name==projectName)
-        pdesc = projectList.projects[i];
-    if (!pdesc)
-      return new cmd.Response ( cmd.fe_retcode.ok,'',{ 
-          'missing' : 1,
-          'project' : projectName 
-      });
+  if (!projectList)  {  // this should never happen, is here only for safety
+    response = getProjectList ( loginData );
+    if (response.status!=cmd.fe_retcode.ok)
+      return response;
+    projectList = response.data;
+    log.warning ( 11,'get current project data (' + response.data.current +
+                     '), login ' + loginData.login );
   }
 
-  if (data.mode=='replay')
-    projectName += ':' + replayDir;
+  let projectName = projectList.current;  // projectID or archiveID
 
+  // read project data
+  let njobs = 0;
   let pData = readProjectData ( loginData,projectName );
   if (pData)  {
-    if (!pd.isProjectAccessible(loginData.login,pData.desc))
-      return new cmd.Response ( cmd.fe_retcode.projectAccess,
+    if (!pd.isProjectAccessible(loginData.login,pData.desc))  {  
+      response = new cmd.Response ( cmd.fe_retcode.projectAccess,
                                 '[00035] Project access denied.',
                                 { access_denied : true } );
-    let d = {};
-    d.meta      = pData;
-    d.tasks_add = [];
-    d.tasks_del = [];
-    let projectDirPath = getProjectDirPath ( loginData,projectName );
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
-    fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
-      if (file.startsWith(jobDirPrefix)) {
-        let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
-        let task    = utils.readObject ( jobPath );
-        if (task)  {
-          d.tasks_add.push ( task );
-        } else  {
-          d.message = '[00021] Job metadata cannot be read.';
-          utils.removePathAsync ( path.join ( projectDirPath,file ) );
+    } else  {
+      let d = {};
+      d.meta      = pData;
+      d.tasks_add = [];
+      d.tasks_del = [];
+      let projectDirPath = getProjectDirPath ( loginData,projectName );
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
+      fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
+        if (file.startsWith(jobDirPrefix)) {
+          let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
+          let task    = utils.readObject ( jobPath );
+          if (task)  {
+            d.tasks_add.push ( task );
+          } else  {
+            d.message = '[00021] Job metadata cannot be read.';
+            utils.removePathAsync ( path.join ( projectDirPath,file ) );
+          }
+          njobs++;
         }
-      }
-    });
+      });
+    }
   } else  {
     let projectDataPath = getProjectDataPath ( loginData,projectName );
     if (utils.fileExists(projectDataPath))  {
       response = new cmd.Response ( cmd.fe_retcode.readError,
-                                 '[00022] Project metadata cannot be read.','' );
+                            '[00022] Project metadata cannot be read or is corrupt.',
+                            '' );
     } else  {
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                            '[00023] Project metadata file does not exist.','' );
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 
+          'missing' : 1,
+          'project' : projectName 
+      });
     }
   }
+
+  // t0 = performance.now() - t0;
+  // console.log ( ' >>>> project read in ' + t0.toFixed(3) + 'ms' );
+  if (njobs>0)
+    anl.logPerformance ( ' Reading Project Data, ms/job',performance.now()-t0,njobs );
 
   return response;
 
@@ -1230,64 +1204,6 @@ function checkTimestamps ( loginData,projectDesc )  {
   return rdata;
 }
 
-
-// function checkSharedProject ( loginData,projectData )  {
-// // 'projectData' comes from the client. Client does not change timestamps,
-// // therefore, timestamp on server side may be either equal or ahead of
-// // timestamp in 'projectData.desc'.
-//   let checkData   = {};
-//   checkData.pdata = projectData;  // synced Project Data
-//   checkData.rdata = {};           // response data object
-//   checkData.rdata.reload = 0;  // project reload codes for client:
-//                      //  0: no reload is needed
-//                      //  1: reload is needed but current operation may continue
-//                      //  2: reload is mandatory, current operation must terminate
-//   checkData.rdata.pdesc = null;
-//   let pdesc = projectData.desc;
-//   if ((pdesc.owner.share.length>0) || pdesc.autorun)  {  // the project is shared
-//     let pData = readProjectData ( loginData,pdesc.name );
-//     if (pData)  {
-//       checkData.rdata.pdesc = pData.desc;
-//       if (pData.desc.timestamp>pdesc.timestamp)  {
-//         // client timestamp is behind on-server project's timestamp; try to merge
-//         // projects
-//         // request update on client side
-//         if (rdata.pdesc.project_version>projectDesc.project_version)
-//               rdata.reload = 2;  // project changed considerably, reload client
-//         else  rdata.reload = 1;  // on-client data should be safe
-//       }
-//     }
-//   }
-//   return checkData;
-// }
-
-
-// function advanceJobCounter ( loginData,data )  {
-//   //let response    = null;
-//   let projectDesc = data.meta;
-//   let rdata       = checkTimestamps ( loginData,projectDesc );
-//   rdata.project_missing = false;
-//   if (!rdata.reload)  {
-//     let projectData = readProjectData ( loginData,projectDesc.name );
-//     if (projectData)  {
-//       projectData.desc.jobCount++;
-//       writeProjectData ( loginData,projectData,false );  // do not change the timestamp
-//       rdata.pdesc = projectData.desc;
-//     } else if (projectDesc.owner.share.length>0)
-//       rdata.project_missing = true;
-//   }
-//   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-// }
-
-// function getTreeNodeByTaskId ( projectTree,taskId )  {
-//   let node = null;
-//   for (let i=0;(i<projectTree.length) && (!node);i++)
-//     if (projectTree[i].dataId==taskId)
-//       node = projectTree[i];
-//     else if (projectTree[i].children.length>0)
-//       node = getTreeNodeByTaskId ( projectTree[i].children,taskId );
-//   return node;
-// }
 
 function makeNodeName ( task,title )  {
 let text = '[';
@@ -1831,7 +1747,7 @@ let t_email   = 1000; //msec
     writeProjectData ( loginData,pData,true );
 
     // modify project entry in project list
-    let pList = readProjectList ( loginData );
+    let pList = readProjectList ( loginData,1 );
     if (pList)  {
       let pno = -1;
       for (let i=0;(i<pList.projects.length) && (pno<0);i++)
@@ -1887,6 +1803,8 @@ let rcode = 'ok';
     rcode = 'Project directory does not exist -- possible data corruption.';
   
   } else  {
+
+    utils.flushDirCache ( projectDirPath );
 
     let files = fs.readdirSync ( projectDirPath );
     for (let i=0;(i<files.length) && (rcode=='ok');i++)
@@ -1974,86 +1892,6 @@ let pData    = readProjectData ( loginData,data.name );
 
 }
 
-/*
-function renameProject ( loginData,data )  {  // data must contain new title
-let response = null;
-let pData    = readProjectData ( loginData,data.name );
-
-  if (pData)  {
-    let rdata = { 'code' : 'ok' };
-    pData.desc.title = data.title;
-    if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
-      // project ID to be changed: serious
-      // make sure that the project is not shared and that no jobs are running
-      if (Object.keys(pData.desc.share).length>0)  {
-        rdata.code = 'Not possible to change ID of a shared project';
-      } else  {
-        // Get users' projects directory name
-        let projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-        let newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
-        if (utils.fileExists(newPrjDirPath))  {
-          rdata.code = 'Project with requested ID (' + data.new_name +
-                       ') already exists (check all folders)';
-        } else  {
-          let jmeta = [];
-          if (utils.dirExists(projectDirPath))  {
-            let files = fs.readdirSync ( projectDirPath );
-            for (let i=0;(i<files.length) && (rdata.code=='ok');i++)  {
-              let jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
-              let jm     = utils.readObject ( jmpath );
-              if (jm)  {
-                if ((jm.state==task_t.job_code.running) ||
-                    (jm.state==task_t.job_code.exiting))
-                  rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
-                else
-                  jmeta.push ( [jmpath,jm] );
-              }
-            }
-          } else
-            rdata.code = 'Project directory does not exist -- possible data corruption.';
-          if (rdata.code=='ok')  {
-            // change code id in all files and rename project directory
-            for (let i=0;i<jmeta.length;i++)  {
-              jmeta[i][1].project = data.new_name;
-              utils.writeObject ( jmeta[i][0],jmeta[i][1] );
-            }
-            pData.desc.name = data.new_name;
-            utils.moveDir ( projectDirPath,newPrjDirPath,false );
-            if (!writeProjectData(loginData,pData,true))  {
-              utils.moveDir ( newPrjDirPath,projectDirPath,false );
-              response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00032] Project metadata cannot be written (1).','' );
-            } else  {
-              rdata.meta = pData;
-              response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-            }
-          }
-        }
-      }
-
-      if (!response)
-        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-
-    } else  {
-      if (!writeProjectData(loginData,pData,true))  {
-        response = new cmd.Response ( cmd.fe_retcode.writeError,
-                             '[00032] Project metadata cannot be written (2).','' );
-      } else  {
-        rdata.meta = pData;
-        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-      }
-    }
-
-  } else  {
-    response = new cmd.Response ( cmd.fe_retcode.readError,
-                             '[00033] Project metadata cannot be read.','' );
-  }
-
-  return response;
-
-}
-*/
-
 
 // ===========================================================================
 
@@ -2115,7 +1953,7 @@ let pData    = readProjectData ( loginData,data.name );
             if (pDesc.archive && pDesc.archive.in_archive) 
               pDesc.archive.in_archive = false;
             writeProjectData ( loginData,pData,true );
-            let pList = readProjectList ( loginData );
+            let pList = readProjectList ( loginData,1 );
             if (pList)  {
               pList.resetFolders ( loginData.login );
               pList.current = data.new_name;
@@ -2153,6 +1991,7 @@ let newPrjDirPath = getProjectDirPath ( loginData,projectName );
     rdata.code = 'fail';
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
+
 
 // ===========================================================================
 
@@ -2262,7 +2101,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
       if (duplicate_key==1)  {
 
         // re-read project list because a new project was added
-        let pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData,1 );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
@@ -2370,7 +2209,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         // make the corresponding entry in project list
 
         // re-read project list because a new project was added
-        let pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData,1 );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
 
@@ -2413,7 +2252,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 }
 
 
-function getProjectTmpDir ( loginData,make_clean )  {
+const project_tmp_suffix = '_project_import';
+
+function getProjectTmpDir ( loginData,make_clean,suffix )  {
   let tempdir = conf.getFETmpDir1(loginData);
 
   if (make_clean)  {
@@ -2425,7 +2266,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
     }
   }
 
-  tempdir = path.join ( tempdir,loginData.login+'_project_import' );
+  tempdir = path.join ( tempdir,loginData.login+suffix );
   if (make_clean)  {
     utils.removePathAsync ( tempdir );  // just in case
     if (!utils.mkDir(tempdir))  {
@@ -2445,7 +2286,7 @@ function importProject ( loginData,upload_meta )  {
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
   if (tempdir)  {
 
     let errs = '';
@@ -2502,7 +2343,7 @@ function startDemoImport ( loginData,meta )  {
 let rc        = cmd.fe_retcode.ok;
 let rc_msg    = 'success';
 let rdata     = { 'status' : 'ok' };
-let tempdir   = getProjectTmpDir ( loginData,true );
+let tempdir   = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 // let duplicate = false;
 let duplicate = 0;
 
@@ -2565,9 +2406,9 @@ let duplicate = 0;
 function startSharedImport ( loginData,meta )  {
   let rc      = cmd.fe_retcode.ok;
   let rc_msg  = 'success';
-  let tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true,project_tmp_suffix );
 
-  let import_as_link = true;  // development switch
+  let import_as_link = true;  // development switch, should be true in production
 
   if (tempdir)  {
 
@@ -2615,7 +2456,9 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-  let signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
+  let signal_path = path.join ( getProjectTmpDir (
+                                    loginData,false,project_tmp_suffix),
+                                        'signal' );
   let rdata  = {};
   let signal = utils.readString ( signal_path );
   if (signal)  {
@@ -2633,7 +2476,7 @@ function checkProjectImport ( loginData,data )  {
 
 
 function finishProjectImport ( loginData,data )  {
-  let tempdir = getProjectTmpDir(loginData,false);
+  let tempdir = getProjectTmpDir ( loginData,false,project_tmp_suffix );
   utils.removePathAsync ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
@@ -2832,6 +2675,7 @@ module.exports.delete_project         = delete_project;
 module.exports.unshare_project        = unshare_project;
 module.exports.deleteProject          = deleteProject;
 module.exports.saveDockData           = saveDockData;
+module.exports.getJobMetas            = getJobMetas;
 module.exports.prepareProjectExport   = prepareProjectExport;
 module.exports.checkProjectExport     = checkProjectExport;
 module.exports.finishProjectExport    = finishProjectExport;

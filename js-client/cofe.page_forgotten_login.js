@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Restore user access page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function ForgottenLoginPage ( sceneId )  {
   this.grid.setVerticalAlignment ( 0,1,'middle' );
   this.grid.setCellSize          ( '10%','',0,1,1,1 );
   this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  // this.makeLogoPanel             ( 1,0,3 );
 
   // make login panel
   let panel = new Grid('');
@@ -90,7 +90,6 @@ function ForgottenLoginPage ( sceneId )  {
 
   back_btn.addOnClickListener  ( function(){
      reloadBrowser();
-    //  makeLoginPage(sceneId);
   });
 
   send_btn.addOnClickListener   ( function(){

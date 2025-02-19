@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.24   <--  Date of Last Modification.
+ *    18.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,6 +64,8 @@ function start ( callback_func )  {
                      ' url=' + ncConfigs[i].url() );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
 
+  utils.configureCache ( feConfig.cache );
+
   // read user login hash
   user.readUserLoginHash();
 
@@ -117,6 +119,8 @@ function start ( callback_func )  {
 
   //  set up request listener
   server.on ( 'request', function(server_request,server_response)  {
+
+    server_response.t_received = performance.now();
 
     server_response.setHeader ( 'Cross-Origin-Opener-Policy'  ,'same-origin'   );
     // server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialles' );
@@ -176,6 +180,10 @@ function start ( callback_func )  {
 
         case cmd.fe_command.cloudRun :
             rj.cloudRun ( server_request,server_response );
+          break;
+
+        case cmd.fe_command.cloudFetch :
+            rj.cloudFetch ( server_request,server_response );
           break;
 
         case cmd.fe_command.checkSession :
@@ -290,6 +298,8 @@ function start ( callback_func )  {
 
   });
 
+  utils.setGracefulQuit();
+  
 }
 
 

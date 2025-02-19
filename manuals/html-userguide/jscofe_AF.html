@@ -103,7 +103,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -197,7 +197,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud projects from the command line</a>
+      <a href="jscofe_cloudrun.html" class="md-nav__link">4. Starting CCP4 Cloud Projects from the Command Line</a>
       
     
     </li>
@@ -211,14 +211,14 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run facility in CCP4i interface</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (user-created) project workflows</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
       
     
     </li>
@@ -232,7 +232,7 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
@@ -269,19 +269,19 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#jscofe-af--page-root" class="md-nav__link">CCP4 Cloud AlphaFold Utilities</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#generate-or-obtain-predicted-models" class="md-nav__link">Generate or obtain predicted models</a>
+        <li class="md-nav__item"><a href="#generating-or-importing-predicted-models" class="md-nav__link">Generating or Importing Predicted Models</a>
         </li>
-        <li class="md-nav__item"><a href="#process-predicted-model" class="md-nav__link">Process predicted model</a>
+        <li class="md-nav__item"><a href="#processing-predicted-models" class="md-nav__link">Processing Predicted Models</a>
         </li>
         <li class="md-nav__item"><a href="#automated-molecular-replacement" class="md-nav__link">Automated Molecular Replacement</a>
         </li>
         <li class="md-nav__item"><a href="#refinement" class="md-nav__link">Refinement</a>
         </li>
-        <li class="md-nav__item"><a href="#automatic-workflows" class="md-nav__link">Automatic workflows</a>
+        <li class="md-nav__item"><a href="#automatic-workflows" class="md-nav__link">Automatic Workflows</a>
         </li>
         <li class="md-nav__item"><a href="#tutorials" class="md-nav__link">Tutorials</a>
         </li></ul>
@@ -298,7 +298,7 @@
             
   
 <h1 id="jscofe-af--page-root">CCP4 Cloud AlphaFold Utilities<a class="headerlink" href="#jscofe-af--page-root" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RosettaFold</a> predicted models are widely acknowledged as good structure templates for Molecular Replacement. This article describes AlphaFold2 integration in CCP4 Cloud for different stages of a structure determination process.</p>
+<p><a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RosettaFold</a> predicted models are widely recognised as valuable structure templates for Molecular Replacement. This article outlines the integration of AlphaFold2 into CCP4 Cloud at various stages of the structure determination process.</p>
 <p>CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">Import</a> task puts a notice of conversion in the <em>Import Summary</em> table, other tasks, such as <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">MrParse</a>, do that silently.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -318,51 +318,50 @@
 </div></blockquote>
 </div>
 
-<h2 id="generate-or-obtain-predicted-models">Generate or obtain predicted models<a class="headerlink" href="#generate-or-obtain-predicted-models" title="Permalink to this headline">¶</a></h2>
-<p>Not only CCP4 Cloud allows <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">import</a> of predicted models but it also allows to generate models for further use in molecular replacement programs (<a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a>)</p>
-<p>In order to <strong>generate models</strong> CCP4 Cloud offers a following tasks:</p>
+<h2 id="generating-or-importing-predicted-models">Generating or Importing Predicted Models<a class="headerlink" href="#generating-or-importing-predicted-models" title="Permalink to this headline">¶</a></h2>
+<p>CCP4 Cloud not only supports the <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">import</a> of predicted models but also facilitates their generation for use in molecular replacement programmes like <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a>.</p>
+<p>To <strong>generate models</strong>, CCP4 Cloud provides the following tasks:</p>
 <ol class="arabic">
-<li><p class="first"><a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">Structure Prediction</a> task, which uses AlphaFold-2 for generating structure models from a given sequence.</p>
+<li><p class="first">The <a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">Structure Prediction</a> task, which employs AlphaFold-2 to generate structure models from a given sequence.</p>
 <blockquote>
-<div><a class="reference internal image-reference" href="_images/structure_prediction_all_tasks.png"><img alt="_images/structure_prediction_all_tasks.png" class="align-center" src="_images/structure_prediction_all_tasks.png" style="width: 707.0px; height: 397.0px;"/></a>
-<p>After importing or generating the model using <a class="reference external" href="../html-taskref/doc.task.ModelPrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Coordinate data</a> task prepares MR search model(s) using predicted models.</p>
+<div><p>After importing or generating a model, the <a class="reference external" href="../html-taskref/doc.task.ModelPrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Coordinate Data</a> task prepares MR search models from the predicted structures.</p>
 </div></blockquote>
 </li>
-<li><p class="first"><a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">Find and prepare MR models with MrParse</a> task identifies structural homologs, suitable for making MR search models, in the PDB and <strong>AlphaFold2 Data Base</strong>. Relevant structures are selected on the basis of sequence alignment with <a class="reference external" href="http://hmmer.org/" rel="noopener noreferrer" target="_blank">PHMMER</a> software.</p>
+<li><p class="first">The <a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">Find and Prepare MR Models with MrParse</a> task identifies structural homologues suitable for creating MR search models from the PDB and the <strong>AlphaFold2 Database</strong>. Relevant structures are selected based on sequence alignment using <a class="reference external" href="http://hmmer.org/" rel="noopener noreferrer" target="_blank">PHMMER</a>.</p>
 </li>
-<li><p class="first"><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a> task uses <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> software to make the <a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">MR Ensemble</a> from given structural homologs. MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and <strong>AlphaFold2 DataBase</strong> with a sequence-based search.</p>
+<li><p class="first">The <a class="reference external" href="../html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a> task utilises <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> to construct an <a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">MR Ensemble</a> from structural homologues. This process involves alignment and truncation of homologous structures identified in the PDB and <strong>AlphaFold2 Database</strong> via sequence-based searches.</p>
 </li>
-<li><p class="first"><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepSeq.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Sequence</a> task uses <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> software to prepare <a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">MR Ensemble</a> for the given target sequence. The process is completely automatic and includes finding suitable structure homologs in the PDB and, optionally, <strong>AlphaFold2 DataBase</strong>, trimming them, and bringing in the best superposition.</p>
+<li><p class="first">The <a class="reference external" href="../html-taskref/doc.task.EnsemblePrepSeq.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Sequence</a> task uses <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> to automatically prepare an <a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">MR Ensemble</a> from a target sequence. This task includes identifying suitable structural homologues in the PDB and, optionally, the <strong>AlphaFold2 Database</strong>, trimming them, and superimposing the best candidates.</p>
 </li>
 </ol>
 
 
-<h2 id="process-predicted-model">Process predicted model<a class="headerlink" href="#process-predicted-model" title="Permalink to this headline">¶</a></h2>
-<p>Inaccuracy in domain-domain orientations is often a key limitation when using predicted models for MR. <a class="reference external" href="../html-taskref/doc.task.Slice.html" rel="noopener noreferrer" target="_blank">Split MR model with Slice-n-Dice</a> task allows to slice of predicted models into distinct structural units which are then can be placed in an automatic MR pipeline.</p>
+<h2 id="processing-predicted-models">Processing Predicted Models<a class="headerlink" href="#processing-predicted-models" title="Permalink to this headline">¶</a></h2>
+<p>Inaccuracies in domain-domain orientations can limit the effectiveness of predicted models for MR. The <a class="reference external" href="../html-taskref/doc.task.Slice.html" rel="noopener noreferrer" target="_blank">Split MR Model with Slice-n-Dice</a> task allows predicted models to be divided into distinct structural units, which can then be placed in an automated MR pipeline.</p>
 
 
 <h2 id="automated-molecular-replacement">Automated Molecular Replacement<a class="headerlink" href="#automated-molecular-replacement" title="Permalink to this headline">¶</a></h2>
-<p>Automated Molecular Replacement pipelines <strong>search for homologous structures in n PDB and AlphaFold DataBase</strong>, <strong>create a set of suitable search models</strong> from the template structures, <strong>perform molecular replacement</strong>, and <strong>test the solutions</strong> with some rounds of restrained refinement.</p>
-<p>The following Automated Molecular Replacement in CCP4 cloud support AlphaFold DataBase search:</p>
+<p>Automated Molecular Replacement pipelines <strong>search for homologous structures in the PDB and AlphaFold Database</strong>, <strong>generate suitable search models</strong> from the templates, <strong>perform molecular replacement</strong>, and <strong>validate the solutions</strong> with iterative rounds of restrained refinement.</p>
+<p>The following Automated Molecular Replacement pipelines in CCP4 Cloud support AlphaFold Database searches:</p>
 <ol class="arabic simple">
-<li><a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump’s</a> model search is obtained with an alignment and truncation procedure using homologues structures found in the <a class="reference external" href="https://www.rcsb.org/" rel="noopener noreferrer" target="_blank">PDB</a> and <a class="reference external" href="https://doi.org/10.1038/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold DataBase</a> with a sequence-based search.</li>
-<li><a class="reference external" href="../html-taskref/doc.task.SliceNDice.html" rel="noopener noreferrer" target="_blank">MR with model splitting using Slice-n-Dice</a> task designed to pre-process <a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RosettaFold</a> models by removing low confidence regions and converting confidence scores into predicted B-factors. It also slices predicted models into distinct structural units and then automatically places the slices using <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a>. The slicing step can use AlphaFold2’s predicted aligned error (PAE) or can operate via a variety of Cɑ atom clustering algorithms, extending applicability to structures of any origin. <strong>Slice-n-Dice helps to deal with inaccuracy in domain-domain orientations of predicted models.</strong></li>
-<li><a class="reference external" href="../html-taskref/doc.task.ArcimboldoShredder.html" rel="noopener noreferrer" target="_blank">Arcimboldo Shredder</a> automatically pre-process an Alphafold or RoseTTAFold model by eliminating unstructured and disconnected areas and verifies MR solution.</li>
+<li><a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump’s</a> model search applies alignment and truncation procedures using homologous structures from the <a class="reference external" href="https://www.rcsb.org/" rel="noopener noreferrer" target="_blank">PDB</a> and <a class="reference external" href="https://doi.org/10.1038/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold Database</a>.</li>
+<li>The <a class="reference external" href="../html-taskref/doc.task.SliceNDice.html" rel="noopener noreferrer" target="_blank">MR with Model Splitting Using Slice-n-Dice</a> task preprocesses <a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RosettaFold</a> models by removing low-confidence regions and converting confidence scores into predicted B-factors. It can slice models into structural units using AlphaFold2’s predicted aligned error (PAE) or clustering algorithms for broader applicability. <strong>Slice-n-Dice addresses domain-domain orientation inaccuracies in predicted models.</strong></li>
+<li><a class="reference external" href="../html-taskref/doc.task.ArcimboldoShredder.html" rel="noopener noreferrer" target="_blank">Arcimboldo Shredder</a> automatically preprocesses AlphaFold or RoseTTAFold models by removing unstructured and disconnected regions and verifying MR solutions.</li>
 </ol>
 
 
 <h2 id="refinement">Refinement<a class="headerlink" href="#refinement" title="Permalink to this headline">¶</a></h2>
-<p>As a final step in the process of solving a macromolecular crystal structure, refinement is carried out to maximize the agreement between the model and the X-ray data. In order to perform structure refinement at low resolution (lower than around 3 Å) it is necessary to use as much available information about macromolecules as possible. <a class="reference external" href="../html-taskref/doc.task.Lorestr.html" rel="noopener noreferrer" target="_blank">Low-Resolution Refinement with Lorestr</a> task uses <strong>AlphaFold2 DataBase</strong> to identify homologues and then Lorestr uses them in order to determine the set of most appropriate refinement parameters.</p>
+<p>Refinement optimises the agreement between the model and X-ray data as the final step in macromolecular crystal structure determination. For low-resolution data (below 3 Å), it is essential to utilise all available macromolecular information. The <a class="reference external" href="../html-taskref/doc.task.Lorestr.html" rel="noopener noreferrer" target="_blank">Low-Resolution Refinement with Lorestr</a> task leverages the <strong>AlphaFold2 Database</strong> to identify homologues, enabling Lorestr to determine optimal refinement parameters.</p>
 
 
-<h2 id="automatic-workflows">Automatic workflows<a class="headerlink" href="#automatic-workflows" title="Permalink to this headline">¶</a></h2>
-<p>In order to understand how AlphaFold2 can be implemented in a structure solution CCP4 Clouds offers an automatic project <strong>workflow: Molecular Replacement with AlphaFold Model</strong> which starts with data import and then uses <a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">Structure Prediction</a> and <a class="reference external" href="../html-taskref/doc.task.SliceNDice.html" rel="noopener noreferrer" target="_blank">MR with model splitting using Slice-n-Dice</a> tasks to automatically create the structure solution project automatically. The result may be further improved with the elementary tasks in manual mode, allowing finer control over the task’s parameters.</p>
+<h2 id="automatic-workflows">Automatic Workflows<a class="headerlink" href="#automatic-workflows" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate AlphaFold2’s integration into structure solution, CCP4 Cloud offers an automated project workflow: <strong>Molecular Replacement with AlphaFold Model</strong>. This workflow begins with data import and utilises the <a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">Structure Prediction</a> and <a class="reference external" href="../html-taskref/doc.task.SliceNDice.html" rel="noopener noreferrer" target="_blank">MR with Model Splitting Using Slice-n-Dice</a> tasks to create the structure solution project automatically. Results can be refined further using individual tasks in manual mode for greater control over task parameters.</p>
 
 
 <h2 id="tutorials">Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
-<p>We also recommend to use <a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud" rel="noopener noreferrer" target="_blank">Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP</a> tutorial to learn on practice how to create the ensembles for Molecular Replacement with <a class="reference external" href="https://www.ccp4.ac.uk/MG/" rel="noopener noreferrer" target="_blank">CCP4mg</a> molecular viewer.</p>
+<p>We recommend the <a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud" rel="noopener noreferrer" target="_blank">Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP</a> tutorial to practise creating ensembles for Molecular Replacement using the <a class="reference external" href="https://www.ccp4.ac.uk/MG/" rel="noopener noreferrer" target="_blank">CCP4mg</a> molecular viewer.</p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
-<p>This article uses materials kindly provided by Dr. Ronan Keegan, whose help is greatly appreciated.</p>
+<p>This article is based on materials kindly provided by Dr. Ronan Keegan, whose assistance is greatly appreciated.</p>
 
 
 
@@ -385,7 +384,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

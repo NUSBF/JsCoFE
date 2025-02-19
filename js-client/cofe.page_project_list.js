@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -37,13 +37,29 @@ function ProjectListPage ( sceneId )  {
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','ProjectListPage' );
 
+  // set scrollbars 
+  // $(this.grid.element).css ({ 
+  //   'height' : 'calc(100vh - 32px)'
+  //   // 'overflow-x' : 'hidden',
+  //   // 'overflow-y' : 'auto'
+  // });
+  $(this.element).css({ 
+    // 'width'      : '100%',
+    // // 'height'     : '100vh',
+    // // 'padding-bottom' : '32px',
+    // // 'scrollbar-padding-bottom' : '34px',
+    // 'height'     : 'calc(100vh - 32px)',
+    'overflow-x' : 'auto',
+    'overflow-y' : 'auto'
+  });  
+
   if (!__login_token)  {
     alert ( ' NOT LOGED IN');
     return;
   }
 
   let projectList    = new ProjectList(__login_id);  // project list data
-  this.tablesort_tbl = null;                         // project list table
+  this.projectTable  = null;                         // project list table
   let folder_btn     = null;
   let open_btn       = null;
   let add_btn        = null;
@@ -56,10 +72,13 @@ function ProjectListPage ( sceneId )  {
   let demoprj_btn    = null;
   let join_btn       = null;
   let help_btn       = null;
+  let search_btn     = null;
+  let search_dlg     = null;
   let panel          = null;
-  this.welcome_lbl   = null;
+  // this.welcome_lbl   = null;
   let nCols          = 0;                  // column span of project table
   let table_row      = 0;                  // project list position in panel
+  let sortCol        = 7;                  // sort column in the list of projects
   let self           = this;               // for reference to Base class
   let pageTitle_lbl  = null;
 
@@ -67,10 +86,19 @@ function ProjectListPage ( sceneId )  {
 
   let tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
 
+  function getProjectName ( displayName )  {
+    return strip_html_tags ( displayName.split(':</b>').pop() );
+  }
+
   function currentProjectName()  {
-    if (__current_folder.nprojects>0)
-          return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
-    else  return '';
+    if (__current_folder.nprojects>0)  {
+      let rowData = self.projectTable.getSelectedRowData();
+      if (rowData)
+        return getProjectName ( rowData[1] );
+        // return rowData[1].split(':</b>').pop().replace(/<[^>]*>/g,'');
+          // return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
+    }
+    return '';
   }
 
   function getCurrentProjectDesc()  {
@@ -157,7 +185,7 @@ function ProjectListPage ( sceneId )  {
           projectList.current = crProjectName;
     else  projectList.current = '';
     
-    if (self.tablesort_tbl.selectedRow)  {
+    if (self.projectTable.table.selectedRow)  {
       if (!crProjectName)
         projectList.current = currentProjectName();
       for (let i=0;i<projectList.projects.length;i++)  {
@@ -167,9 +195,11 @@ function ProjectListPage ( sceneId )  {
           break;
         }
       }
+
     }
     
-    projectList.sortList = self.tablesort_tbl.getSortList();
+    // projectList.sortList = self.tablesort_tbl.getSortList();
+    projectList.listState = self.projectTable.getTableState();
     serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
       function(data){
         if (onDone_func)
@@ -307,8 +337,7 @@ function ProjectListPage ( sceneId )  {
             .setFontItalic ( true )
             .setWidth      ( '240px' );
       ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
-      let title_inp = ibx_grid.setInputText
-                          ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
+      let title_inp = ibx_grid.setInputText ( pDesc.title,3,4,1,1 )
             .setStyle      ( 'text','','Put a descriptive title here','' )
             .setFontItalic ( true )
             .setWidth      ( '520px' );
@@ -434,7 +463,7 @@ function ProjectListPage ( sceneId )  {
 
   let exportProject = function() {
     panel.click();  // get rid of context menu
-    if (self.tablesort_tbl.selectedRow)  {
+    if (self.projectTable.table.selectedRow)  {
       projectList.current = currentProjectName();
       new ExportProjectDialog ( projectList );
     } else
@@ -445,37 +474,11 @@ function ProjectListPage ( sceneId )  {
                        'msg_error' );
   }
 
-  // let sharePrj = function()  {
-  //   panel.click();  // get rid of context menu
-  //   let pno = getCurrentProjectNo();
-  //   if (pno>=0)  {
-  //     shareProject ( projectList.projects[pno],function(desc){
-  //       if (desc)  {
-  //         projectList.projects[pno] = desc;
-  //         projectList.resetFolders ( __login_id );
-  //         saveProjectList ( function(data){},null );
-  //       }
-  //     });
-  //   } else
-  //     new MessageBox ( 'No Project',
-  //                      '<h2>No Project is selected<h2>' +
-  //                      'This is likely to be a program error. ' +
-  //                      'Select project and try again.',
-  //                      'msg_error' );
-  // }
-
   let prjWorkTeam = function()  {
     panel.click();  // get rid of context menu
     let pno = getCurrentProjectNo();
     if (pno>=0)  {
       new WorkTeamDialog ( projectList.projects[pno] );
-      // ,function(desc){
-      //   if (desc)  {
-      //     projectList.projects[pno] = desc;
-      //     projectList.resetFolders ( __login_id );
-      //     saveProjectList ( function(data){},null );
-      //   }
-      // });
     } else
       new MessageBox ( 'No Project',
                        '<h2>No Project is selected<h2>' +
@@ -521,7 +524,8 @@ function ProjectListPage ( sceneId )  {
     ibx_grid.setLabel ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
     ibx_grid.setLabel ( 'Cloned Project ID:',2,3,1,1 );
     let name_sugg  = prjName + '-clone';
-    let title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    // let title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    let title_sugg = pDesc.title;
     if (pDesc.archive)  {
       name_sugg  = prjName + '-rev' + pDesc.archive.version;
       title_sugg = title_sugg.split(': Revision #')[0] + ': Revision #' +
@@ -696,6 +700,7 @@ function ProjectListPage ( sceneId )  {
 
 
   function listProject ( projectDesc )  {
+    // returns true if project should be included in the list
     if (projectDesc.archive && projectDesc.archive.in_archive)  {
       if (projectDesc.owner.login==__login_id)
             return (__current_folder.type==folder_type.archived);
@@ -714,24 +719,330 @@ function ProjectListPage ( sceneId )  {
     }
   }
 
+
+  // function selectRow()  {
+  //   let selRow = -1;  // find if a row needs to be selected
+  //   if (projectList.current)  {
+  //     let pte = self.projectTable.table.element; 
+  //     for (let i=1;(i<pte.rows.length) && (selRow<0);i++)
+  //       if (pte.rows[i].cells[1].innerHTML.split(':</b>').pop()==projectList.current)
+  //         selRow = i;
+  //     if (selRow>0)
+  //       self.projectTable.selectRow ( selRow,1 );
+  //   }
+  //   return selRow;
+  // }
+
+
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
-
-    if (self.tablesort_tbl)
-      projectList.sortList = self.tablesort_tbl.getSortList();
-    else if (!('sortList' in projectList))
-      projectList.sortList = [[5,1]];
 
     if (__current_folder.nprojects>=0)  // works first time after login
           __current_folder = projectList.currentFolder;
     else  projectList.currentFolder = __current_folder;
-    // let owners_folder = __login_id + '\'s Projects';
 
-    let nrows = 0;
-    for (let i=0;i<projectList.projects.length;i++)
-      if (listProject(projectList.projects[i]))
-        nrows++;
+    let archive_folder = (__current_folder.type==folder_type.archived) ||
+                         (__current_folder.type==folder_type.cloud_archive);
 
+    let selRow = -1;  // no selection in the page if <0
+
+    function enableToolbarButtons()  {
+      if (projectList.current)  {
+        selRow = -1;  // no selection in the page if <0
+        let pte = self.projectTable.table.element; 
+        for (let i=1;(i<pte.rows.length) && (selRow<0);i++)  {
+          let pname = pte.rows[i].cells[1].innerHTML.toString();
+          if (getProjectName(pname)==projectList.current)  {
+            selRow = i;
+            if (!tightScreen)  {
+              if (pname.indexOf('[')>=0)  del_btn.setText ( 'Unjoin' );
+                                    else  del_btn.setText ( 'Delete' );
+            }
+          }
+        }
+        if (selRow>0)
+          self.projectTable.selectRow ( selRow,1 );
+      }
+      if (selRow>=0)  {
+        open_btn  .setDisabled ( false );
+        add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        rename_btn.setDisabled ( archive_folder );
+        clone_btn .setDisabled ( false );
+        move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
+            [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
+            .includes(__current_folder.type) );
+        // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
+        del_btn   .setDisabled ( archive_folder  );
+        import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        export_btn.setDisabled ( false );
+        join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      } else  {
+        open_btn  .setDisabled ( true  );
+        add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        rename_btn.setDisabled ( true  );
+        clone_btn .setDisabled ( true  );
+        move_btn  .setDisabled ( true  );
+        del_btn   .setDisabled ( true  );
+        import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
+        export_btn.setDisabled ( true  );
+        join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      }
+    }
+
+    function setContextMenu()  {
+
+      self.projectTable.setContextMenu ( function(rowNo,row_element,rowData){
+
+        let pDesc = rowData[rowData.length-1];
+
+        let del_label = '';
+        if (!tightScreen)  {
+          del_label = 'Delete';
+          if (row_element.cells[1].innerHTML.toString().indexOf('[')>=0)  
+            del_label = 'Unjoin';
+        }
+
+        let contextMenu = new ContextMenu ( row_element,function(){
+          self.projectTable.selectRow ( rowNo,1 );
+          del_btn.setText ( del_label );
+        });
+
+        contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
+        if (!archive_folder)
+          contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
+        if (!archive_folder)
+          contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
+        contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
+        contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
+        if (((__current_folder.type==folder_type.user) &&
+              __current_folder.path.startsWith(owners_folder)) ||
+            (__current_folder.type==folder_type.tutorials))
+          contextMenu.addItem('Move',image_path('folder_projects') )
+                    .addOnClickListener(function(){ browseFolders('move') });
+        else if (__current_folder.type==folder_type.custom_list)
+          contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
+                    .addOnClickListener(function(){ delistProject(); });
+        else if (__current_folder.type==folder_type.cloud_archive)
+          contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
+                    .addOnClickListener(function(){ delistProject(); });
+        if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
+            (!__local_user))
+          contextMenu.addItem('Work team',image_path('workteam')).addOnClickListener(prjWorkTeam);
+        if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
+          contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
+
+        return contextMenu;
+
+      });
+
+    }
+
+    let tdesc = {
+      columns : [   
+        { header  : '##',
+          hstyle  : { 'text-align' : 'right' },
+          tooltip : 'Project number',
+          style   : { 'text-align' : 'right', 'width' : '30px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'ID',
+          hstyle  : { 'text-align' : 'left' },
+          tooltip : 'Project ID',
+          style   : { 'text-align' : 'left', 'width' : '60px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'Name',
+          hstyle  : { 'text-align' : 'left' },
+          tooltip : 'Project name',
+          style   : { 'text-align' : 'left', 'width' : 'auto' },
+          sort    : true
+        },
+        { header  : 'R<sub>free</sub>',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Best R<sub>free</sub> factor achieved in the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : true
+        },
+        { header  : 'Disk<br>(MBytes)',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Disk space occupied by the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'CPU<br>(hours)',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'CPU time consumed by the project',
+          style   : { 'text-align' : 'right', 'width' : '50px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'Date<br>Created',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Date when project was created',
+          style   : { 'text-align' : 'center', 'width' : '80px', 'white-space' : 'nowrap' },
+          sort    : false
+        },
+        { header  : 'Last<br>Opened',
+          hstyle  : { 'text-align' : 'center' },
+          tooltip : 'Date when project was last opened',
+          style   : { 'text-align' : 'center', 'width' : '80px', 'white-space' : 'nowrap' },
+          sort    : false
+        }
+      ],
+      rows        : [],
+      vheaders    : 'row',
+      style       : { 'cursor'      : 'pointer',                      
+                      'font-family' : 'Arial, Helvetica, sans-serif'
+                    },
+      sortCol     : sortCol,
+      mouse_hover : true,
+      page_size   : self.calcPageSize(),  // 0 for no pages
+      start_page  : 1,
+      onclick     : function(rowData){
+                      projectList.current = getProjectName ( rowData[0] );
+                      let pDesc = rowData[rowData.length-1];
+                      if (('owner' in pDesc) && 
+                          (Object.keys(pDesc.share).length>0) &&
+                          (pDesc.owner.login!=__login_id))
+                            del_btn.setText ( 'Unjoin' );
+                      else  del_btn.setText ( 'Delete' );
+                      enableToolbarButtons();
+                    },
+      ondblclick  : function ( dataRow,callback_func){
+                      openProject();
+                    },
+      showonstart : function(rowData){
+                      return (projectList.current==getProjectName(rowData[0]));
+                    },
+      onsort      : function(tdata)  {
+                      let showIndex = -1;
+                      for (let i=0;(i<tdata.length) && (showIndex<0);i++)
+                        if (projectList.current==getProjectName(tdata[i][0]))
+                          showIndex = i;
+                      return showIndex;
+                    },
+      onpage      : function(pageNo)  {
+                      enableToolbarButtons();
+                      setContextMenu();
+                    }
+    };
+
+// console.log ( ' >>>> wh=' + window.innerHeight + ' - ' + tdesc.page_size)
+
+    //  ===== Prepare table description
+
+    if (archive_folder)
+      tdesc.columns.splice ( 1,0, {
+        header  : 'Archive ID',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'Archive ID',
+        style   : { 'text-align' : 'left', 'width' : '60px', 'white-space' : 'nowrap' },
+        sort    : true
+      });
+
+    if ('listState' in projectList)  {
+      tdesc.sortCol    = projectList.listState.sortCol;
+      tdesc.start_page = projectList.listState.crPage;
+      for (let i=tdesc.columns.length-1;i>=0;i--)
+        tdesc.columns[i].sort = projectList.listState.sort_list[i];
+      if ('paginate' in projectList.listState)
+        tdesc.paginate = projectList.listState.paginate;
+    }
+
+    //  ===== Add table data to table description
+
+    let selectIndex = -1;  // selection in current view
+
+    for (let i=0;i<projectList.projects.length;i++)  {
+      let pDesc = projectList.projects[i];
+      if (listProject(pDesc))  {
+        let rowData = [];
+        if (archive_folder)
+          rowData.push ( pDesc.archive.id );
+        let pName = pDesc.name;
+        if (archive_folder)
+          pName = pDesc.archive.project_name;
+        if (projectList.current==pName)
+          selectIndex = tdesc.rows.length;
+        // when list of projects is served from FE, shared record is removed
+        // in case of owner's login
+        let joined = ['','',''];
+        // let shared_project = false;
+        if ('owner' in pDesc)  {
+          if (Object.keys(pDesc.share).length>0)  {
+            if (pDesc.owner.login!=__login_id)  {
+              joined = ['<i>','</i>',"is not included in user\'s quota"];
+              pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+              // shared_project = true;
+            }
+          } else if (('author' in pDesc.owner) && pDesc.owner.author &&
+                      (pDesc.owner.author!=pDesc.owner.login) &&
+                      (pDesc.owner.author!=__login_id))
+            pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
+        }
+        rowData.push ( pName );
+        rowData.push ( pDesc.title );
+
+        let info = '';
+        if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
+                                 && (pDesc.metrics.R_free<'1.0'))  {
+          info = '<table class="table-rations">' +
+                 '<tr><td colspan="2"><b><i>Best scores (job ' +
+                 padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
+                 '<tr><td colspan="2"><hr/></td></tr>';
+          function add_info ( title,value )  {
+            info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
+          }
+          add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
+                      '</b> / ' + round(pDesc.metrics.R_factor,4) );
+          add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
+                      '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
+                      '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
+          info += '</table><table class="table-rations">' +
+                      '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
+                      '<tr><td colspan="2"><hr/></td></tr>';
+          add_info ( 'Space group',pDesc.metrics.SG       );
+          add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
+                      round(pDesc.metrics.res_high,2) + ' &Aring;' );
+          if (pDesc.metrics.Solvent>0.0)
+            add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
+                        round(pDesc.metrics.Solvent,1) + '%' );
+          if (pDesc.metrics.MolWeight>0.0)
+            add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
+          if (pDesc.metrics.nRes_ASU>0)
+            add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
+                        '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
+                        '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
+          if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
+            add_info ( 'HA type',pDesc.metrics.ha_type );
+          rowData.push ( [pDesc.metrics.R_free.toFixed(4),info+'</table>'] );
+        } else
+          rowData.push ( '' );
+
+        if (pDesc.hasOwnProperty('disk_space'))
+              rowData.push ( [joined[0]+pDesc.disk_space.toFixed(1)+joined[1],joined[2]] );
+        else  rowData.push ( [joined[0]+'-:-'+joined[1],joined[2]] );
+
+        if (pDesc.hasOwnProperty('cpu_time'))
+              rowData.push ( [joined[0]+pDesc.cpu_time.toFixed(4)+joined[1],joined[2]] );
+        else  rowData.push ( [joined[0]+'-:-'+joined[1],joined[2]] );
+
+        rowData.push ( pDesc.dateCreated  );
+        rowData.push ( pDesc.dateLastUsed );
+        rowData.push ( pDesc );
+
+        tdesc.rows.push ( rowData    );
+
+      }
+    }
+
+    if ((selectIndex<0) && (tdesc.rows.length>0))  {
+      selectIndex = 0;
+      projectList.current = getProjectName ( tdesc.rows[0][0] );
+    }
+
+    //  ===== Put number of projects in folder metadata
+
+   let nrows = tdesc.rows.length;
     __current_folder.nprojects = nrows;
     switch (__current_folder.type)  {
       case folder_type.shared        : projectList.folders[1].nprojects = nrows;
@@ -753,44 +1064,6 @@ function ProjectListPage ( sceneId )  {
     }
 
     setPageTitle ( __current_folder );
-
-    let archive_folder = (__current_folder.type==folder_type.archived) ||
-                         (__current_folder.type==folder_type.cloud_archive);
-
-    self.tablesort_tbl = new TableSort();
-    let tbs_headers = [];
-    if (archive_folder)
-      tbs_headers = ['Archive ID'];
-    self.tablesort_tbl.setHeaders ( tbs_headers.concat([
-      'ID','Name',
-      '<center>R<sub>free</sub></center>',
-      '<center>Disk<br>(MBytes)</center>',
-      '<center>CPU<br>(hours)</center>',
-      '<center>Date<br>Created</center>',
-      '<center>Last<br>Opened</center>'
-    ]));
-
-    panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-
-    let message = 'folder';
-    if (isCurrentFolderList())
-      message = 'list';
-
-    message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
-              'There are no projects in ' + message + ' "' +
-              folderPathTitle(__current_folder,__login_id,1000) + '".' +
-              '<p>Use "Add" button to create a new Project' +
-              ';<br>"Import" button for importing a project exported from ' +
-                appName() +
-              ';<br>"Join" button for joining project shared with you by ' +
-              'another user;<br>or "Tutorials" button for loading ' +
-              'tutorial/demo projects;<br>or click on page title or folder ' +
-              'icon in it to change the folder.</h3></div>';
-    self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
-                                   table_row+1,0,1,nCols )
-                       .setFontItalic ( true )
-                       .setNoWrap();
-    panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
     let addLbl   = 'Add';
     let addIcon  = 'add';
@@ -821,235 +1094,56 @@ function ProjectListPage ( sceneId )  {
       moveLbl = 'Move';
     move_btn.setButton ( moveLbl,image_path(moveIcon) );
 
+    self.projectTable = new TablePages();
+    panel.setWidget ( self.projectTable,table_row,0,1,nCols );
+
+    self.projectTable.makeTable ( tdesc );
+    if (search_dlg)  {
+      search_dlg.setTable ( self.projectTable );
+      search_dlg.applyFilter();
+    }
+    self.projectTable.setOnShowAllListener ( function(){
+      saveProjectList ( function(rdata){},null );
+    });
+
+    // $(self.projectTable.element).css({'max-height':'600px','overflow-y':'scroll'});
+    // $(panel.element).css({'max-height':'600px','overflow-y':'scroll'});
+
     if (nrows<=0)  {
 
-      __current_project = null;
+      let message = 'folder';
+      if (isCurrentFolderList())
+        message = 'list';
+  
+      message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
+                'There are no projects in ' + message + ' "' +
+                folderPathTitle(__current_folder,__login_id,1000) + '".' +
+                '<p>Use "Add" button to create a new Project' +
+                ';<br>"Import" button for importing a project exported from ' +
+                  appName() +
+                ';<br>"Join" button for joining project shared with you by ' +
+                'another user;<br>or "Tutorials" button for loading ' +
+                'tutorial/demo projects;<br>or click on page title or folder ' +
+                'icon in it to change the folder.</h3></div>';
+      panel.setLabel ( message, //.fontcolor('darkgrey'),
+                       table_row+1,0,1,nCols )
+            .setFontItalic ( true )
+            .setNoWrap();
 
-      let trow = self.tablesort_tbl.addRow();
-      if (archive_folder)
-        trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      trow.addCell ( '' );
-      self.tablesort_tbl.createTable ( null );
-      open_btn  .setDisabled ( true  );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( true  );
-      clone_btn .setDisabled ( true  );
-      move_btn  .setDisabled ( true  );
-      del_btn   .setDisabled ( true  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( true  );
-      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
+      panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
-    } else  {
+       __current_project = null;
 
-      let selectedRow = null;
-      nrows = 0;
-      // alert ( __current_folder );
-      for (let i=0;i<projectList.projects.length;i++)
-        if (listProject(projectList.projects[i]))  {
-
-          let trow = self.tablesort_tbl.addRow();
-
-          //contextMenu.setWidth ( '10px' );
-          // contextMenu.setHeight_px ( 400 );
-          // contextMenu.setZIndex ( 101 );
-
-          let pDesc = projectList.projects[i];
-          let pName = pDesc.name;
-          if (archive_folder)
-            pName = pDesc.archive.project_name;
-          // when list of projects is served from FE, shared record is removed
-          // in case of owner's login
-          let joined = ['','',''];
-          let shared_project = false;
-          if ('owner' in pDesc)  {
-            // if (pDesc.owner.share.length>0)  {
-            if (Object.keys(pDesc.share).length>0)  {
-              if (pDesc.owner.login!=__login_id)  {
-                joined = ['<i>','</i>',"is not included in user\'s quota"];
-                pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-                shared_project = true;
-              }
-            } else if (('author' in pDesc.owner) && pDesc.owner.author &&
-                       (pDesc.owner.author!=pDesc.owner.login) &&
-                       (pDesc.owner.author!=__login_id))
-              pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
-          }
-
-          let contextMenu;
-          (function(shared_prj){
-
-            let del_label = '';
-            if (!tightScreen)  {
-              del_label = 'Delete';
-              if (shared_prj)
-                del_label = 'Unjoin';
-            }
-
-            $(trow.element).click(function(){
-              del_btn.setText(del_label);
-            });
-
-            /*
-            let can_move = ((__current_folder.type==folder_type.user) &&
-                             __current_folder.path.startsWith(owners_folder)) ||
-                           (__current_folder.type==folder_type.tutorials);
-
-            let can_move = ((__current_folder.type==folder_type.user) &&
-                            //  __current_folder.path.startsWith(owners_folder)) ||
-                             pDesc.folderPath.startsWith(owners_folder)) ||
-                           (__current_folder.type==folder_type.tutorials);
-            */
-
-            contextMenu = new ContextMenu ( trow,function(){
-              del_btn.setText ( del_label );
-            });
-            contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
-            if (!archive_folder)
-              contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
-            if (!archive_folder)
-              contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
-            contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-            contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
-            if (((__current_folder.type==folder_type.user) &&
-                  __current_folder.path.startsWith(owners_folder)) ||
-                (__current_folder.type==folder_type.tutorials))
-              contextMenu.addItem('Move',image_path('folder_projects') )
-                         .addOnClickListener(function(){ browseFolders('move') });
-            else if (__current_folder.type==folder_type.custom_list)
-              contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
-                         .addOnClickListener(function(){ delistProject(); });
-            else if (__current_folder.type==folder_type.cloud_archive)
-              contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
-                         .addOnClickListener(function(){ delistProject(); });
-            if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
-                (!__local_user))
-              contextMenu.addItem('Work team',image_path('workteam')).addOnClickListener(prjWorkTeam);
-            if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
-              contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
-            // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
-
-          }(shared_project))
-
-          if (archive_folder)
-            trow.addCell ( pDesc.archive.id  ).setNoWrap();
-          trow.addCell ( pName  ).setNoWrap();
-          trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
-          if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
-                                   && (pDesc.metrics.R_free<'1.0'))  {
-            let info = '<table class="table-rations">' +
-                       '<tr><td colspan="2"><b><i>Best scores (job ' +
-                       padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
-                       '<tr><td colspan="2"><hr/></td></tr>';
-            function add_info ( title,value )  {
-              info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
-            }
-            add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
-                       '</b> / ' + round(pDesc.metrics.R_factor,4) );
-            add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
-                       '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
-                       '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
-            //add_info ( 'R-free'  ,round(pDesc.metrics.R_free,4)   );
-            //add_info ( 'R-factor',round(pDesc.metrics.R_factor,4) );
-            //add_info ( 'Residues modelled',pDesc.metrics.nRes_Model );
-            info += '</table><table class="table-rations">' +
-                       '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
-                       '<tr><td colspan="2"><hr/></td></tr>';
-            add_info ( 'Space group',pDesc.metrics.SG       );
-            add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
-                       round(pDesc.metrics.res_high,2) + ' &Aring;' );
-            if (pDesc.metrics.Solvent>0.0)
-              add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
-                         round(pDesc.metrics.Solvent,1) + '%' );
-            if (pDesc.metrics.MolWeight>0.0)
-              add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
-            if (pDesc.metrics.nRes_ASU>0)
-              add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
-                         '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
-                         '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
-            if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
-              add_info ( 'HA type',pDesc.metrics.ha_type );
-            trow.addCell ( pDesc.metrics.R_free ).setNoWrap()
-                .setTooltip1(info + '</table>','show',false,20000);
-          } else
-            trow.addCell ( '' );
-          if (pDesc.hasOwnProperty('disk_space'))
-                trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          if (pDesc.hasOwnProperty('cpu_time'))
-                trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                    .setNoWrap().setTooltip(joined[2]);
-          trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
-          // trow.addCell ( pDesc.dateLastUsed + 'T' + (1000+i) // '<span style="visibility:hidden;font-size:1px;">' + (1000+i) + '</span>'
-          trow.addCell ( pDesc.dateLastUsed ).setNoWrap().setHorizontalAlignment('center');
-          //tablesort_tbl.addRow ( trow );
-          if ((nrows==0) || (pDesc.name==projectList.current))
-            selectedRow = trow;
-          nrows++;
-
-        }
-
-      self.tablesort_tbl.createTable ( function(){  // onSorted callback
-        saveProjectList ( null,null );
-      });
-      if (projectList.sortList)
-        window.setTimeout ( function(){
-          self.tablesort_tbl.applySortList ( projectList.sortList,true );
-        },10 );
-      self.tablesort_tbl.selectRow ( selectedRow );
-      selectedRow.click();  // just sets the Delete/Unjoin button label
-      open_btn  .setDisabled ( false );
-      add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( archive_folder );
-      clone_btn .setDisabled ( false );
-      move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
-          [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
-          .includes(__current_folder.type) );
-      // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
-      del_btn   .setDisabled ( archive_folder  );
-      import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      export_btn.setDisabled ( false );
-      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
-
-      self.welcome_lbl.hide();
-
+    // } else  {
+    //   self.welcome_lbl.hide();
     }
 
-    self.tablesort_tbl.setHeaderNoWrap   ( -1      );
-    let colNo = 0;
-    if (archive_folder)
-      self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'70%' );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
-
-    self.tablesort_tbl.setHeaderFontSize ( '100%' );
-    self.onResize ( window.innerWidth,window.innerHeight );
-
-    self.tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
-      openProject();
-    });
-    self.tablesort_tbl.setCursor('pointer');
-
-    // self.tablesort_tbl.addSignalHandler ( 'row_click',function(trow){
-    //   __close_all_menus();
-    // });
+    // setTimeout ( function(){
+    //   console.log ( ' >>>> ' + self.projectTable.table.height_px() + ' : ' + window.innerHeight );
+    // },1000);
 
   }
+
 
   function loadProjectList()  {
     //  Read list of projects from server
@@ -1166,7 +1260,9 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  this.makeHeader ( 3,null );
+  this.makeHeader ( 3,function(callback_func){
+    saveProjectList ( function(data){ callback_func(); },null );
+  });
 
   this.headerPanel.setCellSize ( '30%','',0,3 );
   folder_btn = new ImageButton ( image_path('folder_projects'),'34px','34px' )
@@ -1197,6 +1293,7 @@ function ProjectListPage ( sceneId )  {
 
   // Make Main Menu
   this.addMenuItem ( 'Change project folder','folder_projects',function(){
+    saveProjectList ( function(data){},null );
     browseFolders ( 'select' );
   });
   // this.addMenuSeparator();
@@ -1266,7 +1363,7 @@ function ProjectListPage ( sceneId )  {
     // }
     demoprj_btn = new Button ( '',image_path('demoprj') );
     help_btn    = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
-
+    search_btn  = new Button ( '',image_path('search' ) );
 
     // for (let i=0;i<9;i++)
     for (let i=0;i<11;i++)
@@ -1285,6 +1382,7 @@ function ProjectListPage ( sceneId )  {
     join_btn    = new Button ( 'Join'  ,image_path('join'     ) );
     demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
     help_btn    = new Button ( 'Help'  ,image_path('help') ); //.setTooltip('Documentation' );
+    search_btn  = new Button ( ''      ,image_path('search'   ) );
     btn_width = [
       '65pt',
       '60pt',
@@ -1296,29 +1394,12 @@ function ProjectListPage ( sceneId )  {
       '70pt',
       '60pt',
       '80pt',
-      '60pt'
+      '60pt',
     ];
 
-    // btn_width = [
-    //   '65pt',
-    //   '60pt',
-    //   '80pt',
-    //   '70pt',
-    //   '70pt',
-    //   '70pt',
-    //   '70pt',
-    //   '60pt',
-    // ];
-    //
-    // if (__demo_projects)  {
-    //   demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
-    //   btn_width.push ( '80pt' );
-    //   demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
-    // }
-    // help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
-    // btn_width.push ( '60pt' );
-
   }
+
+  search_btn .setTooltip ( 'Find projects using a search template' );
 
   open_btn   .setWidth ( btn_width[0] ).setHeight ( btn_height );
   add_btn    .setWidth ( btn_width[1] ).setHeight ( btn_height );
@@ -1331,18 +1412,20 @@ function ProjectListPage ( sceneId )  {
   join_btn   .setWidth ( btn_width[8] ).setHeight ( btn_height );
   demoprj_btn.setWidth ( btn_width[9] ).setHeight ( btn_height );
   help_btn   .setWidth ( btn_width[10]).setHeight ( btn_height );
+  search_btn .setWidth ( '30pt'       ).setHeight ( btn_height );
 
   // make panel
   panel = new Grid('');
   // center panel horizontally and make left- and right-most columns page margins
-  this.grid.setCellSize ( left_margin ,''    ,1,0,1,1 );
-  this.grid.setWidget   ( panel              ,1,1,1,1 );
-  this.grid.setCellSize ( right_margin,'100%',1,2,1,1 );
+  this.grid.setCellSize ( left_margin ,'',1,0,1,1 );
+  this.grid.setWidget   ( panel          ,1,1,1,1 );
+  this.grid.setCellSize ( right_margin,'',1,2,1,1 );
+  // this.grid.setCellSize ( right_margin,'100%',1,2,1,1 );
 
 //  panel.setVerticalAlignment ( 1,0,'top' );
-  panel.setVerticalAlignment ( 1,1,'middle' );
+  // panel.setVerticalAlignment ( 1,1,'middle' );
 
-  this.makeLogoPanel ( 2,0,3 );
+  // this.makeLogoPanel ( 2,0,3 );
 
   let row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
@@ -1363,7 +1446,11 @@ function ProjectListPage ( sceneId )  {
 
   for (let i=0;i<nCols-1;i++)
     panel.setCellSize ( btn_width[i],'',row,i );
-  panel.setCellSize            ( 'auto','',row++,nCols-1 );
+  panel.setCellSize            ( 'auto'     ,'',row,nCols-1 );
+  panel.setWidget              ( search_btn ,   row,nCols,1,1 );
+  panel.setCellSize            ( '30pt'     ,'',row++,nCols++ );
+
+  table_row = row;  // note the project list table position here
 
   open_btn  .setDisabled       ( true );
   add_btn   .setDisabled       ( true );
@@ -1372,7 +1459,6 @@ function ProjectListPage ( sceneId )  {
   move_btn  .setDisabled       ( true );
   del_btn   .setDisabled       ( true );
   import_btn.setDisabled       ( true );
-  table_row = row;  // note the project list table position here
 
   // add a listeners to toolbar buttons
   open_btn  .addOnClickListener ( openProject   );
@@ -1429,33 +1515,38 @@ function ProjectListPage ( sceneId )  {
     new HelpBox ( '',__user_guide_base_url + 'jscofe_myprojects.html',null );
   });
 
+  search_btn.addOnClickListener ( function(){
+    search_dlg = new TableSearchDialog ( 'Find Project',self.projectTable,500,40,
+      function(){ // on dialog close
+        search_dlg = null; 
+      }); 
+  });
+
   //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
 
   //  Read list of projects from server in new thread, so that all widgets
   // are initialised
   window.setTimeout ( function(){
-    loadProjectList();
+    loadProjectList ();
     offlineGreeting ( function(){} );
-    // new MessageBox ( 'Information','<h3>Information</h3>This is information',
-    //                  'msg_information' );
   },10);
 
 }
 
-// ProjectListPage.prototype = Object.create ( BasePage.prototype );
-// ProjectListPage.prototype.constructor = ProjectListPage;
-
 registerClass ( 'ProjectListPage',ProjectListPage,BasePage.prototype );
 
+ProjectListPage.prototype.calcPageSize = function()  {
+  let rowHeight = 29.1953;
+  if (this.projectTable)
+    rowHeight = this.projectTable.getRowHeight();
+  return  Math.floor ( (window.innerHeight-248*rowHeight/29.1953)/rowHeight );
+}
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
-//  let h = (height - 164) + 'px';
-//  this.tablesort_tbl.table_div.element.style.height = h;
-  if (this.tablesort_tbl)  {
-    this.tablesort_tbl.fixHeader();
-    if (this.welcome_lbl && (!this.welcome_lbl.isVisible()))
-      this.tablesort_tbl.setTableHeight ( height-72 );
-  }
+  // if (this.projectTable.paginator.paginate)
+    this.projectTable.setPageSize ( this.calcPageSize() );
+  // this.element.style.height = `${window.innerHeight - 32}px`;
+  // this.element.style.height = (height+8) + 'px';
 }
 
 ProjectListPage.prototype.reloadProjectList = function()  {

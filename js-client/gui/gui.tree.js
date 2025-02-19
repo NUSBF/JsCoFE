@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.05.24   <--  Date of Last Modification.
+ *    11.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -182,7 +182,7 @@ TreeNode.prototype.compare = function ( node )  {
 TreeNode.prototype.setCustomIconVisible = function ( visible_bool )  {
   if (this.data)  {
     if (visible_bool)  this.data.ci_state = 'visible';
-                   else  this.data.ci_state = 'hidden';
+                 else  this.data.ci_state = 'hidden';
     let ci_element = document.getElementById ( this.id + '_pbar' );
     if (ci_element)  {
       (function(elem,state){
@@ -432,6 +432,7 @@ Tree.prototype.getChildNodes = function ( node )  {
 
 
 Tree.prototype.getNodePosition = function ( node )  {
+//  calculated node position in the list of siblings
 let parent_node = null;
 let parentId    = null;
 let clen        = 0;
@@ -617,10 +618,19 @@ Tree.prototype.selectNodeById = function ( nodeId,single_bool )  {
 
 
 Tree.prototype.selectSingle = function ( node )  {
-// This function will select given node and deselect all others
+  // This function will select given node and deselect all others
   this.selectNode ( node,true );
 }
 
+Tree.prototype.getSelectedNodeRect = function()  {
+  if (this.selected_node_id)  {
+    const node_element = document.querySelector( '#' + this.selected_node_id );
+    if (node_element)
+      return node_element.getBoundingClientRect();
+  }
+  return null;
+}
+      
 
 Tree.prototype.selectMultiple = function ( node )  {
 // This function will select given node
@@ -919,7 +929,7 @@ Tree.prototype.createTree = function ( make_initial_selection,
 
   (function(tree){
 
-    $(tree.root.element).bind('ready.jstree', function(e, data) {
+    $(tree.root.element).bind('ready.jstree', function(event,data) {
 
       tree.created = true;
 
@@ -941,9 +951,9 @@ Tree.prototype.createTree = function ( make_initial_selection,
 
     });
 
-    $(tree.root.element).on('contextmenu', '.jstree-anchor', function (e) {
+    $(tree.root.element).on('contextmenu', '.jstree-anchor', function(event) {
       // note selected node at right mouse clicks
-      let node = $(tree.root.element).jstree(true).get_node(e.target);
+      let node = $(tree.root.element).jstree(true).get_node(event.target);
       if (node)
         tree.selected_node_id = node.id;
     });
@@ -995,7 +1005,7 @@ Tree.prototype.createTree = function ( make_initial_selection,
 */
 
     $(tree.root.element).on("select_node.jstree",
-      function(evt,data) {
+      function(event,data) {
         if (tree.selected_node_id in tree.node_map)
           tree.node_map[tree.selected_node_id].state.selected = false;
         tree.selected_node_id = data.node.id;
@@ -1006,7 +1016,7 @@ Tree.prototype.createTree = function ( make_initial_selection,
       });
 
     $(tree.root.element).on("deselect_node.jstree",
-      function(evt,data) {
+      function(event,data) {
         let snode = tree.calcSelectedNode();
         if (snode)  {
           if (tree.selected_node_id in tree.node_map)
@@ -1019,16 +1029,16 @@ Tree.prototype.createTree = function ( make_initial_selection,
           tree.selectSingleById ( tree.selected_node_id );
       });
 
-    $(tree.root.element).on('open_node.jstree',function(evt,data){
+    $(tree.root.element).on('open_node.jstree',function(event,data){
       tree.node_map[data.node.id].state.opened = true;
     });
 
-    $(tree.root.element).on('close_node.jstree',function(evt,data){
+    $(tree.root.element).on('close_node.jstree',function(event,data){
       tree.node_map[data.node.id].state.opened = false;
     });
 
     if (onDblClick_func)  {
-      $(tree.root.element).bind("dblclick.jstree", function(evt) {
+      $(tree.root.element).bind("dblclick.jstree", function(event) {
         onDblClick_func();
       });
     }
@@ -1036,7 +1046,6 @@ Tree.prototype.createTree = function ( make_initial_selection,
   }(this));
 
 }
-
 
 Tree.prototype.refresh = function()  {
   $(this.root.element).jstree().refresh(function(){});

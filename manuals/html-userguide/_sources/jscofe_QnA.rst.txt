@@ -12,7 +12,4 @@ Questions and Answers
 
 **Do not hesitate to ask your question!**
 
- .. image:: images/Reception_.png
-         :scale: 50 %
-         :align: center
          

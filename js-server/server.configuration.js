@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -31,10 +31,10 @@ const request   = require('request');
 const child     = require('child_process');
 
 //  load application modules
-const utils     = require('./server.utils');
-const adm       = require('./server.fe.admin');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
+const utils     = require('./server.utils');
+const adm       = require('./server.fe.admin');
 
 //  prepare log
 const log_mod   = require('./server.log');
@@ -553,6 +553,7 @@ function CCP4DirName()  {
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
     "update_notifications" : false,  // optional notification on CCP4 updates
+    "make_devel"       : "YES",  // optional, makes devel user at 1st start if YES
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "tmp_dir"          : null, // optional; when null then storage/tmp is used
@@ -601,10 +602,6 @@ function CCP4DirName()  {
                      "diskReserve" : 10000
                    }
     },
-    // REDUNDANT, NOT USED:
-    // "facilitiesPath"   : "./cofe-facilities",
-    // "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
-    // "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {  // optional item, may be null or missing
       "arpwarp" : {
         "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
@@ -865,6 +862,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
     fe_server.sessionCheckPeriod = 2000; // (optional) in ms
     fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
+    fe_server.cache              = 0;    // expected number of simultaneous users to cache
 
     // read configuration file
     for (let key in confObj.FrontEnd)

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.09.24   <--  Date of Last Modification.
+#    28.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,8 +15,8 @@
 #     ccp4-python morda.py jobManager jobDir jobId [queueName [nSubJobs]]
 #
 #  where:
-#    jobManager    is either SHELL or SGE
-#    jobDir     is path to job directory, having:
+#    jobManager    is SHELL, SLURM, SCRIPT or SGE
+#    jobDir        is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
@@ -26,13 +26,13 @@
 #               may be missing even if job is run by SGE, so it should be
 #               checked upon using command line length. queueName=='-' means
 #               the same as "no name", but should be given if nSubJobs need
-#               to be specified.
+#               to be specified. Also applies to SLURM.
 #    nSubJobs   optional parameter giving the maximum number of subjobs that
 #               can be launched by the task. This parameter may be missing
 #               even if job is run by SGE, so it should be checked upon using
-#               comman line length
+#               comman line length. Also applies to SLURM.
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -41,6 +41,7 @@
 import os
 import sys
 import shutil
+import tempfile
 
 #  application imports
 from . import basic
@@ -74,24 +75,15 @@ class Morda(basic.TaskDriver):
 
         # get "extra" command line arguments
 
-        # temporary fix:
-
         queueName = self.getCommandLineParameter ( "queue" )
-        #queueName = "";
-        #if len(sys.argv)>4:
-        #    if sys.argv[4]!="-":
-        #        queueName = sys.argv[4]
 
-        if self.jobManager == "SGE":
-            nSubJobs = self.getCommandLineParameter ( "nproc" )
+        nSubJobs = "4"  # works for running in SHELL
+        if self.jobManager in ["SGE","SCRIPT","SLURM"]:
+            nSubJobs = self.getCommandLineParameter ( "ncores" )
             if not nSubJobs:
-                nSubJobs = "0"
-            #if len(sys.argv)>5:
-            #    nSubJobs = sys.argv[5]
-        else:
-            nSubJobs = "4"
+                nSubJobs = "1"
 
-        # end temporary fix
+        self.stdoutln ( "\n >>>>> " + nSubJobs + " parallel threads will be used\n" )
 
         # Prepare morda job
         # fetch input data
@@ -119,12 +111,18 @@ class Morda(basic.TaskDriver):
                 "HKLOUT",cad_mtz ]
         self.runApp ( "cad",cmd,logType="Service" )
 
+        # create local temporary directory for morda
+        tmp_dir = tempfile.mkdtemp(dir = os.environ["CCP4_SCR"])
+
         # MORDA is running on a cluster, all output is done by morda_sge.py module;
         # pass RVAPI document for morda_sge.py script
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
-                "--sge" if self.jobManager == "SGE" else "--mp",
+                # "--slurm" if self.jobManager == "SLURM" else
+                "--sge"   if self.jobManager == "SGE"   else 
+                "--mp",
+                "--tmpdir",tmp_dir,
                 "-f",cad_mtz,
                 "-s",self.morda_seq(),
                 "-d",self.reportDocumentName() ]
@@ -243,8 +241,8 @@ class Morda(basic.TaskDriver):
         if os.path.exists("morda"):
             shutil.rmtree ( "morda",ignore_errors=True )
 
-        if os.path.exists("tmp_local"):
-            shutil.rmtree ( "tmp_local",ignore_errors=True )
+        if os.path.exists(tmp_dir):
+            shutil.rmtree ( tmp_dir,ignore_errors=True )
 
         # this will go in the project tree job's line
         if not have_results:

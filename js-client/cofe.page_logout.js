@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    05.12.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ function LogoutPage ( sceneId,reason_key )  {
   this.grid.setVerticalAlignment ( 0,1,'middle' );
   this.grid.setHorizontalAlignment ( 0,1,'center' );
   this.grid.setCellSize          ( '45%','',0,2,1,1 );
-  this.makeLogoPanel             ( 1,0,3 );
+  // this.makeLogoPanel             ( 1,0,3 );
 
   // make login panel
   let panel = new Grid('');

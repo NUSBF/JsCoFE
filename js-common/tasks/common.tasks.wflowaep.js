@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.24   <--  Date of Last Modification.
+ *    19.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -166,7 +166,7 @@ TaskWFlowAEP.prototype.icon           = function()  { return 'task_wflowaep'; }
 TaskWFlowAEP.prototype.clipboard_name = function()  { return '"EP Workflow"'; }
 
 TaskWFlowAEP.prototype.desc_title     = function()  {
-  return 'data import, ASU definition, automatic EP, refinement, ligand fitting and PDB deposition';
+  return 'data import, ASU definition, automatic EP, refinement, ligand fitting and PDB validation report';
 }
 
 //TaskWFlowAEP.prototype.canRunInAutoMode = function() { return true; }

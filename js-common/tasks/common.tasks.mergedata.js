@@ -101,7 +101,7 @@ if (!__template)  {
     div.grid.setWidget ( tree_div, 1,0,1,1 );
 
     //  Read project data from server
-    jobTree.readProjectData ( 'Project',true,-1,
+    jobTree.loadProjectData ( 'Project',true,-1,
           function(){  // on tree loaded
           },
           function(node){},  // onTreeContextMenu

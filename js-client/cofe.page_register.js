@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.09.24   <--  Date of Last Modification.
+ *    21.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -38,7 +38,7 @@ function RegisterPage ( sceneId )  {
   this.grid.setVerticalAlignment   ( 0,1,'middle' );
   this.grid.setCellSize            ( '10%','',0,1,1,1 );
   this.grid.setCellSize            ( '45%','',0,2,1,1 );
-  this.makeLogoPanel               ( 1,0,3 );
+  // this.makeLogoPanel               ( 1,0,3 );
 
   // make login panel
   let panel = new Grid('');
@@ -155,7 +155,6 @@ function RegisterPage ( sceneId )  {
     back_btn = new Button       ( 'Back to User Login',image_path('login') );
     back_btn.addOnClickListener ( function(){ 
       reloadBrowser();
-      // makeLoginPage(sceneId); 
     });
   } else  {
     back_btn = new Button       ( 'Back to Admin Page',image_path('admin') );

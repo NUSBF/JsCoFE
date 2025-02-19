@@ -105,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -356,13 +356,13 @@ Unphysical bond lengths and clashes do not usually appear in confident regions. 
 <p>To add Molrep task click on Slice task, then press add new task =&gt; and then in the bottom left corner Switch to full list
 for more tasks as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_4.png"><img alt="_images/T2_005_4.png" class="align-center" src="_images/T2_005_4.png" style="width: 1110.0px; height: 717.0px;"/></a>
-<p>In full task list go to all tasks =&gt; Molecular Replacement =&gt; Molrep</p>
+<p>In full task list go to all tasks =&gt; Molecular Replacement =&gt; MR solvers =&gt; Molrep</p>
 <p><strong>It’s better to phase the bigger domain first</strong>. But in our case all 3 domains are approximately the same size, so we will start by choosing <strong>[0010-01] pdb_0002-01_af_struct_cluster_0 /model/protein/</strong> in <strong>Model ensemble</strong> section of Molrep input table as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_5.png"><img alt="_images/T2_005_5.png" class="align-center" src="_images/T2_005_5.png" style="width: 926.0px; height: 717.0px;"/></a>
 <p>Run Molrep task</p>
 <ol class="arabic simple" start="5">
 <li>After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose <strong>[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</li>
-<li>Run third Molrep task with <strong>[0010-02] pdb_0002-01_af_struct_cluster_2 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</li>
+<li>Run third Molrep task with <strong>[0010-03] pdb_0002-01_af_struct_cluster_2 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</li>
 </ol>
 <p>You should have a branch with 3 Molrep jobs as a result as shown below</p>
 <a class="reference internal image-reference" href="_images/T2_005_6.png"><img alt="_images/T2_005_6.png" class="align-center" src="_images/T2_005_6.png" style="width: 1075.0px; height: 734.0px;"/></a>
@@ -406,7 +406,7 @@ for more tasks as shown below</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
               </div>
             </a>
           
@@ -416,7 +416,7 @@ for more tasks as shown below</p>
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement </span>
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -430,7 +430,7 @@ for more tasks as shown below</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

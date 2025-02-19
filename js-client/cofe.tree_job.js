@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    18.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -23,10 +23,8 @@
  *
  *      constructor JobTree();
  *
- *      function setReplayMode   ();
  *      function setSelectMode   ();
  *      function isProjectMode   ();
- *      function isReplayMode    ();
  *      function isSelectMode    ();
  *      function isShared        ();
  *      function customIcon      ();
@@ -35,7 +33,7 @@
  *      function getTaskNodeId   ( taskId );
  *      function countTasks      ();
  *      function getChildTasks   ( node   );
- *      function readProjectData ( page_title,
+ *      function loadProjectData ( page_title,
  *                                 allow_selection,
  *                                 timestamp,
  *                                 onLoaded_func  ,onRightClick_func,
@@ -69,7 +67,6 @@
  *      function inspectData     ( jobId,dataType,dataId );
  *      function getAllAncestors ();
  *      function getNonRemarkParent ( task );
- *      function replayTree      ( ref_tree );
  *
  *   }
  *
@@ -91,10 +88,9 @@ function JobTree()  {
 
   this.checkTimeout = null;  // timeout timer Id
 
-  this.mode         = 'project';  //  'replay', 'select'
+  this.mode         = 'project';  //  'project', 'select'
   this.in_archive   = false;
   this.view_only    = false;
-//  this.replay_mode  = false;  // works with the replay project if true
 
 }
 
@@ -103,10 +99,6 @@ JobTree.prototype.constructor = JobTree;
 
 
 // ---------------------------------------------------------------------------
-
-JobTree.prototype.setReplayMode = function()  {
-  this.mode = 'replay';
-}
 
 JobTree.prototype.setSelectMode = function()  {
   this.mode = 'select';
@@ -120,10 +112,6 @@ JobTree.prototype.isRemark = function ( nodeId )  {
   if (nodeId in this.task_map)
     return this.task_map[nodeId].isRemark();
   return false;
-}
-
-JobTree.prototype.isReplayMode = function()  {
-  return (this.mode=='replay');
 }
 
 JobTree.prototype.isSelectMode = function()  {
@@ -229,7 +217,7 @@ let tree1 = job_tree.tree;
 }
 
 
-JobTree.prototype.readProjectData = function ( page_title,
+JobTree.prototype.loadProjectData = function ( page_title,
                                                allow_selection,
                                                timestamp,
                                                onLoaded_func,
@@ -485,131 +473,6 @@ JobTree.prototype.resetNodeName = function ( nodeId )  {
     this.confirmCustomIconsVisibility();
   }
 }
-
-/*
-JobTree.prototype.__checkTaskLoop = function()  {
-// checks on running tasks
-
-  (function(tree){
-
-    tree.checkTimeout = window.setTimeout ( function(){
-
-      let request_data = {};
-      request_data.project   = tree.projectData.desc.name;
-      request_data.shared    = tree.isShared();
-      request_data.timestamp = tree.projectData.desc.timestamp;
-      request_data.run_map   = tree.run_map;
-
-      serverRequest ( fe_reqtype.checkJobs,request_data,'Check jobs state',
-        function(data){
-
-          if ((!tree.checkTimeout) || (tree.checkTimeout==-1))
-            return;
-
-          if (data.reload)  {
-
-            // console.log ( 'reload at check');
-
-            tree.emitSignal ( cofe_signals.reloadTree,data );
-
-          } else  {
-
-            // console.log ( 'process check');
-
-            let completedJobs  = data.completed_map;
-            let completed_list = [];
-
-            for (let key in completedJobs)  {
-
-              let json   = JSON.stringify ( completedJobs[key] );
-              let task   = getObjectInstance ( json );
-
-              let nodeId = null;
-              if (task.id in tree.run_map)  {
-
-                nodeId = tree.run_map[task.id];  // task.id == key
-
-                if (nodeId in tree.task_map)  {
-                  task.treeItemId       = nodeId;
-                  tree.task_map[nodeId] = task;
-                  tree.setNodeName ( nodeId,false );
-                  if (task.isRemark())  {
-                    tree.setRemarkStyle ( tree.node_map[nodeId],task );
-                    // if (task.isLink())
-                    //       tree.setStyle ( tree.node_map[nodeId],__linkStyle,0 );
-                    // else  tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
-                  } else
-                    tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
-                  tree.node_map[nodeId].setCustomIconVisible ( false );
-                  tree.setNodeIcon    ( nodeId,false );
-                  completed_list.push ( task );
-                  update_project_metrics ( task,tree.projectData.desc.metrics );
-                }
-
-                if (key in tree.dlg_map)  {
-                  tree.dlg_map[key].task = task;
-                  tree.dlg_map[key].setDlgState();
-                  if (task.state==job_code.failed)
-                    tree.dlg_map[key].reloadReport();
-                    // tree.dlg_map[key].outputPanel.reload();
-                  else if (task.nc_type=='client')
-                    tree.dlg_map[key].loadReport();
-                }
-
-                tree.startChainTask ( task,nodeId );
-
-              }
-                // else {
-                //   alert ( 'error [89761] -- inform developer' );
-                // }
-
-            }
-
-            tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
-
-            if (completed_list.length>0)  {
-              tree.emitSignal ( cofe_signals.treeUpdated,{} );
-              tree.updateRation ( data );
-              tree.saveProjectData ( [],[],false, function(tree,rdata){});
-            }
-
-          }
-
-        },function(){  // always check on job and resume the task loop as necessary
-
-          // if (tree.projectData.desc.autorun)  {
-          //   tree.projectData.desc.autorun = false;
-          //   for (let tid in tree.run_map)
-          //     if (tree.run_map[tid].autoRunId.length>0)  {
-          //       tree.projectData.desc.autorun = true;
-          //       break;
-          //     }
-          //   if (!tree.projectData.desc.autorun)
-          //     tree.saveProjectData ( [],[],true, function(tree,rdata){} );
-          // }
-
-          if (tree.checkTimeout!=-1)  { // task loop was not blocked, and
-            if (tree.checkTimeout &&  // task loop was not terminated, and
-                ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
-                 (tree.isShared())  // or project is shared
-                )
-              )  {
-              tree.__checkTaskLoop();
-            } else  {
-              tree.checkTimeout = null;   // otherwise, terminate and mark terminated
-            }
-          }
-
-        },
-        function(){}  // depress ajax failure messages in this particular case!
-      );
-
-    },__check_job_interval );
-
-  }(this));
-
-}
-*/
 
 
 JobTree.prototype.__checkTaskLoop = function()  {
@@ -1093,30 +956,42 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
 let reftask = null;  // reference task
 let refkeys = null;  // reference keywords
-  for (let i=0;(i<branch_task_list.length) && (!reftask) && (!refkeys);i++)  {
-    if (task._type==branch_task_list[i]._type)
-      reftask = branch_task_list[i];
-    else if ('data' in branch_task_list[i].output_data)  {
-      let data = branch_task_list[i].output_data.data;
-      for (let item_key in data)  {
-        let item_list = data[item_key];
-        if (Array.isArray(item_list))  {
-          for (let j=0;j<item_list.length;j++)  {
-            let item = item_list[j];
-            if (('refkeys' in item) && (task._type in item.refkeys))
-              refkeys = item.refkeys[task._type];
+  try {
+    for (let i=0;(i<branch_task_list.length) && (!reftask) && (!refkeys);i++)  {
+      if (task._type==branch_task_list[i]._type)
+        reftask = branch_task_list[i];
+      else if ('data' in branch_task_list[i].output_data)  {
+        let data = branch_task_list[i].output_data.data;
+        for (let item_key in data)  {
+          let item_list = data[item_key];
+          if (Array.isArray(item_list))  {
+            for (let j=0;j<item_list.length;j++)  {
+              let item = item_list[j];
+              if (('refkeys' in item) && (task._type in item.refkeys))
+                refkeys = item.refkeys[task._type];
+            }
           }
         }
       }
     }
+    if (reftask)  {
+      if (reftask.version<task.currentVersion())
+        return -1;  // version clash, stop
+      task.parameters = jQuery.extend ( true,{},reftask.parameters );
+      // task.copyParameters ( reftask );
+      return 1;  // reference task found and parameters copied, Ok
+    } else if (refkeys)
+      return task.set_refkeys_parameters ( refkeys );
+  } catch(e)  {
+    // window.setTimeout ( function(){
+    //   new MessageBox ( 'Cannot copy task parameters',
+    //     '<div style="width:400px;"><h2>Cannot task parameters</h2>' +
+    //     'The parameters of the last task cannot be copied. This may occur ' +
+    //     'if the task was created with an incompatible version of ' + appName() + 
+    //     ' or due to a potential bug.','msg_warning' );   
+    // },1000);
+    return -11111;
   }
-  if (reftask)  {
-    if (reftask.version<task.currentVersion())
-      return -1;  // version clash, stop
-    task.parameters = jQuery.extend ( true,{},reftask.parameters );
-    return 1;  // reference task found and parameters copied, Ok
-  } else if (refkeys)
-    return task.set_refkeys_parameters ( refkeys );
   return 0;  // reference task or keys not found, Ok
 }
 
@@ -1148,11 +1023,12 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
                   new MessageBox ( 'Cannot copy job parameters',
                     '<div style="width:500px;"</div>' +
                     '<h2>Cannot copy parameters from previous job.</h2>' +
-                    'The previous job was created with a lower version of ' +
+                    'The previous job was created with an older version of ' +
                     appName() + ' and its parameters cannot be copied into ' +
-                    'the new one.<p>Please add the job with default parameters, ' +
-                    'using "<i>Add Job</i>" button from the control bar, and set ' +
-                    'parameters manually.</div>',
+                    'the new job in current version.<p>' +
+                    'To proceed, please add the job with default parameters ' +
+                    'by clicking the "<i>Add Job</i>" button in the control ' +
+                    'bar, and then set the parameters manually.</div>',
                     'msg_stop' );
                   if (onAdd_func)
                     onAdd_func ( -5,null,null );
@@ -1205,6 +1081,9 @@ let dataBox = this.harvestTaskData ( 1,[] );
 JobTree.prototype.startChainTask = function ( task,nodeId )  {
 
   if (!task.hasOwnProperty('task_chain'))
+    return;
+
+  if (('submitter' in task) && task.submitter && (task.submitter!=__login_id))
     return;
 
   if (task.task_chain.length<=0)  {
@@ -2027,8 +1906,10 @@ let crTask = this.getSelectedTask();
         'Task "<i>' + reftask.title + '</i>" was retired. Please use ' +
         'alternative task.</div>','msg_stop' );
 
-    } else
+    } else  {
       __clipboard.task = crTask;
+      showFlashMessage ( 'Copied!',this.getSelectedNodeRect() );
+    }
 
   } else
     new MessageBox ( 'No task copied',
@@ -2070,10 +1951,10 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        '<div style="width:400px;"><h2>This job cannot be cloned.</h2>' +
         'The job was created with a lower version of ' + appName() + 
-        '<br>and cannot be cloned.<p>Please create the job as ' +
-        'a new one, using "<i>Add Job</i>"<br>button from the ' +
+        ' and cannot be cloned.<p>Please create the job as ' +
+        'a new one, using "<i>Add Job</i>" button from the ' +
         'control bar.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
@@ -2081,7 +1962,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     } else if (task.state==job_code.retired)  {
 
       new MessageBox ( 'Cannot clone',
-        '<div style="width:360px;"><h2>This job cannot be cloned.</h2>' +
+        '<div style="width:400px;"><h2>This job cannot be cloned.</h2>' +
         'Task "<i>' + task.title + '</i>" was retired. Please use ' +
         'alternative task.</div>','msg_stop' );
       if (onAdd_func)
@@ -2451,110 +2332,3 @@ JobTree.prototype.getChildTasks = function ( node )  {
   return tasks;
 }
 
-
-JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  {
-
-  this.stopTaskLoop();
-
-  let newJobs = false;
-  for (let i=0;i<replay_node_list.length;i++)  {
-
-    // check if replay task was a root or finished with success
-    let retcode  = job_code.finished;
-    if (replay_node_list[i].parentId)  {
-      let task = this.getTaskByNodeId ( replay_node_list[i].id );
-      if (task)  retcode = task.state;
-           else  retcode = job_code.failed;
-    }
-
-    if (retcode==job_code.finished)  {
-      // append and start all children jobs
-
-      let children = ref_node_list[i].children;
-
-      for (let j=0;j<children.length;j++)  {
-
-        let ref_node = children[j];
-        let ref_task = this.ref_tree.getTaskByNodeId ( ref_node.id );
-
-        this.projectData.desc.jobCount = Math.max (
-                                  this.projectData.desc.jobCount,ref_task.id );
-
-        let replay_task     = $.extend ( makeNewInstance(ref_task._type),ref_task );
-        replay_task.state   = job_code.new;
-        replay_task.project = this.projectData.desc.name;
-        let replay_node     = this.addNode ( replay_node_list[i],ref_node.text,
-                                             ref_node.icon,this.customIcon() );
-
-        this.task_map[replay_node.id] = replay_task;
-        replay_task.treeItemId        = replay_node.id;
-        replay_node.dataId            = replay_task.id;
-
-        // make harvest data links
-        //for (let i=0;i<task.harvestedTaskIds.length;i++)  {
-        //  let taski = tree.getTask ( task.harvestedTaskIds[i] );
-        //  if (taski)
-        //    taski.addHarvestLink ( task.id )
-        //}
-
-        //if (onAdd_func)
-        //  onAdd_func();
-
-        this.saveProjectData ( [replay_task],[],true, function(tree,rdata){
-          if (rdata.reload<=0)  {
-            replay_task.state = job_code.running;
-            let data  = {};
-            data.meta = replay_task;
-            data.ancestors = [];  // used only for knowledge framework, ignored here
-            serverRequest ( fe_reqtype.replayJob,data,replay_task.title,
-              function(rdata){},  //callback_ok
-              null,null
-            );
-          }
-        });
-
-      }
-
-    }
-
-  }
-
-  if (newJobs)
-    this.startTaskLoop();
-
-}
-
-
-
-JobTree.prototype.replayTree = function ( ref_tree )  {
-//  replays jobs found in reference tree; should be called on new tree
-
-  this.ref_tree = ref_tree;
-
-  this.stopTaskLoop();
-
-  // this.checkLoop = false;  // true if job check loop is running
-
-  let task_del_list = [];
-  for (let nodeId in this.task_map)
-    task_del_list.push ( [this.task_map[nodeId].id,this.task_map[nodeId].disk_space] );
-  this.task_map = {};  // map[nodeId]==task of all tasks in the tree
-  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
-  this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
-  this.clear();  // this removes also all root nodes
-  this.projectData.desc.jobCount = 0;
-  // (function(tree){
-    tree.saveProjectData ( [],task_del_list,true, function(tree,rdata){
-      if (rdata.reload<=0)  {
-        let replay_node_list = [];
-        for (let i=0;i<ref_tree.root_nodes.length;i++)  {
-          let ref_node    = ref_tree.root_nodes[i];
-          replay_node_list.push ( tree.addRootNode(ref_node.text.replace(']',':replay]'),
-                                                   ref_node.icon,tree.customIcon()) );
-        }
-        tree.addReplayTasks ( replay_node_list,ref_tree.root_nodes );
-      }
-    });
-  // }(this))
-
-}

@@ -3,6 +3,119 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.8.005** 
+
+    *Released with CCP4 v.9.0.007*
+
+    #. Inactivity-based logout introduced
+
+    #. Cache and Performance stats added to the Administration Page
+
+    #. List of projects and list of users redesigned
+
+    #. Multiple code optimisations
+
+    #. CloudRun notifications enforced in live projects 
+
+    #. ``Xia-2`` progress indicator is removed at job failure
+
+    #. *"devel"* user is not created in local mode
+
+    #. Fixed bug causing finished tasks to open with showing their *Input* panel
+
+    #. Some regexp validations are removed for Forefox due to bugs in the browser
+
+    #. ``MrParse`` results sorted by sequence Id
+
+    #. Fixed bugs in *Workflow Creator* preventing addition of certain tasks to workflows
+
+    #. Added the ``CloudFetch`` utility for fetching jobs from command line
+
+    #. Verdict section added to ``Balbes`` task
+
+    #. Fixed bug in ``Simbad`` resulting in non-passing ASU definition on subsequent tasks in certain circumstances
+
+    #. Fixed bug preventing regular task ending on file systems with unusually high latency 
+
+    #. Fixed bug preventing running jobs with last used parameters in some circumstances
+
+    #. Fixed bug causing duplication task chains in shared projects (e.g. Remac after Coot)
+
+    #. AI-based solvent prediction added to the ``ASU Definition`` task 
+
+    #. B-factor statistics re-introduced in Table 1
+
+    #. ``MrParse`` task now outputs XYZ, rather than MR Model, data type
+
+    #. ``Moorhen`` updated to version 0.14.1
+
+    #. Showing only image ranges in Cloud file browser is now clarified
+
+
+
+**Version 1.8.004** 
+
+    *Released with CCP4 v.9.0.006*
+
+    #. Log verbosity controlled through FE configuration and environmental variable
+
+    #. File cache introduced to mitigate latency effects on NFS systems
+
+    #. ZIP levels in data transfer protocols are now optimised for speed
+
+    #. Temporary directopries configured separately for FE and NC servers
+
+    #. Added verdicts for ``Molrep``, ``MoRDa`` and ``MrBump``
+
+    #. Restore mechanism after ``Coot`` failures is streamlined
+
+    #. Fixed bag in ``Coot`` tasks causeing result write failure due to format confusion
+
+    #. Warning given at regeneration of CloudRunId
+
+
+
+**Version 1.8.003** 
+
+    *Released with CCP4 v.9.0.005*
+
+    #. Retired tasks are not added into the list of tasks in Workflow Creator
+
+    #. Fixed bug preventing project page updating right after data import
+
+    #. Fixed bug causing logout on hitting the Return key or wrong password 
+
+    #. Login page announcements are now manageable from Administration Page
+
+    #. Configuration of Number Crunchers for FE server optimised
+
+    #. Universal CPU/GPU queues introduced
+
+    #. Cosmetic improvements
+
+    #. ``.nxs`` files made available for ``Xia-2`` task
+
+    #. Input sanity checks enforced in ``Crank-2 MAD``
+
+    #. Cofe-browser memorises last login details
+
+    #. Retired tasks made non-clonable and non-copy-pastable
+
+    #. Failed jobs are put in safe with original job names
+
+    #. Sequences are cleaned of illigal symbols before structure prediction 
+
+    #. FE-NC data transfer through common file system is now specific to NC 
+
+    #. Remote type of Number Crunchers introduced for using in local setups
+
+    #. CCP4 Cloud shutdown is optimised in cofe-browser
+
+    #. Administration (System) page now available in local mode
+
+    #. CloudRun puts data and version stamps in log files
+
+
 **Version 1.8.002** 
 
     *Released with CCP4 v.9.0.004*
@@ -15,13 +128,15 @@ CCP4 Cloud Version Log
 
     #. Corrected data requirements for automatic workflows
 
-    #. Introduced pre-defdined pland for project development, project creation dialog changed accordingly
+    #. Introduced pre-defdined plans for project development, project creation dialog changed accordingly
 
     #. Moorhen updated to latest version available
 
     #. WScript added with advanced branching options and possibility to run tasks in parallel
 
     #. Fixed bug that causewd project page to stall when refreshing the page with job dialogs minimised
+
+    #. Fixed bug in job despatch with fasttrack flag equal zero
 
 
 **Version 1.8.001** 

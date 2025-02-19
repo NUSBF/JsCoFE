@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    17.11.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,28 +182,6 @@ function checkVersionMatch ( response,localServer_bool )  {
     return true;  // may need a better solution
 
   if (response.version!='*')  {  // else ignore (useful for debugging)
-    /*
-    if ((v0!=v1) && (rs[rs.length-1]=='client'))  {
-      // this works when client version is different from server version
-      if (v0.split('.')[1]!=v1.split('.')[1])  { // check 2nd version digit
-        let whattodo = '';
-        if (v1<v0)
-              whattodo = 'Please update CCP4 setup on your computer';
-        else  whattodo = 'The maintainer of your ' + appName() + ' setup should ' +
-                         'update the setup<br>to the latest version';
-        new MessageBox ( 'Incompatible Client Version',
-            '<h2>Incompatible Client Version</h2>' +
-            'Your device runs ' + appName() + ' Client version <b>' + rs[0] +
-            ' ' + rs[1] + '</b>,<br>which is not compatible with version <b>' +
-            appVersion() + '</b>, running<br>on the server.<p>' + whattodo +
-            '.<p>You may use ' + appName() + ' by using the direct web-link, ' +
-            'however,<br><i>Coot</i> and some other graphical applications will ' +
-            'not be available.', 'msg_excl'
-        );
-        return false;
-      }
-    } else if (v0<v1)  {
-    */
 
     if ((rs.length>2) && (rs[2]=='client') && response.data.fe_url)
       __fe_url = response.data.fe_url;
@@ -224,17 +202,6 @@ function checkVersionMatch ( response,localServer_bool )  {
             'Continue', function(){
               window.location = response.data.fe_url;
             },true,  'msg_excl' );
-        // console.log ( ' response 3 ' + rs );
-        // new MessageBox ( appName() + ' client',
-        //     '<center>' + appName() + ' Client has advanced to version' +
-        //     '<br><center><sup>&nbsp;</sup><b><i>' + rs[0] + ' ' + rs[1] + 
-        //     '</i></b><sub>&nbsp;</sub></center>' +
-        //     'which is incompatible with version<br><center><sup>&nbsp;</sup><b><i>'
-        //     + appVersion() + '</b></i><sub>&nbsp;</sub></center>you are currently using.' +
-        //     '<hr/>The ' + appName() + ' client will be now disabled, which means that ' +
-        //     'you cannot run Coot<br>' +
-        //     'and similar applications. Contact your ' + appName() + ' server maintainer.' +
-        //     '<hr/></center>','msg_excl' );
         return false;
       } else if (rs.length<=2) {
         // this works if server is updated in the midst of user's session
@@ -263,8 +230,6 @@ function checkVersionMatch ( response,localServer_bool )  {
 
 function makeJSONString ( data_obj )  {
 let json = null;
-
-  // json = JSON.stringify ( data_obj );
 
   try {
     json = JSON.stringify ( data_obj );
@@ -439,6 +404,20 @@ function printServerQueueState ( checkPoint)  {
 }
 
 
+var __request_timing = {
+  time_min : 1.0e30,
+  time_sum : 0.0,
+  n_sum    : 0,
+  time_max : 0.0
+};
+
+function __log_request_timing ( dt )  {
+  __request_timing.time_min  = Math.min ( __request_timing.time_min,dt );
+  __request_timing.time_sum += dt;
+  __request_timing.n_sum++;
+  __request_timing.time_max  = Math.max ( __request_timing.time_max,dt );
+}
+
 function __server_command ( cmd,data_obj,page_title,function_response,
                             function_always,function_fail,sqid )  {
 // used when no user is logged in
@@ -459,6 +438,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
     })
     .done ( function(rdata) {
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
+        __log_request_timing ( performance.now()-__server_queue[0].t_requested );
         __server_queue.shift();
         __process_network_indicators();
         try {
@@ -511,34 +491,6 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       __process_network_indicators();
       // *** old version
       processServerQueue();
-
-      // if (cmd==fe_command.checkSession)
-      //   makeSessionCheck ( __current_page.sceneId );
-
-      /*  ==== ORIGINAL
-      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
-        __server_queue.shift();
-        __process_network_indicators();
-        if (function_fail)
-              function_fail();
-        else  MessageAJAXFailure(page_title,xhr,err);
-        // *** old version
-        processServerQueue();
-      } else  {
-        console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
-        // printServerQueueState ( 3 );
-        // *** new version
-        // if (__server_queue.length>0)  {
-        //   __server_queue.shift();
-        //   __process_network_indicators();
-        // } //else
-          //makeSessionCheck ( __current_page.sceneId );
-      }
-      */
-      // *** new version
-      // processServerQueue();
-      // if (cmd==fe_command.checkSession)
-      //   makeSessionCheck ( __current_page.sceneId );
     });
 
 }
@@ -578,6 +530,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
+        __log_request_timing ( performance.now()-__server_queue[0].t_requested );
         __server_queue.shift();  // request completed
         __process_network_indicators();
 
@@ -590,25 +543,13 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                 function_ok ( response.data );
             } else
               makeCommErrorMessage ( page_title,request_type,response );
-            /*
-            // we put this function here and in the fail section because we
-            // do not want to have it executed multiple times due to multiple
-            // retries
-            if (function_always)
-              function_always(0,response.data);
-            */
           }
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.done:' +
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
                         '\n --- rdata = ' + rdata );
-          // printServerQueueState ( 4 );
         }
-
-        // *** old version
-        // processServerQueue();
-
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
         // printServerQueueState ( 5 );
@@ -770,6 +711,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
     // cmd               : cmd,
     request_type      : cmd,
     data_obj          : data_obj,
+    t_requested       : performance.now(),
     page_title        : page_title,
     function_response : function_response,
     function_always   : function_always,
@@ -793,6 +735,7 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
     id              : __server_queue_id++,
     request_type    : request_type,
     data_obj        : data_obj,
+    t_requested     : performance.now(),
     page_title      : page_title,
     function_ok     : function_ok,
     function_always : function_always,

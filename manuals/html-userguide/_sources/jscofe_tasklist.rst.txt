@@ -6,16 +6,16 @@ Task List
 
 .. _tasklist:
 
-Task List contains all tasks runnable in CCP4 Cloud, and is used to select one
-of them for the insertion in the *Job Tree*, further configuration (choice of
-input data and parameters) and starting a job.
+The Task List contains all tasks runnable in CCP4 Cloud and is used to select one
+of them for insertion in the *Job Tree*, further configuration (choice of
+input data and parameters), and starting a job.
 
-All tasks are grouped in several folders. In every folder, relevant tasks are
-listed as separate entries having a task button with an icon on the left, and task
+All tasks are grouped into several folders. In each folder, relevant tasks are
+listed as separate entries with a task button containing an icon on the left and the task
 title on the right.
 
 Each folder's name contains a number in brackets, showing how many tasks from
-that folder can be run at given point of CCP4 Cloud's Project; this point
+that folder can be run at a given point in CCP4 Cloud's Project. This point
 corresponds to the selected job in the **Job Tree** right behind
 the **Task List**:
 
@@ -23,15 +23,15 @@ the **Task List**:
     :scale: 40 %
     :align: center
 
-If you open a folder of interest, you will see tasks, that **cannot be run**,
-presented with titles deemed and the corresponding task button framed in **red**.
-A task cannot be run if there is not sufficient data for it in the given point
-of the Project. You may see which data is missing by pressing the corresponding
-task button -- a summary of required and available data for the task will be shown.
+If you open a folder of interest, you will see tasks that **cannot be run**,
+presented with titles dimmed and the corresponding task button framed in **red**.
+A task cannot be run if there is insufficient data for it at the given point
+in the Project. You can see which data is missing by pressing the corresponding
+task button -- a summary of the required and available data for the task will be shown.
 
-If task is runnable (with icons framed in either **green (no data ambiguity)** or
-**amber (data may need to be selected before the run)**, then pressing the task
-the button will put it as a child of the highlighted node of the *Job Tree* and open
+If a task is runnable (with icons framed in either **green (no data ambiguity)** or
+**amber (data may need to be selected before the run)**), then pressing the task
+button will add it as a child of the highlighted node of the *Job Tree* and open
 its *Job Dialog*. In the dialog, you may need to select input data, modify the job
-parameters and finally start the job by pressing *the "Run"* button in
-*Job Dialog's* toolbar.
+parameters, and finally start the job by pressing the *"Run"* button in
+the *Job Dialog's* toolbar.

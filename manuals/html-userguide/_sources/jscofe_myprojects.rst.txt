@@ -1,39 +1,46 @@
 ===========
 My Projects
 ===========
+
 ----------
-First time
+First Time
 ----------
 
-This is the page you find yourself in immediately after login. If you read this text first time ever, you are probably new to CCP4 Cloud, just logged in with a temporary password sent to you after registration. If so, the first thing you want to do is to change your temporary password for something memorisable. You do not have to do that -- your temporary password won't expire -- but if you do, look for the Menu icon: |menu| in the top-left corner of the page. Click on it, then choose **"My Account"** from the dropdown menu, and you will be presented with your account settings. Choose and type your new password in there, press button **"Update my account"** , and job's done. You will be then taken to CCP4 Cloud's home page in order to login with your new password.
+This is the first page you see after logging in. If this is your first time using CCP4 Cloud, you have likely logged in with a temporary password sent after registration. Although the temporary password does not expire, you may want to change it to something memorable.
+
+To update your password:
+1. Click the Menu icon: |menu| in the top-left corner of the page.
+2. Select **"My Account"** from the dropdown menu.
+3. Enter your new password in the account settings and press **"Update my account"**.
+
+Once updated, you will be redirected to the CCP4 Cloud home page, where you can log in with your new password.
 
 .. |menu| image:: images/menu.png
-        :width: 16
-        :height: 16
-
+   :width: 16
+   :height: 16
 
 .. _software-authorisation:
 
------------------------
+----------------------
 Software Authorisation
------------------------
+----------------------
 
+CCP4 Cloud integrates certain third-party software that requires user authorisation from the respective software provider. You can manage authorisations on the **"My Account"** page.
 
-CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page.
+.. image:: images/My_account_Authorizations.png
+   :scale: 50%
+   :align: center
 
-    .. image:: images/My_account_Authorizations.png
-            :scale: 50 %
-            :align: center
-
-
-Click on |authorisation| manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.
+To authorise:
+1. Click the |authorisation| manage button to access the authorisation page.
+2. This page provides a summary of your authorisations and allows you to send authorisation requests.
 
 .. Note::
-    Authorisation request will redirect you to the provider's web-site. Any data requested by software provider will be processed at provider's end and will not be stored in CCP4 Cloud.
+   Authorisation requests will redirect you to the software provider's website. Any data provided is processed directly by the provider and is not stored in CCP4 Cloud.
 
 .. |authorisation| image:: images/authorisation.png
-        :width: 16
-        :height: 16
+   :width: 16
+   :height: 16
 
 .. _myprojects:
 
@@ -41,77 +48,87 @@ Click on |authorisation| manage button and you will redirect to the authorisatio
 Projects
 --------
 
-In CCP4 Cloud, your work is arranged in Projects. There is no strict rules how to use them, but a good practice would be to put all work, related to a particular protein, into one Project. Projects start with uploading experimental data and subsequent jobs along the following line:
+In CCP4 Cloud, your work is organised into **Projects**. While there are no strict rules for their usage, a common approach is to create a separate project for each protein. Projects typically follow a workflow:
 
-    *data processing*
-
-    *phasing (MR or EP)*
-
-    *density modification*
-
-    *model building*
-
-    *refinement*
-
-    *validation and deposition*
+- **Data Processing**
+- **Phasing (MR or EP)**
+- **Density Modification**
+- **Model Building**
+- **Refinement**
+- **Validation and Deposition**
 
 ---------------
-Getting started
+Getting Started
 ---------------
 
 .. |addjob| image:: images/add.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
-The page shows the list of projects, which is empty at the start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify a short project name, and a more descriptive title in the dialog appeared, for example:
+Initially, the project list will be empty. To create your first project:
+1. Click the |addjob| button above the list.
+2. In the dialog that appears, provide a short project name and a descriptive title (e.g., "Project A - Initial Refinement").
 
 .. image:: images/add_project.png
-         :scale: 50 %
-         :align: center
+   :scale: 50%
+   :align: center
 
-then press |addjob| and see the new project appeared in the list.
+3. Press |addjob| to add the new project to the list.
 
-The project list is both sortable (use controls found in column titles) and selectable. In order to open a particular Project, select it and press |openjob|  button on top of the list or, alternatively, just double-click on the project line.
+The project list can be sorted using column title controls and is selectable. To open a project:
+- Select it and click the |openjob| button above the list, or
+- Double-click the project line.
 
 .. |openjob| image:: images/openjob.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
-You can delete your projects as well: simply select the unwanted project in the list and press the |delete| button. Do this with due care: once deleted, projects cannot be restored.
+To delete a project:
+1. Select the project in the list.
+2. Click the |delete| button. **Note:** Deleted projects cannot be restored.
 
 .. |delete| image:: images/delete.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
 -------------------------
-Project export and import
+Project Export and Import
 -------------------------
 
 .. |Export| image:: images/export.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
 .. |Import| image:: images/task_import.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
-Using the |Export| button, you can download the selected project as a compressed RAR archive. Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
+To export a project:
+1. Select it from the list.
+2. Click the |Export| button to download it as a compressed RAR archive.
 
-Exporting projects may be needed if there is no disk space left in your account, personal archival, or for transferring data to another CCP4 Cloud setup.
+To import a project:
+1. Use the |Import| button above the list to upload the archive to your CCP4 Cloud account.
 
-Beware that projects usually grow to a considerable size, from 100s MBs to few GBs. You will be advised about the project size before downloading.
+**Exporting Projects:**
+- Useful for saving disk space, personal archiving, or transferring data to another CCP4 Cloud setup.
+- Be mindful of project size, which can range from hundreds of megabytes to several gigabytes. The size will be shown before download.
 
 ----------
-After work
+After Work
 ----------
 
 .. |logout| image:: images/logout.png
-    :width: 16
-    :height: 16
+   :width: 16
+   :height: 16
 
-Whenever you wish to end working with CCP4 Cloud, please ``do logout``. This can be done through the Menu or by clicking on the exit button |logout| in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them.
+To end your session:
+1. Click the Menu or the |logout| button in the top-right corner.
 
-Do not worry about jobs still running: they will not be terminated if you quit your working session.
+Logging out ensures all your projects and data remain intact.
 
 .. Note::
-    CCP4 Cloud does not support multiple logins of the same user. Each login will forcefully terminate any other session of the same user still open.
+   Jobs running in the background will continue even after you log out.
+
+.. Note::
+   CCP4 Cloud does not support multiple logins for the same user. Logging in from another session will terminate any active session.
