@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.25   <--  Date of Last Modification.
+ *    19.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1280,24 +1280,41 @@ function getServerEnvironment ( callback_func )  {
   });
 }
 
+function getRemoteNumberCruncher()  {
+// Returns the number of NC server assigned to handle remote jobs, if found
+// in local FE configuration. Note that this URL must be that of the remote 
+// Cloud FE (RFE, not NC!) assigned to handle jobs submitted in "remote" mode.
+// In the "remote" mode, jobs are submitted to another, independent instance 
+// of CCP4 Cloud. Usually, "remote" NC is used in CCP4 Cloud Local, but it 
+// can be equally used in a distributed CCP4 Cloud setup. In difference of 
+// non-remote NC, job directories are retrieved back to FE by pulling, rather 
+// than pushing from the NC.
+  let nc_number = -1;
+  if (nc_servers)
+    for (let i=0;(i<nc_servers.length) && (nc_number<0);i++)
+      if (nc_servers[i].in_use && (nc_servers[i].exeType.toUpperCase()=='REMOTE'))
+        nc_number = i;
+  return nc_number;
+}
+
+
 function getRemoteJobsServerURL()  {
-// Returns external URL of local NC server assigned to handle remote jobs,
-// if such NC server is found in local FE configuration. Note that this URL
-// must be that of remote Cloud FE (not NC!) assigned to handle jobs submitted
-// in "remote" mode. In "remote" mode, jobs are submitted to another, 
-// independent instance of CCP4 Cloud. Usually, "remote" NC is used in
-// CCP4 Cloud Local, but it can be equally used in a distributed CCP4 Cloud
-// setup.
+  // Returns external URL of local NC server assigned to handle remote jobs,
+  // if such NC server is found in local FE configuration. Note that this URL
+  // must be that of remote Cloud FE (not NC!) assigned to handle jobs submitted
+  // in "remote" mode. In "remote" mode, jobs are submitted to another, 
+  // independent instance of CCP4 Cloud. Usually, "remote" NC is used in
+  // CCP4 Cloud Local, but it can be equally used in a distributed CCP4 Cloud
+  // setup. In difference of non-remote NC, job directories are retrieved back
+  // to FE by pulling, rather than pushing from the NC.
   let url = null;
   if (nc_servers)
-    nc_servers.forEach ( function(config){
-      if (config.in_use && (config.exeType.toUpperCase()=='REMOTE'))
-        url = config.externalURL;
-    });
-
+    for (let i=0;(i<nc_servers.length) && (!url);i++)
+      if (nc_servers[i].in_use && (nc_servers[i].exeType.toUpperCase()=='REMOTE'))
+        url = nc_servers[i].externalURL;
   return url;
-
 }
+
 
 function checkRemoteJobsServerURL ( url,callback_func )  {
   if (url)  {
@@ -1649,6 +1666,7 @@ module.exports.isArchive                = isArchive;
 module.exports.getClientInfo            = getClientInfo;
 module.exports.getFEProxyInfo           = getFEProxyInfo;
 module.exports.getServerEnvironment     = getServerEnvironment;
+module.exports.getRemoteNumberCruncher  = getRemoteNumberCruncher;
 module.exports.getRemoteJobsServerURL   = getRemoteJobsServerURL;
 module.exports.checkRemoteJobsServerURL = checkRemoteJobsServerURL;
 module.exports.getAppStatus             = getAppStatus;
