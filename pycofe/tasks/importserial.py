@@ -85,20 +85,15 @@ class ImportSerial(import_task.Import):
         sec2 = self.task.parameters.sec2.contains #Call section 2
         jsonout  = os.path.join (self.import_serial_json ())
 
-
+        #Conflicting data message and list of data conflict
+        conflict_data = False
+        conflict_list = []
+        
         # Retrieve the keywords from file input 
 
         # If .hkl1 or .hkl2 file was provided
-        if os.path.isfile(halfdataset1) or os.path.isfile(halfdataset2) : 
-            cmd += [ "--half-dataset"]
-
-        #If .hkl1 file was provided
-        if os.path.isfile(halfdataset1):
-            cmd += [ str(halfdataset1) ]
-
-        #If .hkl2 file was provided
-        if os.path.isfile(halfdataset2):
-            cmd += [ str(halfdataset2) ]
+        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) : 
+            cmd += [ "--half-dataset", str(halfdataset1), str(halfdataset2)]
                    
         #If cell file was provided
         if os.path.isfile(cellfile):
@@ -118,15 +113,28 @@ class ImportSerial(import_task.Import):
         if spacegroup: # If there is spacegroup user input
             spacegroup = str(spacegroup)
             cmd += [ "--spacegroup", str(spacegroup) ]
-        
 
+        #Display a message to the user if the user input spacegroup and reference file provided as both contain spacegroup
+        if spacegroup and os.path.isfile(reference):
+            conflict_data=True
+            conflict_list.append("2 Instances of Spacegroups are present from user input and reference file, Check the data")
+        
         cell = self.getParameter ( sec1.UNITCELLPARAMETERS ).strip()
         if cell: # If there is cell user input, split each input into a string for 6 args
             cell = str(cell)
             splitcell = cell.split()
             cmd += [ "--cell"]
             cmd.extend(splitcell)
-            
+
+        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
+        if cell and os.path.isfile(cellfile):
+            conflict_data=True
+            conflict_list.append("2 Instances of Unit Cell Parameters are present from user input and cell file, Check the data")
+        
+        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
+        if cell and os.path.isfile(reference):
+            conflict_data=True
+            conflict_list.append("2 Instances of Unit Cell Parameters are present from user input and reference file, Check the data")
 
         dmin = self.getParameter ( sec2.DMIN ).strip()
         if dmin: # If there is High-resolution cutoff user input
@@ -138,6 +146,12 @@ class ImportSerial(import_task.Import):
         if dmax: # If there is Low-resolution cutoff user input
             dmax = str(dmax)
             cmd += [ "--dmax", str(dmax) ]
+        
+        # Display to the report a message of multiple conflicting data instances of parameters
+        if conflict_data == True:
+            self.putMessage("<h3><b> Conflict of data </h3></b>")
+            for conflict in conflict_list:
+                self.putMessage(str(conflict))
             
 
         # ============================== Run the import_serial task =========================================
@@ -205,7 +219,7 @@ class ImportSerial(import_task.Import):
        
 
         #If hkl1 and hkl2 arent provided then project_dataset.json wont have "cc", "CCstar", "rsplit"
-        if os.path.isfile(halfdataset1) or os.path.isfile(halfdataset2) :
+        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) :
             tableDict['rows'].append({'header':{'label': indent + 'Half-set correlation CC(1/2)', 'tooltip': ''},
                                   'data': ['%0.3f' % float(overall_table.get("cc"))]})
 
