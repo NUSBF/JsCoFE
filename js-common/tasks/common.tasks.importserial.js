@@ -255,9 +255,22 @@ if (!__template)  {
     let cell_file = this.file_select[3].path;
     let ref_file = this.file_select[4].path;
     let cell = this.parameters.sec1.contains.UNITCELLPARAMETERS.value.trim(); //retriaval of params
+
+    //Check for any unit cell parameters from cell file, reference file or input
     if (!cell_file && !cell &&!ref_file){
       input_msg += '|<b><i>Missing unit cell parameters from either cell file, reference file or input</i></b>';
     }
+
+    //cell = string
+    //format = 
+    
+    
+    let splitcell = cell.split(/\s+/).map(Number)// Split the input using space as delimeter regardless of number and map input as a number else return NaN (i.e if a letter is)
+    if ((splitcell.some(part => isNaN(Number(part)))) || splitcell.length!=6){ //If the unit cell parameters contain values that are not a number]
+      input_msg+= "|<b><i>Invalid unit cell parameters from input. Please follow the format of divided by spaces, e.g. 60 50 40 90 90 90 </i></b>"
+
+    }
+    
 
     //Wavelength validation
     let wavelength = this.parameters.sec1.contains.WAVELENGTH.value;
@@ -271,12 +284,7 @@ if (!__template)  {
       input_msg += '|<b><i>Missing spacegroup from either reference file or input</i></b>';
     }
 
-    //Validation for half-dataset .hkl1, .hkl2 files
-    let half_dataset1_file = this.file_select[1].path;
-    let half_dataset2_file = this.file_select[2].path;
-    if ((half_dataset1_file && !half_dataset2_file) || (!half_dataset1_file && half_dataset2_file)){
-      input_msg += '| <b><i> Half-datasets must either be both uploaded or none </i> </b>';
-    }
+
 
     
    
