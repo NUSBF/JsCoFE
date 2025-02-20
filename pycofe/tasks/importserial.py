@@ -90,10 +90,15 @@ class ImportSerial(import_task.Import):
         conflict_list = []
         
         # Retrieve the keywords from file input 
-
         # If .hkl1 or .hkl2 file was provided
         if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) : 
             cmd += [ "--half-dataset", str(halfdataset1), str(halfdataset2)]
+        
+        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
+        if ((os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2)==False) or (os.path.isfile(halfdataset1)==False and os.path.isfile(halfdataset2)) ):
+            conflict_data=True
+            conflict_list.append("Only one half data set was uploaded. Please upload two half-datasets ")
+        
                    
         #If cell file was provided
         if os.path.isfile(cellfile):
