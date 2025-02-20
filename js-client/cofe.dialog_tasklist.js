@@ -639,11 +639,10 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskImportPDB     (),
     new TaskImportReplace (),
     new TaskMigrate       (),
+    new TaskImportSerial(),
     'Upload to Cloud Storage',
     new TaskFetchData     (),
-    new TaskPushToCloud   (),
-    ' ------------------- ',
-    new TaskImportSerial()
+    new TaskPushToCloud   ()
   ];
 
   if (__cloud_storage)
