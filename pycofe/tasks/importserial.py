@@ -117,7 +117,8 @@ class ImportSerial(import_task.Import):
         #Display a message to the user if the user input spacegroup and reference file provided as both contain spacegroup
         if spacegroup and os.path.isfile(reference):
             conflict_data=True
-            conflict_list.append("2 Instances of Spacegroups are present from user input and reference file, Check the data")
+            conflict_list.append("Two sets of Spacegroups are present from your input and another from the reference file. Please check the output ")
+            
         
         cell = self.getParameter ( sec1.UNITCELLPARAMETERS ).strip()
         if cell: # If there is cell user input, split each input into a string for 6 args
@@ -129,12 +130,13 @@ class ImportSerial(import_task.Import):
         #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
         if cell and os.path.isfile(cellfile):
             conflict_data=True
-            conflict_list.append("2 Instances of Unit Cell Parameters are present from user input and cell file, Check the data")
+            conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the cell file. Please check the output ")
         
         #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
         if cell and os.path.isfile(reference):
             conflict_data=True
-            conflict_list.append("2 Instances of Unit Cell Parameters are present from user input and reference file, Check the data")
+            conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the reference file. Please check the output ")
+            
 
         dmin = self.getParameter ( sec2.DMIN ).strip()
         if dmin: # If there is High-resolution cutoff user input
@@ -149,7 +151,7 @@ class ImportSerial(import_task.Import):
         
         # Display to the report a message of multiple conflicting data instances of parameters
         if conflict_data == True:
-            self.putMessage("<h3><b> Conflict of data </h3></b>")
+            self.putMessage("<h3><b> Conflict of input data </h3></b>")
             for conflict in conflict_list:
                 self.putMessage(str(conflict))
             
