@@ -203,12 +203,12 @@ TaskImportSerial.prototype.icon           = function()  { return 'task_importser
 TaskImportSerial.prototype.clipboard_name = function()  { return '"Import Serial"'; }
 
 TaskImportSerial.prototype.desc_title     = function()  {  // *EK* edit description
-  return 'upload and import .hkl, .mtz, .cell files from your device to merge and convert to MTZ Format ';
+  return '"this task imports merged data from CrystFEL in CCP4"';
 }
 
 TaskImportSerial.prototype.taskDescription = function()  {
   // this appears under task title in the Task Dialog
-    return 'Upload and import .hkl, .mtz, .cell files from your device to merge and convert to MTZ Format ';
+    return '"This task imports merged data from CrystFEL in CCP4" ';
   }
 
 
@@ -237,9 +237,7 @@ TaskImportSerial.prototype.currentVersion = function()  {
 TaskImportSerial.prototype.checkKeywords = function ( keywords )  {  // *EK* revise keywords
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,[
-              'workflow','molecular', 'replacement', 'af-mr','asu','auto','automation','auto-mr',
-              'automatic','automatization','automatisation', 'mr', 'structure', 'prediction',
-              'alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold'
+    'import', 'hkl', 'crystfel', 'import_serial'
             ] );
 }
 
@@ -252,18 +250,13 @@ if (!__template)  {
 
   TaskImportSerial.prototype.collectInput = function ( inputPanel )  {
     let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    // let hkl = this.input_data.getData('hkl')[0];
-
-     //Unit cell parameter validation with cell file, ref file, input
+    
+    //Unit cell parameter validation with cell file, ref file, input
     let cell_file = this.file_select[3].path;
     let ref_file = this.file_select[4].path;
     let cell = this.parameters.sec1.contains.UNITCELLPARAMETERS.value.trim(); //retriaval of params
     if (!cell_file && !cell &&!ref_file){
       input_msg += '|<b><i>Missing unit cell parameters from either cell file, reference file or input</i></b>';
-    } else if (cell_file && cell){
-        input_msg += '|<b><i>Cell file already contains unit cell parameters</i></b>';
-    } else if (ref_file && cell){
-      input_msg += '|<b><i>Reference file already contains unit cell parameters</i></b>';
     }
 
     //Wavelength validation
@@ -275,10 +268,16 @@ if (!__template)  {
     //Spacegroup validation with ref file
     let spacegroup = this.parameters.sec1.contains.SPACEGROUP.value;
     if (!ref_file && !spacegroup){
-      input_msg += '|<b><i>Missing spacegroup from either Reference file or input</i></b>';
-    }else if (ref_file && spacegroup){
-      input_msg += '|<b><i>Reference file already contains spacegroup</i></b>';
+      input_msg += '|<b><i>Missing spacegroup from either reference file or input</i></b>';
     }
+
+    //Validation for half-dataset .hkl1, .hkl2 files
+    let half_dataset1_file = this.file_select[1].path;
+    let half_dataset2_file = this.file_select[2].path;
+    if ((half_dataset1_file && !half_dataset2_file) || (!half_dataset1_file && half_dataset2_file)){
+      input_msg += '| <b><i> Half-datasets must either be both uploaded or none </i> </b>';
+    }
+
     
    
 
