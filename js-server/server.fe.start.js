@@ -192,7 +192,8 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.remoteCheckIn :
-            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
+          console.log ( ' >>>>> p0')
+          pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
           break;
 
         case cmd.fe_command.checkSession :

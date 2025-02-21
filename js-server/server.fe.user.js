@@ -810,13 +810,14 @@ function remoteCheckIn ( userData,callback_func )  {
   let response     = null;  // must become a cmd.Response object to return
   let fe_server    = conf.getFEConfig();
   let userFilePath = getUserDataFName ( userData );
+  console.log ( ' >>>>> p1')
 
   if (utils.fileExists(userFilePath))  {
 
-    let uData = utils.readObject ( userFilePath );
+    let uData  = utils.readObject ( userFilePath );
 
-    let ulogin      = userData.login;
-    let cloudrun_id = userData.cloudrun_id;
+    let ulogin = userData.login;
+    let pwd    = userData.pwd;
 
     if (uData)  {
 
@@ -828,7 +829,7 @@ function remoteCheckIn ( userData,callback_func )  {
 
         response  = new cmd.Response ( cmd.fe_retcode.suspendedLogin,'','' );
 
-      } else if ((uData.login==ulogin) && (uData.cloudrun_id==cloudrun_id))  {
+      } else if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
         let rData = {}; // return data object
 
@@ -857,9 +858,9 @@ function remoteCheckIn ( userData,callback_func )  {
         });  
 
       } else  {
-        log.error ( 41,'Login name/cloudrun_id mismatch:' );
-        log.error ( 41,' ' + ulogin + ':' + cloudrun_id );
-        log.error ( 41,' ' + uData.login + ':' + uData.cloudrun_id );
+        log.error ( 41,'Rempte checkin name/password mismatch:' );
+        log.error ( 41,' ' + ulogin + ':' + pwd );
+        log.error ( 41,' ' + uData.login + ':' + uData.pwd );
         response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
       }
 
@@ -1199,8 +1200,10 @@ function updateUserData ( loginData,userData )  {
     if (uData)  {
       ud.checkUserData ( uData );
       if (userData.login==ud.__local_user_id)  {
-        uData.remote_login       = userData.remote_login;
-        uData.remote_cloudrun_id = userData.remote_cloudrun_id;
+        if ('remote_login' in userData)
+          uData.remote_login = userData.remote_login;
+        if ('remote_pwd' in userData)
+          uData.remote_pwd   = hashPassword ( userData.remote_pwd );
         // uData.remote_tasks       = userData.remote_tasks;
       }
       if ('helpTopics' in userData)

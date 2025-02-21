@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    20.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -68,8 +68,8 @@ function UserData()  {
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
+  this.remote_pwd    = '';
   this.cloudrun_id   = '';
-  this.remote_cloudrun_id = '';
   this.knownSince    = '';  // date
   this.lastSeen      = '';  // date
   this.role          = role_code.user;
@@ -124,10 +124,10 @@ let msg = '';
 
   uData.version = 2;  // with new checks, update this number and above
 
-  if (!uData.hasOwnProperty('remote_login'))  {
-    uData.remote_login       = '';
-    uData.remote_cloudrun_id = '';
-    uData.remote_tasks       = {
+  if (!uData.hasOwnProperty('remote_pwd'))  {
+    uData.remote_login = '';
+    uData.remote_pwd   = '';
+    uData.remote_tasks = {
       'TaskStructurePrediction' : true
     };
   }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    20.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,10 +97,10 @@ function AccountPage ( sceneId )  {
   let cloudrun_pnl = null;
   let globus_inp   = null;
 
-  let remote_login_lbl    = null;
-  let remote_cloudrun_lbl = null;
-  let remote_login_inp    = null;
-  let remote_cloudrun_inp = null;
+  let remote_login_lbl = null;
+  let remote_pwd_lbl   = null;
+  let remote_login_inp = null;
+  let remote_pwd_inp   = null;
 
   if (full_list)  {
     user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
@@ -120,13 +120,12 @@ function AccountPage ( sceneId )  {
     cloudrun_inp = new InputText ( '' );
     globus_inp   = new InputText ( '' );
   } else  {
-    remote_login_lbl    = new Label     ( 'Login name:&nbsp;'  ).setNoWrap();
-    remote_cloudrun_lbl = new Label     ( 'CloudRun Id:&nbsp;' ).setNoWrap();
-    remote_login_inp    = new InputText ( __remote_login_id    );
-    remote_cloudrun_inp = new InputText ( __remote_cloudrun_id );
+    remote_login_lbl = new Label     ( 'Login name:&nbsp;' ).setNoWrap();
+    remote_pwd_lbl   = new Label     ( 'Password:&nbsp;'   ).setNoWrap();
+    remote_login_inp = new InputText ( '' );
+    remote_pwd_inp   = new InputText ( '' );
   }
   let authoris_lbl = null;
-  // let authorisation_dic = {};
   if (__auth_software)  {
     authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
@@ -183,23 +182,25 @@ function AccountPage ( sceneId )  {
                                'generate new CloudRun Id.' );  
     globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('234pt');
   } else  {
-    remote_login_lbl   .setFontSize ( '112%' );
-    remote_cloudrun_lbl.setFontSize ( '112%' );
-    remote_login_inp   .setFontSize ( '112%' ).setWidth('100%')
-                       .setTooltip  ( 'Login user name on remote ' + appName() + 
-                                      ' server' ); 
-    remote_cloudrun_inp.setFontSize ( '90%' ).setWidth('100%').setHeight('16pt')
-                       .setStyle    ( null, null, 'XXXX-XXXX-XXXX-XXXX',
-                                      'CloudRun Id for user\'s account on remote ' +
-                                      appName() + 
-                                      ' server (available from user settings).' );  
+    remote_login_lbl.setFontSize ( '112%' );
+    remote_pwd_lbl  .setFontSize ( '112%' );
+    remote_login_inp.setFontSize ( '112%' ).setWidth('100%')
+                    .setTooltip  ( 'Login user name on remote ' + appName() + 
+                                   ' server' ); 
+    remote_pwd_inp  .setFontSize ( '112%' ).setWidth('100%')  // .setHeight('16pt')
+                    .setStyle    ( 'password','','',
+                                   'Password for remote server login' );
+                      //  .setStyle    ( null, null, 'XXXX-XXXX-XXXX-XXXX',
+                      //                 'CloudRun Id for user\'s account on remote ' +
+                      //                 appName() + 
+                      //                 ' server (available from user settings).' );  
   }
 
   let row = 0;
-  panel.setWidget              ( title_lbl   ,row,0,1,4   );
-  panel.setHorizontalAlignment ( row++ ,0    ,'center'    );
+  panel.setWidget              ( title_lbl ,row,0,1,4 );
+  panel.setHorizontalAlignment ( row++ ,0  ,'center'  );
   panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
-  panel.setCellSize            ( '','20pt'   ,row++,0     );
+  panel.setCellSize            ( '','20pt' ,row++,0   );
 
   if (full_list)  {
 
@@ -256,10 +257,10 @@ function AccountPage ( sceneId )  {
       panel.setLabel    ( '',row1,0,1,3 );
       panel.setCellSize ( '','3pt',row1++,0 );
       let rpanel = panel.setGrid ('',row1++,0,1,4 );
-      rpanel.setWidget ( remote_login_lbl   ,0,0,1,1 );
-      rpanel.setWidget ( remote_login_inp   ,0,1,1,1 );
-      rpanel.setWidget ( remote_cloudrun_lbl,1,0,1,1 );
-      rpanel.setWidget ( remote_cloudrun_inp,1,1,1,1 );
+      rpanel.setWidget ( remote_login_lbl,0,0,1,1 );
+      rpanel.setWidget ( remote_login_inp,0,1,1,1 );
+      rpanel.setWidget ( remote_pwd_lbl  ,1,0,1,1 );
+      rpanel.setWidget ( remote_pwd_inp  ,1,1,1,1 );
       rpanel.setVerticalAlignment ( 0,0,'middle' );
       rpanel.setVerticalAlignment ( 1,0,'middle' );
       row1 += 2;
@@ -534,6 +535,19 @@ function AccountPage ( sceneId )  {
           .indexOf(feedback_btn.getText())<0)
         msg += '<b>Feedback agreement</b> must be chosen.<p>';
 
+    } else  {
+      let rlogin = (remote_login_inp.getValue().trim().length>0);
+      let rpwd   = (remote_pwd_inp.getValue().trim().length>0);
+      if (rlogin || rpwd)  {
+        if (!rlogin)
+          msg = '<b>No remote login name is specified</b> while password has ' +
+                'been provided. Either provide both a login name and password or ' +
+                'neither.';
+        if (!rpwd)
+          msg = '<b>No password is specified</b> while remote login name has ' +
+                'been provided. Either provide both a login name and password or ' +
+                'neither.'
+      }
     }
 
     for (let i=0;i<defsize.length;i++)  {
@@ -549,14 +563,13 @@ function AccountPage ( sceneId )  {
 
     if (msg)  {
 
-      
       let msg1 = '<ul>' + replaceAll(replaceAll(msg,'<b>','<li><b>'),'<p>','</li>') +
                  '</ul>';
 
-      new MessageBox ( accLbl + ' Update',
-          '<h2>Incorrect Update Data</h2>' +
+      new MessageBox ( accLbl + ' update',
+          '<div style="width:400px"><h2>Incorrect or inconsisistent data</h2>' +
           'The following items do not have correct value:<p>' +
-          msg1 + 'Please check all items and try again.',
+          msg1 + 'Please check all items and try again.</div>',
           'msg_excl_yellow');
 
     } else  {
@@ -564,23 +577,26 @@ function AccountPage ( sceneId )  {
       let restart = false;
 
       if (full_list)  {
-        userData.name        = user_inp    .getValue();
-        userData.email       = email_inp   .getValue();
-        userData.login       = login_inp   .getValue();
-        userData.pwd         = pwd_inp     .getValue();
+        userData.name        = user_inp    .getValue().trim();
+        userData.email       = email_inp   .getValue().trim();
+        userData.login       = login_inp   .getValue().trim();
+        userData.pwd         = pwd_inp     .getValue().trim();
         userData.licence     = licence_btn .getText ();
         userData.feedback    = feedback_btn.getText ();
-        userData.cloudrun_id = cloudrun_inp.getValue();
-        userData.globusId    = globus_inp  .getValue();
+        userData.cloudrun_id = cloudrun_inp.getValue().trim();
+        userData.globusId    = globus_inp  .getValue().trim();
       } else  {
-        restart = 
-        __remote_login_id           = remote_login_inp   .getValue();
-        __remote_cloudrun_id        = remote_cloudrun_inp.getValue();
-        restart = (userData.remote_login!=__remote_login_id) ||
-                  (userData.remote_cloudrun_id!=__remote_cloudrun_id);
-        userData.remote_login       = __remote_login_id;
-        userData.remote_cloudrun_id = __remote_cloudrun_id;
-        userData.remote_tasks       = __remote_tasks;
+        userData.remote_login = remote_login_inp.getValue().trim();
+        userData.remote_pwd   = remote_pwd_inp  .getValue().trim();
+        userData.remote_tasks = __remote_tasks;
+        restart = true;
+        //   let remote_login_id = remote_login_inp.getValue();
+        //   let remote_pwd      = remote_pwd_inp  .getValue();
+        //   restart = (userData.remote_login!=remote_login_id) ||
+        //             (userData.remote_pwd!=remote_pwd);
+        //   userData.remote_login = remote_login_id;
+        //   userData.remote_pwd   = remote_pwd;
+        //   userData.remote_tasks = __remote_tasks;
       }
       userData.action = userdata_action.none;
 
@@ -727,8 +743,8 @@ function AccountPage ( sceneId )  {
       feedback_btn.setDisabled ( false );
       delete_btn  .setDisabled ( false );
     } else if ('remote_login' in userData)  {
-      remote_login_inp   .setValue ( userData.remote_login       );
-      remote_cloudrun_inp.setValue ( userData.remote_cloudrun_id );
+      remote_login_inp.setValue ( userData.remote_login );
+      // remote_pwd_inp  .setValue ( userData.remote_pwd   );
     }
 
     if (authoris_btn)

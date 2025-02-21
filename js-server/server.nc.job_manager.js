@@ -996,7 +996,7 @@ let cfg = conf.getServerConfig();
 
       send_dir.sendDir ( jobEntry.jobDir,feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token,
-                         nc_meta,{compression:cfg.compression},
+                         nc_meta,{compression:cfg.compression},null,
 
         function(rdata,stats)  {  // send was successful
 

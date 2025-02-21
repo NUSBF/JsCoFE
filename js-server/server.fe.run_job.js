@@ -944,7 +944,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
           meta.email     = uData.email;
         }
         // if (nc_cfg.exeType=='REMOTE')
-        //   meta.cloudrun_id = uData.remote_cloudrun_id;
+        //   meta.cloudrun_id = uData.remote_pwd;
       }
 
       //  for remote jobs:
@@ -957,10 +957,20 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
       //     for retrieving file from RFE; If RFE sees ANC in header, it 
       //     forwards fetch request to ANC
 
+      let request_headers = null;
+      if (run_remotely)  {
+        // RFE will check credentials when job is sent to ANC. Once job is 
+        // running, communication between cliend and ANC is simply proxied
+        // by RFE using rfe_token, which is part of request URL
+        request_headers['ccp4cloud-user'] = uData.remote_login;
+        request_headers['ccp4cloud-pwd']  = uData.remote_pwd;
+      }
+
       // note rfe_token=='' for non-'REMOTE' jobs
       send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,
                          rfe_token + cmd.nc_command.runJob,
                          meta,{compression:nc_cfg.compression},
+                         request_headers,
 
         function ( retdata,stats ){  // send successful
 
