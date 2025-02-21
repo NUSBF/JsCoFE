@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    20.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -616,7 +616,7 @@ function TaskRefmac()  {
               range    : ['NO|No','POLAR|Yes - only polar hydrogens (for H/D exchange experiments)','ALL|Yes - all hydrogens (for perdeuterated crystals)'],
               value    : 'POLAR',
               showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL','YES']},
-              position : [3,3,1,1]
+              position : [4,3,1,1]
             },
             H_INIT_HD : { type : 'combobox',
               keyword  : 'none',
@@ -624,8 +624,8 @@ function TaskRefmac()  {
               tooltip  : 'H/D fractions should be initialised if they have not been refined before, or the model has undergone substantial changes since the last round of refinement.',
               range    : ['no|No - assumes H/D fraction has been refined before','mix|Yes - set to D for exchangable atoms; H for others (for H/D exchange experiments)','alld|Yes - set all to D (for perdeuterated crystals)'],
               value    : 'no',
-              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['YES'],'H_REFINE_HD':['ALL','POLAR']},
-              position : [4,3,1,1]
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['YES']},
+              position : [3,3,1,1]
             },
             H_INIT_HD_HALL : { type : 'combobox',
               keyword  : 'none',
@@ -633,8 +633,8 @@ function TaskRefmac()  {
               tooltip  : 'H/D fractions should be initialised if they have not been refined before, or the model has undergone substantial changes since the last round of refinement.',
               range    : ['mix|Set to D for exchangable atoms; H for others (for H/D exchange experiments)','alld|Set all to D (for perdeuterated crystals)'],
               value    : 'mix',
-              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL'],'H_REFINE_HD':['ALL','POLAR']},
-              position : [4,3,1,1]
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL']},
+              position : [3,3,1,1]
             },
             KEYWORDS_LBL : {
               type     : 'label',
