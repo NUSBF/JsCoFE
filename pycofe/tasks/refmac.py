@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.25   <--  Date of Last Modification.
+#    21.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -360,11 +360,15 @@ class Refmac(basic.TaskDriver):
                  stdin.append ( 'REFINEMENT DFRACTION' )
                  stdin.append ( 'HYDROGEN DFRACTION ' + str(sec6.H_REFINE_HD.value) )
               if str(sec6.MKHYDR_NEUTRON.value) == 'YES':
+                 if str(sec5.RIDING_HYDROGENS.value) != 'NO':
+                    stdin.append ( 'MAKE HOUT YES')
                  if str(sec6.H_INIT_HD.value) == 'alld':
                     stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )  
               elif str(sec6.MKHYDR_NEUTRON.value) == 'ALL':
+                 if str(sec5.RIDING_HYDROGENS.value) != 'NO':
+                    stdin.append ( 'MAKE HOUT YES')
                  if str(sec6.H_INIT_HD_HALL.value) == 'alld':
                     stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD_HALL.value) == 'mix':
