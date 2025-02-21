@@ -61,8 +61,8 @@ CCP4 Cloud includes several `data import <https://cloud.ccp4.ac.uk/manuals/html-
 8. `Push to Cloud Storage <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.PushToCloud.html>`_
 
 
-Automated Structure Solution
-+++++++++++++++++++++++++++++
+Plans 1-4: Automated Structure Solution 
+++++++++++++++++++++++++++++++++++++++++
 
 Project plans correlate to existing `automatic workflows <https://cloud.ccp4.ac.uk/manuals/html-taskref/Workflows.html>`_
 
@@ -77,8 +77,8 @@ After selecting a plan, you will be prompted to upload data. If you have no data
 
 `Automation in CCP4 Cloud: Workflows <https://www.youtube.com/v/ph2rxQSYiE0>`_
 
-Import already solved structure for completion
-++++++++++++++++++++++++++++++++++++++++++++++
+Plan 5. Import already solved structure for completion
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 This plan allows for a quick start from a phased (possibly partially built and refined) 
 structure or heavy-atom substructure for further refinement and model building.
