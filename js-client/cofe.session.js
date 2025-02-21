@@ -179,19 +179,54 @@ function checkAnnouncement()  {
 
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
-  function _no_remote_server_message()  {
-    new MessageBox ( 'Remote jobs server is not connected',
+  function _no_remote_server_message ( refresh )  {
+    // new MessageBox ( 'Remote jobs server is not connected',
+    //   '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
+    //   'The connection to the remote jobs server is fully configured but not ' +
+    //   'currently active.' +
+    //   '<p>This could be due to incorrect server URL or user credentials ' +
+    //   '(login name or password) in the Settings or an internet connectivity ' +
+    //   'issue.' +
+    //   '<p>All jobs will be executed locally on your computer.' +
+    //   '<p><i style="font-size:85%">To desactivate remote server connection ' +
+    //   'without receiving this message, either disable the remote server in ' +
+    //   'the ' + appName() + ' configuration utility or remove both the login ' +
+    //   'name and password from the Settings.</i></div>',
+    //   'msg_information',false );
+    new QuestionBox ( 'Remote jobs server is not connected',
       '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
-      'The connection to the remote jobs server is fully configured, but the ' +
-      'server is not connected.' +
-      '<p>This may be due to incorrect user credentials (login name or ' +
-      'CloudRun ID) in the Settings, or an internet connectivity issue.' +
-      '<p><b>All jobs will run on your computer.</b>' +
-      '<p><i style="font-size:85%">To stop receiving this message, either ' +
-      'disable the remote server in the ' + appName() + ' configuration ' +
-      'utility or clear the login name and CloudRun ID in the Settings.' +
-      '</i></div>', 
-      'msg_information' );
+      'The connection to the remote jobs server is fully configured but not ' +
+      'currently active.' +
+      '<p>This could be due to incorrect server URL or user credentials ' +
+      '(login name or password) in the Settings or an internet connectivity ' +
+      'issue.' +
+      '<p>All jobs will be executed locally on your computer.' +
+      '<p><i style="font-size:85%">To desactivate remote server connection ' +
+      'without receiving this message, either disable the remote server in ' +
+      'the ' + appName() + ' configuration utility or remove both the login ' +
+      'name and password from the Settings.</i></div>',
+      [
+        { name    : 'Close',
+          onclick : function(){
+              if (refresh)  {
+                window.setTimeout ( function(){
+                  if (__current_page)  {
+                    __server_queue = [];
+                    __process_network_indicators();
+                    makePage ( function(){
+                      makeNewInstance ( __current_page._type,__current_page.sceneId );
+                    });
+                    makeSessionCheck ( __current_page.sceneId );
+                  } else  {  // should never come to here
+                    reloadBrowser();
+                  }
+                },100);
+              }
+            }
+        }
+      ],'msg_information'
+    );
+
   }
 
   let ud   = new UserData();
@@ -229,8 +264,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
-              __remote_login_id    = userData.remote_login;
-              __remote_cloudrun_id = userData.remote_cloudrun_id;
+              // __remote_login_id    = userData.remote_login;
+              // __remote_pwd         = userData.remote_pwd;
               __remote_tasks       = userData.remote_tasks;
 
               if (response.data.onlogin_message)  {
@@ -241,22 +276,29 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               }
 
               __remote_environ_server = [];
-              if ((__remoteJobServer.status=='FE') && __remote_login_id 
-                                                   && __remote_cloudrun_id)  {
+              if ((__remoteJobServer.status=='FE') && userData.remote_login 
+                                                   && userData.remote_pwd)  {
                 let rud = new UserData();
-                rud.login       = __remote_login_id;
-                rud.cloudrun_id = __remote_cloudrun_id;
-                serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
-                                rud,'Remote FE request',function(response){
-                  if (response && (response.status==fe_retcode.ok))
-                    __remote_environ_server = response.data.environ_server;
-                  if (__remote_environ_server.length<=0)
-                    _no_remote_server_message();
-                  return true;          
-                });
-              } else if (__remoteJobServer.url && __remote_login_id 
-                                               && __remote_cloudrun_id)  {
-                _no_remote_server_message();
+                rud.login = userData.remote_login;
+                rud.pwd   = userData.remote_pwd;
+                window.setTimeout ( function(){
+                  serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
+                                  rud,'Remote FE request',
+                    function(response){
+                      if (response && (response.status==fe_retcode.ok))
+                        __remote_environ_server = response.data.environ_server;
+                      if (__remote_environ_server.length<=0)
+                        _no_remote_server_message ( false );
+                      return true;
+                    },function(){
+                    },function(xhr,err)  {  
+                      _no_remote_server_message ( true );
+                      return true;
+                    });
+                },500);
+              } else if (__remoteJobServer.url && userData.remote_login 
+                                               && userData.remote_pwd)  {
+                _no_remote_server_message ( false );
               }
 
               if (!__local_service)  {

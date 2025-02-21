@@ -1544,6 +1544,7 @@ ProjectListPage.prototype.calcPageSize = function()  {
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
   // if (this.projectTable.paginator.paginate)
+  if (this.projectTable)
     this.projectTable.setPageSize ( this.calcPageSize() );
   // this.element.style.height = `${window.innerHeight - 32}px`;
   // this.element.style.height = (height+8) + 'px';

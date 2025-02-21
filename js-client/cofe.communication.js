@@ -303,11 +303,11 @@ function processServerQueue()  {
       if (q0.type=='command')
         __server_command ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_response,q0.function_always,
-                           q0.function_fail,q0.id );
+                           q0.function_fail,q0.id,q0.timeout );
       else
         __server_request ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_ok,q0.function_always,
-                           q0.function_fail,q0.id );
+                           q0.function_fail,q0.id,q0.timeout );
     }
     if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))  {
       __delays_timer = window.setTimeout ( function(){
@@ -419,7 +419,8 @@ function __log_request_timing ( dt )  {
 }
 
 function __server_command ( cmd,data_obj,page_title,function_response,
-                            function_always,function_fail,sqid )  {
+                            function_always,function_fail,sqid,
+                            timeout=1000000 )  {
 // used when no user is logged in
 
   let json = makeJSONString ( data_obj );
@@ -430,7 +431,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       async    : true,
       type     : 'POST',
       data     : json,
-      timeout  : 1000000,   // milliseconds
+      timeout  : timeout,   // milliseconds
       dataType : 'text'
       // error: function(xhr, ajaxOptions, thrownError) {
       //             alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -497,7 +498,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 
 
 function __server_request ( request_type,data_obj,page_title,function_ok,
-                            function_always,function_fail,sqid )  {
+                            function_always,function_fail,sqid,
+                            timeout=1000000 )  {
 // used when a user is logged in
 
   let request = new Request ( request_type,__login_token,data_obj );
@@ -511,7 +513,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       type        : 'POST',
       data        : json,
       processData : false,
-      timeout     : 1000000,   // milliseconds
+      timeout     : timeout,   // milliseconds
       dataType    : 'text'
     })
     .done ( function(rdata) {
@@ -700,7 +702,7 @@ function promptSessionCheck ( cmd )  {
 }
 
 function serverCommand ( cmd,data_obj,page_title,function_response,
-                         function_always,function_fail )  {
+                         function_always,function_fail,timeout=1000000 )  {
 
   promptSessionCheck ( cmd );
 
@@ -711,6 +713,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
     request_type      : cmd,
     data_obj          : data_obj,
     t_requested       : performance.now(),
+    timeout           : timeout,
     page_title        : page_title,
     function_response : function_response,
     function_always   : function_always,
@@ -724,7 +727,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
 
 
 function serverRequest ( request_type,data_obj,page_title,function_ok,
-                         function_always,function_fail )  {
+                         function_always,function_fail,timeout=1000000 )  {
 
   promptSessionCheck ( 'x' );
 
@@ -734,6 +737,7 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
     id              : __server_queue_id++,
     request_type    : request_type,
     data_obj        : data_obj,
+    timeout         : timeout,
     t_requested     : performance.now(),
     page_title      : page_title,
     function_ok     : function_ok,
@@ -974,13 +978,13 @@ let c = 0;
 
 
 function saveUserData ( title )  {
-  let userData                = new UserData();
-  userData.login              = __login_id;
-  userData.pwd                = '';  // can save only some records without password
-  userData.remote_login       =  __remote_login_id;
-  userData.remote_cloudrun_id = __remote_cloudrun_id;
-  userData.settings           = __user_settings;
-  userData.remote_tasks       = __remote_tasks;
+  let userData          = new UserData();
+  userData.login        = __login_id;
+  userData.pwd          = '';  // can save only some records without password
+  // userData.remote_login =  __remote_login_id;
+  // userData.remote_pwd   = __remote_pwd;
+  userData.settings     = __user_settings;
+  userData.remote_tasks = __remote_tasks;
   serverRequest ( fe_reqtype.updateUserData,userData,
                   title,function(response){} );
 }
@@ -1147,7 +1151,8 @@ function getRemoteFEStatus()  {
     return remote_jobs_server_code.not_configured;
   if (__remoteJobServer.status!='FE')
     return remote_jobs_server_code.not_accessible;
-  if ((!__remote_login_id) || (!__remote_cloudrun_id))
+  // if ((!__remote_login_id) || (!__remote_pwd))
+  if (__remote_environ_server.length<=0)
     return remote_jobs_server_code.not_connected;
   if (__remote_environ_server.length<=0)
     return remote_jobs_server_code.not_responding;

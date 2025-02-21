@@ -92,8 +92,8 @@ var __environ_server        = [];    // list of key environmental variables on N
 var __environ_client        = [];    // list of key environmental variables on Client
 var __remoteJobServer       = { url: null, status: 'nourl' };
 var __remote_environ_server = [];    // list of key environmental variables on NCs
-var __remote_login_id       = '';
-var __remote_cloudrun_id    = '';
+// var __remote_login_id       = '';
+// var __remote_pwd            = '';
 var __remote_tasks          = { 'TaskStructurePrediction' : true };
 var __my_workflows          = [];    // user defined workflows
 
