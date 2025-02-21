@@ -257,11 +257,15 @@ if (!__template)  {
     if (!cell_file && !cell &&!ref_file){
       input_msg += '|<b><i>Missing unit cell parameters from either cell file, reference file or input</i></b>';
     }
-    let splitcell = cell.split(/\s+/).map(Number)// Split the input using space as delimeter regardless of number and map input as a number else return NaN (i.e if a letter is)
-    if ((splitcell.some(part => isNaN(Number(part)))) || splitcell.length!=6){ //If the unit cell parameters contain values that are not a number]
-      input_msg+= "|<b><i>Invalid unit cell parameters from input. Please follow the format of divided by spaces, e.g. 60 50 40 90 90 90 </i></b>"
+    //Only check for the format of unit cell parameters if input is present
+    if (cell){
+      let splitcell = cell.split(/\s+/).map(Number)// Split the input using space as delimeter regardless of number and map input as a number else return NaN (i.e if a letter is)
+      if ((splitcell.some(part => isNaN(Number(part)))) || splitcell.length!=6){ //If the unit cell parameters contain values that are not a number]
+        input_msg+= "|<b><i>Invalid unit cell parameters from input. Please follow the format of divided by spaces, e.g. 60 50 40 90 90 90 </i></b>"
 
+      }
     }
+
     
     //Wavelength validation
     let wavelength = this.parameters.sec1.contains.WAVELENGTH.value;
