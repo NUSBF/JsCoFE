@@ -97,7 +97,7 @@ class ImportSerial(import_task.Import):
         #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
         if ((os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2)==False) or (os.path.isfile(halfdataset1)==False and os.path.isfile(halfdataset2)) ):
             conflict_data=True
-            conflict_list.append("Only one half data set was uploaded. Please upload two half-datasets ")
+            conflict_list.append("Only one half data set was uploaded. Half-set correlation CC(1/2), CC* and Rsplit weren't calculated. Please upload two half-datasets if required ")
         
                    
         #If cell file was provided
