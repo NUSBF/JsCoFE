@@ -6,6 +6,8 @@ Upload Files to CCP4 Cloud from ISPyB
 
 ISPyB/SynchWeb provides a convenient way to upload files to the CCP4 Cloud storage.
 
+New to cloud? Read `How to start a project in CCP4 Cloud <./jscofe_start_project.html>`_.
+
 CCP4 Cloud Username and Cloudrun ID
 -----------------------------------
 
@@ -19,8 +21,16 @@ My Cloud Storage
 ----------------
 
 The uploaded files will be stored in your ``My Cloud Storage`` within your specified CCP4 Cloud account. These files can be accessed and used in various CCP4 Cloud tasks. 
-To access files in ``My Cloud Storage``, you can use `import data from CCP4 Cloud <../html-taskref/doc.task.CloudImport.html>`_ storage in CCP4 Cloud tasks or set the file location selector to ``cloud storage`` where applicable.
+To access files in ``My Cloud Storage``, you can:
 
+1. Use `import data from CCP4 Cloud storage <../html-taskref/doc.task.CloudImport.html>`_  in CCP4 Cloud tasks: 
+
+  .. image:: images/cloudimport.png
+      :scale: 30%
+     
+
+2. Set the file location selector to ``cloud storage`` where applicable (tasks such as worflows, hop-on, xia2 and etc):
+ 
 .. image:: images/cloud_storage.png
      :scale: 40%
      
