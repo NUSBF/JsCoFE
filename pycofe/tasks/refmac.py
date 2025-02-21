@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.02.25   <--  Date of Last Modification.
+#    20.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskiy 2017-2025
+#                Oleg Kovalevskiy, Maria Fando 2017-2025
 #
 # ============================================================================
 #
@@ -361,12 +361,12 @@ class Refmac(basic.TaskDriver):
                  stdin.append ( 'HYDROGEN DFRACTION ' + str(sec6.H_REFINE_HD.value) )
               if str(sec6.MKHYDR_NEUTRON.value) == 'YES':
                  if str(sec6.H_INIT_HD.value) == 'alld':
-                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                    stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )  
               elif str(sec6.MKHYDR_NEUTRON.value) == 'ALL':
                  if str(sec6.H_INIT_HD_HALL.value) == 'alld':
-                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                    stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD_HALL.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )                  
 
