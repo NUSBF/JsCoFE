@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.02.25   <--  Date of Last Modification.
+#    21.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -245,7 +245,7 @@ class ImportSerial(import_task.Import):
 
         self.flush()
 
-        have_results = True
+        
         summary_line = "imported and merged: MTZ "  # line inside the cloud next to the job tree --imported and merged: MTZ 
 
         self.addCitation ( "import_serial" )
@@ -254,6 +254,7 @@ class ImportSerial(import_task.Import):
         have_results = False
         summary_line = ""
         if os.path.isfile(outputMTZFName):
+            have_results = True
 
             self.putTitle ( "Output Data" )
 
