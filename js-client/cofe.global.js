@@ -581,7 +581,7 @@ var __doNotShowList = [];
 
 function doNotShowAgain ( key,url )  {
 
-  var topic = url.replace ( /^.*\/|\.[^.]*$/g,'' );
+  let topic = url.replace ( /^.*\/|\.[^.]*$/g,'' );
 
   if (key==0)  {
 
@@ -592,7 +592,7 @@ function doNotShowAgain ( key,url )  {
 
     if (__doNotShowList.indexOf(topic)<0)  {
       __doNotShowList.push ( topic );
-      var userData = {};
+      let userData = {};
       userData.helpTopics = __doNotShowList;
       serverRequest ( fe_reqtype.saveHelpTopics,userData,'Do not show again',
                       null,null,'persist' );

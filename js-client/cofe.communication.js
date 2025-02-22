@@ -978,15 +978,17 @@ let c = 0;
 
 
 function saveUserData ( title )  {
-  let userData          = new UserData();
-  userData.login        = __login_id;
-  userData.pwd          = '';  // can save only some records without password
-  // userData.remote_login =  __remote_login_id;
-  // userData.remote_pwd   = __remote_pwd;
-  userData.settings     = __user_settings;
-  userData.remote_tasks = __remote_tasks;
+  let userData           = new UserData();
+  userData.login         = __login_id;
+  userData.pwd           = '';   // can save only some records without password
+  delete userData.remote_login;  // do not update
+  delete userData.remote_pwd;    // do not update
+  userData.helpTopics    = __doNotShowList;
+  userData.authorisation = __user_authorisation;
+  userData.settings      = __user_settings;
+  userData.remote_tasks  = __remote_tasks;
   serverRequest ( fe_reqtype.updateUserData,userData,
-                  title,function(response){} );
+                  title,function(response){} );            
 }
 
 
