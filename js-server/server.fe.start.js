@@ -22,9 +22,10 @@
 'use strict';
 
 //  load system modules
-const http    = require('http');
-const path    = require('path');
-const request = require('request');
+const http      = require('http');
+const path      = require('path');
+const request   = require('request');
+const httpProxy = require('http-proxy');
 
 //  load application modules
 const conf    = require('./server.configuration');
@@ -40,6 +41,9 @@ const cmd     = require('../js-common/common.commands');
 
 //  prepare log
 const log     = require('./server.log').newLog(0);
+
+// Create a proxy server
+const proxy   = httpProxy.createProxyServer({});
 
 // ==========================================================================
 
@@ -192,8 +196,7 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.remoteCheckIn :
-          console.log ( ' >>>>> p0')
-          pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
           break;
 
         case cmd.fe_command.checkSession :
@@ -255,7 +258,21 @@ function start ( callback_func )  {
             rj.ncGetInfo_remote ( server_request,server_response );
           break;
 
+        // case cmd.nc_command.runJob :
+        //   break;
+
         default :
+
+          if (c.filePath.startsWith(cmd.__special_rfe_tag))  {
+            let clist = c.filePath.split('.');  // parse RFE token
+            let furl  = conf.getNCConfig(parseInt(clist[1])).url(); // forward URL
+            proxy.web ( server_request,server_response,
+              { target : furl, changeOrigin : true }, (err) => {
+                console.error('Proxy error:', err);
+                server_response.writeHead(500, { 'Content-Type': 'text/plain' });
+                server_response.end('Proxy encountered an error.');
+            });
+          } else
             c.sendFile ( server_response );
 
       }

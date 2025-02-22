@@ -95,9 +95,10 @@ function FEJobRegister()  {
   this.logflow.njob0  = 0;
 }
 
-FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
-                                            project,jobId,shared_logins,
-                                            eoj_notification,push_back )  {
+FEJobRegister.prototype.addJob = function ( job_token,rfe_token,nc_number,
+                                            loginData,project,jobId,
+                                            shared_logins,eoj_notification,
+                                            push_back )  {
   let crTime = Date.now();
   this.job_map[job_token] = {
     nc_number        : nc_number,
@@ -105,6 +106,7 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     job_token        : job_token,  // job_token issued by NC (clashes hopefully minimal)
                                    // make tokens surely NC-specific through NC
                                    // confoguration
+    rfe_token        : rfe_token,  // toke issued by 'REMOTE' FE (RFE)
     loginData        : loginData,
     project          : project,
     jobId            : jobId,
@@ -221,6 +223,8 @@ function readFEJobRegister()  {
           }
         if (!('push_back' in feJobRegister.job_map[token]))
           feJobRegister.job_map[token].push_back = 'YES';
+        if (!('rfe_token' in feJobRegister.job_map[token]))
+          feJobRegister.job_map[token].rfe_token = '';
       }
       if (!('token_pull_map' in feJobRegister))
         feJobRegister.token_pull_map = {};
@@ -288,7 +292,7 @@ function getEFJobEntry ( loginData,project,jobId )  {
 //
 //        exeType : 'REMOTE'
 //
-// On NC side, the configuration should specify the relevant NC typeof, such as
+// On NC side, the configuration should specify the relevant NC type, such as
 // 'SLURM', 'SGE' etc. When jobs are sent to 'REMOTE' NC, the results are pulled 
 // back by FE, rather than pushed from NC. This is a less efficient model, which 
 // should be used only when absolutely necessary, for example, when a task needs 
@@ -334,7 +338,7 @@ let nc_servers = conf.getNCConfigs();
           let filePath = path.join ( conf.getFETmpDir(),job_entry.job_token + '.zip' );
           let file     = fs.createWriteStream ( filePath );
           request({
-              uri     : cmd.nc_command.getJobResults,
+              uri     : check_jobs[server_no].rfe_token + cmd.nc_command.getJobResults,
               baseUrl : nc_url,
               method  : 'POST',
               body    : { job_token : job_entry.job_token },
@@ -416,18 +420,36 @@ let nc_servers = conf.getNCConfigs();
              (nc_servers[nc_number].exeType.toUpperCase()=='REMOTE'))  {
     // check jobs on next REMOTE NC
 
-    request({
-      uri     : cmd.nc_command.checkJobResults,
-      baseUrl : nc_servers[nc_number].externalURL,
-      method  : 'POST',
-      body    : check_jobs,
-      json    : true,
-      rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-    },function(error,response,body){
-      // console.log ( ' >>>>> error = "' + error + '"' );
-      // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
-      checkRemoteJobs ( body.data,nc_number+1 );
-    });
+    let rfe_tokens = {};
+    for (let index in check_jobs)  
+      if (!(check_jobs[index].rfe_token in rfe_tokens))  {
+        rfe_tokens[check_jobs[index].rfe_token] = true;
+        request({
+          uri     : check_jobs[index].rfe_token + cmd.nc_command.checkJobResults,
+          baseUrl : nc_servers[nc_number].externalURL,
+          method  : 'POST',
+          body    : check_jobs,
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          // console.log ( ' >>>>> error = "' + error + '"' );
+          // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+          checkRemoteJobs ( body.data,nc_number+1 );
+        });
+      }
+
+    // request({
+    //   uri     : cmd.nc_command.checkJobResults,
+    //   baseUrl : nc_servers[nc_number].externalURL,
+    //   method  : 'POST',
+    //   body    : check_jobs,
+    //   json    : true,
+    //   rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+    // },function(error,response,body){
+    //   // console.log ( ' >>>>> error = "' + error + '"' );
+    //   // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+    //   checkRemoteJobs ( body.data,nc_number+1 );
+    // });
 
   } else  {
     checkRemoteJobs ( check_jobs,nc_number+1 );
@@ -455,12 +477,14 @@ function checkPullMap()  {
           check_jobs[index] = {
             job_token : feJobRegister.token_pull_map[index],
             nc_number : jobEntry.nc_number,
+            rfe_token : jobEntry.rfe_token,
             status    : ''
           }
         } else  {  // no job entry, job cannot return therefore remove
           check_jobs[index] = {
             job_token : feJobRegister.token_pull_map[index],
             nc_number : -1,
+            rfe_token : '',
             status    : task_t.job_code.remove
           }
         }
@@ -962,6 +986,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
         // RFE will check credentials when job is sent to ANC. Once job is 
         // running, communication between cliend and ANC is simply proxied
         // by RFE using rfe_token, which is part of request URL
+        request_headers = {};
         request_headers['ccp4cloud-user'] = uData.remote_login;
         request_headers['ccp4cloud-pwd']  = uData.remote_pwd;
       }
@@ -985,10 +1010,10 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
           // The number cruncher will start dealing with the job automatically.
           // On FE end, register job as engaged for further communication with
           // NC and client.
-          feJobRegister.addJob ( retdata.job_token,nc_number,ownerLoginData,
-                                task.project,task.id,shared_logins,
-                                uData.settings.notifications.end_of_job,
-                                meta.push_back );
+          feJobRegister.addJob ( retdata.job_token,rfe_token,nc_number,
+                                 ownerLoginData,task.project,task.id,shared_logins,
+                                 uData.settings.notifications.end_of_job,
+                                 meta.push_back );
           writeFEJobRegister();
           checkPullMap();
 
@@ -1130,7 +1155,7 @@ function runJob ( loginData,data, callback_func )  {
           let jobballPath = send_dir.getPackPath(jobDir);
           utils.moveFile ( packPath,jobballPath );
 
-          feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+          feJobRegister.addJob ( job_token,'',-1,ownerLoginData,  // -1 is nc number
                                 task.project,task.id,shared_logins,
                                 null,'YES' );  // no notifications for client jobs
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -1167,7 +1192,7 @@ function runJob ( loginData,data, callback_func )  {
       'Job is running as web-application on client machine. Full report will ' +
       'become available after job finishes.',true );
 
-    feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+    feJobRegister.addJob ( job_token,'',-1,ownerLoginData,  // -1 is nc number
                            task.project,task.id,shared_logins,
                            null,'YES' );  // no notifications for client jobs
     feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -1682,6 +1707,10 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 function _place_job_results ( job_token,code,errs,meta,server_response )  {
 
   let jobEntry = feJobRegister.getJobEntryByToken ( job_token );
+  if (!jobEntry)  {
+    log.error ( 10,'expected job registry entry not found, job token ' + job_token );
+    return;
+  }
 
   if (jobEntry.nc_number>=0)  {
     let nc_servers = conf.getNCConfigs();
