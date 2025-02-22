@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    21.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -810,7 +810,6 @@ function remoteCheckIn ( userData,callback_func )  {
   let response     = null;  // must become a cmd.Response object to return
   let fe_server    = conf.getFEConfig();
   let userFilePath = getUserDataFName ( userData );
-  console.log ( ' >>>>> p1')
 
   if (utils.fileExists(userFilePath))  {
 
@@ -858,7 +857,7 @@ function remoteCheckIn ( userData,callback_func )  {
         });  
 
       } else  {
-        log.error ( 41,'Rempte checkin name/password mismatch:' );
+        log.error ( 41,'Remote checkin name/password mismatch:' );
         log.error ( 41,' ' + ulogin + ':' + pwd );
         log.error ( 41,' ' + uData.login + ':' + uData.pwd );
         response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
