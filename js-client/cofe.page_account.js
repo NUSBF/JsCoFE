@@ -590,13 +590,6 @@ function AccountPage ( sceneId )  {
         userData.remote_pwd   = remote_pwd_inp  .getValue().trim();
         userData.remote_tasks = __remote_tasks;
         restart = true;
-        //   let remote_login_id = remote_login_inp.getValue();
-        //   let remote_pwd      = remote_pwd_inp  .getValue();
-        //   restart = (userData.remote_login!=remote_login_id) ||
-        //             (userData.remote_pwd!=remote_pwd);
-        //   userData.remote_login = remote_login_id;
-        //   userData.remote_pwd   = remote_pwd;
-        //   userData.remote_tasks = __remote_tasks;
       }
       userData.action = userdata_action.none;
 

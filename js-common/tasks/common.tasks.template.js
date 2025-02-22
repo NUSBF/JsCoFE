@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    22.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -727,7 +727,7 @@ if (!dbx)  {
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
     let env = __environ_server;
-    if (this.canRunRemotely() && (__remoteJobServer.status=='FE') &&
+    if (this.canRunRemotely() && (__remote_environ_server.length>0) &&
         __remote_tasks[this._type])
       env = __remote_environ_server;
     return this._is_task_available ( appName(),
