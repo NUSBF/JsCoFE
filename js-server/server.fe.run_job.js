@@ -347,7 +347,7 @@ let nc_servers = conf.getNCConfigs();
             }
           )
           .pipe(file)
-          .on('finish',function()  {
+          .on('close',function()  {
 
             // Check whether this is a signal response or a possible zip file
             // this is redundant in view of preliminary checks, but we leave
