@@ -156,7 +156,7 @@ let response = null;
           response = prj.shareProjectConfirm ( loginData,data );
        break;
 
-   case cmd.fe_reqtype.shareProject :
+    case cmd.fe_reqtype.shareProject :
           response = prj.shareProject ( loginData,data );
        break;
 

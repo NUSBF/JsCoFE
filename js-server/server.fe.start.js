@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -196,11 +196,18 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.remoteCheckIn :
-            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,
+                                 feConfig.state );
+          break;
+
+        case cmd.fe_command.remoteUserRation :
+            pp.processPOSTData ( server_request,server_response,user.getRemoteUserRation,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.checkSession :
-            pp.processPOSTData ( server_request,server_response,user.checkSession,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.checkSession,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.control :
