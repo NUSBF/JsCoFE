@@ -164,7 +164,6 @@ let cfg   = conf.getFEConfig();
 
 function saveUserRation ( loginData,user_ration )  {
 let fpath = getUserRationFPath ( loginData );
-console.log ( ' >>>>>>> save ration ' + fpath)
   if (utils.writeObject(fpath,user_ration))
     return true;
   log.error ( 9,'cannot save user ration at ' + fpath );
@@ -255,10 +254,8 @@ function updateResourceStats ( loginData,job_class,add_resource )  {
 function bookJob ( loginData,job_class,cloudrun_bool )  {
 // this function is called when job has landed in FE
 let r = getUserRation ( loginData );
-  if (r && r.bookJob(job_class,cloudrun_bool))  {
-    console.log ( ' >>>>>> save ration ' + r.cpu_day_used)
+  if (r && r.bookJob(job_class,cloudrun_bool))
     saveUserRation ( loginData,r );
-  }
   return r;
 }
 

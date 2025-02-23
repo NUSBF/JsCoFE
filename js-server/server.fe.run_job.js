@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.02.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1583,8 +1583,6 @@ function updateUserRation ( data,callback_func )  {  // gets UserData object
   // This function is FE response handler for updating user ration after
   // running remote jobs (i.e. jobs coming from 'external' FEs, typically 
   // CCP4 Cloud Local setups).
-
-console.log ( ' >>>>>> update ratuion ' + data.login)
 
   callback_func ( 
     new cmd.Response ( cmd.fe_retcode.ok,'',
