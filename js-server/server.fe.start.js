@@ -258,19 +258,25 @@ function start ( callback_func )  {
             rj.ncGetInfo_remote ( server_request,server_response );
           break;
 
-        // case cmd.nc_command.runJob :
-        //   break;
-
         default :
 
           if (c.filePath.startsWith(cmd.__special_rfe_tag))  {
             let clist = c.filePath.split('.');  // parse RFE token
+            if (clist[2]==cmd.nc_command.runJob)  {
+              // check credentials and quota
+              let message = user.checkCredentials ( server_request,'cpu' );
+              if (message)  {
+                cmd.sendResponse ( server_response,cmd.fe_retcode.credCheckFailed,'',
+                                   { run_remotely : true, message : message } );
+                break;
+              }
+            }
             let furl  = conf.getNCConfig(parseInt(clist[1])).url(); // forward URL
             proxy.web ( server_request,server_response,
               { target : furl, changeOrigin : true }, (err) => {
                 console.error('Proxy error:', err);
-                server_response.writeHead(500, { 'Content-Type': 'text/plain' });
-                server_response.end('Proxy encountered an error.');
+                server_response.writeHead ( 500, { 'Content-Type': 'text/plain' });
+                server_response.end ( 'Proxy encountered an error.' );
             });
           } else
             c.sendFile ( server_response );

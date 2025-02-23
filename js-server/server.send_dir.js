@@ -244,15 +244,22 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
       } else  {
         try {
           let resp = JSON.parse ( response );
-          if (resp.status==cmd.fe_retcode.ok)  {
-            if (onReady_func)
-              onReady_func ( resp.data,stats );
-            log.detailed ( 1,'directory ' + dirPath +
-                             ' has been received at ' + serverURL );
-          } else  {
-            log.error ( 5,'send directory bad response: ' + resp.status );
-            if (onErr_func)
-              onErr_func ( 3,resp,stats );  // '3' means an error from recipient
+          switch (resp.status)  {
+            case cmd.fe_retcode.ok : 
+                  if (onReady_func)
+                      onReady_func ( resp.data,stats );
+                  log.detailed ( 1,'directory ' + dirPath +
+                                   ' has been received at ' + serverURL );
+                break;
+            case cmd.fe_retcode.credCheckFailed :
+                  log.standard ( 6,'user credentials check failed: ' + resp.data.message );
+                  if (onErr_func)
+                    onReady_func ( resp.data,stats );
+                break;
+            default :
+                  log.error ( 5,'send directory bad response: ' + resp.status );
+                  if (onErr_func)
+                    onErr_func ( 3,resp,stats );  // '3' means an error from recipient
           }
         } catch(error)  {
           log.error ( 6,'send directory errors: ' + error );
