@@ -2259,6 +2259,39 @@ function authResponse ( server_request,server_response )  {
 }
 
 
+
+// ===========================================================================
+
+function checkCredentials ( server_request,check_ration='cpu' )  {
+
+  let message = '';
+  if (('ccp4cloud-user' in server_request.headers) &&
+      ('ccp4cloud-pwd'  in server_request.headers))  {
+    let ulogin = server_request.headers['ccp4cloud-user'];
+    let upwd   = server_request.headers['ccp4cloud-pwd' ];
+    let userFilePath = getUserDataFName ( { login : ulogin } );
+    let uData  = utils.readObject ( userFilePath );
+    if (uData)  {
+      ud.checkUserData ( uData );
+      if (uData.pwd==upwd)  {
+        let check_list = ration.checkUserRation ( { login : ulogin },true );
+        if (check_ration=='cpu')
+          check_list = check_list.filter(item => item.startsWith('CPU'));
+        if (check_list.length>0)
+          message = 'User quota is up for ' + check_list.join(', ');
+      } else  {
+        message = 'User credentials check failed (invalid password)';
+      }
+    } else
+      message = 'User credentials check failed (unknown user "' + ulogin + '")';
+  } else
+    message = 'User credentials check failed (no credentials passed)';
+
+  return message;
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.__announcementFile   = __announcementFile;
@@ -2295,3 +2328,4 @@ module.exports.saveMyWorkflows      = saveMyWorkflows;
 module.exports.getInfo              = getInfo;
 module.exports.getLocalInfo         = getLocalInfo;
 module.exports.authResponse         = authResponse;
+module.exports.checkCredentials     = checkCredentials;

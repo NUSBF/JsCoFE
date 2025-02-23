@@ -174,40 +174,41 @@ const fe_reqtype = {
 // Return codes for client - FE Server AJAX exchange
 
 const fe_retcode = {
-  ok             : 'ok',             // everything's good
-  largeData      : 'largeData',      // data sent to server is too large
-  noProjectData  : 'noProjectData',  // project metadata not found on server
-  writeError     : 'writeError',     // data cannot be written on server side
-  mkDirError     : 'mkDirError',     // directory cannot be created on server
-  readError      : 'readError',      // data cannot be read on server side
-  jobballError   : 'jobballError',   // jobbal preparation error on server side
-  existingLogin  : 'existingLogin',  // attempt to re-use login name at registration
-  corruptDO      : 'corruptDO',      // corrupt data object found
-  userNotFound   : 'userNotFound',   // login recovery failed
-  userNotDeleted : 'userNotDeleted', // delete user request failed
-  corruptJobMeta : 'corruptJobMeta', // corrupt job metadata
-  wrongLogin     : 'wrongLogin',     // wrong login data supplied
-  suspendedLogin : 'suspendedLogin', // wrong login data supplied
-  unconfigured   : 'unconfigured',   // server not configured
-  wrongPassword  : 'wrongPassword',  // wrong password given
-  notLoggedIn    : 'notLoggedIn',    // request without loggin in
-  wrongRequest   : 'wrongRequest',   // unrecognised request
-  wrongSession   : 'wrongSession',   // unrecognised session code
-  uploadErrors   : 'uploadErrors',   // upload errors
-  unpackErrors   : 'unpackErrors',   // unpack errors
-  noUploadDir    : 'noUploadDir',    // no upload directory within a job directory
-  noTempDir      : 'noTempDir',      // no temporary directory
-  noJobDir       : 'noJobDir',       // job directory not found
-  noJobRunning   : 'noJobRunning',   // requested job was not found as running
-  fileNotFound   : 'fileNotFound',   // file not found
-  inProgress     : 'inProgress',     // process in progress
-  askPassword    : 'askPassword',    // request password
-  regFailed      : 'regFailed',      // user registration failed
-  wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
-  proxyError     : 'proxyError',     // fe-proxy error
-  projectAccess  : 'projectAccess',  // project access denied
-  serverInactive : 'serverInactive', // project access denied
-  errors         : 'errors'          // common errors
+  ok              : 'ok',              // everything's good
+  largeData       : 'largeData',       // data sent to server is too large
+  noProjectData   : 'noProjectData',   // project metadata not found on server
+  writeError      : 'writeError',      // data cannot be written on server side
+  mkDirError      : 'mkDirError',      // directory cannot be created on server
+  readError       : 'readError',       // data cannot be read on server side
+  jobballError    : 'jobballError',    // jobbal preparation error on server side
+  existingLogin   : 'existingLogin',   // attempt to re-use login name at registration
+  corruptDO       : 'corruptDO',       // corrupt data object found
+  userNotFound    : 'userNotFound',    // login recovery failed
+  userNotDeleted  : 'userNotDeleted',  // delete user request failed
+  corruptJobMeta  : 'corruptJobMeta',  // corrupt job metadata
+  wrongLogin      : 'wrongLogin',      // wrong login data supplied
+  suspendedLogin  : 'suspendedLogin',  // wrong login data supplied
+  unconfigured    : 'unconfigured',    // server not configured
+  wrongPassword   : 'wrongPassword',   // wrong password given
+  credCheckFailed : 'credCheckFailed', // wrong password given
+  notLoggedIn     : 'notLoggedIn',     // request without loggin in
+  wrongRequest    : 'wrongRequest',    // unrecognised request
+  wrongSession    : 'wrongSession',    // unrecognised session code
+  uploadErrors    : 'uploadErrors',    // upload errors
+  unpackErrors    : 'unpackErrors',    // unpack errors
+  noUploadDir     : 'noUploadDir',     // no upload directory within a job directory
+  noTempDir       : 'noTempDir',       // no temporary directory
+  noJobDir        : 'noJobDir',        // job directory not found
+  noJobRunning    : 'noJobRunning',    // requested job was not found as running
+  fileNotFound    : 'fileNotFound',    // file not found
+  inProgress      : 'inProgress',      // process in progress
+  askPassword     : 'askPassword',     // request password
+  regFailed       : 'regFailed',       // user registration failed
+  wrongJobToken   : 'wrongJobToken',   // unrecognised job token received
+  proxyError      : 'proxyError',      // fe-proxy error
+  projectAccess   : 'projectAccess',   // project access denied
+  serverInactive  : 'serverInactive',  // project access denied
+  errors          : 'errors'           // common errors
 };
 
 

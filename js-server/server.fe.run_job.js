@@ -999,28 +999,48 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
                          meta,{compression:nc_cfg.compression},
                          request_headers,
 
-        function ( retdata,stats ){  // send successful
+        function ( retdata,stats ){  // send was technically successful
+          
+          if ('message' in retdata)  {
 
-          log.standard ( 6,'job ' + task.id + ' sent to ' +
-                          conf.getNCConfig(nc_number).name + ', job token:' +
-                          job_token );
-          log.standard ( 6,'compression: '  + nc_cfg.compression +
-                          ', zip time: '   + stats.zip_time.toFixed(3) +
-                          's, send time: ' + stats.send_time.toFixed(3) + 
-                          's, size: '      + stats.size.toFixed(3) + ' MB' );
+            let message = '<h1>Job submission failed</h1>';
+            if (('run_remotely' in retdata) && retdata.run_remotely)
+              message = '<h1>Job submission to remote server failed</h1>';
 
-          // The number cruncher will start dealing with the job automatically.
-          // On FE end, register job as engaged for further communication with
-          // NC and client.
-          feJobRegister.addJob ( retdata.job_token,rfe_token,nc_number,
-                                 ownerLoginData,task.project,task.id,shared_logins,
-                                 uData.settings.notifications.end_of_job,
-                                 meta.push_back );
-          writeFEJobRegister();
-          checkPullMap();
+            utils.writeJobReportMessage ( jobDir,
+              message + '<b>Reason: </b><i>' + retdata.message + '</i>',
+              false );
 
-          if (callback_func)
-            callback_func ( retdata.job_token );
+            task.state = task_t.job_code.failed;
+            utils.writeObject ( jobDataPath,task );
+  
+            if (callback_func)
+              callback_func ( 0 );
+  
+          } else  {
+
+            log.standard ( 6,'job ' + task.id + ' sent to ' +
+                            conf.getNCConfig(nc_number).name + ', job token:' +
+                            job_token );
+            log.standard ( 6,'compression: '  + nc_cfg.compression +
+                            ', zip time: '   + stats.zip_time.toFixed(3) +
+                            's, send time: ' + stats.send_time.toFixed(3) + 
+                            's, size: '      + stats.size.toFixed(3) + ' MB' );
+
+            // The number cruncher will start dealing with the job automatically.
+            // On FE end, register job as engaged for further communication with
+            // NC and client.
+            feJobRegister.addJob ( retdata.job_token,rfe_token,nc_number,
+                                  ownerLoginData,task.project,task.id,shared_logins,
+                                  uData.settings.notifications.end_of_job,
+                                  meta.push_back );
+            writeFEJobRegister();
+            checkPullMap();
+
+            if (callback_func)
+              callback_func ( retdata.job_token );
+         
+          }
 
         },function(stageNo,code){  // send failed
 
