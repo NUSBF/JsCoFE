@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -289,6 +289,13 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                         __remote_environ_server = response.data.environ_server;
                       if (__remote_environ_server.length<=0)
                         _no_remote_server_message ( false );
+                      else  {
+                        __remote_login_id = userData.remote_login;
+                        if (__current_page && ('ration' in response.data))  {
+                          __current_page.remote_ration = response.data.ration;
+                          __current_page.displayUserRation ( null );
+                        }
+                      }
                       return true;
                     },function(){
                     },function(xhr,err)  {  

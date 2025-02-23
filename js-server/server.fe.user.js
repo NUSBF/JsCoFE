@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -851,6 +851,8 @@ function remoteCheckIn ( userData,callback_func )  {
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
 
+        rData.ration = ration.getUserRation ( userData );
+
         conf.getServerEnvironment ( function(environ_server){
           rData.environ_server = environ_server;
           callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rData ) );
@@ -1113,6 +1115,7 @@ function topupUserRation ( loginData,callback_func )  {
 function getUserRation ( loginData,data,callback_func )  {
   let userLoginData = loginData;
   let login_id      = loginData.login;
+
   if ('user' in data)
     login_id = data.user;
   if (login_id!=loginData.login)
@@ -1121,12 +1124,17 @@ function getUserRation ( loginData,data,callback_func )  {
     topupUserRation ( userLoginData,callback_func );
   } else  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
-        code    : 'ok',
-        message : '',
+        code    : cmd.fe_retcode.ok,
+        message : 'Ok',
         ration  : ration.getUserRation ( userLoginData )
       })
     );
   }
+}
+
+
+function getRemoteUserRation ( userData,callback_func )  {
+  getUserRation ( userData,userData,callback_func );
 }
 
 
@@ -2309,6 +2317,7 @@ module.exports.signalUser           = signalUser;
 module.exports.readUserData         = readUserData;
 module.exports.getUserLoginData     = getUserLoginData;
 module.exports.getUserRation        = getUserRation;
+module.exports.getRemoteUserRation  = getRemoteUserRation;
 module.exports.readUsersData        = readUsersData;
 module.exports.getUserData          = getUserData;
 module.exports.getUserDataFName     = getUserDataFName;

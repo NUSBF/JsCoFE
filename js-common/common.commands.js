@@ -74,29 +74,30 @@ const ncMetaFileName = '__nc_meta.json'; // communicated by 'REMOTE' NC
 // be logged in.
 
 const fe_command = {
-  cofe              : 'cofe',            // load jsCoFE login page
-  ignore            : 'ignore',          // special return code from Communicate module
-  stop              : 'stop',            // quit the server
-  whoareyou         : 'whoareyou',       // request server id
-  status            : 'status',          // request server status, e.g., for uptime watchers
-  getInfo           : '=getinfo',        // request server metadata
-  getLocalInfo      : '=getlocalinfo',   // request local server metadata
-  getClientInfo     : '=getclientinfo',  // request client server metadata
-  register          : '=register',       // register a new user
-  login             : '=login',          // register a new user
-  recoverLogin      : '=recover_login',  // recover login details
-  request           : '=request',        // general request to server
-  upload            : '=upload',         // upload request, key hard-coded in gui.upload.js
-  allocateJob       : '=allocate_job',   // request to allocate remote job
-  jobFinished       : '=job_finished',   // request to accept data from finished job
-  cloudRun          : '=cloud_run',      // run job from command prompt on client
-  cloudFetch        : '=cloud_fetch',    // fetch job(s) from command prompt on client
-  checkSession      : '=check_session',  // request to check session status
-  authResponse      : '=auth_response',  // process from software authorisation server
-  getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
+  cofe              : 'cofe',             // load jsCoFE login page
+  ignore            : 'ignore',           // special return code from Communicate module
+  stop              : 'stop',             // quit the server
+  whoareyou         : 'whoareyou',        // request server id
+  status            : 'status',           // request server status, e.g., for uptime watchers
+  getInfo           : '=getinfo',         // request server metadata
+  getLocalInfo      : '=getlocalinfo',    // request local server metadata
+  getClientInfo     : '=getclientinfo',   // request client server metadata
+  register          : '=register',        // register a new user
+  login             : '=login',           // register a new user
+  recoverLogin      : '=recover_login',   // recover login details
+  request           : '=request',         // general request to server
+  upload            : '=upload',          // upload request, key hard-coded in gui.upload.js
+  allocateJob       : '=allocate_job',    // request to allocate remote job
+  jobFinished       : '=job_finished',    // request to accept data from finished job
+  cloudRun          : '=cloud_run',       // run job from command prompt on client
+  cloudFetch        : '=cloud_fetch',     // fetch job(s) from command prompt on client
+  checkSession      : '=check_session',   // request to check session status
+  authResponse      : '=auth_response',   // process from software authorisation server
+  getFEProxyInfo    : '=getfeproxyinfo',  // get FE Proxy config and other info
   checkAnnouncement : '=checkannouncement', // get service announcements
-  control           : '=control',        // group of server service functions
-  remoteCheckIn     : '=remote_checkin'  // check in a user for running remote jobs
+  control           : '=control',         // group of server service functions
+  remoteUserRation  : '=remote_user_ration', // get remote user ration
+  remoteCheckIn     : '=remote_checkin'   // check in a user for running remote jobs
 };
 
 
