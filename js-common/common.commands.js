@@ -89,6 +89,7 @@ const fe_command = {
   upload            : '=upload',          // upload request, key hard-coded in gui.upload.js
   allocateJob       : '=allocate_job',    // request to allocate remote job
   jobFinished       : '=job_finished',    // request to accept data from finished job
+  updateUserRation  : '=update_ration',   // request to update user ration
   cloudRun          : '=cloud_run',       // run job from command prompt on client
   cloudFetch        : '=cloud_fetch',     // fetch job(s) from command prompt on client
   checkSession      : '=check_session',   // request to check session status
