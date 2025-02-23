@@ -194,6 +194,31 @@ BasePage.prototype.makeLogoPanel = function()  {
 
 }
 
+
+BasePage.prototype.getRemoteUserRation = function ( callback_func )  {
+  if (__remote_environ_server.length>0)  {
+    let page = this;
+    serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteUserRation,
+                    { login : __remote_login_id, topup : false },
+                    'Remote FE ration request',
+      function(response){
+        if (response && (response.status==fe_retcode.ok))
+          page.remote_ration = response.data.ration;
+        if (callback_func)
+          callback_func();
+        return true;
+      },function(){
+      },function(xhr,err)  {
+        page.remote_ration = null;
+        if (callback_func)
+          callback_func();
+        return true;
+      });
+  } else if (callback_func)
+    callback_func();
+}
+
+
 BasePage.prototype.getUserRation = function()  {
 
   let page = this;
@@ -654,12 +679,19 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 BasePage.prototype.updateUserRationDisplay = function ( rdata )  {
   if ('ration' in rdata)
     this.ration = rdata.ration;
+  let page = this;
   if ('pdesc' in rdata)
-    this.displayUserRation ( rdata.pdesc );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( rdata.pdesc );    
+    });
   else if (('_type' in rdata) && (rdata._type=='ProjectDesc'))
-    this.displayUserRation ( rdata );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( rdata );
+    });
   else if ('ration' in rdata)
-    this.displayUserRation ( null );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( null );
+    });
   else
     this.getUserRation();
 }

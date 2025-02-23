@@ -144,35 +144,43 @@ function start ( callback_func )  {
       switch (c.command)  {
 
         case cmd.fe_command.getInfo :
-            pp.processPOSTData ( server_request,server_response,user.getInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,user.getInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.getLocalInfo :
-            pp.processPOSTData ( server_request,server_response,user.getLocalInfo,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.getLocalInfo,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.getClientInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getClientInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,conf.getClientInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.getFEProxyInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.login :
-            pp.processPOSTData ( server_request,server_response,user.userLogin,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.userLogin,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.register :
-            pp.processPOSTData ( server_request,server_response,user.makeNewUser,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.makeNewUser,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.recoverLogin :
-            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.request :
-            pp.processPOSTData ( server_request,server_response,rh.requestHandler,'active' );
+            pp.processPOSTData ( server_request,server_response,rh.requestHandler,
+                                 'active' );
           break;
 
         case cmd.fe_command.upload :
@@ -180,12 +188,18 @@ function start ( callback_func )  {
           break;
 
         case cmd.fe_command.allocateJob :
-            pp.processPOSTData ( server_request,server_response,rj.allocateJob,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,rj.allocateJob,
+                                 feConfig.state );
         break;
 
         case cmd.fe_command.jobFinished :
             rj.getJobResults ( c.job_token,server_request,server_response );
           break;
+
+        case cmd.fe_command.updateUserRation :
+            pp.processPOSTData ( server_request,server_response,rj.updateUserRation,
+                                 feConfig.state );
+        break;
 
         case cmd.fe_command.cloudRun :
             rj.cloudRun ( server_request,server_response );

@@ -96,17 +96,18 @@ function FEJobRegister()  {
 }
 
 FEJobRegister.prototype.addJob = function ( job_token,rfe_token,nc_number,
-                                            loginData,project,jobId,
+                                            loginData,remoteLogin,project,jobId,
                                             shared_logins,eoj_notification,
                                             push_back )  {
   let crTime = Date.now();
   this.job_map[job_token] = {
     nc_number        : nc_number,
     nc_type          : 'ordinary',
-    job_token        : job_token,  // job_token issued by NC (clashes hopefully minimal)
-                                   // make tokens surely NC-specific through NC
-                                   // confoguration
-    rfe_token        : rfe_token,  // toke issued by 'REMOTE' FE (RFE)
+    job_token        : job_token,   // job_token issued by NC (clashes hopefully minimal)
+                                    // make tokens surely NC-specific through NC
+                                    // confoguration
+    rfe_token        : rfe_token,   // toke issued by 'REMOTE' FE (RFE)
+    remoteLogin      : remoteLogin, // remote login name (only if rfe_token given)
     loginData        : loginData,
     project          : project,
     jobId            : jobId,
@@ -1031,9 +1032,10 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
             // On FE end, register job as engaged for further communication with
             // NC and client.
             feJobRegister.addJob ( retdata.job_token,rfe_token,nc_number,
-                                  ownerLoginData,task.project,task.id,shared_logins,
-                                  uData.settings.notifications.end_of_job,
-                                  meta.push_back );
+                                   ownerLoginData,uData.remote_login,
+                                   task.project,task.id,shared_logins,
+                                   uData.settings.notifications.end_of_job,
+                                   meta.push_back );
             writeFEJobRegister();
             checkPullMap();
 
@@ -1177,9 +1179,9 @@ function runJob ( loginData,data, callback_func )  {
           let jobballPath = send_dir.getPackPath(jobDir);
           utils.moveFile ( packPath,jobballPath );
 
-          feJobRegister.addJob ( job_token,'',-1,ownerLoginData,  // -1 is nc number
-                                task.project,task.id,shared_logins,
-                                null,'YES' );  // no notifications for client jobs
+          feJobRegister.addJob ( job_token,'',-1,ownerLoginData,'', // -1 is nc number
+                                 task.project,task.id,shared_logins,
+                                 null,'YES' );  // no notifications for client jobs
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
 
@@ -1214,7 +1216,7 @@ function runJob ( loginData,data, callback_func )  {
       'Job is running as web-application on client machine. Full report will ' +
       'become available after job finishes.',true );
 
-    feJobRegister.addJob ( job_token,'',-1,ownerLoginData,  // -1 is nc number
+    feJobRegister.addJob ( job_token,'',-1,ownerLoginData,'', // -1 is nc number
                            task.project,task.id,shared_logins,
                            null,'YES' );  // no notifications for client jobs
     feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -1448,8 +1450,51 @@ function writeJobStats ( jobEntry )  {
 
     // update records in user's ration book
     // jobEntry.loginData corresponds to the project owner account
-    let userRation = ration.bookJob ( jobEntry.loginData,jobClass,
-                                      ('cloudrun' in jobEntry) );
+
+    let userRation = null;
+    if (jobEntry.rfe_token)  {
+      // job was run remotely
+      // clear time usage for updating local ration
+      let cpu_total_used = jobClass.cpu_time;
+      jobClass.cpu_time  = 0;
+      userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+                                    ('cloudrun' in jobEntry) );
+      jobClass.cpu_time  = cpu_total_used;
+      let remoteURL = conf.getRemoteJobsServerURL()
+      if (remoteURL)  {
+        // clear disk usage for updating remote ration
+        request({
+          uri     : cmd.fe_command.updateUserRation,
+          baseUrl : remoteURL,
+          method  : 'POST',
+          body    : { login    : jobEntry.remoteLogin, 
+                      jobClass : { _type      : jobClass._type,
+                                   id         : jobClass.id,
+                                   project    : jobClass.project,
+                                   disk_space : 0,
+                                   cpu_time   : jobClass.cpu_time 
+                                 }
+                    },
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          // if ((!error) && (response.statusCode==200))  {
+          //   callback_func ( body.data.code,
+          //                   nc_number,  // this should be remote NC, not ANC number
+          //                   body.data.rfe_token );
+          // } else if (!error) {
+          //   callback_func ( 4,nc_number,'' );
+          //   log.warning ( 10,'remote FE could not allocate job for ' + task._type );
+          // } else  {
+          //   callback_func ( 6,nc_number,'' );
+          //   log.warning ( 11,'errors at communication with remote FE' );
+          // }
+        });
+      }
+    } else  {
+      userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+                                    ('cloudrun' in jobEntry) );
+    }
 
     ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
                                 jobClass.cpu_time,jobClass.disk_space,1,false );
@@ -1533,6 +1578,20 @@ function readJobStats()  {
   return stats;
 }
 
+
+function updateUserRation ( data,callback_func )  {  // gets UserData object
+  // This function is FE response handler for updating user ration after
+  // running remote jobs (i.e. jobs coming from 'external' FEs, typically 
+  // CCP4 Cloud Local setups).
+
+console.log ( ' >>>>>> update ratuion ' + data.login)
+
+  callback_func ( 
+    new cmd.Response ( cmd.fe_retcode.ok,'',
+      { ration : ration.bookJob ( { login : data.login },data.jobClass,false ) }
+    ));
+
+}
 
 // ===========================================================================
 
@@ -2455,5 +2514,6 @@ module.exports.webappEndJob        = webappEndJob;
 module.exports.getJobResults       = getJobResults;
 module.exports.checkJobs           = checkJobs;
 module.exports.wakeZombieJobs      = wakeZombieJobs;
+module.exports.updateUserRation    = updateUserRation;
 module.exports.cloudRun            = cloudRun;
 module.exports.cloudFetch          = cloudFetch;
