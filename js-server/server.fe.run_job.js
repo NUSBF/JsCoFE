@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.02.25   <--  Date of Last Modification.
+ *    22.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -870,6 +870,8 @@ function allocateJob ( data,callback_func )  {  // gets UserData object
   // coming from 'external' FEs, typically CCP4 Cloud Local setups).
   // let nc_number = selectNumberCruncher ( data.task );
 
+  // This function is used on Remote FE (RFE), therefore, parameter run_remotely
+  // is set to false.
   ncSelectAndCheck ( conf.getNumberOfNCs(),data.task,false,
     function(code,nc_number,rfe_token){
       let response  = new cmd.Response ( cmd.fe_retcode.ok,'',
