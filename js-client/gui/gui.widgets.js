@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    24.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -583,9 +583,9 @@ Widget.prototype.getBoundingClientRect = function ()  {
 // Grid class
 
 function Grid ( style ) {
-  Widget.call(this, 'table');
+  Widget.call ( this,'table' );
   if (style != 'None')
-    this.element.setAttribute('class', 'grid-layout' + style);
+    this.element.setAttribute ( 'class','grid-layout' + style );
     // $(this.element).addClass ( 'grid-layout' + style );
 }
 
@@ -598,7 +598,7 @@ Grid.prototype.clear = function () {
 
 Grid.prototype.setStyle = function ( style ) {
   if (style != 'None')
-    this.element.setAttribute('class', 'grid-layout' + style);
+    this.element.setAttribute ( 'class','grid-layout' + style );
 }
 
 Grid.prototype.insertRows = function ( rowBefore, nRows ) {
@@ -1704,7 +1704,7 @@ SelectFile.prototype.getFiles = function () {
 // ToolBar class
 
 function ToolBar() {
-  Grid.call(this, '');
+  Grid.call ( this,'' );
   this.element.setAttribute('class', 'toolbar ui-widget-header ui-corner-all');
 }
 
@@ -1824,16 +1824,16 @@ IFrame.prototype.getWindow = function () {
 // Section class
 
 function Section(title_str, open_bool) {
-  Widget.call(this, 'div');
+  Widget.call ( this,'div' );
   this._type = 'Section';
-  this.header = new Widget('h3');
+  this.header = new Widget ( 'h3' );
   this.titleId = this.id + '_title';
   this.header.element.innerHTML = '<span id="' + this.titleId + '">' + title_str + '</span>';
   this.addWidget(this.header);
-  this.body = new Widget('div');
-  this.addWidget(this.body);
-  this.grid = new Grid('');
-  this.body.addWidget(this.grid);
+  this.body = new Widget ( 'div' );
+  this.addWidget ( this.body );
+  this.grid = new Grid ( '' );
+  this.body.addWidget ( this.grid );
   this.title = title_str;
   let options = {
     collapsible: true,
@@ -1841,7 +1841,7 @@ function Section(title_str, open_bool) {
   };
   if (open_bool) options.active = 0;
   else options.active = false;
-  $(this.element).accordion(options);
+  $(this.element).accordion ( options );
 }
 
 

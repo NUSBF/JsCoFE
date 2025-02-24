@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    24.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -279,19 +279,18 @@ function ProjectPage ( sceneId,pspecs=null )  {
     window.open ( 'html/roadmap.html' );
   });
 
-  // (function(self){
-    self.selmode_btn.addOnClickListener ( function(){
-      self.setSelMode ( 0 );  // toggle
+  this.selmode_btn.addOnClickListener ( function(){
+    self.setSelMode ( 0 );  // toggle
+  });
+
+  this.refresh_btn.addOnClickListener ( function(){
+    self.setDisabled  ( true );
+    self.can_reload  = true;  // force in order to avoid locking
+    self.pending_act = '';    // drop pending actions
+    self.wakeZombieJobs( function(){  // must go before reloadTree
+      self.reloadTree   ( true,true,null );  // multiple = false?
     });
-    self.refresh_btn.addOnClickListener ( function(){
-      self.setDisabled  ( true );
-      self.can_reload  = true;  // force in order to avoid locking
-      self.pending_act = '';    // drop pending actions
-      self.wakeZombieJobs( function(){  // must go before reloadTree
-        self.reloadTree   ( true,true,null );  // multiple = false?
-      });
-    });
-  // }(this))
+  });
 
   //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
 
@@ -308,40 +307,39 @@ function ProjectPage ( sceneId,pspecs=null )  {
 
   //  Read project data from server first time
   // takes project name from projectList.current
-  self.jobTree.loadProjectData ( 'Project',true,-1,
-    function(){
-      if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
-        // self.dock.loadDockData();
-        // add button listeners
-        self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
-        if (self.moveup_btn)
-          self.moveup_btn.addOnClickListener ( function(){ self.moveJobUp();  } );
-        self.del_btn    .addOnClickListener ( function(){ self.deleteJob  (); } );
-        self.stack_btn  .addOnClickListener ( function(){ self.stackJobs  (); } );
-        self.open_btn   .addOnClickListener ( function(){ self.openJob    (); } );
-        self.stop_btn   .addOnClickListener ( function(){ self.stopJob    (); } );
-        self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
-        self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
-        self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
-        self.trimPageTitle();
-        self.title_lbl  .setText ( self.jobTree.projectData.desc.title );
-        self.can_reload  = true;
-        self.pending_act = '';
-        if (self.jobTree.hasRunningJobs(0))
-          self.wakeZombieJobs(null);
-      }
-    },function(node){
-      return self.onTreeContextMenu();
-    },function(){
-      self.openJob();
-    },function(){
-      self.onTreeItemSelect();
-    });
+  window.setTimeout ( function(){
+    self.jobTree.loadProjectData ( 'Project',true,-1,
+      function(){
+        if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
+          // self.dock.loadDockData();
+          // add button listeners
+          self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
+          if (self.moveup_btn)
+            self.moveup_btn.addOnClickListener ( function(){ self.moveJobUp();  } );
+          self.del_btn    .addOnClickListener ( function(){ self.deleteJob  (); } );
+          self.stack_btn  .addOnClickListener ( function(){ self.stackJobs  (); } );
+          self.open_btn   .addOnClickListener ( function(){ self.openJob    (); } );
+          self.stop_btn   .addOnClickListener ( function(){ self.stopJob    (); } );
+          self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
+          self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
+          self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
+          self.trimPageTitle();
+          self.title_lbl  .setText ( self.jobTree.projectData.desc.title );
+          self.can_reload  = true;
+          self.pending_act = '';
+          if (self.jobTree.hasRunningJobs(0))
+            self.wakeZombieJobs(null);
+        }
+      },function(node){
+        return self.onTreeContextMenu();
+      },function(){
+        self.openJob();
+      },function(){
+        self.onTreeItemSelect();
+      });
+  },0);
 
 }
-
-// ProjectPage.prototype = Object.create ( BasePage.prototype );
-// ProjectPage.prototype.constructor = ProjectPage;
 
 registerClass ( 'ProjectPage',ProjectPage,BasePage.prototype );
 
@@ -461,44 +459,38 @@ ProjectPage.prototype.addJobRepeat = function()  {
   this.selectRemark();
   let self = this;
   if (this.start_action('add_job_repeat'))
-    // (function(self){
-      self.jobTree.addJob ( false,true,self,function(key){
-        // self.del_btn.setDisabled ( false );
-        self._set_del_button_state();
-        self.end_action();
-      });
-    // }(this))
+    this.jobTree.addJob ( false,true,self,function(key){
+      // self.del_btn.setDisabled ( false );
+      self._set_del_button_state();
+      self.end_action();
+    });
 }
 
 ProjectPage.prototype.insertJob = function()  {
   this.selectRemark();
   let self = this;
   if (this.start_action('insert_job'))
-    // (function(self){
-      self.jobTree.addJob ( true,false,self,function(key){
-        // self.del_btn.setDisabled ( false );
-        if (key!=1) // job was added or failed
-          self._set_del_button_state();
-        self.end_action();
-        if (key==1)  // job was inserted
-          self.reloadTree ( false,true,null );
-      });
-    // }(this))
+    this.jobTree.addJob ( true,false,self,function(key){
+      // self.del_btn.setDisabled ( false );
+      if (key!=1) // job was added or failed
+        self._set_del_button_state();
+      self.end_action();
+      if (key==1)  // job was inserted
+        self.reloadTree ( false,true,null );
+    });
 }
 
 ProjectPage.prototype.addRemark = function()  {
   if (this.start_action('add_remark'))  {
     let self = this;
-    // (function(self){
-      self.can_reload = true;
-      self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
-        if (key!=1)  // remark was added or failed
-          self._set_del_button_state();
-        self.end_action();
-        if (key==1)  // remark was inserted
-          self.reloadTree ( false,true,null );
-      });
-    // }(this))
+    this.can_reload = true;
+    this.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
+      if (key!=1)  // remark was added or failed
+        self._set_del_button_state();
+      self.end_action();
+      if (key==1)  // remark was inserted
+        self.reloadTree ( false,true,null );
+    });
   }
 }
 
@@ -521,12 +513,10 @@ ProjectPage.prototype.addRevisionRemark = function ( callback_func )  {
 ProjectPage.prototype.cloneJob = function() {
   if (this.start_action('clone_job'))  {
     let self = this;
-    // (function(self){
-      self.jobTree.cloneJob ( 'clone',self,function(){
-        self._set_del_button_state();
-        self.end_action();
-      });
-    // }(this))
+    this.jobTree.cloneJob ( 'clone',self,function(){
+      self._set_del_button_state();
+      self.end_action();
+    });
   }
 }
 
@@ -544,26 +534,22 @@ ProjectPage.prototype.pasteJobFromClipboard = function() {
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))  {
     let self = this;
-    // (function(self){
-      self.jobTree.deleteJob ( false,function(was_deleted_bool){
-        self.end_action();
-        self._set_button_state();
-        // self.setButtonState();
-      });
-    // }(this))
+    this.jobTree.deleteJob ( false,function(was_deleted_bool){
+      self.end_action();
+      self._set_button_state();
+      // self.setButtonState();
+    });
   }
 }
 
 ProjectPage.prototype.moveJobUp = function()  {
   if (this.start_action('move_job_up'))  {
     let self = this;
-    // (function(self){
-      self.jobTree.moveJobUp ( function(){
-        self.end_action();
-        self._set_button_state();
-        // self.setButtonState();
-      });
-    // }(this))
+    this.jobTree.moveJobUp ( function(){
+      self.end_action();
+      self._set_button_state();
+      // self.setButtonState();
+    });
   }
 }
 
@@ -594,51 +580,49 @@ ProjectPage.prototype.stackJobs = function() {
         let below_cbx = grid.setCheckbox ( 'below the currently selected job',true, 2,1,1,1 );
         grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Stack</i></b> ' +
                         'button.',3,0,1,3 );
-        // (function(self){
-          qdlg._options.buttons = {
-            "Stack"   : function() {
-                          let nodelist = [];
-                          if (above_cbx.getValue())
-                            nodelist = adata[1];
-                          if (below_cbx.getValue())  {
-                            nodelist.shift();  // avoid duplicate nodes in the list
-                            nodelist = nodelist.concat ( adata[2] );
-                          }
-                          if (nodelist.length<=0)  {
-                            new MessageBox (
-                                'Empty selection',
-                                '<h2>Empty selection</h2>' +
-                                'At least one checkbox must be checked<br>' +
-                                'for acrhiving.', 'msg_warning'
-                            );
-                            self.end_action();
-                          } else  {
-                            $( this ).dialog( 'close' );
-                            self.jobTree.makeStack1 ( nodelist,'',
-                                                  image_path('job_stack') );
-                            self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
-                              self.setSelMode ( 1 );
-                              self.end_action();
-                              if (rdata.reload>0)  {
-                                new MessageBox (
-                                  'Project updating',
-                                  '<h3>Project updating</h3>Project update in progress, please ' +
-                                  'repeat archiving operation later.', 'msg_system'
-                                );
-                              } else  {
-                                // self._set_button_state();
-                                self.reloadTree ( false,true,rdata );
-                              }
-                            });
-                            // self._set_button_state();
-                          }
-                        },
-            "Cancel"  : function() {
-                          $( this ).dialog( "close" );
-                          self.end_action();
+        qdlg._options.buttons = {
+          'Stack'   : function() {
+                        let nodelist = [];
+                        if (above_cbx.getValue())
+                          nodelist = adata[1];
+                        if (below_cbx.getValue())  {
+                          nodelist.shift();  // avoid duplicate nodes in the list
+                          nodelist = nodelist.concat ( adata[2] );
                         }
-          };
-        // }(this))
+                        if (nodelist.length<=0)  {
+                          new MessageBox (
+                              'Empty selection',
+                              '<h2>Empty selection</h2>' +
+                              'At least one checkbox must be checked<br>' +
+                              'for acrhiving.', 'msg_warning'
+                          );
+                          self.end_action();
+                        } else  {
+                          $( this ).dialog( 'close' );
+                          self.jobTree.makeStack1 ( nodelist,'',
+                                                image_path('job_stack') );
+                          self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
+                            self.setSelMode ( 1 );
+                            self.end_action();
+                            if (rdata.reload>0)  {
+                              new MessageBox (
+                                'Project updating',
+                                '<h3>Project updating</h3>Project update in progress, please ' +
+                                'repeat archiving operation later.', 'msg_system'
+                              );
+                            } else  {
+                              // self._set_button_state();
+                              self.reloadTree ( false,true,rdata );
+                            }
+                          });
+                          // self._set_button_state();
+                        }
+                      },
+          'Cancel'  : function() {
+                        $( this ).dialog( "close" );
+                        self.end_action();
+                      }
+        };
         qdlg.launch();
       }
     } else if (adata[0]==2)  {
@@ -646,33 +630,28 @@ ProjectPage.prototype.stackJobs = function() {
       save = true;
     }
     if (save)  {
-      // (function(self){
-        self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
-          self.setSelMode ( 1 );
-          self.end_action();
-          if (rdata.reload>0)  {
-            new MessageBox (
-              'Project updating',
-              '<h3>Project updating</h3>Project update in progress, please ' +
-              'repeat archiving operation later.', 'msg_system'
-            );
-          } else  {
-            // self._set_button_state();
-            self.reloadTree ( false,true,rdata );
-          }
-        });
-      // }(this))
+      self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
+        self.setSelMode ( 1 );
+        self.end_action();
+        if (rdata.reload>0)  {
+          new MessageBox (
+            'Project updating',
+            '<h3>Project updating</h3>Project update in progress, please ' +
+            'repeat archiving operation later.', 'msg_system'
+          );
+        } else  {
+          // self._set_button_state();
+          self.reloadTree ( false,true,rdata );
+        }
+      });
     }
   }
 }
 
 ProjectPage.prototype.setButtonState = function() {
   if (this.start_action('set_button_state'))  {
-    let self = this;
-    // (function(self){
-      self._set_button_state();
-      self.end_action();
-    // }(this))
+    this._set_button_state();
+    this.end_action();
   }
 }
 
@@ -739,31 +718,6 @@ ProjectPage.prototype.sendJobResults = function() {
       return true;
     }
   );
-
-/*
-
-
-  let self = this;
-
-  let data  = {
-    meta : crTask
-  };
-  // data.meta = this.task;
-  // data.ancestors = [];
-  // if (this.tree.projectData)  data.is_shared = this.tree.isShared();
-  //                       else  data.is_shared = false;
-  // for (let i=1;i<this.ancestors.length;i++)
-  //   data.ancestors.push ( this.ancestors[i]._type );
-  // if (!this.task.job_dialog_data.viewed)  {
-  //   this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
-  //   this.task.job_dialog_data.viewed = true;
-  //   this.job_edited = true;
-  // }
-  // data.update_tree = this.job_edited && data.is_shared;
-  serverRequest ( fe_reqtype.sendJobResults,data,crTask.title,function(rdata){
-
-  },null,null );
-*/
 
 }
 
@@ -1295,13 +1249,11 @@ ProjectPage.prototype.makeJobTree = function()  {
   jobTree.element.style.paddingLeft   = '0px';
   // this.job_tree = jobTree;  // for external references
   let self = this;
-  // (function(self){
-    jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
-      //alert ( 'ration updated ' + JSON.stringify(data));
-      self.updateUserRationDisplay ( data );
-      //self.getUserRation();
-    });
-  // }(this))
+  jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
+    //alert ( 'ration updated ' + JSON.stringify(data));
+    self.updateUserRationDisplay ( data );
+    //self.getUserRation();
+  });
   return jobTree;
 }
 
@@ -1425,10 +1377,10 @@ ProjectPage.prototype.trimPageTitle = function()  {
 
 ProjectPage.prototype.onResize = function ( width,height )  {
   let h = (height - 88) + 'px';    // THESE NUMBERS DEFINE WIDTH AND HEIGHT
-  let w = (width  - 80) + 'px';    // OF THE JOB TREE 
+  let w = (width  - 86) + 'px';    // OF THE JOB TREE 
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
-  this.tree_div.element.style.width = w;
+  this.tree_div.element.style.width     = w;
   this.trimPageTitle();
 }
 
