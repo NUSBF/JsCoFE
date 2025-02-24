@@ -511,7 +511,7 @@ function showFlashMessage ( flash_text,rect,widget=null )  {
     let left = rect.left;
     let top  = rect.top;
     if (widget)  {
-      $(flashPanel.element).appendTo(widget.element);
+      $(flashPanel.element).appendTo ( widget.element );
       let rect0 = widget.getBoundingClientRect();
       left -= rect0.left;
       top  -= rect0.top;

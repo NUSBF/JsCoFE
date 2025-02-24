@@ -51,7 +51,10 @@
 
 
 .flash-panel  {
+  display          : block;
   position         : absolute;
+  visibility       : visible;
+  opacity          : 1;
   left             : 0px;
 /*  bottom           : -1px;  this does not work in some cases, therefore ugly 'top' */
   top              : 0px;
