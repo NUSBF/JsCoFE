@@ -150,8 +150,8 @@ let pids = utils.readObject ( pidfile );
 ServerConfig.prototype.killPrevious = function()  {
   // hacked for remote job functionality development, for local dev setup,
   // just remove when complete
-  console.log ( ' >>>>> look in server.configuration.js -- a temporary hack is here' );
-  return;
+  // console.log ( ' >>>>> look in server.configuration.js -- a temporary hack is here' );
+  // return;
 let pidfile = this.getPIDFilePath();
 let pids    = utils.readObject ( pidfile );
   if (pids && (this.type in pids) && (pids[this.type]!=process.pid))  {
