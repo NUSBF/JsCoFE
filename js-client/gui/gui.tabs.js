@@ -37,9 +37,9 @@ Tabs.prototype.constructor = Tabs;
 
 Tabs.prototype.addTab = function ( name,open_bool )  {
 
-  var tab = new Widget ( 'div');
-  var hnd = new Widget ( 'li' );
-  var a   = new Widget ( 'a'  );
+  let tab = new Widget ( 'div');
+  let hnd = new Widget ( 'li' );
+  let a   = new Widget ( 'a'  );
 
   a.setAttribute ( 'href','#' + tab.id );
   a.setText ( name );
@@ -82,7 +82,9 @@ Tabs.prototype.refresh = function()  {
 }
 
 Tabs.prototype.getTabNo = function ( tab )  {
-  return $("#"+this.id+" >div").index(tab.id)-1;
+// tabs are counted started from 0
+  return $(this.element).find(".ui-tabs-panel").index(tab.element);
+  // return $("#"+this.id+" >div").index(tab.id)-1;
 }
 
 Tabs.prototype.getActiveTabNo = function()  {

@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    23.10.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -160,6 +160,7 @@ else    registerClass ( 'TaskMrBump',TaskMrBump,TaskTemplate.prototype );
 
 TaskMrBump.prototype.icon           = function()  { return 'task_mrbump'; }
 TaskMrBump.prototype.clipboard_name = function()  { return '"MrBump"';    }
+TaskMrBump.prototype.canRunRemotely = function()  { return true;          }
 
 TaskMrBump.prototype.currentVersion = function()  {
   let version = 1;

@@ -113,6 +113,7 @@ function checkLocalService ( callback_func )  {
         __setup_desc      = rData.setup_desc;
         __ccp4_version    = rData.ccp4_version;
         __maintainerEmail = rData.maintainerEmail;
+        __remoteJobServer = rData.remoteJobServer;
         __check_session_period = rData.check_session_period;
         if (rData.localuser)  {
           __local_user    = true;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -194,19 +194,67 @@ BasePage.prototype.makeLogoPanel = function()  {
 
 }
 
+
+BasePage.prototype.getRemoteUserRation = function ( callback_func )  {
+  if (__remote_environ_server.length>0)  {
+    let page = this;
+    serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteUserRation,
+                    { login : __remote_login_id, topup : false },
+                    'Remote FE ration request',
+      function(response){
+        if (response && (response.status==fe_retcode.ok))
+          page.remote_ration = response.data.ration;
+        if (callback_func)
+          callback_func();
+        return true;
+      },function(){
+      },function(xhr,err)  {
+        page.remote_ration = null;
+        if (callback_func)
+          callback_func();
+        return true;
+      });
+  } else if (callback_func)
+    callback_func();
+}
+
+
 BasePage.prototype.getUserRation = function()  {
 
+  let page = this;
+
+  function _get_remote_ration()  {
+    serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteUserRation,
+                    { login : __remote_login_id, topup : false },
+                    'Remote FE ration request',
+      function(response){
+        if (response && (response.status==fe_retcode.ok))
+          page.remote_ration = response.data.ration;
+        page.makeUserRationIndicator();
+        return true;
+      },function(){
+      },function(xhr,err)  {
+        page.remote_ration = null;
+        page.makeUserRationIndicator();
+        return true;
+      });
+  }
+
   if (__login_user)  {
-    (function(page){
-      serverRequest ( fe_reqtype.getUserRation,{ topup : false },'User Ration',
-        function(data){
-          page.ration = data.ration;
-          page.makeUserRationIndicator();
-        },null,function(){
-          page.ration = null;
-          page.makeUserRationIndicator();
-        });
-    }(this))
+    serverRequest ( fe_reqtype.getUserRation,{ topup : false },'User Ration',
+      function(data){
+        page.ration = data.ration;
+        page.remote_ration = null;
+        if (__remote_environ_server.length>0)
+              _get_remote_ration()
+        else  page.makeUserRationIndicator();
+      },null,function(){
+        page.ration = null;
+        page.remote_ration = null;
+        if (__remote_environ_server.length>0)
+              _get_remote_ration()
+        else  page.makeUserRationIndicator();
+      });
   } else {
     this.makeUserRationIndicator();
   }
@@ -548,6 +596,18 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.ration.cpu_month,2)) +
                 '&nbsp;</td><td>&nbsp;' + cpu_month_pp + '</td></tr>';
 
+      if (this.remote_ration)  {
+        stats += 
+          '<tr><td colspan="4"><hr/></td></tr>' +
+          '<tr><td colspan="4"><b><i>Remote server quotas:</i></b></td></tr>' +
+          '<tr><td>CPU 24h (hours)</td><td>&nbsp;' + round(this.remote_ration.cpu_day_used,4) +
+                '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.remote_ration.cpu_day,2)) +
+                '&nbsp;</td><td>&nbsp;' + cpu_day_pp + '</td></tr>' +
+          '<tr><td>CPU 30d (hours)</td><td>&nbsp;' + round(this.remote_ration.cpu_month_used,4) +
+                '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.remote_ration.cpu_month,2)) +
+                '&nbsp;</td><td>&nbsp;' + cpu_month_pp + '</td></tr>';
+      }
+
       if ((this.ration.cloudrun_day>0) && (this.ration.cloudrun_day_used>0))  {
         let cloudrun_day_pp = getPercentLine ( this.ration.cloudrun_day_used,
                                                this.ration.cloudrun_day );
@@ -619,12 +679,19 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 BasePage.prototype.updateUserRationDisplay = function ( rdata )  {
   if ('ration' in rdata)
     this.ration = rdata.ration;
+  let page = this;
   if ('pdesc' in rdata)
-    this.displayUserRation ( rdata.pdesc );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( rdata.pdesc );    
+    });
   else if (('_type' in rdata) && (rdata._type=='ProjectDesc'))
-    this.displayUserRation ( rdata );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( rdata );
+    });
   else if ('ration' in rdata)
-    this.displayUserRation ( null );
+    this.getRemoteUserRation ( function(){
+      page.displayUserRation ( null );
+    });
   else
     this.getUserRation();
 }

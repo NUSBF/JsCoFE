@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.08.24   <--  Date of Last Modification.
+ *    08.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -116,28 +116,119 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 // ===========================================================================
 
-TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
+TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row,setall,idlen )  {
 let self    = this;
 let in_dock = __current_page.dock.inDock ( task_obj );
-let dockMenu;
+let icon    = 'dock_';
+let iwidth  = '0px';
+let remote  = 0;
+
+  if (__remoteJobServer.status=='FE')  {
+    iwidth = '14px';
+    icon  += 'remote_';
+    if (!task_obj.canRunRemotely())            remote = 0;
+    else if (//(task_obj._type in __remote_tasks) &&
+             (__remote_environ_server.length>0) && 
+              __remote_tasks[task_obj._type])  remote = 2;
+                                        else   remote = 1;
+    icon += remote
+  }
+  if (in_dock)  icon += '2';
+          else  icon += '1';
+
+  let dockMenu = new Menu ( '',image_path(icon),false,8,iwidth );
 
   if (in_dock)  {
-    dockMenu = new Menu('',image_path('dock_ind_sel'),false,8);
     dockMenu.addItem('Remove task from dock',image_path('remove'))
             .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
       __current_page.dock.removeTask ( task_obj._type );
       __current_page.dock.show();
-      dockMenu.setMenuIcon ( image_path('dock_ind') );
-      self.setDockMenu ( task_obj,grid,row );
+      // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'1') );
+      self.saveDialogState();
+      self.setDockMenu ( task_obj,grid,row,setall,idlen );
+      self.makeLists   ( 1 );
+      showFlashMessage ( 'Removed from Task Dock',rect,self );
     });
   } else  {
-    dockMenu = new Menu('',image_path('dock_ind'),false,8);
     dockMenu.addItem('Add task to dock',image_path('add'))
             .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
       __current_page.dock.addTaskClass ( task_obj );
       __current_page.dock.show();
-      dockMenu.setMenuIcon ( image_path('dock_ind_sel') );
-      self.setDockMenu ( task_obj,grid,row );
+      // dockMenu.setMenuIcon ( image_path(icon.slice(0,-1)+'2') );
+      self.saveDialogState();
+      self.setDockMenu ( task_obj,grid,row,setall,idlen );
+      self.makeLists   ( 1 );
+      showFlashMessage ( 'Task can be used from Task Dock now',rect,self );
+    });
+  }
+
+  if (remote==1)  {
+    dockMenu.addItem('Run task remotely',image_path('remote_on'))
+            .addOnClickListener(function(){
+      let msg = getRemoteFEStatusMessage();
+      // let msg = '';
+      // switch (getRemoteFEStatus())  {
+      //   case remote_jobs_server_code.not_configured :
+      //       msg = 'The connection to the remote server is not configured. ' +
+      //             'Please set up the remote server URL using the ' + appName() +
+      //             ' configuration utility and enter your credentials (login ' +
+      //             'name and CloudRun ID) in the Settings.'; 
+      //     break;
+      //   case remote_jobs_server_code.not_accessible :
+      //       msg = 'The remote server is not accessible. This could be due to ' +
+      //             'an incorrect server URL (please configure it using the ' +
+      //             appName() + ' configuration utility) or issues with your ' +
+      //             'internet connection.';
+      //     break;
+      //   case remote_jobs_server_code.not_connected  :
+      //       msg = 'To run jobs on the remote server, please enter your user ' +
+      //             'credentials (login name and CloudRun ID) in the Settings.';
+      //     break;
+      //   case remote_jobs_server_code.not_responding :
+      //       msg = 'The remote server is not connected, likely due to incorrect ' +
+      //             ' or no user credentials (login name or CloudRun ID) ' +
+      //             'specified in the Settings.';
+      //       break;
+      //   default : ;
+      // }
+      if (!msg)  {
+        let rect = dockMenu.button.getBoundingClientRect();
+        self.saveDialogState();
+        __remote_tasks[task_obj._type] = true;
+        if (self.tabs_full.getActiveTabNo()==0)
+          self.makeLists ( 0 );
+        else  {
+          // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'2'+icon.slice(-1)) );
+          // self.setDockMenu ( task_obj,grid,row,setall,idlen );
+          self.setTask     ( task_obj,grid,row,setall,idlen );
+          self.makeLists   ( 1 );
+        }
+        saveUserData     ( 'Remote tasks list' );
+        showFlashMessage ( 'Task will run on server',rect,self );
+      } else
+        new MessageBox ( 'Cannot run remote jobs',
+            '<div style="width:420px;"><h2>Cannot run jobs remotely</h2>' +
+            msg + '</div>','msg_stop' );
+    });
+  } else if (remote==2)  {
+    dockMenu.addItem('Run task locally',image_path('remote_off'))
+            .addOnClickListener(function(){
+      let rect = dockMenu.button.getBoundingClientRect();
+      self.saveDialogState();
+      if (task_obj._type in __remote_tasks)
+        delete __remote_tasks[task_obj._type];
+      if (self.tabs_full.getActiveTabNo()==0)
+        self.makeLists ( 0 );
+      else  {
+        // dockMenu.setMenuIcon ( image_path(icon.slice(0,-2)+'1'+icon.slice(-1)) );
+        // self.setDockMenu ( task_obj,grid,row,setall,idlen );
+        self.setTask     ( task_obj,grid,row,setall,idlen );
+        self.makeLists   ( 1 );
+      }
+      saveUserData     ( 'Remote tasks list' );
+      showFlashMessage ( 'Task will run on your computer',rect,self );
     });
   }
 
@@ -146,7 +237,8 @@ let dockMenu;
     new HelpBox ( '',task_obj.getHelpURL(),null );
   });
 
-  grid.setWidget ( dockMenu,row,0,1,1 )
+  grid.setWidget ( dockMenu,row,0,1,1 );
+
 }
 
 // function __show_task_help ( help_url )  {
@@ -179,7 +271,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   // let dock_btn = grid.setIconLabel ( '',image_path('dock_small'),row,0,1,1 )
   //               .setSize_px ( 54,40 );
 
-  this.setDockMenu ( task_obj,grid,row );
+  this.setDockMenu ( task_obj,grid,row,setall,idlen );
 
   let btn = grid.setButton  ( '',image_path(task_obj.icon()),row,1,1,1 )
                 .setSize_px ( 54,40 );
@@ -283,6 +375,24 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
 
 }
 
+TaskListDialog.prototype.makeLists = function ( key )  {
+
+  let activeTabNo = this.tabs_full.getActiveTabNo();
+
+  if ((!key) || (this.tabs_full.getTabNo(this.tabf_suggested)!=activeTabNo))
+    this.makeSuggestedList ( this.tabf_suggested.grid );
+
+  if ((!key) || (this.tabs_full.getTabNo(this.tabf_fulllist)!=activeTabNo))
+    this.makeFullList      ( this.tabf_fulllist.grid  );
+
+  if ((!key) || (this.tabs_full.getTabNo(this.tabf_workflows)!=activeTabNo))
+    this.makeWorkflowsList ( this.tabf_workflows.grid );
+
+  if ((!key) || (this.tabs_full.getTabNo(this.tabf_AtoZ)!=activeTabNo))
+    this.makeAtoZList      ( this.tabf_AtoZ.grid      );
+
+}
+
 
 TaskListDialog.prototype.makeLayout = function ( key )  {
 
@@ -294,16 +404,13 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
       ('active_tab' in __task_dialog_state.tabs.full))
     active_tab = __task_dialog_state.tabs.full.active_tab;
 
-  let tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',
-                                                     'Suggested tasks'==active_tab );
-  let tabf_fulllist  = this.tabs_full.addTab ( 'All tasks','All tasks'==active_tab );
-  let tabf_workflows = this.tabs_full.addTab ( 'Workflows','Workflows'==active_tab );
-  this.tabf_AtoZ     = this.tabs_full.addTab ( 'A-Z'      ,'A-Z'      ==active_tab );
-  this._setting_wf = false;
-  this.makeSuggestedList ( tabf_suggested.grid );
-  this.makeFullList      ( tabf_fulllist .grid );
-  this.makeWorkflowsList ( tabf_workflows.grid );
-  this.makeAtoZList      ( this.tabf_AtoZ.grid );
+  this.tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',
+                                                      'Suggested tasks'==active_tab );
+  this.tabf_fulllist  = this.tabs_full.addTab ( 'All tasks','All tasks'==active_tab );
+  this.tabf_workflows = this.tabs_full.addTab ( 'Workflows','Workflows'==active_tab );
+  this.tabf_AtoZ      = this.tabs_full.addTab ( 'A-Z'      ,'A-Z'      ==active_tab );
+  this._setting_wf    = false;
+  this.makeLists ( 0 );
 
   if (__user_settings.tasklist_state)  {
     // Wire up tab scrolling: trace and restore
@@ -402,6 +509,8 @@ TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
 TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
 let r = 0;  // grid row
 
+  grid.clear();
+
   this._setting_wf = true;
 
   grid.setLabel ( 'Automatic Workflows',r++,0,1,4 )
@@ -499,6 +608,8 @@ let tasks     = knowledge.tasks;
 let counts    = knowledge.counts;
 let ctotal    = 0;
 let r         = 0;  // grid row
+
+  grid.clear();
 
   for (let i=0;i<counts.length;i++)  {
     for (let j=i+1;j<counts.length;j++)
@@ -612,6 +723,8 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   this.section0 = null;
   this.navail   = 0;
   this.task_cnt = 0;
+
+  grid.clear();
 
   let section1 = this.section0;
 
@@ -815,7 +928,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskSeqAlign  (),
     new TaskSymMatch  ()
   ],true);
-  
+
   if (this.navail==1)
     this.section0.open();
   else if (section1)
@@ -826,6 +939,8 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
 TaskListDialog.prototype.makeAtoZList = function ( grid )  {
 let r = 0;  // grid row
+
+  grid.clear();
 
   grid.setLabel ( '<b>Filter by keyword(s):&nbsp;</b>',0,0,1,1 )
       .setNoWrap().setWidth('20%');

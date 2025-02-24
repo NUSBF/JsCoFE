@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.12.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -108,8 +108,17 @@ function Communicate ( server_request )  {
   // Parse the server request command
   let url_parse  = url.parse(server_request.url);
   let url_path   = url_parse.pathname.substr(1);
-  this.command   = url_path.toLowerCase();
+  //******  this.command   = url_path.toLowerCase(); !!!! Important change, unverified
+
+  // if (url_path.startsWith(cmd.__special_rfe_tag))  {
+  //   let clist = url_path.split('.');
+  //   this.ncURL = conf.get
+  // }
+
+  this.command   = url_path;
   this.search    = url_parse.search;
+
+  // console.log ( ' >>>>> command=' + this.command + ' search=' + this.search)
 
 // this.doprint = server_request.url.endsWith('.mmcif');
 // if (this.doprint)  {
@@ -249,14 +258,12 @@ function Communicate ( server_request )  {
         // now check whether the job is currently running, in which case the
         // requested file should be fetched from the respective number cruncher
         let jobEntry = rj.getEFJobEntry ( loginData,flist[2],flist[3] );
-//      if (jobEntry && ((jobEntry.nc_type=='ordinary') ||
-//                       (conf.isLocalFE() &&
-//                        (!localPath.endsWith('__dir.tar.gz')))))  {  // yes the job is running
         if (jobEntry && (jobEntry.nc_type=='ordinary'))  {  // yes the job is running
           // form a URL request to forward
           this.ncURL = conf.getNCConfig(jobEntry.nc_number).url() + '/' +
-                                        cmd.__special_url_tag + '/' +
-                                        jobEntry.job_token + '/' +
+                                        jobEntry.rfe_token        +
+                                        cmd.__special_url_tag     + '/' +
+                                        jobEntry.job_token        + '/' +
                                         localPath;
           if (this.search)
             this.ncURL += this.search;
@@ -320,6 +327,8 @@ Communicate.prototype.sendFile = function ( server_response )  {
     server_response.setHeader ( 'Cache-Control','max-age=' + cache_max_age );
 
   log.debug2 ( 5,'send file = ' + this.filePath );
+
+// cmd.__special_rfe_tag
 
   // console.log ( 'send file = ' + this.filePath + ' ' + 
   //               utils.fileSize(this.filePath) + ',  mtype=' + this.mimeType );

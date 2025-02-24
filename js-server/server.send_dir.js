@@ -18,7 +18,8 @@
  *     function packDir    ( dirPath, fileSelection, dest_path, 
  *                           onReady_func )
  *     function sendDir    ( dirPath, serverURL, server_fsmount,
-                             command, metaData, onReady_func, onErr_func )
+ *                           command, metaData, compression_options,
+ *                           request_headers, onReady_func, onErr_func )
  *     function unpackDir  ( dirPath,cleanTmpDir, onReady_func )
  *     function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )
  * 
@@ -205,7 +206,8 @@ function packDir ( dirPath,options, onReady_func )  {
 // ==========================================================================
 
 function sendDir ( dirPath, serverURL, server_fsmount, command,
-                   metaData, options, onReady_func, onErr_func )  {
+                   metaData, compress_options, request_headers,
+                   onReady_func, onErr_func )  {
   let sender_cfg = conf.getServerConfig();
   let stats = {
     zip_time  : 0,  // packing time, s
@@ -220,6 +222,9 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
       formData : formData,
       rejectUnauthorized : sender_cfg.rejectUnauthorized
     };
+
+    if (request_headers)
+      post_options.headers = request_headers;
 
     stats.send_time = performance.now();
 
@@ -239,15 +244,22 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
       } else  {
         try {
           let resp = JSON.parse ( response );
-          if (resp.status==cmd.fe_retcode.ok)  {
-            if (onReady_func)
-              onReady_func ( resp.data,stats );
-            log.detailed ( 1,'directory ' + dirPath +
-                             ' has been received at ' + serverURL );
-          } else  {
-            log.error ( 5,'send directory bad response: ' + resp.status );
-            if (onErr_func)
-              onErr_func ( 3,resp,stats );  // '3' means an error from recipient
+          switch (resp.status)  {
+            case cmd.fe_retcode.ok : 
+                  if (onReady_func)
+                      onReady_func ( resp.data,stats );
+                  log.detailed ( 1,'directory ' + dirPath +
+                                   ' has been received at ' + serverURL );
+                break;
+            case cmd.fe_retcode.credCheckFailed :
+                  log.standard ( 6,'user credentials check failed: ' + resp.data.message );
+                  if (onErr_func)
+                    onReady_func ( resp.data,stats );
+                break;
+            default :
+                  log.error ( 5,'send directory bad response: ' + resp.status );
+                  if (onErr_func)
+                    onErr_func ( 3,resp,stats );  // '3' means an error from recipient
           }
         } catch(error)  {
           log.error ( 6,'send directory errors: ' + error );
@@ -277,8 +289,8 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
     // 1. Pack files, assume tar
 
     stats.zip_time = performance.now();
-    // packDir ( dirPath, fileSelection, null,options, function(code,packSize){
-    packDir ( dirPath,options, function(code,packPath,packSize){
+    // packDir ( dirPath, fileSelection, null,compress_options, function(code,packSize){
+    packDir ( dirPath,compress_options, function(code,packPath,packSize){
 
       stats.zip_time = (performance.now()-stats.zip_time)/1000.0;
       stats.size     = packSize/1024.0/1024.0;

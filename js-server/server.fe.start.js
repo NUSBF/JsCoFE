@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.24   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -22,9 +22,10 @@
 'use strict';
 
 //  load system modules
-const http    = require('http');
-const path    = require('path');
-const request = require('request');
+const http      = require('http');
+const path      = require('path');
+const request   = require('request');
+const httpProxy = require('http-proxy');
 
 //  load application modules
 const conf    = require('./server.configuration');
@@ -40,6 +41,9 @@ const cmd     = require('../js-common/common.commands');
 
 //  prepare log
 const log     = require('./server.log').newLog(0);
+
+// Create a proxy server
+const proxy   = httpProxy.createProxyServer({});
 
 // ==========================================================================
 
@@ -61,7 +65,8 @@ function start ( callback_func )  {
   log.standard ( 1,'FE: url=' + feConfig.url() );
   for (let i=0;i<ncConfigs.length;i++)
     log.standard ( 2,'NC[' + i + ']: type=' + ncConfigs[i].exeType +
-                     ' url=' + ncConfigs[i].url() );
+                     ' url=' + ncConfigs[i].url() + 
+                     (ncConfigs[i].in_use ? '' : ' not in use') );
   log.standard ( 3,'Emailer: ' + conf.getEmailerConfig().type );
 
   utils.configureCache ( feConfig.cache );
@@ -139,44 +144,62 @@ function start ( callback_func )  {
       switch (c.command)  {
 
         case cmd.fe_command.getInfo :
-            pp.processPOSTData ( server_request,server_response,user.getInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,user.getInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.getLocalInfo :
-            pp.processPOSTData ( server_request,server_response,user.getLocalInfo,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.getLocalInfo,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.getClientInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getClientInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,conf.getClientInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.getFEProxyInfo :
-            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo,'active' );
+            pp.processPOSTData ( server_request,server_response,conf.getFEProxyInfo,
+                                 'active' );
           break;
 
         case cmd.fe_command.login :
-            pp.processPOSTData ( server_request,server_response,user.userLogin,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.userLogin,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.register :
-            pp.processPOSTData ( server_request,server_response,user.makeNewUser,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.makeNewUser,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.recoverLogin :
-            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.recoverUserLogin,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.request :
-            pp.processPOSTData ( server_request,server_response,rh.requestHandler,'active' );
+            pp.processPOSTData ( server_request,server_response,rh.requestHandler,
+                                 'active' );
           break;
 
         case cmd.fe_command.upload :
             uh.handleUpload ( server_request,server_response );
           break;
 
+        case cmd.fe_command.allocateJob :
+            pp.processPOSTData ( server_request,server_response,rj.allocateJob,
+                                 feConfig.state );
+        break;
+
         case cmd.fe_command.jobFinished :
             rj.getJobResults ( c.job_token,server_request,server_response );
           break;
+
+        case cmd.fe_command.updateUserRation :
+            pp.processPOSTData ( server_request,server_response,rj.updateUserRation,
+                                 feConfig.state );
+        break;
 
         case cmd.fe_command.cloudRun :
             rj.cloudRun ( server_request,server_response );
@@ -186,13 +209,23 @@ function start ( callback_func )  {
             rj.cloudFetch ( server_request,server_response );
           break;
 
+        case cmd.fe_command.remoteCheckIn :
+            pp.processPOSTData ( server_request,server_response,user.remoteCheckIn,
+                                 feConfig.state );
+          break;
+
+        case cmd.fe_command.remoteUserRation :
+            pp.processPOSTData ( server_request,server_response,user.getRemoteUserRation,
+                                 feConfig.state );
+          break;
+
         case cmd.fe_command.checkSession :
-            pp.processPOSTData ( server_request,server_response,user.checkSession,feConfig.state );
+            pp.processPOSTData ( server_request,server_response,user.checkSession,
+                                 feConfig.state );
           break;
 
         case cmd.fe_command.control :
             pp.processPOSTData ( server_request,server_response,function(data){
-              //console.log ( ' >>>> control ' + JSON.stringify(data) );
               cmd.sendResponse ( server_response,cmd.fe_retcode.ok,controlSignal(data),'' );
             },'active' );
           break;
@@ -242,7 +275,31 @@ function start ( callback_func )  {
         case cmd.fe_command.ignore :
           break;
 
+        case cmd.nc_command.getNCInfo :
+            rj.ncGetInfo_remote ( server_request,server_response );
+          break;
+
         default :
+
+          if (c.filePath.startsWith(cmd.__special_rfe_tag))  {
+            let clist = c.filePath.split('.');  // parse RFE token
+            if (clist[2]==cmd.nc_command.runJob)  {
+              // check credentials and quota
+              let message = user.checkCredentials ( server_request,'cpu' );
+              if (message)  {
+                cmd.sendResponse ( server_response,cmd.fe_retcode.credCheckFailed,'',
+                                   { run_remotely : true, message : message } );
+                break;
+              }
+            }
+            let furl  = conf.getNCConfig(parseInt(clist[1])).url(); // forward URL
+            proxy.web ( server_request,server_response,
+              { target : furl, changeOrigin : true }, (err) => {
+                console.error('Proxy error:', err);
+                server_response.writeHead ( 500, { 'Content-Type': 'text/plain' });
+                server_response.end ( 'Proxy encountered an error.' );
+            });
+          } else
             c.sendFile ( server_response );
 
       }

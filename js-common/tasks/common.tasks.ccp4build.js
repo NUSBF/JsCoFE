@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4Build Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2025
  *
  *  ==========================================================================
  *
@@ -397,6 +397,7 @@ else    registerClass ( 'TaskCCP4Build',TaskCCP4Build,TaskTemplate.prototype );
 
 TaskCCP4Build.prototype.icon           = function()  { return 'task_ccp4build'; }
 TaskCCP4Build.prototype.clipboard_name = function()  { return '"CCP4Build"';    }
+TaskCCP4Build.prototype.canRunRemotely = function()  { return true;             }
 
 // TaskCCP4Build.prototype.desc_title = function()  {
 //   return 'Automatic model building after MR or Experimental Phasing';

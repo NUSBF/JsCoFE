@@ -118,7 +118,7 @@ document.onclick = function(event)  {
 // -------------------------------------------------------------------------
 // Menu class
 
-function Menu ( text,icon_uri,right_click=false,spacing=-1 )  {
+function Menu ( text,icon_uri,right_click=false,spacing=-1,width='0px' )  {
   Widget.call ( this,'div' );
   this.addClass ( 'menu-dropdown' );
   this.spacing  = spacing;
@@ -129,11 +129,13 @@ function Menu ( text,icon_uri,right_click=false,spacing=-1 )  {
     this.button.setNoWrap();
     //this.button.element.setAttribute ( 'class','menu-dropbtn' );
     this.button.addClass ( 'menu-dropbtn' );
-    //this.button.setSize ( '32px','32px' );
+    // this.button.setSize ( '32px','32px' );
     if ((text=='') && (icon_uri!=''))  {
       $(this.button.element).css({
         'background-color' : 'transparent',
-        'background-size'  : '28px'
+        // 'background-size'  : '28px'
+        'background-size'  : 'auto 28px',
+        'width'            : width
       });
     }
     this.addWidget ( this.button );
