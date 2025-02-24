@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -224,7 +224,7 @@ def put_ramaplot_section ( body,structure ):
 
     return
 
-def put_iris_section ( body,revision ):
+def put_iris_section ( body,revision,xyzin ):
 
     hkl       = body.makeClass ( revision.HKL )
     structure = revision.Structure
@@ -232,20 +232,31 @@ def put_iris_section ( body,revision ):
     sec_id    = body.getWidgetId ( "irissec"  )
     body.putSection ( sec_id,"Iris Validation",openState_bool=False )
 
-    xyzin     = structure.getXYZFilePath ( body.outputDir() )
+    xyzout    = structure.getXYZFilePath ( body.outputDir() )
     hklin     = hkl.getHKLFilePath ( body.inputDir() )
 
-    tmp_mmcif = "_tmp.mmcif"
-    tmp_mtz   = "_tmp.mtz"
+    tmpin_mmcif  = "_tmpin.mmcif"
+    tmpout_mmcif = "_tmpout.mmcif"
+    tmp_mtz      = "_tmp.mtz"
 
     try:
 
-        st = gemmi.read_structure ( xyzin )
+        model_paths = (tmpout_mmcif,tmpout_mmcif)
+        if xyzin:
+            st = gemmi.read_structure ( xyzin )
+            st.setup_entities()
+            st.add_entity_types()
+            st.remove_ligands_and_waters()
+            st.remove_empty_chains()
+            st.make_mmcif_document().write_file ( tmpin_mmcif )
+            model_paths = (tmpin_mmcif,tmpout_mmcif)
+
+        st = gemmi.read_structure ( xyzout )
         st.setup_entities()
         st.add_entity_types()
         st.remove_ligands_and_waters()
         st.remove_empty_chains()
-        st.make_mmcif_document().write_file ( tmp_mmcif )
+        st.make_mmcif_document().write_file ( tmpout_mmcif )
 
         cols = hkl.getMeanColumns()
         FreeRColumn = hkl.getFreeRColumn()
@@ -253,7 +264,7 @@ def put_iris_section ( body,revision ):
                         tmp_mtz,["F","SIGF",FreeRColumn] )
 
         model_series = metrics_model_series_from_files (
-            model_paths       = (tmp_mmcif,tmp_mmcif), 
+            model_paths       = model_paths, 
             reflections_paths = (tmp_mtz,tmp_mtz),
             sequence_paths    = (None, None),
             distpred_paths    = (None, None),
@@ -265,7 +276,7 @@ def put_iris_section ( body,revision ):
         )
         panel = Panel (
             model_series.get_raw_data(),
-            custom_labels = dict ( Latest="Latest", Previous="Previous" )
+            custom_labels = dict ( Latest="Output", Previous="Input" )
         )
         # panel.dwg.attribs["style"] += " margin-top: -40px;"
         html_str = panel.dwg.tostring()
@@ -307,7 +318,7 @@ def put_molprobity_section ( body,revision ):
     molprobity_log = "_molprobity.log"
     clashscore_log = "_clashscore.log"
 
-    body.stdoutln ( "\n >>>>> xyz file for mol[rpbity: " + str(xyzpath) + "\n" )
+    # body.stdoutln ( "\n >>>>> xyz file for mol[rpbity: " + str(xyzpath) + "\n" )
 
     meta = {
         "meta_complete"    : True,
@@ -772,7 +783,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
 
 
-def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
+def quality_report ( body,revision,xyzin,title="Quality Assessment",refmacXML=None ):
 
     meta   = None
     edmeta = None
@@ -789,7 +800,7 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
             edmeta = None
         meta   = put_molprobity_section ( body,revision )
         put_ramaplot_section ( body,revision.Structure )
-        put_iris_section     ( body,revision  )
+        put_iris_section     ( body,revision,xyzin  )
 
         # body.stderrln ( " XXXXX " + str(meta) )
 

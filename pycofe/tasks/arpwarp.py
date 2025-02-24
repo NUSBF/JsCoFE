@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -354,8 +354,8 @@ class ArpWarp(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
-                    # meta = qualrep.quality_report ( self,revision )
+                    qualrep.quality_report ( self,revision,None )
+                    # meta = qualrep.quality_report ( self,revision,None )
                     # if "molp_score" in meta:
                     #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
                 except:

@@ -239,7 +239,8 @@ class Privateer(basic.TaskDriver):
 
                 # rvrow0 = self.rvrow
                 # try:
-                #     qualrep.quality_report ( self,revision )
+                #     qualrep.quality_report ( self,revision,
+                #                   istruct.getXYZFilePath ( self.inputDir() ) )
                 # except:
                 #     self.stderr ( " *** validation tools failure" )
                 #     self.rvrow = rvrow0 + 6

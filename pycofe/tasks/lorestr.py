@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -68,7 +68,7 @@ class Lorestr(basic.TaskDriver):
         #self.setGenericLogParser ( self.lorestr_report(),False )
 
         cmd = [ "-xyzin",istruct.getXYZFilePath(self.inputDir()),
-                "-f" ,hkl.getHKLFilePath(self.inputDir()) ]
+                "-f"    ,hkl.getHKLFilePath(self.inputDir()) ]
 
         if len(rstruct)>0:
             cmd += ["-p2"]
@@ -174,7 +174,8 @@ class Lorestr(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    meta = qualrep.quality_report ( self,revision )
+                    meta = qualrep.quality_report ( self,revision,
+                                      istruct.getXYZFilePath(self.inputDir()) )
                 except:
                     meta = None
                     self.stderr ( " *** validation tools failure" )
