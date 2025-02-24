@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -428,10 +428,9 @@ class FitWaters(basic.TaskDriver):
                 have_results = True
 
                 rvrow0 = self.rvrow
-                # meta = qualrep.quality_report ( self,revision )
                 try:
-                    qualrep.quality_report ( self,revision )
-                    # meta = qualrep.quality_report ( self,revision )
+                    qualrep.quality_report ( self,revision,
+                                  istruct.getXYZFilePath ( self.inputDir() ) )
                     # # self.stderr ( " META=" + str(meta) )
                     # if "molp_score" in meta:
                     #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]

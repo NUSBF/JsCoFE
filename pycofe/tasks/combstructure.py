@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -379,7 +379,7 @@ class CombStructure(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
+                    qualrep.quality_report ( self,revision,mtzxyz[1] )
                 except:
                     self.stderr ( " *** validation tools failure" )
                     self.rvrow = rvrow0 + 6

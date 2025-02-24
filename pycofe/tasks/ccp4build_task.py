@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -447,7 +447,7 @@ class CCP4Build(basic.TaskDriver):
                             try:
                                 self.rvrow = meta["page"][i] + 2
                                 self.putSpacer ( 8 )
-                                qrmeta = qualrep.quality_report ( self,rev,title=None )
+                                qrmeta = qualrep.quality_report ( self,rev,None,title=None )
                                 self.putMessage ( "<b>Assigned structure" +\
                                     self.hotHelpLink("Structure","jscofe_qna.structure") +\
                                     " name:</b>&nbsp;" + structure.dname +\

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -465,7 +465,7 @@ class ModelCraft(basic.TaskDriver):
                     rvrow0 = self.rvrow
                     if pdbout:
                         try:
-                            qrmeta = qualrep.quality_report ( self,revision )
+                            qrmeta = qualrep.quality_report ( self,revision,None )
                             metrics["clashscore"] = qrmeta["clashscore"]
                             if "EDCC" in qrmeta:
                                 metrics["EDCC"] = qrmeta["EDCC"]

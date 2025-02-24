@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    24.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -224,7 +224,7 @@ class SliceNDice(basic.TaskDriver):
 
                     rvrow0 = self.rvrow
                     try:
-                        meta = qualrep.quality_report ( self,revision )
+                        meta = qualrep.quality_report ( self,revision,None )
                     except:
                         meta = None
                         self.stderr ( " *** validation tools failure" )

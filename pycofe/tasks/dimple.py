@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.02.25   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -244,7 +244,8 @@ class Dimple(basic.TaskDriver):
 
             rvrow0 = self.rvrow
             try:
-                meta = qualrep.quality_report ( self,revision )
+                meta = qualrep.quality_report ( self,revision,
+                                      istruct.getXYZFilePath(self.inputDir()) )
             except:
                 meta = None
                 self.stderr ( " *** validation tools failure" )
