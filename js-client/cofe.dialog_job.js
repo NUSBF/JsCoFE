@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    24.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,6 +97,7 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   this.inputPanel  = null;
   this.outputPanel = null;
+  this.remote_btn  = null;
   this.run_btn     = null;
   this.autorun_cbx = null;
   this.run_image   = null;
@@ -364,6 +365,8 @@ JobDialog.prototype.setDlgState = function()  {
              startsWith(this.outputPanel.getURL(),__local_service))
     this.loadReport();
 
+  this.__set_remote_tooltip();
+
 }
 
 JobDialog.prototype.getDlgSize = function()  {
@@ -457,19 +460,6 @@ JobDialog.prototype.loadReport = function()  {
                   this.task.getLocalReportPath();
     } else
       reportURL = this.task.getReportURL();
-    // if (__local_service)
-    //   reportURL += '?local_service';
-    // if (__local_service)
-    //   reportURL += '?' + performance.now();
-
-    // // if (__local_service)  {
-    // //   // this is to force reload after coot in local mode, magic or a bug
-    // //   // side effect: screwed reports in task created by running workflows
-    // //   this.setDlgSize (  1 );  
-    // //   this.outputPanel.loadPage ( reportURL );
-    // //   this.setDlgSize ( -1 );
-    // // } else
-    //   this.outputPanel.loadPage ( reportURL );
 
     this.outputPanel.loadPage ( reportURL );
 
@@ -522,6 +512,7 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
                          (this.task.nc_type=='ordinary') &&  
                               this.task.canRunRemotely() && 
                          __remote_tasks[this.task._type];
+  this.task.run_remotely = data.run_remotely;
   serverRequest ( request,data,this.task.title,callback_ok,null,null );
 }
 
@@ -555,6 +546,38 @@ let btn = this.toolBar.setButton ( '',image_path(icon), 0,this.col++, 1,1 )
   return btn;
 }
 
+
+JobDialog.prototype.__get_remote_icon = function()  {
+  let suffix = 'off'
+  if (__remote_environ_server.length>0)  {
+    // server is there and access is configured
+    if (this.task.state==job_code.new)  { 
+      if (__remote_tasks[this.task._type])
+        suffix = 'on';
+    } else if (this.task.run_remotely)
+      suffix = 'on';
+  }
+  return image_path('remote_' + suffix);
+}
+
+
+JobDialog.prototype.__set_remote_tooltip = function()  {
+  if (this.remote_btn)  {
+    let tooltip = 'Switch to run locally or remotely';
+    if (this.task.isRunning())  {
+      if (this.task.run_remotely)
+            tooltip = 'Task is running on server, cannot switch now';
+      else  tooltip = 'Task is running on your computer, cannot switch now';
+    } else if (this.task.state!=job_code.new)  {
+      if (this.task.run_remotely)
+            tooltip = 'Task was run on server, cannot switch now';
+      else  tooltip = 'Task was run on your computer, cannot switch now';
+    }
+    this.remote_btn.setTooltip ( tooltip );
+  }
+}
+
+
 JobDialog.prototype.makeToolBar = function()  {
 
   this.toolBar = new Grid('');
@@ -567,46 +590,85 @@ JobDialog.prototype.makeToolBar = function()  {
     this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
             .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
             .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
-    // (function(dlg){
-      $(dlg.outputPanel.element).on ( 'load',function(){
-        dlg.onDlgResize();
-        //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
-      });
-      dlg.radioSet.make ( function(btnId){
-        dlg.inputPanel.setVisible ( (btnId=='input' ) );
-        dlg.outputPanel.setVisible ( (btnId=='output') );
-        dlg.task.job_dialog_data.panel = btnId;
-        dlg.onDlgResize();  // this is needed for getting all elements in
-                            // inputPanel available by scrolling, in case
-                            // when dialog first opens for 'output'
-        // if dialog was created in input mode, check whether report
-        // page should be loaded at first switch to output mode
-        if (dlg.outputPanel.element.src.length<=0)
-          dlg.loadReport();
-      });
-    // }(this));
+    $(this.outputPanel.element).on ( 'load',function(){
+      dlg.onDlgResize();
+      //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
+    });
+    this.radioSet.make ( function(btnId){
+      dlg.inputPanel.setVisible ( (btnId=='input' ) );
+      dlg.outputPanel.setVisible ( (btnId=='output') );
+      dlg.task.job_dialog_data.panel = btnId;
+      dlg.onDlgResize();  // this is needed for getting all elements in
+                          // inputPanel available by scrolling, in case
+                          // when dialog first opens for 'output'
+      // if dialog was created in input mode, check whether report
+      // page should be loaded at first switch to output mode
+      if (dlg.outputPanel.element.src.length<=0)
+        dlg.loadReport();
+    });
     this.radioSet.setSize ( '220px','' );
 
     if (!this.inputPanel.fullVersionMismatch)  {
-      this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
-                                               image_path('runjob'), 0,this.col++, 1,1 )
-                                  .setTooltip  ( 'Start job' )
-                                  .setDisabled ( !this.dlg_active );
-      // if (this.task.canRunInAutoMode())
+
+      if ((__remoteJobServer.status=='FE') && (this.task.canRunRemotely()))  {
+        this.remote_btn = this.toolBar.setImageButton ( this.__get_remote_icon(),
+                                          '34px','34px',0,this.col++, 1,1 );
+                                      // .setTooltip  ( 'Switch to run locally or remotely' )
+                                      // .setDisabled ( !this.dlg_active );
+        this.__set_remote_tooltip();
+        this.remote_btn.addOnClickListener ( function(){
+          if (__remote_environ_server.length<=0)  {
+            let msg = getRemoteFEStatusMessage();
+            new MessageBox ( 'Cannot run remote jobs',
+              '<div style="width:420px;"><h2>Cannot run jobs remotely</h2>' +
+              msg + '</div>','msg_information' );  
+          } else  {
+            let rect      = dlg.remote_btn.image.getBoundingClientRect();
+            let flash_msg = '';
+            if (dlg.task.state==job_code.new)  {
+              // can choose remote mode for new tasks
+              flash_msg = 'Task will run on server';
+              if (__remote_tasks[dlg.task._type])  {
+                delete __remote_tasks[dlg.task._type];
+                flash_msg = 'Task will run on your computer';
+              } else
+                __remote_tasks[dlg.task._type] = true;
+              dlg.remote_btn.setImage ( dlg.__get_remote_icon() );
+              showFlashMessage ( flash_msg,rect,dlg   );  
+              saveUserData     ( 'Remote task switch' );
+            } else  {
+              if (dlg.task.isRunning())  {
+                if (dlg.task.run_remotely)
+                      flash_msg = 'Task is running on server';
+                else  flash_msg = 'Task is running on your computer';
+              } else  {
+                if (dlg.task.run_remotely)
+                      flash_msg = 'Task was run on server';
+                else  flash_msg = 'Task was run on your computer';
+              }
+              showFlashMessage ( flash_msg,rect,dlg );
+            }
+          }  
+
+        });
+      }
+
+      this.run_btn = this.toolBar.setButton ( this.task.runButtonName(),
+                                              image_path('runjob'), 0,this.col++, 1,1 )
+                                 .setTooltip  ( 'Start job' )
+                                 .setDisabled ( !this.dlg_active );
       if (('autoRunId0' in this.task) && (this.task.autoRunId0.length>0))  {
         this.autorun_cbx = this.toolBar.setCheckbox ( 'Keep auto',
                                     (this.task.autoRunId.length>0),0,this.col++, 1,1 )
                                .setTooltip  ( 'Check to start an automatic workflow' )
                                .setDisabled ( !this.dlg_active );
-        // (function(dlg){
-          dlg.autorun_cbx.addOnClickListener ( function(){
-            if (dlg.autorun_cbx.getValue())
-                  dlg.task.autoRunId = dlg.task.autoRunId0;
-            else  dlg.task.autoRunId = '';
-            dlg.inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
-                                        job_dialog_reason.rename_node );
-          });
-        // }(this));
+        dlg.autorun_cbx.addOnClickListener ( function(){
+          if (dlg.autorun_cbx.getValue())
+                dlg.task.autoRunId = dlg.task.autoRunId0;
+          else  dlg.task.autoRunId = '';
+          dlg.inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                                      job_dialog_reason.rename_node );
+        });
       }
     }
 
@@ -632,46 +694,43 @@ JobDialog.prototype.makeToolBar = function()  {
                                           'results will be kept for inspection ' +
                                           'but unavailable for subsequent jobs.');
 
-  // (function(dlg){
-    let hot_list = dlg.task.hotButtons();
-    let gap      = false;
-    let dBox     = null;
-//    let branch_task_list = self.tree.getAllAncestors ( tree.getSelectedTask() );
-    for (let i=0;i<hot_list.length;i++)  {
-      let task_obj  = makeNewInstance ( hot_list[i].task_name );
-      let avail_key = task_obj.isTaskAvailable();
-      if (avail_key[0]=='ok')  {
-        if (!dBox)
-          dBox = dlg.tree.harvestTaskData ( 1,[] );
-        if (dBox.getDataSummary(task_obj).status>0)  {
-          task_obj.hot_launch = true;  // signal that the task is launched from hpt button
-          (function(task){
-            let hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
-                          .addOnClickListener ( function(){
-                            dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
-                                                   task );
-                          });
-            hbtn.task_name = hot_list[i].task_name;
-            hbtn.task      = task;
-            gap = true;
-            dlg.hot_btn.push ( hbtn );
-          }(task_obj))
-        }
+  let hot_list = dlg.task.hotButtons();
+  let gap      = false;
+  let dBox     = null;
+  for (let i=0;i<hot_list.length;i++)  {
+    let task_obj  = makeNewInstance ( hot_list[i].task_name );
+    let avail_key = task_obj.isTaskAvailable();
+    if (avail_key[0]=='ok')  {
+      if (!dBox)
+        dBox = dlg.tree.harvestTaskData ( 1,[] );
+      if (dBox.getDataSummary(task_obj).status>0)  {
+        task_obj.hot_launch = true;  // signal that the task is launched from hpt button
+        (function(task){
+          let hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
+                        .addOnClickListener ( function(){
+                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
+                                                  task );
+                        });
+          hbtn.task_name = hot_list[i].task_name;
+          hbtn.task      = task;
+          gap = true;
+          dlg.hot_btn.push ( hbtn );
+        }(task_obj))
       }
     }
-    dlg.addjob_btn = dlg.addToolBarButton ( gap,'add_repeat','Add next job with last used parameters' )
-                        .addOnClickListener ( function(){
-                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.add_job,
-                                                 null );
-                        });
-    gap = true;
-    dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone this job' )
-                        .addOnClickListener ( function(){
-                          dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
-                                                 null );
-                          return false;  // preent default
-                        });
-  // }(this))
+  }
+  dlg.addjob_btn = dlg.addToolBarButton ( gap,'add_repeat','Add next job with last used parameters' )
+                      .addOnClickListener ( function(){
+                        dlg.onDlgSignal_func ( dlg,job_dialog_reason.add_job,
+                                                null );
+                      });
+  gap = true;
+  dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone this job' )
+                      .addOnClickListener ( function(){
+                        dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
+                                                null );
+                        return false;  // preent default
+                      });
 
   if (this.task.getHelpURL())
     this.ref_btn = this.addToolBarButton  ( true,'reference','Task Documentation'   );
@@ -764,6 +823,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.toolBar     = null;
     this.toolBarSep  = null;
     this.radioSet    = null;
+    this.remote_btn  = null;
     this.run_btn     = null;
     this.autorun_cbx = null;
     this.run_image   = null;
@@ -784,7 +844,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
   }
 
-  if ((this.task.state!='new') && (this.task.job_dialog_data.panel=='output') &&
+  if ((this.task.state!=job_code.new) && (this.task.job_dialog_data.panel=='output') &&
       (this.outputPanel.getURL().length<=0))
     this.loadReport();
 
@@ -1001,6 +1061,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                 dlg.setDlgState();
 
                 dlg.requestServer ( fe_reqtype.runJob,function(rdata){
+
+                  dlg.__set_remote_tooltip();
 
                   addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
                   dlg.tree.projectData.desc.timestamp = rdata.timestamp;

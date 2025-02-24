@@ -1307,7 +1307,7 @@ function stopJob ( loginData,data )  {
       else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
 
       request({
-          uri     : cmd.nc_command.stopJob,
+          uri     : jobEntry.rfe_token + cmd.nc_command.stopJob,
           baseUrl : nc_url,
           method  : 'POST',
           body    : { job_token   : jobEntry.job_token,
@@ -1375,7 +1375,7 @@ function killJob ( loginData,projectName,taskId )  {
       log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
 
       request({
-          uri     : cmd.nc_command.stopJob,
+          uri     : jobEntry.rfe_token + cmd.nc_command.stopJob,
           baseUrl : nc_url,
           method  : 'POST',
           body    : { job_token   : jobEntry.job_token,

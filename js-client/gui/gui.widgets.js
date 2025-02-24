@@ -819,38 +819,40 @@ Grid.prototype.setTextArea = function ( text, placeholder, nrows, ncols,
   return textarea;
 }
 
-Grid.prototype.addTextArea = function (text, placeholder, nrows, ncols,
-  row, col, rowSpan, colSpan) {
+Grid.prototype.addTextArea = function ( text, placeholder, nrows, ncols,
+                                        row, col, rowSpan, colSpan )  {
   let textarea = new TextArea(text, placeholder, nrows, ncols);
   this.addWidget(textarea, row, col, rowSpan, colSpan);
   return textarea;
 }
 
-Grid.prototype.setHLine = function (size, row, col, rowSpan, colSpan) {
+Grid.prototype.setHLine = function ( size, row, col, rowSpan, colSpan )  {
   let hline = new HLine(size);
   this.setWidget(hline, row, col, rowSpan, colSpan);
   return hline;
 }
 
-Grid.prototype.setImageButton = function (icon_uri, width, height, row, col, rowSpan, colSpan) {
-  let ibutton = new ImageButton(icon_uri, width, height);
+Grid.prototype.setImageButton = function ( icon_uri, width, height, 
+                                           row, col, rowSpan, colSpan ) {
+  let ibutton = new ImageButton ( icon_uri, width, height );
   this.setWidget(ibutton, row, col, rowSpan, colSpan);
   return ibutton;
 }
 
-Grid.prototype.setImage = function (icon_uri, width, height, row, col, rowSpan, colSpan) {
+Grid.prototype.setImage = function ( icon_uri, width, height, 
+                                     row, col, rowSpan, colSpan ) {
   let image = new Image(icon_uri, width, height);
   this.setWidget(image, row, col, rowSpan, colSpan);
   return image;
 }
 
-Grid.prototype.setTree = function (rootName, row, col, rowSpan, colSpan) {
+Grid.prototype.setTree = function ( rootName, row, col, rowSpan, colSpan ) {
   let tree = new Tree(rootName);
   this.setWidget(tree, row, col, rowSpan, colSpan);
   return tree;
 }
 
-Grid.prototype.setProgressBar = function (max_value, row, col, rowSpan, colSpan) {
+Grid.prototype.setProgressBar = function ( max_value, row, col, rowSpan, colSpan ) {
   let pBar = new ProgressBar(max_value);
   this.setWidget(pBar, row, col, rowSpan, colSpan);
   return pBar;
@@ -1449,8 +1451,8 @@ function ImageButton ( icon_uri, width, height )  {
 ImageButton.prototype = Object.create(Label.prototype);
 ImageButton.prototype.constructor = ImageButton;
 
-ImageButton.prototype.setImage = function (icon_uri) {
-  this.image.setImage(icon_uri);
+ImageButton.prototype.setImage = function ( icon_uri ) {
+  this.image.setImage ( icon_uri );
 }
 
 
