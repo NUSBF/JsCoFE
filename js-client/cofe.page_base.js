@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    24.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -401,16 +401,16 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.menu = new Menu('',image_path('menu'));
   this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
 
-  this.headerPanel.setLabel    ( '',0,2,1,1 ).setWidth ( '40px' );
+  this.headerPanel.setLabel    ( '&nbsp;',0,2,1,1 ).setWidth ( '40px' );
   this.headerPanel.setCellSize ( '40px','',0,2 );
 
   if (__login_user)  {
     this.headerPanel.setCellSize ( '99%','',0,12 );
     this._setConnectionIcons ( 13 );
     this._setModeIcon ( 15 );
-    this.rationPanel = new Grid('');
+    this.rationPanel = new Grid ( '' );
     this.headerPanel.setWidget ( this.rationPanel,0,18,1,1 );
-    this.toolPanel = new Grid('');
+    this.toolPanel = new Grid ( '' );
     this.headerPanel.setWidget ( this.toolPanel,0,19,1,1 );
     this.headerPanel.setLabel  ( '&nbsp;',0,20,1,1 ).setWidth('40px');
     //let user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
@@ -437,7 +437,7 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   }
   this.logout_btn.setTooltip ( end_tooltip );
 
-  this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
+  this.headerPanel.setLabel ( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
 }
 
