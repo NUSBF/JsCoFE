@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.09.24   <--  Date of Last Modification.
+ *    20.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -63,10 +63,12 @@ function UserData()  {
   this.name          = '';
   this.email         = '';
   this.login         = '';
+  this.remote_login  = '';
   this.globusId      = '';
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
+  this.remote_pwd    = '';
   this.cloudrun_id   = '';
   this.knownSince    = '';  // date
   this.lastSeen      = '';  // date
@@ -75,6 +77,9 @@ function UserData()  {
   this.volume        = '***';  // where users projects are kept
   this.helpTopics    = [];
   this.authorisation = {};
+  this.remote_tasks  = {
+    'TaskStructurePrediction' : true
+  };
   this.settings      = {
     onlogin        : on_login.all_projects,  // place to land on login
     viewers_size   : [1.40,0.97],     // width, height
@@ -114,10 +119,18 @@ let msg = '';
   if (uData.login==__local_user_id)
     uData.role = role_code.localuser;
 
-  if (('version' in uData) && (uData.version==1))
+  if (('version' in uData) && (uData.version==2))
     return msg;
 
-  uData.version = 1;  // with new checks, update this number and above
+  uData.version = 2;  // with new checks, update this number and above
+
+  if (!uData.hasOwnProperty('remote_pwd'))  {
+    uData.remote_login = '';
+    uData.remote_pwd   = '';
+    uData.remote_tasks = {
+      'TaskStructurePrediction' : true
+    };
+  }
 
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
   if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';

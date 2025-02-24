@@ -46,14 +46,17 @@ function DarkModeDialog()  {
                      '<h3>Dark  Mode parameters</h3>',
                      [{ name    : 'Save mode',
                         onclick : function(){
-                          let userData   = new UserData();
-                          userData.login = __login_id;
-                          userData.pwd   = '';  // can save only some records without password
                           if (pmode_cbox)
                             __user_settings.color_modes.preferred_mode = pmode_cbox.getValue(); 
-                          userData.settings = __user_settings;
-                          serverRequest ( fe_reqtype.updateUserData,userData,
-                                          'Dark Mode preferences update',function(response){} );
+                          saveUserData ( 'Dark Mode preferences update' );
+                          // let userData   = new UserData();
+                          // userData.login = __login_id;
+                          // userData.pwd   = '';  // can save only some records without password
+                          // if (pmode_cbox)
+                          //   __user_settings.color_modes.preferred_mode = pmode_cbox.getValue(); 
+                          // userData.settings = __user_settings;
+                          // serverRequest ( fe_reqtype.updateUserData,userData,
+                          //                 'Dark Mode preferences update',function(response){} );
                           bindToBrowserColorMode ( true );
                         }
                       },{

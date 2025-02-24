@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.01.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -996,7 +996,7 @@ let cfg = conf.getServerConfig();
 
       send_dir.sendDir ( jobEntry.jobDir,feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token,
-                         nc_meta,{compression:cfg.compression},
+                         nc_meta,{compression:cfg.compression},null,
 
         function(rdata,stats)  {  // send was successful
 
@@ -1057,17 +1057,18 @@ let cfg = conf.getServerConfig();
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
     
       send_dir.packDir  ( jobEntry.jobDir, { 
-          compression : 5,
-          destination : send_dir.getPackPath ( jobEntry.jobDir )
+          compression : 5
         },
         function(errs,jobballPath,jobballSize){
           if (jobballSize>0)  {
+            let fdest = send_dir.getPackPath ( jobEntry.jobDir );
+            utils.moveFile ( jobballPath,fdest );
             jobEntry.sendTrials = 0;  // indicate that it's ready
             jobEntry.jobStatus  = task_t.job_code.exiting;
             writeNCJobRegister();
-          } // else  {
-          // errors
-          // }
+          } else  {
+            log.error ( 11,'packed job directory has zero size' );
+          }
         });
 
     }
@@ -1952,13 +1953,15 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
     callback_func ( response );
   
   } else if (jobEntry.jobStatus==task_t.job_code.running)  {
+  // } else if ((jobEntry.jobStatus==task_t.job_code.running) ||
+  //            ((jobEntry.jobStatus!=task_t.job_code.exiting) && jobEntry.sendTrials))  {
   
     response = new cmd.Response ( cmd.nc_retcode.jobIsRunning,post_data_obj.job_token,{} );
     callback_func ( response );
-  
+
   } else  {
 
-    let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
+    let jobballPath = send_dir.getPackPath ( jobEntry.jobDir );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){

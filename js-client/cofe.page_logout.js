@@ -94,7 +94,7 @@ function LogoutPage ( sceneId,reason_key )  {
     let back_btn = new Button    ( 'Back to User Login',image_path('login') );
     panel.setWidget              ( back_btn,row,0,1,1 );
     panel.setHorizontalAlignment ( row++,0,'center' );
-    back_btn  .setWidth          ( '300px' );
+    back_btn.setWidth            ( '300px' );
     back_btn.addOnClickListener  ( function(){ reloadBrowser(); });
     // setDefaultButton             ( back_btn,this.grid );
     setDefaultButton             ( back_btn,panel );

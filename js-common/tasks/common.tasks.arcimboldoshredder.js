@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArcimboldoShredder Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -267,6 +267,7 @@ else    registerClass ( 'TaskArcimboldoShredder',TaskArcimboldoShredder,TaskTemp
 
 TaskArcimboldoShredder.prototype.icon           = function()  { return 'task_arcimboldo';       }
 TaskArcimboldoShredder.prototype.clipboard_name = function()  { return '"Arcimboldo-Shredder"'; }
+TaskArcimboldoShredder.prototype.canRunRemotely = function()  { return true;                    }
 //TaskArcimboldoShredder.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoShredder.prototype.currentVersion = function()  {

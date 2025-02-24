@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    20.07.24   <--  Date of Last Modification.
+ *    07.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Structure Prediction Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev 2022-2024
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2022-2025
  *
  *  ====================================================================
  *
@@ -120,6 +120,8 @@ else    registerClass ( 'TaskStructurePrediction',TaskStructurePrediction,TaskTe
 
 TaskStructurePrediction.prototype.icon           = function()  { return 'task_structureprediction'; }
 TaskStructurePrediction.prototype.clipboard_name = function()  { return '"Structure Prediction"';   }
+
+TaskStructurePrediction.prototype.canRunRemotely = function()  { return true; }
 
 TaskStructurePrediction.prototype.desc_title     = function()  {
 // this appears under task title in the task list

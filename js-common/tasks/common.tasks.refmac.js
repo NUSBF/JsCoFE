@@ -670,6 +670,7 @@ else    registerClass ( 'TaskRefmac',TaskRefmac,TaskTemplate.prototype );
 
 TaskRefmac.prototype.icon           = function()  { return 'task_refmac'; }
 TaskRefmac.prototype.clipboard_name = function()  { return '"Refmac"';    }
+TaskRefmac.prototype.canRunRemotely = function()  { return true;          }
 
 TaskRefmac.prototype.currentVersion = function()  {
 let version = 7;  // tls refinement

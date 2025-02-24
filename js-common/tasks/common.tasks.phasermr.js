@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -866,6 +866,7 @@ else    registerClass ( 'TaskPhaserMR',TaskPhaserMR,TaskTemplate.prototype );
 
 TaskPhaserMR.prototype.icon           = function()  { return 'task_phasermr'; }
 TaskPhaserMR.prototype.clipboard_name = function()  { return '"Phaser-MR"';   }
+TaskPhaserMR.prototype.canRunRemotely = function()  { return true;            }
 
 TaskPhaserMR.prototype.desc_title     = function()  {
 // this appears under task title in the task list
