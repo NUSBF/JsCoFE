@@ -164,7 +164,6 @@ let cfg   = conf.getFEConfig();
 
 function saveUserRation ( loginData,user_ration )  {
 let fpath = getUserRationFPath ( loginData );
-  console.log ( ' >>>>>>>> save ration at ' + fpath )
   if (utils.writeObject(fpath,user_ration))
     return true;
   log.error ( 9,'cannot save user ration at ' + fpath );
