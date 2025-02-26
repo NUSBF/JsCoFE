@@ -4,7 +4,7 @@
     "====================================================================================",
     "                    jsCoFE Configuration for desktop setup mode                     ",
     "====================================================================================",
-    "   02.04.2023 "
+    "   26.02.2025 "
   ],
 
   "Desktop"  : {
@@ -23,6 +23,8 @@
     "stoppable"        : true,
     "exclude_tasks"    : ["TaskAmple"],
     "fsmount"          : "/",
+    "cache"            : 2,
+    "compression"      : 5,
     "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",
     "projectsPath"     : {
@@ -138,6 +140,16 @@
       "jobRemoveTimeout" : 10000,
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000
+    },
+    {
+      "serNo"            : 2,
+      "name"             : "remote-nc",
+      "in_use"           : true,
+      "protocol"         : "https",
+      "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
+      "port"             : 0,
+      "externalURL"      : "https://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
+      "exeType"          : "REMOTE"
     }
   ],
 
