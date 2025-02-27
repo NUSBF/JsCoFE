@@ -153,6 +153,12 @@ class ImportSerial(import_task.Import):
         if dmax: # If there is Low-resolution cutoff user input
             dmax = str(dmax)
             cmd += [ "--dmax", str(dmax) ]
+
+        nbins = self.getParameter ( sec2.N_BINS ).strip()
+        if nbins: # If there is Number of Resolution bins user input
+            nbins = str(nbins)
+            cmd += [ "--nbins", str(nbins) ]
+        
         
         # Display to the report a message of multiple conflicting data instances of parameters
         if conflict_data == True:
