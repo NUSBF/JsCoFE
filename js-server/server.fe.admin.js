@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    27.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,7 +160,8 @@ function getAdminData ( loginData,data,callback_func )  {
         response_timing.time_sum,response_timing.n_sum,
         response_timing.time_min,response_timing.time_max 
       );
-      adminData.memoryReport = cache.memoryReport(); 
+      adminData.memoryReport = cache.memoryReport();
+      adminData.memoryReport.forceCacheFill = conf.forceCacheFill();
       adminData.performance  = anl.getFEAnalytics().performance;
       anl.logPerformance ( 'Collecting Admin Data, ms',dt,1 );
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',adminData,'getAdminData') );

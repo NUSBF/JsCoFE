@@ -999,16 +999,23 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
   if (mdata.cache_enabled)  {
-    grid.setLabel ( 'Metadata Cache Status: ON',grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( 
+      '<table>' +
+        '<tr><td>Metadata Cache Status&nbsp;</td><td>:&nbsp;ON</td></tr>' + 
+        '<tr><td>On-login preload</td><td>:&nbsp;' +
+          (mdata.forceCacheFill ? 'FORCED' : 'NOT FORCED') + '</td></tr>' +
+        '<tr><td>Metadata Write Mode</td><td>:&nbsp;' +
+          (mdata.force_write_sync ? 'SYNC' : 'ASYNC') + '</td></tr></table>',
+          grow++,0,1,1 )
+        .setFontSize('1em').setFontBold(true);
     grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
-    let wmode = 'ASYNC'
-    if (mdata.force_write_sync)
-      wmode = 'SYNC';
-    grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
-    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+    // let wmode = 'ASYNC'
+    // if (mdata.force_write_sync)
+    //   wmode = 'SYNC';
+    // grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
+    //     .setFontSize('1.2em').setFontBold(true);
+    // grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
     grid.setLabel ( 'Cache state',grow++,0,1,1 )
         .setFontItalic(true).setFontBold(true);
