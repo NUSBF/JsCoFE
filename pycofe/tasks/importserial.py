@@ -207,10 +207,10 @@ class ImportSerial(import_task.Import):
                                   'data': ['%0.3f' % float(overall_table.get("d_min"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Number observed reflections', 'tooltip': ''},
-                                  'data': ['%0.3f' % int(overall_table.get("n_unique"))]})
+                                  'data': ['%0.3f' % int(overall_table.get("n_obs"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Number unique reflections', 'tooltip': ''},
-                                  'data': ['%0.3f' % int(overall_table.get("n_obs"))]})
+                                  'data': ['%0.3f' % int(overall_table.get("n_unique"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Completeness %', 'tooltip': ''},
                                   'data': ['%0.3f' %  float(overall_table.get("completeness"))]})
