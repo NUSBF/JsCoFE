@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.24   <--  Date of Last Modification.
+ *    27.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,7 +88,7 @@
  *     function saveJobFiles            ( loginData,data   )
  *     function getJobFile              ( loginData,data   )
  * 
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -1418,7 +1418,7 @@ let projectName = projectDesc.name;
         loginData.login + ':' + projectName + '</b><p>Please investigate.' );
     rdata.reload = 2;
     return  new cmd.Response ( cmd.fe_retcode.readError,
-                               '[00027] Cannot read projecty description',rdata );
+                               '[00027] Cannot read  description',rdata );
   }
 
   // Get users' projects list file name
