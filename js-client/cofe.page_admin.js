@@ -1071,11 +1071,12 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setWidget ( mem_table,grow++,0,1,1 );
   mem_table.setWidth_px ( 300 );
 
-  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
-  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)] ,1,true  );
-  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)]  ,2,false );
-  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
-  mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
+  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)] ,0,false );
+  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)],1,true  );
+  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)] ,2,false );
+  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)] ,3,true  );
+  mem_table.setRow ( 'Total Heap (MB)'  ,'',['<b>' + mdata.totalHeap.toFixed(2) + 
+                                                                '</b>'],4,false );
 
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
   grid.setLabel ( 'Front-End performance stats',grow++,0,1,1 )
