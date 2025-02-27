@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.02.25   <--  Date of Last Modification.
+ *    27.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,7 @@ const child     = require('child_process');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
 const utils     = require('./server.utils');
+const cache     = require('./server.cache');
 const adm       = require('./server.fe.admin');
 
 //  prepare log
@@ -554,8 +555,10 @@ function CCP4DirName()  {
     "treat_private"    : ["none","seq","xyz","lig","hkl","all"],  // data not to be sent out
     "job_despatch"     : "opt_comm", // "opt_load" optimise communication or NC load
     "fsmount"          : "/",
-    "localSetup"       : true,  // optional, overrides automatic definition
-    "update_rcode"     : 212, // optional
+    "cache"            : 10,   // optional, number of users the metadata cache should handle simultaneously
+    "forceCacheFill"   : true, // optional, whether to pre-load cache on user login
+    "localSetup"       : true, // optional, overrides automatic definition
+    "update_rcode"     : 212,  // optional
     "update_notifications" : false,  // optional notification on CCP4 updates
     "make_devel"       : "YES",  // optional, makes devel user at 1st start if YES
     "userDataPath"     : "./cofe-users",
@@ -867,6 +870,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.sessionCheckPeriod = 2000; // (optional) in ms
     fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
     fe_server.cache              = 0;    // expected number of simultaneous users to cache
+    fe_server.forceCacheFill     = false;
 
     // read configuration file
     for (let key in confObj.FrontEnd)
@@ -1496,6 +1500,19 @@ function isLocalFE()  {
   return fe_server.localSetup;
 }
 
+function forceCacheFill()  {
+// Returns true if all user metadata files should be loaded on user login.
+// If configured, the files are read into cache in the background mode
+// (see function js-server/server.fe.user.js:loadUserCache()). This considerably
+// improves user experience of first access to projects on file systems with
+// noticeable latency, such as NSF; some improvement may be noticeable in
+// server-side setups even if file system is local to the FE. However, using 
+// this configuration for CCP4 Cloud Local is poorly justified. This behaviour 
+// is configured with field "forceCacheFill" : true/false  in FE configuration 
+// module (optional, false by default).
+  return (cache.isCacheEnabled() && fe_server && fe_server.forceCacheFill);
+}
+
 function isArchive()  {
 // returns true if CCP4 Cloud Archive is configured
   return fe_server.isArchive();
@@ -1672,6 +1689,7 @@ module.exports.checkRemoteJobsServerURL = checkRemoteJobsServerURL;
 module.exports.getAppStatus             = getAppStatus;
 module.exports.getRegMode               = getRegMode;
 module.exports.isLocalFE                = isLocalFE;
+module.exports.forceCacheFill           = forceCacheFill;
 module.exports.getSetupID               = getSetupID;
 module.exports.getFETmpDir              = getFETmpDir;
 module.exports.getFETmpDir1             = getFETmpDir1;

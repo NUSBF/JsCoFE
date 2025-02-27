@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    27.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,6 +33,7 @@
  *    function getUserData      ( loginData )
  *    function topupUserRation  ( loginData,callback_func )
  *    function getUserRation    ( loginData,data,callback_func )
+ *    function loadUserCache    ( loginData )
  *    function saveHelpTopics   ( loginData,userData )
  *    function userLogout       ( loginData )
  *    function updateUserData   ( loginData,userData )
@@ -73,6 +74,7 @@ const storage = require('./server.fe.storage');
 const anl     = require('./server.fe.analytics');
 const ud      = require('../js-common/common.data_user');
 const cmd     = require('../js-common/common.commands');
+const task_t  = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
 const log = require('./server.log').newLog(10);
@@ -773,7 +775,9 @@ function userLogin ( userData,callback_func )  {  // gets UserData object
         conf.getServerEnvironment ( function(environ_server){
           rData.environ_server = environ_server;
           callback_func ( new cmd.Response ( cmd.fe_retcode.ok,token,rData ) );
-        });  
+        });
+
+        loadUserCache ( uData );  // to speed-up first access on NFS systems
 
       } else  {
         log.error ( 41,'Login name/password mismatch:' );
@@ -1135,6 +1139,37 @@ function getUserRation ( loginData,data,callback_func )  {
 
 function getRemoteUserRation ( userData,callback_func )  {
   getUserRation ( userData,userData,callback_func );
+}
+
+
+function loadUserCache ( loginData )  {  
+// This function only reads user metadata files to cache them. This improves
+// first access experience if a file system with noticeable latency, like NFS,
+// is used. The read-up is done completely in the background, any errors are
+// silently ignored.
+  if (conf.forceCacheFill())  {
+    setTimeout ( function(){
+      log.standard ( 14,'preloading metadata cache for user ' + loginData.login );
+      let projectList = prj.readProjectList ( loginData,1 );
+      if (projectList)  {
+        for (let i=0;i<projectList.projects.length;i++)  {
+          (function(pname){
+            setTimeout ( function(){
+              try {
+                prj.readProjectData ( loginData,pname );
+                // project descriptions are read as part of project list
+                let projectDirPath = prj.getProjectDirPath ( loginData,pname );
+                fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
+                  if (file.startsWith(prj.jobDirPrefix))
+                    utils.readObject ( path.join ( projectDirPath,file,task_t.jobDataFName ) );
+                });
+              } catch(e) {}
+            },0);
+          }(projectList.projects[i].name));
+        }
+      }  
+    },0);
+  }
 }
 
 
