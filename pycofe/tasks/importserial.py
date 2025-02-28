@@ -39,6 +39,7 @@ from   pycofe.varut  import rvapi_utils
 #  application imports
 from   pycofe.tasks  import import_task
 from   pycofe.proc    import import_filetype, import_merged
+from pycofe.varut  import signal
 # from   pycofe.auto   import auto
 # from pycofe.tasks import mtz
 
@@ -169,10 +170,12 @@ class ImportSerial(import_task.Import):
 
         # ============================== Run the import_serial task =========================================
 
-        self.runApp ( "import_serial",cmd,logType="Main" )
+        rc = self.runApp ( "import_serial",cmd,logType="Main", quitOnError=False )
 
         # =============================== Report Log Tables ==========================================
-      
+        if rc.msg != "":
+            self.putMessage ( "<b>Task finished with an error. Please check the erros tab.</b>" )
+            raise signal.JobFailure ( rc.msg )
         _report_widget_id = "report_page" #import report widget for table
         def report_page_id(self): return self._report_widget_id
 
@@ -279,7 +282,12 @@ class ImportSerial(import_task.Import):
         }
 
         # close execution logs and quit
-        self.success ( have_results )
+        if rc.msg == "":
+            self.success ( have_results )
+        else:
+            self.putMessage ( "<b>Task finished with an error. Please check the erros tab.</b>" )
+            raise signal.JobFailure ( rc.msg )
+            
         return
 
 
