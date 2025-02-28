@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.08.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Crank-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -953,6 +953,7 @@ else    registerClass ( 'TaskCrank2',TaskCrank2,TaskTemplate.prototype );
 
 TaskCrank2.prototype.icon           = function()  { return 'task_crank2'; }
 TaskCrank2.prototype.clipboard_name = function()  { return '"Crank-2"';   }
+TaskCrank2.prototype.canRunRemotely = function()  { return true;          }
 
 TaskCrank2.prototype.desc_title     = function()  {
 // this appears under task title in the task list

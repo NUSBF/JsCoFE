@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.12.22   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ration Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ==========================================================================
  *
@@ -86,8 +86,8 @@ UserRation.prototype.clearJobs = function()  {
 
 
 UserRation.prototype.jobIndex = function ( job_meta )  {
-var k = -1;
-  for (var i=0;(i<this.jobs.length) && (k<0);i++)
+let k = -1;
+  for (let i=0;(i<this.jobs.length) && (k<0);i++)
     if ((this.jobs[i].project==job_meta.project) &&
         (this.jobs[i].jobId==job_meta.id))
       k = i;
@@ -100,27 +100,27 @@ UserRation.prototype.maskProject = function ( projectName )  {
 // index because they are still used for calculating current time quotas.
 // However, they should be masked such that they are ignored if user immediately
 // re-creates project with same name
-  for (var i=0;(i<this.jobs.length);i++)
+  for (let i=0;(i<this.jobs.length);i++)
     if (this.jobs[i].project==projectName)
       this.jobs[i].project = '""" ' + projectName + ' """';  // impossible project name
 }
 
 
 UserRation.prototype.calculateTimeRation = function()  {
-var t     = new Date().getTime()/3600000.0;  // hours from beginning
-var tmd   = t - 24.0;   // current day threshold
-var tmm   = t - 720.0;  // current month threshold
-var jobs1 = [];
-var cpu_day_used      = this.cpu_day_used;
-var cpu_month_used    = this.cpu_month_used;
-var cloudrun_day_used = this.cloudrun_day_used;
-var njobs             = this.jobs.length;
+let t     = new Date().getTime()/3600000.0;  // hours from beginning
+let tmd   = t - 24.0;   // current day threshold
+let tmm   = t - 720.0;  // current month threshold
+let jobs1 = [];
+let cpu_day_used      = this.cpu_day_used;
+let cpu_month_used    = this.cpu_month_used;
+let cloudrun_day_used = this.cloudrun_day_used;
+let njobs             = this.jobs.length;
 
   this.cpu_day_used      = 0.0;  // hours, actually used
   this.cpu_month_used    = 0.0;  // hours, actually used
   this.cloudrun_day_used = 0;    // jobs, actually used
 
-  for (var i=0;i<njobs;i++)  {
+  for (let i=0;i<njobs;i++)  {
     if (this.jobs[i].nc_type!='client')  {
       if (this.jobs[i].chargeTime>=tmd)
         this.cpu_day_used   += this.jobs[i].cpu_hours;
@@ -153,11 +153,11 @@ UserRation.prototype.bookJob = function ( job_class,cloudrun_bool )  {
   if (this.jobIndex(job_class)>=0)  // the job was already booked to the ration
     return false;
 
-  var t = new Date().getTime()/3600000.0;  // hours from beginning
+  let t = new Date().getTime()/3600000.0;  // hours from beginning
   // One day (24 hours) is 86400000 milliseconds.
   // One hour is 3600000 milliseconds
 
-  var rjdesc = new RationJobDesc(job_class)
+  let rjdesc = new RationJobDesc(job_class);
   rjdesc.cpu_hours  = job_class.cpu_time;  // put the actual reading
   rjdesc.chargeTime = t;   // record the moment of reading
   rjdesc.cloudrun   = cloudrun_bool;
@@ -179,11 +179,11 @@ const _ms_in_year = 31536000000;
 
 UserRation.prototype.checkArchiveQuota = function()  {
   if (this.archive_year>0)  {
-    var t0 = Date.now() - _ms_in_year;
+    let t0 = Date.now() - _ms_in_year;
     if ((this.archives.length>0) && (t0<this.archives[0])) {
-      var a1 = this.archives;
+      let a1 = this.archives;
       this.archives = [];
-      for (var i=0;i<a1.length;i++)
+      for (let i=0;i<a1.length;i++)
         if (a1[i]>=t0)
           this.archives.push ( a1[i] );
     }

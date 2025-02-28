@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    27.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,7 @@ const child     = require('child_process');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
 const utils     = require('./server.utils');
+const cache     = require('./server.cache');
 const adm       = require('./server.fe.admin');
 
 //  prepare log
@@ -148,6 +149,10 @@ let pids = utils.readObject ( pidfile );
 }
 
 ServerConfig.prototype.killPrevious = function()  {
+  // hacked for remote job functionality development, for local dev setup,
+  // just remove when complete
+  // console.log ( ' >>>>> look in server.configuration.js -- a temporary hack is here' );
+  // return;
 let pidfile = this.getPIDFilePath();
 let pids    = utils.readObject ( pidfile );
   if (pids && (this.type in pids) && (pids[this.type]!=process.pid))  {
@@ -550,8 +555,10 @@ function CCP4DirName()  {
     "treat_private"    : ["none","seq","xyz","lig","hkl","all"],  // data not to be sent out
     "job_despatch"     : "opt_comm", // "opt_load" optimise communication or NC load
     "fsmount"          : "/",
-    "localSetup"       : true,  // optional, overrides automatic definition
-    "update_rcode"     : 212, // optional
+    "cache"            : 10,   // optional, number of users the metadata cache should handle simultaneously
+    "forceCacheFill"   : true, // optional, whether to pre-load cache on user login
+    "localSetup"       : true, // optional, overrides automatic definition
+    "update_rcode"     : 212,  // optional
     "update_notifications" : false,  // optional notification on CCP4 updates
     "make_devel"       : "YES",  // optional, makes devel user at 1st start if YES
     "userDataPath"     : "./cofe-users",
@@ -863,6 +870,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.sessionCheckPeriod = 2000; // (optional) in ms
     fe_server.jobsPullPeriod     = 4000; // (optional, in ms) period for checking jobs on 'REMOTE' NCs 
     fe_server.cache              = 0;    // expected number of simultaneous users to cache
+    fe_server.forceCacheFill     = false;
 
     // read configuration file
     for (let key in confObj.FrontEnd)
@@ -1148,7 +1156,8 @@ function assignPorts ( assigned_callback )  {
             break;
 
       case 2: if (n<nc_servers.length)  {
-                if (nc_servers[n].isLocalHost && (nc_servers[n].port>0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port>0) &&
+                    nc_servers[n].in_use && (nc_servers[n].exeType!='REMOTE'))
                       set_server ( nc_servers[n],function(){ setServer(2,n+1); } );
                 else  setServer(2,n+1);
               } else
@@ -1168,7 +1177,8 @@ function assignPorts ( assigned_callback )  {
             break;
 
       case 5: if (n<nc_servers.length)  {
-                if (nc_servers[n].isLocalHost && (nc_servers[n].port<=0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port<=0) &&
+                    nc_servers[n].in_use && (nc_servers[n].exeType!='REMOTE'))
                       set_server ( nc_servers[n],function(){ setServer(5,n+1); } );
                 else  setServer(5,n+1);
               } else
@@ -1274,6 +1284,62 @@ function getServerEnvironment ( callback_func )  {
   });
 }
 
+function getRemoteNumberCruncher()  {
+// Returns the number of NC server assigned to handle remote jobs, if found
+// in local FE configuration. Note that this URL must be that of the remote 
+// Cloud FE (RFE, not NC!) assigned to handle jobs submitted in "remote" mode.
+// In the "remote" mode, jobs are submitted to another, independent instance 
+// of CCP4 Cloud. Usually, "remote" NC is used in CCP4 Cloud Local, but it 
+// can be equally used in a distributed CCP4 Cloud setup. In difference of 
+// non-remote NC, job directories are retrieved back to FE by pulling, rather 
+// than pushing from the NC.
+  let nc_number = -1;
+  if (nc_servers)
+    for (let i=0;(i<nc_servers.length) && (nc_number<0);i++)
+      if (nc_servers[i].in_use && (nc_servers[i].exeType.toUpperCase()=='REMOTE'))
+        nc_number = i;
+  return nc_number;
+}
+
+
+function getRemoteJobsServerURL()  {
+  // Returns external URL of local NC server assigned to handle remote jobs,
+  // if such NC server is found in local FE configuration. Note that this URL
+  // must be that of remote Cloud FE (not NC!) assigned to handle jobs submitted
+  // in "remote" mode. In "remote" mode, jobs are submitted to another, 
+  // independent instance of CCP4 Cloud. Usually, "remote" NC is used in
+  // CCP4 Cloud Local, but it can be equally used in a distributed CCP4 Cloud
+  // setup. In difference of non-remote NC, job directories are retrieved back
+  // to FE by pulling, rather than pushing from the NC.
+  let url = null;
+  if (nc_servers)
+    for (let i=0;(i<nc_servers.length) && (!url);i++)
+      if (nc_servers[i].in_use && (nc_servers[i].exeType.toUpperCase()=='REMOTE'))
+        url = nc_servers[i].externalURL;
+  return url;
+}
+
+
+function checkRemoteJobsServerURL ( url,callback_func )  {
+  if (url)  {
+    utils.getServerResponse ( url + (url.endsWith('/') ? 'whoareyou' : '/whoareyou'),
+      function(err,text){
+        if (err)  {
+          if (err.message.startsWith('Request timed out'))
+                callback_func ( 'timeout' );
+          else  callback_func ( 'error: ' + err.message );
+        } else if (text.startsWith('CCP4 Cloud FE'))  {
+          callback_func ( 'FE' );
+        } else if (text.startsWith('CCP4 Cloud NC'))  {
+          callback_func ( 'NC' );
+        } else  {
+          callback_func ( 'Unrecognised' );
+        }
+      });
+  } else {
+    callback_func ( 'nourl' );
+  }
+}
 
 function getAppStatus ( callback_func )  {
 let status  = [];
@@ -1434,6 +1500,19 @@ function isLocalFE()  {
   return fe_server.localSetup;
 }
 
+function forceCacheFill()  {
+// Returns true if all user metadata files should be loaded on user login.
+// If configured, the files are read into cache in the background mode
+// (see function js-server/server.fe.user.js:loadUserCache()). This considerably
+// improves user experience of first access to projects on file systems with
+// noticeable latency, such as NSF; some improvement may be noticeable in
+// server-side setups even if file system is local to the FE. However, using 
+// this configuration for CCP4 Cloud Local is poorly justified. This behaviour 
+// is configured with field "forceCacheFill" : true/false  in FE configuration 
+// module (optional, false by default).
+  return (cache.isCacheEnabled() && fe_server && fe_server.forceCacheFill);
+}
+
 function isArchive()  {
 // returns true if CCP4 Cloud Archive is configured
   return fe_server.isArchive();
@@ -1538,9 +1617,22 @@ function getExcludedTasks()  {
 function checkOnUpdate ( callback_func )  {
   try {
     if ('CCP4' in process.env)  {
+      log.standard ( 7,'checking for new updates' );
       let ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists(ccp4um))  {
-        let job = utils.spawn ( ccp4um,['-check-silent'],{} );
+        let cmd     = ['-check-silent'];
+        let vfpath  = path.join ( process.env.CCP4,'lib','ccp4','MAJOR_MINOR' );
+        let sfpath  = path.join ( process.env.CCP4,'restore','timestamp' );
+        let version = utils.readString ( vfpath );
+        let stamp   = utils.readString ( sfpath );
+        if (!version)
+          log.warning ( 7,'version file not found at ' + vfpath );
+        if (!stamp)
+          log.warning ( 8,'stamp file not found at '   + sfpath );
+        if (version && stamp)
+          cmd = cmd.concat([ '--stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
+        log.standard ( 8,'running ' + ccp4um + ' ' + cmd.join(' ') );
+        let job = utils.spawn ( ccp4um,cmd,{} );
         job.on ( 'close',function(code){
           callback_func ( code );  // <254:  number of updates available
                                    //  254:  CCP4 release
@@ -1548,16 +1640,18 @@ function checkOnUpdate ( callback_func )  {
           // console.log ( ' >>>> code=' + code );
         });
       } else  {
+        log.error ( 7,'ccp4um not found for checking on updates' );
         setTimeout ( function(){
-          callback_func ( 255 );  // <254:  number of updates available
+          callback_func ( 255 );   // <254:  number of updates available
                                    //  254:  CCP4 release
                                    //  255:  no connection
         },10);
       }
     }
   } catch(e)  {
+    log.error ( 8,'ccp4 environment not found for checking on updates' );
     setTimeout ( function(){
-      callback_func ( 255 );  // <254:  number of updates available
+      callback_func ( 255 );   // <254:  number of updates available
                                //  254:  CCP4 release
                                //  255:  no connection
     },10);
@@ -1567,45 +1661,49 @@ function checkOnUpdate ( callback_func )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.getDesktopConfig     = getDesktopConfig;
-module.exports.getServerConfig      = getServerConfig;
-module.exports.getFEConfig          = getFEConfig;
-module.exports.getFEProxyConfig     = getFEProxyConfig;
-module.exports.getNCConfig          = getNCConfig;
-module.exports.getNCConfigs         = getNCConfigs;
-module.exports.getNumberOfNCs       = getNumberOfNCs;
-module.exports.getClientNCConfig    = getClientNCConfig;
-module.exports.getEmailerConfig     = getEmailerConfig;
-module.exports.readConfiguration    = readConfiguration;
-module.exports.setServerConfig      = setServerConfig;
-module.exports.assignPorts          = assignPorts;
-module.exports.writeConfiguration   = writeConfiguration;
-module.exports.pythonName           = pythonName;
-module.exports.pythonVersion        = pythonVersion;
-module.exports.setPythonVersion     = setPythonVersion;
-module.exports.isSharedFileSystem   = isSharedFileSystem;
-module.exports.isLocalSetup         = isLocalSetup;
-module.exports.isArchive            = isArchive;
-module.exports.getClientInfo        = getClientInfo;
-module.exports.getFEProxyInfo       = getFEProxyInfo;
-module.exports.getServerEnvironment =  getServerEnvironment;
-module.exports.getAppStatus         = getAppStatus;
-module.exports.getRegMode           = getRegMode;
-module.exports.isLocalFE            = isLocalFE;
-module.exports.getSetupID           = getSetupID;
-module.exports.getFETmpDir          = getFETmpDir;
-module.exports.getFETmpDir1         = getFETmpDir1;
-module.exports.getNCTmpDir          = getNCTmpDir;
-module.exports.getTmpDir            = getTmpDir;
-module.exports.getTmpFileName       = getTmpFileName;
-module.exports.cleanFETmpDir        = cleanFETmpDir;
-module.exports.cleanFETmpDir1       = cleanFETmpDir1;
-module.exports.cleanNCTmpDir        = cleanNCTmpDir;
-module.exports.CCP4Version          = CCP4Version;
-module.exports.CCP4DirName          = CCP4DirName;
-module.exports.isWindows            = isWindows;
-module.exports.windows_drives       = windows_drives;
-module.exports.environ_server       = environ_server;
-module.exports.set_python_check     = set_python_check;
-module.exports.getExcludedTasks     = getExcludedTasks;
-module.exports.checkOnUpdate        = checkOnUpdate;
+module.exports.getDesktopConfig         = getDesktopConfig;
+module.exports.getServerConfig          = getServerConfig;
+module.exports.getFEConfig              = getFEConfig;
+module.exports.getFEProxyConfig         = getFEProxyConfig;
+module.exports.getNCConfig              = getNCConfig;
+module.exports.getNCConfigs             = getNCConfigs;
+module.exports.getNumberOfNCs           = getNumberOfNCs;
+module.exports.getClientNCConfig        = getClientNCConfig;
+module.exports.getEmailerConfig         = getEmailerConfig;
+module.exports.readConfiguration        = readConfiguration;
+module.exports.setServerConfig          = setServerConfig;
+module.exports.assignPorts              = assignPorts;
+module.exports.writeConfiguration       = writeConfiguration;
+module.exports.pythonName               = pythonName;
+module.exports.pythonVersion            = pythonVersion;
+module.exports.setPythonVersion         = setPythonVersion;
+module.exports.isSharedFileSystem       = isSharedFileSystem;
+module.exports.isLocalSetup             = isLocalSetup;
+module.exports.isArchive                = isArchive;
+module.exports.getClientInfo            = getClientInfo;
+module.exports.getFEProxyInfo           = getFEProxyInfo;
+module.exports.getServerEnvironment     = getServerEnvironment;
+module.exports.getRemoteNumberCruncher  = getRemoteNumberCruncher;
+module.exports.getRemoteJobsServerURL   = getRemoteJobsServerURL;
+module.exports.checkRemoteJobsServerURL = checkRemoteJobsServerURL;
+module.exports.getAppStatus             = getAppStatus;
+module.exports.getRegMode               = getRegMode;
+module.exports.isLocalFE                = isLocalFE;
+module.exports.forceCacheFill           = forceCacheFill;
+module.exports.getSetupID               = getSetupID;
+module.exports.getFETmpDir              = getFETmpDir;
+module.exports.getFETmpDir1             = getFETmpDir1;
+module.exports.getNCTmpDir              = getNCTmpDir;
+module.exports.getTmpDir                = getTmpDir;
+module.exports.getTmpFileName           = getTmpFileName;
+module.exports.cleanFETmpDir            = cleanFETmpDir;
+module.exports.cleanFETmpDir1           = cleanFETmpDir1;
+module.exports.cleanNCTmpDir            = cleanNCTmpDir;
+module.exports.CCP4Version              = CCP4Version;
+module.exports.CCP4DirName              = CCP4DirName;
+module.exports.isWindows                = isWindows;
+module.exports.windows_drives           = windows_drives;
+module.exports.environ_server           = environ_server;
+module.exports.set_python_check         = set_python_check;
+module.exports.getExcludedTasks         = getExcludedTasks;
+module.exports.checkOnUpdate            = checkOnUpdate;

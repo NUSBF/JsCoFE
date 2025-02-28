@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    16.07.24   <--  Date of Last Modification.
+#    10.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -20,7 +20,7 @@ import subprocess
 
 #  ccp4-python imports
 import pyrvapi
-import pyrvapi_ext.parsers
+# import pyrvapi_ext.parsers
 
 #  application imports
 from   pycofe.varut   import command
@@ -153,13 +153,16 @@ def run ( body,   # body is reference to the main Import class
     mtzSecId = body.getWidgetId ( "mtz_sec" )
 
     k = 0
-    for f_orig, f_fmt in files_mtz:
+    for f_orig_0, f_fmt_0 in files_mtz:
+
+        f_orig  = f_orig_0
+        f_fmt   = f_fmt_0
 
         p_orig  = os.path.join ( body.importDir(),f_orig )
         p_mtzin = p_orig
 
         if f_fmt==import_filetype.ftype_CIFMerged():
-            # p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
+            p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
             # body.open_stdin()
             # body.write_stdin ( "END\n" )
             # body.close_stdin()
@@ -175,16 +178,20 @@ def run ( body,   # body is reference to the main Import class
             rc = body.runApp ( "gemmi",["cif2mtz",p_orig,p_mtzin],
                                quitOnError=False )
             if rc.msg or not os.path.isfile(p_mtzin):
-                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"CIF",
-                                          "Failed to convert, ignored" )
+                body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),
+                                          "CIF","Failed to convert, ignored" )
                 p_mtzin = None
+            else:
+                f_orig = p_mtzin
+                f_fmt  = import_filetype.ftype_MTZMerged()
             body.unsetLogParser()
 
         #if not f_fmt.startswith('mtz_'):
         elif f_fmt==import_filetype.ftype_XDSMerged():
             p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
             sp = subprocess.Popen ( 'pointless', stdin=subprocess.PIPE,
-                stdout=body.file_stdout, stderr=body.file_stderr )
+                                    stdout=body.file_stdout, 
+                                    stderr=body.file_stderr )
             sp.stdin.write('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n')
             sp.stdin.close()
             if sp.wait():
@@ -668,8 +675,8 @@ def run ( body,   # body is reference to the main Import class
                             pyrvapi.rvapi_flush()
 
                 if len(mf)<=0:
-                    body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"UNKNOWN",
-                                              "-- ignored" )
+                    body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),
+                                             "UNKNOWN","-- ignored" )
 
             body.file_stdout.write ( "... processed: " + f_orig + "\n    " )
 

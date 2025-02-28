@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,6 +179,56 @@ function checkAnnouncement()  {
 
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
+  function _no_remote_server_message ( refresh )  {
+    // new MessageBox ( 'Remote jobs server is not connected',
+    //   '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
+    //   'The connection to the remote jobs server is fully configured but not ' +
+    //   'currently active.' +
+    //   '<p>This could be due to incorrect server URL or user credentials ' +
+    //   '(login name or password) in the Settings or an internet connectivity ' +
+    //   'issue.' +
+    //   '<p>All jobs will be executed locally on your computer.' +
+    //   '<p><i style="font-size:85%">To desactivate remote server connection ' +
+    //   'without receiving this message, either disable the remote server in ' +
+    //   'the ' + appName() + ' configuration utility or remove both the login ' +
+    //   'name and password from the Settings.</i></div>',
+    //   'msg_information',false );
+    new QuestionBox ( 'Remote jobs server is not connected',
+      '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
+      'The connection to the remote jobs server is fully configured but not ' +
+      'currently active.' +
+      '<p>This could be due to incorrect server URL or user credentials ' +
+      '(login name or password) in the Settings or an internet connectivity ' +
+      'issue.' +
+      '<p>All jobs will be executed locally on your computer.' +
+      '<p><i style="font-size:85%">To desactivate remote server connection ' +
+      'without receiving this message, either disable the remote server in ' +
+      'the ' + appName() + ' configuration utility or remove both the login ' +
+      'name and password from the Settings.</i></div>',
+      [
+        { name    : 'Close',
+          onclick : function(){
+              if (refresh)  {
+                window.setTimeout ( function(){
+                  if (__current_page)  {
+                    __server_queue = [];
+                    __process_network_indicators();
+                    makePage ( function(){
+                      makeNewInstance ( __current_page._type,__current_page.sceneId );
+                    });
+                    makeSessionCheck ( __current_page.sceneId );
+                  } else  {  // should never come to here
+                    reloadBrowser();
+                  }
+                },100);
+              }
+            }
+        }
+      ],'msg_information'
+    );
+
+  }
+
   let ud   = new UserData();
   ud.login = user_login_name;
   ud.pwd   = user_password;
@@ -214,12 +264,48 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __globus_id          = userData.globusId;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
+              // __remote_login_id    = userData.remote_login;
+              // __remote_pwd         = userData.remote_pwd;
+              __remote_tasks       = userData.remote_tasks;
 
               if (response.data.onlogin_message)  {
                 window.setTimeout ( function(){
                   new MessageBox ( 'Information',response.data.onlogin_message,
                                    'msg_information' );
                 },1000);
+              }
+
+              __remote_environ_server = [];
+              if ((__remoteJobServer.status=='FE') && userData.remote_login 
+                                                   && userData.remote_pwd)  {
+                let rud = new UserData();
+                rud.login = userData.remote_login;
+                rud.pwd   = userData.remote_pwd;
+                window.setTimeout ( function(){
+                  serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
+                                  rud,'Remote FE request',
+                    function(response){
+                      if (response && (response.status==fe_retcode.ok))
+                        __remote_environ_server = response.data.environ_server;
+                      if (__remote_environ_server.length<=0)
+                        _no_remote_server_message ( false );
+                      else  {
+                        __remote_login_id = userData.remote_login;
+                        if (__current_page && ('ration' in response.data))  {
+                          __current_page.remote_ration = response.data.ration;
+                          __current_page.displayUserRation ( null );
+                        }
+                      }
+                      return true;
+                    },function(){
+                    },function(xhr,err)  {  
+                      _no_remote_server_message ( true );
+                      return true;
+                    });
+                },500);
+              } else if (__remoteJobServer.url && userData.remote_login 
+                                               && userData.remote_pwd)  {
+                _no_remote_server_message ( false );
               }
 
               if (!__local_service)  {

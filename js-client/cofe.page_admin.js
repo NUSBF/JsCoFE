@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -954,6 +954,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
           } else
             njobs++;
         startDate = small_font(nci.config.startDate);
+      } else if (nci.config.exeType=='REMOTE')  {
+        state = 'disconnected';
       } else  {
         state = 'dead';
       }
@@ -997,16 +999,23 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
   if (mdata.cache_enabled)  {
-    grid.setLabel ( 'Metadata Cache Status: ON',grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( 
+      '<table>' +
+        '<tr><td>Metadata Cache Status&nbsp;</td><td>:&nbsp;ON</td></tr>' + 
+        '<tr><td>On-login preload</td><td>:&nbsp;' +
+          (mdata.forceCacheFill ? 'FORCED' : 'NOT FORCED') + '</td></tr>' +
+        '<tr><td>Metadata Write Mode</td><td>:&nbsp;' +
+          (mdata.force_write_sync ? 'SYNC' : 'ASYNC') + '</td></tr></table>',
+          grow++,0,1,1 )
+        .setFontSize('1em').setFontBold(true);
     grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
-    let wmode = 'ASYNC'
-    if (mdata.force_write_sync)
-      wmode = 'SYNC';
-    grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
-    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+    // let wmode = 'ASYNC'
+    // if (mdata.force_write_sync)
+    //   wmode = 'SYNC';
+    // grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
+    //     .setFontSize('1.2em').setFontBold(true);
+    // grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
     grid.setLabel ( 'Cache state',grow++,0,1,1 )
         .setFontItalic(true).setFontBold(true);
@@ -1062,11 +1071,12 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setWidget ( mem_table,grow++,0,1,1 );
   mem_table.setWidth_px ( 300 );
 
-  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
-  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)] ,1,true  );
-  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)]  ,2,false );
-  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
-  mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
+  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)] ,0,false );
+  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)],1,true  );
+  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)] ,2,false );
+  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)] ,3,true  );
+  mem_table.setRow ( 'Total Heap (MB)'  ,'',['<b>' + mdata.totalHeap.toFixed(2) + 
+                                                                '</b>'],4,false );
 
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
   grid.setLabel ( 'Front-End performance stats',grow++,0,1,1 )

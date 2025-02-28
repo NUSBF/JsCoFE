@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.25   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -158,10 +158,11 @@ def getContext ( contextName ):
 #         auto_meta.context.job_register = jsonut.jObject()
 #     return
 
-def writeAutoMeta():
+def writeAutoMeta ( body ):
     global auto_meta
     if auto_meta:
         f = open ( auto_meta_fname(),"w" )
         f.write ( auto_meta.to_JSON() )
         f.close()
+        body.keepWorkflow()
     return

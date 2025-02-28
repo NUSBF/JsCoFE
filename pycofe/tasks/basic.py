@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.25   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -139,6 +139,9 @@ class TaskDriver(object):
     task          = None
     input_data    = None
     outputFName   = ""
+
+    # flag to stop workflow in case of errors
+    stop_workflow = True  
 
     # report parsers
     log_parser    = None
@@ -1213,6 +1216,14 @@ class TaskDriver(object):
 
 
     def runApp ( self,appName,cmd,logType="Main",quitOnError=True,env=None,work_dir="." ):
+        # appName  -- name of application to run 
+        # cmd      -- list of command-line parameters
+        # logType  -- which log to use for standard output ( Main|Service|Error ) not really
+        #             sure that using Error is a good idea 
+        # quitOnError -- whether task drived should quit if an error occurs
+        # env      -- a modified copy of os.environ, if necessary 
+        # work_dir -- working directory; using current directory "." is always
+        #             the best idea
 
         input_script = None
         if self.file_stdin:
@@ -1245,6 +1256,24 @@ class TaskDriver(object):
         self._add_citations ( citations.citation_list )
         self.outputDataBox.putCitations ( self.citation_list )
         return
+
+
+    def keepWorkflow ( self ):
+        self.stop_workflow = False
+        return
+
+
+    def stopWorkflow ( self,amend_report=True ):
+        if self.task.autoRunId and self.stop_workflow and os.path.isfile("auto.meta"):
+            with open("auto.meta","w") as f:
+                f.write ( "{}" )
+            self.stdoutln ( "\n ***** WORKFLOW IS STOPPED\n" )
+            if amend_report:
+                self.putMessage ( "&nbsp;<h3>Workflow stopped</h3>" +\
+                                  "<i>Workflow is stopped due to failure(s) in " +\
+                                  "Quality Assessment (check Log tabs).</i>" )
+            return True
+        return False
 
 
     # ============================================================================
@@ -1678,7 +1707,7 @@ class TaskDriver(object):
             return None
 
 
-    def finaliseLigand ( self,code,xyzPath,cifPath,openState_bool=False,
+    def finaliseLigand ( self,code,xyzPath,mmcifPath,cifPath,openState_bool=False,
                               title="Ligand Structure" ):
 
         ligand = None
@@ -1688,7 +1717,7 @@ class TaskDriver(object):
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
 
-            ligand = self.registerLigand ( xyzPath,cifPath )
+            ligand = self.registerLigand ( xyzPath,mmcifPath,cifPath )
             if ligand:
                 if title!="":
                     self.putTitle ( title )
@@ -1984,9 +2013,9 @@ class TaskDriver(object):
         return structure
 
 
-    def registerLigand ( self,xyzPath,cifPath,copy_files=False ):
+    def registerLigand ( self,xyzPath,mmcifPath,cifPath,copy_files=False ):
         self.dataSerialNo += 1
-        ligand = dtype_ligand.register ( xyzPath,cifPath,
+        ligand = dtype_ligand.register ( xyzPath,mmcifPath,cifPath,
                                          self.dataSerialNo ,self.job_id,
                                          self.outputDataBox,self.outputDir(),
                                          copy=copy_files )
@@ -2438,6 +2467,9 @@ class TaskDriver(object):
         return
     
     def success ( self,have_results,hidden_results=False ):
+
+        self.stopWorkflow ( amend_report=True )
+
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -2448,7 +2480,9 @@ class TaskDriver(object):
         self.rvrow += 1
         self.putMessage ( "<p>&nbsp;" )  # just to make extra space after report
         self.outputDataBox.save ( self.outputDir() )
+        
         self.flush()
+        
         if have_results:
             if hidden_results:
                 raise signal.HiddenResults()
@@ -2456,8 +2490,10 @@ class TaskDriver(object):
                 raise signal.Success()
         else:
             raise signal.NoResults()
+        
 
     def fail ( self,pageMessage,signalMessage ):
+        self.stopWorkflow ( amend_report=True )
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -2473,6 +2509,7 @@ class TaskDriver(object):
         self.file_stdout1.write ( msg + "\n" )
         self.file_stderr .write ( msg + "\n" )
         raise signal.JobFailure ( signalMessage )
+
 
     def python_fail_tab ( self ):
         trace = ''.join( traceback.format_exception( *sys.exc_info() ) )
@@ -2492,6 +2529,8 @@ class TaskDriver(object):
         page_id = self.traceback_page_id()
         pyrvapi.rvapi_add_tab ( page_id, "Error Trace", True )
         pyrvapi.rvapi_set_text ( msg, page_id, 0, 0, 1, 1 )
+        return
+
 
     def start(self):
 

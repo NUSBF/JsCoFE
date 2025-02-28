@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.05.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2024
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -340,11 +340,9 @@ class Pdbredo(basic.TaskDriver):
         seq      = self.input_data.data.seq
         istruct  = self.makeClass(self.input_data.data.istruct[0])
 
-        xyzin = istruct.getPDBFilePath(self.inputDir())
-        hklin = hkl.getHKLFilePath(self.inputDir())
-        libin = istruct.getLibFilePath(self.inputDir())
-
-        
+        xyzin = istruct.getPDBFilePath ( self.inputDir() )
+        hklin = hkl.getHKLFilePath     ( self.inputDir() )
+        libin = istruct.getLibFilePath ( self.inputDir() )
 
         pdbredo_seq = None
         if len(seq)>0:
@@ -524,7 +522,7 @@ class Pdbredo(basic.TaskDriver):
         reportTabId = self.getWidgetId ( "pdbredo_report" )
         self.insertTab ( reportTabId,"PDB-REDO Report",None,False )
 
-        self.putMessage1(
+        self.putMessage1 (
             reportTabId,
             '<iframe src="../'
             + self.resultDir
@@ -649,18 +647,18 @@ class Pdbredo(basic.TaskDriver):
                 summary_line = ""
 
                 rvrow0 = self.rvrow
-                # meta = qualrep.quality_report ( self,revision )
                 try:
+                    qualrep.quality_report ( self, revision,
+                                      istruct.getPDBFilePath(self.inputDir()) )
                     # meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
-                    meta = qualrep.quality_report(self, revision)
-                    self.stdoutln ( str(meta) )
-                    if "molp_score" in meta:
-                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+                    # self.stdoutln ( str(meta) )
+                    # if "molp_score" in meta:
+                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
 
                 except:
-                    meta = None
-                    self.stderr(" *** validation tools or molprobity failure")
-                    self.rvrow = rvrow0 + 4
+                    # meta = None
+                    self.stderr(" *** validation tools failure")
+                    self.rvrow = rvrow0 + 6
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework

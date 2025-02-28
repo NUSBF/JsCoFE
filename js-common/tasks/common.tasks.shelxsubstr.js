@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. fando 2016-2025
  *
  *  =================================================================
  *
@@ -61,6 +61,7 @@ else    registerClass ( 'TaskShelxSubstr',TaskShelxSubstr,TaskCrank2.prototype )
 
 TaskShelxSubstr.prototype.icon           = function()  { return 'task_shelx_substr'; }
 TaskShelxSubstr.prototype.clipboard_name = function()  { return '"Shelx (substr)"';  }
+TaskShelxSubstr.prototype.canRunRemotely = function()  { return true;                }
 
 TaskShelxSubstr.prototype.desc_title     = function()  {
 // this appears under task title in the task list

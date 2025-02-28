@@ -268,18 +268,19 @@ let generate_report = false;
     //  check for ccp4 updates once in 24 hours
 
     let emailer_conf = conf.getEmailerConfig();
-    if (emailer_conf.type!='desktop')  {
-      conf.checkOnUpdate ( function(code){
-        if ((code>0) && (code<255))  {
-          let userData   = new ud.UserData();
-          userData.name  = cmd.appName() + ' Maintainer';
-          userData.email = emailer_conf.maintainerEmail;
-          if (code==254)  {
-            log.standard ( 20,'New CCP4 series released, please upgrade' );
+    conf.checkOnUpdate ( function(code){
+      if ((code>0) && (code<255))  {
+        let userData   = new ud.UserData();
+        userData.name  = cmd.appName() + ' Maintainer';
+        userData.email = emailer_conf.maintainerEmail;
+        if (code==254)  {
+          log.standard ( 20,'New CCP4 series released, please upgrade' );
+          if (emailer_conf.type!='desktop')
             emailer.sendTemplateMessage ( userData,
-                         cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
-          } else  {
-            log.standard ( 21,code + ' CCP4 updates available, please apply' );
+                      cmd.appName() + ': New CCP4 Series','ccp4_release',{} );
+        } else  {
+          log.standard ( 21,code + ' CCP4 updates available, please apply' );
+          if (emailer_conf.type!='desktop')  {
             let txt = 'CCP4 Update is ';
             if (code>1)
               txt = code + ' CCP4 Updates are '
@@ -287,10 +288,10 @@ let generate_report = false;
                   cmd.appName() + ': CCP4 Update','ccp4_update',{
                       'text' : txt
                     } );
-          }
+                  }
         }
-      });
-    }
+      }
+    });
 
     /*
     if (process.env.hasOwnProperty('CCP4'))  {

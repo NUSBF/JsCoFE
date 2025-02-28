@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -428,17 +428,17 @@ class FitWaters(basic.TaskDriver):
                 have_results = True
 
                 rvrow0 = self.rvrow
-                # meta = qualrep.quality_report ( self,revision )
                 try:
-                    meta = qualrep.quality_report ( self,revision )
-                    # self.stderr ( " META=" + str(meta) )
-                    if "molp_score" in meta:
-                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+                    qualrep.quality_report ( self,revision,
+                                  istruct.getXYZFilePath ( self.inputDir() ) )
+                    # # self.stderr ( " META=" + str(meta) )
+                    # if "molp_score" in meta:
+                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
 
                 except:
                     meta = None
-                    self.stderr ( " *** validation tools or molprobity failure" )
-                    self.rvrow = rvrow0 + 4
+                    self.stderr ( " *** validation tools or validation tools failure" )
+                    self.rvrow = rvrow0 + 6
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework

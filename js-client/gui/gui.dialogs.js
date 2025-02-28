@@ -117,7 +117,7 @@ Dialog.prototype.launch = function()  {
 
 // -------------------------------------------
 
-function MessageBox ( title,message,icon_name='' )  {
+function MessageBox ( title,message,icon_name='',modal=true )  {
 // message box with icon
 
   Widget.call ( this,'div' );
@@ -140,7 +140,7 @@ function MessageBox ( title,message,icon_name='' )  {
     resizable : false,
     height    : 'auto',
     width     : 'auto',
-    modal     : true,
+    modal     : modal,
     buttons   : [{
       id    : 'ok_btn_' + __id_cnt++,
       text  : 'Ok',
