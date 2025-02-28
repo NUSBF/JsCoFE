@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  BALBES Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -83,6 +83,7 @@ else    registerClass ( 'TaskBalbes',TaskBalbes,TaskTemplate.prototype );
 
 TaskBalbes.prototype.icon           = function()  { return 'task_balbes'; }
 TaskBalbes.prototype.clipboard_name = function()  { return '"Balbes"';    }
+TaskBalbes.prototype.canRunRemotely = function()  { return true;          }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

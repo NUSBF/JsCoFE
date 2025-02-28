@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -239,6 +239,7 @@ else    registerClass ( 'TaskArcimboldoLite',TaskArcimboldoLite,TaskTemplate.pro
 
 TaskArcimboldoLite.prototype.icon           = function()  { return 'task_arcimboldo';   }
 TaskArcimboldoLite.prototype.clipboard_name = function()  { return '"Arcimboldo-Lite"'; }
+TaskArcimboldoLite.prototype.canRunRemotely = function()  { return true;                }
 //TaskArcimboldoLite.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoLite.prototype.currentVersion = function()  {

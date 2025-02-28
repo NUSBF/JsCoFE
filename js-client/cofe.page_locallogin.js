@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Desktop title page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2024
+ *  (C) E. Krissinel, A. Lebedev 2024-2025
  *
  *  =================================================================
  *
@@ -77,9 +77,10 @@ function LocalLoginPage ( sceneId )  {
 
       let row = 0;
 
-      let selected_tasks = '';
-      if (__local_setup==1)
-        selected_tasks = ' selected tasks and';
+      let exceptions = 'except for cases involving third-party web services';
+      if (__remoteJobServer.status=='FE')
+          exceptions += ' and jobs designated for remote execution';
+
       panel.setLabel ( text +
         'Projects and data stored on your machine:<br>' +
         // '<i style="font-size:85%">path(s): </i>' +
@@ -89,8 +90,7 @@ function LocalLoginPage ( sceneId )  {
         '<i style="font-size:85%">(use project export/import for manual syncing)</i>' +
         '</li><li style="padding-bottom:8px;">' +
         'Jobs run on your machine<br>' +
-        '<i style="font-size:85%">(except' + 
-        selected_tasks + ' when 3rd party web-services are used)</i>' +
+        '<i style="font-size:85%">(' + exceptions + ')</i>' +
         '</li><li>' +
         'You have ' + dfree + 'GB free disk space & ' + rData.cpus.length + 
         ' cores @ ' + speed + ' GHz' +
@@ -128,11 +128,11 @@ function LocalLoginPage ( sceneId )  {
             if ('tipNo' in __tips)  tipNo = __tips.tipNo;
                               else  tipNo = round(Date.now()/5000,0);
             tipNo = tipNo % __tips.tips.length;
-            let tipLink = '<a href="javascript:' +
+            let tipLink = '<a href="javascript:'  +
                               'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
-                                            '\'' + __tips.tips[tipNo].doc   + '/'   +
-                                                   __tips.tips[tipNo].link  + '\',' +
-                                            'null,10);">';
+                                             '\'' + __tips.tips[tipNo].doc   + '/'   +
+                                                    __tips.tips[tipNo].link  + '\',' +
+                                             'null,10);">';
             tip_lbl.setText (
               '<img src="' + image_path('tip') +
               '" style="width:20px;height:20px;vertical-align:bottom;"/>' +

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.25   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,6 +109,7 @@ else    registerClass ( 'TaskMorda',TaskMorda,TaskTemplate.prototype );
 
 TaskMorda.prototype.icon           = function()  { return 'task_morda'; }
 TaskMorda.prototype.clipboard_name = function()  { return '"MoRDa"';    }
+TaskMorda.prototype.canRunRemotely = function()  { return true;         }
 
 TaskMorda.prototype.desc_title     = function()  {
 // this appears under task title in the task list

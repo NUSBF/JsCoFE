@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.01.25   <--  Date of Last Modification.
+#    03.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -119,7 +119,7 @@ class Morda(basic.TaskDriver):
 
         # make command-line parameters for morda_sge.py
         cmd = [ "-m","morda",
-                # "--slurm" if self.jobManager == "SLURM" else
+                "--slurm" if self.jobManager == "SLURM" else
                 "--sge"   if self.jobManager == "SGE"   else 
                 "--mp",
                 "--tmpdir",tmp_dir,

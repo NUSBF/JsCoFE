@@ -1,6 +1,6 @@
-=======================================
-What are *XYZ*, *Model*, and *Ensemble*?
-=======================================
+==================================
+What are XYZ, Model, and Ensemble?
+==================================
 
 **XYZ**, **Model**, and **Ensemble** are related but distinct types of data in CCP4 Cloud:
 
@@ -27,7 +27,7 @@ and `Molrep <../html-taskref/doc.task.Molrep.html>`_ tasks, while **XYZs cannot 
 directly.
 
 ------------------------------
-*Model* and *Ensemble* Preparation
+Model and Ensemble Preparation
 ------------------------------
 
 Models and Ensembles are prepared from XYZ and/or Sequence data using the following tasks 

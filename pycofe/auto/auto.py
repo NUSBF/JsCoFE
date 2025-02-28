@@ -77,7 +77,7 @@ def makeNextTask ( body,data,log=None ):
                 # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
                 #                   % body.task.autoRunId)
 
-            auto_api.writeAutoMeta()
+            auto_api.writeAutoMeta ( body )
             return True
 
 

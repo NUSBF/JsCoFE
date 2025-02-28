@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -244,23 +244,26 @@ class Dimple(basic.TaskDriver):
 
             rvrow0 = self.rvrow
             try:
-                meta = qualrep.quality_report ( self,revision )
+                meta = qualrep.quality_report ( self,revision,
+                                      istruct.getXYZFilePath(self.inputDir()) )
             except:
                 meta = None
-                self.stderr ( " *** molprobity failure" )
-                self.rvrow = rvrow0
+                self.stderr ( " *** validation tools failure" )
+                self.rvrow = rvrow0 + 6
 
-            if meta:
+            if meta and meta["meta_complete"]:
+
                 verdict_meta = {
                     "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
                     "params"     : None, # will be read from log file
                     "molprobity" : meta,
                     "xyzmeta"    : structure.xyzmeta
                 }
+                
                 suggestedParameters = verdict_refmac.putVerdictWidget ( self,verdict_meta,self.verdict_row,
                                                   refmac_log=self.refmac_log )
 
-                auto.makeNextTask(self, {
+                auto.makeNextTask ( self, {
                     "revision": revision,
                     "Rfactor": self.generic_parser_summary["refmac"]["R_factor"],
                     "Rfree": self.generic_parser_summary["refmac"]["R_free"],

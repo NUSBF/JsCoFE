@@ -256,11 +256,6 @@ function bookJob ( loginData,job_class,cloudrun_bool )  {
 let r = getUserRation ( loginData );
   if (r && r.bookJob(job_class,cloudrun_bool))
     saveUserRation ( loginData,r );
-  // if (r && r.bookJob(job_class,cloudrun_bool))  {
-  //   let rfpath = getUserRationFPath ( loginData );
-  //   if (!utils.writeObject(rfpath,r))
-  //     log.error ( 10,'cannot write ration file at ' + rfpath );
-  // }
   return r;
 }
 

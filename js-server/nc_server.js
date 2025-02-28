@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -170,18 +170,18 @@ function start()  {
       // Parse the server request command
       let url_parse = url.parse(server_request.url);
       let url_path  = url_parse.pathname;
+      // console.log ( ' url_path=' + url_path );
       if (url_path.length>0)  {
         // remove leading slash and proxy forward-to-client tag
         // command = url_path.substr(1);
         command = url_path.slice(1);
+        if (command.startsWith(cmd.__special_rfe_tag)) // 'REMOTE' job redirection
+          command = command.split('.').slice(2).join('.');
         if (command.startsWith(cmd.__special_client_tag))
           command = command.slice(cmd.__special_client_tag.length+1);
           // command = command.substr(cmd.__special_client_tag.length+1);
       } else
         command = url_path;
-
-      //console.log ( ' url=' + server_request.url );
-      //console.log ( ' command=' + command );
 
       if (command.startsWith(cmd.__special_url_tag))  {  // special access to files not
                                         // supposed to be on http(s) path --
@@ -272,6 +272,7 @@ function start()  {
             break;
 
           default:
+              log.error ( 13,'unknown command "' + command + '"' );
               response = new cmd.Response ( cmd.nc_retcode.unkCommand,
                                             '[00101] Unknown command "' + command +
                                             '" at number cruncher','' );

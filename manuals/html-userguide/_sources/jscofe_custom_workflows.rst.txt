@@ -5,14 +5,16 @@ Custom (User-Created) Project Workflows
 =======================================
 
 CCP4 Cloud projects can be developed automatically using one of the predefined 
-:ref:`automatic workflows <workflows_guide>`, as well as *custom workflows* 
+:ref:`automatic workflows`, as well as custom workflows
 created by the user.
+
+.. _automatic workflows:
 
 .. _custom_workflows_use:
 
---------------------------------------------------
+
 What Are Custom Workflows, and How Can You Use Them?
---------------------------------------------------
+-----------------------------------------------------
 
 A custom workflow is a script (*WScript*) that outlines the tasks to be performed 
 and the sequence of their execution, *i.e.*, the workflow algorithm. This script 
@@ -23,15 +25,14 @@ and similar programs. If you're using advanced editors like *MS Word* or *LibreO
 
 You can initiate a custom workflow in one of three ways:
 
-* **Import a ``.wscript`` file along with other necessary files**  
+* **Import a .wscript file along with other necessary files**  
   Files such as ``.mtz`` (reflections, phases), ``.pdb``, ``.mmcif`` (structure models), 
   ``.cif`` (ligand descriptions), ``.lib`` (restraint libraries), and ``.seq`` can be 
   included in a *single* import task. If the *WScript* is correct and all required data 
   files are provided, the workflow will start automatically upon import.
 
-* **Add ``.wscript`` files to the data set in a :ref:`CloudRun command file <cloudrun>`**  
-  Use the generic :ref:`FILE <cloudrun_FILE>` keyword, select the :ref:`import <cloudrun_TASK>` 
-  task, and execute the ``CloudRun`` utility. All files will be uploaded to CCP4 Cloud, 
+* **Add .wscript files to the data set in a CloudRun command file**  
+  Use the generic **FILE** keyword, select the **import task**, and execute the ``CloudRun`` utility. All files will be uploaded to CCP4 Cloud, 
   a project will be created, and the workflow will start automatically.
 
 * **Add *WScript* to the *My Workflows* list**  

@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    27.01.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -181,6 +181,13 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
     for (let j=start_col;j<this.element.rows[i].cells.length;j++)
        $(this.element.rows[i].cells[j]).css ( css );
 }
+
+
+Table.prototype.setAllRowCSS = function ( css,row,start_col )  {
+  for (let j=start_col;j<this.element.rows[row].cells.length;j++)
+    $(this.element.rows[row].cells[j]).css ( css );
+}
+
 
 Table.prototype.addSignalHandler = function ( signal,onReceive ) {
   this.element.addEventListener(signal, function (e) {
@@ -809,6 +816,7 @@ TablePages.prototype._fill_table = function ( startIndex )  {
 
   if (this.header_list.length==this.tdesc.columns.length)  {
     this.table.setHeaderRow ( this.header_list,this.tooltip_list );
+    this.table.setAllRowCSS ( {'cursor':'pointer'},0,1 );
     if (this.sortCol>=0)  {
       this.table.setCellCSS ({'color':'yellow'},0,this.sortCol );
       this.header_list[this.sortCol] = header0;
@@ -850,7 +858,7 @@ TablePages.prototype._fill_table = function ( startIndex )  {
             self.sort_list[colNo] = !self.sort_list[colNo];
           self.sortCol = colNo;
           self.sortData();
-          if (('onsort' in self.tdesc) && self.paginator.paginate)  {
+          if (('onsort' in self.tdesc) && self.paginator && self.paginator.paginate)  {
             let showRec = self.tdesc.onsort ( self.tdata );
             if (showRec>=0)  {
               // self.crPage = Math.floor(showRec/self.tdesc.page_size+1);

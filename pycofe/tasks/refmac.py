@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskiy 2017-2024
+#                Oleg Kovalevskiy, Maria Fando 2017-2025
 #
 # ============================================================================
 #
@@ -360,13 +360,17 @@ class Refmac(basic.TaskDriver):
                  stdin.append ( 'REFINEMENT DFRACTION' )
                  stdin.append ( 'HYDROGEN DFRACTION ' + str(sec6.H_REFINE_HD.value) )
               if str(sec6.MKHYDR_NEUTRON.value) == 'YES':
+                 if str(sec5.RIDING_HYDROGENS.value) != 'NO':
+                    stdin.append ( 'MAKE HOUT YES')
                  if str(sec6.H_INIT_HD.value) == 'alld':
-                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                    stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )  
               elif str(sec6.MKHYDR_NEUTRON.value) == 'ALL':
+                 if str(sec5.RIDING_HYDROGENS.value) != 'NO':
+                    stdin.append ( 'MAKE HOUT YES')
                  if str(sec6.H_INIT_HD_HALL.value) == 'alld':
-                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                    stdin.append ( 'HYDROGEN DFRACTION INIT 1' )
                  elif str(sec6.H_INIT_HD_HALL.value) == 'mix':
                     stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )                  
 
@@ -467,7 +471,7 @@ class Refmac(basic.TaskDriver):
                                           structure )
 
                 # make anomolous ED map widget
-                if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
+                if hkl.isAnomalous() and str(hkl.useHKLSet) not in {"TI", "TF"}:
 
                     self.putMessage ( "&nbsp;" )
                     anomsec_id = self.getWidgetId ( "anomsec" )
@@ -574,21 +578,20 @@ class Refmac(basic.TaskDriver):
                 have_results = True
 
                 rvrow0 = self.rvrow
-                # meta = qualrep.quality_report ( self,revision )
                 try:
-                    meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
+                    meta = qualrep.quality_report ( self,revision,xyzin,
+                                                    refmacXML = xmlOutRefmac )
                     # self.stderr ( " META=" + str(meta) )
-                    if "molp_score" in meta:
-                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
-
+                    # if "molp_score" in meta:
+                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
                 except:
                     meta = None
-                    self.stderr ( " *** validation tools or molprobity failure" )
-                    self.rvrow = rvrow0 + 4
+                    self.stderr ( " *** validation tools failure" )
+                    self.rvrow = rvrow0 + 6
 
                 suggestedParameters = {}
 
-                if meta:
+                if meta and meta["meta_complete"]:
                     verdict_meta = {
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
                         "params" : {
@@ -637,6 +640,7 @@ class Refmac(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters" : suggestedParameters
                     }, log=self.file_stderr)
+
 
         else:
             self.putTitle ( "No Output Generated" )
