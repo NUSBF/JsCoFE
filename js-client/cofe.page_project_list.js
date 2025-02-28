@@ -157,7 +157,7 @@ function ProjectListPage ( sceneId )  {
       pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true);
       pageTitle_lbl.setVisible ( true );
-      pageTitle_lbl.setCursor('pointer');
+      pageTitle_lbl.setCursor  ( 'pointer' );
     }
     if (folder_btn)  {
       let icon = 'folder_projects';
@@ -173,8 +173,9 @@ function ProjectListPage ( sceneId )  {
         case folder_type.user          : icon = 'folder_projects_user';  break;
         default : ;
       }
-      folder_btn.setImage ( image_path(icon) );
+      folder_btn.setImage   ( image_path(icon) );
       folder_btn.setVisible ( true );
+      folder_btn.setCursor  ( 'pointer' );
     }
   }
 
