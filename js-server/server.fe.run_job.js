@@ -1069,7 +1069,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
 
             default: utils.writeJobReportMessage ( jobDir,
                     '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
-                    '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + code + '</i>',false );
+                    '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + JSON.stringify(code) +
+                    '</i>',false );
 
           }
 

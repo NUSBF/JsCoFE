@@ -254,17 +254,17 @@ function sendDir ( dirPath, serverURL, server_fsmount, command,
             case cmd.fe_retcode.credCheckFailed :
                   log.standard ( 6,'user credentials check failed: ' + resp.data.message );
                   if (onErr_func)
-                    onReady_func ( resp.data,stats );
+                    onErr_func ( 3,resp.data.message );
                 break;
             default :
                   log.error ( 5,'send directory bad response: ' + resp.status );
                   if (onErr_func)
-                    onErr_func ( 3,resp,stats );  // '3' means an error from recipient
+                    onErr_func ( 4,resp.status );  // '3' means an error from recipient
           }
         } catch(error)  {
           log.error ( 6,'send directory errors: ' + error );
           if (onErr_func)
-            onErr_func ( 4,response,stats );  // '4' means unrecognised response
+            onErr_func ( 5,error );  // '4' means unrecognised response
         }
       }
 
