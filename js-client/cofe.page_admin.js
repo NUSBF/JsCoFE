@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -61,6 +61,7 @@ function AdminPage ( sceneId )  {
 
   // make tabs
   this.tabs = new Tabs();
+
   // this.tabs.setVisible ( false );
   this.userTable = null;
   this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
@@ -405,7 +406,10 @@ AdminPage.prototype.calcUserPageSize = function ( height )  {
 
 AdminPage.prototype.onResize = function ( width,height )  {
 
-  this.tabs.setWidth_px  ( width -42  );
+  // *MOBILE*
+  let w = __mobile_device ? __mobile_width-200 : width;  
+
+  this.tabs.setWidth_px  ( w - 42 );
   this.tabs.setHeight_px ( height-104 );
 
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );

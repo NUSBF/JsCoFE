@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    11.04.24   <--  Date of Last Modification.
+//    01.03.25   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2024
+//  (C) E. Krissinel 2013-2025
 //
 //  ==========================================================================
 //
@@ -222,12 +222,17 @@ let html =
 }
 
 
+const __mobile_device_0 = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+const __mobile_width_0  = 1200;
+
+
 function calcViewerSize ( widthF,heightF )  {
   //let jq = window.parent.$;
   //let w  = jq(window.parent).width () - 40;
   //let h  = jq(window.parent).height() - 64;
 
-  let w0 = window.parent.innerWidth;
+  let w0 = __mobile_device_0 ? __mobile_width_0-200 : window.parent.innerWidth;
+  // let w0 = window.parent.innerWidth;
   let h0 = window.parent.innerHeight;
   let w  = w0 - 40;
   let h  = h0 - 56;
@@ -290,8 +295,6 @@ function _start_viewer ( title,html_str )  {
     $(dialog).css ({ 'box-shadow':dark_shadow  });
   else
     $(dialog).css ({ 'box-shadow':light_shadow });
-  
-
 
   // jq(dialog).css({
   //   'box-shadow' : '8px 8px 16px 16px rgba(0,0,0,0.2)',
@@ -327,7 +330,13 @@ function _start_viewer ( title,html_str )  {
     effect     : 'fade',
     headerVisible: false,
     create     : function() { iframe.contentWindow.focus(); },
-    focus      : function() { iframe.contentWindow.focus(); },
+    focus      : function() { iframe.contentWindow.focus();
+                              if (__mobile_device_0)  {
+                                let sp = __mobile_width_0 - window.parent.innerWidth;
+                                if (sp>0)
+                                  window.parent.scrollTo ( sp/2,0 ); 
+                              }
+                            },
     open       : function() { iframe.contentWindow.focus(); },
     dragStop   : function() { iframe.contentWindow.focus(); },
     resizeStop : function() { iframe.contentWindow.focus(); },
@@ -391,6 +400,8 @@ function _start_viewer ( title,html_str )  {
       jq(dialog).dialog( "destroy" );
       if (dialog.parentNode)
         dialog.parentNode.removeChild ( dialog );
+      if (__mobile_device_0)
+        window.parent.scrollTo ( 0,0 );
     },10 );
   });
 

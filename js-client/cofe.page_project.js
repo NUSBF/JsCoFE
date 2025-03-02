@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.02.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -76,6 +76,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
   // Make page header
 
   this.makeHeader0 ( 3 );
+
   if (self.logout_btn)
     self.logout_btn.addOnClickListener ( function(){
       self.confirmLeaving ( function(do_leave){
@@ -209,7 +210,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
   // note that actual panel size is set in function resizeTreePanel() below
   this.grid.setCellSize ( '40px',''    ,1,0,1,1 );
   this.grid.setVerticalAlignment ( 1,1,'top' );
-  this.grid.setCellSize ( '100%','100%',1,1,1,1 );
+  this.grid.setCellSize ( 'auto','auto',1,1,1,1 );
   this.grid.setCellSize ( '6px',''     ,1,2,1,1 );
 
   // make the toolbar
@@ -383,18 +384,25 @@ ProjectPage.prototype.destructor = function ( function_ready )  {
 
 
 ProjectPage.prototype.setJobTree = function ( jobTree )  {
+  
   if (this.jobTree)  {
     this.jobTree.stopTaskLoop();
     this.jobTree.delete();
   }
+  
   if (this.tree_div)
     this.tree_div.delete();
+  
   this.tree_div = new Widget ( 'div' );
   this.tree_div.element.setAttribute ( 'class','tree-content' );
   this.jobTree  = jobTree;
   this.tree_div.addWidget ( this.jobTree );
   this.panel.setWidget ( this.tree_div, 0,0,1,1 );
-  this.onResize ( window.innerWidth,window.innerHeight );
+
+  // *MOBILE*
+  let w = __mobile_device ? __mobile_width-40 : window.innerWidth;
+  this.onResize ( w,window.innerHeight );
+
 }
 
 

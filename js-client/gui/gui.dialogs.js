@@ -470,20 +470,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
     $(dlg.display.element).on('load',function(){
 
-      // var body = dlg.display.element.contentWindow.document.querySelector('body');
-      // body.style.fontSize = '16px';
-      //
-      // if (!__any_mobile_device)  {
-      //   dlg.options.width  = w0;
-      //   dlg.options.height = h0 + 116;
-      // }
-      //
-      // var dialog = $(dlg.element).dialog ( dlg.options );
-      // if (__any_mobile_device)
-      //   dialog.siblings('.ui-dialog-titlebar').remove();
-
-      // alert ( ' >>> ' + dlg.display.getDocument().location );
-
       if (!dlg.history_control)  {
         dlg.history_position++;
         dlg.history_length = dlg.history_position;
