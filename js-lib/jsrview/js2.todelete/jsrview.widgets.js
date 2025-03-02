@@ -285,7 +285,7 @@ RVAPIReportWidgets.prototype.buttonClicked = function ( command,data )  {
     if (window.rvGate)
       window.rvGate.buttonClicked ( command,data );
     else if (window.parent.__local_service)  {
-      var base_url = window.location.href;
+      let base_url = window.location.href;
       window.parent.ls_RVAPIAppButtonClicked (
                 base_url.substring(0,base_url.lastIndexOf('/')),command,data )  ;
     } else if (command=="{viewhkl}")  {
