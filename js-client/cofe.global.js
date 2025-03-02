@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -101,15 +101,16 @@ var __clipboard             = { task: null };  // clipboard for copy-pasting job
 
 var __tips                  = null;  // tips loaded from FE (optional), used in login page
 
-var __mobile_device      = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
-var __iOS_device         = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+const __mobile_device      = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+const __iOS_device         = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
                            (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
                             /MacIntel/.test(navigator.platform));
-var __any_mobile_device  = __mobile_device || __iOS_device;
+const __any_mobile_device  = __mobile_device || __iOS_device;
+const __mobile_width       = 1200;  // scrollable width for mobile devices
 
-const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
-const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
-const __regexp_globus_id = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
+const __regexp_login       = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname       = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_globus_id   = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
 
 // variable gets raised in jscofe-browser after loading the page
 // alert ( ' isQt=' + isQtWebEngine() );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.02.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,6 +75,13 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   });
 
   this.getUserRation();
+
+  // *MOBILE*
+  if (__mobile_device)
+    $(this.element).css ({ 
+      'max-width'  : __mobile_width + 'px',
+      'overflow-x' : 'auto'
+    });
 
   // this.putWatermark (
   //    appName() + '\'s offline version offers no functionality for syncing or ' +
@@ -190,7 +197,7 @@ BasePage.prototype.makeLogoPanel = function()  {
   logoGrid.setHorizontalAlignment ( 0,c,'right'   );
   logoGrid.setVerticalAlignment   ( 0,c,'middle'  );
   
-  logoPanel.addClass   ( 'logo-panel'  );
+  logoPanel.addClass   ( 'logo-panel' );
 
 }
 
