@@ -184,16 +184,15 @@ function AccountPage ( sceneId )  {
   } else  {
     remote_login_lbl.setFontSize ( '112%' );
     remote_pwd_lbl  .setFontSize ( '112%' );
-    remote_login_inp.setFontSize ( '112%' ).setWidth('100%')
-                    .setTooltip  ( 'Login user name on remote ' + appName() + 
-                                   ' server' ); 
+    remote_login_inp.setFontSize ( '112%' ).setWidth('100%').setFontItalic(true)
+                    .setTooltip  ( 'To enable job execution on the remote ' +
+                                   appName() + ' server, the login username ' +
+                                   'and password must be provided.' ); 
     remote_pwd_inp  .setFontSize ( '112%' ).setWidth('100%')  // .setHeight('16pt')
-                    .setStyle    ( 'password','','',
-                                   'Password for remote server login' );
-                      //  .setStyle    ( null, null, 'XXXX-XXXX-XXXX-XXXX',
-                      //                 'CloudRun Id for user\'s account on remote ' +
-                      //                 appName() + 
-                      //                 ' server (available from user settings).' );  
+                    .setFontItalic(true)
+                    .setStyle    ( 'password','','remote server password',
+                                   'The password for remote server login must ' +
+                                   'be entered each time the settings are saved' );
   }
 
   let row = 0;
