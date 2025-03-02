@@ -146,9 +146,9 @@
       "name"             : "remote-nc",
       "in_use"           : true,
       "protocol"         : "https",
-      "host"             : "ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
+      "host"             : "cloud.ccp4.ac.uk",
       "port"             : 0,
-      "externalURL"      : "https://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/",
+      "externalURL"      : "https://cloud.ccp4.ac.uk",
       "exeType"          : "REMOTE"
     }
   ],
