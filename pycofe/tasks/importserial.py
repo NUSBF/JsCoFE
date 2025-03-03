@@ -248,7 +248,62 @@ class ImportSerial(import_task.Import):
 
         rvapi_utils.makeTable ( tableDict, table_id, reportPanelId, 0,0,1,1 ) #Create the first table
 
+        #=======================================  Plot of Statistics vs Resolution  =====================================
 
+        #Convert dictionary into separate lists for the graph
+        binned_d_max = binned_table.get("d_max",[])
+        binned_completeness = binned_table.get("completeness",[])
+        binned_multiplicity = binned_table.get("multiplicity",[])
+        binned_IsigI = binned_table.get("IsigI",[])
+        binned_cc = binned_table.get("cc",[])
+        binned_CCstar = binned_table.get("CCstar",[])
+        binned_rsplit = binned_table.get("rsplit",[])
+
+        self.putLogGraphWidget ( self.getWidgetId("graph"),[
+                    { "name"  : "Statistics vs Resolution ",
+                      "plots" : [
+                        {
+                          "name"   : "Completeness",
+                          "xtitle" : "Resolution ",
+                          "ytitle" : "Completeness (%%)",
+                          "x"      : {  "name":"Resolution", "values": binned_d_max },
+                          "y"      : [{ "name":"Completeness"       , "values":binned_completeness  }]
+                        },{
+                          "name"   : "Multiplicity",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "Multiplicity",
+                          "x"      : {  "name":"Resolution", "values": binned_d_max },
+                          "y"      : [{ "name":"Multiplicity"     , "values":binned_multiplicity  }]
+                        },{
+                          "name"   : "<I/sI>",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "<I/sI>",
+                          "x"      : {  "name":"Resolution", "values":binned_d_max  },
+                          "y"      : [{ "name":"<I/sI>"     , "values":binned_IsigI  }]
+                        },{
+                          "name"   : "CC 1/2",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "CC 1/2",
+                          "x"      : {  "name":"Resolution", "values":binned_d_max},
+                          "y"      : [{ "name":"CC 1/2"     , "values":binned_cc  }]
+                        },{
+                          "name"   : "CC*",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "CC*",
+                          "x"      : {  "name":"Resolution", "values":binned_d_max},
+                          "y"      : [{ "name":"CC*"     , "values":binned_CCstar  }]
+                        },{
+                          "name"   : "R_split",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "R_split",
+                          "x"      : {  "name":"Resolution", "values":binned_d_max},
+                          "y"      : [{ "name":"R_split"     , "values":binned_rsplit }]
+                        }
+                      ]
+                    }
+                ])
+        
+        
         #======================================== Running Import_Serial Task===================================================
 
 
