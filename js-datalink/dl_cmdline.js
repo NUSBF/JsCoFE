@@ -17,9 +17,20 @@ const client = require('./dl_client.js');
 class appClient extends client {
 
   constructor() {
-    super(true);
-    this.datalink = new datalink(false);
+    super();
+  }
 
+  initParameters() {
+    this.addArgInfoCommon();
+
+    // set default user
+    this.arg_info.user.def = '@local';
+
+    this.addActionMap();
+  }
+
+  addActionMap() {
+    this.datalink = new datalink(false);
     this.action_map = {
       search: this.datalink.searchSourceCatalogs,
       fetch: this.datalink.fetchData,
@@ -35,8 +46,6 @@ class appClient extends client {
       catalog_update_all: this.datalink.updateAllSourceCatalogs,
       stats: this.datalink.getDataStats
     }
-
-    this.arg_info.user.def = '@local';
   }
 
   async doCall(action, ...args) {
