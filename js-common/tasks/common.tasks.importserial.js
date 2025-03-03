@@ -179,8 +179,20 @@ function TaskImportSerial()  {
         position  : [3,1,1,7],
         inputId     : 'dmin' // input Id for referencing input fields
       
-          },
+      },
+      N_BINS : {
+        type      : 'real_',   // empty string allowed
+        label     : '<i> <b>Number of resolution bins </b> </i>',
+        tooltip   : '(Optional) Number of resolution bins',
+        default   : '',
+        keyword   : "nbins",
+        value     : '',
+        iwidth    : 100,
+        lwidth2   : '100%',
+        position  : [4,1,1,7],
+        inputId     : 'nbins ' // input Id for referencing input fields
       
+          },
       
      
     },
