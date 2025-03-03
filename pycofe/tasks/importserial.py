@@ -251,55 +251,68 @@ class ImportSerial(import_task.Import):
         #=======================================  Plot of Statistics vs Resolution  =====================================
 
         #Convert dictionary into separate lists for the graph
-        binned_d_max = binned_table.get("d_max",[])
-        binned_completeness = binned_table.get("completeness",[])
-        binned_multiplicity = binned_table.get("multiplicity",[])
-        binned_IsigI = binned_table.get("IsigI",[])
-        binned_cc = binned_table.get("cc",[])
-        binned_CCstar = binned_table.get("CCstar",[])
-        binned_rsplit = binned_table.get("rsplit",[])
+        binned_d_min = binned_table.get("d_min",[])[::-1] #Reverse the list
+        binned_completeness = binned_table.get("completeness",[])[::-1]
+        binned_multiplicity = binned_table.get("multiplicity",[])[::-1]
+        binned_IsigI = binned_table.get("IsigI",[])[::-1]
 
-        self.putLogGraphWidget ( self.getWidgetId("graph"),[
-                    { "name"  : "Statistics vs Resolution ",
-                      "plots" : [
+
+        plots =[
                         {
                           "name"   : "Completeness",
                           "xtitle" : "Resolution ",
                           "ytitle" : "Completeness (%%)",
-                          "x"      : {  "name":"Resolution", "values": binned_d_max },
+                          "x"      : {  "name":"Resolution", "values": binned_d_min },
                           "y"      : [{ "name":"Completeness"       , "values":binned_completeness  }]
                         },{
                           "name"   : "Multiplicity",
                           "xtitle" : "Resolution",
                           "ytitle" : "Multiplicity",
-                          "x"      : {  "name":"Resolution", "values": binned_d_max },
+                          "x"      : {  "name":"Resolution", "values": binned_d_min },
                           "y"      : [{ "name":"Multiplicity"     , "values":binned_multiplicity  }]
                         },{
                           "name"   : "<I/sI>",
                           "xtitle" : "Resolution",
                           "ytitle" : "<I/sI>",
-                          "x"      : {  "name":"Resolution", "values":binned_d_max  },
+                          "x"      : {  "name":"Resolution", "values":binned_d_min  },
                           "y"      : [{ "name":"<I/sI>"     , "values":binned_IsigI  }]
-                        },{
-                          "name"   : "CC 1/2",
-                          "xtitle" : "Resolution",
-                          "ytitle" : "CC 1/2",
-                          "x"      : {  "name":"Resolution", "values":binned_d_max},
-                          "y"      : [{ "name":"CC 1/2"     , "values":binned_cc  }]
-                        },{
-                          "name"   : "CC*",
-                          "xtitle" : "Resolution",
-                          "ytitle" : "CC*",
-                          "x"      : {  "name":"Resolution", "values":binned_d_max},
-                          "y"      : [{ "name":"CC*"     , "values":binned_CCstar  }]
-                        },{
-                          "name"   : "R_split",
-                          "xtitle" : "Resolution",
-                          "ytitle" : "R_split",
-                          "x"      : {  "name":"Resolution", "values":binned_d_max},
-                          "y"      : [{ "name":"R_split"     , "values":binned_rsplit }]
                         }
-                      ]
+        ]
+
+        #If hkl1 and hkl2 arent provided then project_dataset.json wont have "cc", "CCstar", "rsplit"
+        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) :
+            binned_cc = binned_table.get("cc",[])[::-1]
+            binned_CCstar = binned_table.get("CCstar",[])[::-1]
+            binned_rsplit = binned_table.get("rsplit",[])[::-1]
+            
+            new_plots = [
+                {
+                "name"   : "CC 1/2",
+                "xtitle" : "Resolution",
+                "ytitle" : "CC 1/2",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"CC 1/2"     , "values":binned_cc  }]
+                },{
+                "name"   : "CC*",
+                "xtitle" : "Resolution",
+                "ytitle" : "CC*",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"CC*"     , "values":binned_CCstar  }]
+                },{
+                "name"   : "R_split",
+                "xtitle" : "Resolution",
+                "ytitle" : "R_split",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"R_split"     , "values":binned_rsplit }]
+                }
+            ]
+            plots.extend(new_plots)
+            
+
+
+        self.putLogGraphWidget ( self.getWidgetId("graph"),[
+                    { "name"  : "Statistics vs Resolution ",
+                        "plots" : plots
                     }
                 ])
         
