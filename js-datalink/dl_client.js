@@ -19,94 +19,37 @@ class Client {
   // used for drain event to resume read stream
   in_stream = null;
 
-  constructor(app_client = false) {
-    this.app_client = app_client;
+  constructor() {
+    this.arg_info = {};
+    this.action_map = {};
+    this.initParameters();
+  }
 
-    if (! this.app_client) {
-      // list of valid parameters
-      Object.assign(this.arg_info, {
-        url: {
-          form: 'url', 
-          help: 'URL of the Data Link API including port eg http://localhost:8100/api'
-        },
-        cloudrun_id: {
-          form: 'id', 
-          help: 'CCP4 Cloud cloudrun_id for <user> used to authenticate'
-        },
-        admin_key: {
-          form: 'key', 
-          help: 'Data Link admin_key used to authenticate'
-        }
-      });
+  initParameters() {
+    this.addArgInfoCommon();
+    this.addArgInfoClient();
+    this.addActionMap();
+  }
 
-      Object.assign(this.action_map, {
-        search: {
-          path: 'search/?f=@0&q=@1',
-          method: 'GET'
-        },
-        fetch: {
-          path: 'data/@0/@1/@2',
-          method: 'PUT',
-          auth: 'user'
-        },
-        remove: {
-          path: 'data/@0/@1/@2',
-          method: 'DELETE',
-          auth: 'user'
-        },
-        update: {
-          path: 'data/@0/@1/@2',
-          method: 'PATCH',
-          auth: 'user'
-        },
-        upload: {
-          path: 'data/@0/@1/@2/upload',
-          method: 'POST',
-          auth: 'user'
-        },
-        status: {
-          path: 'data/@0/@1/@2',
-          method: 'GET',
-          auth: 'user'
-        },
-        status_all: {
-          path: 'data',
-          method: 'GET',
-          auth: 'admin'
-        },
-        sources: {
-          path: 'sources/@0',
-          method: 'GET',
-        },
-        sources_all: {
-          path: 'sources/*',
-          method: 'GET',
-        },
-        catalog: {
-          path: 'sources/@0/catalog',
-          method: 'GET',
-        },
-        catalog_all: {
-          path: 'sources/*/catalog',
-          method: 'GET',
-        },
-        catalog_update: {
-          path: 'sources/@0/update',
-          method: 'PUT',
-          auth: 'admin'
-        },
-        catalog_update_all: {
-          path: 'sources/*/update',
-          method: 'PUT',
-          auth: 'admin'
-        },
-        stats: {
-          path: 'stats',
-          method: 'GET'
-        }
-      });
-    }
+  addArgInfoClient() {
+    // list of valid parameters
+    Object.assign(this.arg_info, {
+      url: {
+        form: 'url',
+        help: 'URL of the Data Link API including port eg http://localhost:8100/api'
+      },
+      cloudrun_id: {
+        form: 'id',
+        help: 'CCP4 Cloud cloudrun_id for <user> used to authenticate'
+      },
+      admin_key: {
+        form: 'key',
+        help: 'Data Link admin_key used to authenticate'
+      }
+    });
+  }
 
+  addArgInfoCommon() {
     Object.assign(this.arg_info, {
       user: {
         form: 'user',
@@ -133,7 +76,75 @@ class Client {
         help: 'Don\'t output progress during upload'
       }
     });
+  }
 
+  addActionMap() {
+    Object.assign(this.action_map, {
+      search: {
+        path: 'search/?f=@0&q=@1',
+        method: 'GET'
+      },
+      fetch: {
+        path: 'data/@0/@1/@2',
+        method: 'PUT',
+        auth: 'user'
+      },
+      remove: {
+        path: 'data/@0/@1/@2',
+        method: 'DELETE',
+        auth: 'user'
+      },
+      update: {
+        path: 'data/@0/@1/@2',
+        method: 'PATCH',
+        auth: 'user'
+      },
+      upload: {
+        path: 'data/@0/@1/@2/upload',
+        method: 'POST',
+        auth: 'user'
+      },
+      status: {
+        path: 'data/@0/@1/@2',
+        method: 'GET',
+        auth: 'user'
+      },
+      status_all: {
+        path: 'data',
+        method: 'GET',
+        auth: 'admin'
+      },
+      sources: {
+        path: 'sources/@0',
+        method: 'GET',
+      },
+      sources_all: {
+        path: 'sources/*',
+        method: 'GET',
+      },
+      catalog: {
+        path: 'sources/@0/catalog',
+        method: 'GET',
+      },
+      catalog_all: {
+        path: 'sources/*/catalog',
+        method: 'GET',
+      },
+      catalog_update: {
+        path: 'sources/@0/update',
+        method: 'PUT',
+        auth: 'admin'
+      },
+      catalog_update_all: {
+        path: 'sources/*/update',
+        method: 'PUT',
+        auth: 'admin'
+      },
+      stats: {
+        path: 'stats',
+        method: 'GET'
+      }
+    });
   }
 
   getBoundary() {
@@ -564,7 +575,7 @@ class Client {
       return;
     }
 
-    if (this.app_client == false) {
+    if (this.arg_info.url) {
       // set this.proto to http or https depending on url or return an error
       if (this.opts.url) {
         if (this.opts.url.startsWith('http://')) {
