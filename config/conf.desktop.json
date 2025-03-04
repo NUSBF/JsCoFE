@@ -144,7 +144,7 @@
     {
       "serNo"            : 2,
       "name"             : "remote-nc",
-      "in_use"           : true,
+      "in_use"           : false,
       "protocol"         : "https",
       "host"             : "cloud.ccp4.ac.uk",
       "port"             : 0,
