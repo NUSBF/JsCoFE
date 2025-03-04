@@ -53,7 +53,7 @@ class FitLigand(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
 
         # make command-line parameters
-        pdbin   = istruct.getPDBFilePath ( self.inputDir() )
+        pdbin   = istruct.getXYZFilePath ( self.inputDir() )
 
         # pdbin  = istruct.getMMCIFFilePath ( self.inputDir() )
         # if not pdbin:
