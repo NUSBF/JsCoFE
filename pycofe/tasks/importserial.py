@@ -39,6 +39,7 @@ from   pycofe.varut  import rvapi_utils
 #  application imports
 from   pycofe.tasks  import import_task
 from   pycofe.proc    import import_filetype, import_merged
+from pycofe.varut  import signal
 # from   pycofe.auto   import auto
 # from pycofe.tasks import mtz
 
@@ -153,6 +154,12 @@ class ImportSerial(import_task.Import):
         if dmax: # If there is Low-resolution cutoff user input
             dmax = str(dmax)
             cmd += [ "--dmax", str(dmax) ]
+
+        nbins = self.getParameter ( sec2.N_BINS ).strip()
+        if nbins: # If there is Number of Resolution bins user input
+            nbins = str(nbins)
+            cmd += [ "--nbins", str(nbins) ]
+        
         
         # Display to the report a message of multiple conflicting data instances of parameters
         if conflict_data == True:
@@ -163,10 +170,12 @@ class ImportSerial(import_task.Import):
 
         # ============================== Run the import_serial task =========================================
 
-        self.runApp ( "import_serial",cmd,logType="Main" )
+        rc = self.runApp ( "import_serial",cmd,logType="Main", quitOnError=False )
 
         # =============================== Report Log Tables ==========================================
-      
+        if rc.msg != "":
+            self.putMessage ( "<b>Task finished with an error. Please check the erros tab.</b>" )
+            raise signal.JobFailure ( rc.msg )
         _report_widget_id = "report_page" #import report widget for table
         def report_page_id(self): return self._report_widget_id
 
@@ -207,10 +216,10 @@ class ImportSerial(import_task.Import):
                                   'data': ['%0.3f' % float(overall_table.get("d_min"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Number observed reflections', 'tooltip': ''},
-                                  'data': ['%0.3f' % int(overall_table.get("n_unique"))]})
+                                  'data': ['%0.3f' % int(overall_table.get("n_obs"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Number unique reflections', 'tooltip': ''},
-                                  'data': ['%0.3f' % int(overall_table.get("n_obs"))]})
+                                  'data': ['%0.3f' % int(overall_table.get("n_unique"))]})
 
         tableDict['rows'].append({'header':{'label': indent + 'Completeness %', 'tooltip': ''},
                                   'data': ['%0.3f' %  float(overall_table.get("completeness"))]})
@@ -239,7 +248,75 @@ class ImportSerial(import_task.Import):
 
         rvapi_utils.makeTable ( tableDict, table_id, reportPanelId, 0,0,1,1 ) #Create the first table
 
+        #=======================================  Plot of Statistics vs Resolution  =====================================
 
+        #Convert dictionary into separate lists for the graph
+        binned_d_min = binned_table.get("d_min",[])[::-1] #Reverse the list
+        binned_completeness = binned_table.get("completeness",[])[::-1]
+        binned_multiplicity = binned_table.get("multiplicity",[])[::-1]
+        binned_IsigI = binned_table.get("IsigI",[])[::-1]
+
+
+        plots =[
+                        {
+                          "name"   : "Completeness",
+                          "xtitle" : "Resolution ",
+                          "ytitle" : "Completeness (%%)",
+                          "x"      : {  "name":"Resolution", "values": binned_d_min },
+                          "y"      : [{ "name":"Completeness"       , "values":binned_completeness  }]
+                        },{
+                          "name"   : "Multiplicity",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "Multiplicity",
+                          "x"      : {  "name":"Resolution", "values": binned_d_min },
+                          "y"      : [{ "name":"Multiplicity"     , "values":binned_multiplicity  }]
+                        },{
+                          "name"   : "<I/sI>",
+                          "xtitle" : "Resolution",
+                          "ytitle" : "<I/sI>",
+                          "x"      : {  "name":"Resolution", "values":binned_d_min  },
+                          "y"      : [{ "name":"<I/sI>"     , "values":binned_IsigI  }]
+                        }
+        ]
+
+        #If hkl1 and hkl2 arent provided then project_dataset.json wont have "cc", "CCstar", "rsplit"
+        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) :
+            binned_cc = binned_table.get("cc",[])[::-1]
+            binned_CCstar = binned_table.get("CCstar",[])[::-1]
+            binned_rsplit = binned_table.get("rsplit",[])[::-1]
+            
+            new_plots = [
+                {
+                "name"   : "CC 1/2",
+                "xtitle" : "Resolution",
+                "ytitle" : "CC 1/2",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"CC 1/2"     , "values":binned_cc  }]
+                },{
+                "name"   : "CC*",
+                "xtitle" : "Resolution",
+                "ytitle" : "CC*",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"CC*"     , "values":binned_CCstar  }]
+                },{
+                "name"   : "R_split",
+                "xtitle" : "Resolution",
+                "ytitle" : "R_split",
+                "x"      : {  "name":"Resolution", "values":binned_d_min},
+                "y"      : [{ "name":"R_split"     , "values":binned_rsplit }]
+                }
+            ]
+            plots.extend(new_plots)
+            
+
+
+        self.putLogGraphWidget ( self.getWidgetId("graph"),[
+                    { "name"  : "Statistics vs Resolution ",
+                        "plots" : plots
+                    }
+                ])
+        
+        
         #======================================== Running Import_Serial Task===================================================
 
 
@@ -273,7 +350,12 @@ class ImportSerial(import_task.Import):
         }
 
         # close execution logs and quit
-        self.success ( have_results )
+        if rc.msg == "":
+            self.success ( have_results )
+        else:
+            self.putMessage ( "<b>Task finished with an error. Please check the erros tab.</b>" )
+            raise signal.JobFailure ( rc.msg )
+            
         return
 
 

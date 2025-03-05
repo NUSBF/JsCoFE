@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    27.01.25   <--  Date of Last Modification.
+ *    28.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -269,7 +269,7 @@ Table.prototype.getTableData = function()  {
 Table.prototype.getRowHeight = function ( rowNo )  {
   let rowHeight = 0;
   for (let i=rowNo;i<this.element.rows.length;i++)
-    rowHeight += $(this.element.rows[1]).outerHeight();
+    rowHeight += $(this.element.rows[i]).outerHeight();
   if (rowHeight>0)
     return rowHeight/(this.element.rows.length-rowNo);
   return  29.1953;

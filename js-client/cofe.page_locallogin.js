@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    02.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,9 +77,15 @@ function LocalLoginPage ( sceneId )  {
 
       let row = 0;
 
-      let exceptions = 'except for cases involving third-party web services';
-      if (__remoteJobServer.status=='FE')
-          exceptions += ' and jobs designated for remote execution';
+      let exceptions  = 'except for cases involving third-party web services';
+      let remote_jobs = '';
+      if (__remoteJobServer.status=='FE')  {
+        exceptions += ' and jobs designated for remote execution';
+        remote_jobs = '</li><li style="padding-bottom:8px;">' +
+                      'Remote job execution server:<br>' +
+                      '<span style="font-size:85%;font-family:courier;">' + 
+                      __remoteJobServer.url + '</span>';
+      }
 
       panel.setLabel ( text +
         'Projects and data stored on your machine:<br>' +
@@ -91,6 +97,7 @@ function LocalLoginPage ( sceneId )  {
         '</li><li style="padding-bottom:8px;">' +
         'Jobs run on your machine<br>' +
         '<i style="font-size:85%">(' + exceptions + ')</i>' +
+        remote_jobs +
         '</li><li>' +
         'You have ' + dfree + 'GB free disk space & ' + rData.cpus.length + 
         ' cores @ ' + speed + ' GHz' +
