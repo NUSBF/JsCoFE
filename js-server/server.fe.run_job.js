@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    02.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -805,12 +805,14 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
           if ((!error) && (response.statusCode==200))  {
             callback_func ( body.data.code,
                             nc_number,  // this should be remote NC, not ANC number
-                            body.data.rfe_token );
+                            body.data.rfe_token,
+                            body.data.anc_name
+                          );
           } else if (!error) {
-            callback_func ( 4,nc_number,'' );
+            callback_func ( 4,nc_number,'','' );
             log.warning ( 10,'remote FE could not allocate job for ' + task._type );
           } else  {
-            callback_func ( 6,nc_number,'' );
+            callback_func ( 6,nc_number,'','' );
             log.warning ( 11,'errors at communication with remote FE' );
           }
         }
@@ -818,7 +820,7 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
 
     } else  {
       log.error ( 41,'remote number cruncher is not configured' );
-      callback_func ( 3,nc_number,'' );
+      callback_func ( 3,nc_number,'','' );
     }
 
   } else  {
@@ -836,9 +838,9 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
             printNCState ( nc_number );
             if (nc_number>=0)  {
               conf.getNCConfigs()[nc_number].current_capacity--;
-              callback_func ( 0,nc_number,'' );
+              callback_func ( 0,nc_number,'','' );
             } else
-              callback_func ( 5,nc_number,'' );
+              callback_func ( 5,nc_number,'','' );
           } else  {
             // log.standard ( 1,'NC-' + nc_number + ' does not answer' );
             log.error ( 3,'NC-' + nc_number + ' does not answer' );
@@ -847,18 +849,18 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
             } else  {
               // log.standard ( 2,'no response from number crunchers' );
               log.error ( 4,'no response from number crunchers' );
-              callback_func ( 2,nc_number,'' );
+              callback_func ( 2,nc_number,'','' );
             }
           }
         });
       } else  {
         // log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
         log.error ( 5,'NC-' + nc_number + ' configuration cannot be obtained' );
-        callback_func ( 1,nc_number,'' );
+        callback_func ( 1,nc_number,'','' );
       }
     } else  {
       log.warning ( 42,'all number crunchers refused to accept a job' );
-      callback_func ( 5,nc_number,'' );
+      callback_func ( 5,nc_number,'','' );
     }
 
   }
@@ -874,10 +876,12 @@ function allocateJob ( data,callback_func )  {  // gets UserData object
   // This function is used on Remote FE (RFE), therefore, parameter run_remotely
   // is set to false.
   ncSelectAndCheck ( conf.getNumberOfNCs(),data.task,false,
-    function(code,nc_number,rfe_token){
+    function(code,nc_number,rfe_token,nc_name){
+      let nc_cfg = conf.getNCConfig(nc_number);
       let response  = new cmd.Response ( cmd.fe_retcode.ok,'',
         { code       : code,
           anc_number : nc_number,  // actual NC number, currently not used
+          anc_name   : nc_cfg.name,
           rfe_token  : cmd.__special_rfe_tag + '.' + 
                        nc_number + '.'  // '.' is a separator for parsing
         });
@@ -898,7 +902,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
   //      Actual NC (ANC) number
 
   ncSelectAndCheck ( conf.getNumberOfNCs(),task,run_remotely,
-    function(code,nc_number,rfe_token){
+    function(code,nc_number,rfe_token,anc_name){
 
       let jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
       let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
@@ -955,7 +959,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
       let uData  = user.readUserData ( loginData );
       let meta   = {};
       meta.setup_id  = conf.getSetupID();
-      meta.nc_name   = nc_cfg.name;
+      meta.nc_name   = anc_name ? '[' + nc_cfg.externalURL + ']:' + anc_name
+                                : nc_cfg.name;
       meta.user_id   = loginData.login;
       meta.feedback  = ud.feedback_code.decline;
       meta.user_name = '';
@@ -1069,7 +1074,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
 
             default: utils.writeJobReportMessage ( jobDir,
                     '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
-                    '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + code + '</i>',false );
+                    '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + JSON.stringify(code) +
+                    '</i>',false );
 
           }
 

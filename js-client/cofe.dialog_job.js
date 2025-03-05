@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.02.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -119,6 +119,8 @@ function JobDialog ( params,          // data and task projections up the tree b
     //width     : w,
     width     : size[0],
     height    : size[1],
+    // maxWidth  : "none",
+    // modal     : false,
     buttons   : {},
     // beforeClose : function(event, ui)  {
     //   if (dlg.nc_browser && 
@@ -134,8 +136,11 @@ function JobDialog ( params,          // data and task projections up the tree b
     //     return true;
     // },
     open      : function(event, ui)  {
-      if (__any_mobile_device)
+      // *MOBILE*
+      if (__any_mobile_device)  {
         $(this).siblings('.ui-dialog-titlebar').remove();
+        $('body').css('overflow-x','auto');
+      }
       if (dlg.task.state==job_code.new)  {
         window.setTimeout ( function(){
           dlg.task.onJobDialogStart ( dlg );
@@ -146,10 +151,6 @@ function JobDialog ( params,          // data and task projections up the tree b
         dlg._created = true;
         dlg.setDlgSize();  
       }
-      // window.setTimeout ( function(){
-      //   dlg.setDlgSize();  
-      //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
-      // },100);
     },
     focus     : function() {
                   if (onDlgSignal_func)
@@ -160,7 +161,8 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   if (__any_mobile_device)
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
-                                      at : 'left top' }; // job dialog offset in the screen
+                                      at : 'left top',
+                                      of : window }; // job dialog offset in the screen
   else
     this.dialog_options.position = this.task.job_dialog_data.position;
 
@@ -226,6 +228,11 @@ JobDialog.prototype.delete = function()  {
     this.requestServer ( fe_reqtype.webappEndJob,function(rdata){});
 
   Widget.prototype.delete.call ( this );
+
+  if (__any_mobile_device)  {
+    window.scrollTo ( 0,0 );
+    $('body').css('overflow-x','hidden');
+  }
 
 }
 

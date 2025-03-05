@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -212,61 +212,6 @@ function LoginPage ( sceneId )  {
         '<br>admin or maintainer in your organisation.', 'msg_information' );
   });
 
-  /*
-  if (__any_mobile_device)  {
-    panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
-                                  'cannot be used when<br>working ' +
-                                  'from tablets and phones<br>&nbsp;' +
-                                  '</i></center>',
-                                  row++,col,1,3 )
-         .setTooltip            ( 'For best experience, access this web-site from ' +
-                                  'MS Windows, Linux or Mac OSX device  with ' +
-                                  'CCP4 Software Suite version 7.1 or higher ' +
-                                  'installed.'
-                                )
-         .setNoWrap();
-    panel.setCellSize           ( '','24px',col,3 );
-  } else if (!__local_service)  {
-    panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
-                                  '<b>NOTE:</b> For using <span style="color:maroon">' +
-                                  '<b>Coot, DUI, iMosflm</b></span> and similar<br>' +
-                                  'tasks, install <a href="javascript:_ccp4_download()">' +
-                                  'the CCP4 Software Suite</a> and ' +
-                                  'start<br>' + appName() + ' with this icon:<br>' +
-                                  '<img src="images_com/ccp4cloud_remote.png" ' +
-                                  'style="height:36px;width:36px;padding-top:6px;"/>' +
-                                  '</i></center></div>',
-                                  row++,col,1,3 );
-    panel.setCellSize           ( '','48px',col,3 );
-  }
-
-  if (!isProtectedConnection())
-    panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
-                                  'Connection is not secure - <span style="color:maroon">' +
-                                  '<b>Moorhen</b></span> will not work' +
-                                  '</i></center></div>',
-                                  row++,col,1,3 );
-
-  panel.setLabel                ( '<center><i>Check ' + appName() +
-                                  ' <a target="_blank" href="html/roadmap.html">' +
-                                  'roadmap<a></i> for new users</center>',
-                                  row++,col,1,3 );
-  */
-
-  // panel.setLabel                ( '<div style="font-size:80%">' + appName() + 
-  //                                 ' provides computational resources ' +
-  //                                 'and online access to CCP4 Software for ' +
-  //                                 'determining macromoleculare structures in 3D ' +
-  //                                 'from X-ray diffraction images. Read more details ' +
-  //                                 ' <a href="javascript:_aboutCCP4Cloud()">' +
-  //                                 'here<a>.</div>',
-  //                                 row++,col,1,2 );
-
-  // panel.setLabel                ( '<div style="padding-top:6px;"><i>' +
-  //                                 '<a href="javascript:_privacyStatement()">' +
-  //                                 'Privacy Statement<a></i></div>',
-  //                                 row++,col,1,2 );
-
   vis_btn.addOnClickListener ( function(){
     vis_btn.icon_hidden = !vis_btn.icon_hidden;
     if (vis_btn.icon_hidden)  {
@@ -280,8 +225,9 @@ function LoginPage ( sceneId )  {
 
   login_btn.addOnClickListener ( function(){
 
-    if (__mobile_device)
-      setFullScreen();
+    // *MOBILE*
+    // if (__mobile_device)
+    //   setFullScreen();
 
     // Validate the input
     let msg = '';
