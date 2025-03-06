@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -290,7 +290,11 @@ AdminPage.prototype.refresh = function()  {
   this.searchFilters = null;
 
   self = this;
+  document.body.style.cursor = 'wait';
+  
   serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+    
+    document.body.style.cursor = 'auto';
 
     self.adminData = data;
 
