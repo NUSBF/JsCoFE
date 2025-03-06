@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -308,9 +308,11 @@ function ProjectPage ( sceneId,pspecs=null )  {
 
   //  Read project data from server first time
   // takes project name from projectList.current
+  document.body.style.cursor = 'wait';
   window.setTimeout ( function(){
     self.jobTree.loadProjectData ( 'Project',true,-1,
       function(){
+        document.body.style.cursor = 'auto';
         if (self.onTreeLoaded(false,self.jobTree,pspecs))  {
           // self.dock.loadDockData();
           // add button listeners
