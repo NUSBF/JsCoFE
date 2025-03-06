@@ -225,8 +225,6 @@ function LoginPage ( sceneId )  {
 
   login_btn.addOnClickListener ( function(){
 
-    document.body.style.cursor = 'wait';
-
     // *MOBILE*
     // if (__mobile_device)
     //   setFullScreen();
