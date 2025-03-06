@@ -246,6 +246,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   }
 
+  document.body.style.cursor = 'wait';
+
   let ud   = new UserData();
   ud.login = user_login_name;
   ud.pwd   = user_password;
@@ -253,6 +255,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
   serverCommand ( fe_command.login,ud,'Login',function(response){
 
     stopSessionChecks();
+
+    document.body.style.cursor = 'auto';
 
     switch (response.status)  {
 
@@ -295,7 +299,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __remote_environ_server = [];
               if ((__remoteJobServer.status=='FE') && userData.remote_login 
                                                    && userData.remote_pwd)  {
-                let rud = new UserData();
+                let rud   = new UserData();
                 rud.login = userData.remote_login;
                 rud.pwd   = userData.remote_pwd;
                 window.setTimeout ( function(){
