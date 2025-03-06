@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.25   <--  Date of Last Modification.
+ *    06.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1246,7 +1246,7 @@ function setGracefulQuit()  {
   // });
 }
 
-function getServerResponse ( url,callback,timeout=500 )  {
+function getServerResponse ( url,callback,timeout=4000 )  {
 // Example usage
 // getResponse('https://jsonplaceholder.typicode.com/todos/1', (err, data) => {
 //   if (err) {
@@ -1257,6 +1257,15 @@ function getServerResponse ( url,callback,timeout=500 )  {
 // });
   const client = url.startsWith('https') ? https : http;
   let data = '';
+  let callback_fired = false;
+
+  // const options = {
+  //   hostname: url,
+  //   path: '/' + command,
+  //   method: 'GET',
+  //   agent: new client.Agent({ keepAlive: false }) // Ensures fresh sockets for each request
+  // };
+  // console.log ( ' >>>>> url='+url + 'command='+command)
   const req = client.get ( url, (res) => {
     // Accumulate data chunks
     res.on('data', (chunk) => {
@@ -1264,19 +1273,40 @@ function getServerResponse ( url,callback,timeout=500 )  {
     });
     // Handle the end of the response
     res.on('end', () => {
-      callback ( null,data );
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( null,data );
+      }
     });
   });
 
   // Handle network errors
   req.on('error', (err) => {
-    callback ( err,data );
+    // req.destroy(new Error('Error')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( err,data );
+    }
   });
   
   // Set timeout
   req.setTimeout ( timeout, () => {
-    req.abort(); // Abort the request on timeout
-    callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+    req.destroy(new Error('Timeout')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+    }
+  });
+
+  req.on('socket', (socket) => {
+    socket.setTimeout ( timeout ); // Apply the timeout to the socket
+    socket.on('timeout', () => {
+      req.destroy(new Error('Socket Timeout')); // Forcefully abort the request
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+      }
+    });
   });
 
 }

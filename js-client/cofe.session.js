@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,20 @@
 'use strict';
 
 function startSession ( sceneId,dev_switch )  {
+
+  // set up a loader spinner
+  const img = document.createElement('img');
+  img.src   = './images_png/loader-ring.gif'; // Replace with your GIF URL
+  img.alt   = 'Loading...';
+  img.style.width = '50px'; // Adjust size if needed
+  document.body.appendChild ( img );
+  $(document.body).css({
+    'display'         : 'flex',
+    'justify-content' : 'center',
+    'align-items'     : 'center',
+    'height'          : '100vh',
+    // 'margin'          : '0',
+  });
 
   setClientCode ( client_code.ccp4 );
 
@@ -56,6 +70,9 @@ function startSession ( sceneId,dev_switch )  {
   }
 
   checkLocalService ( function(rc){
+
+    // remove loader spinner and reset body style
+    $(document.body).removeAttr('style');
 
     if (!rc)  {
 
@@ -220,7 +237,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                   } else  {  // should never come to here
                     reloadBrowser();
                   }
-                },100);
+                });
               }
             }
         }
@@ -298,10 +315,11 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                       }
                       return true;
                     },function(){
+                      return true;
                     },function(xhr,err)  {  
                       _no_remote_server_message ( true );
                       return true;
-                    });
+                    },1000 );
                 },500);
               } else if (__remoteJobServer.url && userData.remote_login 
                                                && userData.remote_pwd)  {
@@ -492,7 +510,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
     return false;
 
-  },null,null);
+  },null,null,5000);
 
 }
 
