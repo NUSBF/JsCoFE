@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -938,16 +938,28 @@ function getJobSignalCode_async ( jobDir,callback_func,ntry=20,n=0 )  {
 // necessary if file system has a noticeable latency (e.g., NFS). Time intervals
 // start from 100ms and increase by 25ms on each iteration.
   if (n<=ntry)  {
-    setTimeout ( function(){
-      let signal = readString ( path.join(jobDir,signal_file_name) );
-        if (signal)  {
-          let sigl = signal.split('\n');
-          if (sigl.length>1)
-                callback_func ( parseInt(sigl[sigl.length-1]) );
-          else  callback_func ( 300  );
-        } else
-          getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
-      },n==0 ? 0 : 75 + n*25 );
+    let signal = readString ( path.join(jobDir,signal_file_name) );
+    if (signal)  {
+      let sigl = signal.split('\n');
+      if (sigl.length>1)
+            callback_func ( parseInt(sigl[sigl.length-1]) );
+      else  callback_func ( 300  );
+    } else  {
+      setTimeout ( function(){
+        log.warning ( 2,'attempt #' + (n+1) + ' to read signal file in ' + jobDir );
+        getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+      },100+n*25 );
+    }
+    // setTimeout ( function(){
+    //   let signal = readString ( path.join(jobDir,signal_file_name) );
+    //     if (signal)  {
+    //       let sigl = signal.split('\n');
+    //       if (sigl.length>1)
+    //             callback_func ( parseInt(sigl[sigl.length-1]) );
+    //       else  callback_func ( 300  );
+    //     } else
+    //       getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+    //   },n==0 ? 0 : 75 + n*25 );
   } else
     callback_func ( 301 );
 }

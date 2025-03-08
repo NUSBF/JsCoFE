@@ -2488,6 +2488,10 @@ function saveJobData ( loginData,data )  {
 let response    = null;
 let projectName = data.meta.project;
 let jobId       = data.meta.id;
+let jobEntry    = rj.getEFJobEntry ( loginData,projectName,jobId );
+
+  if (jobEntry)  // fake reply if job is running
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
 
   if (data.update_tree)  {
     let pData = readProjectData ( loginData,projectName );
@@ -2496,24 +2500,62 @@ let jobId       = data.meta.id;
   }
 
   let jobDataPath = getJobDataPath ( loginData,projectName,jobId );
+  let job_data    = utils.readObject ( jobDataPath );
 
-  if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
-  } else  {
-    if (data.is_shared &&
+  if (job_data && 
+      ((job_data.state!=data.meta.state) || // fake return in this case
+       utils.writeObject(jobDataPath,data.meta)))
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                                  { 'project_missing':false } );
+
+  if ((!response) && data.is_shared &&
         (!utils.fileExists(getProjectDataPath(loginData,projectName))))
-      response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
-                                    { 'project_missing':true } );
-    if (!response)
-      response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                    '[00031] Job metadata cannot be written.',
+    response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
+                                  { 'project_missing':true } );
+
+  if (!response)
+    response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                  '[00031] Job metadata cannot be written.',
                                     { 'project_missing':null } );
-  }
 
   return response;
 
 }
 
+
+// function saveJobData ( loginData,data )  {
+// let response    = null;
+// let projectName = data.meta.project;
+// let jobId       = data.meta.id;
+// let jobEntry    = rj.getEFJobEntry ( loginData,projectName,jobId );
+
+//   if (jobEntry)  // fake reply if job is running
+//     return new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
+
+//   if (data.update_tree)  {
+//     let pData = readProjectData ( loginData,projectName );
+//     if (pData)
+//       writeProjectData ( loginData,pData,true );
+//   }
+
+//   let jobDataPath = getJobDataPath ( loginData,projectName,jobId );
+
+//   if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
+//     response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
+//   } else  {
+//     if (data.is_shared &&
+//         (!utils.fileExists(getProjectDataPath(loginData,projectName))))
+//       response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
+//                                     { 'project_missing':true } );
+//     if (!response)
+//       response = new cmd.Response ( cmd.fe_retcode.writeError,
+//                                     '[00031] Job metadata cannot be written.',
+//                                     { 'project_missing':null } );
+//   }
+
+//   return response;
+
+// }  
 
 // ===========================================================================
 
