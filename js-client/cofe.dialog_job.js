@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -525,21 +525,23 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
 
 
 JobDialog.prototype.saveJobData = function()  {
-  let dlg = this;
-  this.requestServer ( fe_reqtype.saveJobData,function(rdata){
-    if (rdata.project_missing)  {
-      new MessageBoxF ( 'Project not found',
-          '<h3>Project "' + dlg.tree.projectData.desc.name +
-            '" is not found on server</h3>' +
-          'Project "' + dlg.tree.projectData.desc.name +
-            '" was shared with you, please check<br>' +
-          'whether it was deleted by project owner.',
-          'Ok',function(){
-              dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
-          },false,'msg_error'
-      );
-    }
-  });
+  if ((!this.task.isRunning()) && (!this.tree.view_only))  {
+    let dlg = this;
+    this.requestServer ( fe_reqtype.saveJobData,function(rdata){
+      if (rdata.project_missing)  {
+        new MessageBoxF ( 'Project not found',
+            '<h3>Project "' + dlg.tree.projectData.desc.name +
+              '" is not found on server</h3>' +
+            'Project "' + dlg.tree.projectData.desc.name +
+              '" was shared with you, please check<br>' +
+            'whether it was deleted by project owner.',
+            'Ok',function(){
+                dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
+            },false,'msg_error'
+        );
+      }
+    });
+  }
 }
 
 
@@ -1219,26 +1221,13 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
   if (this.close_btn)
     this.close_btn.addOnClickListener ( function(){
-      if ((dlg.task.state!=job_code.running) &&
-          (dlg.task.state!=job_code.ending)  &&
-          (dlg.task.state!=job_code.exiting) &&
-          (!dlg.tree.view_only))  {
+      // if ((dlg.task.state!=job_code.running) &&
+      //     (dlg.task.state!=job_code.ending)  &&
+      //     (dlg.task.state!=job_code.exiting) &&
+      //     (!dlg.tree.view_only))  {
+      if ((!dlg.task.isRunning()) && (!dlg.tree.view_only))  {
         dlg.collectTaskData ( true );
         dlg.saveJobData();
-        // dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
-        //   if (rdata.project_missing)  {
-        //     new MessageBoxF ( 'Project not found',
-        //         '<h3>Project "' + dlg.tree.projectData.desc.name +
-        //            '" is not found on server</h3>' +
-        //         'Project "' + dlg.tree.projectData.desc.name +
-        //            '" was shared with you, please check<br>' +
-        //         'whether it was deleted by project owner.',
-        //         'Ok',function(){
-        //             dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
-        //         },false,'msg_error'
-        //     );
-        //   }
-        // });
       }
       dlg.task.onJobDialogClose(dlg,function(close_bool){
         if (close_bool)

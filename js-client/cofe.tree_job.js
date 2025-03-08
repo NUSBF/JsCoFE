@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1621,30 +1621,6 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
   if ((data.meta.state==job_code.running) ||
       ((data.meta.state==job_code.ending) && (!gracefully_bool)))  {
 
-    // new QuestionBox ( msg[0],msg[1],msg[2],function(){
-    //
-    //   // Raise the exiting state here, which will prevent requesting FE with
-    //   // task update if the job dialog is currently opened and gets closed
-    //   // before job actually terminates (see the close_btn listener in JobDialog).
-    //   // This is necessary to enoforce, or this request may overwrite data
-    //   // FE receives back from NC upon job termination.
-    //
-    //   if (gracefully_bool)  data.meta.state = job_code.ending;
-    //                   else  data.meta.state = job_code.exiting;
-    //
-    //   if (data.meta.nc_type=='client')
-    //        localCommand  ( nc_command.stopJob,data,data.meta.title,null );
-    //   else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
-    //
-    //   setTimeout ( function(){
-    //     new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
-    //   },100 );
-    //
-    //   if (callback_func)
-    //     callback_func ( 1 );
-    //
-    // },'Cancel',null,'msg_confirm' );
-
     new QuestionBox ( msg[0],msg[1],[
       { name    : msg[2],
         onclick : function(){
@@ -2006,6 +1982,10 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
         if (('file_mod' in task0) && (task.file_system=='cloud'))
           task.file_mod = task0.file_mod;
       }
+
+      task.job_dialog_data.position = task0.job_dialog_data.position;
+      task.job_dialog_data.width    = task0.job_dialog_data.width;
+      task.job_dialog_data.height   = task0.job_dialog_data.height;
 
       task.customDataClone ( cloneMode,task0 );
       task.project    = this.projectData.desc.name;
