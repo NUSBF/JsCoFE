@@ -24,7 +24,7 @@ class appClient extends client {
     this.addArgInfoCommon();
 
     // set default user
-    this.arg_info.user.def = '@local';
+    this.arg_info.user.def = 'local';
 
     this.addActionMap();
   }
@@ -124,7 +124,7 @@ class appClient extends client {
   async upload(user, source, id) {
     // check username
     if (! tools.validUserName(user)) {
-      return tools.errorMsg(`Invalid user name ${req.params.user}`, 400);
+      return tools.errorMsg(`Invalid user name ${user}`, 400);
     }
 
     let check = tools.validSourceId(source, id);
