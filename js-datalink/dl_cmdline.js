@@ -59,8 +59,8 @@ class appClient extends client {
   }
 
   async waitForCatalogs() {
-    for (const s in this.datalink.ds) {
-      await this.datalink.waitForCatalog(s);
+    for (const ds in this.datalink.ds) {
+      await this.datalink.waitForCatalog(ds);
     }
   }
 
