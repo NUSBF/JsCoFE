@@ -109,7 +109,9 @@ class appClient extends client {
 
     in_stream.on('data', (data) => {
       this.size_uploaded += data.length;
-      this.outputProgress(file);
+      if (this.opts.progress) {
+        this.outputProgress(file);
+      }
     });
 
     try {
@@ -155,7 +157,6 @@ class appClient extends client {
     }
 
     this.datalink.dataComplete(entry);
-    process.stdout.write('\x1b[K');
     return tools.successMsg(`Added files to ${entry.dir}`);
   }
 }
