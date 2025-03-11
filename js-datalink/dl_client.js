@@ -71,9 +71,9 @@ class Client {
         form: 'value',
         help: 'Used for action <search> and <update> for value to search for or set field to'
       },
-      no_progress: {
+      progress: {
         type: 'boolean',
-        help: 'Don\'t output progress during upload'
+        help: 'Output progress during upload'
       }
     });
   }
@@ -434,7 +434,7 @@ class Client {
           in_s.close();
           reject();
         }
-        if (! this.opts.no_progress) {
+        if (this.opts.progress) {
           this.size_uploaded += data.length;
           this.outputProgress(file);
         }
@@ -465,18 +465,13 @@ class Client {
 
   outputProgress(file) {
     let percent = (this.size_uploaded / this.size_total) * 100;
-    this.outputBlankLine();
     let line = `Uploading (${percent.toFixed(2)}%) - `;
-    let width = process.stdout.columns - line.length;
+    let width = process.stderr.columns - line.length;
     if (width < file.length) {
       file = '... ' + file.slice(-width + 4);
     }
     line += file + '\r';
-    process.stdout.write(line);
-  }
-
-  outputBlankLine() {
-    process.stdout.write('\x1b[K');
+    process.stderr.write('\x1b[K' + line);
   }
 
   showHelp() {
@@ -691,10 +686,6 @@ class Client {
   }
 
   displayResult(res) {
-    if (! this.opts.no_progress) {
-      this.outputBlankLine();
-    }
-
     if (! res) {
       return;
     }
