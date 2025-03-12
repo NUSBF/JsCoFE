@@ -67,6 +67,12 @@ class appClient extends client {
   async fetchMultiple(user, results) {
     await super.fetchMultiple(user, results);
 
+    // return if not displaying progress
+    if (! this.opts.progress) {
+      return;
+    }
+
+    // query the status of the data fetches and display progress
     let status_c = 0;
     while (status_c < Object.keys(results).length) {
       let size = 0;
