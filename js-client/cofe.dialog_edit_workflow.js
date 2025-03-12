@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -319,17 +319,8 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
     "restore"  : function(evt,d){ self.onWindowResize(); }
   });
 
-  // this.icon_btn.addOnClickListener ( function(){
-
-  // });
-
   $(this.element).on ( 'dialogresize', function(event,ui){
       self.onWindowResize();
-      // dlg.task.job_dialog_data.width  = dlg.width_px();
-      // if (!__any_mobile_device)  {
-      //   dlg.task.job_dialog_data.height = dlg.height_px();
-      //   dlg.onDlgResize();
-      // }
   });
 
 

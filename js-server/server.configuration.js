@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.02.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1324,6 +1324,7 @@ function checkRemoteJobsServerURL ( url,callback_func )  {
   if (url)  {
     utils.getServerResponse ( url + (url.endsWith('/') ? 'whoareyou' : '/whoareyou'),
       function(err,text){
+        // console.log ( ' >>>>> err=' + err + ' : ' + text)
         if (err)  {
           if (err.message.startsWith('Request timed out'))
                 callback_func ( 'timeout' );

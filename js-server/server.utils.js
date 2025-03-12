@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -938,16 +938,28 @@ function getJobSignalCode_async ( jobDir,callback_func,ntry=20,n=0 )  {
 // necessary if file system has a noticeable latency (e.g., NFS). Time intervals
 // start from 100ms and increase by 25ms on each iteration.
   if (n<=ntry)  {
-    setTimeout ( function(){
-      let signal = readString ( path.join(jobDir,signal_file_name) );
-        if (signal)  {
-          let sigl = signal.split('\n');
-          if (sigl.length>1)
-                callback_func ( parseInt(sigl[sigl.length-1]) );
-          else  callback_func ( 300  );
-        } else
-          getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
-      },n==0 ? 0 : 75 + n*25 );
+    let signal = readString ( path.join(jobDir,signal_file_name) );
+    if (signal)  {
+      let sigl = signal.split('\n');
+      if (sigl.length>1)
+            callback_func ( parseInt(sigl[sigl.length-1]) );
+      else  callback_func ( 300  );
+    } else  {
+      setTimeout ( function(){
+        log.warning ( 2,'attempt #' + (n+1) + ' to read signal file in ' + jobDir );
+        getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+      },100+n*25 );
+    }
+    // setTimeout ( function(){
+    //   let signal = readString ( path.join(jobDir,signal_file_name) );
+    //     if (signal)  {
+    //       let sigl = signal.split('\n');
+    //       if (sigl.length>1)
+    //             callback_func ( parseInt(sigl[sigl.length-1]) );
+    //       else  callback_func ( 300  );
+    //     } else
+    //       getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+    //   },n==0 ? 0 : 75 + n*25 );
   } else
     callback_func ( 301 );
 }
@@ -1246,7 +1258,7 @@ function setGracefulQuit()  {
   // });
 }
 
-function getServerResponse ( url,callback,timeout=500 )  {
+function getServerResponse ( url,callback,timeout=4000 )  {
 // Example usage
 // getResponse('https://jsonplaceholder.typicode.com/todos/1', (err, data) => {
 //   if (err) {
@@ -1257,6 +1269,15 @@ function getServerResponse ( url,callback,timeout=500 )  {
 // });
   const client = url.startsWith('https') ? https : http;
   let data = '';
+  let callback_fired = false;
+
+  // const options = {
+  //   hostname: url,
+  //   path: '/' + command,
+  //   method: 'GET',
+  //   agent: new client.Agent({ keepAlive: false }) // Ensures fresh sockets for each request
+  // };
+  // console.log ( ' >>>>> url='+url + 'command='+command)
   const req = client.get ( url, (res) => {
     // Accumulate data chunks
     res.on('data', (chunk) => {
@@ -1264,19 +1285,40 @@ function getServerResponse ( url,callback,timeout=500 )  {
     });
     // Handle the end of the response
     res.on('end', () => {
-      callback ( null,data );
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( null,data );
+      }
     });
   });
 
   // Handle network errors
   req.on('error', (err) => {
-    callback ( err,data );
+    // req.destroy(new Error('Error')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( err,data );
+    }
   });
   
   // Set timeout
   req.setTimeout ( timeout, () => {
-    req.abort(); // Abort the request on timeout
-    callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+    req.destroy(new Error('Timeout')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+    }
+  });
+
+  req.on('socket', (socket) => {
+    socket.setTimeout ( timeout ); // Apply the timeout to the socket
+    socket.on('timeout', () => {
+      req.destroy(new Error('Socket Timeout')); // Forcefully abort the request
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+      }
+    });
   });
 
 }

@@ -79,7 +79,8 @@ function processPOSTData ( server_request,server_response,process_data_function,
               },server_response );
           } else
             process_data_function ( data_obj,function(response){
-              response.send ( server_response );
+              if (response)
+                response.send ( server_response );
             },server_response );
         } else  {
           cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
