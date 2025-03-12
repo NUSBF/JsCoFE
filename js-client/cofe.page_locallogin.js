@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,21 +41,21 @@ function LocalLoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  let text = '<b>Collaborative Computational Project No.4</b><br>' +
-             '<div style="font-size:80%;padding-bottom:28px;">' +
-             'Science and Technology Facilities Council UK<br>' +
-             'Rutherford Appleton Laboratory<br>' +
-             'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
-             '<a href="https://www.ccp4.ac.uk" target="_blank">' +
-             'https://www.ccp4.ac.uk</a></div>' +
-             '<b style="font-size:250%">' + appName() + '</b><br>' +
-             '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
-             '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
-
   serverCommand ( fe_command.getLocalInfo,{},'Local Login',
     function(response){
       // when success
-      
+    
+      let text = '<b>Collaborative Computational Project No.4</b><br>' +
+                 '<div style="font-size:80%;padding-bottom:28px;">' +
+                 'Science and Technology Facilities Council UK<br>' +
+                 'Rutherford Appleton Laboratory<br>' +
+                 'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
+                 '<a href="https://www.ccp4.ac.uk" target="_blank">' +
+                 'https://www.ccp4.ac.uk</a></div>' +
+                 '<b style="font-size:250%">' + appName() + '</b><br>' +
+                 '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
+                 '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
+    
       let rData = response.data;
       let paths = rData.project_paths.join('<br>');
       let dfree = Math.round ( rData.disk_free/1024.0 );
@@ -119,6 +119,7 @@ function LocalLoginPage ( sceneId )  {
       login_btn.element.focus();
       setDefaultButton ( login_btn,{ element: window } );
 
+      // add tip of the day
       if (!__mobile_device)  {
         // panel.setLabel ( '&nbsp;',row++,0,0,3 );
         row++;
@@ -150,6 +151,23 @@ function LocalLoginPage ( sceneId )  {
           }
         },100);
       
+      }
+
+      if ((__remoteJobServer.url || (__remoteJobServer.status!='nourl')) &&
+          (__remoteJobServer.status!='FE'))  {
+        window.setTimeout ( function(){
+          new MessageBox ( 'Remote job server unreachable',
+            '<div style="width:400px"><h2>Remote job server unreachable</h2>'    +
+            'The remote job server is configured but cannot be reached. '        +
+            'Possible causes include an incorrect remote server URL in the '     + 
+            appName() + ' configuration or an unstable/no internet connection. ' +
+            'As a result, remote job execution will be unavailable in this '     +
+            'session.<p style="font-size:86%"><i>' +
+            'To stop seeing this message and disable remote jobs, deactivate '   +
+            'the remote job option in the ' + appName() + ' configuration '      +
+            'utility.</i></p></div>',
+            'msg_warning');
+        },0);
       }
 
       return true;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1083,6 +1083,8 @@ let cfg = conf.getServerConfig();
 function ncRunJob ( job_token,meta )  {
 // This function must not contain asynchronous code.
 
+  log.standard ( 5,'preparing to run a job, token: ' + job_token );
+
   // acquire the corresponding job entry
   let jobEntry = ncJobRegister.getJobEntry ( job_token );
   jobEntry.feURL     = meta.sender;
@@ -1154,14 +1156,13 @@ function ncRunJob ( job_token,meta )  {
       default       :
       case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
       case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
-      case 'SHELL'  : log.standard ( 5,'starting...' );
-                      command.push ( 'nproc='  + nproc.toString()  );
+      case 'SHELL'  : command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );
                       jobEntry.pid = job.pid;
 
-                      log.standard ( 5,'task ' + task.id + ' started, pid=' +
-                                       jobEntry.pid + ', token:' + job_token );
+                      log.standard ( 6,'task ' + task.id + ' started, pid=' +
+                                       jobEntry.pid + ', token: ' + job_token );
 
                       // make stdout and stderr catchers for debugging purposes
                       let stdout = '';
@@ -1195,13 +1196,13 @@ function ncRunJob ( job_token,meta )  {
                             log.debug ( 105,'[' + comut.padDigits(task.id,4) +
                                             '] stderr=' + stderr );
   
-                          if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
+                          // if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
   //                          if ((code!=0) && (code!=203) && (code!=204))
                             if (code && (code!=203) && (code!=204) && (code!=205))
                               writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                             if (jobEntry.jobStatus!=task_t.job_code.exiting)
                               ncJobFinished ( job_token,code );
-                          }  
+                          // }  
 
                         });
 
@@ -1233,7 +1234,7 @@ function ncRunJob ( job_token,meta )  {
                           if ((w[0]=='Your') && (w[1]=='job'))
                             jobEntry.pid = parseInt(w[2]);
                         }
-                        log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
+                        log.standard ( 7,'task '  + task.id + ' qsubbed, '  +
                                          'name='  + jobName +
                                          ', pid=' + jobEntry.pid +
                                          ', token:' + job_token );
@@ -1300,7 +1301,7 @@ function ncRunJob ( job_token,meta )  {
                           if (comut.isInteger(job_id))
                             jobEntry.pid = job_id;
 
-                          log.standard ( 7,'task '    + task.id + ' submitted, ' +
+                          log.standard ( 8,'task '    + task.id + ' submitted, ' +
                                            'name='    + jobName +
                                            ', pid='   + jobEntry.pid +
                                            ', token:' + job_token );

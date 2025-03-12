@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.02.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -268,7 +268,9 @@ TaskTemplate.prototype.isRemark = function()  {
 TaskTemplate.prototype.isLink = function()  { return false; }
 
 TaskTemplate.prototype.isRunning = function()  {
-  return ((this.state==job_code.running) || (this.state==job_code.exiting));
+  return ((this.state==job_code.running) ||
+          (this.state==job_code.ending)  ||  // graceful ending 
+          (this.state==job_code.exiting));
 }
 
 TaskTemplate.prototype.isComplete = function()  {

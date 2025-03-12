@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1148,9 +1148,11 @@ function ProjectListPage ( sceneId )  {
 
   function loadProjectList()  {
     //  Read list of projects from server
+    document.body.style.cursor = 'wait';
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
       projectList = jQuery.extend ( true, new ProjectList(__login_id),data );
       makeProjectListTable();
+      document.body.style.cursor = 'auto';
     },null,'persist');
   }
 

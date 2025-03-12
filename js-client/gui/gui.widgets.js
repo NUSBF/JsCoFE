@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    24.02.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -841,8 +841,8 @@ Grid.prototype.setImageButton = function ( icon_uri, width, height,
 
 Grid.prototype.setImage = function ( icon_uri, width, height, 
                                      row, col, rowSpan, colSpan ) {
-  let image = new Image(icon_uri, width, height);
-  this.setWidget(image, row, col, rowSpan, colSpan);
+  let image = new Image ( icon_uri, width, height );
+  this.setWidget ( image, row, col, rowSpan, colSpan );
   return image;
 }
 
@@ -1444,8 +1444,9 @@ function ImageButton ( icon_uri, width, height )  {
   Label.call ( this,' ' );
   this.image = new Image ( icon_uri, width, height );
   this.addWidget ( this.image );
-  this.setWidth  ( width  );
-  this.setHeight ( height );
+  this.setWidth  ( width      );
+  this.setHeight ( height     );
+  this.setCursor ( 'pointer'  );
 }
 
 ImageButton.prototype = Object.create(Label.prototype);
