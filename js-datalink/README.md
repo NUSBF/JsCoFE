@@ -87,7 +87,7 @@ An example configuration file is included in the repository `config-dist.json`.
 
 A commandline tool `dl_client.js` is included for communicating with the API. The commandline tool allows calling the API functions detailed below.
 
-The client can be run with `./dl_client.js` or `node dl_client.js`. It has no other 3rd party library dependencies so should work from a vanilla node install.
+The client can be run with `./dl_client.js` or `node dl_client.js`. It has no 3rd party library dependencies so should work from a vanilla node install.
 
 ```
 Usage: dl_client.js [options] <action> -- [...list of files/directories]
@@ -104,7 +104,7 @@ Options:
   --id <id>              id of entries
   --field <field>        Used for actions <search> and <update> to select field to search or update
   --value <value>        Used for action <search> and <update> for value to search for or set field to
-  --no_progress          Don't output progress during upload
+  --progress             Output progress during upload
   -h, --help             display help for command
 ```
 
