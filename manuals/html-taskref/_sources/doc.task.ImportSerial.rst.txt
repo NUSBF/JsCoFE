@@ -1,0 +1,27 @@
+=============
+Import Serial
+=============
+
+This task imports merged data from serial macromolecular crystallography into CCP4 Cloud. Data from CrystFEL (HKL format) are converted to MTZ format, including the necessary specification of space group, unit cell parameters, and wavelength. Symmetry information can be provided manually or extracted from reference files (CrystFEL stream file, CrystFEL cell_explorer cell file, or reference PDB file). Data quality statistics are calculated and reported. 
+
+.. note:: To obtain values of CC1/2 and Rsplit, two half-data-set files must be provided
+
+Example of usage
+----------------
+
+CrystFEL:
+
+* Merged data file (I): data.hkl
+* Merged half data set (I): data.hkl1
+* Merged half data set (I): data.hkl2
+* CrystFEL cell file: cell.cell
+* Space group
+* Wavelength (A)
+* High resolution cutoff (A)
+
+
+Test and example data are available in at https://github.com/MartinMalyMM/import_serial_test_data
+
+
+
+This program has been developed by Martin Malý, University of Southampton, UK.
