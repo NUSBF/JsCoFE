@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.02.25   <--  Date of Last Modification.
+ *    15.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,7 +30,7 @@ const anl     = require('./server.fe.analytics');
 const user    = require('./server.fe.user');
 const rj      = require('./server.fe.run_job');
 const ustats  = require('./server.fe.usagestats')
-// const utils   = require('./server.utils');
+const utils   = require('./server.utils');
 const cache   = require('./server.cache');
 const cmd     = require('../js-common/common.commands');
 const ud      = require('../js-common/common.data_user');
@@ -172,6 +172,7 @@ function getAdminData ( loginData,data,callback_func )  {
 
 }
 
+
 function getAnalytics ( loginData,data )  {
 let uData = user.readUserData ( loginData );
 let rdata = {};
@@ -189,6 +190,46 @@ let rdata = {};
 
 }
 
+
+function getLogFile ( loginData,data,callback_func )  {
+let rdata = null;
+  if (data.log_ref==0)  {
+    callback_func ( 
+      new cmd.Response ( cmd.fe_retcode.ok,'',conf.getFEConfig().getLogFile() ) 
+    );
+  } else if (data.log_ref>0)  {
+    let ncConfig = conf.getNCConfig ( data.log_ref-1 );
+    if (ncConfig)  {
+      request({
+        uri     : cmd.nc_command.getLogFile,
+        baseUrl : ncConfig.externalURL,
+        method  : 'POST',
+        body    : {},
+        json    : true,
+        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized,
+        timeout : 10000
+      },function(error,response,body){
+        if (error)  {
+          callback_func ( 
+            new cmd.Response ( cmd.fe_retcode.ok,'',{ 
+                                ontent: 'Log file was not fetched due to errors' 
+                               }) 
+          );          
+        } else  {
+          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',body.data ) );
+        }
+      });
+    } else
+      rdata = { content : 'Wrong server reference (' + data.log_ref + 
+                          '), probably a bug' };
+
+  } else
+    rdata = { content : 'Wrong server reference (' + data.log_ref + 
+                        '), probably a bug' };
+  if (rdata)
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rdata ) );
+}
+  
 
 function updateAndRestart ( loginData,data )  {
 
@@ -213,4 +254,5 @@ function updateAndRestart ( loginData,data )  {
 module.exports.getNCData        = getNCData;
 module.exports.getAdminData     = getAdminData;
 module.exports.getAnalytics     = getAnalytics;
+module.exports.getLogFile       = getLogFile;
 module.exports.updateAndRestart = updateAndRestart;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    15.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -442,6 +442,16 @@ ServerConfig.prototype.getDataLinkVerifyCert = function()  {
     return this.datalink.verify_cert;
   return true;
 }
+
+
+ServerConfig.prototype.getLogFile = function()  {
+let fpath = path.join(this.storage,'stdout.log');
+let rdata = { content : utils.readString(fpath) };
+  if (!rdata.content)
+    rdata.content = 'Log file is not found (streamed to standard output?)\n';
+  return rdata;
+}  
+  
 
 // ===========================================================================
 // Config service functions

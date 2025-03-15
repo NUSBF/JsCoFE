@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    15.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -271,6 +271,10 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob,srvConfig.state );
             break;
 
+          case cmd.nc_command.getLogFile :
+              pp.processPOSTData ( server_request,server_response,rm.getLogFile,srvConfig.state );
+            break;
+            
           default:
               log.error ( 13,'unknown command "' + command + '"' );
               response = new cmd.Response ( cmd.nc_retcode.unkCommand,
