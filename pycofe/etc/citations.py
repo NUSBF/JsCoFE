@@ -1295,6 +1295,19 @@ citations = {
                          }]
                   },
 
+    'import_serial'  : { 'name'     : 'Import Serial',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Martin Maly, University of Southampton, UK',
+                            'title'   : 'Import Serial',
+                            'journal' : '',
+                            'volume'  : '',
+                            'year'    : '2024',
+                            'pages'   : '',
+                            'doi'     : ''
+                         }]
+                  },
+
     'iris'           : { 'name'     : 'Iris',
                          'category' : 'primary',
                          'refs'     : [{
