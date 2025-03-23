@@ -514,7 +514,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
     return false;
 
-  },null,null,5000);
+  },null,null,60000);
 
 }
 
