@@ -62,7 +62,7 @@ function LogViewerDialog ( log_ref,title )  {
     open      : function ( e,ui ) {
       self.stdoutPanel.setHeight_px ( $(this).height()-100 );
       self.stderrPanel.setHeight_px ( $(this).height()-100 );
-      self.showLog();
+      self.showLogs();
     },
     resize    : function() {
       self.stdoutPanel.setHeight_px ( $(this).height()-100 );
@@ -89,15 +89,24 @@ LogViewerDialog.prototype = Object.create ( Widget.prototype );
 LogViewerDialog.prototype.constructor = LogViewerDialog;
 
 
-LogViewerDialog.prototype.showLog = function()  {
+LogViewerDialog.prototype.setLogs = function ( rdata )  {
+  let scrollPos_stdout = this.stdoutPanel.getScrollPosition();
+  let scrollPos_stderr = this.stderrPanel.getScrollPosition();
+  this.stdoutPanel.setText ( '<pre>' + rdata.stdout + '</pre>' );
+  this.stderrPanel.setText ( '<pre>' + rdata.stderr + '</pre>' );
+  this.stdoutPanel.setScrollPosition ( scrollPos_stdout );
+  this.stdoutPanel.setScrollPosition ( scrollPos_stderr );
+}
+
+
+LogViewerDialog.prototype.showLogs = function()  {
   let self = this;
   if (this.log_ref>=0)  {
     serverRequest ( fe_reqtype.getLogFiles,{
       log_ref : self.log_ref
     },'Log File Viewer',
       function(rdata){
-        self.stdoutPanel.setText ( '<pre>' + rdata.stdout + '</pre>' );
-        self.stderrPanel.setText ( '<pre>' + rdata.stderr + '</pre>' );
+        self.setLogs ( rdata );
       },
       function(){
         self.timer = setTimeout ( function(){
@@ -109,8 +118,7 @@ LogViewerDialog.prototype.showLog = function()  {
     // client NC log
     localCommand ( nc_command.getLogFiles,{},'Log File Viewer',
       function(response){
-        self.stdoutPanel.setText ( '<pre>' + response.data.stdout + '</pre>' );
-        self.stderrPanel.setText ( '<pre>' + response.data.stderr + '</pre>' );
+        self.setLogs ( response.data );
         self.timer = setTimeout ( function(){
           self.showLog();
         },5000);
