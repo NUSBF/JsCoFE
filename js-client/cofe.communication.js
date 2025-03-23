@@ -477,7 +477,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         function_always();
     })
     .fail ( function(xhr,err){
-      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + __check_session_drops );
+      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
+                    __check_session_drops + ' timeout=' + timeout );
       // can be "error" and "timeout"
       if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
         console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
