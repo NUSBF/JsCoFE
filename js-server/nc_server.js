@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -271,8 +271,8 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob,srvConfig.state );
             break;
 
-          case cmd.nc_command.getLogFile :
-              pp.processPOSTData ( server_request,server_response,rm.getLogFile,srvConfig.state );
+          case cmd.nc_command.getLogFiles :
+              pp.processPOSTData ( server_request,server_response,rm.getLogFiles,srvConfig.state );
             break;
             
           default:

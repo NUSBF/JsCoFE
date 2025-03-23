@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -201,10 +201,10 @@ function ncGetCapacity ( server_request,server_response )  {
 }
 
 
-function getLogFile ( post_data_obj,callback_func )  {
-  console.log ( ' >>>>> ' + JSON.stringify(conf.getServerConfig().getLogFile()))
+function getLogFiles ( post_data_obj,callback_func )  {
+  // console.log ( ' >>>>> ' + JSON.stringify(conf.getServerConfig().getLogFiles()))
   callback_func ( 
-    new cmd.Response ( cmd.nc_retcode.ok,'',conf.getServerConfig().getLogFile() )
+    new cmd.Response ( cmd.nc_retcode.ok,'',conf.getServerConfig().getLogFiles() )
   );
 }
 
@@ -216,4 +216,4 @@ module.exports.ncSelectFile     = ncSelectFile;
 module.exports.ncSelectImageDir = ncSelectImageDir;
 module.exports.ncGetInfo        = ncGetInfo;
 module.exports.ncGetCapacity    = ncGetCapacity;
-module.exports.getLogFile       = getLogFile;
+module.exports.getLogFiles      = getLogFiles;

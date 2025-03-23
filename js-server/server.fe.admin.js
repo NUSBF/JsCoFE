@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,17 +191,17 @@ let rdata = {};
 }
 
 
-function getLogFile ( loginData,data,callback_func )  {
+function getLogFiles ( loginData,data,callback_func )  {
 let rdata = null;
   if (data.log_ref==0)  {
     callback_func ( 
-      new cmd.Response ( cmd.fe_retcode.ok,'',conf.getFEConfig().getLogFile() ) 
+      new cmd.Response ( cmd.fe_retcode.ok,'',conf.getFEConfig().getLogFiles() ) 
     );
   } else if (data.log_ref>0)  {
     let ncConfig = conf.getNCConfig ( data.log_ref-1 );
     if (ncConfig)  {
       request({
-        uri     : cmd.nc_command.getLogFile,
+        uri     : cmd.nc_command.getLogFiles,
         baseUrl : ncConfig.externalURL,
         method  : 'POST',
         body    : {},
@@ -254,5 +254,5 @@ function updateAndRestart ( loginData,data )  {
 module.exports.getNCData        = getNCData;
 module.exports.getAdminData     = getAdminData;
 module.exports.getAnalytics     = getAnalytics;
-module.exports.getLogFile       = getLogFile;
+module.exports.getLogFiles      = getLogFiles;
 module.exports.updateAndRestart = updateAndRestart;

@@ -922,11 +922,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       ndata.ccp4_version,app_version,'N/A','running','N/A','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
   this.nodeListTable.addOnDblClickListener ( 1,function(){
-    new LogViewerDialog ( 0,'Front-End Log File' );
-    // new MessageBox ( 'Log file is not available',
-    //     '<div style="width:360px;"><h2>Log file is not available</h2>' +
-    //     'Log file is not available for the Front-End Proxy.</div>',
-    //     'msg_information');
+    new LogViewerDialog ( 0,'Front-End (' + FEname + ') Log Files' );
   });
   row++;
 
@@ -988,25 +984,25 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       let nzp = '' + nzombies;
       if (npulls>0)
         nzp = nzombies + '[' + npulls + ']';
-      this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
+      let ncID = 'NC-' + ncn;
+      this.nodeListTable.setRow ( ncID,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
          startDate,nci.ccp4_version,app_version,fasttrack,state,
          njdone,nci.config.capacity,njobs,nzp],row,(row & 1)==1 );
 
-      (function(self,trow,in_use,ncNo){
+      (function(self,trow,in_use,nc_name,ncNo){
         self.nodeListTable.addOnDblClickListener ( trow,function(){
           if (!in_use)  {
             new MessageBox ( 'NC not in use',
                 '<div style="width:360px;"><h2>Number Cruncher is not in use</h2>' +
-                'No log file is available as the Number Cruncher is not used.' +
+                'Log files are not available as the Number Cruncher is not in use.' +
                 '</div>','msg_information');
             } else  {
-              // alert ( ' row ' + trow);
-              new LogViewerDialog ( ncNo,'Number Cruncher #' + ncNo + 
-                                         ' Log File' );
+              new LogViewerDialog ( ncNo,nc_name + ' Log Files' );
             }
         });
-      }(this,row,nci.config.in_use,i+1))
+      }(this,row,nci.config.in_use,ncID + ' (' + nci.config.name + ')',
+        nci.config.exeType.toUpperCase()=='CLIENT' ? -1 : i+1))
 
       row++;
       ncn++;

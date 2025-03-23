@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -272,8 +272,8 @@ let response = null;
           response = adm.getAnalytics ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.getLogFile :
-         adm.getLogFile ( loginData,data,callback_func );
+    case cmd.fe_reqtype.getLogFiles :
+         adm.getLogFiles ( loginData,data,callback_func );
        break;
 
     default: response = new cmd.Response ( cmd.fe_retcode.wrongRequest,
@@ -292,7 +292,7 @@ let response = null;
       case cmd.fe_reqtype.getUserRation    :
       case cmd.fe_reqtype.wakeZombieJobs   :
       case cmd.fe_reqtype.archiveProject   :
-      case cmd.fe_reqtype.getLogFile       :
+      case cmd.fe_reqtype.getLogFiles      :
             break;
       default : console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }

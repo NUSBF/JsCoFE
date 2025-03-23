@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,32 +33,23 @@ function LogViewerDialog ( log_ref,title )  {
                            //  0: FE 
                            //  1: NC #log_ref
 
+  this.timer = null;
+
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
-  document.body.appendChild ( this.element );
+  document.body.appendChild ( this.element  );
 
-  let grid = new Grid('');
-  this.addWidget ( grid );
-  grid.setLabel ( '<h3>' + title + '</h3>',0,0,1,1 );
-
-  this.logPanel = grid.setPanel ( 1,0,1,1 );
-  this.logPanel.setWidth ( '100%' );
-  $(this.logPanel.element).css({
-    'font-family'      : 'courier',
-    'font-size'        : '14px',
-    'width'            : '100%',
-    'height'           : 'calc(100vh - 100px)',
-    'border'           : '1px solid lightgray',
-    // 'box-shadow'       : '5px 5px 6px #888888',
-    'white-space'      : 'nowrap',
-    'overflow-x'       : 'auto',
-    'overflow-y'       : 'auto',
-    'padding'          : '6px 6px 6px 6px'
-  });
+  // make tabs
+  let tabs = new Tabs();
+  let stdoutTab  = tabs.addTab ( 'Standard log',true  );
+  let stderrTab  = tabs.addTab ( 'Error log'   ,false );
+  this.stdoutPanel = stdoutTab.grid.setLabel  ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.stderrPanel = stderrTab.grid.setLabel  ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.addWidget ( tabs );
 
   this.setScrollable ( 'hidden','hidden' );
 
-  let w = 3*$(window).width()/5;
+  let w = 5*$(window).width()/6;
   let h = 5*$(window).height()/6;
 
   let self = this;
@@ -68,14 +59,18 @@ function LogViewerDialog ( log_ref,title )  {
     width     : w,
     height    : h,
     modal     : false,
-    open      : function (e, ui) {
-      self.logPanel.setHeight_px ( $(this).height()-70 );
-      self.logPanel.setWidth_px  ( $(this).width() -12 );
+    open      : function ( e,ui ) {
+      self.stdoutPanel.setHeight_px ( $(this).height()-100 );
+      self.stderrPanel.setHeight_px ( $(this).height()-100 );
       self.showLog();
     },
-    resize: function() {
-      self.logPanel.setHeight_px ( $(this).height()-70 );
-      self.logPanel.setWidth_px  ( $(this).width() -12 );
+    resize    : function() {
+      self.stdoutPanel.setHeight_px ( $(this).height()-100 );
+      self.stderrPanel.setHeight_px ( $(this).height()-100 );
+    },
+    close     : function ( e,ui ) {
+      if (self.timer)
+        clearTimeout ( self.timer );
     },
     buttons: [{
         id   : 'close_btn' + __id_cnt++,
@@ -89,17 +84,37 @@ function LogViewerDialog ( log_ref,title )  {
 
 }
 
+
 LogViewerDialog.prototype = Object.create ( Widget.prototype );
 LogViewerDialog.prototype.constructor = LogViewerDialog;
 
+
 LogViewerDialog.prototype.showLog = function()  {
   let self = this;
-  serverRequest ( fe_reqtype.getLogFile,{
-    log_ref : self.log_ref
-  },'Log File Viewer',
-    function(rdata){
-      self.logPanel.setText ( '<pre>' + rdata.content + '</pre>' );
-    },
-    null,null
-  );
+  if (this.log_ref>=0)  {
+    serverRequest ( fe_reqtype.getLogFiles,{
+      log_ref : self.log_ref
+    },'Log File Viewer',
+      function(rdata){
+        self.stdoutPanel.setText ( '<pre>' + rdata.stdout + '</pre>' );
+        self.stderrPanel.setText ( '<pre>' + rdata.stderr + '</pre>' );
+      },
+      function(){
+        self.timer = setTimeout ( function(){
+          self.showLog();
+        },5000);
+      },null
+    );
+  } else  {
+    // client NC log
+    localCommand ( nc_command.getLogFiles,{},'Log File Viewer',
+      function(response){
+        self.stdoutPanel.setText ( '<pre>' + response.data.stdout + '</pre>' );
+        self.stderrPanel.setText ( '<pre>' + response.data.stderr + '</pre>' );
+        self.timer = setTimeout ( function(){
+          self.showLog();
+        },5000);
+        return true;
+      });
+  }
 }

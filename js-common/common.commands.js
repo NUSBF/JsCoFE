@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    15.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'; }   // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.006 [15.03.2025]';   // for update
+const jsCoFE_version = '1.8.006 [23.03.2025]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -169,7 +169,7 @@ const fe_reqtype = {
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
   saveMyWorkflows     : '-saveMyWorkflows',   // request to save custom workflow descriptions
-  getLogFile          : '-getLogFile'         // request to get FE or NC log file
+  getLogFiles         : '-getLogFiles'        // request to get FE or NC log file
 };
 
 
@@ -234,7 +234,7 @@ const nc_command = {
   sendJobResults  : '-sendJobResults',  // request to send job results to 3rd party application
   checkJobResults : '-checkJobResults', // request to check job results for a list of job tokens
   getJobResults   : '-getJobResults',   // request to return job results to FE via pull
-  getLogFile      : '-getLogFile'       // request to get NC log file
+  getLogFiles     : '-getLogFiles'      // request to get NC log file
 };
 
 
