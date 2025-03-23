@@ -189,10 +189,28 @@ Table.prototype.setAllRowCSS = function ( css,row,start_col )  {
 }
 
 
-Table.prototype.addSignalHandler = function ( signal,onReceive ) {
+Table.prototype.addSignalHandler = function ( signal,onReceive )  {
   this.element.addEventListener(signal, function (e) {
     onReceive(e.target);
   }, false);
+}
+
+
+Table.prototype.addOnDblClickListener = function ( row,listener_func )  {
+  let tableRow = this.getCell ( row,-1 );
+  tableRow.addEventListener('dblclick', (event) => {
+    event.preventDefault(); // Prevent the default context menu
+    listener_func();
+  });
+}
+
+
+Table.prototype.addOnRightClickListener = function ( row,listener_func )  {
+  let tableRow = this.getCell ( row,-1 );
+  tableRow.addEventListener('contextmenu', (event) => {
+    event.preventDefault(); // Prevent the default context menu
+    listener_func();
+  });
 }
 
 
