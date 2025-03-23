@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -442,6 +442,44 @@ ServerConfig.prototype.getDataLinkVerifyCert = function()  {
     return this.datalink.verify_cert;
   return true;
 }
+
+
+ServerConfig.prototype.getLogFiles = function()  {
+  let stdoutfpath = process.env.pm_out_log_path ||
+                    path.join(this.storage,'stdout.log');
+  let stderrfpath = process.env.pm_err_log_path ||
+                    path.join(this.storage,'stderr.log');
+  
+  // running via pm2 if env PM2_USAGE is set  
+  // env `pm_pid_path` points to the file with the process id in it
+
+  let rdata = { 
+    stdout : utils.readString(stdoutfpath),
+    stderr : utils.readString(stderrfpath) 
+  };
+  if (rdata.stdout===null)
+    rdata.stdout = 'Log file is not found (streamed to standard output?)\n' +
+                   '\n' +
+                   'Log files are sought in locations pointed by environmental '  +
+                   'variables\nenv.pm_out_log_path and env.pm_err_log_path, or, ' +
+                   'if not found, in\nfiles config.storage/stdout.log and ' +
+                   'config.storage/stderr.log';
+  else if (!rdata.stdout.trim())
+    rdata.stdout = '&lt;Empty file&gt;\n';
+  if (rdata.stderr===null)
+    rdata.stderr = 'Log file is not found (streamed to standard output?)\n' +
+                   '\n' +
+                   'Log files are sought in locations pointed by environmental '  +
+                   'variables\nenv.pm_out_log_path and env.pm_err_log_path, or, ' +
+                   'if not found, in\nfiles config.storage/stdout.log and ' +
+                   'config.storage/stderr.log';
+  else if (!rdata.stderr.trim())
+    rdata.stderr = '&lt;Empty file&gt;\n';
+
+  return rdata;
+
+}  
+  
 
 // ===========================================================================
 // Config service functions

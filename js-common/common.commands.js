@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'; }   // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.006 [08.03.2025]';   // for update
+const jsCoFE_version = '1.8.006 [23.03.2025]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -168,7 +168,8 @@ const fe_reqtype = {
   manageDormancy      : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
-  saveMyWorkflows     : '-saveMyWorkflows'    // request to save custom workflow descriptions
+  saveMyWorkflows     : '-saveMyWorkflows',   // request to save custom workflow descriptions
+  getLogFiles         : '-getLogFiles'        // request to get FE or NC log file
 };
 
 
@@ -218,21 +219,22 @@ const fe_retcode = {
 // Commands for NC Server exchange.
 
 const nc_command = {
-  stop            : 'stop',            // quit the server
-  countBrowser    : '-countBrowser',   // request to advance browser start counter
-  runJob          : '-ncRunJob',       // request to upload job data and run the job
-  stopJob         : '-ncStopJob',      // request to stop a running job
-  wakeZombieJobs  : '-wakeZombieJobs', // request to send zombi jobs to FE
-  selectDir       : '-selectDir',      // request to select directory (local service)
-  selectFile      : '-selectFile',     // request to select file (local service)
-  selectImageDir  : '-selectImageDir', // request to select image directory (local service)
-  runRVAPIApp     : '-runRVAPIApp',    // run RVAPI helper application (local service)
-  runClientJob    : '-runClientJob',   // run client job (local service)
-  getNCInfo       : '-getNCInfo',      // get NC config and other info
-  getNCCapacity   : '-getNCCapacity',  // get NC current capacity
-  sendJobResults  : '-sendJobResults', // request to send job results to 3rd party application
+  stop            : 'stop',             // quit the server
+  countBrowser    : '-countBrowser',    // request to advance browser start counter
+  runJob          : '-ncRunJob',        // request to upload job data and run the job
+  stopJob         : '-ncStopJob',       // request to stop a running job
+  wakeZombieJobs  : '-wakeZombieJobs',  // request to send zombi jobs to FE
+  selectDir       : '-selectDir',       // request to select directory (local service)
+  selectFile      : '-selectFile',      // request to select file (local service)
+  selectImageDir  : '-selectImageDir',  // request to select image directory (local service)
+  runRVAPIApp     : '-runRVAPIApp',     // run RVAPI helper application (local service)
+  runClientJob    : '-runClientJob',    // run client job (local service)
+  getNCInfo       : '-getNCInfo',       // get NC config and other info
+  getNCCapacity   : '-getNCCapacity',   // get NC current capacity
+  sendJobResults  : '-sendJobResults',  // request to send job results to 3rd party application
   checkJobResults : '-checkJobResults', // request to check job results for a list of job tokens
-  getJobResults   : '-getJobResults'   // request to return job results to FE via pull
+  getJobResults   : '-getJobResults',   // request to return job results to FE via pull
+  getLogFiles     : '-getLogFiles'      // request to get NC log file
 };
 
 
