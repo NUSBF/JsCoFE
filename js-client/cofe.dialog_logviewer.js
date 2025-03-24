@@ -41,10 +41,10 @@ function LogViewerDialog ( log_ref,title )  {
 
   // make tabs
   let tabs = new Tabs();
-  let stdoutTab  = tabs.addTab ( 'Standard log',true  );
-  let stderrTab  = tabs.addTab ( 'Error log'   ,false );
-  this.stdoutPanel = stdoutTab.grid.setLabel  ( '',0,0,1,1 ).setHeight_px ( 32 );
-  this.stderrPanel = stderrTab.grid.setLabel  ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.stdoutTab   = tabs.addTab ( 'Standard log',true  );
+  this.stderrTab   = tabs.addTab ( 'Error log'   ,false );
+  this.stdoutPanel = this.stdoutTab.grid.setLabel ( '',0,0,1,1 ); //.setHeight_px ( 32 );
+  this.stderrPanel = this.stderrTab.grid.setLabel ( '',0,0,1,1 ); //.setHeight_px ( 32 );
   this.addWidget ( tabs );
 
   this.setScrollable ( 'hidden','hidden' );
@@ -90,12 +90,22 @@ LogViewerDialog.prototype.constructor = LogViewerDialog;
 
 
 LogViewerDialog.prototype.setLogs = function ( rdata )  {
-  let scrollPos_stdout = this.stdoutPanel.getScrollPosition();
-  let scrollPos_stderr = this.stderrPanel.getScrollPosition();
+  let scrollPos_stdout = this.stdoutTab.getScrollPosition();
+  let scrollPos_stderr = this.stderrTab.getScrollPosition();
   this.stdoutPanel.setText ( '<pre>' + rdata.stdout + '</pre>' );
   this.stderrPanel.setText ( '<pre>' + rdata.stderr + '</pre>' );
-  this.stdoutPanel.setScrollPosition ( scrollPos_stdout );
-  this.stdoutPanel.setScrollPosition ( scrollPos_stderr );
+  if (scrollPos_stdout.top+scrollPos_stdout.clientHeight>scrollPos_stdout.height-6) {
+    // keep scrolled down
+    let sc = this.stdoutTab.getScrollPosition();
+    scrollPos_stdout.top = sc.height - sc.clientHeight;
+  }
+  if (scrollPos_stderr.top+scrollPos_stderr.clientHeight>scrollPos_stderr.height-6) {
+    // keep scrolled down
+    let sc = this.stderrTab.getScrollPosition();
+    scrollPos_stderr.top = sc.height - sc.clientHeight;
+  }
+  this.stdoutTab.setScrollPosition ( scrollPos_stdout );
+  this.stderrTab.setScrollPosition ( scrollPos_stderr );  
 }
 
 
@@ -110,7 +120,7 @@ LogViewerDialog.prototype.showLogs = function()  {
       },
       function(){
         self.timer = setTimeout ( function(){
-          self.showLog();
+          self.showLogs();
         },5000);
       },null
     );
