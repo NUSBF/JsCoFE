@@ -86,6 +86,12 @@ function startSession ( sceneId,dev_switch )  {
 
         document.title = appName() + ' Local';
 
+        if (__integration=="project")  {
+          const params = new URLSearchParams(window.location.search);
+          const value = params.get('prj');
+          alert ( ' >> prj=' + value);
+        }
+
         if (__title_page)
               makeLocalLoginPage ( sceneId );
         else  login ( '**' + __local_user_id + '**','',sceneId,0 );

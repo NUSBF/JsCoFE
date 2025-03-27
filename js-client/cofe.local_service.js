@@ -108,6 +108,7 @@ function checkLocalService ( callback_func )  {
         __auth_software   = rData.auth_software;
         __local_setup     = rData.localSetup;
         __title_page      = rData.titlePage;
+        __integration     = rData.integration;
         __is_archive      = rData.isArchive;
         __regMode         = rData.regMode;
         __setup_desc      = rData.setup_desc;
