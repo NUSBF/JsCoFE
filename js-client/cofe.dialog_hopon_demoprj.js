@@ -33,11 +33,11 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
   this.element.setAttribute ( 'title','Proceed to Demo Project' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  let grid = new Grid('');
   this.addWidget ( grid );
   grid.setLabel ( '<h3>Proceed to Demo Project</h3>',0,0,1,1 );
 
-  var msgLabel = new Label ( 'Project "' + __url_parameters.project +
+  let msgLabel = new Label ( 'Project "' + __url_parameters.project +
                              '" is being prepared, please wait ...' );
   grid.setWidget ( msgLabel, 1,0,1,1 );
 
@@ -64,7 +64,7 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
     ]
   });
 
-  var dlg = this;
+  let dlg = this;
   $(dlg.element).on( "dialogclose",function(event,ui){
     serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
                     null,function(){
@@ -81,7 +81,7 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
                       'duplicate'  : true
                   },'Demo Project Loading',function(rdata){  // ok
 
-    var progressBar = new ProgressBar ( 0 );
+    let progressBar = new ProgressBar ( 0 );
     grid.setWidget ( progressBar, 2,0,1,1 );
 
     function checkReady() {
