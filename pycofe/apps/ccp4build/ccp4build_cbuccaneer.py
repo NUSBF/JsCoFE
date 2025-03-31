@@ -176,11 +176,11 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                 for chain in model:
                     for res in chain:
                         if not str(res.seqid)[-1].isdigit():
-                            badlist.append ( [str(model.num),chain.name,str(res.seqid),res.name ] )
+                            badlist.append ( [model,chain.name,str(res.seqid),res.name ] )
                             prev_res = chain.previous_residue ( res )
                             if prev_res:
                                 if str(prev_res.seqid)[-1].isdigit():
-                                    badlist.append ( [str(model.num),chain.name,str(prev_res.seqid),prev_res.name ] )
+                                    badlist.append ( [model,chain.name,str(prev_res.seqid),prev_res.name ] )
 
             if len(badlist)>0:
                 f = open ( stdout_fpath,"a" )
@@ -189,7 +189,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                     " Residues removed from built model\n\n" )
                 for i in range(len(badlist)):
                     item  = badlist[i]
-                    chain = st[item[0]][item[1]]
+                    chain = item[0][item[1]]
                     res   = chain[item[2]][item[3]]
                     f.write ( " {0:3d}  ".format(i+1) + item[1] +\
                                         "/" + str(item[2]) + "(" + item[3] + ")\n" )

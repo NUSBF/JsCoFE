@@ -481,6 +481,7 @@ class CCP4Build(basic.TaskDriver):
                     revisions .append ( rev )
 
                 self.flush()
+                self.rvrow += 7
 
                 verdict_ccp4build.putVerdictWidget ( self,meta )
 
