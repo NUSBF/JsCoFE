@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.02.25   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -476,6 +476,8 @@ def put_molprobity_section ( body,revision ):
                             meta["rms_angles"] = float(lst[-1])
                         elif lst[0]=="MolProbity":
                             meta["molp_score"] = float(lst[3])
+                            if not "refmac" in body.generic_parser_summary:
+                                body.generic_parser_summary["refmac"] = {}
                             body.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
 
     molprob_out = "molprobity.out"
