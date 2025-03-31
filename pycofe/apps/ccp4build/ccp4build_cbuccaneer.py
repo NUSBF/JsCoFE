@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    23.03.23   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build CBuccaneer class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2025
 #
 # ============================================================================
 #
@@ -178,11 +176,11 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                 for chain in model:
                     for res in chain:
                         if not str(res.seqid)[-1].isdigit():
-                            badlist.append ( [model.name,chain.name,str(res.seqid),res.name ] )
+                            badlist.append ( [str(model.num),chain.name,str(res.seqid),res.name ] )
                             prev_res = chain.previous_residue ( res )
                             if prev_res:
                                 if str(prev_res.seqid)[-1].isdigit():
-                                    badlist.append ( [model.name,chain.name,str(prev_res.seqid),prev_res.name ] )
+                                    badlist.append ( [str(model.num),chain.name,str(prev_res.seqid),prev_res.name ] )
 
             if len(badlist)>0:
                 f = open ( stdout_fpath,"a" )
@@ -204,7 +202,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                     for residue in chain:
                         if residue.name=="UNK":
                             residue.name = "ALA"
-                            unklist.append ( [model.name,chain.name,str(residue.seqid),residue.name] )
+                            unklist.append ( [str(model.num),chain.name,str(residue.seqid),residue.name] )
             st.remove_empty_chains()
             st.write_pdb ( cbuccaneer_pdbout )
 
