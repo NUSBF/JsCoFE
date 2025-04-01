@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    01.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1169,7 +1169,7 @@ function getRemoteFEStatusMessage()  {
         msg = 'The connection to the remote server is not configured. ' +
               'Please set up the remote server URL using the ' + appName() +
               ' configuration utility and enter your credentials (login ' +
-              'name and CloudRun ID) in the Settings.'; 
+              'name and password) in the Settings.'; 
       break;
     case remote_jobs_server_code.not_accessible :
         msg = 'The remote server is not accessible. This could be due to ' +
@@ -1179,11 +1179,11 @@ function getRemoteFEStatusMessage()  {
       break;
     case remote_jobs_server_code.not_connected  :
         msg = 'To run jobs on the remote server, please enter your user ' +
-              'credentials (login name and CloudRun ID) in the Settings.';
+              'credentials (login name and password) in the Settings.';
       break;
     case remote_jobs_server_code.not_responding :
         msg = 'The remote server is not connected, likely due to incorrect ' +
-              ' or no user credentials (login name or CloudRun ID) ' +
+              ' or no user credentials (login name or password) ' +
               'specified in the Settings.';
         break;
     default : ;
