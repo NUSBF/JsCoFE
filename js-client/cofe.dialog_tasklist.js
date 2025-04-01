@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.25   <--  Date of Last Modification.
+ *    01.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -168,31 +168,6 @@ let remote  = 0;
     dockMenu.addItem('Run task remotely',image_path('remote_on'))
             .addOnClickListener(function(){
       let msg = getRemoteFEStatusMessage();
-      // let msg = '';
-      // switch (getRemoteFEStatus())  {
-      //   case remote_jobs_server_code.not_configured :
-      //       msg = 'The connection to the remote server is not configured. ' +
-      //             'Please set up the remote server URL using the ' + appName() +
-      //             ' configuration utility and enter your credentials (login ' +
-      //             'name and CloudRun ID) in the Settings.'; 
-      //     break;
-      //   case remote_jobs_server_code.not_accessible :
-      //       msg = 'The remote server is not accessible. This could be due to ' +
-      //             'an incorrect server URL (please configure it using the ' +
-      //             appName() + ' configuration utility) or issues with your ' +
-      //             'internet connection.';
-      //     break;
-      //   case remote_jobs_server_code.not_connected  :
-      //       msg = 'To run jobs on the remote server, please enter your user ' +
-      //             'credentials (login name and CloudRun ID) in the Settings.';
-      //     break;
-      //   case remote_jobs_server_code.not_responding :
-      //       msg = 'The remote server is not connected, likely due to incorrect ' +
-      //             ' or no user credentials (login name or CloudRun ID) ' +
-      //             'specified in the Settings.';
-      //       break;
-      //   default : ;
-      // }
       if (!msg)  {
         let rect = dockMenu.button.getBoundingClientRect();
         self.saveDialogState();
