@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    27.11.23   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2025
 #
 # ============================================================================
 #
@@ -135,7 +135,7 @@ def run ( body,ligand_libraries=[] ):  # body is reference to the main Import cl
                     # Register output data. This moves needful files into output directory
                     # and puts the corresponding metadata into output databox
 
-                    ligand = body.registerLigand ( fileXYZ,fileCIF )
+                    ligand = body.registerLigand ( fileXYZ,None,fileCIF )
 
                     if ligand:
 

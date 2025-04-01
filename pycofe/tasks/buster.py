@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.05.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2025
 #
 # ============================================================================
 #
@@ -507,10 +507,10 @@ class Buster(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
+                    qualrep.quality_report ( self,revision,xyzin )
                 except:
-                    self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0
+                    self.stderr ( " *** validation tools failure" )
+                    self.rvrow = rvrow0 + 6
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
@@ -530,6 +530,7 @@ class Buster(basic.TaskDriver):
                         "Rfactor"  : self.generic_parser_summary["buster"]["R_factor"],
                         "Rfree"    : self.generic_parser_summary["buster"]["R_free"]
                     }, log=self.file_stderr)
+
 
         # remove this because it contains soft links not good for copying
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buster Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2025
  *
  *  =================================================================
  *
@@ -230,6 +230,7 @@ else    registerClass ( 'TaskBuster',TaskBuster,TaskTemplate.prototype );
 
 TaskBuster.prototype.icon           = function()  { return 'task_buster'; }
 TaskBuster.prototype.clipboard_name = function()  { return '"Buster"';    }
+TaskBuster.prototype.canRunRemotely = function()  { return true;          }
 
 // TaskBuster.prototype.cleanJobDir    = function ( jobDir )  {}
 

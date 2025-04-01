@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Desktop title page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2024
+ *  (C) E. Krissinel, A. Lebedev 2024-2025
  *
  *  =================================================================
  *
@@ -41,21 +41,21 @@ function LocalLoginPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  let text = '<b>Collaborative Computational Project No.4</b><br>' +
-             '<div style="font-size:80%;padding-bottom:28px;">' +
-             'Science and Technology Facilities Council UK<br>' +
-             'Rutherford Appleton Laboratory<br>' +
-             'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
-             '<a href="https://www.ccp4.ac.uk" target="_blank">' +
-             'https://www.ccp4.ac.uk</a></div>' +
-             '<b style="font-size:250%">' + appName() + '</b><br>' +
-             '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
-             '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
-
   serverCommand ( fe_command.getLocalInfo,{},'Local Login',
     function(response){
       // when success
-      
+    
+      let text = '<b>Collaborative Computational Project No.4</b><br>' +
+                 '<div style="font-size:80%;padding-bottom:28px;">' +
+                 'Science and Technology Facilities Council UK<br>' +
+                 'Rutherford Appleton Laboratory<br>' +
+                 'Didcot, Oxon, OX1 0FA, United Kingdom<br>' +
+                 '<a href="https://www.ccp4.ac.uk" target="_blank">' +
+                 'https://www.ccp4.ac.uk</a></div>' +
+                 '<b style="font-size:250%">' + appName() + '</b><br>' +
+                 '<b style="font-size:150%"><i>Local Setup</i></b><p>' +
+                 '<ul style="padding:16px;"><li style="padding-bottom:8px;">';
+    
       let rData = response.data;
       let paths = rData.project_paths.join('<br>');
       let dfree = Math.round ( rData.disk_free/1024.0 );
@@ -77,9 +77,16 @@ function LocalLoginPage ( sceneId )  {
 
       let row = 0;
 
-      let selected_tasks = '';
-      if (__local_setup==1)
-        selected_tasks = ' selected tasks and';
+      let exceptions  = 'except for cases involving third-party web services';
+      let remote_jobs = '';
+      if (__remoteJobServer.status=='FE')  {
+        exceptions += ' and jobs designated for remote execution';
+        remote_jobs = '</li><li style="padding-bottom:8px;">' +
+                      'Remote job execution server:<br>' +
+                      '<span style="font-size:85%;font-family:courier;">' + 
+                      __remoteJobServer.url + '</span>';
+      }
+
       panel.setLabel ( text +
         'Projects and data stored on your machine:<br>' +
         // '<i style="font-size:85%">path(s): </i>' +
@@ -89,8 +96,8 @@ function LocalLoginPage ( sceneId )  {
         '<i style="font-size:85%">(use project export/import for manual syncing)</i>' +
         '</li><li style="padding-bottom:8px;">' +
         'Jobs run on your machine<br>' +
-        '<i style="font-size:85%">(except' + 
-        selected_tasks + ' when 3rd party web-services are used)</i>' +
+        '<i style="font-size:85%">(' + exceptions + ')</i>' +
+        remote_jobs +
         '</li><li>' +
         'You have ' + dfree + 'GB free disk space & ' + rData.cpus.length + 
         ' cores @ ' + speed + ' GHz' +
@@ -112,6 +119,7 @@ function LocalLoginPage ( sceneId )  {
       login_btn.element.focus();
       setDefaultButton ( login_btn,{ element: window } );
 
+      // add tip of the day
       if (!__mobile_device)  {
         // panel.setLabel ( '&nbsp;',row++,0,0,3 );
         row++;
@@ -128,11 +136,11 @@ function LocalLoginPage ( sceneId )  {
             if ('tipNo' in __tips)  tipNo = __tips.tipNo;
                               else  tipNo = round(Date.now()/5000,0);
             tipNo = tipNo % __tips.tips.length;
-            let tipLink = '<a href="javascript:' +
+            let tipLink = '<a href="javascript:'  +
                               'launchHelpBox1(\'' + __tips.tips[tipNo].title + '\',' +
-                                            '\'' + __tips.tips[tipNo].doc   + '/'   +
-                                                   __tips.tips[tipNo].link  + '\',' +
-                                            'null,10);">';
+                                             '\'' + __tips.tips[tipNo].doc   + '/'   +
+                                                    __tips.tips[tipNo].link  + '\',' +
+                                             'null,10);">';
             tip_lbl.setText (
               '<img src="' + image_path('tip') +
               '" style="width:20px;height:20px;vertical-align:bottom;"/>' +
@@ -143,6 +151,23 @@ function LocalLoginPage ( sceneId )  {
           }
         },100);
       
+      }
+
+      if ((__remoteJobServer.url || (__remoteJobServer.status!='nourl')) &&
+          (__remoteJobServer.status!='FE'))  {
+        window.setTimeout ( function(){
+          new MessageBox ( 'Remote job server unreachable',
+            '<div style="width:400px"><h2>Remote job server unreachable</h2>'    +
+            'The remote job server is configured but cannot be reached. '        +
+            'Possible causes include an incorrect remote server URL in the '     + 
+            appName() + ' configuration or an unstable/no internet connection. ' +
+            'As a result, remote job execution will be unavailable in this '     +
+            'session.<p style="font-size:86%"><i>' +
+            'To stop seeing this message and disable remote jobs, deactivate '   +
+            'the remote job option in the ' + appName() + ' configuration '      +
+            'utility.</i></p></div>',
+            'msg_warning');
+        },0);
       }
 
       return true;

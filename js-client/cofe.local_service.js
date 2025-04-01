@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.24   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Functions for communication with local (on-client)
  *       ~~~~~~~~~  number cruncher
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -113,6 +113,7 @@ function checkLocalService ( callback_func )  {
         __setup_desc      = rData.setup_desc;
         __ccp4_version    = rData.ccp4_version;
         __maintainerEmail = rData.maintainerEmail;
+        __remoteJobServer = rData.remoteJobServer;
         __check_session_period = rData.check_session_period;
         if (rData.localuser)  {
           __local_user    = true;
@@ -142,8 +143,20 @@ function checkLocalService ( callback_func )  {
         callback_func ( 1 );
       }
       return true;
-  //    alert ( JSON.stringify(response) );
-    },null,null);
+    },null,function(){
+      // callback_func ( 1 );
+      // remove loader spinner
+      $(document.body).empty();
+      new QuestionBox ( 'Server does not respond',
+        '<div style="width:440px"><h2>Server does not respond</h2>'         +
+        'The ' + appName() + ' server is not responding. Possible causes '  +
+        'include server misconfiguration, a poor internet connection, or '  +
+        'the server being down. If the issue persists, contact the server ' +
+        'administrator.<p>' +
+        'If you encounter this message while launching ' + appName() + 
+        ' Local, please report it to CCP4 as a bug.',
+        [],'msg_stop',true,true );
+    });
   }
 
   let n = window.location.search.indexOf ( 'lsp=' );

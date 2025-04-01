@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    07.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CombStructure Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2025
  *
  *  =================================================================
  *
@@ -290,6 +290,7 @@ else    registerClass ( 'TaskCombStructure',TaskCombStructure,TaskTemplate.proto
 
 TaskCombStructure.prototype.icon           = function()  { return 'task_combstructure'; }
 TaskCombStructure.prototype.clipboard_name = function()  { return '"Comb Structure"';   }
+TaskCombStructure.prototype.canRunRemotely = function()  { return true;                 }
 
 TaskCombStructure.prototype.desc_title     = function()  {
   // this appears under task title in the task list

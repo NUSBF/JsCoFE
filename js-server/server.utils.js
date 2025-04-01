@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.01.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,53 +13,54 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *        function configureCache   ( ncache )
- *        function fileExists       ( fpath )
- *        function isSymbolicLink   ( fpath )
- *        function dirExists        ( fpath )
- *        function fileSize         ( fpath )
- *        function removeFile       ( fpath ) 
- *        function readString       ( fpath )  
- *        function makeSymLink      ( pathToTarget,pathToOrigin )  
- *        function readObject       ( fpath )  
- *        function readClass        ( fpath )
- *        function writeString      ( fpath,data_string )  
- *        function appendString     ( fpath,data_string )  
- *        function writeObject      ( fpath,dataObject )  
- *        function copyFile         ( old_path,new_path )  
- *        function moveFile         ( old_path,new_path )  
- *        function copyDirAsync     ( old_path,new_path,overwrite_bool,
- *                                    callback_func )  
- *        function copyDirSync      ( source,destination )
- *        function mkDir_check      ( dirPath )  
- *        function mkDir_anchor     ( dirPath )  
- *        function mkPath           ( dirPath )  
- *        function removePathAsync  ( dir_path )  
- *        function removePath       ( dir_path )  
- *        function moveDir          ( old_path,new_path,overwrite_bool )  
- *        function moveDirAsync     ( old_path,new_path,overwrite_bool,
- *                                    callback_func )  
- *        function cleanDir         ( dir_path ) 
- *        function cleanDirExt      ( dir_path,fext )  
- *        function removeSymLinks   ( dir_path )  
- *        function getDirectorySize ( dir_path )  
- *        function searchTree       ( dir_path,filename,matchKey ) 
- *        function removeFiles      ( dir_path,extList ) 
- *        function killProcess      ( pid )  
+ *        function configureCache    ( ncache )
+ *        function fileExists        ( fpath )
+ *        function isSymbolicLink    ( fpath )
+ *        function dirExists         ( fpath )
+ *        function fileSize          ( fpath )
+ *        function removeFile        ( fpath ) 
+ *        function readString        ( fpath )  
+ *        function makeSymLink       ( pathToTarget,pathToOrigin )  
+ *        function readObject        ( fpath )  
+ *        function readClass         ( fpath )
+ *        function writeString       ( fpath,data_string )  
+ *        function appendString      ( fpath,data_string )  
+ *        function writeObject       ( fpath,dataObject )  
+ *        function copyFile          ( old_path,new_path )  
+ *        function moveFile          ( old_path,new_path )  
+ *        function copyDirAsync      ( old_path,new_path,overwrite_bool,
+ *                                     callback_func )  
+ *        function copyDirSync       ( source,destination )
+ *        function mkDir_check       ( dirPath )  
+ *        function mkDir_anchor      ( dirPath )  
+ *        function mkPath            ( dirPath )  
+ *        function removePathAsync   ( dir_path )  
+ *        function removePath        ( dir_path )  
+ *        function moveDir           ( old_path,new_path,overwrite_bool )  
+ *        function moveDirAsync      ( old_path,new_path,overwrite_bool,
+ *                                     callback_func )  
+ *        function cleanDir          ( dir_path ) 
+ *        function cleanDirExt       ( dir_path,fext )  
+ *        function removeSymLinks    ( dir_path )  
+ *        function getDirectorySize  ( dir_path )  
+ *        function searchTree        ( dir_path,filename,matchKey ) 
+ *        function removeFiles       ( dir_path,extList ) 
+ *        function killProcess       ( pid )  
  *        function writeJobReportMessage ( jobDirPath, message, updating_bool )  
- *        function jobSignalExists  ( jobDir ) 
- *        function removeJobSignal  ( jobDir ) 
- *        function writeJobSignal   ( jobDir,signal_name,signal_message,signal_code )  
- *        function getJobSignalCode ( jobDir )  
- *        function clearRVAPIreport ( jobDirPath,taskFileName )  
- *        function getMIMEType      ( path )  
- *        function capData          ( data,n )  
- *        function send_file        ( fpath,server_response,mimeType,
- *                                    deleteOnDone,capSize,persistance,
- *                                    nofile_callback,onDone_callback=null )  
- *        function receiveRequest   ( server_request,onFinish_func )
- *        function spawn            ( exeName,args,options )  
- *        function padDigits        ( number,digits ) 
+ *        function jobSignalExists   ( jobDir ) 
+ *        function removeJobSignal   ( jobDir ) 
+ *        function writeJobSignal    ( jobDir,signal_name,signal_message,signal_code )  
+ *        function getJobSignalCode  ( jobDir )  
+ *        function clearRVAPIreport  ( jobDirPath,taskFileName )  
+ *        function getMIMEType       ( path )  
+ *        function capData           ( data,n )  
+ *        function send_file         ( fpath,server_response,mimeType,
+ *                                     deleteOnDone,capSize,persistance,
+ *                                     nofile_callback,onDone_callback=null )  
+ *        function receiveRequest    ( server_request,onFinish_func )
+ *        function spawn             ( exeName,args,options )  
+ *        function padDigits         ( number,digits ) 
+ *        function getServerResponse ( url,callback )
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
@@ -73,6 +74,8 @@ const fs            = require('fs-extra');
 const path          = require('path');
 const child_process = require('child_process');
 const formidable    = require('formidable');
+const http          = require('http');
+const https         = require('https');
 
 const class_map     = require('./server.class_map');
 const task_t        = require('../js-common/tasks/common.tasks.template');
@@ -935,16 +938,28 @@ function getJobSignalCode_async ( jobDir,callback_func,ntry=20,n=0 )  {
 // necessary if file system has a noticeable latency (e.g., NFS). Time intervals
 // start from 100ms and increase by 25ms on each iteration.
   if (n<=ntry)  {
-    setTimeout ( function(){
-      let signal = readString ( path.join(jobDir,signal_file_name) );
-        if (signal)  {
-          let sigl = signal.split('\n');
-          if (sigl.length>1)
-                callback_func ( parseInt(sigl[sigl.length-1]) );
-          else  callback_func ( 300  );
-        } else
-          getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
-      },n==0 ? 0 : 75 + n*25 );
+    let signal = readString ( path.join(jobDir,signal_file_name) );
+    if (signal)  {
+      let sigl = signal.split('\n');
+      if (sigl.length>1)
+            callback_func ( parseInt(sigl[sigl.length-1]) );
+      else  callback_func ( 300  );
+    } else  {
+      setTimeout ( function(){
+        log.warning ( 2,'attempt #' + (n+1) + ' to read signal file in ' + jobDir );
+        getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+      },100+n*25 );
+    }
+    // setTimeout ( function(){
+    //   let signal = readString ( path.join(jobDir,signal_file_name) );
+    //     if (signal)  {
+    //       let sigl = signal.split('\n');
+    //       if (sigl.length>1)
+    //             callback_func ( parseInt(sigl[sigl.length-1]) );
+    //       else  callback_func ( 300  );
+    //     } else
+    //       getJobSignalCode_async ( jobDir,callback_func,ntry,n+1 );
+    //   },n==0 ? 0 : 75 + n*25 );
   } else
     callback_func ( 301 );
 }
@@ -1243,6 +1258,72 @@ function setGracefulQuit()  {
   // });
 }
 
+function getServerResponse ( url,callback,timeout=4000 )  {
+// Example usage
+// getResponse('https://jsonplaceholder.typicode.com/todos/1', (err, data) => {
+//   if (err) {
+//     console.error('Error:', err.message);
+//   } else {
+//     console.log('Response:', data);
+//   }
+// });
+  const client = url.startsWith('https') ? https : http;
+  let data = '';
+  let callback_fired = false;
+
+  // const options = {
+  //   hostname: url,
+  //   path: '/' + command,
+  //   method: 'GET',
+  //   agent: new client.Agent({ keepAlive: false }) // Ensures fresh sockets for each request
+  // };
+  // console.log ( ' >>>>> url='+url + 'command='+command)
+  const req = client.get ( url, (res) => {
+    // Accumulate data chunks
+    res.on('data', (chunk) => {
+      data += chunk;
+    });
+    // Handle the end of the response
+    res.on('end', () => {
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( null,data );
+      }
+    });
+  });
+
+  // Handle network errors
+  req.on('error', (err) => {
+    // req.destroy(new Error('Error')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( err,data );
+    }
+  });
+  
+  // Set timeout
+  req.setTimeout ( timeout, () => {
+    req.destroy(new Error('Timeout')); // Abort the request on timeout
+    if (!callback_fired)  {
+      callback_fired = true;
+      callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+    }
+  });
+
+  req.on('socket', (socket) => {
+    socket.setTimeout ( timeout ); // Apply the timeout to the socket
+    socket.on('timeout', () => {
+      req.destroy(new Error('Socket Timeout')); // Forcefully abort the request
+      if (!callback_fired)  {
+        callback_fired = true;
+        callback ( new Error(`Request timed out after ${timeout} ms`),'' );
+      }
+    });
+  });
+
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.configureCache         = configureCache;
@@ -1293,3 +1374,4 @@ module.exports.killProcess            = killProcess;
 module.exports.spawn                  = spawn;
 module.exports.padDigits              = padDigits;
 module.exports.setGracefulQuit        = setGracefulQuit;
+module.exports.getServerResponse      = getServerResponse;

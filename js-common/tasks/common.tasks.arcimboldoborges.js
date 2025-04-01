@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.24   <--  Date of Last Modification.
+ *    16.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Arcimboldo-Borges Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2025
  *
  *  =================================================================
  *
@@ -156,6 +156,7 @@ else    registerClass ( 'TaskArcimboldoBorges',TaskArcimboldoBorges,TaskTemplate
 
 TaskArcimboldoBorges.prototype.icon           = function()  { return 'task_arcimboldo';     }
 TaskArcimboldoBorges.prototype.clipboard_name = function()  { return '"Arcimboldo-Borges"'; }
+TaskArcimboldoBorges.prototype.canRunRemotely = function()  { return true;                  }
 
 //TaskArcimboldoBorges.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 

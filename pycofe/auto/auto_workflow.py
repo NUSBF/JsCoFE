@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    14.08.24   <--  Date of Last Modification.
+#    14.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC CUSTOM WORKFLOW FRAMEWORK
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023-2024
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023-2025
 #
 # ============================================================================
 #
@@ -415,7 +415,7 @@ def nextTask ( body,data,log=None ):
                                     parallel = max ( 1,parallel )
                                 elif words[1].upper()=="OFF":
                                     if parallel>1:  # some tasks have been formed
-                                        auto_api2.writeAutoMeta()
+                                        auto_api2.writeAutoMeta ( body )
                                         return "ok"
                                     parallel = 0  # no tasks formed, just reset
                                 else:
@@ -682,7 +682,7 @@ def nextTask ( body,data,log=None ):
                 if parallel>0:
                     parallel += 1
                 else:
-                    auto_api2.writeAutoMeta()
+                    auto_api2.writeAutoMeta ( body )
                     return "ok"
 
         report ( body, "Workflow finished","<i>End of script</i>",

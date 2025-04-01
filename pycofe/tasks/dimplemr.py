@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.24   <--  Date of Last Modification.
+#    25.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2025
 #
 # ============================================================================
 #
@@ -274,19 +274,22 @@ class DimpleMR(basic.TaskDriver):
 
             rvrow0 = self.rvrow
             try:
-                meta = qualrep.quality_report ( self,revision )
+                meta = qualrep.quality_report ( self,revision,
+                                          xyz.getXYZFilePath(self.inputDir()) )
             except:
                 meta = None
-                self.stderr ( " *** molprobity failure" )
-                self.rvrow = rvrow0
+                self.stderr ( " *** validation tools failure" )
+                self.rvrow = rvrow0 + 6
 
-            if meta:
+            if meta and meta["meta_complete"]:
+
                 verdict_meta = {
                     "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
                     "params"     : None, # will be read from log file
                     "molprobity" : meta,
                     "xyzmeta"    : structure.xyzmeta
                 }
+
                 suggestedParameters = verdict_refmac.putVerdictWidget ( 
                                             self,verdict_meta,self.verdict_row,
                                             refmac_log=self.refmac_log )
@@ -309,12 +312,13 @@ class DimpleMR(basic.TaskDriver):
                         # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 else:  # pre-coded workflow framework
-                    auto.makeNextTask(self, {
+                    auto.makeNextTask ( self, {
                         "revision" : revision,
                         "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters": suggestedParameters
                     }, log=self.file_stderr)
+
 
         # close execution logs and quit
         self.success ( have_results )

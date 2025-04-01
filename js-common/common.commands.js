@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    28.01.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -23,10 +23,10 @@
 // ============================================================================
 // name and version tag
 
-function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
+function appName()  { return 'CCP4 Cloud'; }   // application name for reporting
 
 // const jsCoFE_version = '1.7.024 [18.07.2024]';   // for the main server
-const jsCoFE_version = '1.8.005 [29.01.2025]';   // for update
+const jsCoFE_version = '1.8.006 [08.03.2025]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -74,27 +74,31 @@ const ncMetaFileName = '__nc_meta.json'; // communicated by 'REMOTE' NC
 // be logged in.
 
 const fe_command = {
-  cofe              : 'cofe',            // load jsCoFE login page
-  ignore            : 'ignore',          // special return code from Communicate module
-  stop              : 'stop',            // quit the server
-  whoareyou         : 'whoareyou',       // request server id
-  status            : 'status',          // request server status, e.g., for uptime watchers
-  getInfo           : '=getinfo',        // request server metadata
-  getLocalInfo      : '=getlocalinfo',   // request local server metadata
-  getClientInfo     : '=getclientinfo',  // request client server metadata
-  register          : '=register',       // register a new user
-  login             : '=login',          // register a new user
-  recoverLogin      : '=recover_login',  // recover login details
-  request           : '=request',        // general request to server
-  upload            : '=upload',         // upload request, hard-coded in gui.upload.js
-  jobFinished       : '=job_finished',   // request to accept data from finished job
-  cloudRun          : '=cloud_run',      // run job from command prompt on client
-  cloudFetch        : '=cloud_fetch',    // fetch job(s) from command prompt on client
-  checkSession      : '=check_session',  // request to check session status
-  authResponse      : '=auth_response',  // process from software authorisation server
-  getFEProxyInfo    : '=getfeproxyinfo', // get FE Proxy config and other info
+  cofe              : 'cofe',             // load jsCoFE login page
+  ignore            : 'ignore',           // special return code from Communicate module
+  stop              : 'stop',             // quit the server
+  whoareyou         : 'whoareyou',        // request server id
+  status            : 'status',           // request server status, e.g., for uptime watchers
+  getInfo           : '=getinfo',         // request server metadata
+  getLocalInfo      : '=getlocalinfo',    // request local server metadata
+  getClientInfo     : '=getclientinfo',   // request client server metadata
+  register          : '=register',        // register a new user
+  login             : '=login',           // register a new user
+  recoverLogin      : '=recover_login',   // recover login details
+  request           : '=request',         // general request to server
+  upload            : '=upload',          // upload request, key hard-coded in gui.upload.js
+  allocateJob       : '=allocate_job',    // request to allocate remote job
+  jobFinished       : '=job_finished',    // request to accept data from finished job
+  updateUserRation  : '=update_ration',   // request to update user ration
+  cloudRun          : '=cloud_run',       // run job from command prompt on client
+  cloudFetch        : '=cloud_fetch',     // fetch job(s) from command prompt on client
+  checkSession      : '=check_session',   // request to check session status
+  authResponse      : '=auth_response',   // process from software authorisation server
+  getFEProxyInfo    : '=getfeproxyinfo',  // get FE Proxy config and other info
   checkAnnouncement : '=checkannouncement', // get service announcements
-  control           : '=control'         // group of server service functions
+  control           : '=control',         // group of server service functions
+  remoteUserRation  : '=remote_user_ration', // get remote user ration
+  remoteCheckIn     : '=remote_checkin'   // check in a user for running remote jobs
 };
 
 
@@ -151,8 +155,8 @@ const fe_reqtype = {
   saveJobData         : '-saveJobData',       // request to save job data
   saveJobFile         : '-saveJobFile',       // request to save file in job directory
   saveJobFiles        : '-saveJobFiles',      // request to save files in job directory
-  runJob              : '-runJob',            // request to run job
-  stopJob             : '-stopJob',           // request to stop job
+  runJob              : '-feRunJob',          // request to run job
+  stopJob             : '-feStopJob',         // request to stop job
   webappEndJob        : '-webappEndJob',      // request to conclude a webapp job
   checkJobs           : '-checkJobs',         // request to check on jobs' state
   wakeZombieJobs      : '-wakeZombieJobs',    // request to send zombie jobs to FE
@@ -172,40 +176,41 @@ const fe_reqtype = {
 // Return codes for client - FE Server AJAX exchange
 
 const fe_retcode = {
-  ok             : 'ok',             // everything's good
-  largeData      : 'largeData',      // data sent to server is too large
-  noProjectData  : 'noProjectData',  // project metadata not found on server
-  writeError     : 'writeError',     // data cannot be written on server side
-  mkDirError     : 'mkDirError',     // directory cannot be created on server
-  readError      : 'readError',      // data cannot be read on server side
-  jobballError   : 'jobballError',   // jobbal preparation error on server side
-  existingLogin  : 'existingLogin',  // attempt to re-use login name at registration
-  corruptDO      : 'corruptDO',      // corrupt data object found
-  userNotFound   : 'userNotFound',   // login recovery failed
-  userNotDeleted : 'userNotDeleted', // delete user request failed
-  corruptJobMeta : 'corruptJobMeta', // corrupt job metadata
-  wrongLogin     : 'wrongLogin',     // wrong login data supplied
-  suspendedLogin : 'suspendedLogin', // wrong login data supplied
-  unconfigured   : 'unconfigured',   // server not configured
-  wrongPassword  : 'wrongPassword',  // wrong password given
-  notLoggedIn    : 'notLoggedIn',    // request without loggin in
-  wrongRequest   : 'wrongRequest',   // unrecognised request
-  wrongSession   : 'wrongSession',   // unrecognised session code
-  uploadErrors   : 'uploadErrors',   // upload errors
-  unpackErrors   : 'unpackErrors',   // unpack errors
-  noUploadDir    : 'noUploadDir',    // no upload directory within a job directory
-  noTempDir      : 'noTempDir',      // no temporary directory
-  noJobDir       : 'noJobDir',       // job directory not found
-  noJobRunning   : 'noJobRunning',   // requested job was not found as running
-  fileNotFound   : 'fileNotFound',   // file not found
-  inProgress     : 'inProgress',     // process in progress
-  askPassword    : 'askPassword',    // request password
-  regFailed      : 'regFailed',      // user registration failed
-  wrongJobToken  : 'wrongJobToken',  // unrecognised job token received
-  proxyError     : 'proxyError',     // fe-proxy error
-  projectAccess  : 'projectAccess',  // project access denied
-  serverInactive : 'serverInactive', // project access denied
-  errors         : 'errors'          // common errors
+  ok              : 'ok',              // everything's good
+  largeData       : 'largeData',       // data sent to server is too large
+  noProjectData   : 'noProjectData',   // project metadata not found on server
+  writeError      : 'writeError',      // data cannot be written on server side
+  mkDirError      : 'mkDirError',      // directory cannot be created on server
+  readError       : 'readError',       // data cannot be read on server side
+  jobballError    : 'jobballError',    // jobbal preparation error on server side
+  existingLogin   : 'existingLogin',   // attempt to re-use login name at registration
+  corruptDO       : 'corruptDO',       // corrupt data object found
+  userNotFound    : 'userNotFound',    // login recovery failed
+  userNotDeleted  : 'userNotDeleted',  // delete user request failed
+  corruptJobMeta  : 'corruptJobMeta',  // corrupt job metadata
+  wrongLogin      : 'wrongLogin',      // wrong login data supplied
+  suspendedLogin  : 'suspendedLogin',  // wrong login data supplied
+  unconfigured    : 'unconfigured',    // server not configured
+  wrongPassword   : 'wrongPassword',   // wrong password given
+  credCheckFailed : 'credCheckFailed', // wrong password given
+  notLoggedIn     : 'notLoggedIn',     // request without loggin in
+  wrongRequest    : 'wrongRequest',    // unrecognised request
+  wrongSession    : 'wrongSession',    // unrecognised session code
+  uploadErrors    : 'uploadErrors',    // upload errors
+  unpackErrors    : 'unpackErrors',    // unpack errors
+  noUploadDir     : 'noUploadDir',     // no upload directory within a job directory
+  noTempDir       : 'noTempDir',       // no temporary directory
+  noJobDir        : 'noJobDir',        // job directory not found
+  noJobRunning    : 'noJobRunning',    // requested job was not found as running
+  fileNotFound    : 'fileNotFound',    // file not found
+  inProgress      : 'inProgress',      // process in progress
+  askPassword     : 'askPassword',     // request password
+  regFailed       : 'regFailed',       // user registration failed
+  wrongJobToken   : 'wrongJobToken',   // unrecognised job token received
+  proxyError      : 'proxyError',      // fe-proxy error
+  projectAccess   : 'projectAccess',   // project access denied
+  serverInactive  : 'serverInactive',  // project access denied
+  errors          : 'errors'           // common errors
 };
 
 
@@ -215,9 +220,9 @@ const fe_retcode = {
 const nc_command = {
   stop            : 'stop',            // quit the server
   countBrowser    : '-countBrowser',   // request to advance browser start counter
-  runJob          : '-runJob',         // request to upload job data and run the job
-  stopJob         : '-stopJob',        // request to stop a running job
-  wakeZombieJobs  : '-wakeZombieJobs',  // request to send zombi jobs to FE
+  runJob          : '-ncRunJob',       // request to upload job data and run the job
+  stopJob         : '-ncStopJob',      // request to stop a running job
+  wakeZombieJobs  : '-wakeZombieJobs', // request to send zombi jobs to FE
   selectDir       : '-selectDir',      // request to select directory (local service)
   selectFile      : '-selectFile',     // request to select file (local service)
   selectImageDir  : '-selectImageDir', // request to select image directory (local service)
@@ -267,6 +272,7 @@ function activityIcon()  {
 const __special_url_tag    = 'xxJsCoFExx';
 const __special_fjsafe_tag = 'xxFJSafexx';
 const __special_client_tag = 'xxClientxx';
+const __special_rfe_tag    = 'xxRFExx';
 
 var __response_timing = {
   time_min : 1.0e30,
@@ -398,6 +404,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.__special_url_tag    = __special_url_tag;
   module.exports.__special_fjsafe_tag = __special_fjsafe_tag;
   module.exports.__special_client_tag = __special_client_tag;
+  module.exports.__special_rfe_tag    = __special_rfe_tag;
   module.exports.projectFileExt       = projectFileExt;
   module.exports.endJobFName          = endJobFName;
   module.exports.endJobFName1         = endJobFName1;

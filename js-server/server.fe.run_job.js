@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.01.25   <--  Date of Last Modification.
+ *    02.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -32,7 +32,7 @@
  *     selectNumberCruncher ( task )
  *     ncSelectAndCheck     ( nc_counter,task,callback_func )
  *     _run_job             ( loginData,task,job_token,ownerLoginData,
- *                            shared_logins, callback_func )
+ *                            shared_logins,run_remotely, callback_func )
  *     runJob               ( loginData,data, callback_func )
  *     webappEndJob         ( loginData,data, callback_func )
  *     stopJob              ( loginData,data )
@@ -95,16 +95,19 @@ function FEJobRegister()  {
   this.logflow.njob0  = 0;
 }
 
-FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
-                                            project,jobId,shared_logins,
-                                            eoj_notification,push_back )  {
+FEJobRegister.prototype.addJob = function ( job_token,rfe_token,nc_number,
+                                            loginData,remoteLogin,project,jobId,
+                                            shared_logins,eoj_notification,
+                                            push_back )  {
   let crTime = Date.now();
   this.job_map[job_token] = {
     nc_number        : nc_number,
     nc_type          : 'ordinary',
-    job_token        : job_token,  // job_token issued by NC (clashes hopefully minimal)
-                                   // make tokens surely NC-specific through NC
-                                   // confoguration
+    job_token        : job_token,   // job_token issued by NC (clashes hopefully minimal)
+                                    // make tokens surely NC-specific through NC
+                                    // confoguration
+    rfe_token        : rfe_token,   // toke issued by 'REMOTE' FE (RFE)
+    remoteLogin      : remoteLogin, // remote login name (only if rfe_token given)
     loginData        : loginData,
     project          : project,
     jobId            : jobId,
@@ -221,6 +224,8 @@ function readFEJobRegister()  {
           }
         if (!('push_back' in feJobRegister.job_map[token]))
           feJobRegister.job_map[token].push_back = 'YES';
+        if (!('rfe_token' in feJobRegister.job_map[token]))
+          feJobRegister.job_map[token].rfe_token = '';
       }
       if (!('token_pull_map' in feJobRegister))
         feJobRegister.token_pull_map = {};
@@ -288,7 +293,7 @@ function getEFJobEntry ( loginData,project,jobId )  {
 //
 //        exeType : 'REMOTE'
 //
-// On NC side, the configuration should specify the relevant NC typeof, such as
+// On NC side, the configuration should specify the relevant NC type, such as
 // 'SLURM', 'SGE' etc. When jobs are sent to 'REMOTE' NC, the results are pulled 
 // back by FE, rather than pushed from NC. This is a less efficient model, which 
 // should be used only when absolutely necessary, for example, when a task needs 
@@ -334,7 +339,7 @@ let nc_servers = conf.getNCConfigs();
           let filePath = path.join ( conf.getFETmpDir(),job_entry.job_token + '.zip' );
           let file     = fs.createWriteStream ( filePath );
           request({
-              uri     : cmd.nc_command.getJobResults,
+              uri     : check_jobs[server_no].rfe_token + cmd.nc_command.getJobResults,
               baseUrl : nc_url,
               method  : 'POST',
               body    : { job_token : job_entry.job_token },
@@ -343,7 +348,7 @@ let nc_servers = conf.getNCConfigs();
             }
           )
           .pipe(file)
-          .on('finish',function()  {
+          .on('close',function()  {
 
             // Check whether this is a signal response or a possible zip file
             // this is redundant in view of preliminary checks, but we leave
@@ -416,18 +421,36 @@ let nc_servers = conf.getNCConfigs();
              (nc_servers[nc_number].exeType.toUpperCase()=='REMOTE'))  {
     // check jobs on next REMOTE NC
 
-    request({
-      uri     : cmd.nc_command.checkJobResults,
-      baseUrl : nc_servers[nc_number].externalURL,
-      method  : 'POST',
-      body    : check_jobs,
-      json    : true,
-      rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
-    },function(error,response,body){
-      // console.log ( ' >>>>> error = "' + error + '"' );
-      // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
-      checkRemoteJobs ( body.data,nc_number+1 );
-    });
+    let rfe_tokens = {};
+    for (let index in check_jobs)  
+      if (!(check_jobs[index].rfe_token in rfe_tokens))  {
+        rfe_tokens[check_jobs[index].rfe_token] = true;
+        request({
+          uri     : check_jobs[index].rfe_token + cmd.nc_command.checkJobResults,
+          baseUrl : nc_servers[nc_number].externalURL,
+          method  : 'POST',
+          body    : check_jobs,
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          // console.log ( ' >>>>> error = "' + error + '"' );
+          // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+          checkRemoteJobs ( body.data,nc_number+1 );
+        });
+      }
+
+    // request({
+    //   uri     : cmd.nc_command.checkJobResults,
+    //   baseUrl : nc_servers[nc_number].externalURL,
+    //   method  : 'POST',
+    //   body    : check_jobs,
+    //   json    : true,
+    //   rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+    // },function(error,response,body){
+    //   // console.log ( ' >>>>> error = "' + error + '"' );
+    //   // console.log ( ' >>>>> body = ' + JSON.stringify(body) );
+    //   checkRemoteJobs ( body.data,nc_number+1 );
+    // });
 
   } else  {
     checkRemoteJobs ( check_jobs,nc_number+1 );
@@ -455,12 +478,14 @@ function checkPullMap()  {
           check_jobs[index] = {
             job_token : feJobRegister.token_pull_map[index],
             nc_number : jobEntry.nc_number,
+            rfe_token : jobEntry.rfe_token,
             status    : ''
           }
         } else  {  // no job entry, job cannot return therefore remove
           check_jobs[index] = {
             job_token : feJobRegister.token_pull_map[index],
             nc_number : -1,
+            rfe_token : '',
             status    : task_t.job_code.remove
           }
         }
@@ -721,87 +746,210 @@ let nc_number0     = -1;  // NC with maximal capacity
 
 }
 
+
+function ncGetInfo_remote ( server_request,server_response )  {
+//  This function imitates NC behaviour for 'REMOTE' NC framework
+
+  let ncInfo = {};
+  ncInfo.config         = conf.getServerConfig();
+  ncInfo.jobRegister    = {};
+  ncInfo.jobRegister.launch_count = 0;
+  ncInfo.jobRegister.job_map      = {};
+  ncInfo.ccp4_version   = conf.CCP4Version();
+  ncInfo.jscofe_version = cmd.appVersion();
+  ncInfo.environ        = conf.environ_server;
+
+  let response = new cmd.Response ( cmd.nc_retcode.ok,'',ncInfo );
+  response.send ( server_response );
+
+}
+
+
 function selectNumberCruncher ( task )  {
   if (conf.getFEConfig().job_despatch=="opt_comm")
         return selectNC_by_order    ( task );
   else  return selectNC_by_capacity ( task );
 }
 
-function ncSelectAndCheck ( nc_counter,task,callback_func )  {
+
+
+function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
 //  nc_counter == conf.getNumberOfNCs() at 1st call
-  let nc_number = selectNumberCruncher ( task );
-  if (nc_number>=0)  {
-    let cfg = conf.getNCConfig ( nc_number );
-    if (cfg)  {
-      cfg.checkNCStatus ( function(error,response,body,config){
-        if ((error=='not-in-use') && (nc_counter>0))  {
-          ncSelectAndCheck ( nc_counter-1,task,callback_func );
-        } else if ((!error) && (response.statusCode==200))  {
-          printNCState ( nc_number );
-          if (nc_number>=0)
-            conf.getNCConfigs()[nc_number].current_capacity--;
-          callback_func ( nc_number );
-        } else  {
-          // log.standard ( 1,'NC-' + nc_number + ' does not answer' );
-          log.error    ( 3,'NC-' + nc_number + ' does not answer' );
-          if (nc_counter>0)  {
-            ncSelectAndCheck ( nc_counter-1,task,callback_func );
+  let nc_number = -1;
+  
+  if (run_remotely)  {
+    // Request to allocate job on NCs accessible via rempte FE (RFE). A typical 
+    // scenario includes sending jobs from CCP4 Cloud Local to CCP4 Cloud Remote.
+    // In this mode, the actual NC (ANC allocated to run the job in the remote
+    // setup) is often unavailable for direct communication, and all communication 
+    // goes via RFE, which also check user credentials.
+
+    // Find NC representing ANC in current setup
+    nc_number = conf.getRemoteNumberCruncher();
+    if (nc_number>=0)  {
+      // request job allocation from RFE here. This will allow to re-use job 
+      // submission mechanism by mere forwarding the submission request to
+      // pre-selected ANC via RFE, while keeping ANC number for polling and
+      // retrieving results. Note that job allocation request does not require 
+      // credentials; instead, credentials will be supplied in the job submission
+      // request header.
+
+      request({
+          uri     : cmd.fe_command.allocateJob,
+          baseUrl : conf.getNCConfig(nc_number).externalURL,
+          method  : 'POST',
+          body    : { task : task },
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          if ((!error) && (response.statusCode==200))  {
+            callback_func ( body.data.code,
+                            nc_number,  // this should be remote NC, not ANC number
+                            body.data.rfe_token,
+                            body.data.anc_name
+                          );
+          } else if (!error) {
+            callback_func ( 4,nc_number,'','' );
+            log.warning ( 10,'remote FE could not allocate job for ' + task._type );
           } else  {
-            // log.standard ( 2,'no response from number crunchers' );
-            log.error    ( 4,'no response from number crunchers' );
-            callback_func ( -102 );
+            callback_func ( 6,nc_number,'','' );
+            log.warning ( 11,'errors at communication with remote FE' );
           }
         }
-      });
+      );
+
     } else  {
-      // log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
-      log.error    ( 5,'NC-' + nc_number + ' configuration cannot be obtained' );
-      callback_func ( -101 );
+      log.error ( 41,'remote number cruncher is not configured' );
+      callback_func ( 3,nc_number,'','' );
     }
+
   } else  {
-    log.standard ( 4,'all number crunchers refused to accept a job' );
-    callback_func ( nc_number );
+    // Request to allocate job on NCs directly linked with FE, which is the
+    // most common case.
+
+    nc_number = selectNumberCruncher ( task );
+    if (nc_number>=0)  {
+      let cfg = conf.getNCConfig ( nc_number );
+      if (cfg)  {
+        cfg.checkNCStatus ( function(error,response,body,config){
+          if ((error=='not-in-use') && (nc_counter>0))  {
+            ncSelectAndCheck ( nc_counter-1,task,run_remotely,callback_func );
+          } else if ((!error) && (response.statusCode==200))  {
+            printNCState ( nc_number );
+            if (nc_number>=0)  {
+              conf.getNCConfigs()[nc_number].current_capacity--;
+              callback_func ( 0,nc_number,'','' );
+            } else
+              callback_func ( 5,nc_number,'','' );
+          } else  {
+            // log.standard ( 1,'NC-' + nc_number + ' does not answer' );
+            log.error ( 3,'NC-' + nc_number + ' does not answer' );
+            if (nc_counter>0)  {
+              ncSelectAndCheck ( nc_counter-1,task,run_remotely,callback_func );
+            } else  {
+              // log.standard ( 2,'no response from number crunchers' );
+              log.error ( 4,'no response from number crunchers' );
+              callback_func ( 2,nc_number,'','' );
+            }
+          }
+        });
+      } else  {
+        // log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
+        log.error ( 5,'NC-' + nc_number + ' configuration cannot be obtained' );
+        callback_func ( 1,nc_number,'','' );
+      }
+    } else  {
+      log.warning ( 42,'all number crunchers refused to accept a job' );
+      callback_func ( 5,nc_number,'','' );
+    }
+
   }
+
+}
+
+
+function allocateJob ( data,callback_func )  {  // gets UserData object
+  // This function is FE response handler for allocating remote jobs (i.e. jobs
+  // coming from 'external' FEs, typically CCP4 Cloud Local setups).
+  // let nc_number = selectNumberCruncher ( data.task );
+
+  // This function is used on Remote FE (RFE), therefore, parameter run_remotely
+  // is set to false.
+  ncSelectAndCheck ( conf.getNumberOfNCs(),data.task,false,
+    function(code,nc_number,rfe_token,nc_name){
+      let nc_cfg = conf.getNCConfig(nc_number);
+      let response  = new cmd.Response ( cmd.fe_retcode.ok,'',
+        { code       : code,
+          anc_number : nc_number,  // actual NC number, currently not used
+          anc_name   : nc_cfg.name,
+          rfe_token  : cmd.__special_rfe_tag + '.' + 
+                       nc_number + '.'  // '.' is a separator for parsing
+        });
+      callback_func ( response );
+    });
+
 }
 
 
 // ===========================================================================
 
-function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callback_func )  {
+function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+                    run_remotely, callback_func )  {
 
-  ncSelectAndCheck ( conf.getNumberOfNCs(),task,function(nc_number){
+  // for remote jobs:
+  //   -- get Remote NC (RNC) number
+  //   -- send task to Remote FE (RFE) for checking and receive 
+  //      Actual NC (ANC) number
 
-    let jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
-    let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
+  ncSelectAndCheck ( conf.getNumberOfNCs(),task,run_remotely,
+    function(code,nc_number,rfe_token,anc_name){
 
-    if (nc_number<0)  {
+      let jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
+      let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
 
-      let msg = '<h1>Task cannot be proccessed</h1>';
+      let msg         = '';
 
-      if (nc_number==-101)  {
-        msg += 'Configuration data cannot be obtained. This is internal '   +
-               'server error, caused by misconfiguration or a bug. Please ' +
-               'report to server maintainer.';
-      } else if (nc_number==-102)  {
-        msg += 'Computational server(s) cannot be reached. Please report '  +
-               'to server maintainer.';
-      } else  {
-        msg += 'No computational server has agreed to accept the task. This may ' +
-               'be due to the lack of available servers for given task type, or ' +
-               'because of the high number of tasks queued. Please try submitting ' +
-               'this task later on.';
+      switch (code)  {  
+        case 1 : msg = 'Configuration data cannot be obtained. This is internal '   +
+                       'server error, caused by misconfiguration or a bug. Please ' +
+                       'report this message to server maintainer.';
+                break;
+        case 2 : msg = 'Computational server(s) cannot be reached. Please report '  +
+                       'this message to server maintainer.';
+                break;
+        case 3 : msg = 'Remote computational server is not configured. Please report ' +
+                       'this message to server maintainer.';
+                break;
+        case 4 : msg = 'Job could not be allocated on remote server. This may be ' +
+                       'due to a lack of remote number crunchers for the given   ' +
+                       'task type or a high volume of queued tasks. Please try '   +
+                       'submitting your task again later.';
+                break;
+        case 5 : msg = 'No computational server is currently available to process '    +
+                       'your task. This may be due to a lack of servers for the '      +
+                       'specified task type or a high volume of queued tasks. Please ' +
+                       'try submitting your task again later.';
+                break;
+        case 6 : msg = 'Job could not be allocated on remote server due to errors. ' +
+                       'Pplease try submitting your task again later, or run it '    +
+                       'locally.';
+                break;
+        default : ;
       }
 
-      utils.writeJobReportMessage ( jobDir,msg,false );
-      task.state = task_t.job_code.failed;
-      utils.writeObject ( jobDataPath,task );
+      if (msg)  {
+        if (run_remotely)
+          msg = 'The task was attempted to be run on remote server<p>' + msg;
+        utils.writeJobReportMessage ( jobDir,'<h1>Task cannot be proccessed</h1>'+msg,
+                                      false );
+        task.state = task_t.job_code.failed;
+        utils.writeObject ( jobDataPath,task );
+        if (callback_func)
+          callback_func ( 0 );
+        return;
+      }
 
-      if (callback_func)
-        callback_func ( 0 );
-
-    } else  {
-
-      utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
+      utils.writeJobReportMessage ( jobDir,'<h1>Preparing job ...</h1>',true );
 
       // prepare input data
       task.makeInputData ( loginData,jobDir );
@@ -811,7 +959,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
       let uData  = user.readUserData ( loginData );
       let meta   = {};
       meta.setup_id  = conf.getSetupID();
-      meta.nc_name   = nc_cfg.name;
+      meta.nc_name   = anc_name ? '[' + nc_cfg.externalURL + ']:' + anc_name
+                                : nc_cfg.name;
       meta.user_id   = loginData.login;
       meta.feedback  = ud.feedback_code.decline;
       meta.user_name = '';
@@ -826,39 +975,85 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           meta.user_name = uData.name;
           meta.email     = uData.email;
         }
+        // if (nc_cfg.exeType=='REMOTE')
+        //   meta.cloudrun_id = uData.remote_pwd;
       }
 
-      send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,cmd.nc_command.runJob,
+      //  for remote jobs:
+      //  -- use different request code
+      //  -- send credentials and ANC as part of header to RE; RE checks
+      //     credentials and forwards sendDir to ANC
+      //  -- retain NC token as usual, plus ANC, in job registry
+      //  -- mark job entry as remote (presence of ANC?)
+      //  -- in Communicate.sendFile, provide header with ANC number in header
+      //     for retrieving file from RFE; If RFE sees ANC in header, it 
+      //     forwards fetch request to ANC
+
+      let request_headers = null;
+      if (run_remotely)  {
+        // RFE will check credentials when job is sent to ANC. Once job is 
+        // running, communication between cliend and ANC is simply proxied
+        // by RFE using rfe_token, which is part of request URL
+        request_headers = {};
+        request_headers['ccp4cloud-user'] = uData.remote_login;
+        request_headers['ccp4cloud-pwd']  = uData.remote_pwd;
+      }
+
+      // note rfe_token=='' for non-'REMOTE' jobs
+      send_dir.sendDir ( jobDir,nc_url,nc_cfg.fsmount,
+                         rfe_token + cmd.nc_command.runJob,
                          meta,{compression:nc_cfg.compression},
+                         request_headers,
 
-        function ( retdata,stats ){  // send successful
+        function ( retdata,stats ){  // send was technically successful
+          
+          if ('message' in retdata)  {
 
-          log.standard ( 6,'job ' + task.id + ' sent to ' +
-                           conf.getNCConfig(nc_number).name + ', job token:' +
-                           job_token );
-          log.standard ( 6,'compression: '  + nc_cfg.compression +
-                           ', zip time: '   + stats.zip_time.toFixed(3) +
-                           's, send time: ' + stats.send_time.toFixed(3) + 
-                           's, size: '      + stats.size.toFixed(3) + ' MB' );
+            let message = '<h1>Job submission failed</h1>';
+            if (('run_remotely' in retdata) && retdata.run_remotely)
+              message = '<h1>Job submission to remote server failed</h1>';
 
-          // The number cruncher will start dealing with the job automatically.
-          // On FE end, register job as engaged for further communication with
-          // NC and client.
-          feJobRegister.addJob ( retdata.job_token,nc_number,ownerLoginData,
-                                 task.project,task.id,shared_logins,
-                                 uData.settings.notifications.end_of_job,
-                                 meta.push_back );
-          writeFEJobRegister();
-          checkPullMap();
+            utils.writeJobReportMessage ( jobDir,
+              message + '<b>Reason: </b><i>' + retdata.message + '</i>',
+              false );
 
-          if (callback_func)
-            callback_func ( retdata.job_token );
+            task.state = task_t.job_code.failed;
+            utils.writeObject ( jobDataPath,task );
+  
+            if (callback_func)
+              callback_func ( 0 );
+  
+          } else  {
+
+            log.standard ( 6,'job ' + task.id + ' sent to ' +
+                            conf.getNCConfig(nc_number).name + ', job token:' +
+                            job_token );
+            log.standard ( 6,'compression: '  + nc_cfg.compression +
+                            ', zip time: '   + stats.zip_time.toFixed(3) +
+                            's, send time: ' + stats.send_time.toFixed(3) + 
+                            's, size: '      + stats.size.toFixed(3) + ' MB' );
+
+            // The number cruncher will start dealing with the job automatically.
+            // On FE end, register job as engaged for further communication with
+            // NC and client.
+            feJobRegister.addJob ( retdata.job_token,rfe_token,nc_number,
+                                   ownerLoginData,uData.remote_login,
+                                   task.project,task.id,shared_logins,
+                                   uData.settings.notifications.end_of_job,
+                                   meta.push_back );
+            writeFEJobRegister();
+            checkPullMap();
+
+            if (callback_func)
+              callback_func ( retdata.job_token );
+         
+          }
 
         },function(stageNo,code){  // send failed
 
           log.standard ( 6,'sending job ' + task.id + ' to ' +
-                           conf.getNCConfig(nc_number).name + ' FAILED, job token:' +
-                           job_token );
+                          conf.getNCConfig(nc_number).name + ' FAILED, job token:' +
+                          job_token );
 
           switch (stageNo)  {
 
@@ -878,8 +1073,9 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
                   break;
 
             default: utils.writeJobReportMessage ( jobDir,
-                     '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
-                     '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + code + '</i>',false );
+                    '<h1>[00004] Failed: number cruncher errors, please try again.</h1>' +
+                    '<p><i>Stage No.: ' + stageNo + '<br>Return: ' + JSON.stringify(code) +
+                    '</i>',false );
 
           }
 
@@ -891,9 +1087,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
         });
 
-    }
-
-  });
+    });
 
 }
 
@@ -991,9 +1185,9 @@ function runJob ( loginData,data, callback_func )  {
           let jobballPath = send_dir.getPackPath(jobDir);
           utils.moveFile ( packPath,jobballPath );
 
-          feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
-                                task.project,task.id,shared_logins,
-                                null,'YES' );  // no notifications for client jobs
+          feJobRegister.addJob ( job_token,'',-1,ownerLoginData,'', // -1 is nc number
+                                 task.project,task.id,shared_logins,
+                                 null,'YES' );  // no notifications for client jobs
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
 
@@ -1028,7 +1222,7 @@ function runJob ( loginData,data, callback_func )  {
       'Job is running as web-application on client machine. Full report will ' +
       'become available after job finishes.',true );
 
-    feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+    feJobRegister.addJob ( job_token,'',-1,ownerLoginData,'', // -1 is nc number
                            task.project,task.id,shared_logins,
                            null,'YES' );  // no notifications for client jobs
     feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
@@ -1046,6 +1240,7 @@ function runJob ( loginData,data, callback_func )  {
     // job for ordinary NC, pack and send all job directory to number cruncher
 
     _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+               data.run_remotely,  // remote/own NC comes from JobDialog
       function(jtoken){
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
       });
@@ -1088,6 +1283,7 @@ function webappEndJob ( loginData,data, callback_func )  {
   task.nc_type ='ordinary';
 
   _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+             false,  // webapps run only on own NCs
     function(jtoken){
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
     });
@@ -1117,7 +1313,7 @@ function stopJob ( loginData,data )  {
       else  log.standard ( 9,'request to stop job ' + task.id + ' at ' + nc_url );
 
       request({
-          uri     : cmd.nc_command.stopJob,
+          uri     : jobEntry.rfe_token + cmd.nc_command.stopJob,
           baseUrl : nc_url,
           method  : 'POST',
           body    : { job_token   : jobEntry.job_token,
@@ -1185,7 +1381,7 @@ function killJob ( loginData,projectName,taskId )  {
       log.standard ( 91,'request to kill job ' + taskId + ' at ' + nc_url );
 
       request({
-          uri     : cmd.nc_command.stopJob,
+          uri     : jobEntry.rfe_token + cmd.nc_command.stopJob,
           baseUrl : nc_url,
           method  : 'POST',
           body    : { job_token   : jobEntry.job_token,
@@ -1260,8 +1456,51 @@ function writeJobStats ( jobEntry )  {
 
     // update records in user's ration book
     // jobEntry.loginData corresponds to the project owner account
-    let userRation = ration.bookJob ( jobEntry.loginData,jobClass,
-                                      ('cloudrun' in jobEntry) );
+
+    let userRation = null;
+    if (jobEntry.rfe_token)  {
+      // job was run remotely
+      // clear time usage for updating local ration
+      let cpu_total_used = jobClass.cpu_time;
+      jobClass.cpu_time  = 0;
+      userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+                                    ('cloudrun' in jobEntry) );
+      jobClass.cpu_time  = cpu_total_used;
+      let remoteURL = conf.getRemoteJobsServerURL()
+      if (remoteURL)  {
+        // clear disk usage for updating remote ration
+        request({
+          uri     : cmd.fe_command.updateUserRation,
+          baseUrl : remoteURL,
+          method  : 'POST',
+          body    : { login    : jobEntry.remoteLogin, 
+                      jobClass : { _type      : jobClass._type,
+                                   id         : jobClass.id,
+                                   project    : jobClass.project,
+                                   disk_space : 0,
+                                   cpu_time   : jobClass.cpu_time 
+                                 }
+                    },
+          json    : true,
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
+        },function(error,response,body){
+          // if ((!error) && (response.statusCode==200))  {
+          //   callback_func ( body.data.code,
+          //                   nc_number,  // this should be remote NC, not ANC number
+          //                   body.data.rfe_token );
+          // } else if (!error) {
+          //   callback_func ( 4,nc_number,'' );
+          //   log.warning ( 10,'remote FE could not allocate job for ' + task._type );
+          // } else  {
+          //   callback_func ( 6,nc_number,'' );
+          //   log.warning ( 11,'errors at communication with remote FE' );
+          // }
+        });
+      }
+    } else  {
+      userRation = ration.bookJob ( jobEntry.loginData,jobClass,
+                                    ('cloudrun' in jobEntry) );
+    }
 
     ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
                                 jobClass.cpu_time,jobClass.disk_space,1,false );
@@ -1346,6 +1585,18 @@ function readJobStats()  {
 }
 
 
+function updateUserRation ( data,callback_func )  {  // gets UserData object
+  // This function is FE response handler for updating user ration after
+  // running remote jobs (i.e. jobs coming from 'external' FEs, typically 
+  // CCP4 Cloud Local setups).
+
+  callback_func ( 
+    new cmd.Response ( cmd.fe_retcode.ok,'',
+      { ration : ration.bookJob ( { login : data.login },data.jobClass,false ) }
+    ));
+
+}
+
 // ===========================================================================
 
 function addJobAuto ( jobEntry,jobClass )  {
@@ -1354,7 +1605,11 @@ let projectName = jobEntry.project;
 let pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
 let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
-  if (auto_meta)  {
+  if (auto_meta && (Object.keys(auto_meta).length))  { // empty meta can be used
+                        // to stop the workflow from python layer. Note that
+                        // just removing meta in python does not do the trick 
+                        // because the file persists on FE and must be
+                        // overwritten, rather than removed.
 
     // let projectData = prj.readProjectData ( loginData,projectName );
     let projectDesc = prj.readProjectDesc ( loginData,projectName );
@@ -1510,7 +1765,8 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               let job_token = newJobToken();
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-                          function(jtoken){} );
+                         false, // temporary workflows run only on own NCs
+                         function(jtoken){} );
 
             }
     
@@ -1536,6 +1792,10 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 function _place_job_results ( job_token,code,errs,meta,server_response )  {
 
   let jobEntry = feJobRegister.getJobEntryByToken ( job_token );
+  if (!jobEntry)  {
+    log.error ( 10,'expected job registry entry not found, job token ' + job_token );
+    return;
+  }
 
   if (jobEntry.nc_number>=0)  {
     let nc_servers = conf.getNCConfigs();
@@ -2015,7 +2275,8 @@ function cloudRun ( server_request,server_response )  {
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
-                                    function(jtoken){
+                                     false, // temoporary cloudrun runs only on own NCs
+                                     function(jtoken){
                             let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {
                               jobEntry.cloudrun = true;
@@ -2247,6 +2508,8 @@ module.exports.writeFEJobRegister  = writeFEJobRegister;
 module.exports.cleanFEJobRegister  = cleanFEJobRegister;
 module.exports.getEFJobEntry       = getEFJobEntry;
 module.exports.setNCCapacityChecks = setNCCapacityChecks;
+module.exports.ncGetInfo_remote    = ncGetInfo_remote;
+module.exports.allocateJob         = allocateJob;
 module.exports.runJob              = runJob;
 module.exports.readJobStats        = readJobStats;
 module.exports.stopJob             = stopJob;
@@ -2255,5 +2518,6 @@ module.exports.webappEndJob        = webappEndJob;
 module.exports.getJobResults       = getJobResults;
 module.exports.checkJobs           = checkJobs;
 module.exports.wakeZombieJobs      = wakeZombieJobs;
+module.exports.updateUserRation    = updateUserRation;
 module.exports.cloudRun            = cloudRun;
 module.exports.cloudFetch          = cloudFetch;

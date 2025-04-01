@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.12.23   <--  Date of Last Modification.
+#    02.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -42,17 +42,23 @@ class DType(dtype_template.DType):
     def getPDBFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
+    def getMMCIFFileName(self):
+        return self.getFileName ( dtype_template.file_key["mmcif"] )
+
     def getLibFileName(self):
         return self.getFileName ( dtype_template.file_key["lib"] )
 
     def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
+    def getMMCIFFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
+
     def getLibFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["lib"] )
 
 
-def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
+def register ( xyzFilePath,mmcifPath,cifFilePath,dataSerialNo,job_id,outDataBox,
                outputDir,copy=False ):
 
     if os.path.isfile(xyzFilePath):
@@ -62,7 +68,7 @@ def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
         ligand.removeFiles()
         # this order of files IS FIXED and is relied upon in other parts
         # of jsCoFE
-        for f in [xyzFilePath,cifFilePath]:
+        for f in [xyzFilePath,mmcifPath,cifFilePath]:
             if f and os.path.isfile(f):
                 # fname = ligand.dataId + "_" + os.path.basename(f)
                 fname = os.path.basename(f)
@@ -70,6 +76,8 @@ def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
                     fname = ligand.dataId + "_" + fname
                 if f==xyzFilePath:
                     ligand.setFile ( fname,dtype_template.file_key["xyz"] )
+                elif f==mmcifPath:
+                    ligand.setFile ( fname,dtype_template.file_key["mmcif"] )
                 else:
                     ligand.setFile ( fname,dtype_template.file_key["lib"] )
                 if copy:

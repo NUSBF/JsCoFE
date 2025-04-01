@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.01.25   <--  Date of Last Modification.
+#    31.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -42,6 +42,22 @@ from  pycofe.auto   import auto,auto_workflow
 class MakeLigand(basic.TaskDriver):
 
     def smiles_file_path(self): return "smiles.smi"
+
+    def find_output_file ( self,code ):
+        cifPath  = code + ".cif"
+        if not os.path.exists(cifPath):
+            cifPath = os.path.join ( code+"_TMP",cifPath )
+            if not os.path.exists(cifPath):
+                cifPath = code + "_final.cif"
+                if not os.path.exists(cifPath):
+                    cifPath = os.path.join ( code+"_TMP",cifPath )
+                    if not os.path.exists(cifPath):
+                        cifPath = code + "_mol_0.cif"
+                        if not os.path.exists(cifPath):
+                            cifPath = os.path.join ( code+"_TMP",cifPath )
+                            if not os.path.exists(cifPath):
+                                cifPath = None
+        return cifPath
 
     # ------------------------------------------------------------------------
 
@@ -165,12 +181,8 @@ class MakeLigand(basic.TaskDriver):
                     self.runApp ( "acedrg.bat",cmd,logType="Main" )
                 else:
                     self.runApp ( "acedrg",cmd,logType="Main" )
-                cifPath  = code + ".cif"
-                if not os.path.exists(cifPath):
-                    cifPath = code + "_final.cif"
-                if not os.path.exists(cifPath):
-                    cifPath = code + "_mol_0.cif"
-                if os.path.exists(xyzPath):
+                cifPath = self.find_output_file ( code )
+                if not os.path.exists(xyzPath):
                     cif = gemmi.cif.read_file ( cifPath )
                     st  = gemmi.make_structure_from_chemcomp_block ( cif["comp_" + code] )
                     while len(st)>1:  # because of gemmi bug
@@ -191,18 +203,21 @@ class MakeLigand(basic.TaskDriver):
                     xyzPath = code0 + ".pdb"
                     with open (xyzPath,"w") as fout:
                         fout.write ( xyzdata )
-                block = gemmi.cif.read(cifPath)[-1]
-                if block.find_values('_chem_comp_atom.x'):
-                    mmcifPath = code0 + ".mmcif"
-                    # XYZ coordinates are found in dictionary, just copy
-                    # them over
-                    st = gemmi.make_structure_from_chemcomp_block ( block )
-                    st[0][0][0].seqid = gemmi.SeqId('1')
-                    st.make_mmcif_document().write_file ( mmcifPath )
-                    # shutil.copy ( mmcifPath,xyzPath )
                 code = code0
-    
-            ligand = self.finaliseLigand ( code,xyzPath,cifPath )
+
+            # create ligand coordinate file in mmCIF (to replace PDB for long 
+            # ligand codes)
+            block = gemmi.cif.read(cifPath)[-1]
+            if block.find_values('_chem_comp_atom.x'):
+                mmcifPath = code + ".mmcif"
+                # XYZ coordinates are found in dictionary, just copy
+                # them over
+                st = gemmi.make_structure_from_chemcomp_block ( block )
+                st[0][0][0].seqid = gemmi.SeqId('1')
+                st.make_mmcif_document().write_file ( mmcifPath )
+                # shutil.copy ( mmcifPath,xyzPath )
+
+            ligand = self.finaliseLigand ( code,xyzPath,mmcifPath,cifPath )
             # if mmcifPath:
             #     fname = os.path.splitext(ligand.getLibFileName())[0] + ".mmcif"
             #     ligand.setFile ( fname,dtype_template.file_key["mmcif"] )

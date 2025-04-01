@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -61,6 +61,7 @@ function AdminPage ( sceneId )  {
 
   // make tabs
   this.tabs = new Tabs();
+
   // this.tabs.setVisible ( false );
   this.userTable = null;
   this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
@@ -289,7 +290,11 @@ AdminPage.prototype.refresh = function()  {
   this.searchFilters = null;
 
   self = this;
+  document.body.style.cursor = 'wait';
+  
   serverRequest ( fe_reqtype.getAdminData,0,'Admin Page',function(data){
+    
+    document.body.style.cursor = 'auto';
 
     self.adminData = data;
 
@@ -405,7 +410,10 @@ AdminPage.prototype.calcUserPageSize = function ( height )  {
 
 AdminPage.prototype.onResize = function ( width,height )  {
 
-  this.tabs.setWidth_px  ( width -42  );
+  // *MOBILE*
+  let w = __mobile_device ? __mobile_width-200 : width;  
+
+  this.tabs.setWidth_px  ( w - 42 );
   this.tabs.setHeight_px ( height-104 );
 
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
@@ -954,6 +962,8 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
           } else
             njobs++;
         startDate = small_font(nci.config.startDate);
+      } else if (nci.config.exeType=='REMOTE')  {
+        state = 'disconnected';
       } else  {
         state = 'dead';
       }
@@ -997,16 +1007,23 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
   if (mdata.cache_enabled)  {
-    grid.setLabel ( 'Metadata Cache Status: ON',grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
+    grid.setLabel ( 
+      '<table>' +
+        '<tr><td>Metadata Cache Status&nbsp;</td><td>:&nbsp;ON</td></tr>' + 
+        '<tr><td>On-login preload</td><td>:&nbsp;' +
+          (mdata.forceCacheFill ? 'FORCED' : 'NOT FORCED') + '</td></tr>' +
+        '<tr><td>Metadata Write Mode</td><td>:&nbsp;' +
+          (mdata.force_write_sync ? 'SYNC' : 'ASYNC') + '</td></tr></table>',
+          grow++,0,1,1 )
+        .setFontSize('1em').setFontBold(true);
     grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
-    let wmode = 'ASYNC'
-    if (mdata.force_write_sync)
-      wmode = 'SYNC';
-    grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
-        .setFontSize('1.2em').setFontBold(true);
-    grid.setLabel ( '&nbsp;',grow++,0,1,1 );
+    // let wmode = 'ASYNC'
+    // if (mdata.force_write_sync)
+    //   wmode = 'SYNC';
+    // grid.setLabel ( 'Metadata Write Mode: ' + wmode,grow++,0,1,1 )
+    //     .setFontSize('1.2em').setFontBold(true);
+    // grid.setLabel ( '&nbsp;',grow++,0,1,1 );
 
     grid.setLabel ( 'Cache state',grow++,0,1,1 )
         .setFontItalic(true).setFontBold(true);
@@ -1062,11 +1079,12 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   grid.setWidget ( mem_table,grow++,0,1,1 );
   mem_table.setWidth_px ( 300 );
 
-  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)]  ,0,false );
-  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)] ,1,true  );
-  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)]  ,2,false );
-  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)]  ,3,true  );
-  mem_table.setRow ( 'Total Heap (MB)'  ,'',[mdata.totalHeap.toFixed(2)],4,false );
+  mem_table.setRow ( 'Used RAM (MB)'    ,'',[mdata.usedRAM.toFixed(2)] ,0,false );
+  mem_table.setRow ( 'Total RAM (MB)'   ,'',[mdata.totalRAM.toFixed(2)],1,true  );
+  mem_table.setRow ( 'Free RAM (MB)'    ,'',[mdata.freeRAM.toFixed(2)] ,2,false );
+  mem_table.setRow ( 'External RAM (MB)','',[mdata.usedRAM.toFixed(2)] ,3,true  );
+  mem_table.setRow ( 'Total Heap (MB)'  ,'',['<b>' + mdata.totalHeap.toFixed(2) + 
+                                                                '</b>'],4,false );
 
   grid.setLabel ( '&nbsp;',grow++,0,1,1 );
   grid.setLabel ( 'Front-End performance stats',grow++,0,1,1 )

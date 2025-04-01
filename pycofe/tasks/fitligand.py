@@ -53,7 +53,7 @@ class FitLigand(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
 
         # make command-line parameters
-        pdbin   = istruct.getPDBFilePath ( self.inputDir() )
+        pdbin   = istruct.getXYZFilePath ( self.inputDir() )
 
         # pdbin  = istruct.getMMCIFFilePath ( self.inputDir() )
         # if not pdbin:
@@ -106,6 +106,10 @@ class FitLigand(basic.TaskDriver):
         # PDBIN version
         cmd += [ligand.getPDBFilePath(self.inputDir())]
 
+        # mmCIF version works but does not provide for long ligand codes,
+        # which is fitligand's feature; therefore, currently not used
+        # cmd += [ligand.getMMCIFFilePath(self.inputDir())]
+
         """
         --pdbin pdb-in-filename --hklin mtz-filename
         --f f_col_label --phi phi_col_label
@@ -123,8 +127,7 @@ class FitLigand(basic.TaskDriver):
         if sys.platform.startswith("win"):
             self.runApp ( "findligand.bat",cmd,logType="Main" )
         else:
-            self.runApp ( "findligand",
-                          cmd,logType="Main" )
+            self.runApp ( "findligand",cmd,logType="Main" )
 
         nligs   = 0
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]

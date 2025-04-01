@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    22.12.24   <--  Date of Last Modification.
+ *    23.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Fetching job directores from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel 2024
+ *  (C) E. Krissinel 2024-2025
  *
  *  =================================================================
  *
@@ -208,7 +208,7 @@ function sendFetchQuery ( title,metaData,outDir,callback_func )  {
     }
   })
   .pipe ( fs.createWriteStream(fetch_file) )
-  .on   ( 'finish', () => {
+  .on   ( 'close', () => {
     console.log ( ' ... File received and saved' );
     send_dir.unpackDir ( 'cloudfetch.zip',outDir,false,
       function(err,packSize){

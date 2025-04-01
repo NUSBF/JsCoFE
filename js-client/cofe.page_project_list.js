@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -157,7 +157,7 @@ function ProjectListPage ( sceneId )  {
       pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true);
       pageTitle_lbl.setVisible ( true );
-      pageTitle_lbl.setCursor('pointer');
+      pageTitle_lbl.setCursor  ( 'pointer' );
     }
     if (folder_btn)  {
       let icon = 'folder_projects';
@@ -173,8 +173,9 @@ function ProjectListPage ( sceneId )  {
         case folder_type.user          : icon = 'folder_projects_user';  break;
         default : ;
       }
-      folder_btn.setImage ( image_path(icon) );
+      folder_btn.setImage   ( image_path(icon) );
       folder_btn.setVisible ( true );
+      folder_btn.setCursor  ( 'pointer' );
     }
   }
 
@@ -1147,9 +1148,11 @@ function ProjectListPage ( sceneId )  {
 
   function loadProjectList()  {
     //  Read list of projects from server
+    document.body.style.cursor = 'wait';
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
       projectList = jQuery.extend ( true, new ProjectList(__login_id),data );
       makeProjectListTable();
+      document.body.style.cursor = 'auto';
     },null,'persist');
   }
 
@@ -1544,6 +1547,7 @@ ProjectListPage.prototype.calcPageSize = function()  {
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
   // if (this.projectTable.paginator.paginate)
+  if (this.projectTable)
     this.projectTable.setPageSize ( this.calcPageSize() );
   // this.element.style.height = `${window.innerHeight - 32}px`;
   // this.element.style.height = (height+8) + 'px';

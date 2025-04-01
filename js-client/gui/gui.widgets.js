@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    10.01.25   <--  Date of Last Modification.
+ *    06.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -265,7 +265,7 @@ Widget.prototype.height_px = function() {
   return $(this.element).outerHeight();
 }
 
-Widget.prototype.getBoundingRect = function() {
+Widget.prototype.getBoundingClientRect = function() {
   return this.element.getBoundingClientRect();
 }
 
@@ -381,10 +381,16 @@ Widget.prototype.setNoWrap = function() {
   return this;
 }
 
-Widget.prototype.addWidget = function ( widget ) {
-  this.child.push(widget);
-  this.element.appendChild(widget.element);
+Widget.prototype.addWidget = function ( widget )  {
+  this.child.push ( widget );
+  this.element.appendChild ( widget.element );
   widget.parent = this;
+  return this;
+}
+
+Widget.prototype.setWidget = function ( widget )  {
+  this.removeAllChildren();
+  this.addWidget ( widget );
   return this;
 }
 
@@ -399,9 +405,9 @@ Widget.prototype.removeChild = function ( widget ) {
   let child = [];
   for (let i = 0; i < this.child.length; i++)
     if (this.child[i].id == widget.id) {
-      this.element.removeChild(widget.element);
+      this.element.removeChild ( widget.element );
     } else {
-      child.push(this.child[i]);
+      child.push ( this.child[i] );
     }
   this.child = child;
   return this;
@@ -409,7 +415,7 @@ Widget.prototype.removeChild = function ( widget ) {
 
 Widget.prototype.removeAllChildren = function () {
   while (this.element.firstChild)
-    this.element.removeChild(this.element.firstChild);
+    this.element.removeChild ( this.element.firstChild );
   this.child = [];
   return this;
 }
@@ -568,14 +574,18 @@ Widget.prototype.click = function () {
   this.element.click();
 }
 
+Widget.prototype.getBoundingClientRect = function ()  {
+  return this.element.getBoundingClientRect();
+}
+
 
 // -------------------------------------------------------------------------
 // Grid class
 
 function Grid ( style ) {
-  Widget.call(this, 'table');
+  Widget.call ( this,'table' );
   if (style != 'None')
-    this.element.setAttribute('class', 'grid-layout' + style);
+    this.element.setAttribute ( 'class','grid-layout' + style );
     // $(this.element).addClass ( 'grid-layout' + style );
 }
 
@@ -588,7 +598,7 @@ Grid.prototype.clear = function () {
 
 Grid.prototype.setStyle = function ( style ) {
   if (style != 'None')
-    this.element.setAttribute('class', 'grid-layout' + style);
+    this.element.setAttribute ( 'class','grid-layout' + style );
 }
 
 Grid.prototype.insertRows = function ( rowBefore, nRows ) {
@@ -765,82 +775,84 @@ Grid.prototype.addPopupButton = function ( text, icon_uri, row, col, rowSpan, co
   return button;
 }
 
-Grid.prototype.setRadioSet = function (row, col, rowSpan, colSpan) {
+Grid.prototype.setRadioSet = function ( row, col, rowSpan, colSpan ) {
   let radio = new RadioSet();
   this.setWidget(radio, row, col, rowSpan, colSpan);
   this.setNoWrap(row, col);
   return radio;
 }
 
-Grid.prototype.setLabel = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.setLabel = function ( text, row, col, rowSpan, colSpan ) {
   let label = new Label(text);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.addLabel = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.addLabel = function ( text, row, col, rowSpan, colSpan ) {
   let label = new Label(text);
   this.addWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.setIconLabel = function (text, icon_uri, row, col, rowSpan, colSpan) {
+Grid.prototype.setIconLabel = function ( text, icon_uri, row, col, rowSpan, colSpan ) {
   let label = new IconLabel(text, icon_uri);
   this.setWidget(label, row, col, rowSpan, colSpan);
   return label;
 }
 
-Grid.prototype.setInputText = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.setInputText = function ( text, row, col, rowSpan, colSpan ) {
   let input = new InputText(text);
   this.setWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
 
-Grid.prototype.addInputText = function (text, row, col, rowSpan, colSpan) {
+Grid.prototype.addInputText = function ( text, row, col, rowSpan, colSpan ) {
   let input = new InputText(text);
   this.addWidget(input, row, col, rowSpan, colSpan);
   return input;
 }
 
-Grid.prototype.setTextArea = function (text, placeholder, nrows, ncols,
-  row, col, rowSpan, colSpan) {
+Grid.prototype.setTextArea = function ( text, placeholder, nrows, ncols,
+                                        row, col, rowSpan, colSpan )  {
   let textarea = new TextArea(text, placeholder, nrows, ncols);
   this.setWidget(textarea, row, col, rowSpan, colSpan);
   return textarea;
 }
 
-Grid.prototype.addTextArea = function (text, placeholder, nrows, ncols,
-  row, col, rowSpan, colSpan) {
+Grid.prototype.addTextArea = function ( text, placeholder, nrows, ncols,
+                                        row, col, rowSpan, colSpan )  {
   let textarea = new TextArea(text, placeholder, nrows, ncols);
   this.addWidget(textarea, row, col, rowSpan, colSpan);
   return textarea;
 }
 
-Grid.prototype.setHLine = function (size, row, col, rowSpan, colSpan) {
+Grid.prototype.setHLine = function ( size, row, col, rowSpan, colSpan )  {
   let hline = new HLine(size);
   this.setWidget(hline, row, col, rowSpan, colSpan);
   return hline;
 }
 
-Grid.prototype.setImageButton = function (icon_uri, width, height, row, col, rowSpan, colSpan) {
-  let ibutton = new ImageButton(icon_uri, width, height);
+Grid.prototype.setImageButton = function ( icon_uri, width, height, 
+                                           row, col, rowSpan, colSpan ) {
+  let ibutton = new ImageButton ( icon_uri, width, height );
   this.setWidget(ibutton, row, col, rowSpan, colSpan);
   return ibutton;
 }
 
-Grid.prototype.setImage = function (icon_uri, width, height, row, col, rowSpan, colSpan) {
-  let image = new Image(icon_uri, width, height);
-  this.setWidget(image, row, col, rowSpan, colSpan);
+Grid.prototype.setImage = function ( icon_uri, width, height, 
+                                     row, col, rowSpan, colSpan ) {
+  let image = new Image ( icon_uri, width, height );
+  this.setWidget ( image, row, col, rowSpan, colSpan );
   return image;
 }
 
-Grid.prototype.setTree = function (rootName, row, col, rowSpan, colSpan) {
+Grid.prototype.setTree = function ( rootName, row, col, rowSpan, colSpan ) {
   let tree = new Tree(rootName);
   this.setWidget(tree, row, col, rowSpan, colSpan);
   return tree;
 }
 
-Grid.prototype.setProgressBar = function (max_value, row, col, rowSpan, colSpan) {
+Grid.prototype.setProgressBar = function ( max_value, row, col, rowSpan, colSpan ) {
   let pBar = new ProgressBar(max_value);
   this.setWidget(pBar, row, col, rowSpan, colSpan);
   return pBar;
@@ -1024,7 +1036,7 @@ IconLabel.prototype.setIconLabel = function (text, icon_uri) {
   }
 }
 
-IconLabel.prototype.setBackground = function (icon_uri) {
+IconLabel.prototype.setBackground = function ( icon_uri ) {
   if (icon_uri.length > 0)
     $(this.element).css({ 'background-image': 'url("' + icon_uri + '")' });
 }
@@ -1033,19 +1045,19 @@ IconLabel.prototype.setBackground = function (icon_uri) {
 // -------------------------------------------------------------------------
 // InputText class
 
-function InputText(text) {
+function InputText ( text ) {
   Widget.call(this, 'input');
   this.element.setAttribute('type', 'text');
   this.element.setAttribute('value', text);
 }
 
-InputText.prototype = Object.create(Widget.prototype);
+InputText.prototype = Object.create ( Widget.prototype );
 InputText.prototype.constructor = InputText;
 
 InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, autocomplete=null ) {
-  if (placeholder) this.element.setAttribute('placeholder', placeholder);
-  if (tooltip) this.setTooltip(tooltip);
-  if (type) this.element.setAttribute('type', type);
+  if (placeholder) this.element.setAttribute ( 'placeholder', placeholder );
+  if (tooltip) this.setTooltip ( tooltip );
+  if (type) this.element.setAttribute ( 'type', type );
   if (pattern) {
     if ((pattern == 'integer') || (pattern == 'integer_'))
       this.element.setAttribute ( 'pattern', '^(-?[0-9]+\d*)$|^0$' );
@@ -1061,23 +1073,23 @@ InputText.prototype.setStyle = function ( type, pattern, placeholder, tooltip, a
   return this;
 }
 
-InputText.prototype.setType = function (type) {
-  if (type) this.element.setAttribute('type', type);
+InputText.prototype.setType = function ( type ) {
+  if (type) this.element.setAttribute ( 'type', type );
   return this;
 }
 
-InputText.prototype.setReadOnly = function (yn_bool) {
+InputText.prototype.setReadOnly = function ( yn_bool ) {
   this.element.readOnly = yn_bool;
   return this;
 }
 
-InputText.prototype.setMaxInputLength = function (maxlength_int) {
-  this.element.setAttribute('maxlength', maxlength_int);
+InputText.prototype.setMaxInputLength = function ( maxlength_int ) {
+  this.element.setAttribute ( 'maxlength', maxlength_int );
   return this;
 }
 
 
-InputText.prototype.setDisabled = function (disable_bool) {
+InputText.prototype.setDisabled = function ( disable_bool ) {
   this.element.disabled = disable_bool;
   return this;
 }
@@ -1087,7 +1099,7 @@ InputText.prototype.getValue = function () {
   return this.element.value;
 }
 
-InputText.prototype.setValue = function (text) {
+InputText.prototype.setValue = function ( text ) {
   return this.element.value = text;
 }
 
@@ -1098,11 +1110,11 @@ InputText.prototype.addOnInputListener = function ( listener_func )  {
 }
 */
 
-InputText.prototype.setOnEnterListener = function (socket_function) {
+InputText.prototype.setOnEnterListener = function ( socket_function ) {
   (function (self) {
-    $(self.element).keypress(function (e) {
+    $(self.element).keypress ( function (e) {
       if (e.keyCode == 13)
-        socket_function(self.getValue());
+        socket_function ( self.getValue() );
     });
   }(this))
 }
@@ -1296,7 +1308,7 @@ function Button ( text, icon_uri, type='button' )  {
 Button.prototype = Object.create(Widget.prototype);
 Button.prototype.constructor = Button;
 
-Button.prototype._set_button = function (text, icon_uri) {
+Button.prototype._set_button = function ( text, icon_uri ) {
   this.div.innerHTML = text.toString();
   $(this.div).css({ 'white-space': 'nowrap' });
   // if (text)  this.div.innerHTML = text;
@@ -1324,12 +1336,12 @@ Button.prototype.getText = function () {
   return this.div.innerHTML;
 }
 
-Button.prototype.setButton = function (text, icon_uri) {
+Button.prototype.setButton = function ( text, icon_uri ) {
   this._set_button(text, icon_uri);
   return this;
 }
 
-Button.prototype.setIndicator = function (indicon_uri, location) {
+Button.prototype.setIndicator = function ( indicon_uri, location ) {
   // indicator is a small icon overlaying the button and placed
   // in the specified location:
   //     0 : top-left
@@ -1432,15 +1444,16 @@ function ImageButton ( icon_uri, width, height )  {
   Label.call ( this,' ' );
   this.image = new Image ( icon_uri, width, height );
   this.addWidget ( this.image );
-  this.setWidth  ( width  );
-  this.setHeight ( height );
+  this.setWidth  ( width      );
+  this.setHeight ( height     );
+  this.setCursor ( 'pointer'  );
 }
 
 ImageButton.prototype = Object.create(Label.prototype);
 ImageButton.prototype.constructor = ImageButton;
 
-ImageButton.prototype.setImage = function (icon_uri) {
-  this.image.setImage(icon_uri);
+ImageButton.prototype.setImage = function ( icon_uri ) {
+  this.image.setImage ( icon_uri );
 }
 
 
@@ -1692,7 +1705,7 @@ SelectFile.prototype.getFiles = function () {
 // ToolBar class
 
 function ToolBar() {
-  Grid.call(this, '');
+  Grid.call ( this,'' );
   this.element.setAttribute('class', 'toolbar ui-widget-header ui-corner-all');
 }
 
@@ -1812,16 +1825,16 @@ IFrame.prototype.getWindow = function () {
 // Section class
 
 function Section(title_str, open_bool) {
-  Widget.call(this, 'div');
+  Widget.call ( this,'div' );
   this._type = 'Section';
-  this.header = new Widget('h3');
+  this.header = new Widget ( 'h3' );
   this.titleId = this.id + '_title';
   this.header.element.innerHTML = '<span id="' + this.titleId + '">' + title_str + '</span>';
   this.addWidget(this.header);
-  this.body = new Widget('div');
-  this.addWidget(this.body);
-  this.grid = new Grid('');
-  this.body.addWidget(this.grid);
+  this.body = new Widget ( 'div' );
+  this.addWidget ( this.body );
+  this.grid = new Grid ( '' );
+  this.body.addWidget ( this.grid );
   this.title = title_str;
   let options = {
     collapsible: true,
@@ -1829,7 +1842,7 @@ function Section(title_str, open_bool) {
   };
   if (open_bool) options.active = 0;
   else options.active = false;
-  $(this.element).accordion(options);
+  $(this.element).accordion ( options );
 }
 
 

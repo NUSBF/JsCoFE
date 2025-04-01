@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.06.24   <--  Date of Last Modification.
+#    24.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022-2024
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -169,8 +169,10 @@ class SliceNDice(basic.TaskDriver):
 
 
             if not refmac_pdb or not refmac_mtz:
+                
                 self.putTitle ( "No solution generated" )
                 self.putMessage ( "<i>No solution was produced, although expected</i>" )
+
             else:
 
                 # solution found; firstly, check whether the space group has changed
@@ -222,13 +224,13 @@ class SliceNDice(basic.TaskDriver):
 
                     rvrow0 = self.rvrow
                     try:
-                        meta = qualrep.quality_report ( self,revision )
+                        meta = qualrep.quality_report ( self,revision,None )
                     except:
                         meta = None
-                        self.stderr ( " *** molprobity failure" )
-                        self.rvrow = rvrow0
+                        self.stderr ( " *** validation tools failure" )
+                        self.rvrow = rvrow0 + 6
 
-                    if meta and splitId:
+                    if meta and splitId and meta["meta_complete"]:
                         verdict_meta = {
                             "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
                             "params"     : None, # will be read from log file
@@ -255,10 +257,12 @@ class SliceNDice(basic.TaskDriver):
                             "R_free"   : str(r_free)
                         }
 
-                    auto.makeNextTask(self, {
-                            "revision" : revision,
-                            "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
-                        }, log=self.file_stderr)
+                    if meta and meta["meta_complete"]:
+                        auto.makeNextTask ( self, {
+                                "revision" : revision,
+                                "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                            }, log=self.file_stderr )
+
 
         # self.generic_parser_summary["slicendice"] = {
         #   "summary_line" : str(nmodels) + " model(s) generated"

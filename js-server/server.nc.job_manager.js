@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.01.25   <--  Date of Last Modification.
+ *    08.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -996,7 +996,7 @@ let cfg = conf.getServerConfig();
 
       send_dir.sendDir ( jobEntry.jobDir,feURL,fe_fsmount,
                          cmd.fe_command.jobFinished + job_token,
-                         nc_meta,{compression:cfg.compression},
+                         nc_meta,{compression:cfg.compression},null,
 
         function(rdata,stats)  {  // send was successful
 
@@ -1057,17 +1057,18 @@ let cfg = conf.getServerConfig();
       utils.writeObject ( path.join(jobEntry.jobDir,cmd.ncMetaFileName),nc_meta );
     
       send_dir.packDir  ( jobEntry.jobDir, { 
-          compression : 5,
-          destination : send_dir.getPackPath ( jobEntry.jobDir )
+          compression : 5
         },
         function(errs,jobballPath,jobballSize){
           if (jobballSize>0)  {
+            let fdest = send_dir.getPackPath ( jobEntry.jobDir );
+            utils.moveFile ( jobballPath,fdest );
             jobEntry.sendTrials = 0;  // indicate that it's ready
             jobEntry.jobStatus  = task_t.job_code.exiting;
             writeNCJobRegister();
-          } // else  {
-          // errors
-          // }
+          } else  {
+            log.error ( 11,'packed job directory has zero size' );
+          }
         });
 
     }
@@ -1081,6 +1082,8 @@ let cfg = conf.getServerConfig();
 
 function ncRunJob ( job_token,meta )  {
 // This function must not contain asynchronous code.
+
+  log.standard ( 5,'preparing to run a job, token: ' + job_token );
 
   // acquire the corresponding job entry
   let jobEntry = ncJobRegister.getJobEntry ( job_token );
@@ -1153,14 +1156,13 @@ function ncRunJob ( job_token,meta )  {
       default       :
       case 'CLIENT' : // client NC always runs on local machine, therefore SHELL
       case 'REMOTE' : // needed only for pseudo-remote NC for debugging on local machine
-      case 'SHELL'  : log.standard ( 5,'starting...' );
-                      command.push ( 'nproc='  + nproc.toString()  );
+      case 'SHELL'  : command.push ( 'nproc='  + nproc.toString()  );
                       command.push ( 'ncores=' + ncores.toString() );
                       let job = utils.spawn ( command[0],command.slice(1),{} );
                       jobEntry.pid = job.pid;
 
-                      log.standard ( 5,'task ' + task.id + ' started, pid=' +
-                                       jobEntry.pid + ', token:' + job_token );
+                      log.standard ( 6,'task ' + task.id + ' started, pid=' +
+                                       jobEntry.pid + ', token: ' + job_token );
 
                       // make stdout and stderr catchers for debugging purposes
                       let stdout = '';
@@ -1194,13 +1196,13 @@ function ncRunJob ( job_token,meta )  {
                             log.debug ( 105,'[' + comut.padDigits(task.id,4) +
                                             '] stderr=' + stderr );
   
-                          if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
+                          // if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
   //                          if ((code!=0) && (code!=203) && (code!=204))
                             if (code && (code!=203) && (code!=204) && (code!=205))
                               writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                             if (jobEntry.jobStatus!=task_t.job_code.exiting)
                               ncJobFinished ( job_token,code );
-                          }  
+                          // }  
 
                         });
 
@@ -1232,7 +1234,7 @@ function ncRunJob ( job_token,meta )  {
                           if ((w[0]=='Your') && (w[1]=='job'))
                             jobEntry.pid = parseInt(w[2]);
                         }
-                        log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
+                        log.standard ( 7,'task '  + task.id + ' qsubbed, '  +
                                          'name='  + jobName +
                                          ', pid=' + jobEntry.pid +
                                          ', token:' + job_token );
@@ -1299,7 +1301,7 @@ function ncRunJob ( job_token,meta )  {
                           if (comut.isInteger(job_id))
                             jobEntry.pid = job_id;
 
-                          log.standard ( 7,'task '    + task.id + ' submitted, ' +
+                          log.standard ( 8,'task '    + task.id + ' submitted, ' +
                                            'name='    + jobName +
                                            ', pid='   + jobEntry.pid +
                                            ', token:' + job_token );
@@ -1952,13 +1954,15 @@ function ncGetJobResults ( post_data_obj,callback_func,server_response )  {
     callback_func ( response );
   
   } else if (jobEntry.jobStatus==task_t.job_code.running)  {
+  // } else if ((jobEntry.jobStatus==task_t.job_code.running) ||
+  //            ((jobEntry.jobStatus!=task_t.job_code.exiting) && jobEntry.sendTrials))  {
   
     response = new cmd.Response ( cmd.nc_retcode.jobIsRunning,post_data_obj.job_token,{} );
     callback_func ( response );
-  
+
   } else  {
 
-    let jobballPath = send_dir.getPackPath(jobEntry.jobDir);
+    let jobballPath = send_dir.getPackPath ( jobEntry.jobDir );
     if (utils.fileExists(jobballPath))  {
       utils.send_file ( jobballPath,server_response,'application/zip',false,0,10,null,
         function(rc){

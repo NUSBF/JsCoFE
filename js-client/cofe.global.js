@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.01.25   <--  Date of Last Modification.
+ *    01.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -86,25 +86,31 @@ var __fe_url          =         // front-end url as returned by the server (not 
                         document.location.host     +
                         document.location.pathname;
 
-var __auth_software   = null;   // software authorisation data
-var __user_authorisation = null;  // user authorisation data
-var __environ_server  = [];     // list of key environmental variables on NCs
-var __environ_client  = [];     // list of key environmental variables on Client
-var __my_workflows    = [];     // user defined workflows
+var __auth_software         = null;  // software authorisation data
+var __user_authorisation    = null;  // user authorisation data
+var __environ_server        = [];    // list of key environmental variables on NCs
+var __environ_client        = [];    // list of key environmental variables on Client
+var __remoteJobServer       = { url: null, status: 'nourl' };
+var __remote_environ_server = [];    // list of key environmental variables on NCs
+var __remote_login_id       = '';
+// var __remote_pwd            = '';
+var __remote_tasks          = { 'TaskStructurePrediction' : true };
+var __my_workflows          = [];    // user defined workflows
 
-var __clipboard       = { task: null };     // clipboard for copy-pasting jobs
+var __clipboard             = { task: null };  // clipboard for copy-pasting jobs
 
-var __tips            = null;   // tips loaded from FE (optional), used in login page
+var __tips                  = null;  // tips loaded from FE (optional), used in login page
 
-var __mobile_device   = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
-var __iOS_device      = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
-                        (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
-                         /MacIntel/.test(navigator.platform));
-var __any_mobile_device = __mobile_device || __iOS_device;
+const __mobile_device      = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+const __iOS_device         = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+                           (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
+                            /MacIntel/.test(navigator.platform));
+const __any_mobile_device  = __mobile_device || __iOS_device;
+const __mobile_width       = 1200;  // scrollable width for mobile devices
 
-const __regexp_login     = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
-const __regexp_uname     = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
-const __regexp_globus_id = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
+const __regexp_login       = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname       = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+const __regexp_globus_id   = '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$';
 
 // variable gets raised in jscofe-browser after loading the page
 // alert ( ' isQt=' + isQtWebEngine() );
@@ -500,13 +506,21 @@ function replaceStylesheets ( href_pattern,href )  {
   });
 }
  
-function showFlashMessage ( flash_text,rect )  {
+function showFlashMessage ( flash_text,rect,widget=null )  {
   if (rect)  {
     let flashPanel = new Widget('div');
-    $(flashPanel.element).appendTo(document.body);
+    let left = rect.left;
+    let top  = rect.top;
+    if (widget)  {
+      $(flashPanel.element).appendTo ( widget.element );
+      let rect0 = widget.getBoundingClientRect();
+      left -= rect0.left;
+      top  -= rect0.top;
+    } else
+      $(flashPanel.element).appendTo(document.body);
     flashPanel.addClass ( 'flash-panel' );
-    flashPanel.element.style.left = `${rect.left + rect.width/2}px`;
-    flashPanel.element.style.top  = `${rect.top - 10}px`;
+    flashPanel.element.style.left = `${left + rect.width/2}px`;
+    flashPanel.element.style.top  = `${top  - 10}px`;
     flashPanel.setFontSize   ( '86%' )
               .setFontItalic ( true  )
               .setText   ( flash_text );
@@ -515,6 +529,7 @@ function showFlashMessage ( flash_text,rect )  {
     },2000);
   }
 }
+
 
 function copyToClipboard ( text,rect )  {
  
@@ -567,7 +582,7 @@ var __doNotShowList = [];
 
 function doNotShowAgain ( key,url )  {
 
-  var topic = url.replace ( /^.*\/|\.[^.]*$/g,'' );
+  let topic = url.replace ( /^.*\/|\.[^.]*$/g,'' );
 
   if (key==0)  {
 
@@ -578,7 +593,7 @@ function doNotShowAgain ( key,url )  {
 
     if (__doNotShowList.indexOf(topic)<0)  {
       __doNotShowList.push ( topic );
-      var userData = {};
+      let userData = {};
       userData.helpTopics = __doNotShowList;
       serverRequest ( fe_reqtype.saveHelpTopics,userData,'Do not show again',
                       null,null,'persist' );

@@ -211,49 +211,56 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_i1toCloud.html" class="md-nav__link">6. Cloud Run Facility in CCP4i Interface</a>
+      <a href="jscofe_synchweb.html" class="md-nav__link">6. Upload Files to CCP4 Cloud from ISPyB</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_custom_workflows.html" class="md-nav__link">7. Custom (User-Created) Project Workflows</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">7. Cloud Run Facility in CCP4i Interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">8. CCP4 Cloud Archive</a>
+      <a href="jscofe_custom_workflows.html" class="md-nav__link">8. Custom (User-Created) Project Workflows</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">9. CCP4 Cloud Education Capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">9. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">10. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">10. CCP4 Cloud Education Capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">11. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">11. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">12. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">12. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">13. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -327,24 +334,23 @@
 <h2 id="alphafold-and-manual-molecular-replacement">AlphaFold and Manual Molecular Replacement<a class="headerlink" href="#alphafold-and-manual-molecular-replacement" title="Permalink to this headline">¶</a></h2>
 <p>When automatic methods fail, a solution may still be attainable through custom manipulation of MR models and MR programs (Phaser, Molrep, and related pipelines such as Slice-n-Dice and MorDA). This approach requires more user involvement but provides greater control over program parameters, which can enhance the chances of a successful solution. The following steps will guide you through this process.</p>
 <p>AlphaFold2 integration in CCP4 Cloud is also supported for different stages of the structure determination process.</p>
-<p>CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">Import</a> task puts a notice of conversion in the <em>Import Summary</em> table, other tasks, such as <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">MrParse</a>, do that silently.</p>
+<p>CCP4 Cloud tasks automatically recognize AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or RMSD estimates (RoseTTAFold) into B-factors. The <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">Import</a> task provides a notice of this conversion in the <em>Import Summary</em> table, while other tasks, such as <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">MrParse</a>, perform the conversion silently.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is important to convert pLLDT scores and rmsd estimates, placed in B-factor columns of predicted models, into B-factors. Without that, best parts of the model will get the lowest weight in Molecular Replacement, which significantly decreases chances for solution. All is done automatically, you are fully set.</p>
+<p class="last">It is essential to convert pLDDT scores and RMSD estimates, which are stored in the B-factor columns of predicted models, into actual B-factors. Without this conversion, the best parts of the model would receive the lowest weight in Molecular Replacement, significantly reducing the chances of obtaining a solution. This process is fully automated, so no manual intervention is required.</p>
 </div>
 <div class="toggle-header docutils container">
-<strong>pLDDT cut</strong></div>
+<strong>pLDDT Cut</strong></div>
 <div class="toggle-content docutils container">
-<blockquote>
-<div><p>AlphaFold produces a per-residue estimate of its confidence score, called <strong>pLDDT</strong>, ranging from 0 to 100. This option sets the minimum level of <strong>pLDDT</strong> of selected residues.</p>
+<p>AlphaFold generates a per-residue confidence estimate called <strong>pLDDT</strong>, which ranges from 0 to 100. This option sets the minimum threshold for selecting residues based on their pLDDT scores:</p>
 <ul class="simple">
-<li><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</li>
-<li><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</li>
-<li><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</li>
-<li><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</li>
+<li><strong>pLDDT &gt; 90</strong>: Residues are expected to be positioned with high accuracy. These models are suitable for applications requiring high precision, such as characterizing binding sites.</li>
+<li><strong>70 &lt; pLDDT &lt; 90</strong>: Residues are expected to be positioned reasonably well, generally providing a good backbone prediction.</li>
+<li><strong>50 &lt; pLDDT &lt; 70</strong>: Residues are modeled with low confidence and should be treated with caution.</li>
+<li><strong>pLDDT &lt; 50</strong>: Residues should not be interpreted. These scores strongly indicate disorder, suggesting that the region is either unstructured under physiological conditions or becomes structured only as part of a complex.</li>
 </ul>
-</div></blockquote>
 </div>
+<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud Tips</span></a></p>
 
 
 <h2 id="generate-or-obtain-predicted-models">Generate or Obtain Predicted Models<a class="headerlink" href="#generate-or-obtain-predicted-models" title="Permalink to this headline">¶</a></h2>

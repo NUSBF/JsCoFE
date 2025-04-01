@@ -117,7 +117,7 @@ Dialog.prototype.launch = function()  {
 
 // -------------------------------------------
 
-function MessageBox ( title,message,icon_name='' )  {
+function MessageBox ( title,message,icon_name='',modal=true )  {
 // message box with icon
 
   Widget.call ( this,'div' );
@@ -140,7 +140,7 @@ function MessageBox ( title,message,icon_name='' )  {
     resizable : false,
     height    : 'auto',
     width     : 'auto',
-    modal     : true,
+    modal     : modal,
     buttons   : [{
       id    : 'ok_btn_' + __id_cnt++,
       text  : 'Ok',
@@ -469,20 +469,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     });
 
     $(dlg.display.element).on('load',function(){
-
-      // var body = dlg.display.element.contentWindow.document.querySelector('body');
-      // body.style.fontSize = '16px';
-      //
-      // if (!__any_mobile_device)  {
-      //   dlg.options.width  = w0;
-      //   dlg.options.height = h0 + 116;
-      // }
-      //
-      // var dialog = $(dlg.element).dialog ( dlg.options );
-      // if (__any_mobile_device)
-      //   dialog.siblings('.ui-dialog-titlebar').remove();
-
-      // alert ( ' >>> ' + dlg.display.getDocument().location );
 
       if (!dlg.history_control)  {
         dlg.history_position++;

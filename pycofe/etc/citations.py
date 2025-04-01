@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    21.06.23   <--  Date of Last Modification.
+#    08.02.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2025
 #
 # ============================================================================
 #
@@ -1294,6 +1294,21 @@ citations = {
                             'doi'     : '10.1107/S090744491200251X'
                          }]
                   },
+
+    'iris'           : { 'name'     : 'Iris',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Rochira, W. and Agirre, J.',
+                            'title'   : 'Iris: Interactive all-in-one graphical validation of 3D protein model iterations',
+                            'journal' : 'Protein Sci.',
+                            'volume'  : '30(1)',
+                            'year'    : '2021',
+                            'pages'   : '93-107',
+                            'doi'     : '10.1002/pro.3955',
+                            'pmid'    : '32964594',
+                            'pmcid'   : 'PMC7737763'
+                         }]
+                  }
 
 }
 
