@@ -1540,6 +1540,7 @@ function writeJobStats ( jobEntry )  {
     if (wfId)
       wfId = '[' + wfId + ']:';
 
+    let login_spec = jobEntry.rfe_token ? '-/' : '';
     S += com_utils.padDigits ( feJobRegister.n_jobs+1,6 ) + ' ' +
 
          '['   + new Date(t).toUTCString() +
@@ -1550,13 +1551,11 @@ function writeJobStats ( jobEntry )  {
          com_utils.padDigits ( dh,2 ) + ':' +
          com_utils.padDigits ( dm,2 ) + '.' +
          com_utils.padDigits ( ds,2 ) + ' ' +
-
          com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
          com_utils.padStringRight ( jobClass.state,' ',-8 )      + ' ' +
-
-         com_utils.padStringRight ( jobEntry.loginData.login +
+         com_utils.padStringRight ( login_spec + jobEntry.loginData.login +
                 ' (' + userRation.jobs_total + ')',' ',20 ) +
-                    ' ' + wfId + jobClass.title + '\n';
+                ' '  + wfId + jobClass.title + '\n';
 
     utils.appendString ( fpath,S );
 
