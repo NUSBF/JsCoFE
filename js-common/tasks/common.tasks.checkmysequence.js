@@ -42,7 +42,7 @@ function TaskCheckMySequence()  {
   this.title = 'CheckMySequence';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!phases','~mmcif_only']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!seq','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
