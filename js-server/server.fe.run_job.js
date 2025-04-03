@@ -1414,7 +1414,43 @@ const _hour = 3600000;
 const _min  = 60000;
 const _sec  = 1000;
 
-function writeJobStats ( jobEntry )  {
+function __make_job_log_record ( jobEntry,jobClass,userRation,rlspec )  {
+
+  let S     = '';
+  let fpath = getJobStatPath(0);
+
+  if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
+      (!utils.fileExists(fpath)))  {
+
+
+    if (!('logflow' in feJobRegister))  {
+      feJobRegister.logflow = {};
+      feJobRegister.logflow.logno = 0;
+      feJobRegister.logflow.njob0 = 0;
+    }
+
+    if (conf.getFEConfig().checkLogChunks(
+        feJobRegister.n_jobs-feJobRegister.logflow.njob0,
+        feJobRegister.logflow.logno))  {
+      feJobRegister.logflow.logno++;
+      feJobRegister.logflow.njob0 = feJobRegister.n_jobs;
+      utils.moveFile ( fpath,getJobStatPath(feJobRegister.logflow.logno) );
+    }
+
+    S = '------------------------------------------------------------------' +
+        '------------------------------------------------------------------' +
+        '--------------------------------\n' +
+        ' ###          Date Finished                   Date Started'  +
+        '             DDD-HH:MM:SS NC#  State   User (jobs)        '  +
+        '  Title\n' +
+        '------------------------------------------------------------------' +
+        '------------------------------------------------------------------' +
+        '--------------------------------\n';
+  }
+
+  let wfId = jobClass.autoRunId;
+  if (wfId)
+    wfId = '[' + wfId + ']:';
 
   let t  = Date.now();
   let dt = t - jobEntry.start_time;
@@ -1422,6 +1458,31 @@ function writeJobStats ( jobEntry )  {
   let dh = Math.trunc(dt/_hour);   dt -= dh*_hour;
   let dm = Math.trunc(dt/_min );   dt -= dm*_min;
   let ds = Math.trunc(dt/_sec );
+
+  let login_spec = jobEntry.rfe_token ? rlspec+jobEntry.remoteLogin 
+                                      : jobEntry.loginData.login;
+  S += com_utils.padDigits ( feJobRegister.n_jobs+1,6 ) + ' ' +
+
+       '['   + new Date(t).toUTCString() +
+       '] [' + new Date(jobEntry.start_time).toUTCString() +
+       '] '  +
+
+       com_utils.padDigits ( dd,3 ) + '-' +
+       com_utils.padDigits ( dh,2 ) + ':' +
+       com_utils.padDigits ( dm,2 ) + '.' +
+       com_utils.padDigits ( ds,2 ) + ' ' +
+       com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
+       com_utils.padStringRight ( jobClass.state,' ',-8 )      + ' ' +
+       com_utils.padStringRight ( login_spec + 
+                ' (' + userRation.jobs_total + ')',' ',20 ) +
+                ' '  + wfId + jobClass.title + '\n';
+
+  utils.appendString ( fpath,S );
+
+}
+
+
+function writeJobStats ( jobEntry )  {
 
   let jobDataPath = prj.getJobDataPath ( jobEntry.loginData,jobEntry.project,
                                          jobEntry.jobId );
@@ -1473,13 +1534,8 @@ function writeJobStats ( jobEntry )  {
           uri     : cmd.fe_command.updateUserRation,
           baseUrl : remoteURL,
           method  : 'POST',
-          body    : { login    : jobEntry.remoteLogin, 
-                      jobClass : { _type      : jobClass._type,
-                                   id         : jobClass.id,
-                                   project    : jobClass.project,
-                                   disk_space : 0,
-                                   cpu_time   : jobClass.cpu_time 
-                                 }
+          body    : { jobEntry : jobEntry, //.remoteLogin, 
+                      jobClass : jobClass
                     },
           json    : true,
           rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
@@ -1505,67 +1561,15 @@ function writeJobStats ( jobEntry )  {
     ration.updateProjectStats ( jobEntry.loginData,jobClass.project,
                                 jobClass.cpu_time,jobClass.disk_space,1,false );
 
-    let S     = '';
-    let fpath = getJobStatPath(0);
-
-    if ((Math.trunc(feJobRegister.n_jobs/20)*20==feJobRegister.n_jobs) ||
-        (!utils.fileExists(fpath)))  {
-
-      if (!('logflow' in feJobRegister))  {
-        feJobRegister.logflow = {};
-        feJobRegister.logflow.logno = 0;
-        feJobRegister.logflow.njob0 = 0;
-      }
-
-      if (conf.getFEConfig().checkLogChunks(
-          feJobRegister.n_jobs-feJobRegister.logflow.njob0,
-          feJobRegister.logflow.logno))  {
-        feJobRegister.logflow.logno++;
-        feJobRegister.logflow.njob0 = feJobRegister.n_jobs;
-        utils.moveFile ( fpath,getJobStatPath(feJobRegister.logflow.logno) );
-      }
-
-      S = '------------------------------------------------------------------' +
-          '------------------------------------------------------------------' +
-          '--------------------------------\n' +
-          ' ###          Date Finished                   Date Started'  +
-          '             DDD-HH:MM:SS NC#  State   User (jobs)        '  +
-          '  Title\n' +
-          '------------------------------------------------------------------' +
-          '------------------------------------------------------------------' +
-          '--------------------------------\n';
-    }
-
-    let wfId = jobClass.autoRunId;
-    if (wfId)
-      wfId = '[' + wfId + ']:';
-
-    let login_spec = jobEntry.rfe_token ? '-/' : '';
-    S += com_utils.padDigits ( feJobRegister.n_jobs+1,6 ) + ' ' +
-
-         '['   + new Date(t).toUTCString() +
-         '] [' + new Date(jobEntry.start_time).toUTCString() +
-         '] '  +
-
-         com_utils.padDigits ( dd,3 ) + '-' +
-         com_utils.padDigits ( dh,2 ) + ':' +
-         com_utils.padDigits ( dm,2 ) + '.' +
-         com_utils.padDigits ( ds,2 ) + ' ' +
-         com_utils.padDigits ( jobEntry.nc_number.toString(),3 ) + ' ' +
-         com_utils.padStringRight ( jobClass.state,' ',-8 )      + ' ' +
-         com_utils.padStringRight ( login_spec + jobEntry.loginData.login +
-                ' (' + userRation.jobs_total + ')',' ',20 ) +
-                ' '  + wfId + jobClass.title + '\n';
-
-    utils.appendString ( fpath,S );
+    __make_job_log_record ( jobEntry,jobClass,userRation,'[-]' );
 
     jobClass.end_time = Date.now();
 
     if (jobClass.autoRunId)
       jobClass.job_dialog_data.panel = 'output';
-
+  
     utils.writeObject ( jobDataPath,jobClass );
-
+  
   } else  {
 
     log.error ( 12,'No job metadata found at path ' + jobDataPath );
@@ -1589,10 +1593,13 @@ function updateUserRation ( data,callback_func )  {  // gets UserData object
   // running remote jobs (i.e. jobs coming from 'external' FEs, typically 
   // CCP4 Cloud Local setups).
 
-  callback_func ( 
-    new cmd.Response ( cmd.fe_retcode.ok,'',
-      { ration : ration.bookJob ( { login : data.login },data.jobClass,false ) }
-    ));
+  data.jobClass.disk_space = 0;
+  let userRation = ration.bookJob ( data.jobEntry.remoteLogin,data.jobClass,false );
+  data.jobEntry.loginData.login = data.jobEntry.remoteLogin;
+  __make_job_log_record ( data.jobEntry,data.jobClass,userRation,'[+]' );
+  callback_func (
+    new cmd.Response ( cmd.fe_retcode.ok,'',{ ration : userRation } )
+  );
 
 }
 
