@@ -66,7 +66,7 @@ else    registerClass ( 'TaskCheckMySequence',TaskCheckMySequence,TaskTemplate.p
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCheckMySequence.prototype.icon           = function()  { return 'task_findmysequence'; }
+TaskCheckMySequence.prototype.icon           = function()  { return 'task_checkmysequence'; }
 TaskCheckMySequence.prototype.clipboard_name = function()  { return '"checkMySequence"';    }
 
 TaskCheckMySequence.prototype.desc_title     = function()  {
