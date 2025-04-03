@@ -45,6 +45,117 @@ from proc  import import_seqcp
 # ============================================================================
 # Make CheckMySequence driver
 
+
+def results2string(results_dict):
+
+    output = []
+
+    #output.append("")
+    #output.append('*'*80)
+    #output.append('*'*33 + '  SUMMARY  ' + '*'*36)
+    #output.append('*'*80)
+    #output.append("")
+
+    # 1 UNIDENTIFIED_CHAINS
+    if results_dict['unidentified_chains']:
+        output.append("")
+        output.append(" ==> Unidentified chains; check input sequences and model-to-map fit\n")
+        for chtype in ['protein', 'na']:
+            for error in results_dict['unidentified_chains'].get(chtype, []):
+                output.append( "\t%s/%s:%s"%(error['chain_id_reference'], error['resid_start_reference'], error['resid_end_reference']))
+
+    # 2 SEQUENCE_MISMATCHES
+    if results_dict['sequence_mismatches']:
+        output.append("")
+        output.append(" ==> Chains with sequence mismatches; you will have to fix them first!\n")
+        for chtype in ['protein', 'na']:
+            for ch in results_dict['sequence_mismatches'].get(chtype, []):
+                output.append( " - %s chain %s/%s:%s  - sequence identity to reference %.2f%% [E-value=%.2e]"%
+                                                                                        ("Protein" if chtype=='protein' else "Nucleic-acid",
+                                                                                        ch['chain_id_reference'],
+                                                                                        ch['resid_start_reference'],
+                                                                                        ch['resid_end_reference'],
+                                                                                        ch['seq2ref_si'],
+                                                                                        ch['evalue']))
+                output.append(ch['alignment'])
+
+    # 3 INDEXING_ISSUES
+    if results_dict['indexing_issues']:
+        output.append("")
+        output.append(" ==> Sequence assignment issues\n")
+        for chtype in ['protein', 'na']:
+            for res in results_dict['indexing_issues'].get(chtype, []):
+                output.append(" - %s chain fragment %s/%i-%i has a chain break at %s/%i and no residue indexing gap, check!" %
+                                    ("Protein" if chtype=='protein' else "Nucleic-acid",
+                                    res['chain_id_reference'],
+                                    res['resid_start_reference'],
+                                    res['resid_end_reference'],
+                                    res['chain_id_reference'],
+                                    res['break_idx']))
+
+                if len(res['align_sto'])<500: output.append(res['align_sto'])
+
+    # 4 TRACING_ISSUES
+    if results_dict['tracing_issues']:
+        output.append("")
+        output.append(" ==> Possible tracing issues (inconsistent shifts)\n")
+        for chtype in ['protein', 'na']:
+            for res in results_dict['tracing_issues'].get(chtype, []):
+
+                output.append(" - %s chain fragment %s/%i-%i may be mistraced, check!" % ("Protein" if chtype=='protein' else "Nucleic-acid",
+                                                                                    res['chain_id_reference'],
+                                                                                    res['resid_start_reference'],
+                                                                                    res['resid_end_reference']))
+    # 5 REGISTER_SHIFTS
+    if results_dict['register_shifts']:
+        output.append("")
+        output.append(" ==> Sequence register shifts\n")
+        for chtype in ['protein', 'na']:
+            for res in results_dict['register_shifts'].get(chtype, []):
+
+                output.append(" - %s chain fragment %s/%i-%i may be shifted by %i residue%s [p-value=%.2e]" % 
+                                                                                        ("protein" if chtype=='protein' else "nucleic-acid",
+                                                                                        res['chain_id_reference'],
+                                                                                        res['resid_start_reference'],
+                                                                                        res['resid_end_reference'],
+                                                                                        -res['shift'],
+                                                                                        's' if abs(res['shift'])>1 else '',
+                                                                                        10**-res['mlogpv']))
+                # do not show sequences for long shifts - they look ugly anyway
+                if abs(res['shift'])>10: continue
+
+
+                output.append( "   model seq %i-%i"%(res['resid_start_reference'], res['resid_end_reference']) )
+                output.append(f"      {res['model_seq']}")
+
+                output.append( "     new seq %i-%i"%(res['resid_start_reference']+res['shift'], res['resid_end_reference']+res['shift']) )
+                output.append(f"      {res['new_seq']}")
+                output.append( "\n")
+
+    if results_dict['clean_report']:
+        output.append("")
+        output.append("    No issues detected, congratulations!")
+        output.append('\n\n')
+        return "\n".join(output), True
+
+    return "\n".join(output), False
+
+def put_checkMySequence_section ( body,revision ):
+
+    # return None
+
+    edmeta = None
+
+    if revision.Structure:
+
+        struct = revision.Structure
+        sec_id = body.getWidgetId ( "edstats" )
+        body.putSection ( sec_id,"Sequence assignment analysis",openState_bool=False )
+
+        mtzin  = struct.getMTZFilePath ( body.outputDir() )
+
+
+
 class CheckMySequence(basic.TaskDriver):
 
     # redefine name of input script file
@@ -53,6 +164,7 @@ class CheckMySequence(basic.TaskDriver):
     def importDir(self): return "." # in current directory ( job_dir )
     def seqin(self):  return "checkmysequence.fasta"
     def jsonout(self): return os.path.join(self.outputDir(), 'results.json')
+    def checkmysequence_out(self): return "checkmysequence.out"
 
     # ------------------------------------------------------------------------
 
@@ -66,17 +178,19 @@ class CheckMySequence(basic.TaskDriver):
         if not modelin:
             modelin = istruct.getPDBFilePath ( self.inputDir() )
 
-        seq = self.input_data.data.seq
+        data_seq = self.input_data.data.seq
 
-        if len(seq)>0:
-            with open(self.seqin(),'w') as newf:
-                for i in range(len(seq)):
-                    seq[i] = self.makeClass ( seq[i] )
-                    with open(seq[i].getSeqFilePath(self.inputDir()),'r') as hf:
-                        newf.write(hf.read())
-                    newf.write ( '\n' );
 
-        jsonout = os.path.join(self.outputDir(), 'results.json')
+        self.putMessage ( "&nbsp;<p><h3>Target sequences</h3>")
+        with open(self.seqin(),'w') as newf:
+            for i,seq in enumerate(data_seq):
+                seqclass     = self.makeClass ( seq )
+                seqstr = seqclass.getSequence(self.inputDir())
+                seqstr=seqstr.replace("-","")
+                self.putMessage( f">{i}|len={len(seqstr)}")
+                self.putMessage( f"{seqstr[:50]}...\n" )
+                newf.write(f">{i}\n{seqstr}\n")
+
 
         cmd=[ "--mtzin"  , mtzin, 
               "--labin"  , f"{istruct.FWT},{istruct.PHWT}",
@@ -86,7 +200,7 @@ class CheckMySequence(basic.TaskDriver):
               "--debug"
             ]
 
-        #self.flush()
+        self.flush()
 
         rc = self.runApp ( "checkmysequence",cmd,logType="Main" )
 
@@ -103,35 +217,33 @@ class CheckMySequence(basic.TaskDriver):
             results = json.loads(ifile.read())
 
         nseq = 0
-
-        if results:
-            self.putTitle ( "checkMySequence validation report" )
-
-            self.putMessage ( f"<b>results</b> {results}<i>This is likely to be a program bug, please report.</i>" )
-
-            # for k,v in results.items():
-            #     import_seqcp.run ( self,
-            #         "protein",
-            #         self.outputFName,
-            #         ">" + v['sequence_id'] + "|E-value=" + v["evalue"] + "\n" +  v["sequence"] 
-            #     )
-
-            # for k,v in results.items():
-            #     self.putMessage ( f"<b>#{k}</b> E-value={v['evalue']}</br>>{v['sequence_id']}</br>{v['sequence']}<\br>" )
+        grid_row = 0
+        grid_id  = 0
+        nclash  = 0
+        if not results:
+            meta["meta_complete"] = False
+            self.putMessage1 ( grid_id,"&nbsp;<p><i>checkMySequence output file was not produced</i>",
+                               grid_row,col=0 )
+            grid_row += 1
         else:
-            self.putTitle ( "No plausible sequence matches found" )
+ 
 
-        if int(nseq) == 1:
-            self.generic_parser_summary["pisa"] = {
-                "summary_line" : str(nseq) + " sequence found"
-            }
-        else:
-            self.generic_parser_summary["pisa"] = {
-                "summary_line" : str(nseq) + " sequences found"
-            }
+            content,ok = results2string(results)
 
-        # close execution logs and quit
-        self.success ( (nseq>0) )
+            self.putMessage ( f"&nbsp;<p><h3>checkMySequence validation report: {'ok' if ok else 'errors'}</h3>")
+
+            with (open(os.path.join(self.reportDir(),self.checkmysequence_out()),"w")) as f2:
+                f2.write ( "<pre style=\"border:1px solid #488090; padding:12px; " +\
+                           "height: 400px; width: 100%; overflow: auto; " +\
+                           "font-family : 'Courier'; font-size: 1em; " +\
+                           "box-shadow : 5px 5px 6px #888888;\">" + content +\
+                           "</pre>" )
+            panelId = self.getWidgetId ( "cmspanel" )
+            self.putPanel ( panelId )
+
+
+            self.appendContent ( panelId,self.checkmysequence_out(),watch=False )
+
         return
 
 
