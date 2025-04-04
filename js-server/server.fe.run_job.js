@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.03.25   <--  Date of Last Modification.
+ *    04.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1594,8 +1594,8 @@ function updateUserRation ( data,callback_func )  {  // gets UserData object
   // CCP4 Cloud Local setups).
 
   data.jobClass.disk_space = 0;
-  let userRation = ration.bookJob ( data.jobEntry.remoteLogin,data.jobClass,false );
   data.jobEntry.loginData.login = data.jobEntry.remoteLogin;
+  let userRation = ration.bookJob ( data.jobEntry.loginData,data.jobClass,false );
   __make_job_log_record ( data.jobEntry,data.jobClass,userRation,'[+]' );
   callback_func (
     new cmd.Response ( cmd.fe_retcode.ok,'',{ ration : userRation } )
