@@ -1213,6 +1213,19 @@ citations = {
                             'doi'     : '10.1107/S2052252521011088'
                          }]
                   },
+    'checkmysequence' : { 'name'     : 'checkMySequence',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Chojnowski, G.',
+                            'title'   : 'Sequence-assignment validation in protein crystal structure models with checkMySequence',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D79',
+                            'year'    : '2023',
+                            'pages'   : '559-568',
+                            'doi'     : '10.1107/S2059798323003765'
+                         }]
+                  },
+
 
     'omit'           : { 'name'     : 'Omit',
                          'category' : 'primary',
