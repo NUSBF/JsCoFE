@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    04.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  ROTAMER Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev  2022-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando  2022-2025
  *
  *  =================================================================
  *
@@ -42,39 +42,15 @@ function TaskRabdam()  {
 
   this.input_dtypes = [{      // input data types
     data_type   : { 'DataRevision' : ['xyz'],
-                    'DataEnsemble' : [],
-                    'DataModel'    : [],
-                    'DataXYZ'      : []
-                  },  // data type(s) and subtype(s)
+      'DataModel'    : [],
+      'DataXYZ'      : []
+    },  // data type(s) and subtype(s)
     label       : 'Structure', // label for input dialog
     inputId     : 'ixyz'   ,   // input Id for referencing input fields
     min         : 1,           // minimum acceptable number of data instances
     max         : 1            // maximum acceptable number of data instances
   }];
 
-  // this.parameters = { // input parameters
-  //   SEP_LBL : {
-  //             type     : 'label',
-  //             label    : '&nbsp;',
-  //             position : [0,0,1,5]
-  //           },
-  //   sec1 :  { type     : 'section',
-  //             title    : 'Parameters',
-  //             open     : true,  // true for the section to be initially open
-  //             position : [1,0,1,5],
-  //             contains : {
-  //               DELT : { type     : 'integer',
-  //                           keyword  : 'DELT',
-  //                           label    : 'Delta-Chi threshold',
-  //                           tooltip  : 'threshold from the equivalent one of the nearest rabdam',
-  //                           range    : [1,'*'],
-  //                           value    : 30,
-  //                           iwidth   : 40,
-  //                           position : [0,0,1,1]
-  //                         }
-  //             }
-  //           }
-  // };
 
 }
 

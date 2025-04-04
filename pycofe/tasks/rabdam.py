@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    04.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,12 +27,16 @@
 #  python native imports
 # import sys
 import os
+import shutil
+
 
 #  application imports
 from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
 from  pycofe.dtypes import dtype_structure,dtype_revision
 from  pycofe.dtypes import dtype_sequence
+from varut import signal
+
 
 # ============================================================================
 # Make XUZ Utilities driver
@@ -48,29 +52,64 @@ class Rabdam(basic.TaskDriver):
         xyzin = None
         if ixyz._type==dtype_revision.dtype():
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
-            xyzin   = istruct.getMMCIFFilePath ( self.inputDir() )
-            if not xyzin:
-                xyzin = istruct.getPDBFilePath ( self.inputDir() )
+            
+            xyzin = istruct.getPDBFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getMMCIFFilePath ( self.inputDir() )
-            if not xyzin:
-                xyzin = ixyz.getPDBFilePath ( self.inputDir() )
+            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
-        self.runApp ( "rabdam",[
+        rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
         ],logType="Main" )
-
         have_results = False
+        self.addCitations ( ['rabdam'] )
 
-        # this will go in the project tree line
-        # if have_results:
-        #     self.generic_parser_summary["rabdam"] = {
-        #         "summary_line" : "results saved"
-        #     }
+        if rc.msg:
+            self.putTitle ( "Results" )
+            self.putMessage ( "<h3>Rabdam failure</h3>" )
+            raise signal.JobFailure ( rc.msg )
+        
+        else:
+            final_pdb  = None
+            name = os.path.basename(xyzin)
+            rabdam_dir = os.path.join("Logfiles", name.replace(".pdb", ""))
 
-        # close execution logs and quit
-        self.success ( have_results )
 
+            try:
+                final_pdb = os.path.join(rabdam_dir, f"{name.replace('.pdb', '')}_BDamage.pdb")
+                if os.path.exists ( final_pdb ):
+                    xyzout = self.getXYZOFName()
+                    shutil.copyfile ( final_pdb,xyzout )
+
+            except:
+                pass
+
+            
+
+
+            html_path = None
+            html_path = rabdam_dir
+            log_file = os.path.join ( "_stdout.log" )
+            if os.path.exists(log_file):
+                with open(log_file, "r") as log:
+                    for line in log:
+                        if "ERROR: More than one model present in input PDB file." in line:
+                            self.putMessage("<h3>Error: More than one model present in input PDB file. Please use a PDB file containing a single model.</h3>")
+                            return
+            
+            
+
+            html_report = os.path.join ( html_path, f"{name.replace('.pdb', '')}_BDamage.html")
+            if os.path.exists(html_report):
+                
+                self.insertTab   ( "html_report","Rabdam Report",None,True )
+                self.putMessage1 (
+                    "html_report",
+                    "<iframe src=\"../" + html_report + "\" " + \
+                    "style=\"display:block;border:none;position:absolute;top:50px;left:0;width:100vw;height:90%;overflow-x:auto;\"></iframe>",
+                    0 )
+                self.success ( have_results )
+
+        
         return
 
 
