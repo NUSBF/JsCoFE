@@ -207,7 +207,7 @@ class CheckMySequence(basic.TaskDriver):
             ]
 
         self.flush()
-
+        have_results = False
         rc = self.runApp ( "checkmysequence",cmd,logType="Main" )
 
         self.addCitations ( ['checkmysequence'] )
@@ -244,6 +244,9 @@ class CheckMySequence(basic.TaskDriver):
             self.putPanel ( panelId )
 
             self.appendContent ( panelId,self.checkmysequence_out(),watch=False )
+            
+            self.success ( have_results )
+
 
         return
 
