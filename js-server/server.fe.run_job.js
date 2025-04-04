@@ -1593,13 +1593,23 @@ function updateUserRation ( data,callback_func )  {  // gets UserData object
   // running remote jobs (i.e. jobs coming from 'external' FEs, typically 
   // CCP4 Cloud Local setups).
 
-  data.jobClass.disk_space = 0;
-  data.jobEntry.loginData.login = data.jobEntry.remoteLogin;
-  let userRation = ration.bookJob ( data.jobEntry.loginData,data.jobClass,false );
-  __make_job_log_record ( data.jobEntry,data.jobClass,userRation,'[+]' );
-  callback_func (
-    new cmd.Response ( cmd.fe_retcode.ok,'',{ ration : userRation } )
-  );
+  if ('jobEntry' in data)  {
+    let jobClass = data.jobClass;
+    let jobEntry = data.jobEntry;  // this is jobEntry from client's FE register
+    jobClass.disk_space = 0;       // all disk space consumed on client
+    jobEntry.loginData.login = jobEntry.remoteLogin;
+    let userRation = ration.bookJob ( jobEntry.loginData,jobClass,false );
+    __make_job_log_record ( jobEntry,jobClass,userRation,'[+]' );
+    callback_func (
+      new cmd.Response ( cmd.fe_retcode.ok,'',{ ration : userRation } )
+    );
+  } else if ('jobClass' in data)  {
+    // branch for backward compatibility with v.1.8.006
+    callback_func ( 
+      new cmd.Response ( cmd.fe_retcode.ok,'',
+        { ration : ration.bookJob ( { login : data.login },data.jobClass,false ) }
+      ));
+  }
 
 }
 
