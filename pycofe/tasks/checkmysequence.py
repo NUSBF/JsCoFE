@@ -46,15 +46,21 @@ from proc  import import_seqcp
 # Make CheckMySequence driver
 
 
-def results2string(results_dict):
+def results2string(results_dict, decorate=False):
+    """
+        gchojnowski@04.04.2025
+        this is an exact copy of a module from checkMySequence generating sto
+        summary from output dict (json). I will expose it in checkMySequence
+        code with the next update (>1.5.3) and remove from here
+    """
 
     output = []
-
-    #output.append("")
-    #output.append('*'*80)
-    #output.append('*'*33 + '  SUMMARY  ' + '*'*36)
-    #output.append('*'*80)
-    #output.append("")
+    if decorate:
+        output.append("")
+        output.append('*'*80)
+        output.append('*'*33 + '  SUMMARY  ' + '*'*36)
+        output.append('*'*80)
+        output.append("")
 
     # 1 UNIDENTIFIED_CHAINS
     if results_dict['unidentified_chains']:
@@ -211,22 +217,18 @@ class CheckMySequence(basic.TaskDriver):
             self.putMessage ( "<h3>checkMySequence failure</h3>" )
             raise signal.JobFailure ( rc.msg )
 
-        # fetch sequence as a string
-
+        # fetch json with validation results
         with open(self.jsonout(), 'r') as ifile:
             results = json.loads(ifile.read())
 
-        nseq = 0
         grid_row = 0
         grid_id  = 0
-        nclash  = 0
+
         if not results:
-            meta["meta_complete"] = False
             self.putMessage1 ( grid_id,"&nbsp;<p><i>checkMySequence output file was not produced</i>",
                                grid_row,col=0 )
             grid_row += 1
         else:
- 
 
             content,ok = results2string(results)
 
@@ -240,7 +242,6 @@ class CheckMySequence(basic.TaskDriver):
                            "</pre>" )
             panelId = self.getWidgetId ( "cmspanel" )
             self.putPanel ( panelId )
-
 
             self.appendContent ( panelId,self.checkmysequence_out(),watch=False )
 
