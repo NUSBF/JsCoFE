@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    05.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,7 @@
 'use strict';
 
 function startSession ( sceneId,dev_switch )  {
+
 
   // set up a loader spinner
   const img = document.createElement('img');
@@ -84,9 +85,11 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         // __offline_message = 'on';  // show prompt "working offline"
 
-        document.title = appName() + ' Local';
+        document.title = appName() + ' Local';      
 
-        if (__title_page)
+        if (__integration=='project')
+              login ( '**' + __local_user_id + '**','',sceneId,103 );
+        else if (__title_page)
               makeLocalLoginPage ( sceneId );
         else  login ( '**' + __local_user_id + '**','',sceneId,0 );
 
@@ -420,6 +423,33 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                                 },100);
                               }
                             });
+                        break;
+
+                case 103: // Enter into project from URL in local mode:
+                          // http://localhost:port?prj_name=name&prj_title=title
+                          // If project does not exist, it will be created.
+                          // Title parameter is used only for new projects and 
+                          // can be omitted for existing projects.
+                          let prj_name = null;
+                          if (__url_parameters && ('prj_name' in __url_parameters))
+                            prj_name  = __url_parameters.prj_name;
+                          if (prj_name)  {
+                            let prj_title = 'Untitled project';
+                            if ('prj_title' in __url_parameters)
+                              prj_title = __url_parameters.prj_title;
+                            serverRequest ( fe_reqtype.getProjectList,0,'Project List',
+                              function(data){
+                                let projectList = jQuery.extend ( true,new ProjectList(__login_id),data );
+                                projectList.addProject ( prj_name,prj_title,getDateString() );
+                                projectList.current = prj_name;
+                                serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
+                                  function(data){
+                                    makeProjectPage ( sceneId );
+                                  },null,'persist' );
+                              },null,'persist');
+                          } else  {
+                            makeProjectListPage ( sceneId );
+                          }              
                         break;
 
                 default:  if (__user_role==role_code.admin)

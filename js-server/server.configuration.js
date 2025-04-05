@@ -550,14 +550,18 @@ function CCP4DirName()  {
 
 
 "Desktop"  : {
-  "clientApp"  : "/bin/bash",
-  "titlePage"  : true,  // optional, only in local/desktop mode
-  "args"       : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
-  "_args"       : ["-c","ccp4-python pycofe/apps/browser/browser.py -u $feURL$clientURL"],
-  "__args"       : ["-c","open -a Opera $feURL$clientURL"],
-  "___args"       : ["-c","open $feURL$clientURL"],
-  "____args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
-  "_____args"       : ["-c","open -a Firefox $feURL$clientURL"]
+  "clientApp"   : "/bin/bash",
+  "titlePage"   : true,   // optional, 'true' displays title page in local/desktop mode
+  "integration" : "none", // optional, "project" limits systen to project page only
+                          // in local/desktop mode; add "?prj=projectName" to the 
+                          // URL in this case; the project will be created if does 
+                          // not already exist
+  "args"        : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
+  "_args"        : ["-c","ccp4-python pycofe/apps/browser/browser.py -u $feURL$clientURL"],
+  "__args"        : ["-c","open -a Opera $feURL$clientURL"],
+  "___args"        : ["-c","open $feURL$clientURL"],
+  "____args"        : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+  "_____args"        : ["-c","open -a Firefox $feURL$clientURL"]
 },
 
 {
