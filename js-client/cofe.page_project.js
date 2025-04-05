@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    05.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -75,7 +75,7 @@ function ProjectPage ( sceneId,pspecs=null )  {
   // -------------------------------------------------------------------------
   // Make page header
 
-  this.makeHeader0 ( 3 );
+  this.makeHeader0 ( 3,(__integration!='project') );
 
   if (self.logout_btn)
     self.logout_btn.addOnClickListener ( function(){
@@ -214,8 +214,8 @@ function ProjectPage ( sceneId,pspecs=null )  {
   this.grid.setCellSize ( '6px',''     ,1,2,1,1 );
 
   // make the toolbar
-  const horz_line = '<div style="border-top: 1.5px dotted grey; width:' +
-                    toolbutton_size + '; margin-top:6px;"></div>';
+  const horz_line  = '<div style="border-top: 1.5px dotted grey; width:' +
+                     toolbutton_size + '; margin-top:6px;"></div>';
   let   cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
@@ -1079,7 +1079,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree,pspecs ) 
   });
 
   if ((job_tree.root_nodes.length==1) &&
-      (job_tree.root_nodes[0].children.length<=0))  {
+      (job_tree.root_nodes[0].children.length<=0) &&
+      (__integration!='project'))  {
     __current_page = this;
     self.can_reload = true;   // tree reload semaphore
     // enter empty project: first task to run or choose
