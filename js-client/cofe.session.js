@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    05.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ function startSession ( sceneId,dev_switch )  {
 
         document.title = appName() + ' Local';      
 
-        if (__integration=="project")
+        if (__integration=='project')
               login ( '**' + __local_user_id + '**','',sceneId,103 );
         else if (__title_page)
               makeLocalLoginPage ( sceneId );
@@ -440,6 +440,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',
                               function(data){
                                 let projectList = jQuery.extend ( true,new ProjectList(__login_id),data );
+                                projectList.addProject ( prj_name,prj_title,getDateString() );
                                 projectList.current = prj_name;
                                 serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
                                   function(data){
