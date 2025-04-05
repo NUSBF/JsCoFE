@@ -1164,11 +1164,11 @@ function loadUserCache ( loginData )  {
                     utils.readObject ( path.join ( projectDirPath,file,task_t.jobDataFName ) );
                 });
               } catch(e) {}
-            },0);
+            },50*(i+1));
           }(projectList.projects[i].name));
         }
       }  
-    },0);
+    },50);
   }
 }
 
