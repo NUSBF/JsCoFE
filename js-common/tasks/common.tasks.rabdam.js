@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    04.04.25   <--  Date of Last Modification.
+ *    07.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function TaskRabdam()  {
   this.title   = 'Rabdam';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz'],
+    data_type   : { 'DataRevision' : ['xyz', '~mmcif_only'],
       'DataModel'    : [],
       'DataXYZ'      : []
     },  // data type(s) and subtype(s)
