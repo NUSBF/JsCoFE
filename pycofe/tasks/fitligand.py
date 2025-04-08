@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    06.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -28,13 +28,15 @@
 import os
 import sys
 
-import gemmi
-from   gemmi        import  cif
+# import gemmi
+# from   gemmi        import  cif
+import chapi
 
 #  application imports
 from . import basic
 from   pycofe.proc  import coor
 from   pycofe.auto  import auto, auto_workflow
+from   pycofe.varut import mmcif_utils
 
 # ============================================================================
 # Make Refmac driver
@@ -53,15 +55,157 @@ class FitLigand(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
 
         # make command-line parameters
-        pdbin   = istruct.getXYZFilePath ( self.inputDir() )
-
-        # pdbin  = istruct.getMMCIFFilePath ( self.inputDir() )
-        # if not pdbin:
-        #     self.stderrln ( " ***** mmCIF is not found" )
-        #     pdbin  = istruct.getPDBFilePath ( self.inputDir() )
-
+        xyzin   = istruct.getXYZFilePath ( self.inputDir() )
         mtzin   = istruct.getMTZFilePath ( self.inputDir() )
         libin   = ligand .getLibFilePath ( self.inputDir() )
+
+        mc          = chapi.molecules_container_t ( False )
+        imol_enc    = mc.get_imol_enc_any()
+        imol        = mc.read_coordinates ( xyzin )
+        mc.import_cif_dictionary ( libin,imol_enc )
+        imol_ligand = mc.get_monomer ( ligand.code )
+
+        # rn = mc.get_residue_name(imol, 'A', 401, "")
+        # print("residue name", rn)
+        # mc.delete_residue(imol, 'A', 401, "")
+
+        F   = istruct.FWT
+        PHI = istruct.PHI
+        if istruct.mapSel=="diffmap":
+            F   = istruct.DELFWT
+            PHI = istruct.PHDELWT
+
+        self.stdoutln ( " >>>> 1 " + str(mtzin) + " " + str(F) + " " + str(PHI) )
+
+        imol_map = mc.read_mtz ( mtzin,F,PHI, "", False, False )
+
+        results = mc.fit_ligand ( imol, imol_map, imol_ligand, 1.0, True, 200)
+
+        self.stdoutln ( " >>>>> " + str(results))
+        self.stdoutln ( " >>>>> " + str(dir(results[0])) )
+
+        fs0 = -1.0
+        r0  = None
+        for i in range(len(results)):
+            fscore = results[i].get_fitting_score()
+            if fscore>fs0:
+                s0 = fscore
+                r0 = results[i]
+
+        self.stdoutln ( " >>>>> s0=" + str(s0))
+
+        have_results = False
+        nligs = 0
+
+        if r0:
+
+            xyzout = self.getCIFOFName()
+
+            imol_copy = mc.copy_molecule ( imol )
+            mc.merge_molecules   ( imol_copy, str(r0.imol) )
+            mc.write_coordinates ( imol_copy,"__merged.cif" )
+
+            mmcif_utils.clean_mmcif ( "__merged.cif",xyzout )
+
+            self.stdoutln ( " >>>>> istruct.ligands=" + str(istruct.ligands))
+            self.stdoutln ( " >>>>> ligand.code=" + str(ligand.code))
+
+            # prepare dictionary file for structure
+            libadd = libin
+            libstr = istruct.getLibFilePath ( self.inputDir() )
+            self.stdoutln ( " >>>>> libstr=" + str(libstr))
+            if libstr and not ligand.code in istruct.ligands:
+                # this is not the first ligand in structure, append it to
+                # the previous one(s) with libcheck
+
+                libadd = self.outputFName + ".dict.cif"
+
+                self.open_stdin()
+                self.write_stdin (
+                    "_Y"          +\
+                    "\n_FILE_L  " + libstr +\
+                    "\n_FILE_L2 " + libin  +\
+                    "\n_FILE_O  " + libadd +\
+                    "\n_END\n" )
+                self.close_stdin()
+
+                self.runApp ( "libcheck",[],logType="Service" )
+
+                libadd += ".lib"
+
+            nligs  = 1
+            structure = self.registerStructure ( 
+                            xyzout,
+                            None,
+                            None,
+                            mtzin,
+                            libPath  = libadd,
+                            mapPath  = istruct.getMapFilePath (self.inputDir()),
+                            dmapPath = istruct.getDMapFilePath(self.inputDir()),
+                            leadKey  = istruct.leadKey,
+                            refiner  = istruct.refiner 
+                        )
+            if structure:
+                structure.copy_refkeys_parameters ( istruct )
+                structure.copyAssociations ( istruct )
+                structure.copySubtype      ( istruct )
+                structure.copyLabels       ( istruct )
+                structure.copyLigands      ( istruct )
+                structure.addLigand        ( ligand.code )
+                self.putTitle   ( "Results" )
+                self.putMessage ( "<b>Total " + str(nligs) + " '" + ligand.code +\
+                                  "' ligands were fitted</b><br>&nbsp;" )
+                self.putStructureWidget ( "structure_btn_",
+                                          "Structure and electron density",
+                                          structure )
+                # update structure revision
+                revision = self.makeClass ( self.input_data.data.revision[0] )
+                revision.setStructureData ( structure )
+                revision.addLigandData    ( ligand    )
+                self.registerRevision     ( revision  )
+
+                have_results = True
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : [revision]
+                            }
+                    })
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "nfitted"  : str(nligs)
+                    })
+
+        else:
+            self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )
+
+        # this will go in the project tree job's line
+        self.generic_parser_summary["fitligand"] = {
+          "summary_line" : "N<sub>fitted</sub>=" + str(nligs)
+        }
+
+        # for i,r in enumerate(results):
+        #     self.stdoutln ( " >>>> [" + str(i) + "] " + str(r.get_fitting_score()) + " " + str(r.ligand_idx) + str(r.imol) )
+        #     imol_copy = mc.copy_molecule ( imol )
+        #     mc.merge_molecules ( imol_copy, str(r.imol) )
+        #     fn = "complex-" + str(i) + "-pre-ref.cif"
+        #     mc.write_coordinates ( imol_copy, fn )
+        #     # look at the label for the comp_id and the label residue number
+        #     # they could be more useful. Can you fix it?
+        #     mc.refine_residues_using_atom_cid (imol_copy, "//A/765", "SPHERE", 2000)
+        #     fn = "complex-" + str(i) + "-post-ref.cif"
+        #     mc.write_coordinates(imol_copy, fn)
+
+        # close execution logs and quit
+        self.success ( have_results )
+        return
+
+        """
         cmd = [ "--pdbin"       ,pdbin,
                 "--hklin"       ,mtzin,
                 "--dictionary"  ,libin,
@@ -110,24 +254,23 @@ class FitLigand(basic.TaskDriver):
         # which is fitligand's feature; therefore, currently not used
         # cmd += [ligand.getMMCIFFilePath(self.inputDir())]
 
-        """
-        --pdbin pdb-in-filename --hklin mtz-filename
-        --f f_col_label --phi phi_col_label
-        --clusters nclust
-        --sigma sigma-level
-        --absolute level
-        --fit-fraction frac
-        --flexible
-        --samples nsamples
-        --sampling-rate map-sampling-rate
-        --dictionary cif-dictionary-name
-        """
+        # --pdbin pdb-in-filename --hklin mtz-filename
+        # --f f_col_label --phi phi_col_label
+        # --clusters nclust
+        # --sigma sigma-level
+        # --absolute level
+        # --fit-fraction frac
+        # --flexible
+        # --samples nsamples
+        # --sampling-rate map-sampling-rate
+        # --dictionary cif-dictionary-name
 
         # Start findligand
         if sys.platform.startswith("win"):
             self.runApp ( "findligand.bat",cmd,logType="Main" )
         else:
             self.runApp ( "findligand",cmd,logType="Main" )
+
 
         nligs   = 0
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
@@ -222,6 +365,7 @@ class FitLigand(basic.TaskDriver):
         # close execution logs and quit
         self.success ( have_results )
         return
+        """
 
 
 # ============================================================================

@@ -168,7 +168,7 @@ TaskFitLigand.prototype.desc_title     = function()  {
 }
 
 TaskFitLigand.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -178,6 +178,8 @@ TaskFitLigand.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
     return this.__check_keywords ( keywords,['fit', 'ligand','fitligand'] );
 }
+
+TaskFitLigand.prototype.cleanJobDir = function ( jobDir )  {}
 
 
 if (!__template)  {
@@ -191,7 +193,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskFitLigand.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -199,7 +201,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       //this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
