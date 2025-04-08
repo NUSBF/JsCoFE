@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.04.25   <--  Date of Last Modification.
+ *    08.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -2014,7 +2014,8 @@ let nc_servers = conf.getNCConfigs();
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,
                         '',{nzombies:nzombies}) );
       
-      } else if ((nc_servers[n].exeType!='CLIENT') && nc_servers[n].in_use)  {
+      } else if (!['CLIENT','REMOTE'].includes(nc_servers[n].exeType.toUpperCase()) && 
+                 nc_servers[n].in_use)  {
       
         request ({
           uri     : cmd.nc_command.wakeZombieJobs,
@@ -2167,36 +2168,64 @@ function cloudRun ( server_request,server_response )  {
                   } else  {
                     response = null;
                     message  = 'project "' + meta.project + '" created, ';
-                    pData.tree.push({
-                      id          : 'treenode_06062',  // can be any
-                      parentId    : null,
-                      folderId    : null,
-                      fchildren   : [],
-                      text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
-                      text0       : '',
-                      highlightId : 0,
-                      icon        : cmd.image_path('project'),
-                      data : {
-                        customIcon : cmd.activityIcon(),
-                        ci_width   : '22px',
-                        ci_height  : '22px',
-                        ci_state   : 'hidden'
-                      },
-                      state : {
-                        opened     : true,
-                        disabled   : false,
-                        selected   : false
-                      },
-                      children : [],
-                      li_attr  : {},
-                      a_attr   : {},
-                      dataId   : ''
-                    });
+                    // pData.tree.push({
+                    //   id          : 'treenode_06062',  // can be any
+                    //   parentId    : null,
+                    //   folderId    : null,
+                    //   fchildren   : [],
+                    //   text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
+                    //   text0       : '',
+                    //   highlightId : 0,
+                    //   icon        : cmd.image_path('project'),
+                    //   data : {
+                    //     customIcon : cmd.activityIcon(),
+                    //     ci_width   : '22px',
+                    //     ci_height  : '22px',
+                    //     ci_state   : 'hidden'
+                    //   },
+                    //   state : {
+                    //     opened     : true,
+                    //     disabled   : false,
+                    //     selected   : false
+                    //   },
+                    //   children : [],
+                    //   li_attr  : {},
+                    //   a_attr   : {},
+                    //   dataId   : ''
+                    // });
                   }
                 }
               }
 
               if (pData)  {
+
+                if (pData.tree.length<=0)  {
+                  pData.tree.push({
+                    id          : 'treenode_06062',  // can be any
+                    parentId    : null,
+                    folderId    : null,
+                    fchildren   : [],
+                    text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
+                    text0       : '',
+                    highlightId : 0,
+                    icon        : cmd.image_path('project'),
+                    data : {
+                      customIcon : cmd.activityIcon(),
+                      ci_width   : '22px',
+                      ci_height  : '22px',
+                      ci_state   : 'hidden'
+                    },
+                    state : {
+                      opened     : true,
+                      disabled   : false,
+                      selected   : false
+                    },
+                    children : [],
+                    li_attr  : {},
+                    a_attr   : {},
+                    dataId   : ''
+                  });
+                }
 
                 // 4. The project is either created or retrieved. Prepare task and run it
 
