@@ -17,9 +17,20 @@ const client = require('./dl_client.js');
 class appClient extends client {
 
   constructor() {
-    super(true);
-    this.datalink = new datalink(false);
+    super();
+  }
 
+  initParameters() {
+    this.addArgInfoCommon();
+
+    // set default user
+    this.arg_info.user.def = 'local';
+
+    this.addActionMap();
+  }
+
+  addActionMap() {
+    this.datalink = new datalink(false);
     this.action_map = {
       search: this.datalink.searchSourceCatalogs,
       fetch: this.datalink.fetchData,
@@ -35,8 +46,6 @@ class appClient extends client {
       catalog_update_all: this.datalink.updateAllSourceCatalogs,
       stats: this.datalink.getDataStats
     }
-
-    this.arg_info.user.def = '@local';
   }
 
   async doCall(action, ...args) {
@@ -50,14 +59,20 @@ class appClient extends client {
   }
 
   async waitForCatalogs() {
-    for (const s in this.datalink.ds) {
-      await this.datalink.waitForCatalog(s);
+    for (const ds in this.datalink.ds) {
+      await this.datalink.waitForCatalog(ds);
     }
   }
 
   async fetchMultiple(user, results) {
     await super.fetchMultiple(user, results);
 
+    // return if not displaying progress
+    if (! this.opts.progress) {
+      return;
+    }
+
+    // query the status of the data fetches and display progress
     let status_c = 0;
     while (status_c < Object.keys(results).length) {
       let size = 0;
@@ -100,7 +115,9 @@ class appClient extends client {
 
     in_stream.on('data', (data) => {
       this.size_uploaded += data.length;
-      this.outputProgress(file);
+      if (this.opts.progress) {
+        this.outputProgress(file);
+      }
     });
 
     try {
@@ -115,7 +132,7 @@ class appClient extends client {
   async upload(user, source, id) {
     // check username
     if (! tools.validUserName(user)) {
-      return tools.errorMsg(`Invalid user name ${req.params.user}`, 400);
+      return tools.errorMsg(`Invalid user name ${user}`, 400);
     }
 
     let check = tools.validSourceId(source, id);
@@ -146,7 +163,6 @@ class appClient extends client {
     }
 
     this.datalink.dataComplete(entry);
-    process.stdout.write('\x1b[K');
     return tools.successMsg(`Added files to ${entry.dir}`);
   }
 }

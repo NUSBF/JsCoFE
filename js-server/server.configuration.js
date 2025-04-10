@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -443,6 +443,44 @@ ServerConfig.prototype.getDataLinkVerifyCert = function()  {
   return true;
 }
 
+
+ServerConfig.prototype.getLogFiles = function()  {
+  let stdoutfpath = process.env.pm_out_log_path ||
+                    path.join(this.storage,'stdout.log');
+  let stderrfpath = process.env.pm_err_log_path ||
+                    path.join(this.storage,'stderr.log');
+  
+  // running via pm2 if env PM2_USAGE is set  
+  // env `pm_pid_path` points to the file with the process id in it
+
+  let rdata = { 
+    stdout : utils.readString(stdoutfpath),
+    stderr : utils.readString(stderrfpath) 
+  };
+  if (rdata.stdout===null)
+    rdata.stdout = 'Log file is not found (streamed to standard output?)\n' +
+                   '\n' +
+                   'Log files are sought in locations pointed by environmental '  +
+                   'variables\nenv.pm_out_log_path and env.pm_err_log_path, or, ' +
+                   'if not found, in\nfiles config.storage/stdout.log and ' +
+                   'config.storage/stderr.log';
+  else if (!rdata.stdout.trim())
+    rdata.stdout = '&lt;Empty file&gt;\n';
+  if (rdata.stderr===null)
+    rdata.stderr = 'Log file is not found (streamed to standard output?)\n' +
+                   '\n' +
+                   'Log files are sought in locations pointed by environmental '  +
+                   'variables\nenv.pm_out_log_path and env.pm_err_log_path, or, ' +
+                   'if not found, in\nfiles config.storage/stdout.log and ' +
+                   'config.storage/stderr.log';
+  else if (!rdata.stderr.trim())
+    rdata.stderr = '&lt;Empty file&gt;\n';
+
+  return rdata;
+
+}  
+  
+
 // ===========================================================================
 // Config service functions
 
@@ -512,14 +550,18 @@ function CCP4DirName()  {
 
 
 "Desktop"  : {
-  "clientApp"  : "/bin/bash",
-  "titlePage"  : true,  // optional, only in local/desktop mode
-  "args"       : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
-  "_args"       : ["-c","ccp4-python pycofe/apps/browser/browser.py -u $feURL$clientURL"],
-  "__args"       : ["-c","open -a Opera $feURL$clientURL"],
-  "___args"       : ["-c","open $feURL$clientURL"],
-  "____args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
-  "_____args"       : ["-c","open -a Firefox $feURL$clientURL"]
+  "clientApp"   : "/bin/bash",
+  "titlePage"   : true,   // optional, 'true' displays title page in local/desktop mode
+  "integration" : "none", // optional, "project" limits systen to project page only
+                          // in local/desktop mode; add "?prj=projectName" to the 
+                          // URL in this case; the project will be created if does 
+                          // not already exist
+  "args"        : ["-c","cd cofe-browser; npm start url=$feURL$clientURL"],
+  "_args"        : ["-c","ccp4-python pycofe/apps/browser/browser.py -u $feURL$clientURL"],
+  "__args"        : ["-c","open -a Opera $feURL$clientURL"],
+  "___args"        : ["-c","open $feURL$clientURL"],
+  "____args"        : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+  "_____args"        : ["-c","open -a Firefox $feURL$clientURL"]
 },
 
 {

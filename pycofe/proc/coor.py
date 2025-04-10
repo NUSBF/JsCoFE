@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  COORDINATE FILE HANDLING ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskiy 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskiy 2017-2025
 #
 # ============================================================================
 #
@@ -154,11 +154,12 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
                 for name in [ch.name for ch in model if ch.name not in selList["0"]]:
                     model.remove_chain ( name )
         else:
-            for name in [m.name for m in st if m.name not in selList]:
+            for name in [str(m.num) for m in st if str(m.num) not in selList]:
                 del st[name]
             for model in st:
-                if model.name in selList:
-                    for name in [ch.name for ch in model if ch.name not in selList[model.name]]:
+                mnum = str(model.num)
+                if mnum in selList:
+                    for name in [ch.name for ch in model if ch.name not in selList[mnum]]:
                         model.remove_chain ( name )
 
     st.remove_empty_chains()

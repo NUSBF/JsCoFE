@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    29.01.25   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -159,10 +157,10 @@ def calc_ramachandran ( file_name_list ):
                             #psi = max ( -180.0,min(179.0,psi) )
 
                             try:
-                                litem = [ model.num,chain.name,str(res.seqid.num),
+                                litem = [ str(model.num),chain.name,str(res.seqid.num),
                                           res.name,res.seqid.icode,phi,psi ]
                             except:
-                                litem = [ model.name,chain.name,str(res.seqid.num),
+                                litem = [ str(model.num),chain.name,str(res.seqid.num),
                                           res.name,res.seqid.icode,phi,psi ]
                             if RAMA_PREF_VALUES[aa_type][int(psi)+180][int(phi)+180] < \
                                     RAMA_PREFERENCES[aa_type]["bounds"][1]:

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    18.05.24   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ HANDLING UTILS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -143,9 +143,10 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
                                size=psize,
                                natoms=natoms))
         try:
-            xyz.append(dict(model=int(model.name), chains=chains))
-        except:
             xyz.append(dict(model=int(model.num), chains=chains))
+        except:
+            pass
+            # xyz.append(dict(model=int(model.num), chains=chains))
 
     return dict ( cryst=cryst, xyz=xyz, ligands=[], natoms=natoms )
 

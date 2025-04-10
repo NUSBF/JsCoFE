@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    02.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FindMySequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) G. Chojnowski, E. Krissinel, A. Lebedev 2022-2024
+ *  (C) G. Chojnowski, E. Krissinel, A. Lebedev, M. Fando 2022-2025
  *
  *  =================================================================
  *
@@ -89,7 +89,16 @@ function TaskFindMySequence()  {
                       value     : '',
                       emitting  : true,
                       position  : [2,0,1,1]
-                    }
+                    },
+                EBIAPI : {
+                  type     : 'combobox',
+                  keyword  : 'none',
+                  label    : 'Sequences database search',
+                  tooltip  : 'Select database to search',
+                  range    : ['pdb|PDB','afdb|AFDB','swissprot|Swiss-Prot'],
+                  value    : 'pdb',
+                  position : [4,0,1,1]
+               } 
              }
            }
   };

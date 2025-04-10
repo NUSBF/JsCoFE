@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    06.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1031,21 +1031,29 @@ let cfg = conf.getServerConfig();
             setTimeout ( function(){ ncJobFinished(job_token,code); },
                         conf.getServerConfig().sendDataWaitTime );
 
-          } else if (comut.isObject(errcode) &&
-                    ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
-                      (errcode.status==cmd.nc_retcode.fileErrors)))  {
+          // } else if (comut.isObject(errcode) &&
+          //            ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
+          //             (errcode.status==cmd.nc_retcode.fileErrors)))  {
+          } else  {
+            
+            let status = comut.isObject(errcode) ? errcode.status : errcode;            
+            
+            if ((status==cmd.fe_retcode.wrongJobToken) ||
+                (status==cmd.nc_retcode.fileErrors))  {
             // the job cannot be accepted by FE, e.g., if task was deleted by user.
 
             removeJobDelayed ( job_token,task_t.job_code.finished );
-            log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
+            log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + status + 
                           '). TASK DELETED.' );
 
-          } else  {
+            } else  {
 
-            log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
-                          job_token );
+              log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
+                            job_token );
+            }
 
           }
+
           writeNCJobRegister();
 
         });

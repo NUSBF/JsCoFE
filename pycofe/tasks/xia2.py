@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.24   <--  Date of Last Modification.
+#    27.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -112,9 +112,7 @@ class Xia2(basic.TaskDriver):
                     "Image metadata errors." )
             return
 
-        if sys.platform.startswith("win"):
-            cmd.append ( "nproc=1" )
-        else:
+        if not sys.platform.startswith("win"):
             cmd.append ( "nproc=" + nSubJobs )
 
         if have_durin and hasattr(sec2,"PLUGIN"):

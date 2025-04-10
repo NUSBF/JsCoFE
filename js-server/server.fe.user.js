@@ -1164,11 +1164,11 @@ function loadUserCache ( loginData )  {
                     utils.readObject ( path.join ( projectDirPath,file,task_t.jobDataFName ) );
                 });
               } catch(e) {}
-            },0);
+            },50*(i+1));
           }(projectList.projects[i].name));
         }
       }  
-    },0);
+    },50);
   }
 }
 
@@ -2107,6 +2107,9 @@ function getInfo ( meta,callback_func )  {
     let desktop      = conf.getDesktopConfig()
     if (desktop && ('titlePage' in desktop))
       rData.titlePage = desktop.titlePage;
+    if (desktop && ('integration' in desktop))
+          rData.integration = desktop.integration;
+    else  rData.integration = "none";
     rData.isArchive  = conf.isArchive   ();
     rData.regMode    = conf.getRegMode  ();
     if (fe_server.hasOwnProperty('description'))
