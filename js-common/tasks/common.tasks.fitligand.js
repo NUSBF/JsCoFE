@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    10.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -59,7 +59,7 @@ function TaskFitLigand()  {
     }
   ];
 
-
+  /*
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
               title    : 'Parameters',
@@ -147,6 +147,51 @@ function TaskFitLigand()  {
               }
             }
   };
+  */
+
+  this.parameters = { // input parameters
+    sec1  : { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [0,0,1,5],
+              contains : {
+                ABSOLUTE : {
+                        type      : 'real',
+                        keyword   : '--absolute',
+                        label     : 'Map level, e/&Aring;<sup>3</sup>',
+                        tooltip   : 'Specify map level for ligand search',
+                        range     : [0.0,10.0],
+                        value     : '1.0',
+                        default   : '1.0',
+                        iwidth    : 40,
+                        position  : [0,0,1,1]
+                      },
+                FLEXIBLE_CBX : {
+                        type      : 'checkbox',
+                        keyword   : '--flexible',
+                        label     : 'Flexible fit',
+                        tooltip   : 'Check in order to use torsional ' +
+                                    'conformation ligand search',
+                        iwidth    : 140,
+                        value     : true,
+                        position  : [1,0,1,3]
+                      },
+                SAMPLES : {
+                        type      : 'integer',
+                        keyword   : '--samples',
+                        label     : 'Number of conformers:',
+                        tooltip   : 'The number of flexible ' +
+                                    'conformation samples',
+                        range     : [1,10000],
+                        value     : '300',
+                        default   : '300',
+                        iwidth    : 60,
+                        position  : [1,2,1,4],
+                        showon    : {FLEXIBLE_CBX:[true]}
+                      }
+              }
+            }
+  };
 
   this.saveDefaultValues ( this.parameters );
 
@@ -168,7 +213,7 @@ TaskFitLigand.prototype.desc_title     = function()  {
 }
 
 TaskFitLigand.prototype.currentVersion = function()  {
-  let version = 1;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

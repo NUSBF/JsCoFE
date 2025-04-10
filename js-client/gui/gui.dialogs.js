@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.23   <--  Date of Last Modification.
+ *    10.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
  *                                          btn2_name,onButton2_func )
  *           function InputBox      ( title )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -813,22 +813,6 @@ function WebAppBox ( title )  {
     this.options.resizable = false;
     this.options.modal     = true;
   }
-
-  // var dlg = jq(dialog).dialog(this.options);
-  // //if (window.parent.__mobile_device)
-  // //  dlg.siblings('.ui-dialog-titlebar').remove();
-
-  // function encode_uri(uri) {
-  //   if (uri) return encodeURI(uri);
-  //   return uri;
-  // }
-
-  // var html = makeUglyMolHtml(encode_uri(xyz_uri), encode_uri(mtz_uri),
-  //   encode_uri(map_uri), encode_uri(diffmap_uri),
-  //   mapLabels);
-  // iframe.contentWindow.document.write(html);
-  // iframe.contentWindow.document.close();
-
 
 }
 

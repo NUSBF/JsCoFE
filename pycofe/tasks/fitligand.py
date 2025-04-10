@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.04.25   <--  Date of Last Modification.
+#    10.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,9 +26,9 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 
-# import gemmi
+import gemmi
 # from   gemmi        import  cif
 import chapi
 
@@ -54,20 +54,10 @@ class FitLigand(basic.TaskDriver):
         ligand  = self.makeClass ( self.input_data.data.ligand [0] )
         sec1    = self.task.parameters.sec1.contains
 
-        # make command-line parameters
+        # prepare data for CHAPI
         xyzin   = istruct.getXYZFilePath ( self.inputDir() )
         mtzin   = istruct.getMTZFilePath ( self.inputDir() )
         libin   = ligand .getLibFilePath ( self.inputDir() )
-
-        mc          = chapi.molecules_container_t ( False )
-        imol_enc    = mc.get_imol_enc_any()
-        imol        = mc.read_coordinates ( xyzin )
-        mc.import_cif_dictionary ( libin,imol_enc )
-        imol_ligand = mc.get_monomer ( ligand.code )
-
-        # rn = mc.get_residue_name(imol, 'A', 401, "")
-        # print("residue name", rn)
-        # mc.delete_residue(imol, 'A', 401, "")
 
         F   = istruct.FWT
         PHI = istruct.PHI
@@ -75,45 +65,100 @@ class FitLigand(basic.TaskDriver):
             F   = istruct.DELFWT
             PHI = istruct.PHDELWT
 
-        self.stdoutln ( " >>>> 1 " + str(mtzin) + " " + str(F) + " " + str(PHI) )
 
-        imol_map = mc.read_mtz ( mtzin,F,PHI, "", False, False )
+        # if self.getParameter(sec1.LEVEL_SEL)=="sigma":
+        #     cmd +=["--sigma",self.getParameter(sec1.SIGMA)]
+        # else:
+        #     cmd +=["--absolute",self.getParameter(sec1.ABSOLUTE)]
 
-        results = mc.fit_ligand ( imol, imol_map, imol_ligand, 1.0, True, 200)
+        sd          = float(self.getParameter(sec1.ABSOLUTE))
+        isFlexible  = (self.getParameter(sec1.FLEXIBLE_CBX)=="True")
+        nsamples    = int(self.getParameter(sec1.SAMPLES))
 
-        self.stdoutln ( " >>>>> " + str(results))
-        self.stdoutln ( " >>>>> " + str(dir(results[0])) )
+        # fit ligand
+        mc          = chapi.molecules_container_t ( False )
+        imol_enc    = mc.get_imol_enc_any ()
+        imol        = mc.read_coordinates ( xyzin )
+        mc.import_cif_dictionary     ( libin,imol_enc )
+        imol_ligand = mc.get_monomer ( ligand.code    )
 
-        fs0 = -1.0
-        r0  = None
+        # rn = mc.get_residue_name(imol, 'A', 401, "")
+        # print("residue name", rn)
+        # mc.delete_residue(imol, 'A', 401, "")
+
+        imol_map = mc.read_mtz   ( mtzin,F,PHI, "", False, False )
+        results  = mc.fit_ligand ( imol, imol_map, imol_ligand, sd,isFlexible,nsamples )
+
+        # take best fit only
+        s0 = -1.0
+        r0 = None
         for i in range(len(results)):
             fscore = results[i].get_fitting_score()
-            if fscore>fs0:
+            if fscore>s0:
                 s0 = fscore
                 r0 = results[i]
 
-        self.stdoutln ( " >>>>> s0=" + str(s0))
-
         have_results = False
-        nligs = 0
+        nfitted = 0
 
         if r0:
 
-            xyzout = self.getCIFOFName()
+            xyzout = self.getMMCIFOFName()
 
             imol_copy = mc.copy_molecule ( imol )
-            mc.merge_molecules   ( imol_copy, str(r0.imol) )
+            mc.merge_molecules   ( imol_copy, str(r0.imol)  )
             mc.write_coordinates ( imol_copy,"__merged.cif" )
 
-            mmcif_utils.clean_mmcif ( "__merged.cif",xyzout )
+            st  = gemmi.read_structure ( xyzin )
+            st0 = mmcif_utils.clean_mmcif ( "__merged.cif",xyzout )
 
-            self.stdoutln ( " >>>>> istruct.ligands=" + str(istruct.ligands))
-            self.stdoutln ( " >>>>> ligand.code=" + str(ligand.code))
+            nrefcycles = 0
+
+            if nrefcycles>0:
+
+                ligands = []
+                for model in st:
+                    for chain in model:
+                        for res in chain:
+                            if res.name==ligand.code:
+                                ligands.append ( res )
+
+                for model in st0:
+                    for chain in model:
+                        for res in chain:
+                            if res.name==ligand.code:
+                                found = False
+                                self.stdoutln ( " >>>> res = " + str(dir(res)))
+                                self.stdoutln ( " >>>> seqid = " + str(dir(res.seqid)))
+                                for r in ligands:
+                                    found = r.model.num   == model.num     and\
+                                            r.chain.name  == chain.name    and\
+                                            r.seqid.num   == res.seqid.num and\
+                                            r.seqid.icode == res.seqid.icode
+                                    if found:
+                                        break
+                                if not found:
+                                    #str(model.num) + "/" +\
+                                    cid = "//" +\
+                                        chain.name + "/" +\
+                                        str(res.seqid.num)
+                                    if res.seqid.icode and res.seqid.icode!=" ":
+                                        cid += "." + res.seqid.icode
+                                    # cid += "(" + ligand.code + ")"
+                                    self.stdoutln ( " >>>>> cid = " + cid )
+                                    # rc = mc.refine_residues_using_atom_cid ( imol_copy,cid,"SPHERE",2000 )1
+                                    rc = mc.refine_residues ( imol_copy,chain.name,res.seqid.num,res.seqid.icode,"","SPHERE",2000 )
+                                    if rc:
+                                        self.stdoutln ( " >>>> refined" )
+                                    else:
+                                        self.stdoutln ( " >>>> not refined" )
+
+                mc.write_coordinates ( imol_copy,"__merged1.cif" )
+                st0 = mmcif_utils.clean_mmcif ( "__merged1.cif",xyzout )
 
             # prepare dictionary file for structure
             libadd = libin
             libstr = istruct.getLibFilePath ( self.inputDir() )
-            self.stdoutln ( " >>>>> libstr=" + str(libstr))
             if libstr and not ligand.code in istruct.ligands:
                 # this is not the first ligand in structure, append it to
                 # the previous one(s) with libcheck
@@ -133,7 +178,6 @@ class FitLigand(basic.TaskDriver):
 
                 libadd += ".lib"
 
-            nligs  = 1
             structure = self.registerStructure ( 
                             xyzout,
                             None,
@@ -152,9 +196,13 @@ class FitLigand(basic.TaskDriver):
                 structure.copyLabels       ( istruct )
                 structure.copyLigands      ( istruct )
                 structure.addLigand        ( ligand.code )
+
                 self.putTitle   ( "Results" )
-                self.putMessage ( "<b>Total " + str(nligs) + " '" + ligand.code +\
-                                  "' ligands were fitted</b><br>&nbsp;" )
+
+                nfitted = 1
+                self.putMessage ( "<b>Total " + str(nfitted) + " '" + ligand.code +\
+                                  "' ligands were fitted<br>Fit score: " + 
+                                  str(round(s0,3)) + "</b><br>&nbsp;" )
                 self.putStructureWidget ( "structure_btn_",
                                           "Structure and electron density",
                                           structure )
@@ -178,7 +226,7 @@ class FitLigand(basic.TaskDriver):
                 else:  # pre-coded workflow framework
                     auto.makeNextTask ( self,{
                         "revision" : revision,
-                        "nfitted"  : str(nligs)
+                        "nfitted"  : str(nfitted)
                     })
 
         else:
@@ -186,7 +234,7 @@ class FitLigand(basic.TaskDriver):
 
         # this will go in the project tree job's line
         self.generic_parser_summary["fitligand"] = {
-          "summary_line" : "N<sub>fitted</sub>=" + str(nligs)
+          "summary_line" : "N<sub>fitted</sub>=" + str(nfitted)
         }
 
         # for i,r in enumerate(results):
