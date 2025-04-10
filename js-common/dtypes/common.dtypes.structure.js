@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    10.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -85,7 +85,7 @@ function DataStructure()  {
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp
-  this.mapSel         = 'diffmap'; // map selection ('diffmap','directmap') for coot tasks
+  this.mapSel         = 'map'; // map selection ('diffmap','map') for coot tasks
 
   this.ligands        = [];    // list of ligand codes fitted
   this.refmacLinks    = [];    // list of LINKR records
@@ -322,17 +322,17 @@ if (!__template_d)  {
 
     } else if (startsWith(dropdown.layCustom,'map-sel'))  {
       if (!(this.hasOwnProperty('mapSel')))
-        this.mapSel = 'diffmap';
+        this.mapSel = 'map';
       setLabel ( 'Use map:',row,0 );
       customGrid.mapSel = new Dropdown();
       //customGrid.mapSel.setWidth ( '240px' );
       if (((!this.DELFWT) || (!this.PHDELWT)) && (this.leadKey==2))
-        customGrid.mapSel.addItem ( "experimental",'',"directmap",true );
+        customGrid.mapSel.addItem ( 'experimental','','map',true );
       else  {
         if (this.FWT && this.PHI)
-          customGrid.mapSel.addItem ( "2Fo-Fc",'',"directmap",this.mapSel=='directmap' );
+          customGrid.mapSel.addItem ( '2Fo-Fc (map)','','map',this.mapSel=='map' );
         if (this.DELFWT && this.PHDELWT)
-          customGrid.mapSel.addItem ( "Fo-Fc",'',"diffmap",this.mapSel=='diffmap' );
+          customGrid.mapSel.addItem ( 'Fo-Fc (diff. map)','','diffmap',this.mapSel=='diffmap' );
       }
       customGrid.setWidget ( customGrid.mapSel,row,1,1,4 );
       customGrid.mapSel.make();
