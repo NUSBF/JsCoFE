@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    24.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -350,12 +350,20 @@ Widget.prototype.setScrollable = function ( onx_value, ony_value )  {
 }
 
 Widget.prototype.getScrollPosition = function () {
-  return [this.element.scrollLeft, this.element.scrollTop];
+  return {
+    left   : this.element.scrollLeft,
+    top    : this.element.scrollTop,
+    width  : this.element.scrollWidth,
+    height : this.element.scrollHeight,
+    clientWidth  : this.element.clientWidth,
+    clientHeight : this.element.clientHeight
+  };
 }
 
 Widget.prototype.setScrollPosition = function ( scrollPos ) {
-  this.element.scrollLeft = scrollPos[0];
-  this.element.scrollTop  = scrollPos[1];
+  this.element.scrollLeft = scrollPos.left;
+  this.element.scrollTop  = scrollPos.top;
+  // this.element.scrollTo ( scrollPos.left,scrollPos.top );
 }
 
 Widget.prototype.setScrollListener = function ( callback_func )  {

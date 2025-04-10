@@ -1213,6 +1213,19 @@ citations = {
                             'doi'     : '10.1107/S2052252521011088'
                          }]
                   },
+    'checkmysequence' : { 'name'     : 'checkMySequence',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Chojnowski, G.',
+                            'title'   : 'Sequence-assignment validation in protein crystal structure models with checkMySequence',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D79',
+                            'year'    : '2023',
+                            'pages'   : '559-568',
+                            'doi'     : '10.1107/S2059798323003765'
+                         }]
+                  },
+
 
     'omit'           : { 'name'     : 'Omit',
                          'category' : 'primary',
@@ -1292,6 +1305,19 @@ citations = {
                             'year'    : '2012',
                             'pages'   : '431-440',
                             'doi'     : '10.1107/S090744491200251X'
+                         }]
+                  },
+
+    'import_serial'  : { 'name'     : 'Import Serial',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Martin Maly, University of Southampton, UK',
+                            'title'   : 'Import Serial',
+                            'journal' : '',
+                            'volume'  : '',
+                            'year'    : '2024',
+                            'pages'   : '',
+                            'doi'     : ''
                          }]
                   },
 

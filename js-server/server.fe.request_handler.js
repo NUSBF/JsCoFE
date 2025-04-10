@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.24   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -272,6 +272,10 @@ let response = null;
           response = adm.getAnalytics ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.getLogFiles :
+         adm.getLogFiles ( loginData,data,callback_func );
+       break;
+
     default: response = new cmd.Response ( cmd.fe_retcode.wrongRequest,
                   '[00001] Unrecognised request <i>"' + request_cmd + '"</i>','' );
 
@@ -288,6 +292,7 @@ let response = null;
       case cmd.fe_reqtype.getUserRation    :
       case cmd.fe_reqtype.wakeZombieJobs   :
       case cmd.fe_reqtype.archiveProject   :
+      case cmd.fe_reqtype.getLogFiles      :
             break;
       default : console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }

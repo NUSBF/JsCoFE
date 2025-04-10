@@ -30,6 +30,7 @@ import sys
 # import uuid
 import json
 # import shutil
+import time
 
 #  ccp4-python imports
 import pyrvapi
@@ -328,6 +329,7 @@ class CCP4Build(basic.TaskDriver):
         #pyrvapi.rvapi_keep_polling ( True )
         if sys.platform.startswith("win"):
             self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+            time.sleep ( 2 )  # suspect problems with files on windows
         else:
             self.runApp ( "ccp4-python",cmd,logType="Main" )
         #pyrvapi.rvapi_keep_polling ( False )
@@ -393,9 +395,12 @@ class CCP4Build(basic.TaskDriver):
                     self.rvrow = meta["page"][i]
                 revname.append ( r )
 
-            self.flush()
+            self.flush()            
 
             if secname:
+
+                rfree_min  = 2.0
+                rev0       = None    
 
                 structures = []
                 revisions  = []
@@ -443,21 +448,25 @@ class CCP4Build(basic.TaskDriver):
                             #revisions.append ( rev )
                             have_results = True
 
-                            rvrow0 = self.rvrow
+                            if meta["metrics"][i]["R_free"]<rfree_min:
+                                rfree_min = meta["metrics"][i]["R_free"]
+                                rev0 = rev
+
+                            # rvrow0 = self.rvrow
                             try:
                                 self.rvrow = meta["page"][i] + 2
                                 self.putSpacer ( 8 )
-                                qrmeta = qualrep.quality_report ( self,rev,None,title=None )
+                                # qrmeta = qualrep.quality_report ( self,rev,None,title=None )
                                 self.putMessage ( "<b>Assigned structure" +\
                                     self.hotHelpLink("Structure","jscofe_qna.structure") +\
                                     " name:</b>&nbsp;" + structure.dname +\
                                     "<font size='+2'><sub>&nbsp;</sub></font>" )
                                 #self.putSpacer ( 3 )
-                                meta["metrics"][i]["clashscore"] = qrmeta["clashscore"]
+                                # meta["metrics"][i]["clashscore"] = qrmeta["clashscore"]
                             except:
                                 qrmeta = None
                                 self.stderr ( " *** validation tools failure" )
-                            self.rvrow = rvrow0 + 6
+                            # self.rvrow = rvrow0 + 6
 
                         else:
                             self.putMessage ( "<i>Cannot make structure for " +\
@@ -470,6 +479,9 @@ class CCP4Build(basic.TaskDriver):
 
                     structures.append ( structure )
                     revisions .append ( rev )
+
+                self.flush()
+                self.rvrow += 7
 
                 verdict_ccp4build.putVerdictWidget ( self,meta )
 
@@ -507,16 +519,34 @@ class CCP4Build(basic.TaskDriver):
 
                 self.flush()
 
+                rvrow0 = self.rvrow
+                for i in range(40):
+                    self.putMessage ( "&nbsp;" )
+                self.rvrow = rvrow0
+
+                self.flush()
+
+                try:
+                    qrmeta = qualrep.quality_report ( self,rev0,None )
+                    meta["metrics"][index[1]]["clashscore"] = qrmeta["clashscore"]
+                except:
+                    qrmeta = None
+                    self.stderr ( " *** validation tools failure" )
+
+                self.flush()
+
                 try:
                     # this is only for displayig stats in job tree
                     m0 = meta["metrics"][index[1]]  #  0: edcc  1: rfree
                     self.generic_parser_summary["ccp4build"] = {
-                      "summary_line" : "Compl=" + str(m0["res_compl"]) +\
-                                       "% R="   + str(m0["R_factor"])  +\
-                                       " R<sub>free</sub>=" + str(m0["R_free"]),
+                      "summary_line" : "Compl=" + str(m0["res_compl"]) + "% ",
                       "R_factor"     : str(m0["R_factor"]),
                       "R_free"       : str(m0["R_free"])
                     }
+                    if not "refmac" in self.generic_parser_summary:
+                        self.generic_parser_summary["refmac"] = {}
+                    self.generic_parser_summary["refmac"]["R_factor"] = str(m0["R_factor"])
+                    self.generic_parser_summary["refmac"]["R_free"]   = str(m0["R_free"])
                     #self.generic_parser_summary["refmac"]     = meta["refmac"]
                     #self.generic_parser_summary["cbuccaneer"] = meta["cbuccaneer"]
                     auto.makeNextTask ( self,{

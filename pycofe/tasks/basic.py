@@ -639,6 +639,7 @@ class TaskDriver(object):
         return
 
     def putSection ( self,sec_id,sectionName,openState_bool=False ):
+        pyrvapi.rvapi_set_text  ( "",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_section ( sec_id,sectionName,self.report_page_id(),
                                     self.rvrow,0,1,1,openState_bool )
         self.rvrow += 1

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.12.22   <--  Date of Last Modification.
+#    02.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Grzegorz Chojnowski, Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Grzegorz Chojnowski, Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2025
 #
 # ============================================================================
 #
@@ -106,6 +106,7 @@ class FindMySequence(basic.TaskDriver):
         uid     = self.getParameter(self.task.parameters.sec1.contains.UPID)
         tophits = self.getParameter(self.task.parameters.sec1.contains.TOPHITS)
         selstr  = self.getParameter(self.task.parameters.sec1.contains.SELSTR)
+        ebiapi   = self.getParameter(self.task.parameters.sec1.contains.EBIAPI)
 
         jsonout = os.path.join(self.outputDir(), 'results.json')
 
@@ -116,7 +117,10 @@ class FindMySequence(basic.TaskDriver):
               "--tophits", tophits, 
               "--select" , selstr
             ]
-
+        if ebiapi == "afdb":
+            cmd.extend(['--ebiapi=uniprot'])
+        elif ebiapi == "swissprot":
+            cmd.extend(['--ebiapi=swissprot'])
         if uid:
             self.putMessage ( f"<h3> Downloading protoeomic sequences for {uid} </h3>" )
             self.flush()

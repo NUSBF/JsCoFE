@@ -58,7 +58,7 @@ function move_disk ( disk1,disk2 )  {
   // loop over all user records
   fs.readdirSync(udir_path).forEach(function(file,index){
     if (file.endsWith(user.__userDataExt))  {
-    console.log ( ' >>> ' + file )
+    // console.log ( ' >>> ' + file )
 
       let uDataFPath = path.join    ( udir_path,file );
       let uData      = utils.readObject ( uDataFPath );  // read the record

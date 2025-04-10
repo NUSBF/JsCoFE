@@ -299,7 +299,7 @@ class dataLink {
   }
 
   fetchData(user, source, id, force = ! this.server_mode) {
-    if (! tools.validUserName(user) && ! this.server_mode) {
+    if (! tools.validUserName(user)) {
       return tools.errorMsg(`Invalid user name`, 400);
     }
 

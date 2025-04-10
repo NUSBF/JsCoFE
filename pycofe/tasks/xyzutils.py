@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.01.25   <--  Date of Last Modification.
+#    31.03.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2020-2025
 #
 # ============================================================================
 #
@@ -54,7 +54,7 @@ class XyzUtils(basic.TaskDriver):
         type  = ""
         cdesc = None
         for i in range(len(meta)):
-            if str(meta[i].model)==model.num:
+            if str(meta[i].model)==str(model.num):
                 cdesc = meta[i].chains
                 for j in range(len(cdesc)):
                     if cdesc[j].id==chain.name:
@@ -398,14 +398,8 @@ class XyzUtils(basic.TaskDriver):
                         md1 = gemmi.Model ( "1" )
                         md1.add_chain ( chain )
                         st1.add_model ( md1   )
-                        # if len(st)>1:
-                        #     pdbout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
-                        # else:
-                        #     pdbout = self.getOFName ( "." + chain.name + ".pdb" )
-                        # st1.write_pdb ( pdbout )
-                        # oxyz = self.registerXYZ ( None,pdbout,checkout=True )
                         if len(st)>1:
-                            mmcifout = self.getOFName ( "." + model.name + "." + chain.name + ".mmcif" )
+                            mmcifout = self.getOFName ( "." + str(model.num) + "." + chain.name + ".mmcif" )
                         else:
                             mmcifout = self.getOFName ( "." + chain.name + ".mmcif" )
                         st1.make_mmcif_document().write_file ( mmcifout )
@@ -417,7 +411,7 @@ class XyzUtils(basic.TaskDriver):
                                 oxyz.dname )
                             if len(st)>1:
                                 self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                                    "Model "   + model.name +\
+                                                    "Model "   + str(model.num) +\
                                                     ", chain " + chain.name,oxyz )
                             else:
                                 self.putXYZWidget ( self.getWidgetId("xyz_btn"),
@@ -462,12 +456,10 @@ class XyzUtils(basic.TaskDriver):
 
                         if stype:
                             if len(st)>1:
-                                # seqname = str(os.path.basename(self.outputFName).split('_', 1)[-1]) + str("_" + model.name + "." + chain.name)
-                                seqname = os.path.basename(self.getOFName ( "_" + model.name + "." + chain.name ))
+                                seqname = os.path.basename(self.getOFName ( "_" + str(model.num) + "." + chain.name ))
                             else:
                                 #fixed path issue in seqname 03/01/2025
                                 seqname = os.path.basename(self.getOFName ( "_" + chain.name))
-                                # seqname = str(os.path.basename(self.outputFName).split('_', 1)[-1]) + str("_" + chain.name)
                             # self.stderr ( seqname )
                             seqout  = seqname + ".fasta"
                             dtype_sequence.writeSeqFile ( os.path.join(self.importDir(),seqout),

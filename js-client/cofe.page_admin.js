@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    15.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -712,7 +712,7 @@ AdminPage.prototype.makeUserList = function ( udata,tdesc )  {
 
 
 AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
-  // function to create user info tables and fill them with data
+  // function to create user info table and fill it with data
 
   this.usersTitle.setText('Users').setFontSize('1.5em').setFontBold(true);
 
@@ -855,8 +855,6 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
 AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   // function to create user info tables and fill them with data
 
-//console.log ( JSON.stringify(ndata) );
-
   //this.nodesTitle.setText ( '<h2>Nodes</h2>' );
   this.nodesTitle.setText('Nodes').setFontSize('1.5em').setFontBold(true);
 
@@ -906,7 +904,6 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
   else if (__local_setup)  FEname = 'Home setup';
                      else  FEname = 'Unnamed setup';
 
-
   let fe_url;
   if (('FEProxy' in ndata) && ndata.FEProxy.fe_config)
         fe_url = ndata.FEProxy.fe_config.externalURL;
@@ -917,12 +914,20 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     fe_url += '<br><i>[' + ndata.FEconfig.externalURL + ']</i>';
 
   let app_version = 'unspecified';
+  
   if ('jscofe_version' in ndata)
     app_version = ndata.jscofe_version;
+  
   this.nodeListTable.setRow ( 'Front End','Front End Server',
     [ FEname,fe_url,'FE',small_font(ndata.FEconfig.startDate),
       ndata.ccp4_version,app_version,'N/A','running','N/A','N/A','N/A','N/A' ],
     row,(row & 1)==1 );
+  
+  if (__user_role==role_code.admin)
+    this.nodeListTable.addOnDblClickListener ( 1,function(){
+      new LogViewerDialog ( 0,'Front-End (' + FEname + ') Log Files' );
+    });
+
   row++;
 
   if (('FEProxy' in ndata) && ndata.FEProxy.proxy_config)  {
@@ -934,6 +939,14 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
         ndata.FEProxy.ccp4_version,app_version,
         'N/A','running','N/A','N/A','N/A','N/A'
       ], row,(row & 1)==1 );
+    (function(self,trow){
+      self.nodeListTable.addOnDblClickListener ( trow,function(){
+        new MessageBox ( 'Log file is not available',
+            '<div style="width:360px;"><h2>Log file is not available</h2>' +
+            'Log file is not available for the Front-End Proxy.</div>',
+            'msg_information');
+      });
+    }(this,row))
     row++;
   }
 
@@ -975,13 +988,32 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
       let nzp = '' + nzombies;
       if (npulls>0)
         nzp = nzombies + '[' + npulls + ']';
-      this.nodeListTable.setRow ( 'NC-' + ncn,'Number Cruncher #' + ncn,
+      let ncID = 'NC-' + ncn;
+      this.nodeListTable.setRow ( ncID,'Number Cruncher #' + ncn,
         [nci.config.name,nci.config.externalURL,nc_name,
          startDate,nci.ccp4_version,app_version,fasttrack,state,
          njdone,nci.config.capacity,njobs,nzp],row,(row & 1)==1 );
+
+      if (__user_role==role_code.admin)
+        (function(self,trow,in_use,nc_name,ncNo){
+          self.nodeListTable.addOnDblClickListener ( trow,function(){
+            if (!in_use)  {
+              new MessageBox ( 'NC not in use',
+                  '<div style="width:360px;"><h2>Number Cruncher is not in use</h2>' +
+                  'Log files are not available as the Number Cruncher is not in use.' +
+                  '</div>','msg_information');
+              } else  {
+                new LogViewerDialog ( ncNo,nc_name + ' Log Files' );
+              }
+          });
+        }(this,row,nci.config.in_use,ncID + ' (' + nci.config.name + ')',
+          nci.config.exeType.toUpperCase()=='CLIENT' ? -1 : i+1))
+
       row++;
       ncn++;
+
     }
+
   }
 
   this.nodeListTable.setAllColumnCSS ({
@@ -989,12 +1021,15 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
     'white-space'    : 'nowrap'
   },1,1 );
 
+  this.nodeListTable.setMouseHoverHighlighting ( 1,1 );
+
   if (__user_role==role_code.admin)
     console.log ( '... Nodes Tab complete in ' + this.__load_time() );
 
 //  this.nodesTab.grid.setWidget ( this.nodeListTable,1,0,1,2 );
 
 }
+
 
 AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   
