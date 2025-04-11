@@ -32,13 +32,15 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
 
   InputBox.call ( this,'Import Demo Project' );
   this.setText ( '','demoprj' );
-  var grid = this.grid;
+  let grid = this.grid;
   grid.setLabel ( '<h2>Import Demo Project</h2>',0,2,2,3 );
 
-  var msgLabel = grid.setLabel ( 'The project is being imported, please wait ... ',
+  let msgLabel = grid.setLabel ( 'The project is being imported, please wait ... ',
                                  2,2,1,3 );
   var progressBar = grid.setProgressBar ( 0, 4,2,1,3 );
-  
+
+  // let add_btn_id = 'add_btn_' + __id_cnt++;
+
   var self = this;
 
   $(this.element).dialog({
