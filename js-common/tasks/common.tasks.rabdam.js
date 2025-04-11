@@ -41,7 +41,7 @@ function TaskRabdam()  {
   this.title   = 'Rabdam';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz', '~mmcif_only'],
+    data_type   : { 'DataRevision' : ['xyz'],
       'DataModel'    : [],
       'DataXYZ'      : []
     },  // data type(s) and subtype(s)
