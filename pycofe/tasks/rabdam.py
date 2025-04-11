@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.24   <--  Date of Last Modification.
+#    11.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,24 +19,19 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2024
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
 
 #  python native imports
-# import sys
 import os
 import shutil
 
-
 #  application imports
 from  pycofe.tasks  import basic
-# from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
-# from  pycofe.dtypes import dtype_structure,dtype_revision
-# from  pycofe.dtypes import dtype_sequence
 from  pycofe.dtypes import dtype_revision
-from  varut import signal
+from  pycofe.varut  import signal,mmcif_utils
 
 
 # ============================================================================
@@ -48,31 +43,80 @@ class Rabdam(basic.TaskDriver):
 
     def run(self):
 
+        use_mmcif = True  # assign False to force using PDB. When set True,
+                          # PDB will be still used as a fallback if available
+
         # fetch input data
         ixyz  = self.makeClass ( self.input_data.data.ixyz[0] )
         xyzin = None
         if ixyz._type==dtype_revision.dtype():
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
-            
-            xyzin = istruct.getPDBFilePath ( self.inputDir() )
+            if use_mmcif:
+                xyzin = istruct.getXYZFilePath ( self.inputDir() )
+            else:
+                xyzin = istruct.getPDBFilePath ( self.inputDir() )
+        elif use_mmcif:
+            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
         else:
             xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
+        # the rest is PDB/mmCIF agnostic
+
         fbasepath, fext = os.path.splitext ( xyzin )
 
-        if fext.upper()!=".PDB":
-            fext   = ".cif"
-            xyzin1 = os.path.basename(fbasepath) + fext
+        # rabdam does not like dots in file names – improper handling of file names
+        xyzin1 = os.path.basename ( fbasepath )
+        if "." in xyzin1:
+            xyzin1 = xyzin1.replace ( ".","_" ) + fext
             shutil.copyfile ( xyzin,xyzin1 )
             xyzin  = xyzin1
 
-        self.open_stdin()
-        self.write_stdin ( "yes\n" )
-        self.close_stdin()
+        if fext.upper()!=".PDB":
+            fext   = ".cif"  # another rabdam's "feature" – it checks extension 
+                             # rather than content, so renaming is the only
+                             # way to cope with alternatives
+            xyzin1 = os.path.basename(fbasepath) + fext
+            # shutil.copyfile ( xyzin,xyzin1 )
+            mmcif_utils.clean_mmcif ( xyzin,xyzin1 )  # just in case
+            xyzin  = xyzin1
+
+        # sometimes rabdam asks for user's "yes" -- just give it for all cases1
+        self.write_stdin_all ( "yes\n" )
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
         ],logType="Main" )
+
+        # check that Rabdam did not fail on mmCIF format (weak parser)
+        if fext.upper()!=".PDB":
+
+            self.flush()
+            self.file_stdout.close()
+            suspect_format = False
+            with (open(self.file_stdout_path(),'r')) as fstd:
+                for line in fstd:
+                    if "ERROR: " in line and "mmCIF" in line:
+                        suspect_format = True
+                        break
+            self.file_stdout  = open ( self.file_stdout_path(),'a' )
+
+            if suspect_format:
+                self.stdoutln ( "\n ========= SWITCHING TO PDB FILE\n" )
+                if ixyz._type==dtype_revision.dtype():
+                    xyzin = istruct.getPDBFilePath ( self.inputDir() )
+                else:
+                    xyzin = ixyz.getPDBFilePath ( self.inputDir() )
+                if xyzin:  # check because PDB may be unavailable
+                    fbasepath, fext = os.path.splitext ( xyzin )
+                    # need to be repeated
+                    self.write_stdin_all ( "yes\n" )
+                    rc = self.runApp ( "rabdam",[
+                        "-f",os.path.abspath ( xyzin )
+                    ],logType="Main" )
+                else:
+                    self.stdoutln ( "\n ========= PDB FILE NOT AVAILABLE\n" )
+                    self.putMessage ( "<h3>Could not parse mmCIF file while PDB file not available -- stop</h3>" )
+
         have_results = False
         self.addCitations ( ['rabdam'] )
 
@@ -90,7 +134,7 @@ class Rabdam(basic.TaskDriver):
             try:
                 final_pdb = os.path.join(rabdam_dir, f"{name.replace(fext, '')}_BDamage" + fext)
                 if os.path.exists ( final_pdb ):
-                    xyzout = self.getXYZOFName()
+                    xyzout = self.getOFName ( fext )
                     shutil.copyfile ( final_pdb,xyzout )
 
             except:
