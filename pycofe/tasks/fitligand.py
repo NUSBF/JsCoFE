@@ -26,15 +26,12 @@
 
 #  python native imports
 import os
-# import sys
 
 import gemmi
-# from   gemmi        import  cif
 import chapi
 
 #  application imports
 from . import basic
-from   pycofe.proc  import coor
 from   pycofe.auto  import auto, auto_workflow
 from   pycofe.varut import mmcif_utils
 
@@ -87,16 +84,17 @@ class FitLigand(basic.TaskDriver):
         # mc.delete_residue(imol, 'A', 401, "")
 
         imol_map = mc.read_mtz   ( mtzin,F,PHI, "", False, False )
-        results  = mc.fit_ligand ( imol, imol_map, imol_ligand, sd,isFlexible,nsamples )
+        results  = mc.fit_ligand ( imol, imol_map, imol_ligand, sd,
+                                   isFlexible,nsamples )
 
-        # take best fit only
+        # take the best fit only
         s0 = -1.0
         r0 = None
-        for i in range(len(results)):
-            fscore = results[i].get_fitting_score()
+        for r in results:
+            fscore = r.get_fitting_score()
             if fscore>s0:
                 s0 = fscore
-                r0 = results[i]
+                r0 = r
 
         have_results = False
         nfitted = 0
@@ -105,56 +103,64 @@ class FitLigand(basic.TaskDriver):
 
             xyzout = self.getMMCIFOFName()
 
-            imol_copy = mc.copy_molecule ( imol )
-            mc.merge_molecules   ( imol_copy, str(r0.imol)  )
-            mc.write_coordinates ( imol_copy,"__merged.cif" )
+            # imol_copy = mc.copy_molecule ( imol )
+            # mc.merge_molecules   ( imol_copy, str(r0.imol)  )
+            # rc = mc.refine_residues_using_atom_cid ( imol_copy,'//A/101',"SPHERE",2000 )
+            # self.stdoutln ( " >>>> rc=" + str(rc) )
+            # mc.write_coordinates ( imol_copy,"__merged.cif" )
+
+            mc.merge_molecules   ( imol, str(r0.imol)  )
+            mc.write_coordinates ( imol,"__merged.cif" )
 
             st  = gemmi.read_structure ( xyzin )
             st0 = mmcif_utils.clean_mmcif ( "__merged.cif",xyzout )
 
-            nrefcycles = 0
+            nrefcycles = 10
 
-            if nrefcycles>0:
+            ligands = []
+            for model in st:
+                for chain in model:
+                    for res in chain:
+                        if res.name==ligand.code:
+                            ligands.append ( res )
 
-                ligands = []
-                for model in st:
-                    for chain in model:
-                        for res in chain:
-                            if res.name==ligand.code:
-                                ligands.append ( res )
-
-                for model in st0:
-                    for chain in model:
-                        for res in chain:
-                            if res.name==ligand.code:
-                                found = False
-                                self.stdoutln ( " >>>> res = " + str(dir(res)))
-                                self.stdoutln ( " >>>> seqid = " + str(dir(res.seqid)))
-                                for r in ligands:
-                                    found = r.model.num   == model.num     and\
-                                            r.chain.name  == chain.name    and\
-                                            r.seqid.num   == res.seqid.num and\
-                                            r.seqid.icode == res.seqid.icode
-                                    if found:
-                                        break
-                                if not found:
-                                    #str(model.num) + "/" +\
-                                    cid = "//" +\
-                                        chain.name + "/" +\
-                                        str(res.seqid.num)
-                                    if res.seqid.icode and res.seqid.icode!=" ":
-                                        cid += "." + res.seqid.icode
-                                    # cid += "(" + ligand.code + ")"
-                                    self.stdoutln ( " >>>>> cid = " + cid )
-                                    # rc = mc.refine_residues_using_atom_cid ( imol_copy,cid,"SPHERE",2000 )1
-                                    rc = mc.refine_residues ( imol_copy,chain.name,res.seqid.num,res.seqid.icode,"","SPHERE",2000 )
+            cids = []
+            for model in st0:
+                for chain in model:
+                    for res in chain:
+                        if res.name==ligand.code:
+                            found = False
+                            self.stdoutln ( " >>>> res = " + str(dir(res)))
+                            self.stdoutln ( " >>>> seqid = " + str(dir(res.seqid)))
+                            for r in ligands:
+                                found = r.model.num   == model.num     and\
+                                        r.chain.name  == chain.name    and\
+                                        r.seqid.num   == res.seqid.num and\
+                                        r.seqid.icode == res.seqid.icode
+                                if found:
+                                    break
+                            if not found:
+                                #str(model.num) + "/" +\
+                                cid = "/" + str(model.num) + "/" +\
+                                      chain.name + "/" +\
+                                      str(res.seqid.num)
+                                if res.seqid.icode and res.seqid.icode!=" ":
+                                    cid += "." + res.seqid.icode
+                                cid += "(" + ligand.code + ")"
+                                self.stdoutln ( " >>>>> cid = " + cid )
+                                cids.append ( cid )
+                                if nrefcycles>0:
+                                    cid = "A/101"
+                                    rc = mc.refine_residues_using_atom_cid ( imol,cid,"SPHERE",nrefcycles )
+                                    # rc = mc.refine_residues ( imol,chain.name,res.seqid.num,res.seqid.icode,"","SPHERE",nrefcycles )
                                     if rc:
                                         self.stdoutln ( " >>>> refined" )
                                     else:
                                         self.stdoutln ( " >>>> not refined" )
 
-                mc.write_coordinates ( imol_copy,"__merged1.cif" )
-                st0 = mmcif_utils.clean_mmcif ( "__merged1.cif",xyzout )
+            if len(cids)>0 and nrefcycles>0:
+                mc.write_coordinates ( imol,"__merged1.cif" )
+                mmcif_utils.clean_mmcif ( "__merged1.cif",xyzout )
 
             # prepare dictionary file for structure
             libadd = libin
@@ -197,12 +203,14 @@ class FitLigand(basic.TaskDriver):
                 structure.copyLigands      ( istruct )
                 structure.addLigand        ( ligand.code )
 
-                self.putTitle   ( "Results" )
-
                 nfitted = 1
                 self.putMessage ( "<b>Total " + str(nfitted) + " '" + ligand.code +\
-                                  "' ligands were fitted<br>Fit score: " + 
-                                  str(round(s0,3)) + "</b><br>&nbsp;" )
+                                  "' ligands were fitted: " +\
+                                  ", ".join(cids) + "<br>Fit score: " + 
+                                  str(round(s0,3)) + "</b>" )
+
+                self.putTitle   ( "Results" )
+
                 self.putStructureWidget ( "structure_btn_",
                                           "Structure and electron density",
                                           structure )
@@ -233,8 +241,14 @@ class FitLigand(basic.TaskDriver):
             self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )
 
         # this will go in the project tree job's line
+        summary_line = ""
+        if nfitted>0:
+            summary_line = "N<sub>fitted</sub>=" + str(nfitted) +\
+                           ", score=" + str(round(s0,3))
+        else:
+            summary_line = "no ligands fitted"
         self.generic_parser_summary["fitligand"] = {
-          "summary_line" : "N<sub>fitted</sub>=" + str(nfitted)
+          "summary_line" : summary_line
         }
 
         # for i,r in enumerate(results):

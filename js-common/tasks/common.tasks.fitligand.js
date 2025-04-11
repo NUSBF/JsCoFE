@@ -43,19 +43,19 @@ function TaskFitLigand()  {
   //this.helpURL = './html/jscofe_task_fitligand.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
-      label     : 'Structure revision',        // label for input dialog
-      inputId   : 'revision', // input Id for referencing input fields
+      data_type   : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
+      label       : 'Structure revision',        // label for input dialog
+      inputId     : 'revision', // input Id for referencing input fields
       customInput : 'map-sel', // lay custom fields below the dropdown
-      version   : 4,          // minimum data version allowed
-      min       : 1,          // minimum acceptable number of data instances
-      max       : 1           // maximum acceptable number of data instances
+      version     : 4,          // minimum data version allowed
+      min         : 1,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
     },{
-      data_type : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label     : 'Ligand data', // label for input dialog
-      inputId   : 'ligand',      // input Id for referencing input fields
-      min       : 1,             // minimum acceptable number of data instances
-      max       : 1              // maximum acceptable number of data instances
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 1,             // minimum acceptable number of data instances
+      max         : 1              // maximum acceptable number of data instances
     }
   ];
 
@@ -158,7 +158,8 @@ function TaskFitLigand()  {
                 ABSOLUTE : {
                         type      : 'real',
                         keyword   : '--absolute',
-                        label     : 'Map level, e/&Aring;<sup>3</sup>',
+                        // label     : 'Map level, e/&Aring;<sup>3</sup>',
+                        label     : 'Map level, &sigma;',
                         tooltip   : 'Specify map level for ligand search',
                         range     : [0.0,10.0],
                         value     : '1.0',
@@ -172,7 +173,7 @@ function TaskFitLigand()  {
                         label     : 'Flexible fit',
                         tooltip   : 'Check in order to use torsional ' +
                                     'conformation ligand search',
-                        iwidth    : 140,
+                        iwidth    : 120,
                         value     : true,
                         position  : [1,0,1,3]
                       },

@@ -85,7 +85,7 @@ function DataStructure()  {
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp
-  this.mapSel         = 'map'; // map selection ('diffmap','map') for coot tasks
+  this.mapSel         = 'diffmap'; // map selection ('diffmap','map') for coot tasks
 
   this.ligands        = [];    // list of ligand codes fitted
   this.refmacLinks    = [];    // list of LINKR records
@@ -322,7 +322,7 @@ if (!__template_d)  {
 
     } else if (startsWith(dropdown.layCustom,'map-sel'))  {
       if (!(this.hasOwnProperty('mapSel')))
-        this.mapSel = 'map';
+        this.mapSel = 'diffmap';
       setLabel ( 'Use map:',row,0 );
       customGrid.mapSel = new Dropdown();
       //customGrid.mapSel.setWidth ( '240px' );
