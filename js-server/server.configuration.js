@@ -1673,7 +1673,7 @@ function checkOnUpdate ( callback_func )  {
         if (!stamp)
           log.warning ( 8,'stamp file not found at '   + sfpath );
         if (version && stamp)
-          cmd = cmd.concat([ '--stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
+          cmd = cmd.concat([ '-stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
         log.standard ( 8,'running ' + ccp4um + ' ' + cmd.join(' ') );
         let job = utils.spawn ( ccp4um,cmd,{} );
         job.on ( 'close',function(code){
