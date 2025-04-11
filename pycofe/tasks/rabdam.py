@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.04.24   <--  Date of Last Modification.
+#    11.04.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,15 +56,7 @@ class Rabdam(basic.TaskDriver):
             
             xyzin = istruct.getXYZFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
-
-        fbasepath, fext = os.path.splitext ( xyzin )
-
-        if fext.upper()!=".PDB":
-            fext   = ".cif"
-            xyzin1 = os.path.basename(fbasepath) + fext
-            shutil.copyfile ( xyzin,xyzin1 )
-            xyzin  = xyzin1
+            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
@@ -107,6 +99,17 @@ class Rabdam(basic.TaskDriver):
 
             html_report = os.path.join ( html_path, f"{name.replace(fext, '')}_BDamage.html")
             if os.path.exists(html_report):
+                with open(html_report, "r") as file:
+                    lines = file.readlines()
+                with open(html_report, "w") as file:
+                    for line in lines:  
+                        if "<h1>" in line and "</h1>" in line:
+                            file.write("<h1>Rabdam Report</h1>\n")
+                        elif "<p id=\"file_info\">" in line:
+                            file.write("<p id=\"file_info\"></p>\n")
+                        else:
+                            file.write(line)
+            if os.path.exists(html_report):
                 
                 self.insertTab   ( "html_report","Rabdam Report",None,True )
                 self.putMessage1 (
@@ -124,5 +127,6 @@ class Rabdam(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Rabdam ( "",os.path.basename(__file__) )
+    drv = Rabdam ( "",os.path.basename(__file__),
+                  { "report_page" : { "show" : True, "name" : "Summary" } }  )
     drv.start()
