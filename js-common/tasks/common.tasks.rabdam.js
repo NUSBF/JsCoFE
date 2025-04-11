@@ -41,7 +41,7 @@ function TaskRabdam()  {
   this.title   = 'Rabdam';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz', '~mmcif_only'],
+    data_type   : { 'DataRevision' : ['!xyz'],
       'DataModel'    : [],
       'DataXYZ'      : []
     },  // data type(s) and subtype(s)
@@ -63,10 +63,10 @@ else    registerClass ( 'TaskRabdam',TaskRabdam,TaskTemplate.prototype );
 TaskRabdam.prototype.icon           = function()  { return 'task_rabdam'; }
 TaskRabdam.prototype.clipboard_name = function()  { return '"Rabdam"';    }
 
-// TaskRabdam.prototype.checkKeywords = function ( keywords )  {
-//   // keywords supposed to be in low register
-//     return this.__check_keywords ( keywords,['rabdam','radiation','damage','analysis'] );
-//   }
+TaskRabdam.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['rabdam','radiation','damage','analysis'] );
+  }
 
 
 
