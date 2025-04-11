@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.04.25   <--  Date of Last Modification.
+#    10.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -76,7 +76,7 @@ class DType(dtype_xyz.DType):
             self.useModelSel    = "N"    # for use in Buccaneer and Nautilus
             self.BFthresh       = 3.0
             self.phaseBlur      = 1.0    # used in arpwarp
-            self.mapSel         = "map"  # map selection ('diffmap','map') for coot tasks
+            self.mapSel         = "diffmap" # map selection ('diffmap','map') for coot tasks
 
             self.chains         = []
             self.ligands        = []     # list of ligands fitted
