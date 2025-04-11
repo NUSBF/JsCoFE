@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.06.24  <--  Date of Last Modification.
+ *    11.04.25  <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2024
+ *  (C) E. Krissinel, A. Lebedev 2019-2025
  *
  *  =================================================================
  *
@@ -48,6 +48,9 @@ function ExportJobDialog ( task )  {
       let progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 3,2,1,3 );
 
+      let cancel_btn_id   = 'cancel_btn_'   + __id_cnt++;
+      let download_btn_id = 'download_btn_' + __id_cnt++;
+
       dlg.jobSize = -2;
 
     //  w = 3*$(window).width()/5 + 'px';
@@ -63,8 +66,8 @@ function ExportJobDialog ( task )  {
         },
         buttons   : [
           {
-            id    : "download_btn",
-            text  : "Download",
+            id    : download_btn_id,
+            text  : 'Download',
             click : function() {
               let token;
               let url;
@@ -74,22 +77,23 @@ function ExportJobDialog ( task )  {
               url = __special_url_tag + '/' + token   + '/' + task.project +
                                       '/' + task.id + '/' + exportName   +
                                       '.zip';
-              $('#download_btn').hide();
-              $('#cancel_btn'  ).button ( "option","label","Close" );
+              $( '#' + download_btn_id ).hide();
+              // $('#cancel_btn'  ).button ( "option","label","Close" );
+              $( '#' + cancel_btn_id ).text('Close');
               downloadFile ( url );
             }
           },
           {
-            id    : "cancel_btn",
-            text  : "Cancel",
+            id    : cancel_btn_id,
+            text  : 'Cancel',
             click : function() {
-              $(this).dialog("close");
+              $(this).dialog('close');
             }
           }
         ]
       });
 
-      window.setTimeout ( function(){ $('#download_btn').hide(); },0 );
+      window.setTimeout ( function(){ $('#'+download_btn_id).hide(); },0 );
 
       function checkReady() {
         serverRequest ( fe_reqtype.checkJobExport,task,
@@ -106,7 +110,7 @@ function ExportJobDialog ( task )  {
                                'export. ' +
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
-            $('#download_btn').show();
+            $('#'+download_btn_id).show();
           }
         },null,function(){ // depress error messages in this case!
           window.setTimeout ( checkReady,1000 );
