@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.24   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -71,7 +71,8 @@ function ImportProjectDialog ( onSuccess_func )  {
             window.setTimeout ( checkReady,1000 );
           else {
             progressBar.hide();
-            $( "#cancel_btn" ).button ( "option","label","Close" );
+            // $( "#cancel_btn" ).button ( "option","label","Close" );
+            $( '#' + cancel_btn_id ).text('Close');
             if (data.signal=='Success')  {
               let pnames    = data.name.split(' ');
               let vers_text = '';
@@ -137,6 +138,8 @@ function ImportProjectDialog ( onSuccess_func )  {
 
   grid.setWidget ( upload,3,2,1,3 );
 
+  let cancel_btn_id = 'cancel_btn_' + __id_cnt++;
+
 //  w = 3*$(window).width()/5 + 'px';
 
   $(this.element).dialog({
@@ -150,10 +153,10 @@ function ImportProjectDialog ( onSuccess_func )  {
     },
     buttons   : [
       {
-        id    : "cancel_btn",
-        text  : "Cancel",
+        id    : cancel_btn_id,
+        text  : 'Cancel',
         click : function() {
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       }
     ]

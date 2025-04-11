@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.23   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Hop-on Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -41,6 +41,7 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
                              '" is being prepared, please wait ...' );
   grid.setWidget ( msgLabel, 1,0,1,1 );
 
+  let cancel_btn_id   = 'cancel_btn_'   + __id_cnt++;
 
 //  w = 3*$(window).width()/5 + 'px';
 
@@ -55,21 +56,21 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
     },
     buttons   : [
       {
-        id    : "cancel_btn",
-        text  : "Cancel",
+        id    : cancel_btn_id,
+        text  : 'Cancel',
         click : function() {
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       }
     ]
   });
 
   let dlg = this;
-  $(dlg.element).on( "dialogclose",function(event,ui){
+  $(dlg.element).on( 'dialogclose',function(event,ui){
     serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
                     null,function(){
       window.setTimeout ( function(){
-        $(dlg.element).dialog( "destroy" );
+        $(dlg.element).dialog( 'destroy' );
         dlg.delete();
       },10 );
     },function(){} );  // depress error messages
@@ -90,7 +91,8 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
           window.setTimeout ( checkReady,1000 );
         else {
           progressBar.hide();
-          $( "#cancel_btn" ).button ( "option","label","Close" );
+          // $( "#cancel_btn" ).button ( "option","label","Close" );
+          $( '#' + cancel_btn_id ).text('Close');
           if (data.signal=='Success')  {
             msgLabel.setText ( 'Demo Project "' + data.name + '" is prepared, ' +
                                'you may close this dialog now.' );

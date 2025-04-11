@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -37,11 +37,11 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
 
   let msgLabel = grid.setLabel ( 'The project is being imported, please wait ... ',
                                  2,2,1,3 );
-  var progressBar = grid.setProgressBar ( 0, 4,2,1,3 );
+  let progressBar = grid.setProgressBar ( 0, 4,2,1,3 );
 
-  // let add_btn_id = 'add_btn_' + __id_cnt++;
+  let cancel_btn_id = 'cancel_btn_' + __id_cnt++;
 
-  var self = this;
+  let self = this;
 
   $(this.element).dialog({
     resizable : false,
@@ -54,10 +54,10 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
     },
     buttons   : [
       {
-        id    : "cancel_btn",
-        text  : "Cancel",
+        id    : cancel_btn_id,
+        text  : 'Cancel',
         click : function() {
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       }
     ]
@@ -81,7 +81,8 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
         window.setTimeout ( checkReady,1000 );
       else {
         progressBar.hide();
-        $( "#cancel_btn" ).button ( "option","label","Close" );
+        // $( '#' + self.cancel_btn_id ).button ( "option","label","Close" );
+        $( '#' + cancel_btn_id ).text('Close');
         if (data.signal=='Success')  {
           if (__current_folder.type==folder_type.all_projects)
             msgLabel.setText (
