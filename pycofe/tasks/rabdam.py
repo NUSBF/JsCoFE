@@ -54,9 +54,9 @@ class Rabdam(basic.TaskDriver):
         if ixyz._type==dtype_revision.dtype():
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
             
-            xyzin = istruct.getXYZFilePath ( self.inputDir() )
+            xyzin = istruct.getPDBFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         fbasepath, fext = os.path.splitext ( xyzin )
 
@@ -65,6 +65,10 @@ class Rabdam(basic.TaskDriver):
             xyzin1 = os.path.basename(fbasepath) + fext
             shutil.copyfile ( xyzin,xyzin1 )
             xyzin  = xyzin1
+
+        self.open_stdin()
+        self.write_stdin ( "yes\n" )
+        self.close_stdin()
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
