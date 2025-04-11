@@ -32,10 +32,11 @@ import shutil
 
 #  application imports
 from  pycofe.tasks  import basic
-from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
-from  pycofe.dtypes import dtype_structure,dtype_revision
-from  pycofe.dtypes import dtype_sequence
-from varut import signal
+# from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
+# from  pycofe.dtypes import dtype_structure,dtype_revision
+# from  pycofe.dtypes import dtype_sequence
+from  pycofe.dtypes import dtype_revision
+from  varut import signal
 
 
 # ============================================================================
@@ -53,9 +54,17 @@ class Rabdam(basic.TaskDriver):
         if ixyz._type==dtype_revision.dtype():
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
             
-            xyzin = istruct.getPDBFilePath ( self.inputDir() )
+            xyzin = istruct.getXYZFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
+            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+
+        fbasepath, fext = os.path.splitext ( xyzin )
+
+        if fext.upper()!=".PDB":
+            fext   = ".cif"
+            xyzin1 = os.path.basename(fbasepath) + fext
+            shutil.copyfile ( xyzin,xyzin1 )
+            xyzin  = xyzin1
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
@@ -71,19 +80,17 @@ class Rabdam(basic.TaskDriver):
         else:
             final_pdb  = None
             name = os.path.basename(xyzin)
-            rabdam_dir = os.path.join("Logfiles", name.replace(".pdb", ""))
+            rabdam_dir = os.path.join("Logfiles", name.replace(fext, ""))
 
 
             try:
-                final_pdb = os.path.join(rabdam_dir, f"{name.replace('.pdb', '')}_BDamage.pdb")
+                final_pdb = os.path.join(rabdam_dir, f"{name.replace(fext, '')}_BDamage" + fext)
                 if os.path.exists ( final_pdb ):
                     xyzout = self.getXYZOFName()
                     shutil.copyfile ( final_pdb,xyzout )
 
             except:
                 pass
-
-            
 
 
             html_path = None
@@ -98,7 +105,7 @@ class Rabdam(basic.TaskDriver):
             
             
 
-            html_report = os.path.join ( html_path, f"{name.replace('.pdb', '')}_BDamage.html")
+            html_report = os.path.join ( html_path, f"{name.replace(fext, '')}_BDamage.html")
             if os.path.exists(html_report):
                 
                 self.insertTab   ( "html_report","Rabdam Report",None,True )
