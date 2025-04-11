@@ -56,7 +56,15 @@ class Rabdam(basic.TaskDriver):
             
             xyzin = istruct.getXYZFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
+            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+
+        fbasepath, fext = os.path.splitext ( xyzin )
+
+        if fext.upper()!=".PDB":
+            fext   = ".cif"
+            xyzin1 = os.path.basename(fbasepath) + fext
+            shutil.copyfile ( xyzin,xyzin1 )
+            xyzin  = xyzin1
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
