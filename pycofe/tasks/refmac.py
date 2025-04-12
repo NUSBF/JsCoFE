@@ -581,9 +581,6 @@ class Refmac(basic.TaskDriver):
                 try:
                     meta = qualrep.quality_report ( self,revision,xyzin,
                                                     refmacXML = xmlOutRefmac )
-                    # self.stderr ( " META=" + str(meta) )
-                    # if "molp_score" in meta:
-                    #     self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
                 except:
                     meta = None
                     self.stderr ( " *** validation tools failure" )

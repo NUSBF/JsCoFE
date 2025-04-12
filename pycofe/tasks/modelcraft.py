@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.02.25   <--  Date of Last Modification.
+#    12.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -480,13 +480,19 @@ class ModelCraft(basic.TaskDriver):
                     self.rvrow = rvrow0
 
                     self.generic_parser_summary["modelcraft"] = {
-                        "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                         ", R=" + Rwork +\
-                                         " R<sub>free</sub>="  + Rfree,
+                        # "summary_line" : "Compl={0:.1f}%".format(Compl) +\
+                        #                  ", R=" + Rwork +\
+                        #                  " R<sub>free</sub>="  + Rfree,
+                        "summary_line" : "Compl={0:.1f}% ".format(Compl),
                         "R_factor"     : Rwork,
                         "R_free"       : Rfree
                     }
-                        
+
+                    if not "refmac" in self.generic_parser_summary:
+                        self.generic_parser_summary["refmac"] = {}
+                    self.generic_parser_summary["refmac"]["R_factor"] = str(Rwork)
+                    self.generic_parser_summary["refmac"]["R_free"]   = str(Rfree)
+
                     if self.task.autoRunName.startswith("@"):
                         # scripted workflow framework
                         auto_workflow.nextTask ( self,{
