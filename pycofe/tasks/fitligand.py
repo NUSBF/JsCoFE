@@ -32,8 +32,9 @@ import chapi
 
 #  application imports
 from . import basic
-from   pycofe.auto  import auto, auto_workflow
-from   pycofe.varut import mmcif_utils
+from   pycofe.auto     import auto, auto_workflow
+from   pycofe.varut    import mmcif_utils
+from   pycofe.verdicts import verdict_fitligand
 
 # ============================================================================
 # Make Refmac driver
@@ -184,6 +185,10 @@ class FitLigand(basic.TaskDriver):
 
                 libadd += ".lib"
 
+            row0 = self.rvrow + 2
+
+            # self.putMessage ( '&nbsp;' )
+
             structure = self.registerStructure ( 
                             xyzout,
                             None,
@@ -204,12 +209,19 @@ class FitLigand(basic.TaskDriver):
                 structure.addLigand        ( ligand.code )
 
                 nfitted = 1
+                # self.putMessage ( "<b>Total " + str(nfitted) + " '" + ligand.code +\
+                #                   "' ligands were fitted: " +\
+                #                   ", ".join(cids) + "<br>Fit score: " + 
+                #                   str(round(s0,3)) + "</b>" )
+
                 self.putMessage ( "<b>Total " + str(nfitted) + " '" + ligand.code +\
                                   "' ligands were fitted: " +\
-                                  ", ".join(cids) + "<br>Fit score: " + 
-                                  str(round(s0,3)) + "</b>" )
+                                  ", ".join(cids) + "</b>" )
 
-                self.putTitle   ( "Results" )
+                self.rvrow += 4
+
+                self.putTitle ( "Output Structure" +\
+                                self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 self.putStructureWidget ( "structure_btn_",
                                           "Structure and electron density",
@@ -221,6 +233,11 @@ class FitLigand(basic.TaskDriver):
                 self.registerRevision     ( revision  )
 
                 have_results = True
+
+                verdict_meta = {
+                    "fit_score" : s0
+                }
+                verdict_fitligand.putVerdictWidget ( self,verdict_meta,row0 )
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
