@@ -187,9 +187,13 @@ function AccountPage ( sceneId )  {
     remote_login_lbl.setFontSize ( '112%' );
     remote_pwd_lbl  .setFontSize ( '112%' );
     remote_login_inp.setFontSize ( '112%' ).setWidth('100%').setFontItalic(true)
-                    .setTooltip  ( 'To enable job execution on the remote ' +
-                                   appName() + ' server, the login username ' +
-                                   'and password must be provided.' ); 
+                    .setStyle    ( 'text','','remote server login',
+                                   'To enable job execution on the remote ' +
+                                    appName() + ' server, the login username ' +
+                                    'and password must be provided.' );
+                    // .setTooltip  ( 'To enable job execution on the remote ' +
+                    //                appName() + ' server, the login username ' +
+                    //                'and password must be provided.' ); 
     remote_pwd_inp  .setFontSize ( '112%' ).setWidth('100%')  // .setHeight('16pt')
                     .setFontItalic(true)
                     .setStyle    ( 'password','','remote server password',
