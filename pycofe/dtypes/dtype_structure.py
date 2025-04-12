@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    19.05.24   <--  Date of Last Modification.
+#    10.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -76,7 +76,7 @@ class DType(dtype_xyz.DType):
             self.useModelSel    = "N"    # for use in Buccaneer and Nautilus
             self.BFthresh       = 3.0
             self.phaseBlur      = 1.0    # used in arpwarp
-            self.mapSel         = "diffmap" # map selection ('diffmap','directmap') for coot tasks
+            self.mapSel         = "diffmap" # map selection ('diffmap','map') for coot tasks
 
             self.chains         = []
             self.ligands        = []     # list of ligands fitted
