@@ -1653,9 +1653,13 @@ function getExcludedTasks()  {
 
   }
 
+  if (isWindows() && (fe_server.excluded_tasks.indexOf('unix-only')<0))
+    fe_server.excluded_tasks.push ( 'unix-only' );
+
   return fe_server.excluded_tasks;
 
 }
+
 
 function checkOnUpdate ( callback_func )  {
   try {
