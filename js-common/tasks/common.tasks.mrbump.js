@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    07.02.25   <--  Date of Last Modification.
+ *    14.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -89,7 +89,7 @@ function TaskMrBump()  {
                         label    : 'Check alternative space groups',
                         tooltip  : 'Check to explore compatible space groups',
                         value    : false,
-                        position : [0,0,1,3]
+                        position : [2,0,1,1]
                       },
                 //RLEVEL_SEL : {
                 //        type     : 'combobox',
@@ -104,25 +104,26 @@ function TaskMrBump()  {
                 //      },
                 _label_A : {
                        type      : 'label',
-                       label     : '&nbsp;By default, the PDB will be searched for possible search models. Optionally, the AFDB can also be searched.',
-                       position  : [1,0,1,1]
+                       label     : '<b> By default, only PDB will be searched <b/>',
+                       tooltip   : '',
+                       position  : [3,0,1,1]
                       },
                 AFDB_CBX : {
                         type     : 'checkbox',
                         label    : 'Include structures from AFDB',
                         tooltip  : 'Check to include structures from AlphaFold-2 database',
                         value    : true,
-                        position : [2,0,1,3]
+                        position : [5,0,1,1]
                       },
                 AFLEVEL_SEL : {
                         type     : 'combobox',
                         keyword  : 'AFLEVEL',
-                        label    : 'EBI AlphaFold database model residue confidence cut-off (higher values are more confident)',
+                        label    : 'EBI AlphaFold database model residue confidence cut-off',
                         tooltip  : 'Choose confidence level (pLDDT) cut-off for residues in AlphaFold predictions.' +
                                    'The higher the value the higher the confidence threshold. Residues with lower values are removed from the search models ',
                         range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
                         value    : '70',
-                        position : [3,0,1,1],
+                        position : [7,0,1,3],
                         hideon   : {AFDB_CBX:[false]}
                       },
                 MRNUM : {
@@ -133,7 +134,7 @@ function TaskMrBump()  {
                         range    : [1,'*'],
                         value    : 10,
                         iwidth   : 40,
-                        position : [4,0,1,1]
+                        position : [9,0,1,1]
                       }
                 // SEP2_LBL      : {
                 //         type     : 'label',
