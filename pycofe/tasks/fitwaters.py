@@ -328,7 +328,7 @@ class FitWaters(basic.TaskDriver):
 
         self.rvrow = self.report_row + 1
         self.putMessage ( "<b>Total " + str(rc0["nwaters"]) +\
-                          " water molecules were fitted (&sigma;=" +\
+                          " water molecules placed (&sigma;=" +\
                           str(rc0["sigma"]) + ")</b>" )
 
         self.rvrow += 2
