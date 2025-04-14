@@ -455,10 +455,13 @@ class FitWaters(basic.TaskDriver):
                 structure.copyLabels           ( istruct    )
                 structure.copyLigands          ( istruct    )
                 structure.addWaterSubtype  ()
-                self.putTitle   ( "Results" )
+
+                self.putTitle ( "Output Structure" +\
+                                self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
                 self.putStructureWidget   ( "structure_btn_",
                                             "Structure and electron density",
                                             structure )
+
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
