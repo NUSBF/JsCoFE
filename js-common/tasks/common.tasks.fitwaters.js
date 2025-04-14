@@ -83,62 +83,74 @@ function TaskFitWaters()  {
               position : [0,0,1,5],
               contains : {
                 SIGMA : {
-                        type      : 'real_',
-                        keyword   : '--sigma',
-                        label     : 'Map level, &sigma;',
-                        tooltip   : 'Specify map level for water search or ' +
-                                    'leave blank for automatic choice (will ' +
-                                    'take longer time)',
-                        range     : [0.0,10.0],
-                        value     : '',
+                        type        : 'real_',
+                        keyword     : '--sigma',
+                        label       : 'Map level, &sigma;',
+                        tooltip     : 'Specify map level for water search or ' +
+                                      'leave blank for automatic choice (will ' +
+                                      'take longer time)',
+                        range       : [0.0,10.0],
+                        value       : '',
                         // default   : '2.0',
-                        position  : [0,0,1,1]
+                        placeholder : 'auto',
+                        position    : [0,0,1,1]
                       },
                 FLOOD_CBX : {
-                        type      : 'checkbox',
-                        keyword   : '--flood',
-                        label     : 'Flood',
-                        tooltip   : 'Check in order to fill everything (not ' +
-                                    'just the density peaks) with water',
-                        iwidth    : 140,
-                        value     : false,
-                        position  : [1,0,1,1]
+                        type        : 'checkbox',
+                        keyword     : '--flood',
+                        label       : 'Flood',
+                        tooltip     : 'Check in order to fill everything (not ' +
+                                      'just the density peaks) with water',
+                        iwidth      : 140,
+                        value       : false,
+                        position    : [1,0,1,1]
                       },
                 FLOOD_RADIUS : {
-                        type      : 'real',
-                        keyword   : '--flood-atom-radius',
-                        label     : 'Water molecule radius [&Aring;]',
-                        tooltip   : 'Needs adjustment only if solvent is ' +
-                                    'something else but water.',
-                        range     : [0.1,'*'],
-                        value     : '1.4',
-                        default   : '1.4',
-                        position  : [1,2,1,1],
-                        showon    : {FLOOD_CBX:[true]}
+                        type        : 'real_',
+                        keyword     : '--flood-atom-radius',
+                        label       : 'Water molecule radius [&Aring;]',
+                        tooltip     : 'Needs adjustment only if solvent is ' +
+                                      'something else but water.',
+                        range       : [0.1,'*'],
+                        value       : '1.4',
+                        placeholder : '1.4',
+                        position    : [1,2,1,1],
+                        showon      : {FLOOD_CBX:[true]}
                       },
                 MIN_DIST : {
-                        type      : 'real_',
-                        keyword   : '--min-dist',
-                        label     : 'Minimum distance to macromolecule [&Aring;]',
-                        tooltip   : 'The minimum distance to macromolecular ' +
-                                    'surface water molecules should be found at.',
-                        range     : [0.0,'*'],
-                        value     : '1.7',
-                        // default   : '0.0',
-                        position  : [2,0,1,1],
-                        showon    : {FLOOD_CBX:[false]}
+                        type        : 'real_',
+                        keyword     : '--min-dist',
+                        label       : 'Minimum distance to macromolecule [&Aring;]',
+                        tooltip     : 'The minimum distance to macromolecular ' +
+                                      'surface water molecules should be found at.',
+                        range       : [0.0,'*'],
+                        value       : '',
+                        placeholder : '2.4',
+                        position    : [2,0,1,1],
+                        showon      : {FLOOD_CBX:[false]}
                       },
                 MAX_DIST : {
-                        type      : 'real_',
-                        keyword   : '--max-dist',
-                        label     : 'Maximum distance to macromolecule [&Aring;]',
-                        tooltip   : 'The maximum distance to macromolecular ' +
-                                    'surface water molecules should be found at.',
-                        range     : [0.0,'*'],
-                        value     : '',
-                        // default   : '50.0',
-                        position  : [3,0,1,1],
-                        showon    : {FLOOD_CBX:[false]}
+                        type        : 'real_',
+                        keyword     : '--max-dist',
+                        label       : 'Maximum distance to macromolecule [&Aring;]',
+                        tooltip     : 'The maximum distance to macromolecular ' +
+                                      'surface water molecules should be found at.',
+                        range       : [0.0,'*'],
+                        value       : '',
+                        placeholder : '50.0',
+                        position    : [3,0,1,1],
+                        showon      : {FLOOD_CBX:[false]}
+                      },
+                VARIANCE_LIMIT : {
+                        type        : 'real_',
+                        keyword     : '--variance',
+                        label       : 'Variance limit',
+                        tooltip     : 'Variance limit.',
+                        range       : [0.0,'*'],
+                        value       : '',
+                        placeholder : '0.1',
+                        position    : [4,0,1,1],
+                        showon      : {FLOOD_CBX:[false]}
                       }
               }
             }
@@ -169,12 +181,13 @@ TaskFitWaters.prototype.checkKeywords = function ( keywords )  {
 }
 
 TaskFitWaters.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// TaskFitWaters.prototype.cleanJobDir = function ( jobDir )  {}
 
 if (!__template)  {
   // for client side
@@ -187,7 +200,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskFitWaters.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -195,7 +208,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
