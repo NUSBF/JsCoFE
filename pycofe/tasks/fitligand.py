@@ -131,8 +131,8 @@ class FitLigand(basic.TaskDriver):
                     for res in chain:
                         if res.name==ligand.code:
                             found = False
-                            self.stdoutln ( " >>>> res = " + str(dir(res)))
-                            self.stdoutln ( " >>>> seqid = " + str(dir(res.seqid)))
+                            # self.stdoutln ( " >>>> res = " + str(dir(res)))
+                            # self.stdoutln ( " >>>> seqid = " + str(dir(res.seqid)))
                             for r in ligands:
                                 found = r.model.num   == model.num     and\
                                         r.chain.name  == chain.name    and\
