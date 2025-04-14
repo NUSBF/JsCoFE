@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.04.25   <--  Date of Last Modification.
+#    14.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -284,7 +284,7 @@ class ModelCraft(basic.TaskDriver):
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),
             "[" + str(self.job_id).zfill(4) + "] Modelcraft current structure",
-            "Build in progress",
+            "View build in progress",
             gridId,0,3
         )
         # self.rvrow -= 1

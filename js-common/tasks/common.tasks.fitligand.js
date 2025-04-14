@@ -225,7 +225,7 @@ TaskFitLigand.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['fit', 'ligand','fitligand'] );
 }
 
-TaskFitLigand.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskFitLigand.prototype.cleanJobDir = function ( jobDir )  {}
 
 
 if (!__template)  {

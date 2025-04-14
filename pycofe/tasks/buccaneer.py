@@ -7,7 +7,7 @@
 #
 # ============================================================================
 #
-#    25.02.25   <--  Date of Last Modification.
+#    14.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -247,7 +247,7 @@ class Buccaneer(basic.TaskDriver):
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),
             "[" + str(self.job_id).zfill(4) + "] Buccaneer current structure",
-            "Build in progress",
+            "View build in progress",
             self.report_page_id(),wcrvrow,0
         )
 
