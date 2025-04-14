@@ -117,6 +117,7 @@ class Rabdam(basic.TaskDriver):
                     self.stdoutln ( "\n ========= PDB FILE NOT AVAILABLE\n" )
                     self.putMessage ( "<h3>Could not parse mmCIF file while PDB file not available -- stop</h3>" )
 
+
         have_results = False
         self.addCitations ( ['rabdam'] )
 
@@ -143,13 +144,9 @@ class Rabdam(basic.TaskDriver):
 
             html_path = None
             html_path = rabdam_dir
-            log_file = os.path.join ( "_stdout.log" )
-            if os.path.exists(log_file):
-                with open(log_file, "r") as log:
-                    for line in log:
-                        if "ERROR: More than one model present in input PDB file." in line:
-                            self.putMessage("<h3>Error: More than one model present in input PDB file. Please use a PDB file containing a single model.</h3>")
-                            return
+            
+                        
+
             
             
 
@@ -173,7 +170,24 @@ class Rabdam(basic.TaskDriver):
                     "<iframe src=\"../" + html_report + "\" " + \
                     "style=\"display:block;border:none;position:absolute;top:50px;left:0;width:100vw;height:90%;overflow-x:auto;\"></iframe>",
                     0 )
+                have_results = True
                 self.success ( have_results )
+            else:
+                log_file = os.path.join ( "_stdout.log" )
+                if os.path.exists(log_file):
+                    with open(log_file, "r") as log:
+                        for line in log:
+                            if "ERROR: More than one model present in input PDB file." in line:
+                                self.putMessage("<h3>Error: More than one model present in input PDB file. Please use a PDB file containing a single model.</h3>")
+                                have_results = False
+                                self.success ( have_results )
+                                raise signal.NoResults()
+                else:
+                    self.putMessage("<h3>Rabdam Report not generated</h3>")
+                    have_results = False
+                    self.success ( have_results )
+
+            
 
         
         return
