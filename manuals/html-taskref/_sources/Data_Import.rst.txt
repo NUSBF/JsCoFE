@@ -13,4 +13,5 @@ Data Import
     doc.task.Migrate
     doc.task.FetchData
     doc.task.PushToCloud
-   
+    doc.task.ImportSerial
+  
