@@ -300,7 +300,7 @@ class FitWaters(basic.TaskDriver):
             "View watering in progress",
             self.report_page_id(),self.rvrow,0
         )
-        self.rvrow -= 1
+        # self.rvrow -= 1
         # self.rvrow += 1
 
         self.flush()
