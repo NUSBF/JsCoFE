@@ -94,7 +94,7 @@ class FitWaters(basic.TaskDriver):
                                      self.report_row+1,0,1,1 )
         self.rvrow += 1
 
-        pyrvapi.rvapi_add_graph_data ( "data_id"   ,self.graphId,"Fit statistics" )
+        pyrvapi.rvapi_add_graph_data    ( "data_id",self.graphId,"Fit statistics" )
         pyrvapi.rvapi_add_graph_dataset ( "sigma_id","data_id",self.graphId,
                                           "Sigma","Map level" )
 
@@ -228,12 +228,12 @@ class FitWaters(basic.TaskDriver):
         # Prepare report parser
         if log_type=="Main":
             self.putMessage ( "<b>Total " + str(nwaters) +\
-                              " water molecules were fitted (&sigma;=" +\
-                              str(sigma) + ")</b>" )
+                              " water molecules placed (&sigma;=" +\
+                              str(sigma) + ")</b><br>&nbsp;" )
             self.putMessage ( "<h2>Refinement statistics</h2>" )
             panel_id = self.getWidgetId ( "refmac_report" )
             self.setRefmacLogParser ( panel_id,False,
-                                    graphTables=False,makePanel=True )
+                                      graphTables=False,makePanel=True )
         self.runApp ( "refmac5",self.refmac_cmd,logType="Main" )
         self.unsetLogParser()
         self.file_stdout.close()
@@ -253,7 +253,7 @@ class FitWaters(basic.TaskDriver):
 
     def try_sigma ( self,sigma ):
         nwaters,rfactor,rfree = self.findWaters ( sigma,"Service" )
-        fname   = "sigma_" + str(sigma)
+        fname = "sigma_" + str(sigma)
         rc = {
             "sigma"   : sigma,
             "nwaters" : nwaters,
@@ -289,6 +289,8 @@ class FitWaters(basic.TaskDriver):
             "PHDELWT"      : "PHDELWT"
         }
 
+        self.report_row = self.rvrow
+
         self.putWebCootButton (
             self.xyzout,
             self.mtzout,
@@ -301,10 +303,9 @@ class FitWaters(basic.TaskDriver):
             self.report_page_id(),self.rvrow,0
         )
         # self.rvrow -= 1
-        # self.rvrow += 1
+        self.rvrow += 1
 
         self.flush()
-
 
         step  = 0.25
         sigma = self.sigma_min
@@ -326,10 +327,10 @@ class FitWaters(basic.TaskDriver):
         os.rename ( rc0["mtzout"] ,self.mtzout     )
         os.rename ( rc0["xyzout"] ,self.xyzout     )
 
-        self.rvrow = self.report_row + 1
+        self.rvrow = self.report_row
         self.putMessage ( "<b>Total " + str(rc0["nwaters"]) +\
                           " water molecules placed (&sigma;=" +\
-                          str(rc0["sigma"]) + ")</b>" )
+                          str(rc0["sigma"]) + ")</b><br>&nbsp;" )
 
         self.rvrow += 2
         self.putMessage ( "<h2>Refinement statistics</h2>" )
