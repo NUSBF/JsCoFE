@@ -106,7 +106,7 @@ function TaskMrBump()  {
                        type      : 'label',
                        label     : '<b> By default, only PDB will be searched <b/>',
                        tooltip   : '',
-                       position  : [3,0,1,1]
+                       position  : [4,0,1,1]
                       },
                 AFDB_CBX : {
                         type     : 'checkbox',
@@ -115,17 +115,17 @@ function TaskMrBump()  {
                         value    : true,
                         position : [5,0,1,1]
                       },
-                AFLEVEL_SEL : {
-                        type     : 'combobox',
-                        keyword  : 'AFLEVEL',
-                        label    : 'EBI AlphaFold database model residue confidence cut-off',
-                        tooltip  : 'Choose confidence level (pLDDT) cut-off for residues in AlphaFold predictions.' +
-                                   'The higher the value the higher the confidence threshold. Residues with lower values are removed from the search models ',
-                        range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
-                        value    : '70',
-                        position : [7,0,1,3],
-                        hideon   : {AFDB_CBX:[false]}
-                      },
+                // AFLEVEL_SEL : {
+                //         type     : 'combobox',
+                //         keyword  : 'AFLEVEL',
+                //         label    : 'EBI AlphaFold database model residue confidence cut-off',
+                //         tooltip  : 'Choose confidence level (pLDDT) cut-off for residues in AlphaFold predictions.' +
+                //                    'The higher the value the higher the confidence threshold. Residues with lower values are removed from the search models ',
+                //         range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
+                //         value    : '70',
+                //         position : [7,0,1,3],
+                //         hideon   : {AFDB_CBX:[false]}
+                //       },
                 MRNUM : {
                         type     : 'integer',
                         keyword  : 'MRNUM',
@@ -134,7 +134,7 @@ function TaskMrBump()  {
                         range    : [1,'*'],
                         value    : 10,
                         iwidth   : 40,
-                        position : [9,0,1,1]
+                        position : [9,0,1,3]
                       }
                 // SEP2_LBL      : {
                 //         type     : 'label',
