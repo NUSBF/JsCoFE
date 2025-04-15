@@ -36,6 +36,7 @@ import chapi
 #  application imports
 from . import basic
 from   pycofe.proc   import qualrep
+from   pycofe.varut  import mmcif_utils
 from   pycofe.auto   import auto,auto_workflow
 
 # ============================================================================
@@ -206,7 +207,8 @@ class FitWaters(basic.TaskDriver):
             mc.set_add_waters_variance_limit  ( self.variance_limit ) # unclear what is this
             nwaters = mc.add_waters ( imol,imol_map )
 
-        mc.write_coordinates ( imol,self.xyz_wat )
+        mc.write_coordinates ( imol,"_tmp.cif" )
+        mmcif_utils.clean_mmcif ( "_tmp.cif",self.xyz_wat )
         
         return nwaters
 
