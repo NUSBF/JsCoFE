@@ -42,7 +42,7 @@ function TaskFitWaters()  {
   this.title   = 'Find and Fit Waters with Coot';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       customInput : 'map-sel', // lay custom fields below the dropdown
