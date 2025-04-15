@@ -150,6 +150,9 @@ class MrParse(basic.TaskDriver):
         if "AFDB_SEQDB" in os.environ:
             if os.path.isfile(os.environ["AFDB_SEQDB"]):
                 cmd += [ "--afdb_seqdb",os.environ["AFDB_SEQDB"] ]
+        if "PHMMER_EXE" in os.environ:
+            if os.path.isfile(os.environ["PHMMER_EXE"]):
+                cmd += [ "--phmmer_exe",os.environ["PHMMER_EXE"] ]
 
         cmd += [ "--max_hits", max_hits ]
         cmd += [ "--database", database ]
