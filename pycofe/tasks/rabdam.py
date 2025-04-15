@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.25   <--  Date of Last Modification.
+#    15.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -171,6 +171,9 @@ class Rabdam(basic.TaskDriver):
                     "style=\"display:block;border:none;position:absolute;top:50px;left:0;width:100vw;height:90%;overflow-x:auto;\"></iframe>",
                     0 )
                 have_results = True
+                self.generic_parser_summary["rabdam"] = {
+                                    "summary_line" : " Report generated",
+                                }
                 self.success ( have_results )
             else:
                 log_file = os.path.join ( "_stdout.log" )
@@ -180,11 +183,19 @@ class Rabdam(basic.TaskDriver):
                             if "ERROR: More than one model present in input PDB file." in line:
                                 self.putMessage("<h3>Error: More than one model present in input PDB file. Please use a PDB file containing a single model.</h3>")
                                 have_results = False
+                                # this will go in the project tree line
+                                self.generic_parser_summary["rabdam"] = {
+                                    "summary_line" : " More than one model present"
+                                }
                                 self.success ( have_results )
-                                raise signal.NoResults()
+                                # raise signal.NoResults()
                 else:
                     self.putMessage("<h3>Rabdam Report not generated</h3>")
                     have_results = False
+
+                    self.generic_parser_summary["rabdam"] = {
+                                    "summary_line" : " No report was generated",
+                                }
                     self.success ( have_results )
 
             
