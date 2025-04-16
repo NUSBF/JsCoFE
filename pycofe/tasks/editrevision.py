@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.12.24   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2025
 #
 # ============================================================================
 #
@@ -255,12 +255,14 @@ class EditRevision(asudef.ASUDef):
                             structure.setLigands  ( lig_codes )
                         if xyz_fpath or sub_fpath:
                             hasPhases = structure.hasPhasesSubtype()
+                            structure.BF_correction = xyz.BF_correction
                             structure.addSubtypes ( xyz.getSubtypes() )
                             if not hasPhases:  # because xyz may be casted from structure
                                 structure.removePhasesSubtype()
                         else:
                             if revision0.Structure:
                                 structure.addSubtypes ( revision0.Structure.subtype )
+                                structure.BF_correction = revision0.Structure.BF_correction
                             elif revision0.Substructure:
                                 structure.addSubtypes ( revision0.Substructure.subtype )
                                 structure.adjust_dname()

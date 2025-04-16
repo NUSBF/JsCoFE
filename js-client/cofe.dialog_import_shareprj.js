@@ -149,7 +149,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                                'the page title or use Main Menu.</b>';
                       msg_lbl.setText (
                           '<div style="width:600px">' +
-                          'Project "' + data.name + '" is now joined, ' +
+                          'Project <b><i>"' + data.name + '"</i></b> is now joined, ' +
                           'and you may work on it simultaneously with ' +
                           'the project owner and other users, with whom the ' +
                           'project may have also been shared.' +
@@ -159,17 +159,17 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                         onSuccess_func();
                     } else  {
                       dlg.grid.setLabel ( '<h2>Join Shared Project Failed</h2>',0,2,2,3 );
-                      let msg2 = '<div style="width:600px">Project "'  + data.name  +
-                                 '" was not joined, the reason being:<p><b>*** <i>' +
+                      let msg2 = '<div style="width:600px">Project <b></i>"'  + data.name  +
+                                 '"</i></b> was not joined, the reason being:<p><b>*** <i>' +
                                  data.signal + '</i></b>';
                       if (data.signal.indexOf('already exists')>=0)
                         msg2 += '<p>You can:<ul>' +
-                                '<li>find and rename your project "' + data.name +
-                                '" and try joining again</li>' +
+                                '<li>find and rename your project <b></i>"' + data.name +
+                                '"</i></b> and try joining again</li>' +
                                 '<li>ask your collaborator to rename the project ' +
                                 'and re-share it with you</li>' +
-                                '<li>delete/unjoin project ' + data.name +
-                                ' if renaming is not possible (project\'s backup ' +
+                                '<li>delete/unjoin project <b></i>"' + data.name +
+                                '"</i></b> if renaming is not possible (project\'s backup ' +
                                 'copy may be exported before deletion)</li></ul>';
                       msg_lbl.setText ( msg2 + '</div>' );
                     }
