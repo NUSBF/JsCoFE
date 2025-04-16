@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.04.25   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,7 +85,7 @@ class Rabdam(basic.TaskDriver):
 
         rc = self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )
-        ],logType="Main" )
+        ],logType="Main", quitOnError=False )
 
         # check that Rabdam did not fail on mmCIF format (weak parser)
         if fext.upper()!=".PDB":
@@ -120,11 +120,27 @@ class Rabdam(basic.TaskDriver):
 
         have_results = False
         self.addCitations ( ['rabdam'] )
-
+        
         if rc.msg:
-            self.putTitle ( "Results" )
-            self.putMessage ( "<h3>Rabdam failure</h3>" )
-            raise signal.JobFailure ( rc.msg )
+            error_log = os.path.join ( "_stderr.log" )
+            if os.path.exists ( error_log):
+                with open ( error_log,"r" ) as log:
+                    for line in log:
+                        if "must supply crystal_symmetry" in line:
+                            self.putMessage("<h3>Error: input model must have crystal symmetry. Please provide the necessary symmetry information.</h3>")
+                            have_results = False
+                            # this will go in the project tree line
+                            self.generic_parser_summary["rabdam"] = {
+                                "summary_line" : " failed"
+                            }
+                            self.success ( have_results )
+                            raise signal.NoResults()
+            else:
+
+                self.putTitle ( "Results" )
+                self.putMessage ( "<h3>Rabdam failure</h3>" )
+                self.putMessage ( rc.msg )
+                raise signal.JobFailure ( rc.msg )
         
         else:
             final_pdb  = None
@@ -140,7 +156,6 @@ class Rabdam(basic.TaskDriver):
 
             except:
                 pass
-
 
             html_path = None
             html_path = rabdam_dir
