@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.24   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2025
 #
 # ============================================================================
 #
@@ -295,6 +295,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                 else:
                     model = self.registerModel ( xyz[i].getSubtypes(),fpath_out,checkout=True )
                 if model:
+                    model.BF_correction = xyz[i].BF_correction
                     #if ensNo<1:
                     if len(models)<1:
                         if seq:
@@ -355,11 +356,6 @@ class ModelPrepXYZ(basic.TaskDriver):
 
         for i in range(len(xyz)):
             xyz[i] = self.makeClass ( xyz[i] )
-            # xyz[i].convertToPDB ( self.inputDir() )
-            # if xyz[i].BF_correction=="alphafold-suggested":
-            #     xyz[i].fixBFactors ( self.inputDir(),"alphafold" )
-            # elif xyz[i].BF_correction=="rosetta-suggested":
-            #     xyz[i].fixBFactors ( self.inputDir(),"rosetta" )
 
         self.fixBFactors ( xyz )
 

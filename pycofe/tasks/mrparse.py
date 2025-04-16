@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.25   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -276,6 +276,7 @@ class MrParse(basic.TaskDriver):
                         # model = self.registerModel ( seq,fpath,checkout=True )
                         model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
+                            model.BF_correction = "alphafold"  # already corrected
                             if nmodels<1:
                                 self.putFoundMessage ( seq )
                                 # self.putTitle ( "MR models prepared from AFDB structures" )
@@ -316,6 +317,7 @@ class MrParse(basic.TaskDriver):
                         # model = self.registerModel ( seq,fpath,checkout=True )
                         model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
+                            model.BF_correction = "esmfold"  # already corrected
                             if nmodels<1:
                                 self.putFoundMessage ( seq )
                                 # self.putTitle ( "MR models prepared from ESMFold structures" )
