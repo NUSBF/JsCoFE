@@ -753,6 +753,12 @@ class TaskDriver(object):
     def close_stdin ( self ):
         self.file_stdin.close()
         return
+    
+    def write_stdin_all ( self,S ):
+        self.open_stdin  ()
+        self.write_stdin ( S )
+        self.close_stdin ()
+        return
 
 
     # ============================================================================

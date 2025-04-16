@@ -1286,6 +1286,34 @@ citations = {
                             'doi'     : '10.1002/prot.10286'
                         }]
                   },
+    'rabdam'         : { 'name'     : 'RABDAM',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Shelley, K. L., Dixon, T. P. E., Brooks-Bartlett, J. C. & Garman, E. F. ',
+                            'title'   : 'RABDAM',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '51',
+                            'year'    : '2018',
+                            'pages'   : '522-559',
+                            'doi'     : 'https://doi.org/10.1107/S1600576718002509'
+                          },{
+                            'authors' : 'Gerstel, M., Deane, C. M. & Garman, E. F.',
+                            'title'   : 'Identifying and quantifying radiation damage at the atomic level',
+                            'journal' : 'J. Synchrotron Radiat ',
+                            'volume'  : '22',
+                            'year'    : '2015',
+                            'pages'   : '201-212',
+                            'doi'     : 'https://doi.org/10.1107/S1600577515002131'
+                        },{
+                            'authors' : 'Shelley, K.L., Garman, E.F',
+                            'title'   : 'Quantifying and comparing radiation damage in the Protein Data Bank',
+                            'journal' : 'Nat Commun',
+                            'volume'  : '13',
+                            'year'    : '2022',
+                            'pages'   : '1314',
+                            'doi'     : 'https://doi.org/10.1038/s41467-022-28934-0'
+                        }]
+                  },
 
     'jligand'        : { 'name'     : 'JLigand',
                          'category' : 'primary',

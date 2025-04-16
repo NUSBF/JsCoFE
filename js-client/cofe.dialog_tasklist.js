@@ -877,7 +877,8 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskRotamer   (),
     new TaskAreaimol  (),
     new TaskRampage   (),
-    new TaskCheckMySequence ()
+    new TaskCheckMySequence (),
+    new TaskRabdam()
   ],true);
 
   let gemmi_task = null;
