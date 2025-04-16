@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.25   <--  Date of Last Modification.
+ *    16.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -40,9 +40,10 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
       null,'persist' );
   }(this))
 
-  let cancel_btn_id = 'cancel_btn_' + __id_cnt++;
+  this.cancel_btn_id = 'cancel_btn_' + __id_cnt++;
 
 //  w = 3*$(window).width()/5 + 'px';
+  let self = this;
 
   $(this.element).dialog({
     resizable : false,
@@ -56,7 +57,7 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
     },
     buttons   : [
       {
-        id    : cancel_btn_id,
+        id    : self.cancel_btn_id,
         text  : 'Cancel',
         click : function() {
           $(this).dialog('close');
@@ -65,19 +66,19 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
     ]
   });
 
-  (function(dlg){
+  // (function(dlg){
 
-    $(dlg.element).on( "dialogclose",function(event,ui){
+    $(this.element).on( "dialogclose",function(event,ui){
       serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Joining Project',
                       null,function(){
         window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
-          dlg.delete();
+          $(self.element).dialog( "destroy" );
+          self.delete();
         },10 );
       },function(){} );  // depress error messages
     });
 
-  }(this))
+  // }(this))
 
 }
 
@@ -137,7 +138,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                   else {
                     progressBar.hide();
                     // $( "#cancel_btn" ).button ( "option","label","Close" );
-                    $( '#' + cancel_btn_id ).text('Close');
+                    $( '#' + dlg.cancel_btn_id ).text('Close');
                     if (data.signal=='Success')  {
                       dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,2,2,3 );
                       let msg1 = '';
