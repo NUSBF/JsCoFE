@@ -249,7 +249,7 @@ JobDialog.prototype.statusLine = function()  {
     case job_code.running       :  return ' -- running';
     case job_code.finished      :  return ' -- completed';
     case job_code.hiddenresults :
-    case job_code.noresults     :  return ' -- no results';
+    case job_code.noresults     :  return ' -- finished';
     case job_code.failed        :  return ' -- failed';
     case job_code.stopped       :  return ' -- terminated by user';
     default : ;
