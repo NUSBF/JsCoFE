@@ -248,6 +248,56 @@ let json = null;
 }
 
 
+// ===========================================================================
+// __lid_closed_period captures period when device seem to be inactive/blocked 
+// but powered on. This can be because of lid closed, but can also occur if
+// main thread in browser was held by, e.g., CPU-intensive task or similar.
+// In either case, network communications could have been impacted during 
+// this period, which fact is used in commuication functions.
+
+var __lid_close_check_interval = 1000; //ms
+var __last_active_time = Date.now();
+var __lid_open_time    = Date.now();
+
+// var __lid_closed_period = {  // start>end for a placeholder
+//   start : __last_active_time + __lid_close_check_interval,
+//   end   : __lid_close_check_interval
+// };
+
+setInterval ( function(){
+  let t0 = __last_active_time;
+  __last_active_time = Date.now();
+  if (__last_active_time>t0+10*__lid_close_check_interval)  {
+    __lid_open_time = __last_active_time;
+    console.log("Likely resumed from sleep/lid close");
+    processServerQueue();
+  }
+},__lid_close_check_interval);
+
+// document.addEventListener('visibilitychange', () => {
+//   // if (!document.hidden) {
+//     // Page came back (maybe from lid close)
+//     const now = Date.now();
+//     const delta = now - __last_active_time;
+//     if (delta > 10*__lid_close_check_interval) { // 10x threshold for sleep/lid close
+//       console.log("Likely resumed from sleep/lid close");
+//       __lid_open_time = now;
+//       // Optionally reset timers, reconnect, etc.
+//     }
+//     __last_active_time = now;
+//   // }
+// });
+
+// // Update timestamp regularly
+// setInterval(() => {
+//   // if (!document.hidden) {
+//     __last_active_time = Date.now();
+//   // }
+// }, __lid_close_check_interval);
+
+
+// ===========================================================================
+// Communication functions
 
 var __server_queue    = [];
 var __local_queue     = [];
@@ -300,6 +350,7 @@ function processServerQueue()  {
     let q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
+      q0.start_time = Date.now();
       if (q0.type=='command')
         __server_command ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_response,q0.function_always,
@@ -307,15 +358,20 @@ function processServerQueue()  {
       else
         __server_request ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_ok,q0.function_always,
-                           q0.function_fail,q0.id,q0.timeout );
+                           q0.function_fail,q0.id,q0.start_time,
+                           q0.timeout );
     }
     if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))  {
       __delays_timer = window.setTimeout ( function(){
-          __delays_ind.show();
+        if (q0.start_time>__lid_open_time)
+          __delays_ind.show();  // shows "network delays" runner
       },__delays_wait);
       __holdup_timer = window.setTimeout ( function(){
+        // suspected network problem, ask user to keep waiting or to 
+        // restart the session
         __holdup_timer = null;
-        if (__server_queue.length>0)  {
+        // if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
+        if (__server_queue.length>0) {
           if ((__server_queue[0].type=='command') &&
                    (__server_queue[0].request_type==fe_command.checkSession) &&
                    (__check_session_drops<10))  {
@@ -499,7 +555,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 
 
 function __server_request ( request_type,data_obj,page_title,function_ok,
-                            function_always,function_fail,sqid,
+                            function_always,function_fail,sqid,start_time,
                             timeout=1000000 )  {
 // used when a user is logged in
 
