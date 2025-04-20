@@ -354,7 +354,8 @@ function processServerQueue()  {
       if (q0.type=='command')
         __server_command ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_response,q0.function_always,
-                           q0.function_fail,q0.id,q0.timeout );
+                           q0.function_fail,q0.id,q0.start_time,
+                           q0.timeout );
       else
         __server_request ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_ok,q0.function_always,
@@ -371,7 +372,7 @@ function processServerQueue()  {
         // restart the session
         __holdup_timer = null;
         // if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
-        if (__server_queue.length>0) {
+        if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
           if ((__server_queue[0].type=='command') &&
                    (__server_queue[0].request_type==fe_command.checkSession) &&
                    (__check_session_drops<10))  {
@@ -475,8 +476,8 @@ function __log_request_timing ( dt )  {
 }
 
 function __server_command ( cmd,data_obj,page_title,function_response,
-                            function_always,function_fail,sqid,
-                            timeout=1000000 )  {
+                            function_always,function_fail,sqid,start_time,
+                            timeout=1000000,attemptNo=10 )  {
 // used when no user is logged in
 
   let json = makeJSONString ( data_obj );
@@ -533,22 +534,39 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         function_always();
     })
     .fail ( function(xhr,err){
-      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
-                    __check_session_drops + ' timeout=' + timeout );
-      // can be "error" and "timeout"
-      if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
-        console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
-        // printServerQueueState ( 3 );
+
+      if ((start_time>__lid_open_time) && (attemptNo>0))  {
+        // genuine transaction failure
+
+        console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
+                      __check_session_drops + ' timeout=' + timeout );
+        // can be "error" and "timeout"
+        if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
+          console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
+          // printServerQueueState ( 3 );
+        }
+        if (cmd==fe_command.checkSession)
+          __check_session_drops++;
+        if (function_fail)
+              function_fail();
+        else  MessageAJAXFailure ( page_title,xhr,err );
+        // __server_queue.shift();
+        __process_network_indicators();
+        // *** old version
+        processServerQueue();
+
+      } else  {
+        // transaction likely failed because the system was down (lid closed)
+        // try recovering by repeating transaction
+        console.log ( ' +++ trying to recover after system sleep, attempt ' + 
+                      attemptNo );
+        window.setTimeout ( function(){
+          __server_command ( cmd,data_obj,page_title,function_response,
+                             function_always,function_fail,sqid,start_time,
+                             timeout,attemptNo-1 );
+        },Math.max(1000,1000*(11-attemptNo)));
       }
-      if (cmd==fe_command.checkSession)
-        __check_session_drops++;
-      if (function_fail)
-            function_fail();
-      else  MessageAJAXFailure ( page_title,xhr,err );
-      // __server_queue.shift();
-      __process_network_indicators();
-      // *** old version
-      processServerQueue();
+
     });
 
 }
@@ -556,7 +574,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 
 function __server_request ( request_type,data_obj,page_title,function_ok,
                             function_always,function_fail,sqid,start_time,
-                            timeout=1000000 )  {
+                            timeout=1000000,attemptNo=10 )  {
 // used when a user is logged in
 
   let request = new Request ( request_type,__login_token,data_obj );
@@ -574,6 +592,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       dataType    : 'text'
     })
     .done ( function(rdata) {
+      // successful transaction
 
 /*  only for testing!!!!
 if ((typeof function_fail === 'string' || function_fail instanceof String) &&
@@ -641,57 +660,72 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     .fail ( function(xhr,err){
 
-      console.log ( ' >>> 2 request=' + request_type + ' err=' + err );
-      // can be "error" and "timeout"
+      if ((start_time>__lid_open_time) && (attemptNo>0))  {
+        // genuine transaction failure
 
-      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
+        console.log ( ' >>> 2 request=' + request_type + ' err=' + err );
+        // can be "error" and "timeout"
 
-        // *** old version
-        __server_queue.shift();  // request completed
-        __process_network_indicators();
+        if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
-        try {
+          // *** old version
+          __server_queue.shift();  // request completed
+          __process_network_indicators();
 
-          if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-              (function_fail=='persist')) {
+          try {
 
-            if (attemptNo>0)  {
-              execute_ajax ( attemptNo-1 );
-              return;  // repeat; server queue is not shifted here
-            } else
+            if ((typeof function_fail === 'string' || function_fail instanceof String) &&
+                (function_fail=='persist')) {
+
+              if (attemptNo>0)  {
+                execute_ajax ( attemptNo-1 );
+                return;  // repeat; server queue is not shifted here
+              } else
+                MessageAJAXFailure ( page_title,xhr,err );
+
+            } else if (function_fail)
+              function_fail();
+            else
               MessageAJAXFailure ( page_title,xhr,err );
 
-          } else if (function_fail)
-            function_fail();
-          else
-            MessageAJAXFailure ( page_title,xhr,err );
+            // we put this function here and in done section because we do not
+            // want to have it executed multiple times due to multiple retries
+            if (function_always)
+              function_always ( 1,{} );
 
-          // we put this function here and in done section because we do not
-          // want to have it executed multiple times due to multiple retries
-          if (function_always)
-            function_always ( 1,{} );
+          } catch(err) {
+            console.log ( ' >>> error catch in __server_request.fail: ' + err );
+            // printServerQueueState ( 6 );
+          }
 
-        } catch(err) {
-          console.log ( ' >>> error catch in __server_request.fail: ' + err );
-          // printServerQueueState ( 6 );
+          // *** old version
+          // processServerQueue();
+
+        } else  {
+          console.log ( ' >>> return on skipped operation in __server_request.fail' );
+          // printServerQueueState ( 7 );
+          // *** new version
+          if (__server_queue.length>0)  {
+            __server_queue.shift();
+            __process_network_indicators();
+          } else
+            makeSessionCheck ( __current_page.sceneId );
         }
 
-        // *** old version
-        // processServerQueue();
+        // *** new version
+        processServerQueue();
 
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_request.fail' );
-        // printServerQueueState ( 7 );
-        // *** new version
-        if (__server_queue.length>0)  {
-          __server_queue.shift();
-          __process_network_indicators();
-        } else
-          makeSessionCheck ( __current_page.sceneId );
+        // transaction likely failed because the system was down (lid closed)
+        // try recovering by repeating transaction
+        console.log ( ' +++ trying to recover after system sleep, attempt ' + 
+                      attemptNo );
+        window.setTimeout ( function(){
+          __server_request ( request_type,data_obj,page_title,function_ok,
+                             function_always,function_fail,sqid,start_time,
+                             timeout,attemptNo-1 );
+        },Math.max(1000,1000*(11-attemptNo)));
       }
-
-      // *** new version
-      processServerQueue();
 
     });
 
