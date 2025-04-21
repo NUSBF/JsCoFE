@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.04.25   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -148,11 +148,8 @@ function start ( callback_func )  {
     });
     res.end('Something went wrong. And we are reporting a custom error message.');
     */
-    //log.error ( 2,'fe-proxy failure' );
     //cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #2',{} );
-    //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
-    //log.warning ( 3,'             error ' + err );
-    log.warning ( 3,'Proxy-server' + err + ' fetching ' + 
+    log.warning ( 3,'Proxy-server ' + err + ' fetching ' + 
                     url.parse(server_request.url).pathname.substr(1) );
     // setTimeout ( function(){
     //   proxy.web ( server_request,server_response,options_web );
