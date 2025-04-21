@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.25   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -267,10 +267,19 @@ var __lid_open_time    = Date.now();
 setInterval ( function(){
   let t0 = __last_active_time;
   __last_active_time = Date.now();
-  if (__last_active_time>t0+10*__lid_close_check_interval)  {
+  if (__last_active_time>t0+4*__lid_close_check_interval)  {
     __lid_open_time = __last_active_time;
-    console.log("Likely resumed from sleep/lid close");
-    processServerQueue();
+    console.log ( ' +++ likely resumed from sleep/lid close' );
+    if (__server_queue.length>0)  {
+      if (__server_queue[0].xhr)  {
+        console.log ( ' +++ killing pending transaction' );
+        __server_queue[0].xhr.abort();
+      }
+      // processServerQueue();  // not necessary as xhr.abort will trigger repeat
+                                // request in error handlers
+    }
+    // if (__current_page)
+    //   checkSession ( __current_page.sceneId );
   }
 },__lid_close_check_interval);
 
@@ -481,9 +490,10 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 // used when no user is logged in
 
   let json = makeJSONString ( data_obj );
+  let xhr  = null;
 
   if (json)
-    $.ajax ({
+    xhr = $.ajax ({
       url      : cmd,
       async    : true,
       type     : 'POST',
@@ -535,7 +545,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
     })
     .fail ( function(xhr,err){
 
-      if ((start_time>__lid_open_time) && (attemptNo>0))  {
+      if ((start_time>__lid_open_time) || (attemptNo<=0))  {
         // genuine transaction failure
 
         console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
@@ -569,6 +579,9 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 
     });
 
+  if (__server_queue.length>0)
+    __server_queue[0].xhr = xhr;
+
 }
 
 
@@ -580,9 +593,9 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
   let request = new Request ( request_type,__login_token,data_obj );
   let json    = makeJSONString ( request );
 
-  function execute_ajax ( attemptNo )  {
+  function execute_ajax ( npersists )  {
 
-    $.ajax ({
+    let xhr = $.ajax ({
       url         : fe_command.request,
       async       : true,
       type        : 'POST',
@@ -593,16 +606,6 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
     })
     .done ( function(rdata) {
       // successful transaction
-
-/*  only for testing!!!!
-if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-          (function_fail=='persist')) {
-  if (attemptNo>0)  {
-    execute_ajax ( attemptNo-1 );
-    return;
-  }
-}
-*/
 
       let response = null;
 
@@ -660,7 +663,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     .fail ( function(xhr,err){
 
-      if ((start_time>__lid_open_time) && (attemptNo>0))  {
+      if ((start_time>__lid_open_time) || (attemptNo<=0))  {
         // genuine transaction failure
 
         console.log ( ' >>> 2 request=' + request_type + ' err=' + err );
@@ -677,8 +680,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
             if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                 (function_fail=='persist')) {
 
-              if (attemptNo>0)  {
-                execute_ajax ( attemptNo-1 );
+              if (npersists>0)  {
+                execute_ajax ( npersists-1 );
                 return;  // repeat; server queue is not shifted here
               } else
                 MessageAJAXFailure ( page_title,xhr,err );
@@ -729,10 +732,15 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     });
 
+    if (__server_queue.length>0)
+      __server_queue[0].xhr = xhr;
+
   }
 
   if (json)
     execute_ajax ( __persistence_level );
+  else if (__server_queue.length>0)
+    __server_queue[0].xhr = null;
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.25   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -651,17 +651,26 @@ function checkSession0 ( sceneId )  {
     },
     function(){}, // always do nothing
     function(){   // fail
-
       if (__session_check_timer)  {
         if (__local_setup)  {
-          __login_token = '';
-          logout ( sceneId,2 );
+          console.log ( ' +++ attemt to logout at session checking' );
+          // check that the failure is not triggered by closed lid; since
+          // detection of closed lid takes a bit of time, put action on
+          // timer
+          window.setTimeout ( function(){
+            if (__last_session_check_time>__lid_open_time)  {
+              __login_token = '';
+              logout ( sceneId,2 );
+            } else
+              makeSessionCheck ( sceneId );
+          },2*__lid_close_check_interval);
         } else
           makeSessionCheck ( sceneId );
       }
     }
   );
 }
+
 
 function checkSession ( sceneId )  {
   if (__server_queue.length>0)  makeSessionCheck ( sceneId );

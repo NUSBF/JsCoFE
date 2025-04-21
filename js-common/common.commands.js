@@ -76,7 +76,7 @@ const ncMetaFileName = '__nc_meta.json'; // communicated by 'REMOTE' NC
 const fe_command = {
   cofe              : 'cofe',             // load jsCoFE login page
   ignore            : 'ignore',           // special return code from Communicate module
-  stop              : 'stop',             // quit the server
+  stop              : 'stop',            // quit the server
   whoareyou         : 'whoareyou',        // request server id
   status            : 'status',           // request server status, e.g., for uptime watchers
   getInfo           : '=getinfo',         // request server metadata

@@ -120,6 +120,7 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
 
   if (__local_user && isElectronAPI())  {
 
+    console.log ( ' +++ attempt to stop electron at logout, reason=' + reason_key );
     sendMessageToElectron ( 'stop' );
 
   } else if (__login_token && (reason_key!=3) && (reason_key!=10))  {
