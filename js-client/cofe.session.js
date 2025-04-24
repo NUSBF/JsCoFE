@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.25   <--  Date of Last Modification.
+ *    23.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,6 @@
 'use strict';
 
 function startSession ( sceneId,dev_switch )  {
-
 
   // set up a loader spinner
   const img = document.createElement('img');
@@ -653,17 +652,35 @@ function checkSession0 ( sceneId )  {
     function(){   // fail
       if (__session_check_timer)  {
         if (__local_setup)  {
-          console.log ( ' +++ attemt to logout at session checking' );
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] attemt to logout at session checking' );
           // check that the failure is not triggered by closed lid; since
           // detection of closed lid takes a bit of time, put action on
           // timer
-          window.setTimeout ( function(){
-            if (__last_session_check_time>__lid_open_time)  {
-              __login_token = '';
-              logout ( sceneId,2 );
-            } else
-              makeSessionCheck ( sceneId );
-          },2*__lid_close_check_interval);
+          if ((!__lid_open) || (__last_session_check_time<=__lid_open_time))  {
+            // system deactivated -- keep on checking
+            makeSessionCheck ( sceneId );
+          } else  {
+            new MessageBoxF ( 'Possible malfunction detected',
+              '<div style="width:460px">' +
+              '<h2>' + appName() + ' appears to be malfunctioning</h2>' +
+              'This may be due to an interruption caused by putting your ' +
+              'system to sleep, closing the laptop lid, or similar actions. ' +
+              'You may continue working; however, if any features fail to ' +
+              'respond, please restart ' + appName() + 
+              '.<p style="font-size:86%"><i>Please report this message to ' +
+              'CCP4 as a possible bug if you see it too often.</i></p></div>',
+              'Continue',function(){
+                makeSessionCheck ( sceneId );
+              },true,'msg_warning' );
+            /*
+            // log user out on suspicion that FE went down. For local user, this
+            // will gracefully stop Electron app, or display the title page in
+            // browser
+            __login_token = '';
+            logout ( sceneId,2 );
+            */
+          }
         } else
           makeSessionCheck ( sceneId );
       }

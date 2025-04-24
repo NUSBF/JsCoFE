@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    23.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -353,16 +353,17 @@ JobTree.prototype.loadProjectData = function ( page_title,
 
     }
 
-  },function(code,rdata){
-    if ('access_denied' in rdata)  {
-      tree.projectData = null;
-      tree.no_access   = true;
-      // tree.emitSignal ( cofe_signals.makeProjectList,{} );
-      onLoaded_func();
-      // window.setTimeout ( function(){
-      //   tree.emitSignal ( cofe_signals.makeProjectList,{} );
-      // },100);
-    } else  
+  // },function(code,rdata){
+  },function(){
+    // if ('access_denied' in rdata)  {
+    //   tree.projectData = null;
+    //   tree.no_access   = true;
+    //   // tree.emitSignal ( cofe_signals.makeProjectList,{} );
+    //   onLoaded_func();
+    //   // window.setTimeout ( function(){
+    //   //   tree.emitSignal ( cofe_signals.makeProjectList,{} );
+    //   // },100);
+    // } else  
       tree.startTaskLoop();
   },'persist');
 

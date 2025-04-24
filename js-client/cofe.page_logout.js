@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.12.24   <--  Date of Last Modification.
+ *    23.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -115,13 +115,23 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
   stopOfflineGreeting();
   stopSessionChecks  ();
 
+  console.log ( ' [' + getCurrentTimeString() + 
+                '] attempt to logout, reason=' + reason_key );
+  printStackTrace();
+
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
 
   if (__local_user && isElectronAPI())  {
 
-    console.log ( ' +++ attempt to stop electron at logout, reason=' + reason_key );
-    sendMessageToElectron ( 'stop' );
+    console.log ( ' [' + getCurrentTimeString() + 
+                  '] attempt to stop electron at logout, reason=' + reason_key );
+    // sendMessageToElectron ( 'stop' );
+    checkSession ( __current_page.sceneId );
+
+  } else if (__local_user)  {
+
+    makeLocalLoginPage ( sceneId );
 
   } else if (__login_token && (reason_key!=3) && (reason_key!=10))  {
 
@@ -135,10 +145,6 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
       },
       null
     );
-
-  } else if (__local_user)  {
-
-    makeLocalLoginPage ( sceneId );
   
   } else  {
 

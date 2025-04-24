@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.25   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -476,7 +476,7 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
   if (this.headerPanel.menu)
     this.headerPanel.menu.addItem ( name,image_path(icon_name) )
-                        .addOnClickListener ( listener_func );
+                         .addOnClickListener ( listener_func );
   return this;
 }
 

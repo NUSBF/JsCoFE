@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.25   <--  Date of Last Modification.
+ *    24.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -134,6 +134,7 @@ function makeCommErrorMessage ( title,request_type,response )  {
 
     case fe_retcode.notLoggedIn:
         if (request_type!=fe_reqtype.logout)
+          console.log ( ' +++ attempt to logout on user is not logged in' );
           logout ( __current_page.element.id,0,function(){
             MessageNotLoggedIn ( title );
           });
@@ -257,30 +258,61 @@ let json = null;
 
 var __lid_close_check_interval = 1000; //ms
 var __last_active_time = Date.now();
-var __lid_open_time    = Date.now();
+var __lid_close_time   = __last_active_time;
+var __lid_open_time    = __last_active_time;
+var __lid_open         = true;
 
 // var __lid_closed_period = {  // start>end for a placeholder
 //   start : __last_active_time + __lid_close_check_interval,
 //   end   : __lid_close_check_interval
 // };
 
-setInterval ( function(){
-  let t0 = __last_active_time;
-  __last_active_time = Date.now();
-  if (__last_active_time>t0+4*__lid_close_check_interval)  {
-    __lid_open_time = __last_active_time;
-    console.log ( ' +++ likely resumed from sleep/lid close' );
-    if (__server_queue.length>0)  {
-      if (__server_queue[0].xhr)  {
-        console.log ( ' +++ killing pending transaction' );
-        __server_queue[0].xhr.abort();
-      }
-      // processServerQueue();  // not necessary as xhr.abort will trigger repeat
-                                // request in error handlers
+function systemSleeps()  {
+  return (!__lid_open) || (__last_active_time<=__lid_open_time);
+}
+
+function systemAwake()  {
+  return __lid_open  && (__last_active_time>__lid_open_time);
+}
+
+
+function checkActiveState()  {
+  if (document.hidden)  {
+    if (__lid_open)  {
+      __lid_close_time = __last_active_time;
+      console.log ( ' [' + getCurrentTimeString(__lid_close_time) + 
+                    '] likely lid closed' );
+      __lid_open = false;
     }
-    // if (__current_page)
-    //   checkSession ( __current_page.sceneId );
+  } else  {
+    let t0 = __last_active_time;
+    __last_active_time = Date.now();
+    if ((__last_active_time>t0+4*__lid_close_check_interval) || (!__lid_open))  {
+      __lid_open_time = __last_active_time;
+      __lid_open      = true;
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] likely resumed from sleep/lid close' );
+      if (__server_queue.length>0)  {
+        if (__server_queue[0].xhr)  {
+          console.log ( ' [' + getCurrentTimeString(__lid_open_time) +
+                        '] killing pending transaction' );
+          __server_queue[0].xhr.abort();
+        }
+        // processServerQueue();  // not necessary as xhr.abort will trigger repeat
+                                  // request in error handlers
+      }
+      // if (__current_page)
+      //   checkSession ( __current_page.sceneId );
+    }
   }
+}
+
+document.addEventListener ( 'visibilitychange', () => {
+  checkActiveState();
+});
+
+setInterval ( function(){
+  checkActiveState();
 },__lid_close_check_interval);
 
 // document.addEventListener('visibilitychange', () => {
@@ -517,15 +549,19 @@ function __server_command ( cmd,data_obj,page_title,function_response,
               makeCommErrorMessage ( page_title,cmd,response );
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_command.done: ' + err );  
-          console.log ( ' >>> rdata = ' + rdata );
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (c) error catch in __server_command.done: ' + err +
+                        ' reqid=' + sqid );  
+          console.log ( ' rdata = ' + rdata );
           // printServerQueueState ( 1 );
         }
         // *** old version
         // processServerQueue();
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_command.done' );
-        console.log ( ' >>> rdata = ' + rdata );
+        console.log ( ' [' + getCurrentTimeString() +
+                      '] (c) return on skipped operation in __server_command.done' +
+                      ' cmd=' + cmd + ' reqid=' + sqid );
+        console.log ( ' rdata = ' + rdata );
         // printServerQueueState ( 2 );
         // *** new version
         if (__server_queue.length>0)  {
@@ -548,17 +584,21 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       if ((start_time>__lid_open_time) || (attemptNo<=0))  {
         // genuine transaction failure
 
-        console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
-                      __check_session_drops + ' timeout=' + timeout );
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (c) cmd=' + cmd + ' err=' + err + ' ndrops=' + 
+                      __check_session_drops + ' timeout=' + timeout +
+                      ' reqid=' + sqid );
         // can be "error" and "timeout"
         if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
-          console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (c) return on skipped operation in __server_command.fail, cmd=' + 
+                        cmd +' err=' + err + ' reqid=' + sqid);
           // printServerQueueState ( 3 );
         }
         if (cmd==fe_command.checkSession)
           __check_session_drops++;
         if (function_fail)
-              function_fail();
+              function_fail      ( xhr,err );
         else  MessageAJAXFailure ( page_title,xhr,err );
         // __server_queue.shift();
         __process_network_indicators();
@@ -568,13 +608,15 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       } else  {
         // transaction likely failed because the system was down (lid closed)
         // try recovering by repeating transaction
-        console.log ( ' +++ trying to recover after system sleep, attempt ' + 
-                      attemptNo );
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (c) trying to recover after system sleep, attempt ' + 
+                      attemptNo + ' cmd=' + cmd + ' reqid=' + sqid );
         window.setTimeout ( function(){
           __server_command ( cmd,data_obj,page_title,function_response,
                              function_always,function_fail,sqid,start_time,
                              timeout,attemptNo-1 );
-        },Math.max(1000,1000*(11-attemptNo)));
+        },__lid_close_check_interval);
+        // },Math.max(1000,1000*(11-attemptNo)));
       }
 
     });
@@ -626,13 +668,18 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
               makeCommErrorMessage ( page_title,request_type,response );
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_request.done:' +
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (r) error catch in __server_request.done:' +
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
-                        '\n --- rdata = ' + rdata );
+                        '\n --- rdata = ' + rdata +
+                        '\n --- reqid='   + sqid );
         }
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_request.done' );
+        console.log ( ' [' + getCurrentTimeString() +
+                      '] (r) return on skipped operation in __server_request.done' +
+                      ' request type=' + request_type +
+                      ' reqid=' + sqid );
         // printServerQueueState ( 5 );
         // *** new version
         if (__server_queue.length>0)  {
@@ -666,7 +713,9 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       if ((start_time>__lid_open_time) || (attemptNo<=0))  {
         // genuine transaction failure
 
-        console.log ( ' >>> 2 request=' + request_type + ' err=' + err );
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (r) failed request=' + request_type + ' err=' + err +
+                      ' reqid=' + sqid );
         // can be "error" and "timeout"
 
         if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
@@ -687,7 +736,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
                 MessageAJAXFailure ( page_title,xhr,err );
 
             } else if (function_fail)
-              function_fail();
+              function_fail ( xhr,err );
             else
               MessageAJAXFailure ( page_title,xhr,err );
 
@@ -697,7 +746,9 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
               function_always ( 1,{} );
 
           } catch(err) {
-            console.log ( ' >>> error catch in __server_request.fail: ' + err );
+            console.log ( ' [' + getCurrentTimeString() +
+                          '] (r) error catch in __server_request.fail: ' + err +
+                          ' request type=' + request_type + ' reqid=' + sqid );
             // printServerQueueState ( 6 );
           }
 
@@ -705,7 +756,9 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
           // processServerQueue();
 
         } else  {
-          console.log ( ' >>> return on skipped operation in __server_request.fail' );
+          console.log ( ' [' + getCurrentTimeString() +
+                        '] (r) return on skipped operation in __server_request.fail' +
+                        ' request type=' + request_type +' reqid=' + sqid );
           // printServerQueueState ( 7 );
           // *** new version
           if (__server_queue.length>0)  {
@@ -721,13 +774,17 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       } else  {
         // transaction likely failed because the system was down (lid closed)
         // try recovering by repeating transaction
-        console.log ( ' +++ trying to recover after system sleep, attempt ' + 
-                      attemptNo );
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (r) trying to recover after system sleep, attempt ' + 
+                      attemptNo + ' request type=' + request_type + 
+                      ' reqid=' + sqid );
         window.setTimeout ( function(){
           __server_request ( request_type,data_obj,page_title,function_ok,
                              function_always,function_fail,sqid,start_time,
                              timeout,attemptNo-1 );
-        },Math.max(1000,1000*(11-attemptNo)));
+        },__lid_close_check_interval);
+        // },Math.max(__lid_close_check_interval,
+        //            __lid_close_check_interval*(11-attemptNo)));
       }
 
     });
@@ -1087,7 +1144,7 @@ function saveUserData ( title )  {
   userData.settings      = __user_settings;
   userData.remote_tasks  = __remote_tasks;
   serverRequest ( fe_reqtype.updateUserData,userData,
-                  title,function(response){} );            
+                  title,function(response){},null,'persist' );            
 }
 
 
