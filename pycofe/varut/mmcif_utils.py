@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    08.11.24   <--  Date of Last Modification.
+#    10.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  mmCIF Utility Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Paul Bond 2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Paul Bond 2024-2025
 #
 # ============================================================================
 #
@@ -107,8 +107,8 @@ def clean_mmcif ( mmcif_infile_path,mmcif_outfile_path ):
                             del res[k]
         st.remove_empty_chains()
         st.make_mmcif_document().write_file ( mmcif_outfile_path )
-        return True
-    return False
+        return st
+    return None
 
 def check_xyz_format ( file_path ):
     try:

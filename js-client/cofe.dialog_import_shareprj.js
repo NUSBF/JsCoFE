@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.05.24   <--  Date of Last Modification.
+ *    16.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Shared Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -40,7 +40,10 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
       null,'persist' );
   }(this))
 
+  this.cancel_btn_id = 'cancel_btn_' + __id_cnt++;
+
 //  w = 3*$(window).width()/5 + 'px';
+  let self = this;
 
   $(this.element).dialog({
     resizable : false,
@@ -54,28 +57,28 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
     },
     buttons   : [
       {
-        id    : "cancel_btn",
-        text  : "Cancel",
+        id    : self.cancel_btn_id,
+        text  : 'Cancel',
         click : function() {
-          $(this).dialog("close");
+          $(this).dialog('close');
         }
       }
     ]
   });
 
-  (function(dlg){
+  // (function(dlg){
 
-    $(dlg.element).on( "dialogclose",function(event,ui){
+    $(this.element).on( "dialogclose",function(event,ui){
       serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Joining Project',
                       null,function(){
         window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
-          dlg.delete();
+          $(self.element).dialog( "destroy" );
+          self.delete();
         },10 );
       },function(){} );  // depress error messages
     });
 
-  }(this))
+  // }(this))
 
 }
 
@@ -134,7 +137,8 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                     window.setTimeout ( checkReady,1000 );
                   else {
                     progressBar.hide();
-                    $( "#cancel_btn" ).button ( "option","label","Close" );
+                    // $( "#cancel_btn" ).button ( "option","label","Close" );
+                    $( '#' + dlg.cancel_btn_id ).text('Close');
                     if (data.signal=='Success')  {
                       dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,2,2,3 );
                       let msg1 = '';
@@ -145,7 +149,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                                'the page title or use Main Menu.</b>';
                       msg_lbl.setText (
                           '<div style="width:600px">' +
-                          'Project "' + data.name + '" is now joined, ' +
+                          'Project <b><i>"' + data.name + '"</i></b> is now joined, ' +
                           'and you may work on it simultaneously with ' +
                           'the project owner and other users, with whom the ' +
                           'project may have also been shared.' +
@@ -155,17 +159,17 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                         onSuccess_func();
                     } else  {
                       dlg.grid.setLabel ( '<h2>Join Shared Project Failed</h2>',0,2,2,3 );
-                      let msg2 = '<div style="width:600px">Project "'  + data.name  +
-                                 '" was not joined, the reason being:<p><b>*** <i>' +
+                      let msg2 = '<div style="width:600px">Project <b></i>"'  + data.name  +
+                                 '"</i></b> was not joined, the reason being:<p><b>*** <i>' +
                                  data.signal + '</i></b>';
                       if (data.signal.indexOf('already exists')>=0)
                         msg2 += '<p>You can:<ul>' +
-                                '<li>find and rename your project "' + data.name +
-                                '" and try joining again</li>' +
+                                '<li>find and rename your project <b></i>"' + data.name +
+                                '"</i></b> and try joining again</li>' +
                                 '<li>ask your collaborator to rename the project ' +
                                 'and re-share it with you</li>' +
-                                '<li>delete/unjoin project ' + data.name +
-                                ' if renaming is not possible (project\'s backup ' +
+                                '<li>delete/unjoin project <b></i>"' + data.name +
+                                '"</i></b> if renaming is not possible (project\'s backup ' +
                                 'copy may be exported before deletion)</li></ul>';
                       msg_lbl.setText ( msg2 + '</div>' );
                     }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Expot from Failed Jobs Safe Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2025
  *
  *  =================================================================
  *
@@ -99,31 +99,34 @@ function ExportFailedJobDialog ( safeDirPath )  {
 
   (function(dlg){
 
-    var fjdata = { 'path' : safeDirPath };
+    let fjdata = { 'path' : safeDirPath };
     serverRequest ( fe_reqtype.prepareFJobExport,fjdata,
                     'Prepare Failed Job Export',function(fjurl){  // on success
 
       Widget.call ( dlg,'div' );
 
-      var exportName = safeDirPath.split('/').pop();
+      let exportName = safeDirPath.split('/').pop();
       dlg.element.setAttribute ( 'title','Export Failed Job ' + exportName );
       document.body.appendChild ( dlg.element );
 
-      var grid = new Grid('');
+      let grid = new Grid('');
       dlg.addWidget ( grid );
 
       grid.setLabel ( '<h3>Exporting Failed Job "' + exportName + '"</h3>',0,0,1,3 );
 
-      var msgLabel = new Label ( 'Failed Job <b>"' + exportName + '"</b> is being ' +
+      let msgLabel = new Label ( 'Failed Job <b>"' + exportName + '"</b> is being ' +
                                  'prepared for download ....' );
       grid.setWidget ( msgLabel, 1,0,1,3 );
 
-      var progressBar = new ProgressBar ( 0 );
+      let progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 2,0,1,3 );
 
       dlg.jobSize = -2;
 
     //  w = 3*$(window).width()/5 + 'px';
+
+      let cancel_btn_id   = 'cancel_btn_'   + __id_cnt++;
+      let download_btn_id = 'download_btn_' + __id_cnt++;
 
       $(dlg.element).dialog({
         resizable : false,
@@ -136,24 +139,24 @@ function ExportFailedJobDialog ( safeDirPath )  {
         },
         buttons   : [
           {
-            id    : "download_btn",
-            text  : "Download",
+            id    : download_btn_id,
+            text  : 'Download',
             click : function() {
                 downloadFile ( fjurl );
-                $( "#cancel_btn" ).button ( "option","label","Close" );
-            }
+                $( '#' + cancel_btn_id ).text('Close');
+              }
           },
           {
-            id    : "cancel_btn",
-            text  : "Cancel",
+            id    : cancel_btn_id,
+            text  : 'Cancel',
             click : function() {
-              $(this).dialog("close");
+              $(this).dialog('close');
             }
           }
         ]
       });
 
-      window.setTimeout ( function(){ $('#download_btn').hide(); },0 );
+      window.setTimeout ( function(){ $('#'+download_btn_id).hide(); },0 );
 
       function checkReady() {
         serverRequest ( fe_reqtype.checkFJobExport,fjdata,
@@ -169,7 +172,7 @@ function ExportFailedJobDialog ( safeDirPath )  {
                                '<i>Download</i> button to export the job.' +
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
-            $('#download_btn').show();
+            $('#'+download_btn_id).show();
           }
         },null,function(){ // depress error messages in this case!
           window.setTimeout ( checkReady,1000 );

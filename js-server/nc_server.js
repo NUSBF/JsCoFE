@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.25   <--  Date of Last Modification.
+ *    18.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -337,6 +337,11 @@ function start()  {
   utils.setGracefulQuit();
 
 }
+
+process.on ( 'uncaughtException', function (err) {
+  log.error ( 3,'Caught unhandled exception: ' + err );
+  console.error ( err.stack );
+});
 
 // ---------------------------------------------------------------------------
 

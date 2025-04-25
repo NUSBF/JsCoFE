@@ -83,6 +83,23 @@ class MrBump(basic.TaskDriver):
                     "No internet connection" )
             return
 
+        # Check for environment variables
+        pdb_seqdb_line  = ""
+        afdb_seqdb_line  = ""
+        phmmer_exe_line = ""
+        parsedb_line    = ""
+        #if isLocalPDB:
+        #    cmd += [ "--pdb_local",os.environ["PDB_DIR"] ]
+        if "PDB_SEQDB" in os.environ:
+            if os.path.isfile(os.environ["PDB_SEQDB"]):
+                pdb_seqdb_line = "dbpdbseq %s" % os.environ["PDB_SEQDB"]
+        if "AFDB_SEQDB" in os.environ:
+            if os.path.isfile(os.environ["AFDB_SEQDB"]):
+                afdb_seqdb_line = "dbafdbseq %s" % os.environ["AFDB_SEQDB"]
+        if "PHMMER_EXE" in os.environ:
+            if os.path.isfile(os.environ["PHMMER_EXE"]):
+                phmmer_exe_line = "phmmer_exe %s" % os.environ["PHMMER_EXE"]
+
         # Prepare mrbump input
         # fetch input data
 
@@ -104,14 +121,19 @@ class MrBump(basic.TaskDriver):
 
         sgmode  = self.getCheckbox ( sec1.ALTGROUPS_CBX,checkVisible=True )
 
-        rlevel  = "RLEVEL "
-        rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
-
         if self.getParameter(sec1.AFDB_CBX)=="True" and not self.task.private_data:
-            aflevel = "AFLEVEL "
-            aflevel += self.getParameter ( sec1.AFLEVEL_SEL,False )
+            parsedb_line = "parsedb all"
         else:
-            aflevel = ""
+            parsedb_line = "parsedb pdb"
+
+        #rlevel  = "RLEVEL "
+        #rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
+#
+#        if self.getParameter(sec1.AFDB_CBX)=="True" and not self.task.private_data:
+#            aflevel = "AFLEVEL "
+#            aflevel += self.getParameter ( sec1.AFLEVEL_SEL,False )
+#        else:
+#            aflevel = ""
 
 
         # devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
@@ -120,7 +142,7 @@ class MrBump(basic.TaskDriver):
         if devmode:
             self.write_stdin ([
                 "JOBID " + self.outdir_name(),
-                "rlevel 100",
+                #"rlevel 100",
                 "mrnum 100",
                 "sgall " + str(sgmode),
                 "mdlc true",
@@ -133,6 +155,11 @@ class MrBump(basic.TaskDriver):
                 "mrprog phaser",
                 "pjobs 10",
                 "debug true",
+                "mrparse true",
+                "%s" % parsedb_line,
+                "%s" % afdb_seqdb_line,
+                "%s" % pdb_seqdb_line,
+                "%s" % phmmer_exe_line,
                 pdbLine +\
                 #"pdblocal /data1/opt/db/pdb",
                 "end",
@@ -160,14 +187,19 @@ class MrBump(basic.TaskDriver):
                 "USEE False",
                 "SCOP False",
                 "DEBUG False",
-                rlevel,
-                aflevel,
+                #rlevel,
+                #aflevel,
                 "GESE False",
                 "GEST False",
                 "AMPT False",
                 "CHECK False",
                 "PHAQ True",
                 "PJOBS 1",
+                "mrparse true",
+                "%s" % parsedb_line,
+                "%s" % afdb_seqdb_line,
+                "%s" % pdb_seqdb_line,
+                "%s" % phmmer_exe_line,
                 pdbLine + \
                 "LABIN F=" + hkl.dataset.Fmean.value + \
                   " SIGF=" + hkl.dataset.Fmean.sigma + \

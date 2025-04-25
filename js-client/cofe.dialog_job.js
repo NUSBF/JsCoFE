@@ -260,8 +260,16 @@ JobDialog.prototype.statusLine = function()  {
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 //  if (input_msg.startsWith('#'))  {
   if (input_msg[0]=='#')  {
-    new MessageBox ( 'Input errors','<div style="width:450px;">' +
-                     input_msg.substring(1) + '</div>', 'msg_error' );
+    let msg  = input_msg.substring(1);
+    let smsg = 'Input errors';
+    let icon = 'msg_error';
+    let lmsg = msg.split('#');
+    if (lmsg.length>1)  {
+      smsg = lmsg[0];
+      msg  = lmsg[1];
+      icon = lmsg[2];
+    }
+    new MessageBox ( smsg,'<div style="width:450px;">' + msg + '</div>',icon );
   } else  {
     // alert ( input_msg );
     let errlst  = input_msg.split('|');
