@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.02.25   <--  Date of Last Modification.
+#    14.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,16 +26,17 @@
 
 #  python native imports
 import os
-import sys
 import uuid
+import json
+import shutil
 
 import pyrvapi
-# import gemmi
+import chapi
 
 #  application imports
 from . import basic
-from   pycofe.proc   import coor
 from   pycofe.proc   import qualrep
+from   pycofe.varut  import mmcif_utils
 from   pycofe.auto   import auto,auto_workflow
 
 # ============================================================================
@@ -45,12 +46,11 @@ class FitWaters(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    watout     = "_waters.pdb"
-    xyz_wat    = "_xyz_wat.pdb"
-    xyzout     = "_xyzout.pdb"
-    mtzout     = "_mtzout.pdb"
-    refmac_log = "_refmac_log"
-    fndwat_cmd = []
+    # watout     = "_waters.pdb"
+    xyz_wat    = "_xyz_wat.mmcif"
+    xyzout     = "_xyzout.mmcif"
+    mtzout     = "_mtzout.mtz"
+    refmac_log = "_refmac.log"
     refmac_cmd = []
     report_row = 0
     graphId    = None
@@ -95,7 +95,7 @@ class FitWaters(basic.TaskDriver):
                                      self.report_row+1,0,1,1 )
         self.rvrow += 1
 
-        pyrvapi.rvapi_add_graph_data ( "data_id"   ,self.graphId,"Fit statistics" )
+        pyrvapi.rvapi_add_graph_data    ( "data_id",self.graphId,"Fit statistics" )
         pyrvapi.rvapi_add_graph_dataset ( "sigma_id","data_id",self.graphId,
                                           "Sigma","Map level" )
 
@@ -191,17 +191,33 @@ class FitWaters(basic.TaskDriver):
     #     return
 
 
+    def run_find_waters ( self,sigma ):
+
+        mc       = chapi.molecules_container_t ( False )
+        imol     = mc.read_coordinates ( self.xyzin )
+        imol_map = mc.read_mtz   ( self.mtzin,self.F,self.PHI, "", False, False )
+        mc.set_add_waters_sigma_cutoff ( sigma )
+
+        if self.flood:
+            # unclear if self.flood_radius is used at all
+            nwaters = mc.flood ( imol,imol_map,sigma )
+        else:
+            mc.set_add_waters_water_to_protein_distance_lim_min ( self.mindist )
+            mc.set_add_waters_water_to_protein_distance_lim_max ( self.maxdist )
+            mc.set_add_waters_variance_limit  ( self.variance_limit ) # unclear what is this
+            nwaters = mc.add_waters ( imol,imol_map )
+
+        mc.write_coordinates ( imol,"_tmp.cif" )
+        mmcif_utils.clean_mmcif ( "_tmp.cif",self.xyz_wat )
+        
+        return nwaters
+
 
     def findWaters ( self,sigma,log_type ):
 
         # Start findwaters
-        cmd = self.fndwat_cmd + ["--sigma",str(sigma)]
-        if sys.platform.startswith("win"):
-            self.runApp ( "findwaters.bat",cmd,logType=log_type )
-        else:
-            self.runApp ( "findwaters",cmd,logType=log_type )
+        nwaters = self.run_find_waters ( sigma )
 
-        nwaters = coor.mergeLigands ( self.pdbin,[self.watout],"W",self.xyz_wat )
         # if self.mindist:
         #     self.removeCloseContacts()
 
@@ -214,12 +230,12 @@ class FitWaters(basic.TaskDriver):
         # Prepare report parser
         if log_type=="Main":
             self.putMessage ( "<b>Total " + str(nwaters) +\
-                              " water molecules were fitted (&sigma;=" +\
-                              str(sigma) + ")</b>" )
+                              " water molecules placed (&sigma;=" +\
+                              str(sigma) + ")</b><br>&nbsp;" )
             self.putMessage ( "<h2>Refinement statistics</h2>" )
             panel_id = self.getWidgetId ( "refmac_report" )
             self.setRefmacLogParser ( panel_id,False,
-                                    graphTables=False,makePanel=True )
+                                      graphTables=False,makePanel=True )
         self.runApp ( "refmac5",self.refmac_cmd,logType="Main" )
         self.unsetLogParser()
         self.file_stdout.close()
@@ -239,21 +255,21 @@ class FitWaters(basic.TaskDriver):
 
     def try_sigma ( self,sigma ):
         nwaters,rfactor,rfree = self.findWaters ( sigma,"Service" )
-        fname   = "sigma_" + str(sigma)
+        fname = "sigma_" + str(sigma)
         rc = {
             "sigma"   : sigma,
             "nwaters" : nwaters,
             "rfactor" : float(rfactor),
             "rfree"   : float(rfree),
-            # "rfactor" : float(self.generic_parser_summary["refmac"]["R_factor"]),
-            # "rfree"   : float(self.generic_parser_summary["refmac"]["R_free"]),
             "logfile" : fname + ".log",
             "mtzout"  : fname + ".mtz",
-            "xyzout"  : fname + ".pdb"
+            "xyzout"  : fname + ".mmcif"
         }
         os.rename ( self.refmac_log,rc["logfile"] )
-        os.rename ( self.mtzout    ,rc["mtzout"]  )
-        os.rename ( self.xyzout    ,rc["xyzout"]  )
+        # os.rename ( self.mtzout    ,rc["mtzout"]  )
+        # os.rename ( self.xyzout    ,rc["xyzout"]  )
+        shutil.copyfile ( self.mtzout,rc["mtzout"] )
+        shutil.copyfile ( self.xyzout,rc["xyzout"] )
         return rc
 
 
@@ -261,6 +277,37 @@ class FitWaters(basic.TaskDriver):
         
         self.rvrow = self.report_row
         self.prepareGraph()
+
+        webcoot_options = {
+            "project"      : self.task.project,
+            "id"           : self.job_id,
+            "no_data_msg"  : "<b>Waiting for results ...</b>",
+            "FWT"          : "FWT",
+            "PHWT"         : "PHWT", 
+            "FP"           : "FP",
+            "SigFP"        : "SIGFP",
+            "FreeR_flag"   : "FreeR_flag",
+            "DELFWT"       : "DELFWT",
+            "PHDELWT"      : "PHDELWT"
+        }
+
+        self.report_row = self.rvrow
+
+        self.putWebCootButton (
+            self.xyzout,
+            self.mtzout,
+            "",  # placeholder for legend file
+            "view-update",
+            5000,  # milliseconds update interval
+            json.dumps(webcoot_options),
+            "[" + str(self.job_id).zfill(4) + "] Current structure",
+            "View watering in progress",
+            self.report_page_id(),self.rvrow,0
+        )
+        # self.rvrow -= 1
+        self.rvrow += 1
+
+        self.flush()
 
         step  = 0.25
         sigma = self.sigma_min
@@ -284,8 +331,8 @@ class FitWaters(basic.TaskDriver):
 
         self.rvrow = self.report_row
         self.putMessage ( "<b>Total " + str(rc0["nwaters"]) +\
-                          " water molecules were fitted (&sigma;=" +\
-                          str(rc0["sigma"]) + ")</b>" )
+                          " water molecules placed (&sigma;=" +\
+                          str(rc0["sigma"]) + ")</b><br>&nbsp;" )
 
         self.rvrow += 2
         self.putMessage ( "<h2>Refinement statistics</h2>" )
@@ -309,42 +356,35 @@ class FitWaters(basic.TaskDriver):
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
         sec1    = self.task.parameters.sec1.contains
 
-        # make command-line parameters
-        self.pdbin      = istruct.getPDBFilePath ( self.inputDir() )
-        mtzin           = istruct.getMTZFilePath ( self.inputDir() )
-        self.fndwat_cmd = [ 
-                "--pdbin" ,self.pdbin,
-                "--hklin" ,mtzin,
-                "--pdbout",self.watout
-                # "--sigma" ,self.getParameter(sec1.SIGMA)
-            ]
+        # prepare data for CHAPI
+        self.xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+        self.mtzin  = istruct.getMTZFilePath ( self.inputDir() )
 
+        self.F   = istruct.FWT
+        self.PHI = istruct.PHI
         if istruct.mapSel=="diffmap":
-            self.fndwat_cmd += [
-                "--f"     ,istruct.DELFWT,
-                "--phi"   ,istruct.PHDELWT,
-            ]
-        else:
-            self.fndwat_cmd += [
-                "--f"     ,istruct.FWT,
-                "--phi"   ,istruct.PHI,
-            ]
+            self.F   = istruct.DELFWT
+            self.PHI = istruct.PHDELWT
 
-        #    self.PHI      = ""
-        #    self.FOM      = ""
-
-        self.mindist = None
-        self.maxdist = None
-        if self.getParameter(sec1.FLOOD_CBX)=="True":
-            self.fndwat_cmd += [ "--flood","--flood-atom-radius",
-                                 self.getParameter(sec1.FLOOD_RADIUS) ]
+        self.mindist        = 2.4
+        self.maxdist        = 50.0
+        self.variance_limit = 0.1
+        self.flood_radius   = 1.4
+        self.flood          = (self.getParameter(sec1.FLOOD_CBX)=="True")
+        if self.flood:
+            pv = self.getParameter ( sec1.FLOOD_RADIUS )
+            if pv:
+                self.flood_radius = float ( pv )
         else:
-            self.mindist = self.getParameter ( sec1.MIN_DIST )
-            self.maxdist = self.getParameter ( sec1.MAX_DIST )
-            if self.mindist:
-                self.fndwat_cmd += [ "--min-dist",self.mindist ]
-            if self.maxdist:
-                self.fndwat_cmd += [ "--max-dist",self.maxdist ]
+            pv = self.getParameter ( sec1.MIN_DIST )
+            if pv:
+                self.mindist = float ( pv )
+            pv = self.getParameter ( sec1.MAX_DIST )
+            if pv:
+                self.maxdist = float ( pv )
+            pv = self.getParameter ( sec1.VARIANCE_LIMIT )
+            if pv:
+                self.variance_limit = float ( pv )
 
         # make command-line parameters for refmac
         self.refmac_cmd = [ 
@@ -389,19 +429,19 @@ class FitWaters(basic.TaskDriver):
 
         sigma = self.getParameter ( sec1.SIGMA )
         if sigma:
-            nwaters = self.findWaters ( self.getParameter(sec1.SIGMA),"Main" )[0]
+            nwaters = self.findWaters ( float(sigma),"Main" )[0]
         else:
             nwaters = self.optimise_sigma()
 
         have_results = False
         if nwaters>0:
-            pdbout = self.outputFName + ".pdb"
-            os.rename ( self.xyzout,pdbout )
-            mtzout = self.outputFName + ".mtz"
+            mmcifout = self.outputFName + ".mmcif"
+            os.rename ( self.xyzout,mmcifout )
+            mtzout   = self.outputFName + ".mtz"
             os.rename ( self.mtzout,mtzout )
             structure = self.registerStructure (
+                            mmcifout,
                             None,
-                            pdbout,
                             None,
                             mtzout,
                             libPath  = libin,
@@ -417,10 +457,13 @@ class FitWaters(basic.TaskDriver):
                 structure.copyLabels           ( istruct    )
                 structure.copyLigands          ( istruct    )
                 structure.addWaterSubtype  ()
-                self.putTitle   ( "Results" )
+
+                self.putTitle ( "Output Structure" +\
+                                self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
                 self.putStructureWidget   ( "structure_btn_",
                                             "Structure and electron density",
                                             structure )
+
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )

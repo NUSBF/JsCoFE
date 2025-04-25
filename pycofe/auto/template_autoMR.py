@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.01.25   <--  Date of Last Modification.
+#    22.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -375,7 +375,7 @@ def makeNextTask ( crTask,data ):
                 revision = auto_api.getContext("starting_asu_revision")
                 parent = auto_api.getContext("asu_task_name")
                 parentTask = crTask.autoRunName
-                revision = data["revision"]
+                # revision = data["revision"]
                 if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
                     os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
                     auto_tasks.morda("morda", revision, parent)

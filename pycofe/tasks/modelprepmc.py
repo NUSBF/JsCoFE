@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.02.23   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2025
 #
 # ============================================================================
 #
@@ -59,10 +59,6 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
         csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
 
         self.fixBFactors ( [xyz] )
-        # if xyz.BF_correction=="alphafold-suggested":
-        #    xyz.fixBFactors ( self.inputDir(),"alphafold" )
-        # elif xyz.BF_correction=="rosetta-suggested":
-        #    xyz.fixBFactors ( self.inputDir(),"rosetta" )
 
         # molWeight = 0.0
         nRes   = 0
@@ -120,6 +116,7 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
             st0.write_pdb ( model_path )
             model = self.registerModel ( stypes,model_path,checkout=True )
             if model:
+                model.BF_correction = xyz.BF_correction
                 self.putTitle ( "Results" )
                 self.putMessage ( "<h3>Model " + model.dname + "</h3>" )
                 model.meta  = {

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -136,9 +136,12 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
         xyz = self.input_data.data.xyz
         nmodels = 0
+        BF_correction = "none"
         for i in range(len(xyz)):
             xyz[i]  = self.makeClass ( xyz[i] )
             nmodels = max ( nmodels,len(xyz[i].xyzmeta.xyz) )
+            if (xyz[i].BF_correction!="none") and (xyz[i].BF_correction!="pdb"):
+                BF_correction = xyz[i].BF_correction
 
         self.fixBFactors ( xyz )
 
@@ -326,6 +329,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
 
                     ensemble = self.registerEnsemble ( temp.subtype,outputFile,checkout=True )
                     if ensemble:
+                        ensemble.BF_correction = BF_correction
                         self.stdoutln ( str(ensemble.xyzmeta) )
                         if seq:
                             ensemble.putSequence ( seq )
@@ -426,6 +430,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                             ensemble = self.registerEnsemble ( xyz[0].getSubtypes(),fout_name,checkout=True )
 
                         if ensemble:
+
+                            ensemble.BF_correction = BF_correction
 
                             self.putMessage ( "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>" )
 

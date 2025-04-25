@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.25   <--  Date of Last Modification.
+ *    12.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -205,7 +205,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
     //   'The connection to the remote jobs server is fully configured but not ' +
     //   'currently active.' +
     //   '<p>This could be due to incorrect server URL or user credentials ' +
-    //   '(login name or password) in the Settings or an internet connectivity ' +
+    //   '(login name or password) in Settings or an internet connectivity ' +
     //   'issue.' +
     //   '<p>All jobs will be executed locally on your computer.' +
     //   '<p><i style="font-size:85%">To desactivate remote server connection ' +
@@ -218,7 +218,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
       'The connection to the remote jobs server is fully configured but not ' +
       'currently active.' +
       '<p>This could be due to incorrect server URL or user credentials ' +
-      '(login name or password) in the Settings or an internet connectivity ' +
+      '(login name or password) in Settings or an internet connectivity ' +
       'issue.' +
       '<p>All jobs will be executed locally on your computer.' +
       '<p><i style="font-size:85%">To desactivate remote server connection ' +

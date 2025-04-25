@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    23.03.23   <--  Date of Last Modification.
+#    14.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2026
 #
 # ============================================================================
 #
@@ -525,7 +525,7 @@ class Base(object):
                 }
 
                 buttonId = self.getWidgetId ( "webcoot" )
-                pyrvapi.rvapi_add_button ( buttonId,"Build in progress","{function}",
+                pyrvapi.rvapi_add_button ( buttonId,"View build in progress","{function}",
                             "window.parent.rvapi_wcviewer("  +\
                             str(self.jobId)          + ",'[" +\
                             str(self.jobId).zfill(4) +\

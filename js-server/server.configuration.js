@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.25   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1653,9 +1653,13 @@ function getExcludedTasks()  {
 
   }
 
+  if (isWindows() && (fe_server.excluded_tasks.indexOf('unix-only')<0))
+    fe_server.excluded_tasks.push ( 'unix-only' );
+
   return fe_server.excluded_tasks;
 
 }
+
 
 function checkOnUpdate ( callback_func )  {
   try {
@@ -1663,7 +1667,7 @@ function checkOnUpdate ( callback_func )  {
       log.standard ( 7,'checking for new updates' );
       let ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
       if (utils.fileExists(ccp4um))  {
-        let cmd     = ['-check-silent'];
+        let cmd     = [];
         let vfpath  = path.join ( process.env.CCP4,'lib','ccp4','MAJOR_MINOR' );
         let sfpath  = path.join ( process.env.CCP4,'restore','timestamp' );
         let version = utils.readString ( vfpath );
@@ -1673,7 +1677,8 @@ function checkOnUpdate ( callback_func )  {
         if (!stamp)
           log.warning ( 8,'stamp file not found at '   + sfpath );
         if (version && stamp)
-          cmd = cmd.concat([ '--stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
+          cmd = cmd.concat ([ '-stamp','jcl.' + version.trim() + '.' + stamp.trim() ]);
+        cmd = cmd.concat (['-check-silent']);
         log.standard ( 8,'running ' + ccp4um + ' ' + cmd.join(' ') );
         let job = utils.spawn ( ccp4um,cmd,{} );
         job.on ( 'close',function(code){

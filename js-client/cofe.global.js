@@ -626,6 +626,18 @@ function removeMyWorkflow ( workflowId )  {
     __my_workflows.splice(n,1);
 }
 
+// window.onerror = function(message, source, lineno, colno, error) {
+//   console.error('Caught by window.onerror:', {
+//     message,
+//     source,
+//     lineno,
+//     colno,
+//     error
+//   });
+//   // Optional: report to a server
+//   return false; // prevents the firing of the default event handler
+// }
+
 // ===========================================================================
 // allow HTML markup in tooltips
 

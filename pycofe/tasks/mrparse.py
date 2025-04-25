@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.25   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -150,6 +150,9 @@ class MrParse(basic.TaskDriver):
         if "AFDB_SEQDB" in os.environ:
             if os.path.isfile(os.environ["AFDB_SEQDB"]):
                 cmd += [ "--afdb_seqdb",os.environ["AFDB_SEQDB"] ]
+        if "PHMMER_EXE" in os.environ:
+            if os.path.isfile(os.environ["PHMMER_EXE"]):
+                cmd += [ "--phmmer_exe",os.environ["PHMMER_EXE"] ]
 
         cmd += [ "--max_hits", max_hits ]
         cmd += [ "--database", database ]
@@ -273,6 +276,7 @@ class MrParse(basic.TaskDriver):
                         # model = self.registerModel ( seq,fpath,checkout=True )
                         model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
+                            model.BF_correction = "alphafold"  # already corrected
                             if nmodels<1:
                                 self.putFoundMessage ( seq )
                                 # self.putTitle ( "MR models prepared from AFDB structures" )
@@ -313,6 +317,7 @@ class MrParse(basic.TaskDriver):
                         # model = self.registerModel ( seq,fpath,checkout=True )
                         model = self.registerXYZ ( None,fpath,checkout=True )
                         if model:
+                            model.BF_correction = "esmfold"  # already corrected
                             if nmodels<1:
                                 self.putFoundMessage ( seq )
                                 # self.putTitle ( "MR models prepared from ESMFold structures" )

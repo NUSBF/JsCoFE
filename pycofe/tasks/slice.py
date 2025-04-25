@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.01.25   <--  Date of Last Modification.
+#    16.01.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,6 @@ class Slice(basic.TaskDriver):
         nsplits = self.getParameter ( sec1.NSPLITS )
         plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
 
-
         self.fixBFactors ( [xyz] )
 
         cmd = [
@@ -68,7 +67,7 @@ class Slice(basic.TaskDriver):
         elif xyz.BF_correction=="rosetta-suggested":
             cmd += ['--bfactor_column', 'rms']
         elif xyz.BF_correction=="alphafold":
-           cmd += ['--bfactor_column', 'predicted_bfactor']
+            cmd += ['--bfactor_column', 'predicted_bfactor']
 
         if int(plddt_threshold)!=0:
             cmd += ["--plddt_threshold",plddt_threshold]
@@ -105,6 +104,7 @@ class Slice(basic.TaskDriver):
                         }
                         model.seqId = "100.0"
                         model.rmsd  = "1"
+                        model.BF_correction = xyz.BF_correction
                         self.add_seqid_remark ( model,["100.0"] )
                         self.putModelWidget ( self.getWidgetId("model_btn"),
                                               "Coordinates:&nbsp;",model )

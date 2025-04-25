@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    16.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -156,6 +156,7 @@ class EditRevisionStruct(basic.TaskDriver):
                 structure.setLigands  ( lig_codes )
             if xyz_fpath:
                 structure.addSubtypes ( xyz.getSubtypes() )
+                structure.BF_correction = xyz.BF_correction
             if phases:
                 structure.addSubtypes ( phases.getSubtypes() )
                 structure.copyLabels  ( phases )

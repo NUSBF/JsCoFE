@@ -1013,6 +1013,8 @@ let cfg = conf.getServerConfig();
 
         },function(stageNo,errcode)  {  // send failed
 
+          let status = comut.isObject(errcode) ? errcode.status : errcode;            
+
           if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
               ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
 
@@ -1027,29 +1029,26 @@ let cfg = conf.getServerConfig();
             jobEntry.sendTrials--;
             log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
                             job_token + ' back to FE due to FE/transmission errors (stage' +
-                            stageNo + ', code [' + JSON.stringify(errcode) + '])' );
+                            stageNo + ', code [' + JSON.stringify(status) + '])' );
             setTimeout ( function(){ ncJobFinished(job_token,code); },
                         conf.getServerConfig().sendDataWaitTime );
 
-          // } else if (comut.isObject(errcode) &&
-          //            ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
-          //             (errcode.status==cmd.nc_retcode.fileErrors)))  {
           } else  {
-            
-            let status = comut.isObject(errcode) ? errcode.status : errcode;            
-            
+                        
             if ((status==cmd.fe_retcode.wrongJobToken) ||
                 (status==cmd.nc_retcode.fileErrors))  {
-            // the job cannot be accepted by FE, e.g., if task was deleted by user.
+              // the job cannot be accepted by FE, e.g., if task was deleted by user.
 
-            removeJobDelayed ( job_token,task_t.job_code.finished );
-            log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + status + 
-                          '). TASK DELETED.' );
+              removeJobDelayed ( job_token,task_t.job_code.finished );
+              log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + 
+                            status + '). TASK DELETED.' );
 
             } else  {
 
-              log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
+              log.error ( 5,'job ' + task.id + ' is put in zombi state, ' +
+                            'code [' + JSON.stringify(status) + ']) token:' +
                             job_token );
+
             }
 
           }

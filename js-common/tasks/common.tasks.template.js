@@ -486,7 +486,7 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
             exclude_tasks,local_service,any_mobile_device,cloud_storage,
             treat_private,protected_connection,maintainerEmail,client_version,
             environ_client,local_user,user_authorisation,auth_software,
-            user_guide_base_url,local_setup,environ_server )  {
+            user_guide_base_url,local_setup,environ_server,run_remotely )  {
 
   // let fe_server            = conf.getFEConfig();
   // let app_name             = cmd.appName();
@@ -520,7 +520,7 @@ TaskTemplate.prototype._is_task_available = function ( app_name,
   }
 
   if ((exclude_tasks.indexOf('unix-only')>=0) &&
-      (this.platforms().indexOf('W')<0))  {
+      (this.platforms().indexOf('W')<0) && (!run_remotely))  {
     // task not supported on Windows
     return ['windows-excluded',
             'task is not available on MS Windows systems',
@@ -728,15 +728,15 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.isTaskAvailable = function()  {
-    let env = __environ_server;
-    if (this.canRunRemotely() && (__remote_environ_server.length>0) &&
-        __remote_tasks[this._type])
-      env = __remote_environ_server;
+    let run_remotely = (this.canRunRemotely() && 
+                       (__remote_environ_server.length>0) &&
+                       __remote_tasks[this._type]);
+    let env = run_remotely ?  __remote_environ_server : __environ_server;
     return this._is_task_available ( appName(),
       __exclude_tasks,__local_service,__any_mobile_device,__cloud_storage,
       __treat_private,isProtectedConnection(),__maintainerEmail,__client_version,
       __environ_client,__local_user,__user_authorisation,__auth_software,
-      __user_guide_base_url,__local_setup,env );
+      __user_guide_base_url,__local_setup,env,run_remotely );
   }
 
 
@@ -3147,7 +3147,7 @@ if (!dbx)  {
       exclude_tasks,local_service,any_mobile_device,cloud_storage,
       treat_private,protected_connection,maintainerEmail,client_version,
       environ_client,local_user,user_authorisation,auth_software,
-      user_guide_base_url,local_setup,conf.environ_server );
+      user_guide_base_url,local_setup,conf.environ_server,false );
   
   }
 

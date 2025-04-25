@@ -188,6 +188,7 @@ class Molrep(basic.TaskDriver):
                                   title="Positioned Structure",reserveRows=3 )
 
           if structure:
+              structure.BF_correction = model.BF_correction
               # update structure revision
               revision.setStructureData ( structure )
               self.registerRevision     ( revision  )
