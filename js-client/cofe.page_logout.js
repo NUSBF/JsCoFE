@@ -95,7 +95,10 @@ function LogoutPage ( sceneId,reason_key )  {
     panel.setWidget              ( back_btn,row,0,1,1 );
     panel.setHorizontalAlignment ( row++,0,'center' );
     back_btn.setWidth            ( '300px' );
-    back_btn.addOnClickListener  ( function(){ reloadBrowser(); });
+    back_btn.addOnClickListener  ( function(){
+      back_btn.element.style.cursor = 'wait';
+      reloadBrowser(); 
+    });
     // setDefaultButton             ( back_btn,this.grid );
     setDefaultButton             ( back_btn,panel );
   }

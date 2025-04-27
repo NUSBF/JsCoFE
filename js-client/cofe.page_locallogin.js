@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    27.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -108,6 +108,7 @@ function LocalLoginPage ( sceneId )  {
       let login_btn = panel.setButton ( 'Go to your projects',
                                         image_path('enter'),row,0,1,1 )
                            .addOnClickListener(function(){
+        login_btn.element.style.cursor = 'wait';
         login ( '**' + __local_user_id + '**','',sceneId,0 );
       }).setHorizontalAlignment('left');
       panel.setHorizontalAlignment ( row++,0,'left' );
