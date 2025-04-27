@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    27.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,7 +153,8 @@ function RegisterPage ( sceneId )  {
   let back_btn = null;
   if (__login_token=='')  {
     back_btn = new Button       ( 'Back to User Login',image_path('login') );
-    back_btn.addOnClickListener ( function(){ 
+    back_btn.addOnClickListener ( function(){
+      back_btn.element.style.cursor = 'wait';
       reloadBrowser();
     });
   } else  {

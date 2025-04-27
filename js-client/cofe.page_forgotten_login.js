@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.25   <--  Date of Last Modification.
+ *    27.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -89,7 +89,8 @@ function ForgottenLoginPage ( sceneId )  {
   panel.setWidget               ( back_btn,row++,0,1,2 );
 
   back_btn.addOnClickListener  ( function(){
-     reloadBrowser();
+    back_btn.element.style.cursor = 'wait';
+    reloadBrowser();
   });
 
   send_btn.addOnClickListener   ( function(){
