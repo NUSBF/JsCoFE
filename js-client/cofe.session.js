@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.25   <--  Date of Last Modification.
+ *    26.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -199,19 +199,6 @@ function checkAnnouncement()  {
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   function _no_remote_server_message ( refresh )  {
-    // new MessageBox ( 'Remote jobs server is not connected',
-    //   '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
-    //   'The connection to the remote jobs server is fully configured but not ' +
-    //   'currently active.' +
-    //   '<p>This could be due to incorrect server URL or user credentials ' +
-    //   '(login name or password) in Settings or an internet connectivity ' +
-    //   'issue.' +
-    //   '<p>All jobs will be executed locally on your computer.' +
-    //   '<p><i style="font-size:85%">To desactivate remote server connection ' +
-    //   'without receiving this message, either disable the remote server in ' +
-    //   'the ' + appName() + ' configuration utility or remove both the login ' +
-    //   'name and password from the Settings.</i></div>',
-    //   'msg_information',false );
     new QuestionBox ( 'Remote jobs server is not connected',
       '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
       'The connection to the remote jobs server is fully configured but not ' +
@@ -653,21 +640,24 @@ function checkSession0 ( sceneId )  {
       if (__session_check_timer)  {
         if (__local_setup)  {
           console.log ( ' [' + getCurrentTimeString() + 
-                        '] attemt to logout at session checking' );
+                        '] attemt to logout at session checking, lid ' +
+                        (__lid_open ? 'open' : 'closed') );
           // check that the failure is not triggered by closed lid; since
           // detection of closed lid takes a bit of time, put action on
           // timer
-          if ((!__lid_open) || (__last_session_check_time<=__lid_open_time))  {
+          if ((!__lid_open) ||  // let some extra time to wake up after lid open
+                  (__last_session_check_time <=
+                           __lid_open_time + __holdup_wait + __delays_wait))  {
             // system deactivated -- keep on checking
             makeSessionCheck ( sceneId );
           } else  {
             new MessageBoxF ( 'Possible malfunction detected',
               '<div style="width:460px">' +
-              '<h2>' + appName() + ' appears to be malfunctioning</h2>' +
+              '<h2>' + appName() + ' may be be malfunctioning</h2>' +
               'This may be due to an interruption caused by putting your ' +
               'system to sleep, closing the laptop lid, or similar actions. ' +
-              'You may continue working; however, if any features fail to ' +
-              'respond, please restart ' + appName() + 
+              '<b>You may continue working;</b> however, if any features ' +
+              'fail to respond, please restart ' + appName() + 
               '.<p style="font-size:86%"><i>Please report this message to ' +
               'CCP4 as a possible bug if you see it too often.</i></p></div>',
               'Continue',function(){
@@ -681,8 +671,12 @@ function checkSession0 ( sceneId )  {
             logout ( sceneId,2 );
             */
           }
-        } else
+        } else  {
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] session check failed, lid ' +
+                        (__lid_open ? 'open' : 'closed') );
           makeSessionCheck ( sceneId );
+        }
       }
     }
   );

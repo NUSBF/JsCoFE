@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.25   <--  Date of Last Modification.
+ *    25.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,10 +124,10 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
 
   if (__local_user && isElectronAPI())  {
 
-    console.log ( ' [' + getCurrentTimeString() + 
-                  '] attempt to stop electron at logout, reason=' + reason_key );
-    // sendMessageToElectron ( 'stop' );
-    checkSession ( __current_page.sceneId );
+    // console.log ( ' [' + getCurrentTimeString() + 
+    //               '] attempt to stop electron at logout, reason=' + reason_key );
+    sendMessageToElectron ( 'stop' );
+    // checkSession ( __current_page.sceneId );
 
   } else if (__local_user)  {
 
