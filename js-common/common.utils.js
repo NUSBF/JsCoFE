@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.24   <--  Date of Last Modification.
+ *    23.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -217,22 +217,39 @@ function sortObjects ( array, field, ascending=true )  {
   });
 }
 
+function getCurrentTimeString ( time=null ) {
+  const now          = time? new Date(time) : new Date();
+  const pad          = (num, size = 2) => String(num).padStart(size, '0');
+  const hours        = pad(now.getHours());
+  const minutes      = pad(now.getMinutes());
+  const seconds      = pad(now.getSeconds());
+  const milliseconds = pad(now.getMilliseconds(),3);
+  return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+}
+
+function printStackTrace()  {
+  const stack = new Error().stack;
+  console.log("Call stack:\n", stack);
+}
+
 // ===========================================================================
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.mapExcludeKey  = mapExcludeKey;
-  module.exports.mapMaskIn      = mapMaskIn;
-  module.exports.mapMaskOut     = mapMaskOut;
-  module.exports.padDigits      = padDigits;
-  module.exports.padStringLeft  = padStringLeft;
-  module.exports.padStringRight = padStringRight;
-  module.exports.isInteger      = isInteger;
-  module.exports.isObject       = isObject;
-  module.exports.isFloat        = isFloat;
-  module.exports.replaceAll     = replaceAll;
-  module.exports.startsWith     = startsWith;
-  module.exports.round          = round;
-  module.exports.getDateString  = getDateString;
-  module.exports.sortObjects    = sortObjects;
+  module.exports.mapExcludeKey        = mapExcludeKey;
+  module.exports.mapMaskIn            = mapMaskIn;
+  module.exports.mapMaskOut           = mapMaskOut;
+  module.exports.padDigits            = padDigits;
+  module.exports.padStringLeft        = padStringLeft;
+  module.exports.padStringRight       = padStringRight;
+  module.exports.isInteger            = isInteger;
+  module.exports.isObject             = isObject;
+  module.exports.isFloat              = isFloat;
+  module.exports.replaceAll           = replaceAll;
+  module.exports.startsWith           = startsWith;
+  module.exports.round                = round;
+  module.exports.getDateString        = getDateString;
+  module.exports.sortObjects          = sortObjects;
+  module.exports.printStackTrace      = printStackTrace;
+  module.exports.getCurrentTimeString = getCurrentTimeString;
 }
