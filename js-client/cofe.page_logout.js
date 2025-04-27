@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.04.25   <--  Date of Last Modification.
+ *    27.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,11 +60,11 @@ function LogoutPage ( sceneId,reason_key )  {
     case 2  :  msg = 'Your session in this window was terminated because local ' +
                      appName() + ' service has stopped or was restared.';
             break;
-    case 3  :  msg = 'Your session in this window was terminated in order to keep ' +
-                     appName() + ' archiving process uninterrupted. Your account ' +
-                     'is temporarily suspended and will be made available automatically ' +
-                     'once archiving is completed.<p>Please try to login ' +
-                     'after 10-20 minutes. Contact ' + report_problem ( 
+    case 3  :  msg = 'Your session in this window has been terminated to ' +
+                     'ensure the ' + appName() + ' archiving process remains ' +
+                     'uninterrupted. Your account is temporarily suspended ' +
+                     'and will be automatically reactivated once archiving ' +
+                     'is complete. Contact ' + report_problem ( 
                        appName() + ' archiving problem',
                        'Account remains suspended after archiving for long time.',
                        ''
@@ -115,9 +115,9 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
   stopOfflineGreeting();
   stopSessionChecks  ();
 
-  console.log ( ' [' + getCurrentTimeString() + 
-                '] attempt to logout, reason=' + reason_key );
-  printStackTrace();
+  // console.log ( ' [' + getCurrentTimeString() + 
+  //               '] attempt to logout, reason=' + reason_key );
+  // printStackTrace();
 
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
