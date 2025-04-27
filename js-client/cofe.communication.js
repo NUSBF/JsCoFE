@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.04.25   <--  Date of Last Modification.
+ *    25.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -262,11 +262,6 @@ var __lid_close_time   = __last_active_time;
 var __lid_open_time    = __last_active_time;
 var __lid_open         = true;
 
-// var __lid_closed_period = {  // start>end for a placeholder
-//   start : __last_active_time + __lid_close_check_interval,
-//   end   : __lid_close_check_interval
-// };
-
 function systemSleeps()  {
   return (!__lid_open) || (__last_active_time<=__lid_open_time);
 }
@@ -275,7 +270,6 @@ function systemAwake()  {
   return __lid_open  && (__last_active_time>__lid_open_time);
 }
 
-
 function checkActiveState()  {
   if (document.hidden)  {
     if (__lid_open)  {
@@ -283,6 +277,7 @@ function checkActiveState()  {
       console.log ( ' [' + getCurrentTimeString(__lid_close_time) + 
                     '] likely lid closed' );
       __lid_open = false;
+      stopRequestQueues();
     }
   } else  {
     let t0 = __last_active_time;
@@ -292,17 +287,8 @@ function checkActiveState()  {
       __lid_open      = true;
       console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
                     '] likely resumed from sleep/lid close' );
-      if (__server_queue.length>0)  {
-        if (__server_queue[0].xhr)  {
-          console.log ( ' [' + getCurrentTimeString(__lid_open_time) +
-                        '] killing pending transaction' );
-          __server_queue[0].xhr.abort();
-        }
-        // processServerQueue();  // not necessary as xhr.abort will trigger repeat
-                                  // request in error handlers
-      }
-      // if (__current_page)
-      //   checkSession ( __current_page.sceneId );
+      stopRequestQueues  ();  // if any requests were still pending, kill them
+      resumeRequestQueues();
     }
   }
 }
@@ -315,27 +301,6 @@ setInterval ( function(){
   checkActiveState();
 },__lid_close_check_interval);
 
-// document.addEventListener('visibilitychange', () => {
-//   // if (!document.hidden) {
-//     // Page came back (maybe from lid close)
-//     const now = Date.now();
-//     const delta = now - __last_active_time;
-//     if (delta > 10*__lid_close_check_interval) { // 10x threshold for sleep/lid close
-//       console.log("Likely resumed from sleep/lid close");
-//       __lid_open_time = now;
-//       // Optionally reset timers, reconnect, etc.
-//     }
-//     __last_active_time = now;
-//   // }
-// });
-
-// // Update timestamp regularly
-// setInterval(() => {
-//   // if (!document.hidden) {
-//     __last_active_time = Date.now();
-//   // }
-// }, __lid_close_check_interval);
-
 
 // ===========================================================================
 // Communication functions
@@ -344,12 +309,12 @@ var __server_queue    = [];
 var __local_queue     = [];
 var __server_queue_id = 1;
 
-var __delays_ind   = null;
-var __delays_timer = null;
-var __delays_wait  = 1000;  //msec
-var __holdup_dlg   = null;
-var __holdup_timer = null;
-var __holdup_wait  = 20000;  //msec
+var __delays_ind      = null;
+var __delays_timer    = null;
+var __delays_wait     = 1000;  //msec
+var __holdup_dlg      = null;
+var __holdup_timer    = null;
+var __holdup_wait     = 20000;  //msec
 var __communication_ind = null;
 
 function clearNetworkIndicators()  {
@@ -387,7 +352,7 @@ function __process_network_indicators()  {
 var __check_session_drops = 0;
 
 function processServerQueue()  {
-  if (__server_queue.length>0)  {
+  if ((__server_queue.length>0) && __lid_open)  {
     let q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
@@ -413,24 +378,34 @@ function processServerQueue()  {
         // restart the session
         __holdup_timer = null;
         // if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
-        if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
+        if ((__server_queue.length>0) && __lid_open && (q0.start_time>__lid_open_time)) {
           if ((__server_queue[0].type=='command') &&
-                   (__server_queue[0].request_type==fe_command.checkSession) &&
-                   (__check_session_drops<10))  {
+              (__server_queue[0].request_type==fe_command.checkSession) &&
+              (__check_session_drops<10))  {
             __check_session_drops++;
             __server_queue.shift();
             __process_network_indicators();
             processServerQueue();
           } else if (__server_queue[0].request_type!=undefined)  {
+                // 'Communication with ' + appName() + ' is severely delayed. ' +
+                // 'Please be patient, the problem may resolve in few moments, ' +
+                // 'after which this dialog will disappear automatically.<p>' +
+                // 'If communication does not resume after a long time, you can ' +
+                // 'either reload the current page (quick option) or start new ' +
+                // 'working session (complete refresh, hard option) using buttons ' +
+                // 'below.<p>Make sure that your Internet connection is stable.',[
             __holdup_dlg = new QuestionBox ( 'Communication hold-up',
-                '<div style="width:450px"><h3>Communication hold-up</h3>' +
-                'Communication with ' + appName() + ' is severely delayed. ' +
-                'Please be patient, the problem may resolve in few moments, ' +
-                'after which this dialog will disappear automatically.<p>' +
-                'If communication does not resume after a long time, you can ' +
-                'either reload the current page (quick option) or start new ' +
-                'working session (complete refresh, hard option) using buttons ' +
-                'below.<p>Make sure that your Internet connection is stable.',[
+              '<div style="width:450px"><h3>Communication hold-up</h3>' +
+              'Communication with ' + appName() + ' is currently experiencing ' +
+              'significant delays. Please be patient - the issue may resolve ' +
+              'on its own in a few moments, and this dialog will close ' +
+              'automatically.' +
+              '<p>If the connection does not resume after a while, you can ' +
+              'try one of the following options:<ul>' +
+              '<li>Reload the current page (quick fix), or</li>' +
+              '<li>Start a new session (complete refresh — more thorough).</li>' +      
+              '</ul>Also, please ensure that your internet connection is stable.',
+              [
                 { name    : 'Reload current page',
                   onclick : function(){
                       __holdup_dlg = null;
@@ -454,7 +429,8 @@ function processServerQueue()  {
                       // window.location = window.location;  // complete refresh
                     }
                 }
-              ],'msg_system'
+              ],
+              'msg_system'
             );
           } else  {
             console.log ( ' >>> undefined server request delayed' );
@@ -473,13 +449,46 @@ function processServerQueue()  {
 // }
 
 function processLocalQueue()  {
-  if (__local_queue.length>0)  {
+  if ((__local_queue.length>0) && __lid_open)  {
     let q0 = __local_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
-      local_command ( q0.request_type,q0.data_obj,q0.command_title,q0.function_response );
+      __local_queue[0].xhr = local_command ( q0.request_type,q0.data_obj,
+                                             q0.command_title,
+                                             q0.function_response );
     }
   }
+}
+
+function stopRequestQueues()  {
+  for (let i=0;i<__server_queue.length;i++)
+    if (('xhr' in __server_queue[i]) && __server_queue[i].xhr)  {
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] killing server request '  + 
+                    __server_queue[i].id   + ' ' +
+                    __server_queue[i].type + ' ' + 
+                    __server_queue[i].request_type );
+      __server_queue[i].xhr.abort();
+      __server_queue[i].xhr    = null;
+      __server_queue[i].status = 'waiting';
+    }
+  for (let i=0;i<__local_queue.length;i++)
+    if (('xhr' in __local_queue[i]) && __local_queue[i].xhr)  {
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] killing local request '  + 
+                    __local_queue[i].id   + ' ' +
+                    __local_queue[i].type + ' ' + 
+                    __local_queue[i].request_type );
+      __local_queue[i].xhr.abort();
+      __local_queue[i].xhr    = null;
+      __local_queue[i].status = 'waiting';
+    }
+}
+
+
+function resumeRequestQueues()  {
+  processServerQueue();
+  processLocalQueue ();
 }
 
 // function shiftLocalQueue()  {
@@ -581,7 +590,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
     })
     .fail ( function(xhr,err){
 
-      if ((start_time>__lid_open_time) || (attemptNo<=0))  {
+      if (__lid_open && ((start_time>__lid_open_time) || (attemptNo<=0)))  {
         // genuine transaction failure
 
         console.log ( ' [' + getCurrentTimeString() + 
@@ -605,6 +614,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         // *** old version
         processServerQueue();
 
+        /*
       } else  {
         // transaction likely failed because the system was down (lid closed)
         // try recovering by repeating transaction
@@ -617,12 +627,18 @@ function __server_command ( cmd,data_obj,page_title,function_response,
                              timeout,attemptNo-1 );
         },__lid_close_check_interval);
         // },Math.max(1000,1000*(11-attemptNo)));
+        */
       }
 
     });
 
-  if (__server_queue.length>0)
-    __server_queue[0].xhr = xhr;
+  // should be just a single item in the queue in most cases, and 0th
+  // item should be the one in 99.99% cases
+  for (let i=0;i<__server_queue.length;i++)
+    if (__server_queue[i].id==sqid)  {
+      __server_queue[i].xhr = xhr;
+      break;
+    }
 
 }
 
@@ -710,7 +726,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
 
     .fail ( function(xhr,err){
 
-      if ((start_time>__lid_open_time) || (attemptNo<=0))  {
+      if (__lid_open && ((start_time>__lid_open_time) || (attemptNo<=0)))  {
         // genuine transaction failure
 
         console.log ( ' [' + getCurrentTimeString() + 
@@ -771,6 +787,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
         // *** new version
         processServerQueue();
 
+        /*
       } else  {
         // transaction likely failed because the system was down (lid closed)
         // try recovering by repeating transaction
@@ -785,12 +802,20 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
         },__lid_close_check_interval);
         // },Math.max(__lid_close_check_interval,
         //            __lid_close_check_interval*(11-attemptNo)));
+        */
       }
 
     });
 
-    if (__server_queue.length>0)
-      __server_queue[0].xhr = xhr;
+    // should be just a single item in the queue in most cases, and 0th
+    // item should be the one in 99.99% cases
+    for (let i=0;i<__server_queue.length;i++)
+      if (__server_queue[i].id==sqid)  {
+        __server_queue[i].xhr = xhr;
+        break;
+      }
+
+    // return xhr;
 
   }
 
@@ -815,9 +840,11 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 //                      communication error message box is displayed.
 
   let json = makeJSONString ( data_obj );
+  let xhr  = null;
 
-  if (__local_service && json)
-    $.ajax ({
+  if (__local_service && json)  {
+    let start_time = Date.now();
+    xhr = $.ajax ({
       url      : __local_service + '/' + cmd,
       async    : true,
       type     : 'POST',
@@ -836,13 +863,20 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
     })
     .always ( function(){
-      __local_queue.shift();
-      processServerQueue();
+      if (__lid_open && (start_time>__lid_open_time))  {
+        __local_queue.shift();
+        processServerQueue();
+      }
     })
     .fail   ( function(xhr,err){
-      if (function_response && (!function_response(null)))
-        MessageAJAXFailure(command_title,xhr,err);
+      if (__lid_open && (start_time>__lid_open_time))  {
+        if (function_response && (!function_response(null)))
+          MessageAJAXFailure(command_title,xhr,err);
+      }
     });
+  }
+
+  return xhr;
 
 }
 
