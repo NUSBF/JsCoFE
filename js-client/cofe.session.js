@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.25   <--  Date of Last Modification.
+ *    26.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,6 @@
 'use strict';
 
 function startSession ( sceneId,dev_switch )  {
-
 
   // set up a loader spinner
   const img = document.createElement('img');
@@ -200,19 +199,6 @@ function checkAnnouncement()  {
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   function _no_remote_server_message ( refresh )  {
-    // new MessageBox ( 'Remote jobs server is not connected',
-    //   '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
-    //   'The connection to the remote jobs server is fully configured but not ' +
-    //   'currently active.' +
-    //   '<p>This could be due to incorrect server URL or user credentials ' +
-    //   '(login name or password) in Settings or an internet connectivity ' +
-    //   'issue.' +
-    //   '<p>All jobs will be executed locally on your computer.' +
-    //   '<p><i style="font-size:85%">To desactivate remote server connection ' +
-    //   'without receiving this message, either disable the remote server in ' +
-    //   'the ' + appName() + ' configuration utility or remove both the login ' +
-    //   'name and password from the Settings.</i></div>',
-    //   'msg_information',false );
     new QuestionBox ( 'Remote jobs server is not connected',
       '<div style="width:460px;"><h2>Remote jobs server is not connected</h2>' +
       'The connection to the remote jobs server is fully configured but not ' +
@@ -251,300 +237,305 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
   document.body.style.cursor = 'wait';
 
-  let ud   = new UserData();
-  ud.login = user_login_name;
-  ud.pwd   = user_password;
+  setTimeout ( function(){
 
-  serverCommand ( fe_command.login,ud,'Login',function(response){
+    let ud   = new UserData();
+    ud.login = user_login_name;
+    ud.pwd   = user_password;
 
-    stopSessionChecks();
+    serverCommand ( fe_command.login,ud,'Login',function(response){
 
-    document.body.style.cursor = 'auto';
+      stopSessionChecks();
 
-    switch (response.status)  {
+      document.body.style.cursor = 'auto';
 
-      case fe_retcode.ok:
-              let userData         = response.data.userData;
-              __login_token        = response.message;
-              if (user_login_name=='**' + __local_user_id + '**')
-                    __login_id     = __local_user_id;
-              else  __login_id     = user_login_name;
-              __cloud_storage      = response.data.cloud_storage;
-              __strict_dormancy    = response.data.strict_dormancy;
-              __treat_private      = response.data.treat_private;
-              __jobs_safe          = response.data.jobs_safe;
-              __has_datalink       = response.data.has_datalink;
-              __demo_projects      = response.data.demo_projects;
-              __environ_server     = response.data.environ_server;
-              __my_workflows       = response.data.my_workflows;
-              __login_user         = userData.name;
-              let color_modes      = __user_settings.color_modes;
-              __user_settings      = userData.settings;
-              if (!('color_modes' in __user_settings))
-                __user_settings.color_modes = color_modes;
-              bindToBrowserColorMode ( true ); 
-              __user_role          = userData.role;
-              __user_licence       = userData.licence;
-              __globus_id          = userData.globusId;
-              __dormant            = userData.dormant;
-              __user_authorisation = userData.authorisation;
-              // __remote_login_id    = userData.remote_login;
-              // __remote_pwd         = userData.remote_pwd;
-              __remote_tasks       = userData.remote_tasks;
+      switch (response.status)  {
 
-              if (response.data.onlogin_message)  {
-                window.setTimeout ( function(){
-                  new MessageBox ( 'Information',response.data.onlogin_message,
-                                   'msg_information' );
-                },1000);
-              }
+        case fe_retcode.ok:
+                let userData         = response.data.userData;
+                __login_token        = response.message;
+                if (user_login_name=='**' + __local_user_id + '**')
+                      __login_id     = __local_user_id;
+                else  __login_id     = user_login_name;
+                __cloud_storage      = response.data.cloud_storage;
+                __strict_dormancy    = response.data.strict_dormancy;
+                __treat_private      = response.data.treat_private;
+                __jobs_safe          = response.data.jobs_safe;
+                __has_datalink       = response.data.has_datalink;
+                __demo_projects      = response.data.demo_projects;
+                __environ_server     = response.data.environ_server;
+                __my_workflows       = response.data.my_workflows;
+                __login_user         = userData.name;
+                let color_modes      = __user_settings.color_modes;
+                __user_settings      = userData.settings;
+                if (!('color_modes' in __user_settings))
+                  __user_settings.color_modes = color_modes;
+                bindToBrowserColorMode ( true ); 
+                __user_role          = userData.role;
+                __user_licence       = userData.licence;
+                __globus_id          = userData.globusId;
+                __dormant            = userData.dormant;
+                __user_authorisation = userData.authorisation;
+                // __remote_login_id    = userData.remote_login;
+                // __remote_pwd         = userData.remote_pwd;
+                __remote_tasks       = userData.remote_tasks;
 
-              __remote_environ_server = [];
-              if ((__remoteJobServer.status=='FE') && userData.remote_login 
-                                                   && userData.remote_pwd)  {
-                let rud   = new UserData();
-                rud.login = userData.remote_login;
-                rud.pwd   = userData.remote_pwd;
-                window.setTimeout ( function(){
-                  serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
-                                  rud,'Remote FE request',
-                    function(response){
-                      if (response && (response.status==fe_retcode.ok))
-                        __remote_environ_server = response.data.environ_server;
-                      if (__remote_environ_server.length<=0)
-                        _no_remote_server_message ( false );
-                      else  {
-                        __remote_login_id = userData.remote_login;
-                        if (__current_page && ('ration' in response.data))  {
-                          __current_page.remote_ration = response.data.ration;
-                          __current_page.displayUserRation ( null );
+                if (response.data.onlogin_message)  {
+                  window.setTimeout ( function(){
+                    new MessageBox ( 'Information',response.data.onlogin_message,
+                                    'msg_information' );
+                  },1000);
+                }
+
+                __remote_environ_server = [];
+                if ((__remoteJobServer.status=='FE') && userData.remote_login 
+                                                    && userData.remote_pwd)  {
+                  let rud   = new UserData();
+                  rud.login = userData.remote_login;
+                  rud.pwd   = userData.remote_pwd;
+                  window.setTimeout ( function(){
+                    serverCommand ( __remoteJobServer.url + '/' + fe_command.remoteCheckIn,
+                                    rud,'Remote FE request',
+                      function(response){
+                        if (response && (response.status==fe_retcode.ok))
+                          __remote_environ_server = response.data.environ_server;
+                        if (__remote_environ_server.length<=0)
+                          _no_remote_server_message ( false );
+                        else  {
+                          __remote_login_id = userData.remote_login;
+                          if (__current_page && ('ration' in response.data))  {
+                            __current_page.remote_ration = response.data.ration;
+                            __current_page.displayUserRation ( null );
+                          }
                         }
+                        return true;
+                      },function(){
+                        return true;
+                      },function(xhr,err)  {  
+                        _no_remote_server_message ( true );
+                        return true;
+                      },1000 );
+                  },500);
+                } else if (__remoteJobServer.url && userData.remote_login 
+                                                && userData.remote_pwd)  {
+                  _no_remote_server_message ( false );
+                }
+
+                if (!__local_service)  {
+                  __environ_client = [];
+                } else  {
+                  localCommand ( nc_command.getNCInfo,{},'NC Info Request',
+                    function(response){
+                      if (response)  {
+                        if (response.status==nc_retcode.ok)  {
+                          if ('environ' in response.data)
+                            __environ_client = response.data.environ;
+                          else  // fallback
+                            __environ_client = ['CCP4'];
+                        } else  {
+                          new MessageBox ( 'Get NC Info Error',
+                            'Unknown error: <b>' + response.status + '</b><p>' +
+                            'when trying to fetch Client NC data.', 'msg_error' );
+                        }
+                        return true;
                       }
-                      return true;
-                    },function(){
-                      return true;
-                    },function(xhr,err)  {  
-                      _no_remote_server_message ( true );
-                      return true;
-                    },1000 );
-                },500);
-              } else if (__remoteJobServer.url && userData.remote_login 
-                                               && userData.remote_pwd)  {
-                _no_remote_server_message ( false );
-              }
+                      return false;
+                    });
+                }
 
-              if (!__local_service)  {
-                __environ_client = [];
-              } else  {
-                localCommand ( nc_command.getNCInfo,{},'NC Info Request',
-                  function(response){
-                    if (response)  {
-                      if (response.status==nc_retcode.ok)  {
-                        if ('environ' in response.data)
-                          __environ_client = response.data.environ;
-                        else  // fallback
-                          __environ_client = ['CCP4'];
-                      } else  {
-                        new MessageBox ( 'Get NC Info Error',
-                          'Unknown error: <b>' + response.status + '</b><p>' +
-                          'when trying to fetch Client NC data.', 'msg_error' );
-                      }
-                      return true;
-                    }
-                    return false;
-                  });
-              }
+                if ('helpTopics' in userData)
+                      __doNotShowList = userData.helpTopics;
+                else  __doNotShowList = [];
+                __local_setup = response.data.localSetup;
+                __is_archive  = response.data.isArchive;
 
-              if ('helpTopics' in userData)
-                    __doNotShowList = userData.helpTopics;
-              else  __doNotShowList = [];
-              __local_setup = response.data.localSetup;
-              __is_archive  = response.data.isArchive;
+                loadKnowledge ( 'Login' );
 
-              loadKnowledge ( 'Login' );
+                switch (__user_settings.onlogin)  {
+                  case on_login.all_projects :
+                              __current_folder.path = folder_path.all_projects;
+                              __current_folder.type = folder_type.all_projects;
+                              __current_folder.nprojects = -1;
+                            break;
+                  case on_login.my_projects :
+                              __current_folder.path = __login_id + '\'s Projects';
+                              __current_folder.type = folder_type.user;
+                              __current_folder.nprojects = -1;
+                            break;
+                  default : ;
+                }
 
-              switch (__user_settings.onlogin)  {
-                case on_login.all_projects :
-                            __current_folder.path = folder_path.all_projects;
-                            __current_folder.type = folder_type.all_projects;
-                            __current_folder.nprojects = -1;
-                          break;
-                case on_login.my_projects :
-                            __current_folder.path = __login_id + '\'s Projects';
-                            __current_folder.type = folder_type.user;
-                            __current_folder.nprojects = -1;
-                          break;
-                default : ;
-              }
+                switch (page_switch)  {
 
-              switch (page_switch)  {
-
-                case 0 :  if ((!__local_setup) && (userData.action!=userdata_action.none) &&
-                                   (userData.login!=__local_user_id))
-                            makeAccountPage ( sceneId );
-                          else if ((__user_role==role_code.admin) && (userData.login=='admin'))
-                            makeAdminPage ( sceneId );
-                          else if (__user_settings.onlogin==on_login.last_project)  {
-                            serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-                              __current_folder = data.currentFolder;
-                              let n = -1;
-                              for (let i=0;(i<data.projects.length) && (n<0);i++)
-                                if (data.projects[i].name==data.current)
-                                  n = i;
-                              if (n>=0)  makeProjectPage     ( sceneId );
-                                   else  makeProjectListPage ( sceneId );
-                            },null,'persist');
-                          } else
-                            makeProjectListPage ( sceneId );
-                        break;
-
-                case 1 :  makeProjectListPage ( sceneId );  break;
-                case 2 :  makeAccountPage     ( sceneId );  break;
-
-                case 101: new HopOnDemoProjectDialog ( function(){
-                            makeProjectPage ( sceneId );
-                          });
-                        break;
-
-                case 102: // load archived project, archiveID=__url_parameters.id
-                          accessArchProject ( __url_parameters.id,'external',
-                            function(done){
-                              if (done)
-                                makeProjectPage ( sceneId );
-                              else  {
-                                makeProjectListPage ( sceneId );
-                                window.setTimeout ( function(){
-                                  new MessageBox ( 'Project not found',
-                                    '<h2>Project not found</h2>' +
-                                    'Project code<h3>' + __url_parameters.id + 
-                                    '</h3>is not found in ' + appName() + 
-                                    ' Archive. Check project code.','msg_error' );
-                                  __url_parameters = null;
-                                },100);
-                              }
-                            });
-                        break;
-
-                case 103: // Enter into project from URL in local mode:
-                          // http://localhost:port?prj_name=name&prj_title=title
-                          // If project does not exist, it will be created.
-                          // Title parameter is used only for new projects and 
-                          // can be omitted for existing projects.
-                          let prj_name = null;
-                          if (__url_parameters && ('prj_name' in __url_parameters))
-                            prj_name  = __url_parameters.prj_name;
-                          if (prj_name)  {
-                            let prj_title = 'Untitled project';
-                            if ('prj_title' in __url_parameters)
-                              prj_title = __url_parameters.prj_title;
-                            serverRequest ( fe_reqtype.getProjectList,0,'Project List',
-                              function(data){
-                                let projectList = jQuery.extend ( true,new ProjectList(__login_id),data );
-                                projectList.addProject ( prj_name,prj_title,getDateString() );
-                                projectList.current = prj_name;
-                                serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
-                                  function(data){
-                                    makeProjectPage ( sceneId );
-                                  },null,'persist' );
+                  case 0 :  if ((!__local_setup) && (userData.action!=userdata_action.none) &&
+                                    (userData.login!=__local_user_id))
+                              makeAccountPage ( sceneId );
+                            else if ((__user_role==role_code.admin) && (userData.login=='admin'))
+                              makeAdminPage ( sceneId );
+                            else if (__user_settings.onlogin==on_login.last_project)  {
+                              serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+                                __current_folder = data.currentFolder;
+                                let n = -1;
+                                for (let i=0;(i<data.projects.length) && (n<0);i++)
+                                  if (data.projects[i].name==data.current)
+                                    n = i;
+                                if (n>=0)  makeProjectPage     ( sceneId );
+                                    else  makeProjectListPage ( sceneId );
                               },null,'persist');
-                          } else  {
-                            makeProjectListPage ( sceneId );
-                          }              
-                        break;
+                            } else
+                              makeProjectListPage ( sceneId );
+                          break;
 
-                default:  if (__user_role==role_code.admin)
-                                makeAdminPage   ( sceneId );
-                          else  makeProjectPage ( sceneId );
+                  case 1 :  makeProjectListPage ( sceneId );  break;
+                  case 2 :  makeAccountPage     ( sceneId );  break;
 
-              }
+                  case 101: new HopOnDemoProjectDialog ( function(){
+                              makeProjectPage ( sceneId );
+                            });
+                          break;
 
-              makeSessionCheck ( sceneId );
+                  case 102: // load archived project, archiveID=__url_parameters.id
+                            accessArchProject ( __url_parameters.id,'external',
+                              function(done){
+                                if (done)
+                                  makeProjectPage ( sceneId );
+                                else  {
+                                  makeProjectListPage ( sceneId );
+                                  window.setTimeout ( function(){
+                                    new MessageBox ( 'Project not found',
+                                      '<h2>Project not found</h2>' +
+                                      'Project code<h3>' + __url_parameters.id + 
+                                      '</h3>is not found in ' + appName() + 
+                                      ' Archive. Check project code.','msg_error' );
+                                    __url_parameters = null;
+                                  },100);
+                                }
+                              });
+                          break;
 
-              if (__dormant==1)  {
+                  case 103: // Enter into project from URL in local mode:
+                            // http://localhost:port?prj_name=name&prj_title=title
+                            // If project does not exist, it will be created.
+                            // Title parameter is used only for new projects and 
+                            // can be omitted for existing projects.
+                            let prj_name = null;
+                            if (__url_parameters && ('prj_name' in __url_parameters))
+                              prj_name  = __url_parameters.prj_name;
+                            if (prj_name)  {
+                              let prj_title = 'Untitled project';
+                              if ('prj_title' in __url_parameters)
+                                prj_title = __url_parameters.prj_title;
+                              serverRequest ( fe_reqtype.getProjectList,0,'Project List',
+                                function(data){
+                                  let projectList = jQuery.extend ( true,new ProjectList(__login_id),data );
+                                  projectList.addProject ( prj_name,prj_title,getDateString() );
+                                  projectList.current = prj_name;
+                                  serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
+                                    function(data){
+                                      makeProjectPage ( sceneId );
+                                    },null,'persist' );
+                                },null,'persist');
+                            } else  {
+                              makeProjectListPage ( sceneId );
+                            }              
+                          break;
 
-                window.setTimeout ( function(){
-                  new MessageBox ( 'Dormant Account',
-                    '<div style="width:500px"><h2>Welcome back, ' + __login_user   +
-                    '!</h2>' +
-                    'We did not see you for some while, and while you were away, ' +
-                    'we gave your <i>unused</i> disk space to other users. This '  +
-                    'is why you may find that your <i>free</i> disk space is '  +
-                    'shorter than at your last session back on ' + 
-                    new Date(userData.lastSeen).toISOString().slice(0,10) + '.' +
-                    '<p>Be reassured though, that <b>your disk space will be '  +
-                    'automatically topped up</b> once you submit a job. So, just ' +
-                    'carry on working with ' + appName() + ' as usual.' +
-                    '<p>Contact server\'s maintainer at ' +
-                    '<a href="mailto:' + __maintainerEmail +
-                      '?Subject=' + encodeURIComponent(appName()+' Account re-activation') +
-                      '">' + __maintainerEmail +
-                    '</a> if you have any questions.',
-                    'msg_ok'
-                  );
-                },100);
-                __dormant = 0;  // remove dormancy
-              
-              } else if (__dormant)  {
-              
-                window.setTimeout ( function(){
-                  new MessageBox ( 'Dormant Account',
-                    'Dear ' + __login_user + ',' +
-                    '<p>Your account was deemed dormant due to low use rate.<br>' +
-                    'This means: ' +
-                    '<ul>' +
-                    '  <li>you can login as before</li>' +
-                    '  <li>you can browse your projects and jobs</li>' +
-                    '  <li>you can export all your data, job directories and projects</li>' +
-                    '  <li>you can delete your account, jobs and projects</li>' +
-                    '  <li>you <b>cannot run</b> new jobs</li>' +
-                    '  <li>you <b>cannot create</b> new projects</li>' +
-                    '  <li>you <b>cannot import</b> projects</li>' +
-                    '</ul>' +
-                    'In order to re-activate your account, please send an e-mail<br>' +
-                    'request to server\'s maintainer at<p>' +
-                    '<a href="mailto:' + __maintainerEmail +
-                      '?Subject=' + encodeURIComponent(appName()+' Account re-activation') + 
-                      '">' + __maintainerEmail +
-                    '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
-                    'msg_mail'
-                  );
-                },100);
-              
-              }
+                  default:  if (__user_role==role_code.admin)
+                                  makeAdminPage   ( sceneId );
+                            else  makeProjectPage ( sceneId );
 
-          return true;
+                }
 
-      case fe_retcode.wrongLogin:
-                new MessageBox ( 'Login',
-                  '<h2>Login data is not recognised</h2>' +
-                  'Please check that provided login name and<br>password are ' +
-                  'correct.', 'msg_excl_yellow' );
-          return true;
+                makeSessionCheck ( sceneId );
 
-      case fe_retcode.suspendedLogin:
-                new MessageBox ( 'Suspended Login',
-                  '<div style="width:500px;">' +
-                  '<h2>Your account is suspended.</h2><p>' +
-                  'Your account is suspended due to sensitive data operations ' +
-                  'on your project(s), taking place at this moment. This should ' +
-                  'not last longer than a minute per gigabyte of your project(s) ' +
-                  'data, after which your account will be released automatically. ' +
-                  'Please contact ' + appName() +
-                  ' maintainer at <a href="mailto:' + __maintainerEmail +
-                    '?Subject=Account%20suspended">' + __maintainerEmail +
-                    '</a> if your account remains suspended for ' +
-                  'unreasonably long time.<p>Sincere apologies for any ' +
-                  'inconvenience this may be causing to you.</div>',
-                  'msg_stop' );
-          return true;
+                if (__dormant==1)  {
 
-      default: ;
+                  window.setTimeout ( function(){
+                    new MessageBox ( 'Dormant Account',
+                      '<div style="width:500px"><h2>Welcome back, ' + __login_user   +
+                      '!</h2>' +
+                      'We did not see you for some while, and while you were away, ' +
+                      'we gave your <i>unused</i> disk space to other users. This '  +
+                      'is why you may find that your <i>free</i> disk space is '  +
+                      'shorter than at your last session back on ' + 
+                      new Date(userData.lastSeen).toISOString().slice(0,10) + '.' +
+                      '<p>Be reassured though, that <b>your disk space will be '  +
+                      'automatically topped up</b> once you submit a job. So, just ' +
+                      'carry on working with ' + appName() + ' as usual.' +
+                      '<p>Contact server\'s maintainer at ' +
+                      '<a href="mailto:' + __maintainerEmail +
+                        '?Subject=' + encodeURIComponent(appName()+' Account re-activation') +
+                        '">' + __maintainerEmail +
+                      '</a> if you have any questions.',
+                      'msg_ok'
+                    );
+                  },100);
+                  __dormant = 0;  // remove dormancy
+                
+                } else if (__dormant)  {
+                
+                  window.setTimeout ( function(){
+                    new MessageBox ( 'Dormant Account',
+                      'Dear ' + __login_user + ',' +
+                      '<p>Your account was deemed dormant due to low use rate.<br>' +
+                      'This means: ' +
+                      '<ul>' +
+                      '  <li>you can login as before</li>' +
+                      '  <li>you can browse your projects and jobs</li>' +
+                      '  <li>you can export all your data, job directories and projects</li>' +
+                      '  <li>you can delete your account, jobs and projects</li>' +
+                      '  <li>you <b>cannot run</b> new jobs</li>' +
+                      '  <li>you <b>cannot create</b> new projects</li>' +
+                      '  <li>you <b>cannot import</b> projects</li>' +
+                      '</ul>' +
+                      'In order to re-activate your account, please send an e-mail<br>' +
+                      'request to server\'s maintainer at<p>' +
+                      '<a href="mailto:' + __maintainerEmail +
+                        '?Subject=' + encodeURIComponent(appName()+' Account re-activation') + 
+                        '">' + __maintainerEmail +
+                      '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
+                      'msg_mail'
+                    );
+                  },100);
+                
+                }
 
-    }
+            return true;
 
-    return false;
+        case fe_retcode.wrongLogin:
+                  new MessageBox ( 'Login',
+                    '<h2>Login data is not recognised</h2>' +
+                    'Please check that provided login name and<br>password are ' +
+                    'correct.', 'msg_excl_yellow' );
+            return true;
 
-  },null,null,60000);
+        case fe_retcode.suspendedLogin:
+                  new MessageBox ( 'Suspended Login',
+                    '<div style="width:500px;">' +
+                    '<h2>Your account is suspended.</h2><p>' +
+                    'Your account is suspended due to sensitive data operations ' +
+                    'on your project(s), taking place at this moment. This should ' +
+                    'not last longer than a minute per gigabyte of your project(s) ' +
+                    'data, after which your account will be released automatically. ' +
+                    'Please contact ' + appName() +
+                    ' maintainer at <a href="mailto:' + __maintainerEmail +
+                      '?Subject=Account%20suspended">' + __maintainerEmail +
+                      '</a> if your account remains suspended for ' +
+                    'unreasonably long time.<p>Sincere apologies for any ' +
+                    'inconvenience this may be causing to you.</div>',
+                    'msg_stop' );
+            return true;
+
+        default: ;
+
+      }
+
+      return false;
+
+    },null,null,60000);
+
+  },0);
+
 
 }
 
@@ -556,22 +547,6 @@ function offlineGreeting ( callback_func )  {
         height     : 300,
         navigation : false
       });
-    // new MessageBoxF (
-    //   appName() + ' offline',
-    //   '<div style="width:500px"><h2>' + appName() + ' offline</h2>' +
-    //   'You are using the offline adaptation of ' + appName() +
-    //   ' now.' +
-    //   '<p><b>Note: this offline version of ' + appName() +
-    //   ' offers no functionality for syncing or transferring data and projects ' +
-    //   'to remote servers.</b><p>' +
-    //   'To benefit from in-cloud, online, data storage and computing, export ' +
-    //   'your project(s) and import them in an online ' + appName() +
-    //   ' setup manually.<p>' +
-    //   'Read more details <a href="' + __user_guide_base_url +
-    //   'jscofe_tips.three_clouds.html" target="_blank">here</a>.',
-    //   'Understood',function(){ callback_func(); },
-    //   true,'msg_information'
-    // );
   } else
     callback_func();
 }
@@ -651,17 +626,51 @@ function checkSession0 ( sceneId )  {
     },
     function(){}, // always do nothing
     function(){   // fail
-
       if (__session_check_timer)  {
         if (__local_setup)  {
-          __login_token = '';
-          logout ( sceneId,2 );
-        } else
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] attemt to logout at session checking, lid ' +
+                        (__lid_open ? 'open' : 'closed') );
+          // check that the failure is not triggered by closed lid; since
+          // detection of closed lid takes a bit of time, put action on
+          // timer
+          if ((!__lid_open) ||  // let some extra time to wake up after lid open
+                  (__last_session_check_time <=
+                           __lid_open_time + __holdup_wait + __delays_wait))  {
+            // system deactivated -- keep on checking
+            makeSessionCheck ( sceneId );
+          } else  {
+            new MessageBoxF ( 'Possible malfunction detected',
+              '<div style="width:460px">' +
+              '<h2>' + appName() + ' may be be malfunctioning</h2>' +
+              'This may be due to an interruption caused by putting your ' +
+              'system to sleep, closing the laptop lid, or similar actions. ' +
+              '<b>You may continue working;</b> however, if any features ' +
+              'fail to respond, please restart ' + appName() + 
+              '.<p style="font-size:86%"><i>Please report this message to ' +
+              'CCP4 as a possible bug if you see it too often.</i></p></div>',
+              'Continue',function(){
+                makeSessionCheck ( sceneId );
+              },true,'msg_warning' );
+            /*
+            // log user out on suspicion that FE went down. For local user, this
+            // will gracefully stop Electron app, or display the title page in
+            // browser
+            __login_token = '';
+            logout ( sceneId,2 );
+            */
+          }
+        } else  {
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] session check failed, lid ' +
+                        (__lid_open ? 'open' : 'closed') );
           makeSessionCheck ( sceneId );
+        }
       }
     }
   );
 }
+
 
 function checkSession ( sceneId )  {
   if (__server_queue.length>0)  makeSessionCheck ( sceneId );

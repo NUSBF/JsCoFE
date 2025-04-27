@@ -144,7 +144,7 @@ function LocalLoginPage ( sceneId )  {
             tip_lbl.setText (
               '<img src="' + image_path('tip') +
               '" style="width:20px;height:20px;vertical-align:bottom;"/>' +
-              '<span><i style="font-style:Garamond;color:#666666;">' +
+              '<span><i style="font-family:Garamond;color:#666666;">' +
               __tips.tips[tipNo].summary.replace('<a>',tipLink) +
               '</i></span>'
             );
