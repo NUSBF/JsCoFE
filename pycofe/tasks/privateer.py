@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    28.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import sys
 #  application imports
 from . import basic
 from   pycofe.varut   import rvapi_utils
+import xml.etree.ElementTree as ET
 
 
 # ============================================================================
@@ -199,6 +200,100 @@ class Privateer(basic.TaskDriver):
                 "labout" : ["DELFWT","PHDELWT"]
               }
             ],mtzout )
+            # Convert program.xml to report.html
+            
+            tree = ET.parse('program.xml')
+            root = tree.getroot()
+
+            # Find all Pyranose 
+            pyranoses = root.findall('.//Pyranose')
+            glycans = root.findall('.//Glycan')
+
+            # Build HTML
+            html_content = """<!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+            <title>Privateer Report</title>
+            <style>
+              table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+              th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+              th { background-color: #f2f2f2; }
+              .glycan-svg { text-align: left; }
+            </style>
+            </head>
+            <body>
+            <h1>Privateer Validation Report</h1>
+            <h2>Pyranose Data</h2>
+            <table>
+            <thead>
+            <tr>
+            <th>Sugar Name</th><th>Seq Num</th><th>Chain</th><th>Q</th><th>Phi</th><th>Theta</th>
+            <th>Anomer</th><th>Hand</th><th>Conformation</th><th>Bond RMSD</th>
+            <th>Angle RMSD</th><th>B-Factor</th><th>RSCC</th><th>Diagnostic</th><th>Context</th>
+            </tr>
+            </thead>
+            <tbody>
+            """
+
+            for p in pyranoses:
+              html_content += "<tr>"
+              fields = [
+                'SugarName', 'SugarSeqNum', 'SugarChain', 'SugarQ', 'SugarPhi', 'SugarTheta',
+                'SugarAnomer', 'SugarHand', 'SugarConformation', 'SugarBondRMSD',
+                'SugarAngleRMSD', 'SugarBFactor', 'SugarRSCC', 'SugarDiagnostic', 'SugarContext'
+              ]
+              for field in fields:
+                text = p.find(field).text if p.find(field) is not None else ''
+                html_content += f"<td>{text}</td>"
+              html_content += "</tr>\n"
+
+            html_content += """
+            </tbody>
+            </table>
+            <h2>Glycan Data</h2>
+            <table>
+            <thead>
+            <tr>
+            <th>Glycan PDB</th><th>Type</th><th>Root</th><th>Chain</th><th>IUPAC</th><th>SNFG</th><th>WURCS</th>
+            </tr>
+            </thead>
+            <tbody>
+            """
+
+            for g in glycans:
+              html_content += "<tr>"
+              fields = [
+                'GlycanPDB', 'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
+              ]
+              for field in fields:
+                text = g.find(field).text if g.find(field) is not None else ''
+                if field == 'GlycanSVG':
+                  html_content += f"<td class='glycan-svg'><img src='{text}' alt='Glycan SVG' width='200'></td>"
+                else:
+                  html_content += f"<td>{text}</td>"
+              html_content += "</tr>\n"
+
+            html_content += """
+            </tbody>
+            </table>
+            </body>
+            </html>
+            """
+
+            # Write html
+            with open('report.html', 'w', encoding='utf-8') as f:
+              f.write(html_content)
+
+            print("Report generated: report.html")
+            self.putMessage (
+              "<iframe src='../report.html' style='width:100%; height:600px; border:none;'></iframe>"
+            )
+
+            
+            
+        
+            
 
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
@@ -236,6 +331,9 @@ class Privateer(basic.TaskDriver):
                 #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
                 self.registerRevision      ( revision  )
                 have_results = True
+
+                
+                
 
                 # rvrow0 = self.rvrow
                 # try:
