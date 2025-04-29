@@ -269,7 +269,7 @@ class Privateer(basic.TaskDriver):
               for field in fields:
                 text = g.find(field).text if g.find(field) is not None else ''
                 if field == 'GlycanSVG':
-                  html_content += f"<td style='border: 1px solid #999;' class='glycan-svg'><img src='../{text}' alt='Glycan SVG' width='300'></td>"
+                  html_content += f"<td style='border: 1px solid #999;' class='glycan-svg'><img src='../{text}' alt='Glycan SVG' height='20%'></td>"
                 else:
                   html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
               html_content += "</tr>\n"
