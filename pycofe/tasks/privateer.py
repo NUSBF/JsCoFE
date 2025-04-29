@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.04.25   <--  Date of Last Modification.
+#    29.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -245,7 +245,7 @@ class Privateer(basic.TaskDriver):
               ]
               for field in fields:
                 text = p.find(field).text if p.find(field) is not None else ''
-                html_content += f"<td>{text}</td>"
+                html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
               html_content += "</tr>\n"
 
             html_content += """
@@ -255,7 +255,7 @@ class Privateer(basic.TaskDriver):
             <table>
             <thead>
             <tr>
-            <th>Glycan PDB</th><th>Type</th><th>Root</th><th>Chain</th><th>IUPAC</th><th>SNFG</th><th>WURCS</th>
+            <th>Type</th><th>Root</th><th>Chain</th><th>IUPAC</th><th>SNFG</th><th>WURCS</th>
             </tr>
             </thead>
             <tbody>
@@ -264,14 +264,14 @@ class Privateer(basic.TaskDriver):
             for g in glycans:
               html_content += "<tr>"
               fields = [
-                'GlycanPDB', 'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
+                 'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
               ]
               for field in fields:
                 text = g.find(field).text if g.find(field) is not None else ''
                 if field == 'GlycanSVG':
-                  html_content += f"<td class='glycan-svg'><img src='{text}' alt='Glycan SVG' width='200'></td>"
+                  html_content += f"<td style='border: 1px solid #999;' class='glycan-svg'><img src='../{text}' alt='Glycan SVG' width='300'></td>"
                 else:
-                  html_content += f"<td>{text}</td>"
+                  html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
               html_content += "</tr>\n"
 
             html_content += """
@@ -285,15 +285,12 @@ class Privateer(basic.TaskDriver):
             with open('report.html', 'w', encoding='utf-8') as f:
               f.write(html_content)
 
-            print("Report generated: report.html")
-            self.putMessage (
-              "<iframe src='../report.html' style='width:100%; height:600px; border:none;'></iframe>"
+            with open('report.html', 'r', encoding='utf-8') as report_file:
+              report_content = report_file.read()
+            self.putMessage(
+              f"<div style='width:100%; height:100%; text-align: center;'>{report_content}</div>"
             )
 
-            
-            
-        
-            
 
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
