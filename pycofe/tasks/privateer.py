@@ -200,97 +200,173 @@ class Privateer(basic.TaskDriver):
                 "labout" : ["DELFWT","PHDELWT"]
               }
             ],mtzout )
+
+
             # Convert program.xml to report.html
+
+            self.putMessage ( "&nbsp;<p><h1>Privateer Validation Report</h1>" )
             
             tree = ET.parse('program.xml')
             root = tree.getroot()
 
             # Find all Pyranose 
             pyranoses = root.findall('.//Pyranose')
-            glycans = root.findall('.//Glycan')
+            glycans   = root.findall('.//Glycan')
 
-            # Build HTML
-            html_content = """<!DOCTYPE html>
-            <html lang="en">
-            <head>
-            <meta charset="UTF-8">
-            <title>Privateer Report</title>
-            <style>
-              table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
-              th, td { border: 1px solid #999; padding: 8px; text-align: center; }
-              th { background-color: #f2f2f2; }
-              .glycan-svg { text-align: left; }
-            </style>
-            </head>
-            <body>
-            <h1>Privateer Validation Report</h1>
-            <h2>Pyranose Data</h2>
-            <table>
-            <thead>
-            <tr>
-            <th>Sugar Name</th><th>Seq Num</th><th>Chain</th><th>Q</th><th>Phi</th><th>Theta</th>
-            <th>Anomer</th><th>Hand</th><th>Conformation</th><th>Bond RMSD</th>
-            <th>Angle RMSD</th><th>B-Factor</th><th>RSCC</th><th>Diagnostic</th><th>Context</th>
-            </tr>
-            </thead>
-            <tbody>
-            """
+            tdictP = {
+                "title": "<h2>Pyranose Data</h2>",
+                "state": 0, 
+                "class": "table-blue",
+                "css"  : 'text-align:center;white-space:nowrap;font-family="Arial";',
+                "horzHeaders" :  [
+                    { "label" : "Sugar Name"  , "tooltip" : "" },
+                    { "label" : "Seq Num"     , "tooltip" : "" },
+                    { "label" : "Chain"       , "tooltip" : "" },
+                    { "label" : "Q"           , "tooltip" : "" },
+                    { "label" : "Phi"         , "tooltip" : "" },
+                    { "label" : "Theta"       , "tooltip" : "" },
+                    { "label" : "Anomer"      , "tooltip" : "" },
+                    { "label" : "Hand"        , "tooltip" : "" },
+                    { "label" : "Conformation", "tooltip" : "" },
+                    { "label" : "Bond RMSD"   , "tooltip" : "" },
+                    { "label" : "Angle RMSD"  , "tooltip" : "" },
+                    { "label" : "B-Factor"    , "tooltip" : "" },
+                    { "label" : "RSCC"        , "tooltip" : "" },
+                    { "label" : "Diagnostic"  , "tooltip" : "" },
+                    { "label" : "Context"     , "tooltip" : "" }
+                ],
+                "rows" : []
+            }
 
+            fields = [
+              'SugarName', 'SugarSeqNum', 'SugarChain', 'SugarQ', 'SugarPhi', 'SugarTheta',
+              'SugarAnomer', 'SugarHand', 'SugarConformation', 'SugarBondRMSD',
+              'SugarAngleRMSD', 'SugarBFactor', 'SugarRSCC', 'SugarDiagnostic', 'SugarContext'
+            ]
             for p in pyranoses:
-              html_content += "<tr>"
-              fields = [
-                'SugarName', 'SugarSeqNum', 'SugarChain', 'SugarQ', 'SugarPhi', 'SugarTheta',
-                'SugarAnomer', 'SugarHand', 'SugarConformation', 'SugarBondRMSD',
-                'SugarAngleRMSD', 'SugarBFactor', 'SugarRSCC', 'SugarDiagnostic', 'SugarContext'
-              ]
-              for field in fields:
-                text = p.find(field).text if p.find(field) is not None else ''
-                html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
-              html_content += "</tr>\n"
+                data = []
+                for field in fields:
+                    data.append ( p.find(field).text if p.find(field) is not None else '' )
+                tdictP["rows"].append ( { "data":data} )
 
-            html_content += """
-            </tbody>
-            </table>
-            <h2>Glycan Data</h2>
-            <table>
-            <thead>
-            <tr>
-            <th>Type</th><th>Root</th><th>Chain</th><th>IUPAC</th><th>SNFG</th><th>WURCS</th>
-            </tr>
-            </thead>
-            <tbody>
-            """
+            rvapi_utils.makeTable ( tdictP,self.getWidgetId("pyranose_table"),
+                                    self.report_page_id(),
+                                    self.rvrow,0,1,1 )
+            self.rvrow = self.rvrow + 1
+
+            self.putMessage ( "&nbsp;" )
+
+            tdictG = {
+                "title": "<h2>Glycan Data</h2>",
+                "state": 0, 
+                "class": "table-blue",
+                "css"  : 'text-align:center;font-family="Arial";', # max-width:60px; white-space: normal; word-wrap: break-word;',
+                "horzHeaders" :  [
+                    { "label" : "Type"  , "tooltip" : "" },
+                    { "label" : "Root"  , "tooltip" : "" },
+                    { "label" : "Chain" , "tooltip" : "" },
+                    { "label" : "IUPAC" , "tooltip" : "" },
+                    { "label" : "SNFG"  , "tooltip" : "" },
+                    { "label" : "WURCS" , "tooltip" : "" }
+                ],
+                "rows" : []
+            }
+
+            fields = [
+                'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
+            ]
 
             for g in glycans:
-              html_content += "<tr>"
-              fields = [
-                 'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
-              ]
-              for field in fields:
-                text = g.find(field).text if g.find(field) is not None else ''
-                if field == 'GlycanSVG':
-                  html_content += f"<td style='border: 1px solid #999;' class='glycan-svg'><img src='../{text}' alt='Glycan SVG' height='20%'></td>"
-                else:
-                  html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
-              html_content += "</tr>\n"
+                data = []
+                for field in fields:
+                    text = g.find(field).text if g.find(field) is not None else ''
+                    if field == 'GlycanSVG':
+                        data.append ( "<img alt='Glycan SVG' onload='this.style.width = this.naturalWidth * 0.86+\"px\";' src='../" + text + "'></img>" )
+                    else:
+                        data.append ( text )
+                tdictG["rows"].append ( { "data":data } )
 
-            html_content += """
-            </tbody>
-            </table>
-            </body>
-            </html>
-            """
+            rvapi_utils.makeTable ( tdictG,self.getWidgetId("glycan_table"),
+                                    self.report_page_id(),
+                                    self.rvrow,0,1,1 )
+            self.rvrow = self.rvrow + 1
 
-            # Write html
-            with open('report.html', 'w', encoding='utf-8') as f:
-              f.write(html_content)
 
-            with open('report.html', 'r', encoding='utf-8') as report_file:
-              report_content = report_file.read()
-            self.putMessage(
-              f"<div style='width:100%; height:100%; text-align: center;'>{report_content}</div>"
-            )
+            # # Build HTML
+            # html_content = """<!DOCTYPE html>
+            # <html lang="en">
+            # <head>
+            # <meta charset="UTF-8">
+            # <title>Privateer Report</title>
+            # <style>
+            #   table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+            #   th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+            #   th { background-color: #f2f2f2; }
+            #   .glycan-svg { text-align: left; }
+            # </style>
+            # </head>
+            # <body>
+            # <h1>Privateer Validation Report</h1>
+            # <h2>Pyranose Data</h2>
+            # <table>
+            # <thead>
+            # <tr>
+            # <th>Sugar Name</th><th>Seq Num</th><th>Chain</th><th>Q</th><th>Phi</th><th>Theta</th>
+            # <th>Anomer</th><th>Hand</th><th>Conformation</th><th>Bond RMSD</th>
+            # <th>Angle RMSD</th><th>B-Factor</th><th>RSCC</th><th>Diagnostic</th><th>Context</th>
+            # </tr>
+            # </thead>
+            # <tbody>
+            # """
 
+            # for p in pyranoses:
+            #   html_content += "<tr>"
+            #   fields = [
+            #     'SugarName', 'SugarSeqNum', 'SugarChain', 'SugarQ', 'SugarPhi', 'SugarTheta',
+            #     'SugarAnomer', 'SugarHand', 'SugarConformation', 'SugarBondRMSD',
+            #     'SugarAngleRMSD', 'SugarBFactor', 'SugarRSCC', 'SugarDiagnostic', 'SugarContext'
+            #   ]
+            #   for field in fields:
+            #     text = p.find(field).text if p.find(field) is not None else ''
+            #     html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
+            #   html_content += "</tr>\n"
+
+            # html_content += """
+            # </tbody>
+            # </table>
+            # <h2>Glycan Data</h2>
+            # <table>
+            # <thead>
+            # <tr>
+            # <th>Type</th><th>Root</th><th>Chain</th><th>IUPAC</th><th>SNFG</th><th>WURCS</th>
+            # </tr>
+            # </thead>
+            # <tbody>
+            # """
+
+            # for g in glycans:
+            #   html_content += "<tr>"
+            #   fields = [
+            #      'GlycanType', 'GlycanRoot', 'GlycanChain', 'GlycanText', 'GlycanSVG', 'GlycanWURCS'
+            #   ]
+            #   for field in fields:
+            #     text = g.find(field).text if g.find(field) is not None else ''
+            #     if field == 'GlycanSVG':
+            #       html_content += f"<td style='border: 1px solid #999;' class='glycan-svg'><img src='../{text}' alt='Glycan SVG' height='20%'></td>"
+            #     else:
+            #       html_content += f"<td style='text-align: center; border: 1px solid #999;'>{text}</td>"
+            #   html_content += "</tr>\n"
+
+            # html_content += """
+            # </tbody>
+            # </table>
+            # </body>
+            # </html>
+            # """
+
+            # self.putMessage(
+            #   f"<div style='width:100%; height:100%; text-align: center;'>{html_content}</div>"
+            # )
 
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )

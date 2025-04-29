@@ -262,3 +262,72 @@
     font-size : 16px;
 /*   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
 }
+
+
+
+/* <style>
+table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; }
+th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+th { background-color: #f2f2f2; }
+.glycan-svg { text-align: left; }
+</style> */
+
+
+.table-gray {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  font-size       : 16px;
+  width           : 100%;
+  border-collapse : collapse;
+  /* box-shadow      : 5px 5px 6px #888888; */
+}
+.table-gray-hh {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
+  font-style      : italic;
+  text-align      : center;
+  vertical-align  : middle;
+  border          : 1px solid black;
+  padding         : 5px 9px 4px 9px;
+  background-color: #f2f2f2;
+  color           : #ffffff;
+  white-space     : nowrap;
+}
+.table-gray-vh {
+  font-family     : "Trebuchet MS", Arial, Helvetica, sans-serif;
+  /*font-size       : 1em;*/
+  font-size       : 16px;
+  font-style      : italic;
+  text-align      : left;
+  vertical-align  : middle;
+  border          : 1px solid black;
+  padding         : 5px 9px 4px 9px;
+  background-color: #f2f2f2;
+  color           : #ffffff;
+  white-space     : nowrap;
+}
+.table-gray-td, .table-gray td {
+  font-family     : "Courier";
+  font-size       : 15px !important;
+  /*font-size       : 1em;*/
+  /* text-decoration : none; */
+  /* font-weight     : normal; */
+  font-style      : normal;
+  text-align      : center;
+  vertical-align  : middle !important;
+  border          : 1px solid black;
+  padding         : 5px 9px 4px 9px;
+}
+.table-gray-alt {
+  /* font-size       : 15px!important; */
+  /*font-size       : 1em;*/
+  /* font-family     : "Courier";
+  text-decoration : none;
+  font-weight     : normal;
+  font-style      : normal;
+  text-align      : right;
+  vertical-align  : middle;
+  border          : 1px solid #488090;
+  padding         : 5px 9px 4px 9px; */
+  background-color: #EAF2D3;
+}
