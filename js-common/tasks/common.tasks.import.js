@@ -404,7 +404,7 @@ if (!__template)  {
         { 'type'   : 'project_data',
           'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.sca,.cif,.mmcif,.doc,.docx,' +
                      '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr,.borges,' +
-                     '.lib,.wscript,.sdf,.mol2,.sml',
+                     '.lib,.wscript,.sdf,.mol2,.sml,.expt,.phil',
           'gzip'   : true
         },
         function(e,onReady_func) {

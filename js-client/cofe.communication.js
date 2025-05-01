@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.25   <--  Date of Last Modification.
+ *    25.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -134,6 +134,7 @@ function makeCommErrorMessage ( title,request_type,response )  {
 
     case fe_retcode.notLoggedIn:
         if (request_type!=fe_reqtype.logout)
+          console.log ( ' +++ attempt to logout on user is not logged in' );
           logout ( __current_page.element.id,0,function(){
             MessageNotLoggedIn ( title );
           });
@@ -248,17 +249,72 @@ let json = null;
 }
 
 
+// ===========================================================================
+// __lid_closed_period captures period when device seem to be inactive/blocked 
+// but powered on. This can be because of lid closed, but can also occur if
+// main thread in browser was held by, e.g., CPU-intensive task or similar.
+// In either case, network communications could have been impacted during 
+// this period, which fact is used in commuication functions.
+
+var __lid_close_check_interval = 1000; //ms
+var __last_active_time = Date.now();
+var __lid_close_time   = __last_active_time;
+var __lid_open_time    = __last_active_time;
+var __lid_open         = true;
+
+function systemSleeps()  {
+  return (!__lid_open) || (__last_active_time<=__lid_open_time);
+}
+
+function systemAwake()  {
+  return __lid_open  && (__last_active_time>__lid_open_time);
+}
+
+function checkActiveState()  {
+  if (document.hidden)  {
+    if (__lid_open)  {
+      __lid_close_time = __last_active_time;
+      console.log ( ' [' + getCurrentTimeString(__lid_close_time) + 
+                    '] likely lid closed' );
+      __lid_open = false;
+      stopRequestQueues();
+    }
+  } else  {
+    let t0 = __last_active_time;
+    __last_active_time = Date.now();
+    if ((__last_active_time>t0+4*__lid_close_check_interval) || (!__lid_open))  {
+      __lid_open_time = __last_active_time;
+      __lid_open      = true;
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] likely resumed from sleep/lid close' );
+      stopRequestQueues  ();  // if any requests were still pending, kill them
+      resumeRequestQueues();
+    }
+  }
+}
+
+document.addEventListener ( 'visibilitychange', () => {
+  checkActiveState();
+});
+
+setInterval ( function(){
+  checkActiveState();
+},__lid_close_check_interval);
+
+
+// ===========================================================================
+// Communication functions
 
 var __server_queue    = [];
 var __local_queue     = [];
 var __server_queue_id = 1;
 
-var __delays_ind   = null;
-var __delays_timer = null;
-var __delays_wait  = 1000;  //msec
-var __holdup_dlg   = null;
-var __holdup_timer = null;
-var __holdup_wait  = 20000;  //msec
+var __delays_ind      = null;
+var __delays_timer    = null;
+var __delays_wait     = 1000;  //msec
+var __holdup_dlg      = null;
+var __holdup_timer    = null;
+var __holdup_wait     = 20000;  //msec
 var __communication_ind = null;
 
 function clearNetworkIndicators()  {
@@ -296,43 +352,60 @@ function __process_network_indicators()  {
 var __check_session_drops = 0;
 
 function processServerQueue()  {
-  if (__server_queue.length>0)  {
+  if ((__server_queue.length>0) && __lid_open)  {
     let q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
+      q0.start_time = Date.now();
       if (q0.type=='command')
         __server_command ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_response,q0.function_always,
-                           q0.function_fail,q0.id,q0.timeout );
+                           q0.function_fail,q0.id,q0.start_time,
+                           q0.timeout );
       else
         __server_request ( q0.request_type,q0.data_obj,q0.page_title,
                            q0.function_ok,q0.function_always,
-                           q0.function_fail,q0.id,q0.timeout );
+                           q0.function_fail,q0.id,q0.start_time,
+                           q0.timeout );
     }
     if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))  {
       __delays_timer = window.setTimeout ( function(){
-          __delays_ind.show();
+        if (q0.start_time>__lid_open_time)
+          __delays_ind.show();  // shows "network delays" runner
       },__delays_wait);
       __holdup_timer = window.setTimeout ( function(){
+        // suspected network problem, ask user to keep waiting or to 
+        // restart the session
         __holdup_timer = null;
-        if (__server_queue.length>0)  {
+        // if ((__server_queue.length>0) && (q0.start_time>__lid_open_time)) {
+        if ((__server_queue.length>0) && __lid_open && (q0.start_time>__lid_open_time)) {
           if ((__server_queue[0].type=='command') &&
-                   (__server_queue[0].request_type==fe_command.checkSession) &&
-                   (__check_session_drops<10))  {
+              (__server_queue[0].request_type==fe_command.checkSession) &&
+              (__check_session_drops<10))  {
             __check_session_drops++;
             __server_queue.shift();
             __process_network_indicators();
             processServerQueue();
           } else if (__server_queue[0].request_type!=undefined)  {
+                // 'Communication with ' + appName() + ' is severely delayed. ' +
+                // 'Please be patient, the problem may resolve in few moments, ' +
+                // 'after which this dialog will disappear automatically.<p>' +
+                // 'If communication does not resume after a long time, you can ' +
+                // 'either reload the current page (quick option) or start new ' +
+                // 'working session (complete refresh, hard option) using buttons ' +
+                // 'below.<p>Make sure that your Internet connection is stable.',[
             __holdup_dlg = new QuestionBox ( 'Communication hold-up',
-                '<div style="width:450px"><h3>Communication hold-up</h3>' +
-                'Communication with ' + appName() + ' is severely delayed. ' +
-                'Please be patient, the problem may resolve in few moments, ' +
-                'after which this dialog will disappear automatically.<p>' +
-                'If communication does not resume after a long time, you can ' +
-                'either reload the current page (quick option) or start new ' +
-                'working session (complete refresh, hard option) using buttons ' +
-                'below.<p>Make sure that your Internet connection is stable.',[
+              '<div style="width:450px"><h3>Communication hold-up</h3>' +
+              'Communication with ' + appName() + ' is currently experiencing ' +
+              'significant delays. Please be patient - the issue may resolve ' +
+              'on its own in a few moments, and this dialog will close ' +
+              'automatically.' +
+              '<p>If the connection does not resume after a while, you can ' +
+              'try one of the following options:<ul>' +
+              '<li>Reload the current page (quick fix), or</li>' +
+              '<li>Start a new session (complete refresh — more thorough).</li>' +      
+              '</ul>Also, please ensure that your internet connection is stable.',
+              [
                 { name    : 'Reload current page',
                   onclick : function(){
                       __holdup_dlg = null;
@@ -356,7 +429,8 @@ function processServerQueue()  {
                       // window.location = window.location;  // complete refresh
                     }
                 }
-              ],'msg_system'
+              ],
+              'msg_system'
             );
           } else  {
             console.log ( ' >>> undefined server request delayed' );
@@ -375,13 +449,46 @@ function processServerQueue()  {
 // }
 
 function processLocalQueue()  {
-  if (__local_queue.length>0)  {
+  if ((__local_queue.length>0) && __lid_open)  {
     let q0 = __local_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
-      local_command ( q0.request_type,q0.data_obj,q0.command_title,q0.function_response );
+      __local_queue[0].xhr = local_command ( q0.request_type,q0.data_obj,
+                                             q0.command_title,
+                                             q0.function_response );
     }
   }
+}
+
+function stopRequestQueues()  {
+  for (let i=0;i<__server_queue.length;i++)
+    if (('xhr' in __server_queue[i]) && __server_queue[i].xhr)  {
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] killing server request '  + 
+                    __server_queue[i].id   + ' ' +
+                    __server_queue[i].type + ' ' + 
+                    __server_queue[i].request_type );
+      __server_queue[i].xhr.abort();
+      __server_queue[i].xhr    = null;
+      __server_queue[i].status = 'waiting';
+    }
+  for (let i=0;i<__local_queue.length;i++)
+    if (('xhr' in __local_queue[i]) && __local_queue[i].xhr)  {
+      console.log ( ' [' + getCurrentTimeString(__lid_open_time) + 
+                    '] killing local request '  + 
+                    __local_queue[i].id   + ' ' +
+                    __local_queue[i].type + ' ' + 
+                    __local_queue[i].request_type );
+      __local_queue[i].xhr.abort();
+      __local_queue[i].xhr    = null;
+      __local_queue[i].status = 'waiting';
+    }
+}
+
+
+function resumeRequestQueues()  {
+  processServerQueue();
+  processLocalQueue ();
 }
 
 // function shiftLocalQueue()  {
@@ -419,14 +526,15 @@ function __log_request_timing ( dt )  {
 }
 
 function __server_command ( cmd,data_obj,page_title,function_response,
-                            function_always,function_fail,sqid,
-                            timeout=1000000 )  {
+                            function_always,function_fail,sqid,start_time,
+                            timeout=1000000,attemptNo=10 )  {
 // used when no user is logged in
 
   let json = makeJSONString ( data_obj );
+  let xhr  = null;
 
   if (json)
-    $.ajax ({
+    xhr = $.ajax ({
       url      : cmd,
       async    : true,
       type     : 'POST',
@@ -450,15 +558,19 @@ function __server_command ( cmd,data_obj,page_title,function_response,
               makeCommErrorMessage ( page_title,cmd,response );
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_command.done: ' + err );  
-          console.log ( ' >>> rdata = ' + rdata );
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (c) error catch in __server_command.done: ' + err +
+                        ' reqid=' + sqid );  
+          console.log ( ' rdata = ' + rdata );
           // printServerQueueState ( 1 );
         }
         // *** old version
         // processServerQueue();
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_command.done' );
-        console.log ( ' >>> rdata = ' + rdata );
+        console.log ( ' [' + getCurrentTimeString() +
+                      '] (c) return on skipped operation in __server_command.done' +
+                      ' cmd=' + cmd + ' reqid=' + sqid );
+        console.log ( ' rdata = ' + rdata );
         // printServerQueueState ( 2 );
         // *** new version
         if (__server_queue.length>0)  {
@@ -477,38 +589,71 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         function_always();
     })
     .fail ( function(xhr,err){
-      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + 
-                    __check_session_drops + ' timeout=' + timeout );
-      // can be "error" and "timeout"
-      if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
-        console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
-        // printServerQueueState ( 3 );
+
+      if (__lid_open && ((start_time>__lid_open_time) || (attemptNo<=0)))  {
+        // genuine transaction failure
+
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (c) cmd=' + cmd + ' err=' + err + ' ndrops=' + 
+                      __check_session_drops + ' timeout=' + timeout +
+                      ' reqid=' + sqid );
+        // can be "error" and "timeout"
+        if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (c) return on skipped operation in __server_command.fail, cmd=' + 
+                        cmd +' err=' + err + ' reqid=' + sqid);
+          // printServerQueueState ( 3 );
+        }
+        if (cmd==fe_command.checkSession)
+          __check_session_drops++;
+        if (function_fail)
+              function_fail      ( xhr,err );
+        else  MessageAJAXFailure ( page_title,xhr,err );
+        // __server_queue.shift();
+        __process_network_indicators();
+        // *** old version
+        processServerQueue();
+
+        /*
+      } else  {
+        // transaction likely failed because the system was down (lid closed)
+        // try recovering by repeating transaction
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (c) trying to recover after system sleep, attempt ' + 
+                      attemptNo + ' cmd=' + cmd + ' reqid=' + sqid );
+        window.setTimeout ( function(){
+          __server_command ( cmd,data_obj,page_title,function_response,
+                             function_always,function_fail,sqid,start_time,
+                             timeout,attemptNo-1 );
+        },__lid_close_check_interval);
+        // },Math.max(1000,1000*(11-attemptNo)));
+        */
       }
-      if (cmd==fe_command.checkSession)
-        __check_session_drops++;
-      if (function_fail)
-            function_fail();
-      else  MessageAJAXFailure ( page_title,xhr,err );
-      // __server_queue.shift();
-      __process_network_indicators();
-      // *** old version
-      processServerQueue();
+
     });
+
+  // should be just a single item in the queue in most cases, and 0th
+  // item should be the one in 99.99% cases
+  for (let i=0;i<__server_queue.length;i++)
+    if (__server_queue[i].id==sqid)  {
+      __server_queue[i].xhr = xhr;
+      break;
+    }
 
 }
 
 
 function __server_request ( request_type,data_obj,page_title,function_ok,
-                            function_always,function_fail,sqid,
-                            timeout=1000000 )  {
+                            function_always,function_fail,sqid,start_time,
+                            timeout=1000000,attemptNo=10 )  {
 // used when a user is logged in
 
   let request = new Request ( request_type,__login_token,data_obj );
   let json    = makeJSONString ( request );
 
-  function execute_ajax ( attemptNo )  {
+  function execute_ajax ( npersists )  {
 
-    $.ajax ({
+    let xhr = $.ajax ({
       url         : fe_command.request,
       async       : true,
       type        : 'POST',
@@ -518,16 +663,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       dataType    : 'text'
     })
     .done ( function(rdata) {
-
-/*  only for testing!!!!
-if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-          (function_fail=='persist')) {
-  if (attemptNo>0)  {
-    execute_ajax ( attemptNo-1 );
-    return;
-  }
-}
-*/
+      // successful transaction
 
       let response = null;
 
@@ -548,13 +684,18 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
               makeCommErrorMessage ( page_title,request_type,response );
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_request.done:' +
+          console.log ( ' [' + getCurrentTimeString() + 
+                        '] (r) error catch in __server_request.done:' +
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
-                        '\n --- rdata = ' + rdata );
+                        '\n --- rdata = ' + rdata +
+                        '\n --- reqid='   + sqid );
         }
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_request.done' );
+        console.log ( ' [' + getCurrentTimeString() +
+                      '] (r) return on skipped operation in __server_request.done' +
+                      ' request type=' + request_type +
+                      ' reqid=' + sqid );
         // printServerQueueState ( 5 );
         // *** new version
         if (__server_queue.length>0)  {
@@ -585,64 +726,103 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     .fail ( function(xhr,err){
 
-      console.log ( ' >>> 2 request=' + request_type + ' err=' + err );
-      // can be "error" and "timeout"
+      if (__lid_open && ((start_time>__lid_open_time) || (attemptNo<=0)))  {
+        // genuine transaction failure
 
-      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (r) failed request=' + request_type + ' err=' + err +
+                      ' reqid=' + sqid );
+        // can be "error" and "timeout"
 
-        // *** old version
-        __server_queue.shift();  // request completed
-        __process_network_indicators();
+        if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
-        try {
+          // *** old version
+          __server_queue.shift();  // request completed
+          __process_network_indicators();
 
-          if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-              (function_fail=='persist')) {
+          try {
 
-            if (attemptNo>0)  {
-              execute_ajax ( attemptNo-1 );
-              return;  // repeat; server queue is not shifted here
-            } else
+            if ((typeof function_fail === 'string' || function_fail instanceof String) &&
+                (function_fail=='persist')) {
+
+              if (npersists>0)  {
+                execute_ajax ( npersists-1 );
+                return;  // repeat; server queue is not shifted here
+              } else
+                MessageAJAXFailure ( page_title,xhr,err );
+
+            } else if (function_fail)
+              function_fail ( xhr,err );
+            else
               MessageAJAXFailure ( page_title,xhr,err );
 
-          } else if (function_fail)
-            function_fail();
-          else
-            MessageAJAXFailure ( page_title,xhr,err );
+            // we put this function here and in done section because we do not
+            // want to have it executed multiple times due to multiple retries
+            if (function_always)
+              function_always ( 1,{} );
 
-          // we put this function here and in done section because we do not
-          // want to have it executed multiple times due to multiple retries
-          if (function_always)
-            function_always ( 1,{} );
+          } catch(err) {
+            console.log ( ' [' + getCurrentTimeString() +
+                          '] (r) error catch in __server_request.fail: ' + err +
+                          ' request type=' + request_type + ' reqid=' + sqid );
+            // printServerQueueState ( 6 );
+          }
 
-        } catch(err) {
-          console.log ( ' >>> error catch in __server_request.fail: ' + err );
-          // printServerQueueState ( 6 );
+          // *** old version
+          // processServerQueue();
+
+        } else  {
+          console.log ( ' [' + getCurrentTimeString() +
+                        '] (r) return on skipped operation in __server_request.fail' +
+                        ' request type=' + request_type +' reqid=' + sqid );
+          // printServerQueueState ( 7 );
+          // *** new version
+          if (__server_queue.length>0)  {
+            __server_queue.shift();
+            __process_network_indicators();
+          } else
+            makeSessionCheck ( __current_page.sceneId );
         }
 
-        // *** old version
-        // processServerQueue();
-
-      } else  {
-        console.log ( ' >>> return on skipped operation in __server_request.fail' );
-        // printServerQueueState ( 7 );
         // *** new version
-        if (__server_queue.length>0)  {
-          __server_queue.shift();
-          __process_network_indicators();
-        } else
-          makeSessionCheck ( __current_page.sceneId );
+        processServerQueue();
+
+        /*
+      } else  {
+        // transaction likely failed because the system was down (lid closed)
+        // try recovering by repeating transaction
+        console.log ( ' [' + getCurrentTimeString() + 
+                      '] (r) trying to recover after system sleep, attempt ' + 
+                      attemptNo + ' request type=' + request_type + 
+                      ' reqid=' + sqid );
+        window.setTimeout ( function(){
+          __server_request ( request_type,data_obj,page_title,function_ok,
+                             function_always,function_fail,sqid,start_time,
+                             timeout,attemptNo-1 );
+        },__lid_close_check_interval);
+        // },Math.max(__lid_close_check_interval,
+        //            __lid_close_check_interval*(11-attemptNo)));
+        */
       }
 
-      // *** new version
-      processServerQueue();
-
     });
+
+    // should be just a single item in the queue in most cases, and 0th
+    // item should be the one in 99.99% cases
+    for (let i=0;i<__server_queue.length;i++)
+      if (__server_queue[i].id==sqid)  {
+        __server_queue[i].xhr = xhr;
+        break;
+      }
+
+    // return xhr;
 
   }
 
   if (json)
     execute_ajax ( __persistence_level );
+  else if (__server_queue.length>0)
+    __server_queue[0].xhr = null;
 
 }
 
@@ -660,9 +840,11 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 //                      communication error message box is displayed.
 
   let json = makeJSONString ( data_obj );
+  let xhr  = null;
 
-  if (__local_service && json)
-    $.ajax ({
+  if (__local_service && json)  {
+    let start_time = Date.now();
+    xhr = $.ajax ({
       url      : __local_service + '/' + cmd,
       async    : true,
       type     : 'POST',
@@ -681,13 +863,20 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
     })
     .always ( function(){
-      __local_queue.shift();
-      processServerQueue();
+      if (__lid_open && (start_time>__lid_open_time))  {
+        __local_queue.shift();
+        processServerQueue();
+      }
     })
     .fail   ( function(xhr,err){
-      if (function_response && (!function_response(null)))
-        MessageAJAXFailure(command_title,xhr,err);
+      if (__lid_open && (start_time>__lid_open_time))  {
+        if (function_response && (!function_response(null)))
+          MessageAJAXFailure(command_title,xhr,err);
+      }
     });
+  }
+
+  return xhr;
 
 }
 
@@ -989,7 +1178,7 @@ function saveUserData ( title )  {
   userData.settings      = __user_settings;
   userData.remote_tasks  = __remote_tasks;
   serverRequest ( fe_reqtype.updateUserData,userData,
-                  title,function(response){} );            
+                  title,function(response){},null,'persist' );            
 }
 
 
