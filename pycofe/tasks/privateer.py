@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.04.25   <--  Date of Last Modification.
+#    01.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -208,10 +208,22 @@ class Privateer(basic.TaskDriver):
             
             tree = ET.parse('program.xml')
             root = tree.getroot()
+            # Replacing .svg filenames with imageN and renaming .svg files
+            svg_counter = 1
+            glycans = root.findall('.//Glycan')  
+            for glycan in glycans:
+              svg_element = glycan.find('GlycanSVG')
+              if svg_element is not None and svg_element.text.endswith('.svg'):
+                  old_svg_name = svg_element.text
+                  new_svg_name = f"image{svg_counter}.svg"
+                  new_svg_path = os.path.join(self.reportDir(), new_svg_name)
+                  svg_element.text = new_svg_path
+                  if os.path.isfile(old_svg_name):
+                      os.rename(old_svg_name, new_svg_path)
+                  svg_counter += 1
 
             # Find all Pyranose 
             pyranoses = root.findall('.//Pyranose')
-            glycans   = root.findall('.//Glycan')
 
             tdictP = {
                 "title": "<h2>Pyranose Data</h2>",
