@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.25   <--  Date of Last Modification.
+ *    25.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,31 +182,35 @@ function ProjectListPage ( sceneId )  {
   // function to save Project List
   function saveProjectList ( onDone_func,crProjectName )  {
 
-    if (crProjectName)
-          projectList.current = crProjectName;
-    else  projectList.current = '';
-    
-    if (self.projectTable.table.selectedRow)  {
-      if (!crProjectName)
-        projectList.current = currentProjectName();
-      for (let i=0;i<projectList.projects.length;i++)  {
-        let pDesc = projectList.projects[i];
-        if (pDesc.name==projectList.current)  {
-          pDesc.dateLastUsed = getDateString();
-          break;
+    if (self.projectTable)  {
+
+      if (crProjectName)
+            projectList.current = crProjectName;
+      else  projectList.current = '';
+      
+      if (self.projectTable.table.selectedRow)  {
+        if (!crProjectName)
+          projectList.current = currentProjectName();
+        for (let i=0;i<projectList.projects.length;i++)  {
+          let pDesc = projectList.projects[i];
+          if (pDesc.name==projectList.current)  {
+            pDesc.dateLastUsed = getDateString();
+            break;
+          }
         }
+
       }
+      
+      // projectList.sortList = self.tablesort_tbl.getSortList();
+      projectList.listState = self.projectTable.getTableState();
+      serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
+        function(data){
+          if (onDone_func)
+            onDone_func ( data );
+          self.updateUserRationDisplay ( data );
+        },null,'persist' );
 
     }
-    
-    // projectList.sortList = self.tablesort_tbl.getSortList();
-    projectList.listState = self.projectTable.getTableState();
-    serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
-      function(data){
-        if (onDone_func)
-          onDone_func ( data );
-        self.updateUserRationDisplay ( data );
-      },null,'persist' );
   
   }
 

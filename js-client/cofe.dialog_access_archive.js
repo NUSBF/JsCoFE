@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.23   <--  Date of Last Modification.
+ *    23.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Archive Dialog (archives given project)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2022-2025
  *
  *  =================================================================
  *
@@ -165,11 +165,11 @@ function accessArchProject ( archiveID,mode,callback_func )  {
     mode      : mode
   },'Access Archived Project', function(response){
 
-    var message  = '';
-    var aid      = '<b>' + archiveID + '</b>';
-    var archive  = appName() + ' Archive';
-    var done     = false;
-    var msg_icon = 'msg_system';
+    let message  = '';
+    let aid      = '<b>' + archiveID + '</b>';
+    let archive  = appName() + ' Archive';
+    let done     = false;
+    let msg_icon = 'msg_system';
     switch (response.code)  {
       case 'project_not_found'    :  message = '<h2>Project not found</h2>' +
                                      'Project ' + aid + ' is not found in ' +
