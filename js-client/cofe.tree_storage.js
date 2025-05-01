@@ -90,12 +90,11 @@ let icon_ext = {
   'borges'    : 'file_borges',
   'wscript'   : 'file_wscript',
   'expt'      : 'file_dummy',   // create and replace for file_expt (images_png/file_expt.png)
-  'phil'      : 'file_dummy',    // create and replace for file_phil (images_png/file_phil.png)
-  'hkl'       : 'file_dummy',    // create and replace for file_hkl (images_png/file_hkl.png)
-  'hkl1'      : 'file_dummy',    // create and replace for file_hkl1 (images_png/file_hkl1.png)
-  'hkl2'      : 'file_dummy',    // create and replace for file_hkl2 (images_png/file_hkl2.png)
-  'cell'      : 'file_dummy',    // create and replace for file_cell (images_png/file_cell.png)
-
+  'phil'      : 'file_dummy',   // create and replace for file_phil (images_png/file_phil.png)
+  'hkl'       : 'file_dummy',    // create and replace for file_hkl (images_png/file_phil.png)
+  'hkl1'      : 'file_dummy',    // create and replace for file_hkl1 (images_png/file_phil.png)
+  'hkl2'      : 'file_dummy',    // create and replace for file_hkl2 (images_png/file_phil.png)
+  'cell'      : 'file_dummy',    // create and replace for file_cell (images_png/file_phil.png)
 };
 
 let importable_ext = [
