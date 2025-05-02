@@ -4,7 +4,15 @@
 Upload Files to CCP4 Cloud from ISPyB
 =====================================
 
-ISPyB/SynchWeb provides a convenient way to upload files to the CCP4 Cloud storage.
+ISPyB/SynchWeb provides upload to CCP4 Cloud functionality for users who have a CCP4 Cloud account. 
+
+.. image:: images/ISPyB_attachments.jpg
+
+
+.. image:: images/ISPyB_to_Cloud.jpg
+
+
+This feature allows users to upload files directly from ISPyB to their personal storage in CCP4 Cloud, making it easier to manage and access data for various tasks.
 
 New to cloud? Read `How to start a project in CCP4 Cloud <./jscofe_start_project.html>`_.
 
