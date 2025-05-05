@@ -1,0 +1,34 @@
+
+==================================
+Introducing Moorhen (aka web-Coot)
+==================================
+
+Most crystallographers are familiar with **Coot** - an essential tool for 
+building and refining macromolecular structures. While Coot is available 
+through **CCP4 Cloud**, you may notice that Coot tasks appear *deactivated* 
+when accessing CCP4 Cloud directly via a web browser. This is because Coot 
+needs to run within a locally configured CCP4 environment, which browsers 
+cannot launch on their own.
+
+However, CCP4 Cloud has a workaround: you can still use Coot if you access 
+CCP4 Cloud via the ``ccp4cloud-remote`` or ``ccp4cloud-local`` launchers 
+placed by the **CCP4 Setup Manager** on your computer's desktop. These 
+launchers are also available as scripts in the CCP4 ``bin`` folder.
+
+Enter **Moorhen** - a modern, browser-native counterpart to Coot, developed 
+specifically for use in web browsers. Moorhen incorporates Coot's core 
+codebase but presents it through a web-friendly interface, eliminating the 
+need for special connections or local installations. Find Moorhen in the 
+same section of the CCP4 Cloud Task List where the Coot tasks are located.
+
+Moorhen includes nearly all the core functionality of Coot needed for model 
+building and refinement, and we're continuously working to bring it to full 
+feature parity. It is **seamlessly integrated** with CCP4 Cloud - you can 
+run it like any other task, and your results will be saved automatically 
+to your project when you exit.
+
+In the unlikely event of a crash, simply **clone the task** and use the 
+**recovery function** (see Moorhen's documentation) to restore your work.
+
+Give Moorhen a try - you might find that it becomes your tool of choice. 
+With Moorhen, structure solution can happen entirely online.

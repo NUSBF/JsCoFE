@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>RABDAM &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -436,8 +435,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-rabdam--page-root">RABDAM<a class="headerlink" href="#doc-task-rabdam--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="rabdam">
+<h1 id="doc-task-rabdam--page-root">RABDAM<a class="headerlink" href="#doc-task-rabdam--page-root" title="Link to this heading">¶</a></h1>
 <p>When collecting data using X-rays, crystals can suffer damage that triggers localized chemical changes in macromolecules. This phenomenon, known as radiation damage, can lead to disulfide bond breakage and the loss of carboxyl groups from glutamate and aspartate side chains. If not accounted for, these changes can result in misleading biological interpretations.</p>
 <p>Specific radiation damage manifests as chemical changes that elevate atomic <em>B</em>-factor values at affected sites. However, <em>B</em>-factors are also influenced by other factors, such as atomic mobility, making it challenging to isolate the effects of radiation damage from mobility alone.</p>
 <p>Interestingly, there’s a strong link between an atom’s mobility and its packing density—the number of atoms in its local environment. The <em>B</em><sub>Damage</sub> metric cleverly adjusts the isotropic atomic <em>B</em>-factor to account for packing density. For an atom <em>j</em>, its <em>B</em><sub>Damage</sub> value is calculated as the ratio of its <em>B</em>-factor to the average <em>B</em>-factor of atoms with similar packing density. This metric has been validated to pinpoint expected sites of specific radiation damage in macromolecular crystallography (MX) structures (Gerstel <em>et al.</em>, 2015).</p>
@@ -451,39 +450,39 @@
 <img alt="_images/Bnet_calculation.png" src="_images/Bnet_calculation.png"/>
 <p>To compute <em>B</em><sub>net</sub>, RABDAM plots a kernel density estimate of the <em>B</em><sub>Damage</sub> values of Glu and Asp side chain oxygen atoms. The area under the curve to the left-hand side (LHS) and right-hand side (RHS) of the median <em>B</em><sub>Damage</sub> value is measured, and <em>B</em><sub>net</sub> is calculated as LHS divided by RHS.</p>
 <p>RABDAM provides a comprehensive analysis of specific radiation damage by calculating <em>B</em><sub>Damage</sub>, <em>B</em><sub>net</sub>, and <em>B</em><sub>net</sub>-percentile metrics for any standard-format PDB or mmCIF file. While <em>B</em><sub>Damage</sub> can be calculated for any macromolecule, the <em>B</em><sub>net</sub> and <em>B</em><sub>net</sub>-percentile metrics are tailored for cryo-temperature protein crystal structures.</p>
-
-<h2 id="data-requirements">Data Requirements<a class="headerlink" href="#data-requirements" title="Permalink to this headline">¶</a></h2>
+<section id="data-requirements">
+<h2 id="data-requirements">Data Requirements<a class="headerlink" href="#data-requirements" title="Link to this heading">¶</a></h2>
 <p>To use RABDAM, you’ll need a standard-format PDB or mmCIF file containing a single model of your crystal structure. The file must include ATOM/HETATM records, as well as details about the space group, resolution, and temperature. Since <em>B</em><sub>Damage</sub> is a per-atom metric, it should only be calculated for structures where <em>B</em>-factors have been refined per-atom, typically near the final stages of refinement. Additionally, ensure that non-ligand atoms subject to occupancy refinement are limited to alternate conformers, with occupancies summing to 1.</p>
-
-
-<h2 id="queries">Queries<a class="headerlink" href="#queries" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="queries">
+<h2 id="queries">Queries<a class="headerlink" href="#queries" title="Link to this heading">¶</a></h2>
 <p>Please email <a class="reference external" href="mailto:kathryn.l.shelley%40gmail.com" rel="noopener noreferrer" target="_blank">kathryn<span>.</span>l<span>.</span>shelley<span>@</span>gmail<span>.</span>com</a>.</p>
-
-
-<h2 id="contributors">Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="contributors">
+<h2 id="contributors">Contributors<a class="headerlink" href="#contributors" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li>Kathryn Shelley</li>
-<li>Tom Dixon</li>
-<li>Jonny Brooks-Bartlett</li>
+<li><p>Kathryn Shelley</p></li>
+<li><p>Tom Dixon</p></li>
+<li><p>Jonny Brooks-Bartlett</p></li>
 </ul>
 <p>This software was developed in the lab of Professor Elspeth Garman at the University of Oxford.</p>
-
-
-<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="acknowledgements">
+<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading">¶</a></h2>
 <p>source: <a class="reference external" href="https://github.com/GarmanGroup/RABDAM" rel="noopener noreferrer" target="_blank">https://github.com/GarmanGroup/RABDAM</a></p>
 <ul class="simple">
-<li>Shelley KL, Dixon TPE, Brooks-Bartlett JC &amp; Garman EF (2018) RABDAM: quantifying specific radiation damage in individual protein crystal structures. <em>J Appl Cryst</em> <strong>51</strong>: 552-559. <a class="reference external" href="https://doi.org/10.1107/S1600576718002509" rel="noopener noreferrer" target="_blank">https://doi.org/10.1107/S1600576718002509</a></li>
+<li><p>Shelley KL, Dixon TPE, Brooks-Bartlett JC &amp; Garman EF (2018) RABDAM: quantifying specific radiation damage in individual protein crystal structures. <em>J Appl Cryst</em> <strong>51</strong>: 552-559. <a class="reference external" href="https://doi.org/10.1107/S1600576718002509" rel="noopener noreferrer" target="_blank">https://doi.org/10.1107/S1600576718002509</a></p></li>
 </ul>
 <p>The <em>B</em><sub>Damage</sub> metric is defined and validated in:</p>
 <ul class="simple">
-<li>Gerstel M, Deane CM &amp; Garman EF (2015) Identifying and quantifying radiation damage at the atomic level. <em>J Synchrotron Radiat</em> <strong>22</strong>: 201-212. <a class="reference external" href="https://doi.org/10.1107/S1600577515002131" rel="noopener noreferrer" target="_blank">https://doi.org/10.1107/S1600577515002131</a></li>
+<li><p>Gerstel M, Deane CM &amp; Garman EF (2015) Identifying and quantifying radiation damage at the atomic level. <em>J Synchrotron Radiat</em> <strong>22</strong>: 201-212. <a class="reference external" href="https://doi.org/10.1107/S1600577515002131" rel="noopener noreferrer" target="_blank">https://doi.org/10.1107/S1600577515002131</a></p></li>
 </ul>
 <p>The <em>B</em><sub>net</sub> and <em>B</em><sub>net</sub>-percentile metrics are defined and validated in:</p>
 <ul class="simple">
-<li>Shelley KL &amp; Garman EF (2022) Quantifying and comparing radiation damage in the Protein Data Bank. <em>Nat Commun</em> <strong>13</strong>: 1314. <a class="reference external" href="https://doi.org/10.1038/s41467-022-28934-0" rel="noopener noreferrer" target="_blank">https://doi.org/10.1038/s41467-022-28934-0</a></li>
+<li><p>Shelley KL &amp; Garman EF (2022) Quantifying and comparing radiation damage in the Protein Data Bank. <em>Nat Commun</em> <strong>13</strong>: 1314. <a class="reference external" href="https://doi.org/10.1038/s41467-022-28934-0" rel="noopener noreferrer" target="_blank">https://doi.org/10.1038/s41467-022-28934-0</a></p></li>
 </ul>
-
-
+</section>
+</section>
 
 
           </article>
@@ -528,7 +527,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

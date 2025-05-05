@@ -85,6 +85,61 @@
       "title"   : "Pushing Data to the Cloud",
       "doc"     : "manuals/html-taskref",
       "link"    : "doc.task.PushToCloud.html"
+    },{
+      "summary" : "Did you know that you can run tasks remotely in CCP4 Cloud Local? Learn how <a>here</a>.",
+      "title"   : "Running Tasks Remotely in CCP4 Cloud Local",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.remote_tasks.html"
+    },{
+      "summary" : "Did you know that you can develop projects automatically using CCP4 Cloud workflows? Read <a>here</a>.",
+      "title"   : "Automatic CCP4 Cloud Workflows",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_automated_workflows.html"
+    },{
+      "summary" : "Did you know that you can create your own workflows in CCP4 Cloud? Check out <a>here</a>.",
+      "title"   : "Custom CCP4 Cloud Workflows",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_custom_workflows.html"
+    },{
+      "summary" : "Did you know that you can run CCP4 Cloud projects from command line? Read <a>here</a>.",
+      "title"   : "Running Cloud Projects from Command Line",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_cloudrun.html"
+    },{
+      "summary" : "Do you know how to switch from CCP4i1 project to CCP4 Cloud? Check out <a>here</a>.",
+      "title"   : "Switching from CCP4i1 to CCP4 Cloud",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_i1toCloud.html"
+    },{
+      "summary" : "Did you know how that you can push data from SynchWeb straight to your CCP4 Cloud account? Learn how <a>here</a>.",
+      "title"   : "Send data from SynchWeb to CCP4 Cloud",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_synchweb.html"
+    },{
+      "summary" : "Do you know how to exchange projects between CCP4 Cloud Local and CCP4 Cloud Remote? Check out <a>here</a>.",
+      "title"   : "Exchanging projects between CCP4 Cloud Local and CCP4 Cloud Remote",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "aps.html"
+    },{
+      "summary" : "Interested in learning CCP4 Cloud Local independently? See <a>here</a>.",
+      "title"   : "CCP4 Cloud Tutorials and Demo Projects",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_CloudED.html"
+    },{
+      "summary" : "Have you heard about CCP4 Cloud Atlas? Check out <a>here</a>.",
+      "title"   : "CCP4 Cloud Atlas",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "CCP4Cloud_Atlas.html"
+    },{
+      "summary" : "Are you using Moorhen (aka web-Coot) yet? Read <a>here</a> about it.",
+      "title"   : "Moorhen (web-Coot)",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.moorhen.html"
+    },{
+      "summary" : "Did you know that you can detach dialogs in separate windows? Learn <a>how</a>.",
+      "title"   : "Moorhen (web-Coot)",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.detach_windows.html"
     }
   ]
 }

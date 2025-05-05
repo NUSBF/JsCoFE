@@ -2,9 +2,13 @@
 Working modes of CCP4 Cloud
 ===========================
 
-At times you may think that something is wrong and you may be working with at least 3 different CCP4 Clouds. This is partially true, and if you feel confused, read this article.
+At times you may think that something is wrong and you may be working with at 
+least 3 different CCP4 Clouds. This is partially true, and if you feel confused, 
+read this article.
 
-Much of the confusion comes from the fact that CCP4 Cloud is designed to run "somewhere" in the Web, but it can also run on your own device, in full or in part, providing that your device:
+Much of the confusion comes from the fact that CCP4 Cloud is designed to run 
+"somewhere" in the Web, but it can also run on your own device, in full or in 
+part, providing that your device:
 
     - is not a mobile phone or tablet
     - has CCP4 version 7.1 or higher installed
@@ -13,11 +17,14 @@ There are 3 working modes of CCP4 Cloud:
 
     #. Web-only
     #. Remote/online (partly in the Web and partly on your computer)
-    #. Desktop/offline (only on your computer, even without internet connection)
+    #. Local/offline (only on your computer, even without internet connection)
 
 There are two main reasons for having different working modes:
 
-    a) Because not all CCP4 applications can be run on remote server. While this may, potentially, change in future, but at the time being we have no choice other than to use your own machine for running such applications. Examples include:
+    a) Because not all CCP4 applications can be run on remote server. While this 
+       may, potentially, change in future, but at the time being we have no 
+       choice other than to use your own machine for running such applications. 
+       Examples include:
 
         - Coot (interactive model building)
         - All graphical interfaces to data processing packages: iMosflm, DUI, XDSGui
@@ -25,7 +32,10 @@ There are two main reasons for having different working modes:
         - ViewHKL (reflection data viewer)
         - Arp/wArp (automatic model builder, does not apply to CCP4 series 8.0 and higher)
 
-    b) Because sending data to the Web may be disallowed by IT security protocols acting in your organisation, so that you must be sure that all software is running on your machine(s) and your projects and data do not leave your place of work.
+    b) Because sending data to the Web may be disallowed by IT security protocols 
+       acting in your organisation, so that you must be sure that all software is 
+       running on your machine(s) and your projects and data do not leave your 
+       place of work.
 
 **CCP4 Cloud modes summary**
 
@@ -36,7 +46,7 @@ There are two main reasons for having different working modes:
    * - Mode
      - Web-only
      - Remote (online)
-     - Desktop (offline)
+     - Local (offline)
    * - Compatible device
      - Windows, Mac, Linux, iOS, Android
      - Windows, Mac, Linux
@@ -47,8 +57,8 @@ There are two main reasons for having different working modes:
      - Yes
    * - How to connect
      - Using direct web-link (*e.g.*, https://cloud.ccp4.ac.uk) in browser
-     - Using *Cloud-remote* CCP4 icon in CCP4 Setup
-     - Using *Cloud-desktop* CCP4 icon in CCP4 Setup
+     - Using *ccp4loud-remote* CCP4 icon in CCP4 Setup
+     - Using *ccp4loud-local* CCP4 icon in CCP4 Setup
    * - User account required
      - Yes
      - Yes
@@ -72,16 +82,20 @@ There are two main reasons for having different working modes:
 
 
 .. Note::
-    *Web-only* and *Remote* modes share same projects, while the *Desktop* mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between *Desktop* and *Web-only/Remote* modes is through the explicit Export/Import procedure.
+    *Web-only* and *Remote* modes share same projects, while the *Local* mode 
+    has own set of projects. Local projects are not synced with the 
+    Web-only/Remote projects. The only way to exchange projects between 
+    *Local* and *Web-only/Remote* modes is through the explicit 
+    Export/Import procedure.
 
 **In brief**
 
 - if you work from a tablet or smartphone, your only choice is the **Web-only** mode. You won't be able to use Coot and interactive data processing GUIs
-- if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the **Desktop** mode. All computations will be done on your computer and you may need a decently powerful device.
+- if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the **Local** mode. All computations will be done on your computer and you may need a decently powerful device.
 - in all other cases, the recommended choice is the **Remote** mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones; you may connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks, which won't affect your CCP4 jobs running in the cloud.
 
 .. Note::
-    The *Desktop* mode may be conveniently used for collecting projects finished in *Web-only*/*Remote* modes. After transferring projects to the *Desktop* mode, they may be deleted in the *Web-only/Remote* area in order to release the online disk space quota for new projects. Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.
+    The *Local* mode may be conveniently used for collecting projects finished in *Web-only*/*Remote* modes. After transferring projects to the *Local* mode, they may be deleted in the *Web-only/Remote* area in order to release the online disk space quota for new projects. Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.
 
 
 :doc:`All CCP4 Cloud tips <jscofe_tips>`

@@ -3,6 +3,46 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.8.007** 
+    *Released with CCP4 v.9.0.009*
+
+    #. Improved recovery after closing lid or system sleep/inactivity
+
+    #. Remote tasks are reflected in CCP4 Cloud FE log
+
+    #. Fixed bugs in zombi job management
+
+    #. FitLigand and FindWaters tasks now use headless Coot (CHAPI)
+
+    #. *Rabdam* task included for assessing radiation damage
+
+    #. *Import Serial* task is included for importing serial data
+
+    #. Fixed bug in the evaluation of remote task availability on Windows
+
+
+**Version 1.8.006** 
+    *Released with CCP4 v.9.0.008*
+
+    #. User's file cache is filled up at login (configurable)
+
+    #. Tasks can be run remotely in CCP4 Cloud Local
+
+    #. Improved user and project tables and search interface
+
+    #. Added verdict to Balbes task
+
+    #. Multiple parallel launches of Refmac after Coot removed in shared projects
+
+    #. Coot's exit-and-refine failures on NFS systems fixed
+
+    #. Offline fetch job function is added to cloudrun framework
+
+    #. MrParse now sorts results on sequence Id
+
+    #. Inserting MakeLigand task in custom workflows made possible
+
+
 **Version 1.8.005** 
 
     *Released with CCP4 v.9.0.007*
@@ -122,7 +162,7 @@ CCP4 Cloud Version Log
 
     #. Fixed bug preventing deleting job directories on MS Windows in rare circumstances
 
-    #. CCP4 programs can now use all available CPU cores in local/desktop mode
+    #. CCP4 programs can now use all available CPU cores in local mode
 
     #. Default packing criterion in Phaser task adjusted
 
@@ -438,7 +478,7 @@ CCP4 Cloud Version Log
 
     #. Persistance of basic/full task list modes enhanced
 
-    #. Share/Join projects removed in Desktop mode as not needed
+    #. Share/Join projects removed in Local mode as not needed
 
     #. Graceful handling of wrong Cloud Storage path implemented
 

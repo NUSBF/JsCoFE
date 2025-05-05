@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>3. Creating MR Search Ensembles with CCP4MG/MrBUMP &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -304,92 +303,103 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-001--page-root"><span class="section-number">3. </span>Creating MR Search Ensembles with CCP4MG/MrBUMP<a class="headerlink" href="#doc-tutorial-t2-001--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="creating-mr-search-ensembles-with-ccp4mg-mrbump">
+<h1 id="doc-tutorial-t2-001--page-root"><span class="section-number">3. </span>Creating MR Search Ensembles with CCP4MG/MrBUMP<a class="headerlink" href="#doc-tutorial-t2-001--page-root" title="Link to this heading">¶</a></h1>
 <p>This tutorial explains how to create the ensembles for Molecular Replacement (MR) with <a class="reference external" href="https://www.ccp4.ac.uk/MG/" rel="noopener noreferrer" target="_blank">CCP4mg</a> molecular viewer. We will use data from CCP4’s Gamma protein example.</p>
 <blockquote>
 <div><div class="admonition important">
-<p class="first admonition-title">Important</p>
-<blockquote class="last">
-<div>Launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a>.</div></blockquote>
+<p class="admonition-title">Important</p>
+<blockquote>
+<div><p>Launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a>.</p>
+</div></blockquote>
 </div>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   The sequence and reflection data were already imported in the “Creating MR Search Ensembles with CCP4MG/MrBUMP” project (<em>import from the Cloud storage</em> task).</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task.</p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU.png"><img alt="_images/Demo.CCP4MG_ASU.png" class="align-center" src="_images/Demo.CCP4MG_ASU.png" style="width: 565.6px; height: 392.0px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU.png"><img alt="_images/Demo.CCP4MG_ASU.png" class="align-center" src="_images/Demo.CCP4MG_ASU.png" style="width: 565.6px; height: 392.0px;"/>
+</a>
 <p>Every task in CCP4 Cloud produces a report. Some reports come with the verdict.</p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU2.jpg"><img alt="_images/Demo.CCP4MG_ASU2.jpg" class="align-center" src="_images/Demo.CCP4MG_ASU2.jpg" style="width: 624.0px; height: 380.4px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU2.jpg"><img alt="_images/Demo.CCP4MG_ASU2.jpg" class="align-center" src="_images/Demo.CCP4MG_ASU2.jpg" style="width: 624.0px; height: 380.4px;"/>
+</a>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">Please read verdict carefully, it helps assessing the obtained results.</p>
+<p class="admonition-title">Tip</p>
+<p>Please read verdict carefully, it helps assessing the obtained results.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare MR Ensemble with CCP4mg</strong> task: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Prepare MR Ensemble with CCP4mg</strong></p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG1.png"><img alt="_images/Demo.CCP4MG_MG1.png" class="align-center" src="_images/Demo.CCP4MG_MG1.png" style="width: 604.8000000000001px; height: 392.0px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG1.png"><img alt="_images/Demo.CCP4MG_MG1.png" class="align-center" src="_images/Demo.CCP4MG_MG1.png" style="width: 604.8000000000001px; height: 392.0px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code> <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a> task will identify structure homologs from the <a class="reference external" href="https://www.rcsb.org/" rel="noopener noreferrer" target="_blank">PDB</a> and the <a class="reference external" href="https://alphafold.ebi.ac.uk" rel="noopener noreferrer" target="_blank">EBI-AFDB</a> and display them in CCP4mg (<code class="docutils literal notranslate"><span class="pre">takes</span> <span class="pre">a</span> <span class="pre">couple</span> <span class="pre">of</span> <span class="pre">minutes</span></code>).</p>
 <p>For <abbr title="AlphaFold DataBase">AFDB</abbr> models, you can adjust the pLDDT cut-off</p>
 <div class="toggle-header docutils container">
-<strong>pLDDT cut-off</strong></div>
+<p><strong>pLDDT cut-off</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p>AlphaFold produces a per-residue estimate of its confidence score, called <strong>pLDDT</strong>, ranging from 0 to 100. This option sets the minimum level of <strong>pLDDT</strong> of selected residues.</p>
 <ul class="simple">
-<li><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</li>
-<li><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</li>
-<li><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</li>
-<li><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</li>
+<li><p><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</p></li>
+<li><p><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</p></li>
+<li><p><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</p></li>
+<li><p><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</p></li>
 </ul>
 </div></blockquote>
 </div>
 <p>Higher values mean only the most confidently predicted residues are retained in the search models.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is possible to search only the PDB or EBI-AFDB by unticking the relevant box in the input menu.</p>
+<p class="admonition-title">Note</p>
+<p>It is possible to search only the PDB or EBI-AFDB by unticking the relevant box in the input menu.</p>
 </div>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">In order to read more abound the task click on task documentation button <a class="reference internal" href="_images/reference.png"><img alt="reference" src="_images/reference.png" style="width: 20px; height: 20px;"/></a></p>
+<p class="admonition-title">Tip</p>
+<p>In order to read more abound the task click on task documentation button <a class="reference internal" href="_images/reference.png"><img alt="reference" src="_images/reference.png" style="width: 20px; height: 20px;"/></a></p>
 </div>
 <p>For this tutorial, make sure that:</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>PDB sequence redundancy level</strong> set to <strong>100%</strong></li>
-<li><strong>Include structures from AFDB</strong> set <strong>on</strong></li>
-<li><strong>EBI-AFDB pLDDT cut-off</strong> set to <strong>50%</strong></li>
-<li><strong>Maximum number of models to create</strong> is <strong>10</strong></li>
+<li><p><strong>PDB sequence redundancy level</strong> set to <strong>100%</strong></p></li>
+<li><p><strong>Include structures from AFDB</strong> set <strong>on</strong></p></li>
+<li><p><strong>EBI-AFDB pLDDT cut-off</strong> set to <strong>50%</strong></p></li>
+<li><p><strong>Maximum number of models to create</strong> is <strong>10</strong></p></li>
 </ul>
 </div></blockquote>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG2.png"><img alt="_images/Demo.CCP4MG_MG2.png" class="align-center" src="_images/Demo.CCP4MG_MG2.png" style="width: 550.9px; height: 306.59999999999997px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG2.png"><img alt="_images/Demo.CCP4MG_MG2.png" class="align-center" src="_images/Demo.CCP4MG_MG2.png" style="width: 550.9px; height: 306.59999999999997px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">5.</span></code>  Shortly after the task is run, the <strong>CCP4mg window</strong> will opened on your computer. After a couple of minutes, results of the MrBUMP sequence-based search should appear in the graphical interface.</p>
 <blockquote>
 <div><blockquote>
 <div><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">the models will be truncated to better match the target structure by referencing the sequence alignment between the model and the target. The <a class="reference external" href="https://doi.org/10.1107/S0907444910051218" rel="noopener noreferrer" target="_blank">Sculptor</a> application is used to perform the truncation. The resulting search models are structurally aligned and superposed.</p>
+<p class="admonition-title">Note</p>
+<p>the models will be truncated to better match the target structure by referencing the sequence alignment between the model and the target. The <a class="reference external" href="https://doi.org/10.1107/S0907444910051218" rel="noopener noreferrer" target="_blank">Sculptor</a> application is used to perform the truncation. The resulting search models are structurally aligned and superposed.</p>
 </div>
 </div></blockquote>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG3.png"><img alt="_images/Demo.CCP4MG_MG3.png" class="align-center" src="_images/Demo.CCP4MG_MG3.png" style="width: 854.4px; height: 409.2px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG3.png"><img alt="_images/Demo.CCP4MG_MG3.png" class="align-center" src="_images/Demo.CCP4MG_MG3.png" style="width: 854.4px; height: 409.2px;"/>
+</a>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">6.</span></code>  In order to save all that is currently visible in CCP4mg and make it an “ensemble model” go to <strong>File =&gt; Save all visible to the CCP4 Cloud</strong></p>
 <blockquote>
 <div><div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">To save a single model or chosen models, make all other models invisible. To do this in CCP4mg, right-click (or Ctrl-click / Cmd-click on a laptop) on the coloured icon next to the model’s name in the “Display Table” (right-hand panel of CCP4MG window). The icon turns grey and the model becomes invisible in the graphics window. Right-clicking again makes the model visible again.</p>
+<p class="admonition-title">Tip</p>
+<p>To save a single model or chosen models, make all other models invisible. To do this in CCP4mg, right-click (or Ctrl-click / Cmd-click on a laptop) on the coloured icon next to the model’s name in the “Display Table” (right-hand panel of CCP4MG window). The icon turns grey and the model becomes invisible in the graphics window. Right-clicking again makes the model visible again.</p>
 </div>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">7.</span></code>  Quit CCP4mg</p>
 <blockquote>
-<div>The created ensemble should appear in the task output window.</div></blockquote>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG4.png"><img alt="_images/Demo.CCP4MG_MG4.png" class="align-center" src="_images/Demo.CCP4MG_MG4.png" style="width: 633.6px; height: 430.40000000000003px;"/></a>
+<div><p>The created ensemble should appear in the task output window.</p>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG4.png"><img alt="_images/Demo.CCP4MG_MG4.png" class="align-center" src="_images/Demo.CCP4MG_MG4.png" style="width: 633.6px; height: 430.40000000000003px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">8.</span></code>  Created ensembles can be further used in both <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
 <blockquote>
 <div><p>We will use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
 <p>For predicted (AFDB) models, we recommend setting <strong>Similarity to target by rms differences (Å) to 1.2</strong></p>
 </div></blockquote>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_Phaser.jpg"><img alt="_images/Demo.CCP4MG_Phaser.jpg" class="align-center" src="_images/Demo.CCP4MG_Phaser.jpg" style="width: 508.2px; height: 375.59999999999997px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_Phaser.jpg"><img alt="_images/Demo.CCP4MG_Phaser.jpg" class="align-center" src="_images/Demo.CCP4MG_Phaser.jpg" style="width: 508.2px; height: 375.59999999999997px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">9.</span></code>  After Phaser, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4’s automatic model builders (<a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> , <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>). Let’s run the <a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> task. The built model can be visually inspected with <strong>UglyMol</strong> (the corresponding launch button can be found in task report page).</p>
 <p><code class="docutils literal notranslate"><span class="pre">10.</span></code>  Further refinement can be done with the <strong>Automated refinement and ligand fitting workflow</strong></p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
-
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/>
+</a>
+</section>
 
 
           </article>
@@ -434,7 +444,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

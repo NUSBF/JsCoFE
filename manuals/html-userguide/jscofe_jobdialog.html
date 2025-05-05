@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>2.4. Job Dialog &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -413,100 +412,101 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-jobdialog--page-root"><span class="section-number">2.4. </span>Job Dialog<a class="headerlink" href="#jscofe-jobdialog--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="job-dialog">
+<h1 id="jscofe-jobdialog--page-root"><span class="section-number">2.4. </span>Job Dialog<a class="headerlink" href="#jscofe-jobdialog--page-root" title="Link to this heading">¶</a></h1>
 <p>The Job Dialog is central to CCP4 Cloud functionality. It is used to configure a job (choose/set input data and parameters), run it, and review results. The Dialog opens automatically upon selecting a task in the <strong>Task List</strong> or pressing the <a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 16px; height: 16px;"/></a> button in the <strong>Project Page toolbar</strong> (also accessible by right-clicking a job in the Job Tree).</p>
-
-<h2 id="general-layout"><span class="section-number">2.4.1. </span>General Layout<a class="headerlink" href="#general-layout" title="Permalink to this headline">¶</a></h2>
+<section id="general-layout">
+<h2 id="general-layout"><span class="section-number">2.4.1. </span>General Layout<a class="headerlink" href="#general-layout" title="Link to this heading">¶</a></h2>
 <p>The dialog consists of two pages: <strong>Input</strong> and <strong>Output</strong>, along with a toolbar at the top:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/></a>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/>
+</a>
 <ul class="simple">
-<li><strong>Input and Output Buttons</strong>: Located on the left side of the toolbar, these switch between the <strong>Input</strong> and <strong>Output</strong> pages. (The <strong>Output</strong> button is disabled until results are available.)</li>
-<li><strong>Central Toolbar</strong>: Displays:
+<li><p><strong>Input and Output Buttons</strong>: Located on the left side of the toolbar, these switch between the <strong>Input</strong> and <strong>Output</strong> pages. (The <strong>Output</strong> button is disabled until results are available.)</p></li>
+<li><p><strong>Central Toolbar</strong>: Displays:
 - The <strong>Run button</strong> to start the job.
 - A <strong>busy indicator</strong> and <strong>Stop button</strong> while the job is running.
-- The <strong>job status</strong> (“completed,” “failed,” or “terminated”) after completion.</li>
-<li><strong>Ref. Button</strong>: Displays reference documentation for the current task.</li>
-<li><strong>Help Button</strong>: Opens this manual.</li>
-<li><strong>Close Button</strong>: Closes the Dialog without running the job.</li>
+- The <strong>job status</strong> (“completed,” “failed,” or “terminated”) after completion.</p></li>
+<li><p><strong>Ref. Button</strong>: Displays reference documentation for the current task.</p></li>
+<li><p><strong>Help Button</strong>: Opens this manual.</p></li>
+<li><p><strong>Close Button</strong>: Closes the Dialog without running the job.</p></li>
 </ul>
-
-
-<h2 id="input-page"><span class="section-number">2.4.2. </span>Input Page<a class="headerlink" href="#input-page" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="input-page">
+<h2 id="input-page"><span class="section-number">2.4.2. </span>Input Page<a class="headerlink" href="#input-page" title="Link to this heading">¶</a></h2>
 <p>The <strong>Input</strong> page is divided into three sections: <strong>Header</strong>, <strong>Data Section</strong>, and <strong>Parameters Section</strong>.</p>
-
-<h3 id="the-header"><span class="section-number">2.4.2.1. </span>The Header<a class="headerlink" href="#the-header" title="Permalink to this headline">¶</a></h3>
+<section id="the-header">
+<h3 id="the-header"><span class="section-number">2.4.2.1. </span>The Header<a class="headerlink" href="#the-header" title="Link to this heading">¶</a></h3>
 <p>The Header displays the job title and includes two input fields: <strong>Job Description</strong> and <strong>Output ID</strong>.</p>
-<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/></a>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/>
+</a>
 <p>Both fields have default values that are suitable in many cases but can be customized as needed:</p>
-<table border="1">
-<colgroup>
-<col width="7%"/>
-<col width="93%"/>
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><strong>Job Description</strong></td>
-<td>Provides a brief description for display in the Job Tree. Use this field to annotate your project (e.g., “2nd molecular replacement attempt using sequence correction of the model”). This field can be edited before and after running the job.</td>
+<table>
+<tbody>
+<tr class="row-odd"><td><p><strong>Job Description</strong></p></td>
+<td><p>Provides a brief description for display in the Job Tree. Use this field to annotate your project (e.g., “2nd molecular replacement attempt using sequence correction of the model”). This field can be edited before and after running the job.</p></td>
 </tr>
-<tr class="row-even"><td><strong>Output ID</strong></td>
-<td>Specifies a template name for output data. Refer to the “Naming” section in Data Management. Customizing this field helps generate and download output files with meaningful names.</td>
+<tr class="row-even"><td><p><strong>Output ID</strong></p></td>
+<td><p>Specifies a template name for output data. Refer to the “Naming” section in Data Management. Customizing this field helps generate and download output files with meaningful names.</p></td>
 </tr>
 </tbody>
 </table>
-
-
-<h3 id="data-section"><span class="section-number">2.4.2.2. </span>Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="data-section">
+<h3 id="data-section"><span class="section-number">2.4.2.2. </span>Data Section<a class="headerlink" href="#data-section" title="Link to this heading">¶</a></h3>
 <p>The Data Section contains widgets (e.g., comboboxes) for selecting required data objects for the job. Each data type required by the job is represented by its own combobox. For example:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_data_section_1.png"><img alt="_images/job_dialog_data_section_1.png" class="align-center" src="_images/job_dialog_data_section_1.png" style="width: 577.6px; height: 220.8px;"/></a>
+<a class="reference internal image-reference" href="_images/job_dialog_data_section_1.png"><img alt="_images/job_dialog_data_section_1.png" class="align-center" src="_images/job_dialog_data_section_1.png" style="width: 577.6px; height: 220.8px;"/>
+</a>
 <p>This example shows:
 - One <strong>Structure Revision</strong>.
 - One or more <strong>anomalous HKL Datasets</strong>.
 - One <strong>native HKL Dataset</strong>.</p>
 <p>Combobox selections are pre-set based on the task and project logic. Users should verify the selections in all cases.</p>
 <ul class="simple">
-<li>If additional input is required, another combobox (e.g., <em>“Anomalous reflection data (3)”</em>) will appear with the default value <cite>[do not use]</cite>. Selecting a dataset in this combobox passes it as another input.</li>
+<li><p>If additional input is required, another combobox (e.g., <em>“Anomalous reflection data (3)”</em>) will appear with the default value <cite>[do not use]</cite>. Selecting a dataset in this combobox passes it as another input.</p></li>
 </ul>
 <p>Some comboboxes include supplementary input widgets for annotating selected data objects. For example:
 - Anomalous datasets may require wavelength annotations (<em>“low-remote”</em>, <em>“peak”</em>, etc.).
 - Native datasets may include a checkbox to indicate their use for phasing in addition to model building and refinement.</p>
 <p>Inspection buttons next to comboboxes allow detailed viewing of selected data, including space group, cell parameters, and chain descriptions. Optional data widgets will not appear if corresponding data is unavailable in the project.</p>
-
-
-<h3 id="parameters-section"><span class="section-number">2.4.2.3. </span>Parameters Section<a class="headerlink" href="#parameters-section" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="parameters-section">
+<h3 id="parameters-section"><span class="section-number">2.4.2.3. </span>Parameters Section<a class="headerlink" href="#parameters-section" title="Link to this heading">¶</a></h3>
 <p>The Parameters Section contains task-specific parameters, organized into collapsible sections:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_parameters_section__1_.png"><img alt="_images/job_dialog_parameters_section__1_.png" class="align-center" src="_images/job_dialog_parameters_section__1_.png" style="width: 588.8000000000001px; height: 217.60000000000002px;"/></a>
+<a class="reference internal image-reference" href="_images/job_dialog_parameters_section__1_.png"><img alt="_images/job_dialog_parameters_section__1_.png" class="align-center" src="_images/job_dialog_parameters_section__1_.png" style="width: 588.8000000000001px; height: 217.60000000000002px;"/>
+</a>
 <p>Parameters may be hidden dynamically based on user selections in the <strong>Data Section</strong> or other parts of the <strong>Parameters Section</strong>.</p>
-
-
-<h3 id="output-page"><span class="section-number">2.4.2.4. </span>Output Page<a class="headerlink" href="#output-page" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="output-page">
+<h3 id="output-page"><span class="section-number">2.4.2.4. </span>Output Page<a class="headerlink" href="#output-page" title="Link to this heading">¶</a></h3>
 <p>The <strong>Output</strong> page presents job results in a tabbed layout. Common tabs include <strong>“Report”</strong>, <strong>“Log File”</strong>, and <strong>“Errors”</strong>, with additional tabs provided for certain tasks.</p>
 <p>Output is dynamic and updates in real time as the job progresses. Tabs serve the following purposes:</p>
 <ul class="simple">
-<li><strong>“Log File”</strong>: Displays the concatenated standard output of all programs executed during the job. Command lines and standard input data for each program are also shown.</li>
-<li><strong>“Errors”</strong>: Displays standard error streams for debugging.</li>
-<li><dl class="first docutils">
+<li><p><strong>“Log File”</strong>: Displays the concatenated standard output of all programs executed during the job. Command lines and standard input data for each program are also shown.</p></li>
+<li><p><strong>“Errors”</strong>: Displays standard error streams for debugging.</p></li>
+<li><dl class="simple">
 <dt><strong>“Report”</strong>: Typically includes:</dt><dd><ul>
-<li>Job title.</li>
-<li>Report body with sections (collapsible for brevity).</li>
-<li>Summary of generated data for subsequent tasks.</li>
+<li><p>Job title.</p></li>
+<li><p>Report body with sections (collapsible for brevity).</p></li>
+<li><p>Summary of generated data for subsequent tasks.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
 <p>Example:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_output_page.png"><img alt="_images/job_dialog_output_page.png" class="align-center" src="_images/job_dialog_output_page.png" style="width: 690.4000000000001px; height: 478.40000000000003px;"/></a>
+<a class="reference internal image-reference" href="_images/job_dialog_output_page.png"><img alt="_images/job_dialog_output_page.png" class="align-center" src="_images/job_dialog_output_page.png" style="width: 690.4000000000001px; height: 478.40000000000003px;"/>
+</a>
 <p>Reports often include detailed tables, graphs, and intermediate results. Generated
 data summaries appear after the report body, with inspection and visualization
 buttons for further exploration:</p>
 <ul class="simple">
-<li><strong>“Coot”</strong>, <strong>“CCP4mg”</strong>, and <strong>“UglyMol”</strong>: Launch viewers for structural data.</li>
-<li><strong>“ViewHKL”</strong>: Opens a utility to inspect MTZ file content.</li>
-<li><strong>“Display”</strong>: Launches a viewer for inspecting XYZ files (e.g., in PDB format).</li>
+<li><p><strong>“Coot”</strong>, <strong>“CCP4mg”</strong>, and <strong>“UglyMol”</strong>: Launch viewers for structural data.</p></li>
+<li><p><strong>“ViewHKL”</strong>: Opens a utility to inspect MTZ file content.</p></li>
+<li><p><strong>“Display”</strong>: Launches a viewer for inspecting XYZ files (e.g., in PDB format).</p></li>
 </ul>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>
@@ -551,7 +551,7 @@ buttons for further exploration:</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

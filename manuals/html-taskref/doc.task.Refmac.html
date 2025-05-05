@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>REFMACAT &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -545,70 +544,70 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-refmac--page-root">REFMACAT<a class="headerlink" href="#doc-task-refmac--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="refmacat">
+<h1 id="doc-task-refmac--page-root">REFMACAT<a class="headerlink" href="#doc-task-refmac--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html" rel="noopener noreferrer" target="_blank">REFMAC5</a> is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.</p>
 <p><em>Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best’ electron-density maps for further model (re)building.</em></p>
-
-<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this headline">¶</a></h2>
+<section id="basic-principles-of-refinement">
+<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Link to this heading">¶</a></h2>
 <p>refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between <strong>F</strong> <sub>obs</sub> and <strong>F</strong> <sub>calc</sub></p>
 <p>The model is defined not only about the PDB file, but also should consider the parameters of the refinement program.</p>
 <p>We work with two types of maps:</p>
 <ul class="simple">
-<li><strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : “standard” electron density - represents crystal contents</li>
-<li><strong>F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : difference density - represents differences</li>
+<li><p><strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : “standard” electron density - represents crystal contents</p></li>
+<li><p><strong>F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> : difference density - represents differences</p></li>
 </ul>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Data of different quality shall be described differently (the difference in quality tells us about how many statistics we have for the atom, that why different number parameters of the model could be estimated given particular data).``</p>
+<p class="admonition-title">Note</p>
+<p>Data of different quality shall be described differently (the difference in quality tells us about how many statistics we have for the atom, that why different number parameters of the model could be estimated given particular data).``</p>
 </div>
-
-
-<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="stages-of-model-building">
+<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Link to this heading">¶</a></h2>
 <p><strong>Early stages (e.g. straight after MR)</strong></p>
 <ul class="simple">
-<li>Run many cycles (up to 200 with jelly body restraints) of refinement</li>
+<li><p>Run many cycles (up to 200 with jelly body restraints) of refinement</p></li>
 </ul>
 <p><strong>Medium stages – during model building</strong></p>
 <ul class="simple">
-<li>10-20 cycles</li>
-<li>Optimise additional parameters like NCS, TLS, etc</li>
-<li>Once your Rfree is lower than 40%, turn on twinning if twinned</li>
+<li><p>10-20 cycles</p></li>
+<li><p>Optimise additional parameters like NCS, TLS, etc</p></li>
+<li><p>Once your Rfree is lower than 40%, turn on twinning if twinned</p></li>
 </ul>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last"><strong>DON’T USE TWIN REFINEMENT IF YOUR Rfree IS HIGHER THAN 40%!</strong></p>
+<p class="admonition-title">Warning</p>
+<p><strong>DON’T USE TWIN REFINEMENT IF YOUR Rfree IS HIGHER THAN 40%!</strong></p>
 </div>
 <ul class="simple">
-<li>Play with geometry weight parameter</li>
+<li><p>Play with geometry weight parameter</p></li>
 </ul>
 <p><strong>Final stages of refinement</strong></p>
 <ul class="simple">
-<li>Use optimal additional parameters</li>
-<li>If geometrical quality of the model is not optimal, further play with parameters like geometry weight.</li>
+<li><p>Use optimal additional parameters</p></li>
+<li><p>If geometrical quality of the model is not optimal, further play with parameters like geometry weight.</p></li>
 </ul>
 <p><em>Before applying bulk solvent scaling and including all low resolution data, check your distribution of &lt;F&gt; looks sensible. A good way to check this is to look at a &lt;Fsq&gt; plot against resolution.</em></p>
 <p>User may find further suggestions about improving your refinement strategy in Refmac output =&gt; <strong>Verdict</strong></p>
-
-
-<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this headline">¶</a></h2>
-
-<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="model-parameterisation">
+<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Link to this heading">¶</a></h2>
+<section id="b-factors">
+<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Link to this heading">¶</a></h3>
 <blockquote>
-<div><strong>describe relative positional uncertainty</strong></div></blockquote>
+<div><p><strong>describe relative positional uncertainty</strong></p>
+</div></blockquote>
 <p>Atomic displacement parameters, or B-values, are an integral part of atomic models. They reﬂect the mobility of atoms.</p>
 <p>Atomic B-factors can be modelled in a different way according to the quality of the data: <strong>anisotropic</strong> (6 parameters per atom, for better than 1.5 Å resolution), <strong>isotropic</strong> (1 parameter per atom, for more then 1.5 Å resolution ), <strong>overall</strong> B-factor (for more then 5 Å resolution), (<strong>TLS</strong> (20 parameters per group of atoms).</p>
 <p><em>B-factors are sometimes also referred to as atomic displacement parameters (ADPs) or thermal/temperature factors</em></p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Should not compare atomic B-factors between different models</p>
+<p class="admonition-title">Note</p>
+<p>Should not compare atomic B-factors between different models</p>
 </div>
 <p>B-values have various roles:</p>
 <blockquote>
 <div><ul>
-<li><p class="first">They reﬂect atomic mobility, thus refinement the B-values increases the agreement between the observed data and the refined model;</p>
-</li>
-<li><p class="first">When atoms are incorrectly placed, the atomic B-values become large. This indicates reﬂecting errors in the model.</p>
+<li><p>They reﬂect atomic mobility, thus refinement the B-values increases the agreement between the observed data and the refined model;</p></li>
+<li><p>When atoms are incorrectly placed, the atomic B-values become large. This indicates reﬂecting errors in the model.</p>
 <blockquote>
 <div><p>It generally expected for neighboring atoms to have similar B-values in regions where modeled atoms are positioned sufficiently accurately. If neighboring atoms have wildly different B-values after refinement, it usually means that some of the atoms are either in the wrong place; or  otherwise incorrectly parameterized (e.g., the occupancies and/or element types for some of the atoms are wrong).</p>
 <p>B-values of bonded atoms will be more similar to each other than those of atoms that are spatially close but non-bonded.</p>
@@ -619,24 +618,23 @@
 <p>One of the problems with absolute atomic B-values is that if one adds/removes a constant B-value to/from all atoms then the average B-value will change accordingly. If there are no negative B-values as a result of such an operation then it will only affect the scale of observed versus calculated structure factors, as well as causing the resultant density map to be blurred/sharpened. Consequently, one can manipulate the B-values of atoms (or structure factors) without changing the information content of the data.</p>
 <blockquote>
 <div><ul class="simple">
-<li>Average B-values or Wilson B-values are not good indicators of data quality/resolution.</li>
-<li>Restraints based on B-values may not be accurate if they involve anything other than the differences between B-values</li>
+<li><p>Average B-values or Wilson B-values are not good indicators of data quality/resolution.</p></li>
+<li><p>Restraints based on B-values may not be accurate if they involve anything other than the differences between B-values</p></li>
 </ul>
 </div></blockquote>
-
-
-<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="tls-groups">
+<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Link to this heading">¶</a></h3>
 <blockquote>
-<div><strong>describe anisotropic motion</strong></div></blockquote>
+<div><p><strong>describe anisotropic motion</strong></p>
+</div></blockquote>
 <p><a class="reference external" href="http://skuld.bmsc.washington.edu/~tlsmd/" rel="noopener noreferrer" target="_blank">TLS Motion Determination (TLSMD)</a> analyzes a macromolecular crystal structure for evidence of flexibility, e.g. local or inter-domain motions. It does this by partitioning individual chains into multiple segments that are modeled as rigid bodies undergoing TLS (Translation/Libration/Screw) vibrational (anisotropic) motion. It generates all possible partitions up to a maximum number of segments. Each trial partition is scored by how well it explains the observed atomic displacement parameters (<strong>B values</strong>) that came out of crystallographic refinement.</p>
 <p>Suitable for medium resolution, when full anisotropy is impossible
 Per group (20 parameters):</p>
 <ul>
-<li><p class="first"><strong>Translation</strong> – 6 parameters</p>
-</li>
-<li><p class="first"><strong>Libration</strong> – 6 parameters</p>
-</li>
-<li><p class="first"><strong>Screw rotation</strong> – 8 parameters</p>
+<li><p><strong>Translation</strong> – 6 parameters</p></li>
+<li><p><strong>Libration</strong> – 6 parameters</p></li>
+<li><p><strong>Screw rotation</strong> – 8 parameters</p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">TLS</span> <span class="pre">refinement</span> <span class="pre">is</span> <span class="pre">useful</span> <span class="pre">when</span> <span class="pre">there</span> <span class="pre">is</span> <span class="pre">NCS.</span> <span class="pre">It</span> <span class="pre">is</span> <span class="pre">often</span> <span class="pre">the</span> <span class="pre">case</span> <span class="pre">that</span> <span class="pre">different</span> <span class="pre">copies</span> <span class="pre">of</span> <span class="pre">a</span> <span class="pre">molecule</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">asymmetric</span> <span class="pre">unit</span> <span class="pre">have</span> <span class="pre">different</span> <span class="pre">overall</span> <span class="pre">displacements.</span> <span class="pre">These</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">accounted</span> <span class="pre">for</span> <span class="pre">by</span> <span class="pre">refining</span> <span class="pre">TLS</span> <span class="pre">parameters</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">molecule.</span> <span class="pre">The</span> <span class="pre">residual</span> <span class="pre">atomic</span> <span class="pre">displacement</span> <span class="pre">parameters</span> <span class="pre">(B</span> <span class="pre">factors)</span> <span class="pre">should</span> <span class="pre">then</span> <span class="pre">be</span> <span class="pre">similar</span> <span class="pre">between</span> <span class="pre">molecules,</span> <span class="pre">and</span> <span class="pre">NCS</span> <span class="pre">restraints</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">applied</span> <span class="pre">between</span> <span class="pre">them.</span></code></p>
 </div></blockquote>
@@ -645,125 +643,134 @@ Per group (20 parameters):</p>
 <p><em>TLS rigid body model is highly dependent on the quality of the crystal lattice, and conformational flexibility unique to the protein.</em></p>
 <blockquote>
 <div><div class="toggle-header docutils container">
-<strong>more</strong></div>
+<p><strong>more</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
-<div>TLS (Translation/Libration/Screw) is a mathematical model that predicts the local positional displacement of atoms in a crystal structure based on an underlying assumption that each atom acts as a member of a rigid body that is displaced normally about a mean position. This displacement is seen crystallographically as non-spherical electron density at the atomic positions. The net displacement results both from actual vibration of the molecule in the crystal and from the static disorder within the crystal lattice that results from trapping different microconformers of the molecule in different unit cells making up the crystal lattice. The TLS formalism was originally developed to confirm rigid body displacement for small molecule crystallography, which yields high resolution data and precise anisotropic thermal parameters. Its success in predicting the thermal parameters for small molecules makes it tempting for use in macromolecular crystallography where it could potentially be used to find domain and loop flexibility in proteins; however, the challenges in applying the TLS model to macromolecular structures are different than those encountered with small molecules. Most macromolecular structures do not diffract to a high enough resolution to solve for individual atomic anisotropic thermal parameters (six per atom), so isotropic thermal parameters (one per atom) are used instead.</div></blockquote>
+<div><p>TLS (Translation/Libration/Screw) is a mathematical model that predicts the local positional displacement of atoms in a crystal structure based on an underlying assumption that each atom acts as a member of a rigid body that is displaced normally about a mean position. This displacement is seen crystallographically as non-spherical electron density at the atomic positions. The net displacement results both from actual vibration of the molecule in the crystal and from the static disorder within the crystal lattice that results from trapping different microconformers of the molecule in different unit cells making up the crystal lattice. The TLS formalism was originally developed to confirm rigid body displacement for small molecule crystallography, which yields high resolution data and precise anisotropic thermal parameters. Its success in predicting the thermal parameters for small molecules makes it tempting for use in macromolecular crystallography where it could potentially be used to find domain and loop flexibility in proteins; however, the challenges in applying the TLS model to macromolecular structures are different than those encountered with small molecules. Most macromolecular structures do not diffract to a high enough resolution to solve for individual atomic anisotropic thermal parameters (six per atom), so isotropic thermal parameters (one per atom) are used instead.</p>
+</div></blockquote>
 </div>
 </div></blockquote>
-
-
-<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="solvent-model">
+<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Link to this heading">¶</a></h3>
 <blockquote>
-<div><strong>estimation of the bulk solvent contribution to the diffraction</strong></div></blockquote>
+<div><p><strong>estimation of the bulk solvent contribution to the diffraction</strong></p>
+</div></blockquote>
 <p>Typically, a significant part of a macromolecular crystal is occupied by disordered (bulk) solvent, whose contribution to low resolution reflections is quite significant. An atomic model of a macromolecule without the contribution of the bulk solvent cannot describe these low resolution diffraction data correctly.</p>
 <p><em>low resolution reflections being less sensitive to model imperfection (including the errors in its orientation) are extremely useful for the solution of the translation problem.</em></p>
 <p>Two types solvent parameters are present:</p>
 <ul>
-<li><p class="first"><strong>Simple</strong> - Mask-based bulk solvent correction (default)</p>
+<li><p><strong>Simple</strong> - Mask-based bulk solvent correction (default)</p>
 <blockquote>
 <div><p><em>The contribution of bulk solvent to structure factors is strongest at low resolution, although its effect at high resolution is still non-negligible.</em></p>
 <p>Mask-based bulk solvent correction</p>
 <ul class="simple">
-<li>Protein region is masked out</li>
-<li>Solvent region is flattened (set to constant)</li>
-<li>Structure factors for solvent are calculated: Fsolvent</li>
+<li><p>Protein region is masked out</p></li>
+<li><p>Solvent region is flattened (set to constant)</p></li>
+<li><p>Structure factors for solvent are calculated: Fsolvent</p></li>
 </ul>
-<a class="reference internal image-reference" href="_images/doc.task.refmac5.solvent_model.png"><img alt="_images/doc.task.refmac5.solvent_model.png" src="_images/doc.task.refmac5.solvent_model.png" style="width: 576.9px; height: 239.4px;"/></a>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.solvent_model.png"><img alt="_images/doc.task.refmac5.solvent_model.png" src="_images/doc.task.refmac5.solvent_model.png" style="width: 576.9px; height: 239.4px;"/>
+</a>
 <p><em>Mask based bulk solvent is a standard in all refinement programs. In refmac it is default.</em></p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>Bulk</strong> - Babinet’s bulk solvent correction <a class="reference external" href="https://doi.org/10.1016/S0076-6879(97)77017-4" rel="noopener noreferrer" target="_blank">[Tronrud 1997]</a></p>
+<li><p><strong>Bulk</strong> - Babinet’s bulk solvent correction <a class="reference external" href="https://doi.org/10.1016/S0076-6879(97)77017-4" rel="noopener noreferrer" target="_blank">[Tronrud 1997]</a></p>
 <blockquote>
 <div><ul class="simple">
-<li>At low resolution electron density is flat</li>
-<li>Solvent and protein regions differ only by density height</li>
+<li><p>At low resolution electron density is flat</p></li>
+<li><p>Solvent and protein regions differ only by density height</p></li>
 </ul>
-<a class="reference internal image-reference" href="_images/doc.task.refmac5.Bulk_solventpng.png"><img alt="_images/doc.task.refmac5.Bulk_solventpng.png" src="_images/doc.task.refmac5.Bulk_solventpng.png" style="width: 558.0px; height: 302.4px;"/></a>
+<a class="reference internal image-reference" href="_images/doc.task.refmac5.Bulk_solventpng.png"><img alt="_images/doc.task.refmac5.Bulk_solventpng.png" src="_images/doc.task.refmac5.Bulk_solventpng.png" style="width: 558.0px; height: 302.4px;"/>
+</a>
 </div></blockquote>
 </li>
 </ul>
-
-
-
-<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="restraints">
+<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Link to this heading">¶</a></h2>
 <p>Standard restraints (used by default) include:</p>
 <ul class="simple">
-<li>Bond lengths</li>
-<li>Angles</li>
-<li>Chirals</li>
-<li>Planes</li>
-<li>Some torsion angles</li>
-<li>B-values</li>
-<li>VDW repulsions</li>
+<li><p>Bond lengths</p></li>
+<li><p>Angles</p></li>
+<li><p>Chirals</p></li>
+<li><p>Planes</p></li>
+<li><p>Some torsion angles</p></li>
+<li><p>B-values</p></li>
+<li><p>VDW repulsions</p></li>
 </ul>
 <p>These help to ensure that the model is chemically sensible</p>
 <blockquote>
-<div><em>we generally deal with restraints, not constraints.</em></div></blockquote>
-
-<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this headline">¶</a></h3>
+<div><p><em>we generally deal with restraints, not constraints.</em></p>
+</div></blockquote>
+<section id="ncs-non-crystallographic-symmetry-restraints">
+<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Link to this heading">¶</a></h3>
 <p><em>Used if there are two copies of the same molecule present.</em></p>
 <ul>
-<li><p class="first"><strong>Local NCS restraints</strong>  ( <em>Useful only for high resolution data</em> )</p>
+<li><p><strong>Local NCS restraints</strong>  ( <em>Useful only for high resolution data</em> )</p>
 <blockquote>
 <div><p><strong>making the list of corresponding interatomic distances (removing bond and angle related atom pairs)</strong></p>
 <ul class="simple">
-<li>Molecules are assumed to be locally similar</li>
-<li>However, they may adopt (slightly) different global conformations</li>
-<li>Restrain differences between local interatomic distances</li>
+<li><p>Molecules are assumed to be locally similar</p></li>
+<li><p>However, they may adopt (slightly) different global conformations</p></li>
+<li><p>Restrain differences between local interatomic distances</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 <p><strong>Should be used if between domain movement are expected</strong></p>
 <ul>
-<li><p class="first"><strong>Global NCS restraints</strong> (i.e. restraints based on RMS between atoms of aligned chains)</p>
+<li><p><strong>Global NCS restraints</strong> (i.e. restraints based on RMS between atoms of aligned chains)</p>
 <blockquote>
 <div><p><strong>identifying domains</strong></p>
 <ul class="simple">
-<li>Molecules are superimposed</li>
-<li>Difference between atoms are minimized</li>
+<li><p>Molecules are superimposed</p></li>
+<li><p>Difference between atoms are minimized</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
-
-
-<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="jelly-body-restraints">
+<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Link to this heading">¶</a></h3>
 <p>The effect of “jelly-body” restraints is the implicit parameterization between the rigid body and individual atoms.</p>
-<dl class="docutils">
+<dl class="simple">
 <dt>Jelly-body restraints</dt><dd><ul class="simple">
-<li>Does not change likelihood function.</li>
-<li>Does change 2 <sup>nd</sup> derivative - curvature, thus changing the search direction.</li>
+<li><p>Does not change likelihood function.</p></li>
+<li><p>Does change 2 <sup>nd</sup> derivative - curvature, thus changing the search direction.</p></li>
 </ul>
 </dd>
 </dl>
-<a class="reference internal image-reference" href="_images/jelly-body_restraints.png"><img alt="_images/jelly-body_restraints.png" src="_images/jelly-body_restraints.png" style="width: 562.5px; height: 72.89999999999999px;"/></a>
+<a class="reference internal image-reference" href="_images/jelly-body_restraints.png"><img alt="_images/jelly-body_restraints.png" src="_images/jelly-body_restraints.png" style="width: 562.5px; height: 72.89999999999999px;"/>
+</a>
 <p>t <sub>m</sub> denotes the current value calculated from the current model;</p>
 <p>t <sub>i</sub> denotes the ideal/target value (either tabulated in a dictionary or calculated from reference homologous structures);</p>
 <p>w(t <sub>m</sub> ,t <sub>i</sub>) is an additional weighting factor that may depend on the current value calculated from the model.</p>
 <blockquote>
-<div>Usually, w(t <sub>m</sub> ,t <sub>i</sub>) = 1 except when robust estimators are used, as well as for non-bonding interactions. For non-bonding interactions, w(t <sub>m</sub> ,t <sub>i</sub> ) = 1 when t <sub>m</sub> &lt; t <sub>i</sub> and 0 otherwise.</div></blockquote>
+<div><p>Usually, w(t <sub>m</sub> ,t <sub>i</sub>) = 1 except when robust estimators are used, as well as for non-bonding interactions. For non-bonding interactions, w(t <sub>m</sub> ,t <sub>i</sub> ) = 1 when t <sub>m</sub> &lt; t <sub>i</sub> and 0 otherwise.</p>
+</div></blockquote>
 <p>σ represents target uncertainty (standard deviation), and is usually listed alongside the “ideal” values in the <a class="reference external" href="https://doi.org/10.1107/S0907444904023510" rel="noopener noreferrer" target="_blank">pre-tabulated dictionary</a>.</p>
 <p>d <sub>m</sub> and d <sub>c</sub> denote the current and ideal values of interatomic distances in the model.</p>
 <blockquote>
-<div>At every cycle of refinement d <sub>c</sub> = d <sub>m</sub>, i.e., the current values of the interatomic distances are always taken as the ideal values.</div></blockquote>
+<div><p>At every cycle of refinement d <sub>c</sub> = d <sub>m</sub>, i.e., the current values of the interatomic distances are always taken as the ideal values.</p>
+</div></blockquote>
 <p>The purpose of this term is to keep the local conformation of the molecule intact, while allowing groups of atoms (e.g., secondary structures,
 domains) to move in a concerted fashion. This helps to avoid local minima, increasing the radius of convergence of refinement. Were all pairs of distances restrained with large weights, then the only allowed movement would be a rigid-body movement with six parameters for each domain, i.e., refinement would be reduced to rigid-body fitting. In practice, restraining interatomic distances up to 4.2 Å with σ = 0.01 or 0.02 Å works sufficiently well for a large class of problems.</p>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last"><code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">many</span> <span class="pre">cycles</span> <span class="pre">(up</span> <span class="pre">to</span> <span class="pre">200</span> <span class="pre">with</span> <span class="pre">jelly</span> <span class="pre">body</span> <span class="pre">restraints)</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">early</span> <span class="pre">stage</span> <span class="pre">of</span> <span class="pre">refinement</span> <span class="pre">(e.g.</span> <span class="pre">straight</span> <span class="pre">after</span> <span class="pre">MR)</span></code></p>
+<p class="admonition-title">Tip</p>
+<p><code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">many</span> <span class="pre">cycles</span> <span class="pre">(up</span> <span class="pre">to</span> <span class="pre">200</span> <span class="pre">with</span> <span class="pre">jelly</span> <span class="pre">body</span> <span class="pre">restraints)</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">early</span> <span class="pre">stage</span> <span class="pre">of</span> <span class="pre">refinement</span> <span class="pre">(e.g.</span> <span class="pre">straight</span> <span class="pre">after</span> <span class="pre">MR)</span></code></p>
 </div>
-
-
-<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="fourier-shell-correlation-fsc">
+<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Link to this heading">¶</a></h3>
 <p>Fourier shell correlation measures the normalised cross-correlation coefficient between two 3-dimensional volumes over corresponding shells in Fourier space.  FSC calculated over all structure factors.</p>
 <p>The main idea:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Correlation between volumes can be written as a product in Fourier space</li>
-<li>The Fourier space product can be split into shells by radial frequency</li>
-<li>Compute plot of correlation versus frequency</li>
+<li><p>Correlation between volumes can be written as a product in Fourier space</p></li>
+<li><p>The Fourier space product can be split into shells by radial frequency</p></li>
+<li><p>Compute plot of correlation versus frequency</p></li>
 </ul>
 </div></blockquote>
 <p>For “good” maps the FSC would be higher. If we had two maps, and could calculate the FSC between these maps and the “true” maps, then we would prefer the one that had the higher FSC.</p>
@@ -772,13 +779,13 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
 <p>With random amplitudes but exact phases, the correlation between the current and “true” maps will be ~78.5%. When phases are random then the FSC will be 0, irrespective of the accuracy of the amplitudes.</p>
 <p><code class="docutils literal notranslate"><span class="pre">For</span> <span class="pre">FSC</span> <span class="pre">value</span> <span class="pre">is</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">0.785,</span> <span class="pre">if</span> <span class="pre">we</span> <span class="pre">know</span> <span class="pre">that</span> <span class="pre">the</span> <span class="pre">structure</span> <span class="pre">factors</span> <span class="pre">have</span> <span class="pre">no</span> <span class="pre">information</span> <span class="pre">about</span> <span class="pre">the</span> <span class="pre">crystal</span> <span class="pre">we</span> <span class="pre">are</span> <span class="pre">analysing,</span> <span class="pre">then</span> <span class="pre">it</span> <span class="pre">might</span> <span class="pre">be</span> <span class="pre">better</span> <span class="pre">to</span> <span class="pre">replace</span> <span class="pre">the</span> <span class="pre">observations</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">expected</span> <span class="pre">value</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">amplitudes.</span></code></p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Using anything other than the expected amplitude will cause sudden jumps in the power spectrum of the Fourier series, resulting in ripples in the map. If absent reﬂections are to be replaced by a constant value then the value must be equal to the expected amplitude (for that resolution).</p>
+<p class="admonition-title">Note</p>
+<p>Using anything other than the expected amplitude will cause sudden jumps in the power spectrum of the Fourier series, resulting in ripples in the map. If absent reﬂections are to be replaced by a constant value then the value must be equal to the expected amplitude (for that resolution).</p>
 </div>
 <p>We may have <strong>exact phases and nonrandom amplitudes</strong>:  if the correlation between the E-values of the current and “true” structure factors is larger than 47% then it makes sense to use these data, otherwise, it is better to replace the observed amplitudes with FC for map calculation.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This 47% threshold is a theoretical value, calculated under the assumption that phases are exact, and amplitudes correspond to a crystal. It is also interesting to note that this result indicates that if the isomorphism between two crystals is 47% then it is possible to use data from one of the crystals to restore missing data from the other.</p>
+<p class="admonition-title">Note</p>
+<p>This 47% threshold is a theoretical value, calculated under the assumption that phases are exact, and amplitudes correspond to a crystal. It is also interesting to note that this result indicates that if the isomorphism between two crystals is 47% then it is possible to use data from one of the crystals to restore missing data from the other.</p>
 </div>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
 <p>This article uses materials kindly provided by Dr. Robert Nicholls and Dr. Garib Murshudov, whose help is greatly appreciated.</p>
@@ -786,9 +793,9 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798323002413" rel="noopener noreferrer" target="_blank">Yamashita, K., Wojdyr, M., Long, F., Nicholls, R. A. &amp; Murshudov, G. N. (2023). Acta Cryst. D79, 368-373</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911001314" rel="noopener noreferrer" target="_blank">Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367;</a></p>
 <p><a class="reference external" href="https://doi.org/10.1007/978-1-4939-7000-1_23" rel="noopener noreferrer" target="_blank">Nicholls R.A., Kovalevskiy O., Murshudov G.N. (2017). Methods Mol Biol. 1607: 565-593.</a></p>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>
@@ -833,7 +840,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
