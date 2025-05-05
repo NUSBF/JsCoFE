@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>Automatic Image Processing with Xia-2 &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -393,29 +392,29 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-xia2--page-root">Automatic Image Processing with Xia-2<a class="headerlink" href="#doc-task-xia2--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="automatic-image-processing-with-xia-2">
+<h1 id="doc-task-xia2--page-root">Automatic Image Processing with Xia-2<a class="headerlink" href="#doc-task-xia2--page-root" title="Link to this heading">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889809045701" rel="noopener noreferrer" target="_blank">Xia-2</a> is a system for macromolecular crystallography data reduction, which builds on existing software to automate the complete data reduction process from images to merged structure factor amplitudes. XIA-2 automatically identifies multi-wedge, multi-pass and multi-wavelength data sets.</p>
-
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<section id="input">
+<h2 id="input">Input<a class="headerlink" href="#input" title="Link to this heading">¶</a></h2>
 <p>Although Xia-2 can operate in a completely automatic way, there are some options that can be defined manually on the input page. One can specify the data set and sweep ranges, define the name of the resulting data set, specify the implied heavy atom type (if present).
 The type of <strong>processing pipeline</strong> ( <a class="reference internal" href="doc.task.iMosflm.html"><span class="doc">Mosfilm</span></a> with <a class="reference internal" href="doc.task.Aimless.html"><span class="doc">Aimless</span></a>, <a class="reference external" href="https://xds.mr.mpg.de/" rel="noopener noreferrer" target="_blank">XDS</a> with <a class="reference external" href="https://strucbio.biologie.uni-konstanz.de/xdswiki/index.php/Xscale" rel="noopener noreferrer" target="_blank">XSCALE</a>, <a class="reference internal" href="doc.task.DUI.html"><span class="doc">DIALS</span></a> ) may be chosen in the <strong>Advanced section</strong>.</p>
-
-
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="output">
+<h2 id="output">Output<a class="headerlink" href="#output" title="Link to this heading">¶</a></h2>
 <p>The Xia-2 processing report varies according to the <strong>processing pipeline</strong> chosen.</p>
 <ul class="simple">
-<li>Check graphs - they should vary smoothly without obvious discontinuities. If there are discontinuities in the graphs, they often occur around the same images for different graphs. Look at any images in the region of the discontinuities and see if there is anything obviously wrong with them</li>
-<li>I/sigma(I) at high resolution limit (~0.2Å) should be ≳1. If the graphs, corresponding to I/sigma(I), fall gradually to lower values towards the end of the dataset, it is usually an indication that the crystal is exhibiting radiation damage.</li>
-<li>Check the half-dataset correlation coefficient: <strong>CC1/2</strong> measures correlation between two subsets of observations split randomly in halves. <strong>CC1/2 = 1</strong> corresponds to perfect correlation, <strong>CC1/2 = 0</strong> means no correlation. <em>Recommended cut-off value is between 0.3 and 0.5.</em></li>
-<li>Signal/noise estimates:<strong>I/sig(I)</strong> depends on σ(I), which is not entirely reliable. It is advised to cut resolution at &lt;I/σ(I)&gt; = 1 – 2 (shown in plots as Mn(I/sd))</li>
-<li>R-factors (<strong>Rmerge, Rpim, Rmeas</strong>) shouldn’t be used to determine resolution cutoffs.</li>
+<li><p>Check graphs - they should vary smoothly without obvious discontinuities. If there are discontinuities in the graphs, they often occur around the same images for different graphs. Look at any images in the region of the discontinuities and see if there is anything obviously wrong with them</p></li>
+<li><p>I/sigma(I) at high resolution limit (~0.2Å) should be ≳1. If the graphs, corresponding to I/sigma(I), fall gradually to lower values towards the end of the dataset, it is usually an indication that the crystal is exhibiting radiation damage.</p></li>
+<li><p>Check the half-dataset correlation coefficient: <strong>CC1/2</strong> measures correlation between two subsets of observations split randomly in halves. <strong>CC1/2 = 1</strong> corresponds to perfect correlation, <strong>CC1/2 = 0</strong> means no correlation. <em>Recommended cut-off value is between 0.3 and 0.5.</em></p></li>
+<li><p>Signal/noise estimates:<strong>I/sig(I)</strong> depends on σ(I), which is not entirely reliable. It is advised to cut resolution at &lt;I/σ(I)&gt; = 1 – 2 (shown in plots as Mn(I/sd))</p></li>
+<li><p>R-factors (<strong>Rmerge, Rpim, Rmeas</strong>) shouldn’t be used to determine resolution cutoffs.</p></li>
 </ul>
 <p><strong>Rmerge</strong>: traditional overall measure of quality. In case of low intensity values, it always has a high value. In case of high intensity values, <strong>Rmerge</strong> should be in the range of 0.01 to 0.04.</p>
 <blockquote>
 <div><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Rmerge increases with multiplicity although the data improves (tends to infinity as data gets weaker).</p>
+<p class="admonition-title">Note</p>
+<p>Rmerge increases with multiplicity although the data improves (tends to infinity as data gets weaker).</p>
 </div>
 </div></blockquote>
 <p><strong>Rmerge</strong> should be relatively stable across all batches. Larger values indicate the presence of systematic errors.</p>
@@ -428,8 +427,8 @@ The type of <strong>processing pipeline</strong> ( <a class="reference internal"
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0021889809045701" rel="noopener noreferrer" target="_blank">Winter, G. (2010). J. Appl. Cryst. 43, 186-190.</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/" rel="noopener noreferrer" target="_blank">Karplus, A. and Diederichs, K. (2015) Curr Opin Struct Biol. 34, 60–68.</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -474,7 +473,7 @@ The type of <strong>processing pipeline</strong> ( <a class="reference internal"
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

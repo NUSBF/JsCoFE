@@ -8,7 +8,7 @@ Written by: Rob Nicholls
 Preliminary notes
 -----------------
 
-* It is essential for this tutorial that CCP4 Cloud is used in remote |ccp4cloud_remote| or desktop |ccp4cloud_desktop| mode.
+* It is essential for this tutorial that CCP4 Cloud is used in remote |ccp4cloud_remote| or local |ccp4cloud_desktop| mode.
 
 .. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
    :width: 20

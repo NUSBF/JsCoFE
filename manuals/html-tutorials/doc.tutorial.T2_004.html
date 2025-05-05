@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>Protein-ligand structure determination by Molecular Replacement &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -302,22 +301,22 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-004--page-root">Protein-ligand structure determination by Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-004--page-root" title="Permalink to this headline">¶</a></h1>
-
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+  <section id="protein-ligand-structure-determination-by-molecular-replacement">
+<h1 id="doc-tutorial-t2-004--page-root">Protein-ligand structure determination by Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-004--page-root" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
 <p>In this tutorial, we will guide you through the process of determining a protein-ligand structure using Molecular Replacement (MR) followed up by ligand fitting and refinement.</p>
-
-
-<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="steps">
+<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look at the import’s task output.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code> Since we have unmerged data imported. First step would be merging them with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html" rel="noopener noreferrer" target="_blank">Aimless</a>: <strong>add next job =&gt; All tasks =&gt; Data Processing =&gt; Merging and Scaling with Aimless</strong>. Run the task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> or type <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>. Run the task</p>
 <p>After the task is finished, please, investigate the output it created. Every task in CCP4 Cloud produces a report. Here we can see that Matthew’s coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.</p>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry). In this tutorial we will use automated molecular replacement task <a class="reference external" href="..html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">Auto-MR with MrBump</a>. Go to all tasks =&gt; Molecular Replacement =&gt; Automated Molecular Replacement =&gt; Auto-MR with MrBump</p>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -338,7 +337,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

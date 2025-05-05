@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>5. Transferring data to CCP4 Cloud via Globus &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -351,40 +350,46 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="jscofe-globus--page-root"><span class="section-number">5. </span>Transferring data to CCP4 Cloud via Globus<a class="headerlink" href="#jscofe-globus--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="transferring-data-to-ccp4-cloud-via-globus">
+<h1 id="jscofe-globus--page-root"><span class="section-number">5. </span>Transferring data to CCP4 Cloud via Globus<a class="headerlink" href="#jscofe-globus--page-root" title="Link to this heading">¶</a></h1>
 <p>Globus is a system that allows the transfer of large amounts of data via a web based GUI. Many synchrotrons and other facilities make their data available via Globus. CCP4 Cloud has a Globus Endpoint allowing transfer of your data from experiments directly into CCP4 Cloud for processing.</p>
 <p><strong>Note</strong>: Data sent to CCP4 Cloud via Globus is stored temporarily. Please do not rely on this for permanent storage of data.</p>
-
-<h2 id="authenticating-with-the-ccp4-cloud-globus-endpoint"><span class="section-number">5.1. </span>Authenticating with the CCP4 Cloud Globus Endpoint<a class="headerlink" href="#authenticating-with-the-ccp4-cloud-globus-endpoint" title="Permalink to this headline">¶</a></h2>
+<section id="authenticating-with-the-ccp4-cloud-globus-endpoint">
+<h2 id="authenticating-with-the-ccp4-cloud-globus-endpoint"><span class="section-number">5.1. </span>Authenticating with the CCP4 Cloud Globus Endpoint<a class="headerlink" href="#authenticating-with-the-ccp4-cloud-globus-endpoint" title="Link to this heading">¶</a></h2>
 <p>To send data to CCP4 Cloud via Globus, you need to link your CCP4 Cloud account with a Globus ID.</p>
 <p>To start, please navigate to <a class="reference external" href="https://app.globus.org" rel="noopener noreferrer" target="_blank">https://app.globus.org</a> and login/signup.</p>
 <p>The CCP4 Cloud Globus Endpoint allows users to authenticate via an <em>stfc.ac.uk</em> or <em>globusid.org</em> account. If you have a Globus account with another login provider, you will be prompted to link either an <em>stfc.ac.uk</em> or <em>globusid.org</em> account when connecting to the CCP4 Cloud collection.</p>
 <p>To link your CCP4 Cloud account to your Globus account, you will first need your Globus ID which can be retrieved from <a class="reference external" href="https://app.globus.org" rel="noopener noreferrer" target="_blank">https://app.globus.org</a>.
 Navigate on the left to <strong>Settings</strong> and you will see the identities linked to your Globus account. You need to copy the ID associated with either a <em>globusid.org</em> or <em>stfc.ac.uk</em> identity.</p>
-<a class="reference internal image-reference" href="_images/globus_identifier.png"><img alt="_images/globus_identifier.png" class="align-center" src="_images/globus_identifier.png" style="width: 940.0px; height: 635.2px;"/></a>
+<a class="reference internal image-reference" href="_images/globus_identifier.png"><img alt="_images/globus_identifier.png" class="align-center" src="_images/globus_identifier.png" style="width: 940.0px; height: 635.2px;"/>
+</a>
 <p>This value needs to be added to your CCP4 Cloud account which is accessible from your <strong>My Account</strong> page on CCP4 Cloud as shown here:</p>
-<a class="reference internal image-reference" href="_images/globus_ccp4cloud.png"><img alt="_images/globus_ccp4cloud.png" class="align-center" src="_images/globus_ccp4cloud.png" style="width: 824.0px; height: 511.20000000000005px;"/></a>
+<a class="reference internal image-reference" href="_images/globus_ccp4cloud.png"><img alt="_images/globus_ccp4cloud.png" class="align-center" src="_images/globus_ccp4cloud.png" style="width: 824.0px; height: 511.20000000000005px;"/>
+</a>
 <p>Once this is done go back to <a class="reference external" href="https://app.globus.org" rel="noopener noreferrer" target="_blank">https://app.globus.org</a> and choose <strong>File Manager</strong>. This is the main interface for transferring data between systems.
 You have two panes, which you can copy data between.  The CCP4 Cloud collection is called “CCP4 Cloud”. You can click in the <em>Collection</em> box to bring up the search:</p>
-<a class="reference internal image-reference" href="_images/globus_filemanager.png"><img alt="_images/globus_filemanager.png" class="align-left" src="_images/globus_filemanager.png" style="width: 522.72px; height: 224.64px;"/></a>
-<a class="reference internal image-reference" href="_images/globus_collection.png"><img alt="_images/globus_collection.png" class="align-right" src="_images/globus_collection.png" style="width: 418.56px; height: 196.32px;"/></a>
-
-
-<h2 id="copying-data-to-ccp4-cloud-via-globus"><span class="section-number">5.2. </span>Copying data to CCP4 Cloud via Globus<a class="headerlink" href="#copying-data-to-ccp4-cloud-via-globus" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/globus_filemanager.png"><img alt="_images/globus_filemanager.png" class="align-left" src="_images/globus_filemanager.png" style="width: 522.72px; height: 224.64px;"/>
+</a>
+<a class="reference internal image-reference" href="_images/globus_collection.png"><img alt="_images/globus_collection.png" class="align-right" src="_images/globus_collection.png" style="width: 418.56px; height: 196.32px;"/>
+</a>
+</section>
+<section id="copying-data-to-ccp4-cloud-via-globus">
+<h2 id="copying-data-to-ccp4-cloud-via-globus"><span class="section-number">5.2. </span>Copying data to CCP4 Cloud via Globus<a class="headerlink" href="#copying-data-to-ccp4-cloud-via-globus" title="Link to this heading">¶</a></h2>
 <p>If for example you want to copy data from Diamond, you can search for the Diamond collection in one pane, and choose the CCP4 Cloud collection in the other. You can then browse to the data you want to copy, select it, and then click <strong>Start</strong> to transfer. More details on accessing data at Diamond with Globus can be found at <a class="reference external" href="https://www.diamond.ac.uk/Users/Experiment-at-Diamond/IT-User-Guide/Not-at-DLS/Retrieve-data/in40days/Globus.html" rel="noopener noreferrer" target="_blank">https://www.diamond.ac.uk/Users/Experiment-at-Diamond/IT-User-Guide/Not-at-DLS/Retrieve-data/in40days/Globus.html</a></p>
 <p>You can also use Globus to copy data from your local system to CCP4 Cloud. To do this you need to install <strong>Globus Connect Personal</strong>. This is available for Windows, Mac OS X and Linux. Installation instructions can be found here: <a class="reference external" href="https://www.globus.org/globus-connect-personal" rel="noopener noreferrer" target="_blank">https://www.globus.org/globus-connect-personal</a></p>
-
-
-<h2 id="accessing-data-sent-via-globus-in-ccp4-cloud"><span class="section-number">5.3. </span>Accessing data sent via Globus in CCP4 Cloud<a class="headerlink" href="#accessing-data-sent-via-globus-in-ccp4-cloud" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="accessing-data-sent-via-globus-in-ccp4-cloud">
+<h2 id="accessing-data-sent-via-globus-in-ccp4-cloud"><span class="section-number">5.3. </span>Accessing data sent via Globus in CCP4 Cloud<a class="headerlink" href="#accessing-data-sent-via-globus-in-ccp4-cloud" title="Link to this heading">¶</a></h2>
 <p>Data transferred to CCP4 Cloud via Globus is available in CCP4 Cloud’s <strong>Cloud Storage</strong>.</p>
 <p>This data is available for some tasks in CCP4 Cloud, such as Xia-2. To choose your data from the Xia-2 task, make sure you have <strong>Cloud Storage</strong> selected as follows:</p>
-<a class="reference internal image-reference" href="_images/globus_xia2.png"><img alt="_images/globus_xia2.png" class="align-center" src="_images/globus_xia2.png" style="width: 921.6px; height: 639.2px;"/></a>
+<a class="reference internal image-reference" href="_images/globus_xia2.png"><img alt="_images/globus_xia2.png" class="align-center" src="_images/globus_xia2.png" style="width: 921.6px; height: 639.2px;"/>
+</a>
 <p>Then choose <strong>Browse</strong>. Your data sent by Globus is available in <strong>My Cloud Storage/globus</strong></p>
-<a class="reference internal image-reference" href="_images/globus_cloudstorage.png"><img alt="_images/globus_cloudstorage.png" class="align-center" src="_images/globus_cloudstorage.png" style="width: 344.8px; height: 188.8px;"/></a>
-
-
-<h2 id="troubleshooting"><span class="section-number">5.4. </span>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/globus_cloudstorage.png"><img alt="_images/globus_cloudstorage.png" class="align-center" src="_images/globus_cloudstorage.png" style="width: 344.8px; height: 188.8px;"/>
+</a>
+</section>
+<section id="troubleshooting">
+<h2 id="troubleshooting"><span class="section-number">5.4. </span>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
 <p><strong>Authentication Required</strong>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Session reauthentication required
 You must log in with an identity from one of the following domains in order to access CCP4 Cloud.
@@ -394,7 +399,8 @@ You must log in with an identity from one of the following domains in order to a
 </pre></div>
 </div>
 <p>You will get this message if you do not have an <em>stfc.ac.uk</em> or <em>globusid.org</em> identity linked with your Globus account. In this case you can click <strong>Continue</strong> and then create a <em>globusid.org</em> account or associate an existing stfc/globus identity with your account.</p>
-<a class="reference internal image-reference" href="_images/globus_auth.png"><img alt="_images/globus_auth.png" class="align-center" src="_images/globus_auth.png" style="width: 863.2px; height: 492.0px;"/></a>
+<a class="reference internal image-reference" href="_images/globus_auth.png"><img alt="_images/globus_auth.png" class="align-center" src="_images/globus_auth.png" style="width: 863.2px; height: 492.0px;"/>
+</a>
 <p><strong>Authentication Required</strong>:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Identity set contains an identity from an allowed domain,
 but it does not map to a valid username for this connector
@@ -402,9 +408,10 @@ but it does not map to a valid username for this connector
 </div>
 <p>If you get this, it likely means the wrong Globus ID has been used.
 You can view the details of the error and extract the ID Globus is sending and add that to your CCP4 Cloud user account.</p>
-<a class="reference internal image-reference" href="_images/globus_authdetails.png"><img alt="_images/globus_authdetails.png" class="align-center" src="_images/globus_authdetails.png" style="width: 810.4000000000001px; height: 514.4px;"/></a>
-
-
+<a class="reference internal image-reference" href="_images/globus_authdetails.png"><img alt="_images/globus_authdetails.png" class="align-center" src="_images/globus_authdetails.png" style="width: 810.4000000000001px; height: 514.4px;"/>
+</a>
+</section>
+</section>
 
 
           </article>
@@ -449,7 +456,7 @@ You can view the details of the error and extract the ID Globus is sending and a
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

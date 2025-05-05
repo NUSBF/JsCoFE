@@ -13,9 +13,9 @@ Beware that projects usually grow to a considerable size, from 100s MBs to few G
 advised about project size before downloading.
 
 
-.. note:: Web-only and Remote modes share same projects, while the Desktop mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between Desktop and server modes is through the explicit Export/Import procedure.
+.. note:: Web-only and Remote modes share same projects, while the Local mode has own set of projects. Local projects are not synced with the Web-only/Remote projects. The only way to exchange projects between Desktop and server modes is through the explicit Export/Import procedure.
 
-The |desktop| ccp4cloud-desktop mode may be conveniently used for collecting projects finished in Web-only/Remote modes. **After transferring projects to the** |desktop| **Desktop mode, they may be deleted in the server (remote) Cloud area in order to release the online disk space quota for new projects.** 
+The |desktop| ccp4cloud-local mode may be conveniently used for collecting projects finished in Web-only/Remote modes. **After transferring projects to the** |desktop| **Local mode, they may be deleted in the server (remote) Cloud area in order to release the online disk space quota for new projects.** 
 
 .. note:: Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.
 

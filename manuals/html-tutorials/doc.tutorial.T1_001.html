@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>2. Data processing and SAD phasing &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -304,25 +303,27 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t1-001--page-root"><span class="section-number">2. </span>Data processing and SAD phasing<a class="headerlink" href="#doc-tutorial-t1-001--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="data-processing-and-sad-phasing">
+<h1 id="doc-tutorial-t1-001--page-root"><span class="section-number">2. </span>Data processing and SAD phasing<a class="headerlink" href="#doc-tutorial-t1-001--page-root" title="Link to this heading">¶</a></h1>
 <p>This tutorial is based on a set of diffraction images collected from a crystal of selenomethionine-containing CD44 protein.</p>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code> The protein sequence has been already imported and can be found in the output of the <strong>Cloud Import</strong> task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code> The next step is to process diffraction images to obtain merged reflection dataset. This can be automatically with the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html" rel="noopener noreferrer" target="_blank">Automatic Image Processing with Xia2</a> task: <strong>add next job =&gt; All tasks =&gt; Data Processing =&gt; Automatic Image Processing with Xia-2</strong>.</p>
 <p><strong>Image directory</strong></p>
 <blockquote>
-<div><em>diffraction images are found in Cloud storage at the following path:</em> <strong>Tutorials/Tutorial data/1_from_images/cd44/images</strong></div></blockquote>
+<div><p><em>diffraction images are found in Cloud storage at the following path:</em> <strong>Tutorials/Tutorial data/1_from_images/cd44/images</strong></p>
+</div></blockquote>
 <p>Specify <strong>Se</strong> as <strong>Heavy atom type</strong> in the task input.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Resolution limits and Spacegroup are normally determined by Xia-2 automatically, but it is possible to override the automatic choice if necessary.</p>
+<p class="admonition-title">Note</p>
+<p>Resolution limits and Spacegroup are normally determined by Xia-2 automatically, but it is possible to override the automatic choice if necessary.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data only if heavy atom type is specified in task input parameters. Otherwise, only mean intensities will be computed.</p>
+<p class="admonition-title">Note</p>
+<p>Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data only if heavy atom type is specified in task input parameters. Otherwise, only mean intensities will be computed.</p>
 </div>
 <div class="toggle-header docutils container">
-<strong>Xia-2 report</strong></div>
+<p><strong>Xia-2 report</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p><strong>Look for the plot of CC(1/2) vs resolution</strong> (<strong>Dataset SAD</strong> =&gt; <strong>Analysis by resolution</strong> section). It shows the correlation coefficient between randomly selected half sets of the intensities in the dataset. Low (less than 0.5) values of CC(1/2) indicate internally inconsistent data (weak signal data) and <em>it is a good idea not to include such data from processing</em>. By default, Xia2 cuts off data at a resolution where CC(1/2) drops to 0.5 (some people are less conservative and select a cutoff closer to 0.35).</p>
@@ -336,14 +337,15 @@
 <p>When preparing the task for run, specify <strong>Se</strong> as <strong>Main anomalous scatterer</strong>.</p>
 <p>After the task finishes, inspect <strong>verdict</strong> section in the report page. The verdict will help you to assess the likelihood of having correct ASU composition.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">ASU composition remains a hypothesis until the structure is solved. It is not unusual to have it reconsidered in case of difficulties with phasing or refinement.</p>
+<p class="admonition-title">Note</p>
+<p>ASU composition remains a hypothesis until the structure is solved. It is not unusual to have it reconsidered in case of difficulties with phasing or refinement.</p>
 </div>
 <p>On output, the task creates the initial <strong>structure revision</strong>, containing only <strong>ASU definition</strong>  and <strong>merged HKL dataset</strong>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">5.</span></code> Once the Asymmetric Unit is defined and the initial structure revision is created, first approximation to phases may be computed. Finding initial phases in Experimental Phasing is a two-step procedure. In first step, anomalous signal in the reflection dataset is used to find the location of anomalous scatterers (the heavy-atom substructure). In second step, the reflection dataset and substructure found are used to estimate protein phases.</p>
 <p>The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task <strong>Substructure Search with SHELX via Crank-2</strong> in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (<strong>Substructure Search with SHELX-C/D</strong>). Let’s choose the first one: <strong>add next job =&gt; All tasks =&gt; Experimental phasing =&gt; Substructure Search with SHELX via Crank-2</strong>.</p>
 <div class="toggle-header docutils container">
-<strong>Output</strong></div>
+<p><strong>Output</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p><em>the task provides heavy atom substructure for calculating initial protein phases</em></p>
@@ -352,20 +354,23 @@
 </div></blockquote>
 </div>
 <div class="toggle-header docutils container">
-<strong>Substructure determination output</strong></div>
+<p><strong>Substructure determination output</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
-<div>Please find the report summary for the substructure determination under <strong>graph data</strong>.</div></blockquote>
+<div><p>Please find the report summary for the substructure determination under <strong>graph data</strong>.</p>
+</div></blockquote>
 </div>
 <div class="toggle-header docutils container">
-<strong>Result</strong>:</div>
+<p><strong>Result</strong>:</p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
 <div><p><strong>Judging from the scores obtained, there is a reasonable chance that the substructure has been correctly determined</strong></p>
 <p>A good indication that the substructure has been correctly determined is if CFOM reaches the <em>automatically set threshold</em> before the maximum number of cycles has been made.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">this indication may be invalid if automatic choice of CFOM threshold is overridden in the tasks input parameters.</p>
+<p class="admonition-title">Note</p>
+<p>this indication may be invalid if automatic choice of CFOM threshold is overridden in the tasks input parameters.</p>
 </div>
 <p>A clear separation between low-value and high-value CFOM distributions in the <strong>distribution of CFOM from trials</strong> graph is another an encouraging indication. In this tutorial, the graph shows good separation of unsuccessful (lower CFOM) trials and successful (higher CFOM) solutions.</p>
 <p>The success of substructure determination can be also guessed from the trials clustering pattern in <strong>CC against CCweak</strong> plot. If cluster, located in the top-right corner of the plot, lies above CC=0.25 and is well-separated from the cluster of unsuccessful trials in the bottom-left part of the plot, the likelihood of correct substructure determination is significant.</p>
@@ -375,21 +380,21 @@
 <p><code class="docutils literal notranslate"><span class="pre">6.</span></code> Macromolecular phases are calculated using substructure phases and reflection data with <strong>Phaser-EP</strong> software. The Phaser-EP task calculates protein phases for the original and inverted hands, corresponding to mutually-inversed heavy-atom substructures. Run the task: <strong>add next job =&gt; All tasks =&gt; Experimental phasing =&gt; Experimental Phasing with Phaser-EP</strong></p>
 <p>The task will improve the substructure, calculate inverted substructure and estimate their macromolecular phases.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases</p>
+<p class="admonition-title">Note</p>
+<p>do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases</p>
 </div>
 <p>Examine the <strong>verdict</strong> section in Phaser output, which contains the analysis of task performance.</p>
 <p>The average <strong>FOM</strong> (Figure Of Merit) is the phase quality indicator: FOM values <strong>above 0.3</strong> correspond to <strong>good phases</strong> (which may lead to an interpretable electron density map) and values <strong>below 0.15</strong> indicate <strong>poor phases</strong> (which make model building difficult or impossible).</p>
 <p><code class="docutils literal notranslate"><span class="pre">7.</span></code> Phaser-EP job produces two structure revisions, one for the original and one for the inverse hands. Unless the heavy-atom substructure has inversion centre, only one hand’s phases are suitable for model building. At high quality of phases, the correct hand can be identified by visual inspection of the corresponding electron density maps (try this). However, in most cases, the phases need to be improved (modified) in order to make a confident choice. Even more, automatic building in both hands may need to be attempted in order to make the ultimate decision. Therefore, perform density modification in each hand  using the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">Density Modification with Parrot</a> task.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">the density modification jobs should both descend from Phaser-EP job, because they need structure revisions created by it. This means that project tree will branch at this point. To make your project easily interpretable, annotate the branches by starting them with appropriate remarks: first, place remark “Original hand”, then clone it and rename as “Inverted hand”.</p>
+<p class="admonition-title">Note</p>
+<p>the density modification jobs should both descend from Phaser-EP job, because they need structure revisions created by it. This means that project tree will branch at this point. To make your project easily interpretable, annotate the branches by starting them with appropriate remarks: first, place remark “Original hand”, then clone it and rename as “Inverted hand”.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">8.</span></code>  Append Parrot task to the “Original hand” remark (<strong>add next job =&gt; All tasks =&gt; Density Modification =&gt; Density Modification with Parrot</strong>) and make sure that the “original hand” revision from Phaser-EP (<strong>phaser-ep-original_hand</strong>) is selected in <strong>Structure revision</strong>. State <strong>heavy-athom(Se) substructure</strong> as <strong>model for NCS detection</strong>. Parrot uses substructure to define initial values of NCS operations. Start the task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">9.</span></code>  Append Parrot task to the “Inverted hand” remark (<strong>add next job =&gt; All task =&gt; Density Modification =&gt; Density Modification with Parrot</strong>) and make sure that the “inverted hand” revision from Phaser-EP <strong>phaser-ep-inverted_hand</strong> is selected in <strong>Structure revision</strong>. State <strong>heavy-athom(Se) substructure</strong> as <strong>model for NCS detection</strong>. Start the task.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">jobs in different branches can be run simultaneously, therefore, there is no need to wait for Parrot job in the “Original hand” branch to finish before starting Parrot job in the “Inverted hand” branch!</p>
+<p class="admonition-title">Note</p>
+<p>jobs in different branches can be run simultaneously, therefore, there is no need to wait for Parrot job in the “Original hand” branch to finish before starting Parrot job in the “Inverted hand” branch!</p>
 </div>
 <p>Inspect electron density generated by the two Parrot runs in <strong>UglyMol</strong> viewer (the corresponding launch button is found in <em>task output</em>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">10.</span></code> Are resulting maps from Parrot jobs good enough for deciding on the hand? <em>Probably not</em>. Therefore, continue each project branch with the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">Automatic Model Building with CCP4Build</a> task: <strong>add next job =&gt; All tasks =&gt; Refinement and Model Building =&gt; Automatic Model Building with CCP4Build</strong></p>
@@ -397,15 +402,16 @@
 <p>Could using more cycles of model building be useful?</p>
 <p><em>You may clone and run another CCP4Build job(s) if you think it could</em></p>
 <p><code class="docutils literal notranslate"><span class="pre">11.</span></code>  Further refinement can be conveniently done by the <strong>Automated refinement and ligand fitting workflow</strong></p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">12.</span></code>  Run the <strong>Prepare data for deposition</strong> task and check the PDB Validation Report to see whether the structure quality is good enough for deposition.</p>
 <p><em>As a rule, automatically built and refined structures do not achieve deposition quality standards and need to be refined more thoroughly with the interactive model building (Coot)</em>. Start <strong>Model Building with Coot</strong> as a child node of the Refmac job and correct several side chains.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Coot task is available only if CCP4 Cloud is started through the local installation of CCP4 using launcher with <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> icon.</p>
+<p class="admonition-title">Note</p>
+<p>Coot task is available only if CCP4 Cloud is started through the local installation of CCP4 using launcher with <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;"/></a> icon.</p>
 </div>
 <p>Refine structure after editing in Coot. Have you got R-factors decreased?</p>
-
+</section>
 
 
           </article>
@@ -450,7 +456,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

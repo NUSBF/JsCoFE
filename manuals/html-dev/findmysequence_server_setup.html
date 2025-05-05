@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>Linking Findmysequence to local databases &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -302,10 +301,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="findmysequence-server-setup--page-root">Linking Findmysequence to local databases<a class="headerlink" href="#findmysequence-server-setup--page-root" title="Permalink to this headline">¶</a></h1>
-
-<h2 id="findmysequence-search-in-ccp4-cloud">Findmysequence search in CCP4 Cloud<a class="headerlink" href="#findmysequence-search-in-ccp4-cloud" title="Permalink to this headline">¶</a></h2>
+  <section id="linking-findmysequence-to-local-databases">
+<h1 id="findmysequence-server-setup--page-root">Linking Findmysequence to local databases<a class="headerlink" href="#findmysequence-server-setup--page-root" title="Link to this heading">¶</a></h1>
+<section id="findmysequence-search-in-ccp4-cloud">
+<h2 id="findmysequence-search-in-ccp4-cloud">Findmysequence search in CCP4 Cloud<a class="headerlink" href="#findmysequence-search-in-ccp4-cloud" title="Link to this heading">¶</a></h2>
 <p>In CCP4 Cloud, <em>findmysequence</em> can be used to identify the sequence of a
 structure from a given electron density map. It is useful when the sequence is
 unknown or the crystal structure appears to differ from the assumed sequence.
@@ -313,17 +312,17 @@ It uses various sequence databases to assist with identifying the unknown target
 sequence. For example, in CCP4 Cloud we can set it to use the <a class="reference external" href="https://alphafold.ebi.ac.uk" rel="noopener noreferrer" target="_blank">EBI
 AlphaFold Database</a> (<em>EBI-AFDB</em>). A local versions of the <em>EBI-AFDB</em> sequence
 listings (~92GBs) can be used to enable this.</p>
-
-
-<h2 id="configuring-findmysequence-to-use-local-resources">Configuring Findmysequence to use local resources<a class="headerlink" href="#configuring-findmysequence-to-use-local-resources" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="configuring-findmysequence-to-use-local-resources">
+<h2 id="configuring-findmysequence-to-use-local-resources">Configuring Findmysequence to use local resources<a class="headerlink" href="#configuring-findmysequence-to-use-local-resources" title="Link to this heading">¶</a></h2>
 <p><strong>1 A local copy of the EBI-AFDB sequence listing file (sequences.fasta)</strong></p>
 <p>This file, containing the complete list of the sequences of the
 predictions in the <em>EBI-AFDB</em>, is available for download from the <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/alphafold/" rel="noopener noreferrer" target="_blank">AFDB ftp site</a>.
 Setting the <strong>AFDB_SEQDB</strong> environment variable in start-nc.sh to point at the
 file’s location on the local file system will enable findmysequnce to search the
 entire <em>EBI-AFDB</em> for hits.</p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -344,7 +343,7 @@ entire <em>EBI-AFDB</em> for hits.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
