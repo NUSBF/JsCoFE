@@ -14,7 +14,7 @@ const log = require('../log.js');
 const URL_FILES = 'https://zenodo.org/records'
 
 // match all records that contain 'PDB' and have a dataset (100 records per page)
-const URL_API = 'https://zenodo.org/api/records?q=pdb&type=dataset&size=100';
+const URL_API = 'https://zenodo.org/api/records?q=pdb%20"protein%20data%20bank"&type=dataset&size=100';
 const PAGE_SIZE = 100;
 
 const CACHE_DIR = path.join(config.get('storage.catalog_dir'), 'zenodo');
@@ -24,7 +24,7 @@ const CACHE_FILE = path.join(CACHE_DIR, 'pdbs.json');
 const CACHE_TIME_MS = 1000 * 60 * 60 * 24 * 28;
 
 // detect PDB identifier
-const PDB_RE = /\s([0-9][A-Za-z0-9]{3})[^A-Za-z0-9]/;
+const PDB_RE = /\s([0-9][A-Za-z0-9]{3})[^A-Za-z0-9]/g;
 
 class zenodo extends dataSource {
 
@@ -76,27 +76,34 @@ class zenodo extends dataSource {
         const e = {};
         let id = r.id;
 
-        let pdb = '';
+        let pdb = null;
 
         // try and extract a PDB identifier from title or description
         for (const field of [r.metadata.title, r.metadata.description]) {
           if (! field) {
             continue;
           }
-          const match = field.match(PDB_RE);
-          if (match) {
-            let pdb_temp = match[1];
-            if (pdb_temp.match(/[0-9]/)) {
+          const matches = field.matchAll(PDB_RE);
+          // if there are matches
+          if (matches) {
+            // loop through them
+            for (const match of matches) {
+              let pdb_temp = match[1];
               if (PDB_IDS && PDB_IDS[pdb_temp.toUpperCase()]) {
                 pdb = pdb_temp;
                 break;
               }
             }
           }
+
+          // if we have found a PDB identifier, then break out of loop
+          if (pdb) {
+            break;
+          }
         }
 
         // if no PDB identifier is found, skip to the next record
-        if (pdb == '') {
+        if (! pdb) {
           continue;
         }
 
