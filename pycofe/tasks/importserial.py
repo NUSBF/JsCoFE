@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.02.25   <--  Date of Last Modification.
+#    08.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -65,17 +65,9 @@ class ImportSerial(import_task.Import):
 
     def run(self): #This is how the apps are ran
         
-        #Retrieve file imports
+        #Retrieve merged HKL file upload
         if self.task.file_select[0].path:
-            hklin = self._addFileImport(self.task.file_select[0].path) # Creates the import button functionality
-        if self.task.file_select[1].path:
-            halfdataset1 = self._addFileImport(self.task.file_select[1].path) #can't have a "-" in the name
-        if self.task.file_select[2].path:
-            halfdataset2 = self._addFileImport(self.task.file_select[2].path)
-        if self.task.file_select[3].path:
-            cellfile = self._addFileImport(self.task.file_select[3].path)
-        if self.task.file_select[4].path:
-            reference = self._addFileImport(self.task.file_select[4].path)   
+            hklin = self._addFileImport(self.task.file_select[0].path)
 
         #=============================== cmd option keywords ========================================
         outputMTZFName = "project_dataset.mtz"
@@ -102,24 +94,31 @@ class ImportSerial(import_task.Import):
         conflict_list = []
         
         # Retrieve the keywords from file input 
-        # If .hkl1 or .hkl2 file was provided
-        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2) : 
-            cmd += [ "--half-dataset", str(halfdataset1), str(halfdataset2)]
+    
+        # if .hkl1 was uploaded
+        if (self.task.file_select[1].path) : #halfdataset1
+            halfdataset1 = self._addFileImport(self.task.file_select[1].path)
+        else:
+            halfdataset1 =""
         
-        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
+        # if .hkl2 was uploaded
+        if (self.task.file_select[2].path) : #halfdataset2
+            halfdataset2 = self._addFileImport(self.task.file_select[2].path)
+        else:
+            halfdataset2 =""
+
+        # if both .hkl1 and .hkl2 was uploaded
+        if os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2): #halfdataset1 and halfdataset2 uploaded
+            cmd += [ "--half-dataset", str(halfdataset1), str(halfdataset2)]
+
+        
+        
+        #Display a message to the user if the user has only uploaded one half data set 
         if ((os.path.isfile(halfdataset1) and os.path.isfile(halfdataset2)==False) or (os.path.isfile(halfdataset1)==False and os.path.isfile(halfdataset2)) ):
             conflict_data=True
             conflict_list.append("Only one half data set was uploaded. Half-set correlation CC(1/2), CC* and Rsplit weren't calculated. Please upload two half-datasets if required ")
         
                    
-        #If cell file was provided
-        if os.path.isfile(cellfile):
-            cmd += [ "--cellfile", str(cellfile) ]
-          
-        #If reference file was provided
-        if os.path.isfile(reference):
-            cmd += [ "--reference", str(reference) ]
-           
         wavelength = self.getParameter ( sec1.WAVELENGTH ).strip()
         if wavelength: # If there is wavelength user input
             wavelength = str(wavelength)
@@ -131,10 +130,18 @@ class ImportSerial(import_task.Import):
             spacegroup = str(spacegroup)
             cmd += [ "--spacegroup", str(spacegroup) ]
 
-        #Display a message to the user if the user input spacegroup and reference file provided as both contain spacegroup
-        if spacegroup and os.path.isfile(reference):
-            conflict_data=True
-            conflict_list.append("Two sets of Spacegroups are present from your input and another from the reference file. Please check the output ")
+           
+        #If reference file was uploaded
+        if self.task.file_select[4].path:
+            reference = self._addFileImport(self.task.file_select[4].path) 
+            #If reference file was provided 
+            if os.path.isfile(reference):
+                cmd += [ "--reference", str(reference) ]
+
+            #Display a message to the user if the user input spacegroup and reference file provided as both contain spacegroup
+            if spacegroup and os.path.isfile(reference):
+                conflict_data=True
+                conflict_list.append("Two sets of Spacegroups are present from your input and another from the reference file. Please check the output ")
             
         
         cell = self.getParameter ( sec1.UNITCELLPARAMETERS ).strip()
@@ -144,15 +151,23 @@ class ImportSerial(import_task.Import):
             cmd += [ "--cell"]
             cmd.extend(splitcell)
 
-        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
-        if cell and os.path.isfile(cellfile):
-            conflict_data=True
-            conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the cell file. Please check the output ")
-        
-        #Display a message to the user if the user input unit cell parameters and reference file provided as both contain spacegroup
-        if cell and os.path.isfile(reference):
-            conflict_data=True
-            conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the reference file. Please check the output ")
+        #If cell file was uploaded
+        if self.task.file_select[3].path:
+            cellfile = self._addFileImport(self.task.file_select[3].path)
+
+            #If cell file was provided
+            if os.path.isfile(cellfile):
+                cmd += [ "--cellfile", str(cellfile) ]
+            
+            #Display a message to the user if the user input unit cell parameters and cell file provided as both contain unit cell parameters
+            if cell and os.path.isfile(cellfile):
+                conflict_data=True
+                conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the cell file. Please check the output ")
+            
+            #Display a message to the user if the user input unit cell parameters and reference file provided as both contain unit cell parameters
+            if cell and os.path.isfile(reference):
+                conflict_data=True
+                conflict_list.append("Two sets of Unit Cell Parameters are present from your input and another from the reference file. Please check the output ")
             
 
         dmin = self.getParameter ( sec2.DMIN ).strip()
