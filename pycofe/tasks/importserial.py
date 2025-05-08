@@ -56,19 +56,30 @@ class ImportSerial(import_task.Import):
     #Retrieve Json Data set inside job task folder
     def import_serial_json  (self):  return "project_dataset.json" 
 
+    def _addFileImport ( self,fname ):
+        if fname.startswith("cloudstorage::"): #cloud upload
+            return os.path.join( self.importDir(),fname.split("/")[-1] )
+        else:
+            return os.path.join( self.importDir(),fname )
+
 
     def run(self): #This is how the apps are ran
-
+        
         #Retrieve file imports
-        hklin = os.path.join ( self.importDir(),self.task.file_select[0].path ) # Creates the import button functionality
-        halfdataset1 = os.path.join ( self.importDir(),self.task.file_select[1].path )  #can't have a "-" in the name
-        halfdataset2 = os.path.join ( self.importDir(),self.task.file_select[2].path )  
-        cellfile = os.path.join ( self.importDir(),self.task.file_select[3].path ) 
-        reference = os.path.join ( self.importDir(),self.task.file_select[4].path )   
+        if self.task.file_select[0].path:
+            hklin = self._addFileImport(self.task.file_select[0].path) # Creates the import button functionality
+        if self.task.file_select[1].path:
+            halfdataset1 = self._addFileImport(self.task.file_select[1].path) #can't have a "-" in the name
+        if self.task.file_select[2].path:
+            halfdataset2 = self._addFileImport(self.task.file_select[2].path)
+        if self.task.file_select[3].path:
+            cellfile = self._addFileImport(self.task.file_select[3].path)
+        if self.task.file_select[4].path:
+            reference = self._addFileImport(self.task.file_select[4].path)   
 
         #=============================== cmd option keywords ========================================
         outputMTZFName = "project_dataset.mtz"
-
+        
         cmd = [
             # "-m"         , "import_serial",
             "--hklin"    , hklin,

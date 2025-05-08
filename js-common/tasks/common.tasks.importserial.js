@@ -45,6 +45,7 @@ function TaskImportSerial()  {
   this.name        = 'import_serial';
   this.setOName ( 'import_serial' );  // default output file name template
   this.title       = 'Import Serial';
+  this.currentCloudPath = '';
 
   this.file_select = [{
       file_types  : '.hkl', // data type(s) and subtype(s)
