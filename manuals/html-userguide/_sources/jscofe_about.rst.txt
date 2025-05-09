@@ -24,17 +24,24 @@ To access CCP4 Cloud, follow these steps:
 
 **Licence:** Use of CCP4 Cloud is governed by the CCP4 Licence Agreement. The CCP4 Licence is free for academic users, while commercial users must obtain an appropriate licence. For more details, refer to the licence agreement `here <https://www.ccp4.ac.uk/ccp4-licence-and-conditions-2/>`_.
 
-----------------------------------------
-CCP4 Cloud and CCP4 Desktop Applications
-----------------------------------------
+---------------------------------
+CCP4 Cloud and Local Applications
+---------------------------------
 
-Some CCP4 applications, such as **Coot**, **CCP4mg**, **DUI**, **iMosflm**, and others, require the CCP4 software to be installed on your local machine (see installation packages and instructions in `CCP4 Download <https://www.ccp4.ac.uk/download/>`_). To use these applications within CCP4 Cloud, simply start your Cloud session by clicking on the relevant CCP4 Cloud icon in the CCP4 directory. To connect to the remote CCP4 Cloud setup, click on:
+Some CCP4 applications, such as **Coot**, **CCP4mg**, **DUI**, **iMosflm**, 
+and others, require the CCP4 software to be installed on your local machine 
+(see installation packages and instructions 
+in `CCP4 Download <https://www.ccp4.ac.uk/download/>`_). To use these 
+applications within CCP4 Cloud, simply start your Cloud session by clicking 
+on the relevant CCP4 Cloud icon in the CCP4 directory. To connect to the 
+remote CCP4 Cloud setup, click on:
 
 .. image:: images/ccp4cloud_remote.png
       :scale: 8 %
       :align: center
 
-In remote mode, your projects and data are stored on remote servers, with computational tasks running on cloud machines.
+In remote mode, your projects and data are stored on remote servers, with 
+computational tasks running on cloud machines.
 
 To use CCP4 Cloud locally on your machine, click on:
 
@@ -42,7 +49,11 @@ To use CCP4 Cloud locally on your machine, click on:
       :scale: 8 %
       :align: center
 
-In local mode, your projects and data are stored on your machine, and computational tasks are performed locally.
+In local mode, your projects and data are stored on your machine, and 
+computational tasks are performed locally.
 
 .. tip::
-        Note that projects and data stored in your CCP4 Cloud account are not automatically synchronised with projects and data on your local machine. However, you can export projects from your account and import them into CCP4 Cloud on your local machine, or vice versa.
+        Note that projects and data stored in your CCP4 Cloud account are not 
+        automatically synchronised with projects and data on your local machine. 
+        However, you can export projects from your account and import them into 
+        CCP4 Cloud on your local machine, or vice versa.

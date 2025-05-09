@@ -92,7 +92,7 @@ be placed on the Desktop.
 In some cases you may find that provided launchers do not work. In this happens,
 CCP4 Cloud can be launched from terminal with one of the following commands: ::
 
-  $ /path/to/ccp4cloud/bin/ccp4cloud-desktop.sh
+  $ /path/to/ccp4cloud/bin/ccp4cloud-local.sh
   $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 
 
@@ -152,7 +152,7 @@ in your machine, a few more steps may be required before you can use the icons.
 
 #. Open Finder and navigate to ``ccp4cloud`` directory, found in CCP4 Cloud
    destination directory. The directory should contain application launchers
-   ``ccp4cloud-remote.app``, ``ccp4cloud-desktop.app`` and ``ccp4cloud-config.app``.
+   ``ccp4cloud-remote.app``, ``ccp4cloud-local.app`` and ``ccp4cloud-config.app``.
    You can drag them to the location of your choice, for example, Desktop or Dock.
 #. Double-click on any of the icon. If the corresponding CCP4 Cloud component does
    not start, it may be that the launchers are disabled by OSX security.

@@ -5,20 +5,23 @@ Tips and Tricks
 .. toctree::
     :maxdepth: 2
     
+    jscofe_tips.AlphaFold
+    jscofe_tips.archive
     jscofe_tips.coot_crash
-    jscofe_tips.task_dock
-    jscofe_tips.remarks
-    jscofe_tips.sharing
-    jscofe_tips.login_project
-    jscofe_tips.three_clouds
-    jscofe_tips.hot_task_launchers
+    jscofe_tips.detach_windows
+    jscofe_tips.download
     jscofe_tips.eoj_notifications
     jscofe_tips.file_names
-    jscofe_tips.AlphaFold
-    jscofe_tips.Work_with_diffraction_images
     jscofe_tips.folders
-    jscofe_tips.archive
-    jscofe_tips.tree_marker
-    jscofe_tips.download
+    jscofe_tips.hot_task_launchers
+    jscofe_tips.login_project
+    jscofe_tips.moorhen
+    jscofe_tips.remarks
+    jscofe_tips.remote_tasks
+    jscofe_tips.sharing
     jscofe_tips.store_completed_projects
+    jscofe_tips.task_dock
+    jscofe_tips.three_clouds
+    jscofe_tips.tree_marker
+    jscofe_tips.Work_with_diffraction_images
 
