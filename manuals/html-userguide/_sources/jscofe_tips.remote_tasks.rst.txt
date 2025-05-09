@@ -1,0 +1,48 @@
+==========================================
+Running Tasks Remotely in CCP4 Cloud Local
+==========================================
+
+By default, CCP4 Cloud Local stores all data and projects on your local computer
+and runs tasks locally. However, in certain cases, you may wish to run specific 
+tasks remotely on the CCP4 Cloud server. This is particularly useful for:
+
+- Tasks that rely on third-party software not typically installed locally 
+  (e.g., *AlphaFold-2*)
+- Tasks that require access to large databases (e.g., *PDB*, *Gesamt archive*)
+- Tasks that demand substantial computational resources (e.g., 
+  *automated structure solvers*)
+
+Remote task execution in CCP4 Cloud Local is seamless: all required data 
+transfers occur automatically without user intervention.
+
+To enable remote task execution:
+
+1. Ensure you have a valid user account on the CCP4 Cloud server.
+2. In the **CCP4 Cloud Configuration Utility**, check the box labeled 
+   **"Allow for remote jobs in local mode."**
+3. Enter your CCP4 Cloud login credentials (username and password) in the 
+   **CCP4 Cloud Local Settings**.
+
+Once configured, eligible tasks will display a cloud icon in the Task List.
+
+.. note::
+
+   You may need to **restart CCP4 Cloud** after updating your credentials for 
+   the changes to take effect.
+
+Clicking the cloud icon opens a drop-down menu with options **"Run remotely"** 
+or **"Run locally"**, depending on the task's current run mode. When set to 
+run remotely, the icon turns blue. Simply add the task to your project and 
+run it as usual. This setting persists until manually changed.
+
+.. note::
+
+   The cloud icon also appears in the Task’s Job dialog, to the left of the 
+   **Run** button. You can toggle the execution mode there before starting 
+   the task. Once the task has started, the icon reflects where the given task 
+   is actually being run and cannot be changed.
+
+When remote execution is enabled, CCP4 Cloud Local checks the availability of 
+the external server during startup. If the server is unreachable, the remote 
+execution feature will be disabled automatically and a warning message will be 
+shown. This check may introduce a slight delay during startup.

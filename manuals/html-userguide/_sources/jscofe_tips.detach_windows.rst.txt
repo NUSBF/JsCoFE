@@ -1,0 +1,35 @@
+
+===============================
+Detaching Windows in CCP4 Cloud
+===============================
+
+You may have noticed that the CCP4 Cloud interface uses windows and dialogs 
+similar to those in traditional desktop applications. However, by default, 
+these windows are confined to the main browser window.
+
+In most cases, this layout works well. However, there are times when you might 
+prefer to move a window's contents into a separate browser tab or window — 
+for example, to reduce scrolling or to compare information side by side.
+
+CCP4 Cloud allows you to detach windows in the following cases:
+
+1. **Documentation Pages**
+
+   Documentation windows can be detached by clicking the **"Detach"** button 
+   located at the bottom of the window. Try looking for it now as you read 
+   this guide. Once detached, the documentation remains accessible in a separate 
+   tab, which is especially helpful when following tutorials or instructions 
+   alongside your main work.
+
+2. **Job Dialogs**
+
+   You can also detach output panels of job dialogs by clicking the *detach* 
+   icon in the dialog's toolbar. If you're unsure which one it is, hover over 
+   the icons to view their tooltips. Detaching a job dialog can make it easier 
+   to inspect or compare job reports without crowding your main workspace.
+
+.. note::
+
+   Detached windows operate independently from your CCP4 Cloud session. As a result, 
+   certain features — such as launching new jobs from a detached Job dialog — are 
+   unavailable.

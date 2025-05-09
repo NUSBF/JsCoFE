@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>9. CCP4 Cloud Task Development: Hello World! &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -384,8 +383,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<span id="hello-world"></span><h1 id="dev-hello-world--page-root"><span class="section-number">9. </span>CCP4 Cloud Task Development: Hello World!<a class="headerlink" href="#dev-hello-world--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="ccp4-cloud-task-development-hello-world">
+<span id="hello-world"></span><h1 id="dev-hello-world--page-root"><span class="section-number">9. </span>CCP4 Cloud Task Development: Hello World!<a class="headerlink" href="#dev-hello-world--page-root" title="Link to this heading">¶</a></h1>
 <p>CCP4 Cloud runs <em>tasks</em>. A <em>task</em> may be anything; it may or may not have input
 data and parameters, it may or may not produce output data, and the least what
 a <em>task</em> should do is to print messages. CCP4 Cloud is designed to run complex
@@ -394,38 +393,38 @@ complex data structures, passable from one <em>task</em> to another. However, we
 introduction into task development for CCP4 Cloud with a simplest possible task
 that only prints “Hello World!”.</p>
 <p>First, let’s overview parts of CCP4 Cloud code relevant to task development.</p>
-
-<h2 id="ccp4-cloud-source-code-structure"><span class="section-number">9.1. </span>CCP4 Cloud source code structure<a class="headerlink" href="#ccp4-cloud-source-code-structure" title="Permalink to this headline">¶</a></h2>
+<section id="ccp4-cloud-source-code-structure">
+<h2 id="ccp4-cloud-source-code-structure"><span class="section-number">9.1. </span>CCP4 Cloud source code structure<a class="headerlink" href="#ccp4-cloud-source-code-structure" title="Link to this heading">¶</a></h2>
 <p>From task developer perspective, CCP4 Cloud source code has 6 main parts:</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">js-client</span></code>: javascript code that runs on client side (browser). Task
+<li><p><code class="docutils literal notranslate"><span class="pre">js-client</span></code>: javascript code that runs on client side (browser). Task
 developer need to modify only one file from this part:
-<code class="docutils literal notranslate"><span class="pre">js-client/cofe.dialog_tasklist.js</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">js-common</span></code>: javascript code that runs on both client and server. Task
+<code class="docutils literal notranslate"><span class="pre">js-client/cofe.dialog_tasklist.js</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">js-common</span></code>: javascript code that runs on both client and server. Task
 developer is supposed to contribute relevant data classes in
 <code class="docutils literal notranslate"><span class="pre">js-common/dtypes</span></code> (only if necessary), and new task classes in
-<code class="docutils literal notranslate"><span class="pre">js-common/tasks</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">pycofe</span></code>: python code that actually runs tasks on number crunchers.
+<code class="docutils literal notranslate"><span class="pre">js-common/tasks</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pycofe</span></code>: python code that actually runs tasks on number crunchers.
 <code class="docutils literal notranslate"><span class="pre">pycofe/dtypes</span></code> must include python equivalents of all data classes from
 <code class="docutils literal notranslate"><span class="pre">js-common/dtypes</span></code>, and <code class="docutils literal notranslate"><span class="pre">pycofe/tasks</span></code> must include task drivers for all
-task classes from <code class="docutils literal notranslate"><span class="pre">js-common/tasks</span></code>.</li>
-<li><code class="docutils literal notranslate"><span class="pre">images</span></code>: icons used in task’s web-pages. Task developer is supposed to
+task classes from <code class="docutils literal notranslate"><span class="pre">js-common/tasks</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">images</span></code>: icons used in task’s web-pages. Task developer is supposed to
 design a task icon and place 2 copies of it: one of size 20x20px, and one
 of size at least 96x96px (unless in svg format), conventionally named
-(see below), and copy them in this directory.</li>
-<li><code class="docutils literal notranslate"><span class="pre">jscofe.html</span></code>: a bootstrap HTML file, where URLs to newly developed
-javascript classes need to be inserted.</li>
-<li><code class="docutils literal notranslate"><span class="pre">html</span></code>: task documentation (HTML). Task developers should document the use
-of their tasks by placing properly named html files in this directory.</li>
+(see below), and copy them in this directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jscofe.html</span></code>: a bootstrap HTML file, where URLs to newly developed
+javascript classes need to be inserted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">html</span></code>: task documentation (HTML). Task developers should document the use
+of their tasks by placing properly named html files in this directory.</p></li>
 </ul>
 <p>File locations in CCP4 Cloud source code are fixed, which is essential for
 CCP4 Cloud framework. In addition, data and task classes and respective file names
 must follow conventions as described below.</p>
-
-
-<h2 id="hello-world-task-in-stages"><span class="section-number">9.2. </span>“Hello, World!” task in stages<a class="headerlink" href="#hello-world-task-in-stages" title="Permalink to this headline">¶</a></h2>
-
-<span id="task-class"></span><h3 id="create-task-class"><span class="section-number">9.2.1. </span>Create Task Class<a class="headerlink" href="#create-task-class" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="hello-world-task-in-stages">
+<h2 id="hello-world-task-in-stages"><span class="section-number">9.2. </span>“Hello, World!” task in stages<a class="headerlink" href="#hello-world-task-in-stages" title="Link to this heading">¶</a></h2>
+<section id="create-task-class">
+<span id="task-class"></span><h3 id="create-task-class"><span class="section-number">9.2.1. </span>Create Task Class<a class="headerlink" href="#create-task-class" title="Link to this heading">¶</a></h3>
 <p>In CCP4 Cloud, task classes must be named as <code class="docutils literal notranslate"><span class="pre">TaskClassName</span></code> and be placed in
 file named <code class="docutils literal notranslate"><span class="pre">js-common/tasks/common.tasks.classname.js</span></code>. The absolute minimal
 class should be defined as follows:</p>
@@ -535,9 +534,9 @@ code mentions <code class="docutils literal notranslate"><span class="pre">hello
 <a class="reference download internal" download="" href="_downloads/be614178b19d12caa47b7abd059270d6/task_helloworld.png"><code class="xref download docutils literal notranslate"><span class="pre">large</span></code></a>, and copy them into
 <code class="docutils literal notranslate"><span class="pre">images</span></code> directory of your CCP4 Cloud setup. Make sure that file names are exactly
 as specified in the source code.</p>
-
-
-<h3 id="create-task-documentation"><span class="section-number">9.2.2. </span>Create Task Documentation<a class="headerlink" href="#create-task-documentation" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="create-task-documentation">
+<h3 id="create-task-documentation"><span class="section-number">9.2.2. </span>Create Task Documentation<a class="headerlink" href="#create-task-documentation" title="Link to this heading">¶</a></h3>
 <p>Task Documentation should be written in HTML and placed in <code class="docutils literal notranslate"><span class="pre">html</span></code> directory
 under the name given by <code class="docutils literal notranslate"><span class="pre">helpURL</span></code> variable of the task class (<em>cf.</em>
 <a class="reference internal" href="#task-class"><span class="std std-ref">Create Task Class</span></a>). In order to comply with with the rest of documentation on
@@ -583,9 +582,9 @@ style, use template downloadable from
 </div>
 <p><a class="reference download internal" download="" href="_downloads/88455e3e8b703cc94c07780736580d22/jscofe_task_helloworld.html"><code class="xref download docutils literal notranslate"><span class="pre">Download</span></code></a> this file, edit
 as necessary and copy it in <code class="docutils literal notranslate"><span class="pre">html</span></code> directory of your CCP4 Cloud setup.</p>
-
-
-<h3 id="insert-new-task-in-the-task-list"><span class="section-number">9.2.3. </span>Insert New Task in the Task List<a class="headerlink" href="#insert-new-task-in-the-task-list" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="insert-new-task-in-the-task-list">
+<h3 id="insert-new-task-in-the-task-list"><span class="section-number">9.2.3. </span>Insert New Task in the Task List<a class="headerlink" href="#insert-new-task-in-the-task-list" title="Link to this heading">¶</a></h3>
 <p>Open file <code class="docutils literal notranslate"><span class="pre">js-client/cofe.dialog_tasklist.js</span></code> in any text editor and look for
 the following fragment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">__login_user</span><span class="o">==</span><span class="s1">'Developer'</span><span class="p">)</span>
@@ -628,9 +627,9 @@ for empty projects; otherwise, click the <em>Add job</em> button in the toolbar)
 down to the last section, open it and click on <em>Hello World!</em> icon. The task
 should appear in the <em>Job Tree</em>, and the corresponding <em>Job Dialog</em> should
 start.</p>
-
-
-<span id="task-driver"></span><h3 id="making-the-task-driver"><span class="section-number">9.2.4. </span>Making the Task Driver<a class="headerlink" href="#making-the-task-driver" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="making-the-task-driver">
+<span id="task-driver"></span><h3 id="making-the-task-driver"><span class="section-number">9.2.4. </span>Making the Task Driver<a class="headerlink" href="#making-the-task-driver" title="Link to this heading">¶</a></h3>
 <p>At this point, the new <em>task</em> appears on the client side, but it cannot be
 started as we have not supplied the corresponding module, called <em>Task Driver</em>,
 to run on a number cruncher. <em>Task Driver</em> is a program, which is started with
@@ -678,9 +677,9 @@ by the following Python script:</p>
 press <em>Run</em> button in <em>Hello World!</em> job dialog to run the task, which only
 prints “Hellow World!” messages in the main output tab and output tabs for
 standard output and standard error streams.</p>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>
@@ -725,7 +724,7 @@ standard output and standard error streams.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>Automatic Model Building with Buccaneer &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -486,49 +485,59 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-buccaneer--page-root">Automatic Model Building with Buccaneer<a class="headerlink" href="#doc-task-buccaneer--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="automatic-model-building-with-buccaneer">
+<h1 id="doc-task-buccaneer--page-root">Automatic Model Building with Buccaneer<a class="headerlink" href="#doc-task-buccaneer--page-root" title="Link to this heading">¶</a></h1>
 <p>Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using the likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.</p>
 <p>Buccaneer performs model building in 10 stages:</p>
 <ol class="arabic simple">
-<li><dl class="first docutils">
-<dt>Find candidate C-alpha positions</dt><dd><em>Candidate C-alpha positions are located by searching the electron density</em></dd>
+<li><dl class="simple">
+<dt>Find candidate C-alpha positions</dt><dd><p><em>Candidate C-alpha positions are located by searching the electron density</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Grow them into chain fragments</dt><dd><em>The candidate C-alphas or input chains (*fixed model</em>) are grown by adding residues at either end, as suggested by the density*</dd>
+<li><dl class="simple">
+<dt>Grow them into chain fragments</dt><dd><p><em>The candidate C-alphas or input chains (*fixed model</em>) are grown by adding residues at either end, as suggested by the density*</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Join and merge the fragments, resolving branches</dt><dd><em>Overlapping fragments are joined to make longer chains. If this leads to a junction in a chain, the contested residue is removed</em></dd>
+<li><dl class="simple">
+<dt>Join and merge the fragments, resolving branches</dt><dd><p><em>Overlapping fragments are joined to make longer chains. If this leads to a junction in a chain, the contested residue is removed</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Link nearby N and C terminii (if possible)</dt><dd><em>Nearby N and C termini are examined to see if they can be linked by a short loop</em></dd>
+<li><dl class="simple">
+<dt>Link nearby N and C terminii (if possible)</dt><dd><p><em>Nearby N and C termini are examined to see if they can be linked by a short loop</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Sequence the chains (i.e. dock sequence)</dt><dd><em>Likelihood comparison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing</em>) allows sequence to be assigned to longer fragments*</dd>
+<li><dl class="simple">
+<dt>Sequence the chains (i.e. dock sequence)</dt><dd><p><em>Likelihood comparison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing</em>) allows sequence to be assigned to longer fragments*</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Correct insertions/deletions</dt><dd><em>Insertions and deletions in the model building are fixed by rebuilding, where possible</em></dd>
+<li><dl class="simple">
+<dt>Correct insertions/deletions</dt><dd><p><em>Insertions and deletions in the model building are fixed by rebuilding, where possible</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Filter based on poor density</dt><dd><em>Residues in poor density are removed</em></dd>
+<li><dl class="simple">
+<dt>Filter based on poor density</dt><dd><p><em>Residues in poor density are removed</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>NCS Rebuild to complete NCS copies of chains</dt><dd><em>Any NCS relationships found in the model are used to augment the related chains</em></dd>
+<li><dl class="simple">
+<dt>NCS Rebuild to complete NCS copies of chains</dt><dd><p><em>Any NCS relationships found in the model are used to augment the related chains</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Prune any remaining clashing chains</dt><dd><em>Clashing fragments are examined and the one with the worse density is removed</em></dd>
+<li><dl class="simple">
+<dt>Prune any remaining clashing chains</dt><dd><p><em>Clashing fragments are examined and the one with the worse density is removed</em></p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Rebuild side chains</dt><dd><em>Rebuilding allows side chain atoms and carbonyl oxygens to be rebuilt</em></dd>
+<li><dl class="simple">
+<dt>Rebuild side chains</dt><dd><p><em>Rebuilding allows side chain atoms and carbonyl oxygens to be rebuilt</em></p>
+</dd>
 </dl>
 </li>
 </ol>
@@ -536,17 +545,17 @@
 <p><strong>Molecular replacement mode</strong></p>
 <p>In this mode, Buccaneer requires atomic model used for <em>Molecular Replacement</em>. The model is used for placing and naming chans, with the following additional options:</p>
 <ul>
-<li><p class="first"><strong>nothing else</strong>:  MR model is not used for anything else.</p>
+<li><p><strong>nothing else</strong>:  MR model is not used for anything else.</p>
 <blockquote>
 <div><p>This minimizes the possibility of bias, at the expense of slower building and often a less complete model.</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>seed chain growing</strong>: isolated residues from the model are used as starting points for growing a new model.</p>
+<li><p><strong>seed chain growing</strong>: isolated residues from the model are used as starting points for growing a new model.</p>
 <blockquote>
 <div><p>This usually produces a fairly complete model without significant bias, and should be used in most cases.</p>
 </div></blockquote>
 </li>
-<li><p class="first"><strong>provide an initial model</strong>: most of the model is used as a set of initial fragments for building.</p>
+<li><p><strong>provide an initial model</strong>: most of the model is used as a set of initial fragments for building.</p>
 <blockquote>
 <div><p>This may be useful when the initial map is too poor for reliable building, but the resulting model is more biased towards the molecular replacement model.</p>
 </div></blockquote>
@@ -555,33 +564,33 @@
 <p>You may also provide the <strong>Fixed model</strong> containing an initial model to extend. Note that this model should be correctly positioned in electron density.</p>
 <p>In addition, you may supply the <strong>Model to aid sequencing</strong>, which is a model with known residues to help the residue type assignment.</p>
 <p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">following</span> <span class="pre">options</span> <span class="pre">and</span> <span class="pre">parameters</span> <span class="pre">are</span> <span class="pre">applicable</span> <span class="pre">for</span> <span class="pre">both</span> <span class="pre">“Molecular</span> <span class="pre">Replacement”</span> <span class="pre">and</span> <span class="pre">“Experimental</span> <span class="pre">phasing”</span> <span class="pre">Buccaneer`s</span> <span class="pre">modes</span></code></p>
-
-<h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<section id="options">
+<h2 id="options">Options<a class="headerlink" href="#options" title="Link to this heading">¶</a></h2>
 <p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <strong>This should use by default</strong></p>
 <p><strong>Build Selenomethionine (MSE istead of MET)</strong> option should be chosen if selenomethionine is present.</p>
 <p><strong>Number of building/refinement cycles</strong> may be set more than 5(default number) if first attempt ends up with an incomplete model.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The chance to benefit from using more than 20 cycles is really small</p>
+<p class="admonition-title">Note</p>
+<p>The chance to benefit from using more than 20 cycles is really small</p>
 </div>
 <p><strong>Use fastest methods</strong> option shortens the job running time without a loss in quality of obtained results in most cases. In case of low resolution data, turning this option off may produce better results.</p>
-
-
-<h2 id="model-building-parameters">Model Building Parameters<a class="headerlink" href="#model-building-parameters" title="Permalink to this headline">¶</a></h2>
-
-<h3 id="parameters-for-first-and-subsequent-buccaneer-cycles">Parameters for first and subsequent Buccaneer cycles<a class="headerlink" href="#parameters-for-first-and-subsequent-buccaneer-cycles" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="model-building-parameters">
+<h2 id="model-building-parameters">Model Building Parameters<a class="headerlink" href="#model-building-parameters" title="Link to this heading">¶</a></h2>
+<section id="parameters-for-first-and-subsequent-buccaneer-cycles">
+<h3 id="parameters-for-first-and-subsequent-buccaneer-cycles">Parameters for first and subsequent Buccaneer cycles<a class="headerlink" href="#parameters-for-first-and-subsequent-buccaneer-cycles" title="Link to this heading">¶</a></h3>
 <p><strong>Number of internal building cycles</strong>. By default, Buccaneer performs 3 cycles for the “first Buccaneer cycle” and 2 cycles for all “subsequent Buccaneer cycles” of finding, growing and sequencing protein chains. It can be increased to 50 if the default number of cycles is not sufficient for completing the final model.</p>
 <p><strong>Use the correlation target function</strong> for growing new chains and sequencing. This function uses the likelihood target for identifying protein features, which is less efficient at the initial building steps but works better for model completion.</p>
 <p><strong>Assign sequence when found match is</strong>: <strong>probable</strong> is used by default, which corresponds to the situation when sequences are docked if the match to electron density is estimated as reasonably good. This can be changed to <strong>definite</strong>, causing sequence docking to occur only in case of fairly good matches, or to <strong>possible</strong> for performing sequence docking at virtually any plausible match.</p>
-
-
-
-<h2 id="general-parameters">General parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="general-parameters">
+<h2 id="general-parameters">General parameters<a class="headerlink" href="#general-parameters" title="Link to this heading">¶</a></h2>
 <p><strong>Truncate data beyond resolution limit [Å]</strong>. Using high resolution data in Buccaneer makes it slower and more memory-consuming, yet it does not contribute significantly to the quality of the final model. Therefore, by default, reflection data is truncated beyond 2.0Å, unless you change this value.</p>
 <p><strong>Residue name for unsequenced residues</strong> you may set the name which will be given to newly built residues of unrecognised type. The default is ‘UNK’, change this to ‘ALA’ if you need to use the built model in a program which doesn’t recognise ‘UNK’ (this should not be required in CCP4 Cloud).</p>
-
-
-<h2 id="reference-structure">Reference structure<a class="headerlink" href="#reference-structure" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="reference-structure">
+<h2 id="reference-structure">Reference structure<a class="headerlink" href="#reference-structure" title="Link to this heading">¶</a></h2>
 <p>Reference structure is used for generating search target functions of various structural features to be identified in electron density map. Any reasonable-quality PDB structure with sufficient structural diversity and available reflection data may be taken as a reference.</p>
 <p><strong>Library reference structure to use</strong> option allows you to change the buccaneer reference structure; <code class="docutils literal notranslate"><span class="pre">1tqw</span></code> is used by default and hardly needs changing.</p>
 <p>Further refinement is performed by Refmac, read more about <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">Refmac Parameters</span></a></p>
@@ -590,8 +599,8 @@
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2006/09/00/av5064/" rel="noopener noreferrer" target="_blank">Cowtan, K. (2006) The Buccaneer software for automated model building. Acta Cryst. D62: 1002-1011</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S090744490903947X" rel="noopener noreferrer" target="_blank">Cowtan K. (2010). Recent developments in classical density modification. Acta crystallographica. Section D, Biological crystallography, 66(Pt 4), 470–478</a></p>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2012/04/00/ba5169/index.html" rel="noopener noreferrer" target="_blank">Cowtan, K. (2012) Completion of autobuilt protein models using a database of protein fragments. Acta Cryst. D68: 328-335</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -636,7 +645,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

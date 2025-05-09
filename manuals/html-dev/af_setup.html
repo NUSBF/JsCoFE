@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>6. Linking AlphaFold setup with CCP4 Cloud &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -380,10 +379,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="af-setup--page-root"><span class="section-number">6. </span>Linking AlphaFold setup with CCP4 Cloud<a class="headerlink" href="#af-setup--page-root" title="Permalink to this headline">¶</a></h1>
-
-<h2 id="structure-prediction-in-ccp4-cloud"><span class="section-number">6.1. </span>Structure prediction in CCP4 Cloud<a class="headerlink" href="#structure-prediction-in-ccp4-cloud" title="Permalink to this headline">¶</a></h2>
+  <section id="linking-alphafold-setup-with-ccp4-cloud">
+<h1 id="af-setup--page-root"><span class="section-number">6. </span>Linking AlphaFold setup with CCP4 Cloud<a class="headerlink" href="#af-setup--page-root" title="Link to this heading">¶</a></h1>
+<section id="structure-prediction-in-ccp4-cloud">
+<h2 id="structure-prediction-in-ccp4-cloud"><span class="section-number">6.1. </span>Structure prediction in CCP4 Cloud<a class="headerlink" href="#structure-prediction-in-ccp4-cloud" title="Link to this heading">¶</a></h2>
 <p>In CCP4 Cloud, working with <em>AlphaFold</em> database (AFDB) is completely
 streamlined and does not require any additional configuration or adjustments.
 Individual AFDB entries may be fetched by UniProt ID in the same way as
@@ -392,9 +391,9 @@ structural homologs from the PDB, acquire them also from AFDB, seamlessly
 for users. If AFDB entry does not exist for particular UniProt code or if
 sequence data cannot be sent to remote servers, the structure may be predicted
 locally using the <em>Structure Prediction</em> task in CCP4 Cloud.</p>
-
-
-<h2 id="linking-alphafold-setup-in-outline"><span class="section-number">6.2. </span>Linking AlphaFold setup in outline<a class="headerlink" href="#linking-alphafold-setup-in-outline" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="linking-alphafold-setup-in-outline">
+<h2 id="linking-alphafold-setup-in-outline"><span class="section-number">6.2. </span>Linking AlphaFold setup in outline<a class="headerlink" href="#linking-alphafold-setup-in-outline" title="Link to this heading">¶</a></h2>
 <p>For the <em>Structure Prediction</em> task to work, a local <em>AlphaFold</em> (or <em>OpenFold</em>,
 or <em>ColabFold</em>) setup must be available on CCP4 Cloud number cruncher(s) and
 linked with them. The following describes the 4-step procedure of linking
@@ -427,9 +426,9 @@ the script:</p>
 was placed.</p>
 <p><strong>4. Restart CCP4 Cloud servers.</strong></p>
 <p><strong>The End</strong></p>
-
-
-<span id="appendix-a"></span><h2 id="appendix-a-alphafold-setup"><span class="section-number">6.3. </span>Appendix A. AlphaFold setup<a class="headerlink" href="#appendix-a-alphafold-setup" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="appendix-a-alphafold-setup">
+<span id="appendix-a"></span><h2 id="appendix-a-alphafold-setup"><span class="section-number">6.3. </span>Appendix A. AlphaFold setup<a class="headerlink" href="#appendix-a-alphafold-setup" title="Link to this heading">¶</a></h2>
 <p>A.1. Install miniconda3</p>
 <p>First, install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html" rel="noopener noreferrer" target="_blank">miniconda3</a>.
 Download the installation script for your platform (Linux or macOS) and run it.
@@ -478,9 +477,9 @@ requirements.txt file (the one in the parent installation directory).</p>
 </div>
 <p>You will also need to install kalign, the <a class="reference external" href="https://github.com/soedinglab/hh-suite" rel="noopener noreferrer" target="_blank">HH-suite</a> and jackhmmer. If you use Docker, these
 needn’t be installed separately.</p>
-
-
-<span id="appendix-b"></span><h2 id="appendix-b-colabfold-setup"><span class="section-number">6.4. </span>Appendix B. ColabFold setup<a class="headerlink" href="#appendix-b-colabfold-setup" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="appendix-b-colabfold-setup">
+<span id="appendix-b"></span><h2 id="appendix-b-colabfold-setup"><span class="section-number">6.4. </span>Appendix B. ColabFold setup<a class="headerlink" href="#appendix-b-colabfold-setup" title="Link to this heading">¶</a></h2>
 <p>First install miniconda3 and af2wrapper as instructed for the
 AlphaFold setup in sections A.1 and A.2.</p>
 <p>The full instructions for running ColabFold on Linux or macOS are available on the
@@ -495,12 +494,12 @@ installed. For example:</p>
 </div>
 <p>ColabFold doesn’t require installation of local databases, as it obtains the MSA
 and template files from the MMseqs2 server.</p>
-
-
-<span id="appendix-c"></span><h2 id="appendix-c-openfold-setup"><span class="section-number">6.5. </span>Appendix C. OpenFold setup<a class="headerlink" href="#appendix-c-openfold-setup" title="Permalink to this headline">¶</a></h2>
-
-
-<span id="appendix-d"></span><h2 id="appendix-d-json-formatted-configuration-file"><span class="section-number">6.6. </span>Appendix D. JSON-formatted configuration file<a class="headerlink" href="#appendix-d-json-formatted-configuration-file" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="appendix-c-openfold-setup">
+<span id="appendix-c"></span><h2 id="appendix-c-openfold-setup"><span class="section-number">6.5. </span>Appendix C. OpenFold setup<a class="headerlink" href="#appendix-c-openfold-setup" title="Link to this heading">¶</a></h2>
+</section>
+<section id="appendix-d-json-formatted-configuration-file">
+<span id="appendix-d"></span><h2 id="appendix-d-json-formatted-configuration-file"><span class="section-number">6.6. </span>Appendix D. JSON-formatted configuration file<a class="headerlink" href="#appendix-d-json-formatted-configuration-file" title="Link to this heading">¶</a></h2>
 <p>Create file, <em>e.g.,</em> <code class="docutils literal notranslate"><span class="pre">af2.conf</span></code> with the following content (use copy-paste):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="s2">"engine"</span>                   <span class="p">:</span> <span class="s2">"alphafold"</span><span class="p">,</span>
@@ -538,7 +537,7 @@ and template files from the MMseqs2 server.</p>
 <p>and put values of all parameters that correspond to your installation, as
 described below.  For the paths to executable scripts, the full paths are not
 required if the PATH variable includes them.</p>
-<dl class="docutils">
+<dl>
 <dt><strong>engine</strong></dt><dd><p><em>AlphaFold</em> implementation, one of <code class="docutils literal notranslate"><span class="pre">alphafold</span></code>, <code class="docutils literal notranslate"><span class="pre">colabfold</span></code> or <code class="docutils literal notranslate"><span class="pre">openfold</span></code>. Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"engine"</span> <span class="p">:</span> <span class="s2">"alphafold"</span>
 </pre></div>
@@ -574,7 +573,7 @@ being used as a template. Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"max_template_date"</span> <span class="p">:</span> <span class="s2">"2020-05-14"</span>
 </pre></div>
 </div>
-<dl class="docutils">
+<dl>
 <dt><strong>data_dir</strong></dt><dd><p>Directory where the protein databases are stored. Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">"data_dir"</span> <span class="p">:</span> <span class="s2">"/data/alphafold/db"</span>
 </pre></div>
@@ -670,8 +669,8 @@ option should include the device number.  Example:</p>
 </div>
 </dd>
 </dl>
-
-
+</section>
+</section>
 
 
           </article>
@@ -716,7 +715,7 @@ option should include the device number.  Example:</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
