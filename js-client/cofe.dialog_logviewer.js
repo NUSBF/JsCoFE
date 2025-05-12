@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.25   <--  Date of Last Modification.
+ *    12.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -130,7 +130,7 @@ LogViewerDialog.prototype.showLogs = function()  {
       function(response){
         self.setLogs ( response.data );
         self.timer = setTimeout ( function(){
-          self.showLog();
+          self.showLogs();
         },5000);
         return true;
       });
