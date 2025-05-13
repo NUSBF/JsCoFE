@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    28.02.25   <--  Date of Last Modification.
+ *    13.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -958,8 +958,9 @@ TablePages.prototype._filter_data = function ( tdesc )  {
       const regexPattern = "^" + 
                 escPattern.replace ( /\*/g, ".*").replace(/\?/g, "." ) + "$";
       regex = new RegExp ( regexPattern,'i'  );  // regex for testing strings
-    } else
-      regex = new RegExp ( this.filter, 'gi' );
+    } else  {
+      regex = new RegExp ( escapeRegExp(this.filter), 'gi' );
+    }
     this.tdata  = [];
     let seltext = null;
     for (let i=0;i<tdesc.rows.length;i++)  {
@@ -970,8 +971,13 @@ TablePages.prototype._filter_data = function ( tdesc )  {
         let listval = Array.isArray(line);
         if (listval)
           line = line[0];
-        seltext = line.toString().replace ( regex, 
-                  match => `<span style="color:#D2042D;">${match}</span>` );
+        line = String(line); // needed as data may be numerical
+        if (this.filter=='.')  // special case
+              seltext = line.replace ( '.','<span style="color:#D2042D;">.</span>' );
+        else if (isHtmlEntity(line))
+              seltext = line;
+        else  seltext = line.replace ( regex, 
+                           match => `<span style="color:#D2042D;">${match}</span>` );
         if (seltext.length>line.length)
           match = true;
         if (listval)  {
