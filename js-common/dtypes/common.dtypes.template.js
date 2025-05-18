@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.24   <--  Date of Last Modification.
+ *    18.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -57,8 +57,8 @@ function DataTemplate()  {
   this.version    = this.currentVersion(); // version of data class
   this.subtype    = [];                    // default 'basic' subtype
   this.jobId      = '';                    // Id of producing job
-  this.dataId     = '';                    // (unique) data Id
-  this.dname      = 'template';            // data name for displaying
+  this.dataId     = '0000-00';             // (unique) data Id
+  this.dname      = '[0000-00] template';  // data name for displaying
   this.files      = {};                    // list of files, uses file_key (above)
   this.associated = [];                    // list of associated data Ids
   this.backtrace  = true;                  // collect all data up the tree branch
