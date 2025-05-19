@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    06.04.24   <--  Date of Last Modification.
+//    19.05.25   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's html content module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2024
+//  (C) E. Krissinel 2013-2025
 //
 //  =================================================================
 //
@@ -112,8 +112,8 @@ function updateWatchedContent ( updateHidden_bool )  {
         processFile ( uri,"post",true,function(data){
 
           let n = 0;
-          if (data.lastIndexOf('[[[[]]]]',0) === 0)  {  // for old JS engines (jsrview)
-//          if (data.startsWith('[[[[]]]]'))  {  // for modern JS engines
+          if (data.startsWith('[[[[]]]]'))  {  // for modern JS engines
+            // if (data.lastIndexOf('[[[[]]]]',0) === 0)  {  // for old JS engines (jsrview)
             // Capped file (e.g. a long log file); put a message and a
             // download button on the top of the page
             let divId = hId + '-div';
@@ -123,13 +123,23 @@ function updateWatchedContent ( updateHidden_bool )  {
               let holder = document.getElementById ( hId );
               if (holder)
                 holder.appendChild ( div );
-              $( '<div class="cap-div"><b><i>File is too large and shown ' +
-                 'without middle part.</i></b><br>Click <a href="' +
-                 uri.substring(0,uri.indexOf('?capsize')) +
-                 '"><i>here</i></a> to download full version to your device.</div>' )
-                .appendTo ( $(div) );
+              let msg = '<div class="cap-div">';
+              if (data.startsWith('[[[[]]]]{d}'))  {
+                msg += '<a href="' + 
+                         uri.substring(0,uri.indexOf('?capsize')) +
+                       '"><i>Download</i></a> a copy.</div>';
+                n = 12;
+              } else  {
+                msg += '<b><i>The file is too large and shown ' +
+                       'without the middle part.</i></b><br>'   +
+                       'Click <a href="' + 
+                         uri.substring(0,uri.indexOf('?capsize')) +
+                       '"><i>here</i></a> to download the full '  +
+                       'file.</div>';
+                n = 9;
+              }
+              $( msg ).appendTo ( $(div) );
             }
-            n = 8;
           }
 
           let preId = hId + "-pre";

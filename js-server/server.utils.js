@@ -1090,6 +1090,9 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
         if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
 
+          if (['_stdout.log','_stdout1.log','_stderr.log']
+              .some(name=>fpath.endsWith(name)))
+            server_response.write ( '[[[[]]]]{d}\n' );
           fReadStream.pipe ( server_response );
 
         } else  {  // send capped file
