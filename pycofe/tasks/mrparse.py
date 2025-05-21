@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.04.25   <--  Date of Last Modification.
+#    21.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,10 +67,11 @@ class MrParse(basic.TaskDriver):
         #                   "with sequence:&nbsp;" + seq.dname + "</b></i>" )
         # self.putTitle ( "MR models prepared from PDB structures" )
         self.putMessage ( "<i><b>Found homologs are associated " +\
-                            "with sequence:&nbsp;" + seq.dname + ".<p>" +
-                            "NOTE: process chosen homologs with one of " +
-                            "MR model preparation tasks for using them " +
-                            "in Molecular Replacement tasks.</b></i>" )
+                          "with sequence:&nbsp;"  + seq.dname + ".<p>" +
+                          "<span style=\"font-size:100%;color:maroon;\">" +
+                          "NOTE: process chosen homologs with one of " +
+                          "MR model preparation tasks for using them " +
+                          "in Molecular Replacement tasks.</span></b></i>" )
         return
 
 
