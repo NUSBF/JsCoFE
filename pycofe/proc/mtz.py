@@ -283,6 +283,8 @@ class mtz_dataset_list(list):
         for data in header_dict['COLUMN']:
             words = data.split()
             label = words[0]
+            if "HALF1" in label or "HALF2" in label:
+                continue
             ctype = words[1]
             index = words[4] if len(words) > 4 else '0'
             if ctype == 'H' and label in ('H', 'K', 'L'):
