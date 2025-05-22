@@ -3,7 +3,10 @@
   "server": {
     "host": "localhost",
     "port": 8100,
-    "request_timeout_secs": 1800
+    "ssl": false,
+    "ssl_key": "",
+    "ssl_cert": "",
+    "request_timeout_secs": 1800,
     "admin_key": ""
   },
   // locations for storage
