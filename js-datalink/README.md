@@ -59,6 +59,10 @@ Configuration Values:
  * `server`: **Server related configuration**
    * `host`: The hostname of the interface the service will bind to. Default is `localhost`
    * `port`: The port the web service will listen on. Default is 8100
+   * `ssl`: Set to true to enable ssl/https. ssl_key and ssl_cert must be provided. Defaults to false.
+   * `ssl_key`: Path to ssl key for https.
+   * `ssl_cert`: Path to ssl certificate for https.
+   * `request_timeout_secs`: Sets the timeout value in seconds for receiving requests from the client. Defaults to 1800.
    * `admin_key`: The default `admin_key` used to authenticate requests that require it.
  * `storage`: **Storage related configuration**
   * `data_dir`: Location to store x-ray difraction images. Default is `data`.
