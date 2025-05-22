@@ -2,11 +2,13 @@
 
 'use strict';
 
+const https = require('https');
 const express = require('express');
 const busboy = require('busboy');
 const bodyparser = require('body-parser');
 const stream = require('stream');
 
+const fs = require('fs');
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
 const config = require('./js/config.js');
@@ -15,6 +17,8 @@ const log = require('./js/log.js');
 const API_PREFIX = '/api';
 
 class server {
+
+  server = null;
 
   constructor() {
     this.datalink = new datalink();
@@ -245,25 +249,53 @@ class server {
       this.jsonResponse(res, tools.errorMsg(`Cannot ${req.method} ${req.url}`, 404));
     });
 
-    let server = app.listen(port, host, function(err) {
+    // default to app.listen (http)
+    let cs = app;
+    let scheme = 'http';
+
+    // if ssl is set, try and load certificates and set up https createServer
+    if (config.get('server.ssl')) {
+      let key, cert;
+      try {
+        key = fs.readFileSync(config.get('server.ssl_key'));
+        cert = fs.readFileSync(config.get('server.ssl_cert'));
+      } catch (err) {
+        log.error(`Error loading certificate/key - ${err}`);
+        this.stop();
+        return;
+      }
+
+      // createServer options
+      const options = {
+        key: key,
+        cert: cert
+      }
+
+      // create the https server
+      cs = https.createServer(options, app);
+      scheme = 'https';
+    }
+
+    this.server = cs.listen(port, host, function(err) {
       if (err) {
         log.error(err)
       } else {
-        log.info(`Data Link Server - Running on ${host}:${port}`);
+        log.info(`Data Link Server - Running on ${scheme}://${host}:${port}`);
       }
     });
 
     // set requestTimeout - sets the timeout value in milliseconds for receiving the entire request from the client.
     // https://nodejs.org/api/http.html#serverrequesttimeout
-    server.requestTimeout = config.get('server.request_timeout_secs') * 1000;
+    this.server.requestTimeout = config.get('server.request_timeout_secs') * 1000;
     log.debug(`Server requestTimeout set to ${server.requestTimeout} ms`);
   }
 
   stop() {
-    server.close(() => {
-        console.log('Shutting down.');
-        process.exit(0);
-    });
+    log.info('Shutting down.');
+    if (this.server) {
+      this.server.close();
+    }
+    process.exit(0);
   }
 
 }
