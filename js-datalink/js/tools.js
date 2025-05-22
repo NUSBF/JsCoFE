@@ -25,28 +25,52 @@ const HTTP_DELAY_INT = 1000;
 // backoff exponential
 const HTTP_DELAY_EXP = 3;
 
+// catalog entry statuses
 const status = {
   completed: 'completed',
   inProgress: 'in_progress',
   failed: 'failed'
 };
 
+/**
+ * A utility class providing various file system, network and validation tools.
+ *
+ * Most methods are static and are intended to be used as helpers throughout
+ * the application without instantiating the class.
+ */
 class tools {
-
+  /**
+   * Returns a formatted error message.
+   * @param {string} msg - Error message.
+   * @param {number} [code=200] - HTTP status code.
+   * @returns {{error: boolean, code: number, msg: string}}
+   */
   static errorMsg(msg, code = 200) {
     log.error(msg);
     return { error: true, code: code, msg: msg };
   }
 
+  /**
+   * Returns a formatted success message.
+   * @param {string} msg - Success message.
+   * @param {number} [code=200] - HTTP status code.
+   * @returns {{success: boolean, code: number, msg: string}}
+   */
   static successMsg(msg, code = 200) {
     log.info(msg);
     return { success: true, code: code, msg: msg };
   }
 
+  /** @returns {string} The data directory path. */
   static getDataDir() {
     return DATA_DIR;
   }
 
+  /**
+   * Gets subdirectories of a given directory.
+   * @param {string} dir - The path to the directory.
+   * @returns {string[]|boolean} Array of subdirectory names or false if directory doesn't exist.
+   */
   static getSubDirs(dir) {
     if (fs.existsSync(dir)) {
       return fs.readdirSync(dir).filter(file => {
@@ -56,6 +80,12 @@ class tools {
     return false;
   }
 
+  /**
+   * Recursively gets the size of a directory, ignoring hidden directories or files.
+   * @param {string} dir - The path to the directory.
+   * @param {number} [size=0] - The initial size.
+   * @returns {number} Total size in bytes.
+   */
   static getDirSize(dir, size = 0) {
     const files = fs.readdirSync(dir, { withFileTypes: true });
     files.forEach((file) => {
@@ -66,9 +96,15 @@ class tools {
       }
     );
     return size;
-}
+  }
 
-  // for files the callback should return true on success and false on failure (to abort).
+  /**
+   * Recursively processes files in a directory tree using a callback.
+   * @param {string} dir - Directory to traverse.
+   * @param {function(string): Promise<boolean>} callback - Async function to call for each file.
+   *   For files the callback should return true on success and false on failure (to abort).
+   * @returns {Promise<boolean>} True if completed, false if aborted.
+   */
   static async fileCallback(dir, callback) {
     let files;
     try {
@@ -91,6 +127,13 @@ class tools {
     return true;
   }
 
+  /**
+   * Removes empty subdirectories older than a specified date.
+   * @param {string} dir - Base directory.
+   * @param {Date} [older_than=new Date()] - Date to compare modification time.
+   * @param {number} [depth=0] - Current recursion depth.
+   * @returns {Promise<void>}
+   */
   static async removeEmptySubDirs(dir, older_than = new Date(), depth = 0) {
     const msg = 'removeEmptySubDirs';
     let stat;
@@ -127,14 +170,25 @@ class tools {
     }
   }
 
+  /** @returns {string} The catalog directory path. */
   static getCatalogDir() {
     return CATALOG_DIR;
   }
 
+  /**
+   * Gets the path to a user config file.
+   * @param {string} user - Username.
+   * @returns {string}
+   */
   static getUserPath(user) {
     return path.join(USER_DIR, user + '.user');
   }
 
+  /**
+   * Gets the Cloud Run ID for a user.
+   * @param {string} user - Username.
+   * @returns {string|boolean} Cloud Run ID or false on error.
+   */
   static getUserCloudRunId(user) {
     if (! tools.validUserName(user)) {
       log.error(`Invalid user name ${user}`);
@@ -160,6 +214,15 @@ class tools {
     return false;
   }
 
+  /**
+   * Validates a username.
+   * Only allows ccp4cloud compatible usernames -
+   * Usernames must:
+   *  - Start with an alpha character
+   *  - Contain only Alphanumeric, fullstop, dash, hyphen and underscore characters
+   * @param {string} user - Username.
+   * @returns {boolean}
+   */
   static validUserName(user) {
     if (/^[a-zA-Z][a-zA-Z0-9\.\-_]+$/.test(user)) {
       return true;
@@ -167,6 +230,12 @@ class tools {
     return false;
   }
 
+  /**
+   * Validates Cloud Run ID for a user.
+   * @param {string} user - Username.
+   * @param {string} id - Cloud Run ID.
+   * @returns {boolean}
+   */
   static validCloudRunId(user, id) {
     let cloudrun_id = this.getUserCloudRunId(user);
     if (cloudrun_id && id === cloudrun_id) {
@@ -175,6 +244,11 @@ class tools {
     return false;
   }
 
+  /**
+   * Validates the admin key.
+   * @param {string} key - Key to validate.
+   * @returns {boolean}
+   */
   static validAdminKey(key) {
     const admin_key = config.get('server.admin_key');
     if (admin_key && key === admin_key) {
@@ -183,6 +257,12 @@ class tools {
     return false;
   }
 
+  /**
+   * Validates data source and ID names.
+   * @param {string} source - Data source name.
+   * @param {string} id - Identifier.
+   * @returns {true|object} True or error object.
+   */
   static validSourceId(source, id) {
     if (/[^a-z]/.test(source) || source.length < 3) {
       return this.errorMsg('Data source name must contain only lowercase characters (with a minimum length of 3)', 400);
@@ -193,6 +273,14 @@ class tools {
     return true;
   }
 
+  /**
+   * Executes an `rsync` process.
+   * @param {string[]} args - Arguments for rsync.
+   * @param {function=} stdoutFunc - Callback for stdout.
+   * @param {function=} stderrFunc - Callback for stderr.
+   * @param {function=} spawnFunc - Callback for spawn.
+   * @returns {Promise<number>}
+   */
   static doRsync(args, stdoutFunc = null, stderrFunc = null, spawnFunc = null) {
     const options = {};
 
@@ -239,6 +327,11 @@ class tools {
     });
   };
 
+  /**
+   * Makes a HEAD request and returns the headers.
+   * @param {string} url - URL to request.
+   * @returns {Promise<Object>}
+   */
   static httpGetHeaders(url) {
     log.debug(`httpGetHeaders - requesting ${url}`);
     return new Promise ((resolve, reject) => {
@@ -249,6 +342,15 @@ class tools {
     });
   }
 
+  /**
+   * Makes an HTTP request with support for redirects, retries, and streaming to file.
+   * @param {string} url - URL to request.
+   * @param {Object} [options={}] - Request options.
+   * @param {string|null} [dest=null] - Destination file path (if the url is to be downloaded).
+   * @param {function=} signalCallback - Callback to receive AbortController.
+   * @param {function=} writeCallback - Callback for streamed data chunks.
+   * @returns {Promise<string|undefined>}
+   */
   static httpRequest(url, options = {}, dest = null, signalCallback = null, writeCallback = null) {
     if (! options.method) {
       options.method = 'GET';
@@ -386,6 +488,12 @@ class tools {
     });
   }
 
+  /**
+   * Determines the unpack command for a given archive file.
+   * @param {string} file - Path to archive file.
+   * @param {string} dest - Destination directory.
+   * @returns {{cmd: string, args: string[]}}
+   */
   static getUnpackCmd(file, dest) {
     let is_tar = false;
     let cmd, args;
@@ -431,6 +539,15 @@ class tools {
     return {cmd, args}
   }
 
+  /**
+   * Unpacks an archive file to a destination directory.
+   * @param {string} file - Archive file path.
+   * @param {string} dest - Destination directory.
+   * @param {string} [cmd=null] - Optional command to execute (can be retrieved with getUnpackCmd).
+   * @param {string[]} [args=null] - Optional arguments for command (can be retrieved with getUnpackCmd).
+   * @param {function=} spawnFunc - Callback to receive AbortController.
+   * @returns {Promise<void>}
+   */
   static unpack(file, dest, cmd = null, args = null, spawnFunc = null) {
     if (! cmd) {
       var {cmd, args, is_archive} = tools.getUnpackCmd(file, dest);
@@ -477,6 +594,12 @@ class tools {
     });
   }
 
+  /**
+   * Reads a cached file if it is younger than the specified age.
+   * @param {string} file - File path.
+   * @param {number} age - Maximum age in ms.
+   * @returns {Buffer|false}
+   */
   static getFileCache(file, age) {
     try {
       if (fs.existsSync(file)) {
@@ -493,6 +616,12 @@ class tools {
     return false;
   }
 
+  /**
+   * Returns available disk space in blocks of given size.
+   * @param {string} dir - Path to check.
+   * @param {string|number} size - Block size.
+   * @returns {string|false}
+   */
   static getFreeSpace(dir, size) {
     let res;
     try {
@@ -504,10 +633,20 @@ class tools {
     return res;
   }
 
+  /**
+   * Sleeps for a given number of milliseconds.
+   * @param {number} ms - Milliseconds to sleep.
+   * @returns {Promise<void>}
+   */
   static sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
   }
 
+  /**
+   * Sanitizes a file path by normalizing and removing unwanted characters.
+   * @param {string} file - File path.
+   * @returns {string} Sanitized path.
+   */
   static sanitizeFilename(file) {
     // resolve any ../ ./ in path
     file = path.normalize(file);
