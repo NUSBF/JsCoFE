@@ -49,11 +49,6 @@ class dataLink {
 
     // configure timer based jobs such as data pruning and catalog updating
     this.setupTimers();
-
-    process.on('error', (err) => {
-      log.error(err);
-      log.error(err.stack);
-    });
   }
 
   loadAllUserCatalogs() {
