@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    19.05.25   <--  Date of Last Modification.
+//    23.05.25   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -113,6 +113,7 @@ function updateWatchedContent ( updateHidden_bool )  {
 
           let n = 0;
           if (data.startsWith('[[[[]]]]'))  {  // for modern JS engines
+            n = 9;
             // if (data.lastIndexOf('[[[[]]]]',0) === 0)  {  // for old JS engines (jsrview)
             // Capped file (e.g. a long log file); put a message and a
             // download button on the top of the page
@@ -136,10 +137,10 @@ function updateWatchedContent ( updateHidden_bool )  {
                          uri.substring(0,uri.indexOf('?capsize')) +
                        '"><i>here</i></a> to download the full '  +
                        'file.</div>';
-                n = 9;
               }
               $( msg ).appendTo ( $(div) );
-            }
+            } else if (data.startsWith('[[[[]]]]{d}'))
+              n = 12;
           }
 
           let preId = hId + "-pre";
