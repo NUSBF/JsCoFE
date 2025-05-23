@@ -14,8 +14,16 @@ const datalink = require('./js/data_link.js');
 const config = require('./js/config.js');
 const log = require('./js/log.js');
 
+/**
+ * API route prefix.
+ * @constant {string}
+ */
 const API_PREFIX = '/api';
 
+/**
+ * Class representing the Data Link Server.
+ * Handles routing, data validation, middleware, and response formatting for the DataLink management API.
+ */
 class server {
 
   server = null;
@@ -25,6 +33,11 @@ class server {
     this.datalink.resumeData();
   }
 
+  /**
+   * Sends a JSON response with the appropriate HTTP status code.
+   * @param {express.Response} res - The Express response object.
+   * @param {Object} data - Data to send as JSON.
+   */
   jsonResponse(res, data) {
     res.set('Content-Type', 'application/json');
     let code = 200;
@@ -36,6 +49,12 @@ class server {
     res.status(code).send(json);
   }
 
+  /**
+   * Middleware to decode the request path. Responds with error if decoding fails.
+   * @param {express.Request} req
+   * @param {express.Response} res
+   * @param {Function} next
+   */
   middleware(req, res, next) {
     try {
       decodeURIComponent(req.path)
@@ -47,6 +66,9 @@ class server {
     }
   }
 
+  /**
+   * Validates cloud run ID or admin key in headers.
+   */
   checkCloudRunId(req, res, next) {
     if (tools.validCloudRunId(req.params.user, req.headers.cloudrun_id) ||
         tools.validAdminKey(req.headers.admin_key)) {
@@ -56,6 +78,9 @@ class server {
     }
   }
 
+  /**
+   * Checks if the provided source and ID are valid.
+   */
   checkValidSourceId(req, res, next) {
     let check = tools.validSourceId(req.params.source, req.params.id);
     if (check === true) {
@@ -65,6 +90,9 @@ class server {
     }
   }
 
+  /**
+   * Middleware to check for valid admin key.
+   */
   checkAdminKey(req, res, next) {
     if (tools.validAdminKey(req.headers.admin_key)) {
       next();
@@ -73,6 +101,9 @@ class server {
     }
   }
 
+  /**
+   * Gets metadata for one or all data sources.
+   */
   getSources(req, res) {
     let data;
     if (! req.params.id || req.params.id === '*') {
@@ -83,6 +114,9 @@ class server {
     this.jsonResponse(res, data);
   }
 
+  /**
+   * Retrieves the catalog of one or all data sources.
+   */
   getSourceCatalog(req, res) {
     let data;
     if (req.params.id === '*') {
@@ -93,10 +127,19 @@ class server {
     this.jsonResponse(res, data);
   }
 
+  /**
+   * Searches all catalogs using a field and query value.
+   * @param {express.Response} res
+   * @param {string} field
+   * @param {string} value
+   */
   async searchSourceCatalogs(res, field, value) {
     this.jsonResponse(res, await this.datalink.searchSourceCatalogs(field, value));
   }
 
+  /**
+   * Updates source catalog(s).
+   */
   updateSourceCatalog(req, res) {
     let data = {};
     if (req.params.id === '*') {
@@ -107,10 +150,9 @@ class server {
     this.jsonResponse(res, data);
   }
 
-  getLocalCatalog(req, res) {
-    this.jsonResponse(res, this.datalink.catalog);
-  }
-
+  /**
+   * Initiates a data fetch for a given source entry.
+   */
   fetchData(req, res) {
     let force = false;
     if (req.query.force == 1) {
@@ -119,18 +161,30 @@ class server {
     this.jsonResponse(res, this.datalink.fetchData(req.params.user, req.params.source, req.params.id, force));
   }
 
+  /**
+   * Returns the status of data downloads for a user/source/id.
+   */
   getDataStatus(req, res) {
     this.jsonResponse(res, this.datalink.getDataStatus(req.params.user, req.params.source, req.params.id));
   }
 
+  /**
+   * Removes downloaded data for a specific user/source/id.
+   */
   removeData(req, res) {
     this.jsonResponse(res, this.datalink.removeData(req.params.user, req.params.source, req.params.id));
   }
 
+  /**
+   * Updates metadata or state for a specific user/source/id.
+   */
   updateData(req, res) {
     this.jsonResponse(res, this.datalink.updateData(req.params.user, req.params.source, req.params.id, req.body));
   }
 
+  /**
+   * Handles file uploads using Busboy for multipart form data.
+   */
   uploadData(req, res, next) {
     // check username
     if (! tools.validUserName(req.params.user)) {
@@ -184,6 +238,11 @@ class server {
     req.pipe(bb);
   }
 
+  /**
+   * Starts the Express server, sets up routes, middleware, and static file serving.
+   * @param {number} [port=config.get('server.port')] - Server port.
+   * @param {string} [host=config.get('server.host')] - Server host.
+   */
   start(port = config.get('server.port'), host = config.get('server.host')) {
 
     // set up express router
@@ -290,6 +349,9 @@ class server {
     log.debug(`Server requestTimeout set to ${server.requestTimeout} ms`);
   }
 
+  /**
+   * Stops the Express server and exits the process.
+   */
   stop() {
     log.info('Shutting down.');
     if (this.server) {
