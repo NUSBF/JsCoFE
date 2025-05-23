@@ -7,25 +7,73 @@ const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
 
+/**
+ * Abstract base class for data sources that manage catalog fetching, data retrieval,
+ * and unpacking of datasets via HTTP or rsync.
+ */
 class dataSource {
 
+  /**
+   * Name of the data source (class name).
+   * @type {string}
+   */
   name = this.constructor.name;
+
+  /**
+   * Description of the data source.
+   * @type {string}
+   */
   description = '';
+
+  /**
+   * URL of the data source.
+   * @type {string}
+   */
   url = '';
+
+  /**
+   * Catalog object containing entries.
+   * @type {?Object}
+   */
   catalog = null;
+
+  /**
+   * Number of entries in the catalog.
+   * @type {number}
+   */
   catalog_size = 0;
+
+  /**
+   * Current status of the catalog.
+   * @type {?string}
+   */
   catalog_status = null;
 
+  /**
+   * Create a new dataSource instance.
+   * @param {string} data_dir - Directory to save downloaded data.
+   * @param {string} catalog_dir - Directory to store catalog files.
+   * @param {Object} jobs - Job manager for tracking active jobs.
+   */
   constructor(data_dir, catalog_dir, jobs) {
     this.data_dir = data_dir;
     this.jobs = jobs;
     this.catalog_file = path.join(catalog_dir, this.name + '.json');;
   }
 
+  /**
+   * Get a catalog entry by ID.
+   * @param {string} id - Entry ID.
+   * @returns {Object} Catalog entry.
+   */
   getEntry(id) {
     return this.catalog[id];
   }
 
+  /**
+   * Adds a catalog object to the instance and logs the number of entries.
+   * @param {Object} catalog - Catalog object keyed by entry IDs.
+   */
   addCatalog(catalog) {
     this.catalog = catalog;
     this.catalog_size = Object.keys(catalog).length;
@@ -33,6 +81,10 @@ class dataSource {
     log.info(`${this.name} - Added catalog: ${this.catalog_size} entries`);
   }
 
+  /**
+   * Saves the catalog to disk as a JSON file.
+   * @param {Object} catalog - Catalog object to save.
+   */
   saveCatalog(catalog) {
     log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
     this.addCatalog(catalog);
@@ -49,6 +101,9 @@ class dataSource {
     });
   }
 
+  /**
+   * Loads the catalog from disk, or fetches a new one if missing.
+   */
   loadCatalog() {
     if (! fs.existsSync(this.catalog_file)) {
       this.updateCatalog(this.catalog_file);
@@ -70,6 +125,10 @@ class dataSource {
     });
   }
 
+  /**
+   * Fetches and updates the catalog, saving it to disk.
+   * If the fetch fails, marks catalog as failed if empty.
+   */
   async updateCatalog() {
     if (this.catalog_status === status.inProgress) {
       log.info(`${this.name} - Fetch already in progress`);
@@ -89,24 +148,46 @@ class dataSource {
     }
   }
 
+  /**
+   * Sets the callback function to invoke on data error.
+   * @param {Function} callback - Function to call on error.
+   */
   setErrorCallback(callback) {
     this.errorCallback = callback;
   }
 
+  /**
+   * Sets the callback function to invoke when data is successfully fetched.
+   * @param {Function} callback - Function to call on success.
+   */
   setCompleteCallback(callback) {
     this.completeCallback = callback;
   }
 
+  /**
+   * Handles errors in data fetching.
+   * @param {Object} entry - Data entry.
+   * @param {Error|string} err - Error object or message.
+   */
   dataError(entry, err) {
     this.jobs.remove(entry);
     this.errorCallback(entry, err);
   }
 
+  /**
+   * Mark a data entry as completed.
+   * @param {Object} entry - Data entry object.
+   */
   dataComplete(entry) {
     this.jobs.remove(entry);
     this.completeCallback(entry);
   }
 
+  /**
+   * Fetch data for an entry using HTTP.
+   * @param {string|Array<Object>} urls - Single URL or list of objects {url, file}.
+   * @param {Object} entry - Data entry object.
+   */
   async fetchDataHttp(urls, entry) {
     if (typeof urls == 'string') {
       urls = [ { 'url': urls, 'file': path.basename(urls) } ];
@@ -136,6 +217,13 @@ class dataSource {
     this.dataComplete(entry)
   }
 
+  /**
+   * Internal method to fetch a single file via HTTP and unpack if necessary.
+   * @param {string} url - URL of the file.
+   * @param {string} file - File name.
+   * @param {Object} entry - Data entry object.
+   * @param {boolean} [update_size=true] - Whether to update the size.
+   */
   async _fetchDataHttp(url, file, entry, update_size = true) {
     // get content-size from http headers
     let headers = await tools.httpGetHeaders(url);
@@ -196,9 +284,14 @@ class dataSource {
         throw err;
       }
     }
-
   }
 
+  /**
+   * Unpacks nested compressed files in a directory.
+   * @param {Object} entry - Data entry object.
+   * @param {string} dest_dir - Destination directory to unpack to.
+   * @returns {Promise<void>}
+   */
   async unpackDirectory(entry, dest_dir) {
     // go through the contents of the archive and unpack any additional files
     // this is required as some data source images are gzipped/bzipped individually
@@ -225,6 +318,11 @@ class dataSource {
     });
   }
 
+  /**
+   * Fetches data source catalog size via rsync and updates catalog.
+   * @param {string} url - Rsync source URL.
+   * @param {Object} catalog - Catalog object to populate.
+   */
   async fetchCatalogRsync(url, catalog) {
     if (! config.get('data_sources.' + this.name + '.rsync_size')) {
       return;
@@ -249,6 +347,11 @@ class dataSource {
     this.rsyncParseLines(catalog, lines);
   }
 
+  /**
+   * Fetches a dataset via rsync and unpacks it if needed.
+   * @param {string} url - Rsync base URL.
+   * @param {Object} entry - Data entry object.
+   */
   async fetchDataRsync(url, entry) {
     let job_id;
 
@@ -279,6 +382,11 @@ class dataSource {
     this.dataComplete(entry);
   }
 
+  /**
+   * Parses rsync listing output lines and updates the catalog object.
+   * @param {Object} catalog - Catalog object.
+   * @param {string[]} lines - Output lines from rsync listing.
+   */
   // parse rsync listing
   // -rw-r--r--    178,407,270 2022/10/28 11:50:05 100/diffractions/Camera Ceta 1903 670 mm 0001.emd
   rsyncParseLines(catalog, lines) {
