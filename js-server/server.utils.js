@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    24.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -450,9 +450,9 @@ function copyDirSync ( source,destination,copyLinks )  {
 }
 
 
-function mkDir ( dirPath )  {
+function mkDir ( dirPath,options={recursive:true} )  {
   try {
-    fs.mkdirSync ( dirPath );
+    fs.mkdirSync ( dirPath,options );
     return true;
   } catch (e)  {
     log.error ( 70,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
