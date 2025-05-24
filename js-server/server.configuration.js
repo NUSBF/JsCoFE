@@ -839,46 +839,62 @@ ServerConfig.prototype._check_directory = function ( dirPath,desc,logcode )  {
     log.standard ( logcode  ,this.type + ': ' + desc + ' found' );
   else if (utils.mkDir(dirPath))
     log.warning  ( logcode+1,this.type + ': ' + desc + ' created' );
-  else 
+  else  {
     log.error    ( logcode+2,this.type + ': failed to create ' + desc );
+    return false;
+  }
+  return true;
 }
 
 ServerConfig.prototype.checkDirectories = function()  {
  
+  let ok = true;
+
   if (('userDataPath' in this) && this.userDataPath)
-    this._check_directory ( this.userDataPath,'user registry',100 );
-  else if (this.type=='FE')
-    log.error ( 103,this.type + ': user registry is not configured' )
+    ok = ok && this._check_directory ( this.userDataPath,'user registry',100 );
+  else if (this.type=='FE')  {
+    log.error ( 103,this.type + ': user registry is not configured' );
+    ok = false;
+  }
 
   if (('projectsPath' in this) && this.projectsPath)
     for (let dname in this.projectsPath)
-      this._check_directory ( this.projectsPath[dname].path,
-                              'projects volume ' + dname,105 );
-  else if (this.type=='FE')
-    log.error ( 108,this.type + ': project volumes are not configured' )
+      ok = ok && this._check_directory ( this.projectsPath[dname].path,
+                                         'projects volume ' + dname,105 );
+  else if (this.type=='FE')  {
+    log.error ( 108,this.type + ': project volumes are not configured' );
+    ok = false;
+  }
 
   let storage_desc = this.type=='FE' ? 'general storage' : 'job working area';
   if (this.storage)
-    this._check_directory ( this.storage,storage_desc,110 );
-  else if (this.type!='FE-PROXY')
-    log.standard ( 118,this.type + ': ' + storage_desc + ' is not configured' )
+    ok = ok && this._check_directory ( this.storage,storage_desc,110 );
+  else if (this.type!='FE-PROXY')  {
+    log.standard ( 118,this.type + ': ' + storage_desc + ' is not configured' );
+    ok = false;
+  }
 
   if (this.tmp_dir)
-    this._check_directory ( this.tmp_dir,'fast scratch area',115 );
+    ok = ok && this._check_directory ( this.tmp_dir,'fast scratch area',115 );
   else if (this.type!='FE-PROXY')
-    log.standard ( 118,this.type + ': fast scratch area is not configured' )
+    log.standard ( 118,this.type + ': fast scratch area is not configured' );
 
   if ('jobs_safe' in this)
-    this._check_directory ( this.jobs_safe.path,'jobs safe',120 );
+    ok = ok && this._check_directory ( this.jobs_safe.path,'jobs safe',120 );
   else if (this.type!='FE-PROXY')
     log.standard ( 123,this.type + ': jobs safe is not configured' )
 
   if ('archivePath' in this)
     for (let aname in this.archivePath)
-      this._check_directory ( this.archivePath[aname].path,
-                          'archive volume ' + aname,125 );
+      ok = ok && this._check_directory ( this.archivePath[aname].path,
+                                         'archive volume ' + aname,125 );
   else if (this.type=='FE')
-    log.standard ( this.type + ': archive volumes are not configured' );
+    log.standard ( 128,this.type + ': archive volumes are not configured' );
+
+  if (!ok)  {
+    log.error ( 130,this.type + ': PRINCIPAL DIRECTORIES MISCONFIGURED -- STOP' );
+    process.exit ( 130 );
+  }
 
 }
 
