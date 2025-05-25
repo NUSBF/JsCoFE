@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.24   <--  Date of Last Modification.
+#    25.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2025
 #
 # ============================================================================
 #
@@ -162,6 +162,11 @@ class Workflow(import_task.Import):
             for i in range(len(self.input_data.data.ligand)):
                 self.lig.append ( self.makeClass(self.input_data.data.ligand[i]) )
 
+        if hasattr(self.input_data.data,"revision"):  # optional data parameter
+            self.revision = []
+            for i in range(len(self.input_data.data.revision)):
+                self.revision.append ( self.makeClass(self.input_data.data.revision[i]) )
+
         return
 
 
@@ -169,15 +174,16 @@ class Workflow(import_task.Import):
 
     def run(self):
 
-        self.unm     = []  # unmerged dataset
-        self.hkl     = []  # selected merged dataset
-        self.seq     = []  # list of sequence objects
-        self.xyz     = []  # coordinates (model/apo)
-        self.lig     = []  # not used in this function but must be initialised
-        self.ligdesc = []
-        self.lib     = []
+        self.unm      = []  # unmerged dataset
+        self.hkl      = []  # selected merged dataset
+        self.seq      = []  # list of sequence objects
+        self.xyz      = []  # coordinates (model/apo)
+        self.lig      = []  # not used in this function but must be initialised
+        self.ligdesc  = []
+        self.lib      = []
+        self.revision = []
 
-        summary_line = ""
+        summary_line  = ""
         ilist = []
 
         # ligand library CIF has been provided
@@ -210,6 +216,8 @@ class Workflow(import_task.Import):
             ilist.append ( "Ligands (" + str(nligs) + ")" )
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
+        if len(self.revision)>0:
+            ilist.append ( "Revision (" + str(len(self.revision)) + ")" )
 
         have_results = (len(ilist)>0)
 
@@ -223,7 +231,8 @@ class Workflow(import_task.Import):
             "N_xyz"      : 0,
             "N_lig"      : 0,
             "N_ligdesc"  : 0,
-            "N_lib"      : 0
+            "N_lib"      : 0,
+            "N_revision" : 0
         }
 
         if self.unm:
@@ -236,11 +245,12 @@ class Workflow(import_task.Import):
                 if self.hkl[i].isAnomalous():
                     variables["N_hkl_anom"] += 1
         
-        if self.seq:     variables["N_seq"]     = len(self.seq)
-        if self.xyz:     variables["N_xyz"]     = len(self.xyz)
-        if self.lig:     variables["N_lig"]     = len(self.lig)
-        if self.ligdesc: variables["N_ligdesc"] = len(self.ligdesc)
-        if self.lib:     variables["N_lib"]     = len(self.lib)
+        if self.seq:      variables["N_seq"]      = len(self.seq)
+        if self.xyz:      variables["N_xyz"]      = len(self.xyz)
+        if self.lig:      variables["N_lig"]      = len(self.lig)
+        if self.ligdesc:  variables["N_ligdesc"]  = len(self.ligdesc)
+        if self.lib:      variables["N_lib"]      = len(self.lib)
+        if self.revision: variables["N_revision"] = len(self.revision)
 
         if hasattr(self.task.parameters,"sec1"):
             sec1 = self.task.parameters.sec1.contains
@@ -269,7 +279,8 @@ class Workflow(import_task.Import):
                         "xyz"      : self.xyz,
                         "ligand"   : self.lig,
                         "lib"      : self.lib,
-                        "ligdesc"  : self.ligdesc
+                        "ligdesc"  : self.ligdesc,
+                        "revision" : self.revision
                     },
                     "variables" : variables
                  })

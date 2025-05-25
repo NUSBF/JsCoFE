@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    24.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2025
  *
  *  =================================================================
  *
@@ -173,6 +173,11 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                                                 dtype.tooltip = 'Specify ligand to '+
                                                         'be fit in electron density.';
                                                 dtype.max     = 1; // this.input_ligands.length;
+                                            break;
+                              case 'REVISION' : dtype.data_type.DataRevision = tsec;
+                                                dtype.label   = 'Structure revision';
+                                                dtype.tooltip = 'Structure revision.';
+                                                dtype.max     = 1;
                                             break;
                               default : ;
                             }
