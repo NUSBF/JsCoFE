@@ -1029,7 +1029,11 @@ function getUserData ( loginData )  {
 
 function topupUserRation ( loginData,callback_func )  {
   let uRation = ration.getUserRation ( loginData );
-  let rData   = { code : 'ok', message : '', ration : uRation };
+  let rData   = { 
+    code    : 'ok', 
+    message : '', 
+    ration  : uRation
+   };
 
   // console.log ( ' >>>> storage      = ' + uRation.storage );
   // console.log ( ' >>>> storage_used = ' + uRation.storage_used );
@@ -1056,7 +1060,7 @@ function topupUserRation ( loginData,callback_func )  {
       log.error ( 81,'User data file not found, login ' + loginData.login );
   
     } else  {
-  
+
       let feconf = conf.getFEConfig();
       // find new storage and topup requirement
       let storage1 = uRation.storage;  // current allocation
@@ -1092,6 +1096,7 @@ function topupUserRation ( loginData,callback_func )  {
               uRation.storage = storage1;
               ration.saveUserRation ( loginData,uRation );
               rData.code    = 'topup';
+              rData.ration  = uRation;
               rData.message = emailer.sendTemplateMessage ( uData,
                 cmd.appName() + ' Disk Space Auto-Topup',
                 'auto_topup',{
@@ -1134,6 +1139,7 @@ function getUserRation ( loginData,data,callback_func )  {
       })
     );
   }
+
 }
 
 
