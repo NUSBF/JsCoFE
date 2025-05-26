@@ -3151,6 +3151,18 @@ if (!dbx)  {
   
   }
 
+  // // this function only to be used on FE
+  // TaskTemplate.prototype.setRunningRemotely = function ( uData )  {
+
+  //   this.run_remotely = (__remote_environ_server.length>0) && 
+  //                        (this.nc_type=='ordinary') &&  
+  //                             this.canRunRemotely() && 
+  //                        uData.remote_tasks[this._type];
+
+  //   this.run_remotely = false;
+  
+  // }
+
 
   // TaskTemplate.prototype.canRunInWorkflow = function ( uData )  {
 

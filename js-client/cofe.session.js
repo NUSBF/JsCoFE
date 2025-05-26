@@ -289,7 +289,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
                 __remote_environ_server = [];
                 if ((__remoteJobServer.status=='FE') && userData.remote_login 
-                                                    && userData.remote_pwd)  {
+                                                     && userData.remote_pwd)  {
                   let rud   = new UserData();
                   rud.login = userData.remote_login;
                   rud.pwd   = userData.remote_pwd;

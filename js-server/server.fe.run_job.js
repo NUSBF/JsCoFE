@@ -106,7 +106,7 @@ FEJobRegister.prototype.addJob = function ( job_token,rfe_token,nc_number,
     job_token        : job_token,   // job_token issued by NC (clashes hopefully minimal)
                                     // make tokens surely NC-specific through NC
                                     // confoguration
-    rfe_token        : rfe_token,   // toke issued by 'REMOTE' FE (RFE)
+    rfe_token        : rfe_token,   // token issued by 'REMOTE' FE (RFE)
     remoteLogin      : remoteLogin, // remote login name (only if rfe_token given)
     loginData        : loginData,
     project          : project,
@@ -1028,7 +1028,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
             log.standard ( 6,'job ' + task.id + ' sent to ' +
                             conf.getNCConfig(nc_number).name + ', job token:' +
                             job_token );
-            log.standard ( 6,'compression: '  + nc_cfg.compression +
+            log.standard ( 6,'compression: ' + nc_cfg.compression +
                             ', zip time: '   + stats.zip_time.toFixed(3) +
                             's, send time: ' + stats.send_time.toFixed(3) + 
                             's, size: '      + stats.size.toFixed(3) + ' MB' );
@@ -1700,9 +1700,12 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                       task.script         = jobClass.script;
                       task.script_pointer = jobClass.script_end_pointer;
                     }
-                    task.submitter            = loginData.login;
+                    // task.submitter            = loginData.login;
+                    task.submitter            = jobClass.submitter;
                     task.input_data.data      = auto_meta[key].data;
                     task.start_time           = Date.now();
+
+                    // task.setRunningRemotely();
     
                     for (let field in auto_meta[key].fields)
                       task[field] = auto_meta[key].fields[field];
@@ -1785,7 +1788,7 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                          function(jtoken){} );
 
             }
-    
+
           }
   
         } else  {
