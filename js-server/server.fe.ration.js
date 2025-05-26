@@ -171,8 +171,8 @@ let fpath = getUserRationFPath ( loginData );
 }
 
 
-function checkUserRation ( loginData,include_cloudrun )  {
-let r = getUserRation ( loginData );
+function checkUserRation ( loginData,include_cloudrun,ration=null )  {
+let r = ration ? ration : getUserRation ( loginData );
 let check_list = [];
   if (r.storage && (r.storage_used>r.storage))
     check_list.push ( 'Disk space' );
