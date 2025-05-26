@@ -300,7 +300,8 @@ function getEFJobEntry ( loginData,project,jobId )  {
 // complex software setup such as AF2.
 //
 
-var pull_jobs_timer = null;
+var __pull_jobs_timer = null;
+var __retrieval_map   = {};
 
 function checkRemoteJobs ( check_jobs,nc_number )  {
 let nc_servers = conf.getNCConfigs();
@@ -330,10 +331,16 @@ let nc_servers = conf.getNCConfigs();
         delete feJobRegister.token_map[index];
         were_changes = true;
       
-      } else if (jobEntry && (check_jobs[index].status!=task_t.job_code.running))  {
+      } else if (jobEntry && (!__retrieval_map[jobEntry.job_token]) &&
+                 (check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
-        (function(server_no,job_entry){
+        let server_no = index;
+        let job_entry = jobEntry;
+
+        __retrieval_map[jobEntry.job_token] = true;
+
+        // (function(server_no,job_entry){
           let ncCfg    = nc_servers[check_jobs[server_no].nc_number];
           let nc_url   = ncCfg.externalURL;
           let filePath = path.join ( conf.getFETmpDir(),job_entry.job_token + '.zip' );
@@ -344,6 +351,7 @@ let nc_servers = conf.getNCConfigs();
               method  : 'POST',
               body    : { job_token : job_entry.job_token },
               json    : true,
+              timeout : 20000,
               rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
             }
           )
@@ -357,8 +365,10 @@ let nc_servers = conf.getNCConfigs();
               let rdata = utils.readObject ( filePath );
               if (rdata)  {
                 // if job is still running, just ignore received file till next round
-                if (rdata.status==cmd.nc_retcode.jobIsRunning)
+                if (rdata.status==cmd.nc_retcode.jobIsRunning)  {
+                  delete __retrieval_map[jobEntry.job_token];
                   return;
+                }
                 // the other signal is job not found on NC
                 if (rdata.status==cmd.nc_retcode.jobNotFound)  {
                   log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
@@ -367,6 +377,7 @@ let nc_servers = conf.getNCConfigs();
                   writeFEJobRegister();
                   check_jobs[server_no].status = task_t.job_code.remove;
                   were_changes = true;
+                  delete __retrieval_map[jobEntry.job_token];
                   return;
                 }
               }
@@ -392,6 +403,7 @@ let nc_servers = conf.getNCConfigs();
                   check_jobs[server_no].status = task_t.job_code.remove;
                   checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
                 }
+                delete __retrieval_map[jobEntry.job_token];
               });
 
           })
@@ -399,9 +411,10 @@ let nc_servers = conf.getNCConfigs();
             // make a counter here to avoid infinite looping
             utils.removeFile ( filePath ); // Remove file on error
             log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
+            delete __retrieval_map[jobEntry.job_token];
           });
 
-        }(index,jobEntry))
+        // }(index,jobEntry))
       
       }
 
@@ -411,7 +424,7 @@ let nc_servers = conf.getNCConfigs();
       checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
       writeFEJobRegister();
     } else  {
-      pull_jobs_timer = null;  // note that timer was blocked up to this point
+      __pull_jobs_timer = null;  // note that timer was blocked up to this point
       checkPullMap();
     }
 
@@ -464,11 +477,11 @@ function checkPullMap()  {
 
   if (Object.keys(feJobRegister.token_pull_map).length <= 0)  {
 
-    pull_jobs_timer = null;
+    __pull_jobs_timer = null;
   
-  } else if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
+  } else if (!__pull_jobs_timer)  {  // else the timer is already running, do not repeat
 
-    pull_jobs_timer = setTimeout ( function(){
+    __pull_jobs_timer = setTimeout ( function(){
 
       let check_jobs = {};  // buffer structure for convenience
       for (let index in feJobRegister.token_pull_map)  {

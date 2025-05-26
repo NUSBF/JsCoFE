@@ -35,6 +35,7 @@ const job_code = {
   running       : 'running',       // job is running
   ending        : 'ending',        // job is in gracefull ending phase
   exiting       : 'exiting',       // job is in post-run processing
+  // retrieved     : 'retrieved',     // job is being retrieved from remote NC
   finished      : 'finished',      // job finished normally (nothing to do with the results)
   noresults     : 'noresults',     // job finished normally but no results produced
   hiddenresults : 'hiddenresults', // job finished normally but results are hidden
