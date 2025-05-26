@@ -2278,6 +2278,7 @@ function cloudRun ( server_request,server_response )  {
                     pData.desc.jobCount = mjd[2];
                     task.submitter      = loginData.login;
                     task.start_time     = Date.now();
+                    task.run_remotely   = (uData && uData.remote_tasks[task._type]);
                     if (!task.autoRunId)
                       task.autoRunId = 'cloudrun';
                     task.state          = task_t.job_code.running;
@@ -2343,7 +2344,7 @@ function cloudRun ( server_request,server_response )  {
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
-                                     0, // temoporary cloudrun runs only on own NCs
+                                     task.run_remotely ? 2 : 0, // conditional on RNC
                                      function(jtoken){
                             let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {
