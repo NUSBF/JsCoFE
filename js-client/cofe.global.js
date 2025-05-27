@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    13.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -609,6 +609,35 @@ function doNotShowAgain ( key,url )  {
 
 }
 
+
+// ===========================================================================
+// HTML entity identification
+
+const __htmlEntityParser = (() => {
+  try {
+    return document.createElement('textarea');
+  } catch {
+    return null;
+  }
+})();
+
+function isHtmlEntity ( str ) {
+// returns true if str==' &xxxx; ' is recognised as a valid html entity
+  if (!__htmlEntityParser) 
+    return false;
+  const trimmed = str.trim();
+  if (!trimmed.startsWith('&') || !trimmed.endsWith(';'))
+    return false;
+  __htmlEntityParser.innerHTML = trimmed;
+  const decoded = __htmlEntityParser.value;
+  return decoded !== trimmed;
+}
+
+function escapeRegExp ( str ) {
+// this function escapes special regexp characters in given string
+  return str.replace ( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+  // return str.replace ( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+}
 
 // ===========================================================================
 

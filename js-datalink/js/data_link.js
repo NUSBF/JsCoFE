@@ -10,8 +10,10 @@ const config = require('./config.js');
 const log = require('./log.js');
 const rcsb = require('./rcsb.js');
 
+/** Absolute path to the sources directory containing data source modules. */
 const SOURCES_DIR = path.join(__dirname, 'sources');
 
+/** List of supported data source names. */
 const DATA_SOURCES = [
   'pdbj',
   'sbgrid',
@@ -19,11 +21,20 @@ const DATA_SOURCES = [
   'zenodo'
 ]
 
+/** One gigabyte in bytes. */
 const GB = 1000000000;
+/** One megabyte in bytes. */
 const MB = 1000000;
 
+/**
+ * Main class managing api data operations.
+ */
 class dataLink {
 
+  /**
+   * Constructs the dataLink object.
+   * @param {boolean} [server_mode=true] - Whether the server is running in standalone or server mode.
+   */
   constructor(server_mode = true) {
     this.server_mode = server_mode;
     this.ds = {};
@@ -49,13 +60,11 @@ class dataLink {
 
     // configure timer based jobs such as data pruning and catalog updating
     this.setupTimers();
-
-    process.on('error', (err) => {
-      log.error(err);
-      log.error(err.stack);
-    });
   }
 
+  /**
+   * Loads all user catalogs from the data directory.
+   */
   loadAllUserCatalogs() {
     log.info(`Loading local catalogs`);
     const users = tools.getSubDirs(tools.getDataDir());
@@ -70,6 +79,11 @@ class dataLink {
     }
   }
 
+  /**
+   * Rebuilds a local catalog for the given user by scanning their data directory.
+   * @param {string} user - The username whose catalog will be rebuilt.
+   * @returns {Promise<void>}
+   */
   // rebuilds a user catalog file
   async rebuildLocalCatalog(user) {
     let data_dir = path.join(tools.getDataDir(), user);
@@ -96,12 +110,18 @@ class dataLink {
     }
   }
 
+  /**
+   * Loads catalogs from all enabled data sources.
+   */
   loadSourceCatalogs() {
     for (let name in this.ds) {
       this.ds[name].loadCatalog();
     }
   }
 
+  /**
+   * Sets up periodic jobs for catalog updates and data pruning.
+   */
   setupTimers() {
     // only setup timers when in client/server mode
     if (! this.server_mode) {
@@ -122,6 +142,10 @@ class dataLink {
     }
   }
 
+  /**
+   * Retrieves all data sources and their metadata.
+   * @returns {Object} - Object containing data source metadata keyed by source name.
+   */
   getAllSources() {
     const sources = {};
     for (const name of Object.keys(this.ds)) {
@@ -130,6 +154,11 @@ class dataLink {
     return sources;
   }
 
+  /**
+   * Retrieves metadata for a specific data source.
+   * @param {string} id - The data source ID.
+   * @returns {Object|Object} - Metadata object or error object.
+   */
   getSource(id) {
     let result = this.hasSource(id);
     if (result !== true) {
@@ -145,6 +174,11 @@ class dataLink {
     };
   }
 
+  /**
+   * Retrieves the catalog for a given data source.
+   * @param {string} id - The data source ID.
+   * @returns {Object|Object} - Catalog object or error object.
+   */
   getSourceCatalog(id) {
     let result = this.hasSource(id);
     if (result !== true) {
@@ -158,6 +192,10 @@ class dataLink {
     return tools.errorMsg('No catalog available', 404);
   }
 
+  /**
+   * Retrieves all source catalogs.
+   * @returns {Object} - Object mapping source names to their catalog objects.
+   */
   getAllSourceCatalogs() {
     const catalogs = {};
     for (const [name, source] of Object.entries(this.ds)) {
@@ -166,6 +204,14 @@ class dataLink {
     return catalogs;
   }
 
+  /**
+   * Adds a catalog entry for a user from a specific data source.
+   * @param {string} user - Username.
+   * @param {string} source - Source name.
+   * @param {string} id - Entry ID.
+   * @param {string} [st=status.inProgress] - Entry status.
+   * @returns {Object|false} - Catalog entry object or false on failure.
+   */
   addEntryFromSource(user, source, id, st = status.inProgress) {
     const f = {};
     if (this.ds[source]) {
@@ -185,6 +231,12 @@ class dataLink {
     return this.catalog.addEntry(user, source, id, f);
   }
 
+  /**
+   * Searches across all source catalogs for a matching field.
+   * @param {string} field - The field to search ('pdb' or 'doi').
+   * @param {string} search - Search term.
+   * @returns {Promise<Object>} - Search results and optional PDB metadata from RCSB.
+   */
   async searchSourceCatalogs(field, search) {
     if (search === undefined || search === '') {
       return tools.errorMsg(`Empty or invalid search string`, 400);
@@ -246,6 +298,11 @@ class dataLink {
     return obj;
   }
 
+  /**
+   * Updates the catalog for a specific data source.
+   * @param {string} name - Data source name.
+   * @returns {Object} - Success or error object.
+   */
   updateSourceCatalog(name) {
     let result = this.hasSource(name);
     if (result !== true) {
@@ -257,6 +314,10 @@ class dataLink {
     return tools.successMsg(`${name} - Updating catalog`);
   }
 
+  /**
+   * Updates all source catalogs.
+   * @returns {Object} - Success object with source names.
+   */
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.ds)) {
@@ -266,6 +327,11 @@ class dataLink {
     return tools.successMsg(`Updating catalog(s): ${sources.join(', ')}`);
   }
 
+  /**
+   * Checks if a data source exists.
+   * @param {string} source - Data source ID.
+   * @returns {true|Object} - True if exists, or error object.
+   */
   hasSource(source) {
     if (! this.ds[source]) {
       return tools.errorMsg(`${source} data source not found`, 404);
@@ -273,13 +339,22 @@ class dataLink {
     return true;
   }
 
+  /**
+   * Waits for a data source's catalog to be available.
+   * @param {string} source - Data source ID.
+   * @returns {Promise<void>}
+   */
   async waitForCatalog(source) {
     while (! this.ds[source].catalog) {
       await new Promise(r => setTimeout(r, 1000));
     }
   }
 
-  async resumeData () {
+  /**
+   * Resumes all in-progress data fetch jobs.
+   * @returns {Promise<void>}
+   */
+  async resumeData() {
     const catalog = this.catalog.getCatalog();
     for (const user in catalog) {
       for (const source in catalog[user]) {
@@ -298,6 +373,14 @@ class dataLink {
     }
   }
 
+  /**
+   * Fetches data from a source and updates the catalog.
+   * @param {string} user - Username.
+   * @param {string} source - Source name.
+   * @param {string} id - Entry ID.
+   * @param {boolean} [force] - Force refetch even if data exists.
+   * @returns {Object} - Success or error object.
+   */
   fetchData(user, source, id, force = ! this.server_mode) {
     if (! tools.validUserName(user)) {
       return tools.errorMsg(`Invalid user name`, 400);
@@ -358,6 +441,10 @@ class dataLink {
     return tools.successMsg(`${source} - Fetching ${user}/${source}/${id}`);
   }
 
+  /**
+   * Updates a catalog entry as completed and sets its size from disk usage (eg. after unpacking).
+   * @param {Object} entry - Catalog entry object.
+   */
   dataComplete(entry) {
     const fields = {
       status: status.completed,
@@ -366,6 +453,10 @@ class dataLink {
     this.catalog.updateEntry(entry, fields);
   }
 
+  /**
+   * Updates a catalog entry as failed due to an error.
+   * @param {Object} entry - Catalog entry object.
+   */
   dataError(entry) {
     // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
     if (entry) {
@@ -373,6 +464,13 @@ class dataLink {
     }
   }
 
+  /**
+   * Uploads a data file to the user's directory and processes it.
+   * @param {Object} entry - Catalog entry.
+   * @param {ReadableStream} in_s - Incoming data stream.
+   * @param {string} file - Filename.
+   * @returns {Promise<void>}
+   */
   uploadData(entry, in_s, file) {
     return new Promise((resolve, reject) => {
       // make sure there is a filename set
@@ -423,6 +521,12 @@ class dataLink {
     });
   }
 
+  /**
+   * Unpacks an uploaded file if it's an archive.
+   * @param {Object} entry - Catalog entry.
+   * @param {string} file - Filename.
+   * @returns {Promise<void>}
+   */
   async uploadDataUnpack(entry, file) {
     const file_path = path.join(tools.getDataDir(), entry.dir, file);
     const dest_dir = path.dirname(file_path);
@@ -440,6 +544,13 @@ class dataLink {
     }
   }
 
+  /**
+   * Gets the status of data for a user, source, and ID.
+   * @param {string} user - Username.
+   * @param {string} source - Data source name.
+   * @param {string} id - Entry ID.
+   * @returns {Object} - Catalog entry or error object.
+   */
   getDataStatus(user, source, id) {
     let catalog = this.catalog.getCatalog();
 
@@ -469,6 +580,14 @@ class dataLink {
     return catalog;
   }
 
+
+  /**
+   * Removes a catalog entry and deletes associated data.
+   * @param {string} user - Username.
+   * @param {string} source - Data source name.
+   * @param {string} id - Entry ID.
+   * @returns {Object} - Success or error object.
+   */
   removeData(user, source, id) {
     const entry = this.catalog.getEntry(user, source, id);
     if (! entry) {
@@ -492,6 +611,14 @@ class dataLink {
     return tools.errorMsg(`${source} - Unable to remove ${id} for ${user}`, 405);
   }
 
+  /**
+   * Updates fields on a completed data entry.
+   * @param {string} user - Username.
+   * @param {string} source - Data source name.
+   * @param {string} id - Entry ID.
+   * @param {Object} obj - Fields to update (currently only in_use is supported).
+   * @returns {Object} - Success or error object.
+   */
   updateData(user, source, id, obj) {
     const entry = this.catalog.getEntry(user, source, id);
     if (! entry) {
@@ -537,6 +664,10 @@ class dataLink {
     return tools.successMsg(`Updated fields ${Object.keys(valid).join(',')}`);
   }
 
+  /**
+   * Retrieves global data storage statistics.
+   * @returns {Object} - Data stats including sizes and free space.
+   */
   getDataStats() {
     let data_stats = this.catalog.getStats();
     data_stats.size_gb = (data_stats.size / GB).toFixed(2);

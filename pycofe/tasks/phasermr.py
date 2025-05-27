@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.10.24   <--  Date of Last Modification.
+#    23.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -225,7 +225,8 @@ class PhaserMR(basic.TaskDriver):
                                  .replace("M","A").replace("N","A") \
                                  .replace("R","A").replace("S","C") \
                                  .replace("V","A").replace("W","A") \
-                                 .replace("Y","C").replace("U","T")
+                                 .replace("Y","C").replace("U","T") \
+                                 .replace("X","U")
             else:
                 self.write_stdin ( "\nCOMPOSITION PROTEIN SEQ" )
             seqfpath, fext = os.path.splitext ( seqfpath )

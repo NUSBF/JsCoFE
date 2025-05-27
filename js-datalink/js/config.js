@@ -2,11 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const log = require('./log.js');
 
+/**
+ * Default configuration fallback if no config file is found or values are missing.
+ * @type {Object}
+ */
 const def_config = {
   "server": {
     "host": "localhost",
-    "request_timeout_secs": 1800,
-    "port": 8100
+    "port": 8100,
+    "ssl": false,
+    "ssl_key": "",
+    "ssl_cert": "",
+    "request_timeout_secs": 1800
   },
   "storage": {
     "data_dir": "data",
@@ -44,12 +51,22 @@ const def_config = {
   }
 }
 
+/**
+ * Configuration manager for loading and accessing system configuration values.
+ */
 class config {
 
+  /**
+   * Initializes the configuration by loading from disk
+   */
   constructor() {
     this.load();
   }
 
+  /**
+   * Loads the main configuration from the `config.json` file.
+   * Exits the process if the file cannot be read or parsed.
+   */
   load() {
     let config = path.join(process.cwd(), 'config.json');
     log.info(`Loading config ${config}`);
@@ -61,6 +78,12 @@ class config {
     }
   }
 
+  /**
+   * Loads a JSON file from disk, removing `//` style comments before parsing.
+   *
+   * @param {string} file - Path to the JSON config file.
+   * @returns {Object|false} The parsed JSON object, or `false` on failure.
+   */
   loadJSON(file) {
     try {
       let json = fs.readFileSync(file);
@@ -73,6 +96,13 @@ class config {
     }
   }
 
+  /**
+   * Retrieves a configuration value using a dot-separated key path.
+   * Falls back to default config if not found in loaded config.
+   *
+   * @param {string} config_path - Dot-separated path to the config value (e.g. "server.port").
+   * @returns {*} The configuration value, or `undefined` if not found in both sources.
+   */
   get(config_path) {
     let config = this.getRecurse(config_path, this.config);
     if (config === undefined) {
@@ -81,6 +111,13 @@ class config {
     return config;
   }
 
+  /**
+   * Recursively retrieves a value from a nested object using a dot-separated key path.
+   *
+   * @param {string} config_path - Dot-separated key string.
+   * @param {Object} [obj=this.config] - The object to search within.
+   * @returns {*} The value found, or `undefined` if not present.
+   */
   getRecurse(config_path, obj = this.config) {
     let keys = config_path.split('.');
     if (keys.length > 1 && obj[keys[0]]) {

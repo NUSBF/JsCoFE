@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    15.10.24   <--  Date of Last Modification.
+#    18.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2016-2025
 #
 # ============================================================================
 #
@@ -88,9 +88,9 @@ class DType(jsonut.jObject):
             self._type      = dtype()     # base data type
             self.version    = 2
             self.subtype    = []          # default 'basic' subtype
-            self.dname      = "template"  # data name to display
+            self.dname      = "[0000-00] template"  # data name to display
             self.jobId      = job_id;
-            self.dataId     = "0-0"
+            self.dataId     = "0000-00"
             self.files      = {}  # may be a multiple-file data type
             self.associated = []  # optional list of associated data Ids
             self.citations  = []  # list of program citations

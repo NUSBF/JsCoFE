@@ -393,7 +393,9 @@ JobTree.prototype.makeNodeName = function ( task )  {
         (task.submitter!=author))  {  // empty author makes anonymisation
       if (node_name)
         node_name += ':';
-      node_name += task.submitter;
+      node_name += '<i>' + task.submitter + '</i>';
+      // node_name = '<i>' + task.submitter + '</i>' + 
+      //             (node_name ? ':' + node_name : '');
     }
   }
   if (node_name)

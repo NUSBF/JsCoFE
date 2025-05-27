@@ -8,11 +8,20 @@ const path = require('path');
 const { tools, status } = require('./tools.js');
 const log = require('./log.js');
 
+/** One gigabyte in bytes. */
 const GB = 1000000000;
+/** One megabyte in bytes. */
 const MB = 1000000;
 
+/**
+ * Represents a single data entry in the catalog.
+ */
 class dataEntry {
 
+  /**
+   * Create a data entry.
+   * @param {Object} [fields={}] - Initial values to assign to the entry.
+   */
   constructor(fields = {}) {
     this.updated = new Date().toISOString();
     this.size = 0;
@@ -25,8 +34,16 @@ class dataEntry {
 
 }
 
+/**
+ * Manages a catalog of user data entries.
+ */
 class dataCatalog {
 
+  /**
+   * @param {string} data_dir - Directory for storing data.
+   * @param {boolean} keep_with_data - Whether to keep catalog files with the data.
+   * @param {string} meta_dir - Directory with meta files to copy into new entries.
+   */
   constructor(data_dir, keep_with_data = false, meta_dir) {
     this.data_dir = data_dir;
     this.keep_with_data = keep_with_data;
@@ -34,27 +51,53 @@ class dataCatalog {
     this.catalog = {};
   }
 
+  /**
+   * Get the catalog object.
+   * @returns {Object} The internal catalog.
+   */
   getCatalog() {
     return this.catalog;
   }
 
-  // get the relative data directory for an entry
+  /**
+   * Get relative data path for a given user/source/id.
+   * @param {string} user
+   * @param {string} source
+   * @param {string} id
+   * @returns {string}
+   */
   getRelDataDest(user, source, id) {
     return path.join(user, source, id);
   }
 
-  // get the absolute data directory for an entry
+  /**
+   * Get full path to data directory.
+   * @param {string} [user='']
+   * @param {string} [source='']
+   * @param {string} [id='']
+   * @returns {string}
+   */
   getDataDest(user = '', source = '', id = '') {
     return path.join(this.data_dir, this.getRelDataDest(user, source, id));
   }
 
-  // get the current date minus num_days
+
+  /**
+   * Get a date object representing the date N days ago.
+   * @param {number} num_days
+   * @returns {Date}
+   */
   getPruneDate(num_days) {
     let check_date = new Date();
     check_date.setDate(check_date.getDate() - num_days);
     return check_date;
   }
 
+  /**
+   * Get the file path to a user's catalog file.
+   * @param {string} user
+   * @returns {string}
+   */
   getUserCatalogFile(user) {
     let dir;
     if (this.keep_with_data) {
@@ -65,6 +108,11 @@ class dataCatalog {
     return dir;
   }
 
+  /**
+   * Load a user's catalog from disk.
+   * @param {string} user
+   * @returns {boolean} Success status.
+   */
   loadUserCatalog(user) {
     const catalog = this.getCatalog();
     const file = this.getUserCatalogFile(user);
@@ -82,6 +130,11 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Save a user's catalog to disk.
+   * @param {string} user
+   * @returns {boolean}
+   */
   saveUserCatalog(user) {
     const catalog = this.getCatalog()[user];
 
@@ -106,6 +159,11 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Remove a user's catalog file.
+   * @param {string} user
+   * @returns {boolean}
+   */
   removeUserCatalog(user) {
     let file = this.getUserCatalogFile(user);
     try {
@@ -117,6 +175,13 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Remove a specific data entry's directory.
+   * @param {string} user
+   * @param {string} source
+   * @param {string} id
+   * @returns {boolean}
+   */
   removeUserData(user, source, id) {
     let dir = this.getDataDest(user, source, id);
     try {
@@ -131,6 +196,12 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Remove a user's data source directory.
+   * @param {string} user
+   * @param {string} source
+   * @returns {boolean}
+   */
   removeUserSource(user, source) {
     let dir = this.getDataDest(user, source);
     try {
@@ -142,6 +213,11 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Remove a user from catalog and filesystem.
+   * @param {string} user
+   * @returns {boolean}
+   */
   removeUser(user) {
     let dir = this.getDataDest(user);
     if (! this.removeUserCatalog(user)) {
@@ -156,6 +232,13 @@ class dataCatalog {
     return true;
   }
 
+  /**
+   * Get a specific catalog entry.
+   * @param {string} user
+   * @param {string} source
+   * @param {string} id
+   * @returns {Object|null}
+   */
   getEntry(user, source, id) {
     const catalog = this.getCatalog();
     if (catalog[user] && catalog[user][source] && catalog[user][source][id]) {
@@ -164,6 +247,14 @@ class dataCatalog {
     return null;
   }
 
+  /**
+   * Add a new entry to the catalog and create data directory.
+   * @param {string} user
+   * @param {string} source
+   * @param {string} id
+   * @param {Object} [fields={}]
+   * @returns {Object|boolean}
+   */
   addEntry(user, source, id, fields = {}) {
     const err_msg = `addEntry ${user}/${source}/${id}`;
     let dest = this.getDataDest(user, source, id);
@@ -221,6 +312,12 @@ class dataCatalog {
     return catalog[user][source][id];
   }
 
+  /**
+   * Update an existing entry with new fields.
+   * @param {Object} entry
+   * @param {Object} fields
+   * @returns {boolean}
+   */
   updateEntry(entry, fields) {
     Object.assign(entry, fields);
 
@@ -229,6 +326,13 @@ class dataCatalog {
     return this.saveUserCatalog(entry.user);
   }
 
+  /**
+   * Remove a user's data entry from catalog and disk.
+   * @param {string} user
+   * @param {string} source
+   * @param {string} id
+   * @returns {boolean}
+   */
   removeEntry(user, source, id) {
     const catalog = this.getCatalog();
 
@@ -259,11 +363,20 @@ class dataCatalog {
     return this.saveUserCatalog(user);
   }
 
+  /**
+   * Update the size of a data entry based on directory size.
+   * @param {Object} entry
+   */
   updateEntrySize(entry) {
     const size = this.getStorageSize(entry);
     this.updateEntry(entry, { size: size });
   }
 
+  /**
+   * Get the size of a directory associated with an entry.
+   * @param {Object} entry
+   * @returns {number}
+   */
   getStorageSize(entry) {
     const dir = path.join(this.getDataDest(), entry.dir);
     try {
@@ -278,6 +391,11 @@ class dataCatalog {
     }
   }
 
+  /**
+   * Prune old or unused data to free up space.
+   * @param {number} data_free_gb
+   * @param {number} data_max_days
+   */
   async pruneData(data_free_gb, data_max_days) {
     await this.pruneManagedData(data_free_gb, data_max_days);
     if (data_max_days > 0) {
@@ -285,6 +403,11 @@ class dataCatalog {
     }
   }
 
+  /**
+   * Prune internal (managed) data.
+   * @param {number} data_free_gb
+   * @param {number} data_max_days
+   */
   async pruneManagedData(data_free_gb, data_max_days) {
     log.info(`pruneManagedData - pruning managed data older than ${data_max_days} day(s)`);
     const min_free = data_free_gb * GB;
@@ -353,6 +476,10 @@ class dataCatalog {
     }
   }
 
+  /**
+   * Prune external data directories not in catalog.
+   * @param {number} data_max_days
+   */
   async pruneExternalData(data_max_days) {
     const name = 'pruneExternalData';
     log.info(`${name} - pruning external data older than ${data_max_days} day(s)`);
@@ -401,6 +528,10 @@ class dataCatalog {
     }
   }
 
+  /**
+   * Get statistics about the current catalog.
+   * @returns {{users: number, entries: number, size: number}}
+   */
   getStats() {
     let users = 0;
     let entries = 0;

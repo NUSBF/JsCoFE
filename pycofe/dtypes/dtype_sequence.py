@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    14.01.20   <--  Date of Last Modification.
+#    23.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -25,6 +23,47 @@ from . import dtype_template
 # ============================================================================
 
 def dtype(): return "DataSequence"  # must coincide with data definitions in JS
+
+
+def identify_sequence_type ( seq, ambiguity_threshold=0.2, unknown_threshold=0.2 ):
+
+    seq = seq.upper().replace(" ", "").replace("\n", "")
+    total_length = len(seq)
+    if total_length == 0:
+        return "empty"
+
+    # Base letters
+    dna_bases       = set("ACGT")
+    rna_bases       = set("ACGU")
+    protein_letters = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ") # "ACDEFGHIKLMNPQRSTVWY")
+
+    # Ambiguity codes for NA
+    na_ambiguity    = set("RYSWKMBDHVN")
+
+    # Collect sequence characters
+    seq_letters     = set(seq)
+
+    # Count valid and ambiguous nucleotides
+    def nucleotide_score(bases):
+        valid     = sum(1 for char in seq if char in bases)
+        ambiguous = sum(1 for char in seq if char in na_ambiguity)
+        unknown   = total_length - valid - ambiguous
+        ambiguous_fraction = ambiguous / total_length
+        unknown_fraction   = unknown   / total_length
+        return valid, ambiguous, unknown, ambiguous_fraction, unknown_fraction
+
+    dna_valid, dna_ambig, dna_unknown, dna_ambfrac, dna_unkfrac = nucleotide_score(dna_bases)
+    rna_valid, rna_ambig, rna_unknown, rna_ambfrac, rna_unkfrac = nucleotide_score(rna_bases)
+
+    # Logic
+    if dna_ambfrac <= ambiguity_threshold and dna_unkfrac <= unknown_threshold:
+        return dtype_template.subtypeDNA()
+    elif rna_ambfrac <= ambiguity_threshold and rna_unkfrac <= unknown_threshold:
+        return dtype_template.subtypeRNA()
+    elif seq_letters.issubset(protein_letters):
+        return dtype_template.subtypeProtein()
+    else:
+        return "unknown"
 
 
 def writeSeqFile ( filePath,name,sequence ):

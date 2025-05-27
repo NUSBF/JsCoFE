@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    31.07.23   <--  Date of Last Modification.
+#    23.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2018-2025
 #
 # ============================================================================
 #
@@ -231,16 +231,19 @@ def run ( body,pdb_list,
                     #body.stdoutln ( str(seqdesc) )
                     for i in range(len(seqlist)):
                         name  = str(i+1)
-                        stype = "protein"  # ugly fallback
+                        # stype = "protein"  # ugly fallback
+                        stype = dtype_sequence.identify_sequence_type ( seqlist[i][1] )
                         lst   = seqlist[i][0].split("|")
                         if len(lst)>1:
                             if lst[1].startswith("Chain"):
                                 chains = lst[1].split(" ")[1].split(",")
+                                for j in range(len(chains)):
+                                    chains[j] = chains[j].split("[")[0]
                                 name   = "_".join(chains)
-                                for j in range(len(seqdesc)):
-                                    if chains[0]==seqdesc[j]["chain_id"]:
-                                        stype = seqdesc[j]["type"]
-                                        break
+                                # for j in range(len(seqdesc)):
+                                #     if chains[0]==seqdesc[j]["chain_id"]:
+                                #         stype = seqdesc[j]["type"]
+                                #         break
                         fname = lcode + "_expected_" + name + ".fasta"
                         dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
                                                       seqlist[i][0],seqlist[i][1] )
