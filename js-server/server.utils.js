@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    24.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -450,9 +450,9 @@ function copyDirSync ( source,destination,copyLinks )  {
 }
 
 
-function mkDir ( dirPath )  {
+function mkDir ( dirPath,options={recursive:true} )  {
   try {
-    fs.mkdirSync ( dirPath );
+    fs.mkdirSync ( dirPath,options );
     return true;
   } catch (e)  {
     log.error ( 70,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
@@ -1090,6 +1090,9 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
         if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
 
+          if (['_stdout.log','_stdout1.log','_stderr.log']
+              .some(name=>fpath.endsWith(name)))
+            server_response.write ( '[[[[]]]]{d}\n' );
           fReadStream.pipe ( server_response );
 
         } else  {  // send capped file

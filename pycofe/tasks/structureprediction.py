@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.09.24   <--  Date of Last Modification.
+#    22.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2024
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2025
 #
 # ============================================================================
 #
@@ -29,11 +29,13 @@ import os
 import stat
 import json
 import shutil
-# import uuid
+import uuid
+import time
 
 from pycofe.tasks  import basic
 from pycofe.dtypes import dtype_sequence
 from pycofe.auto   import auto, auto_workflow
+from pycofe.varut  import command
 
 # ============================================================================
 # StructurePrediction driver
@@ -76,10 +78,11 @@ class StructurePrediction(basic.TaskDriver):
         seq  = self.input_data.data.seq
         sec1 = self.task.parameters.sec1.contains
 
-        seqname  = []
-        sequence = []
-        ncopies  = []
-        npmax    = 0
+        seqname   = []
+        sequence  = []
+        ncopies   = []
+        npmax     = 0
+        cache_key = ""
         for i in range(len(seq)):
             seqname.append ( 'seq' + str(i+1) )
             seq[i] = self.makeClass ( seq[i] )
@@ -90,18 +93,32 @@ class StructurePrediction(basic.TaskDriver):
                 seq[i].npred = 1  # backward compatibility in existing setups
             ncopies.append ( seq[i].npred )
             npmax = max ( npmax,seq[i].npred )
+            cache_key += sequence[i] + ":" + str(ncopies[i])
+
         dtype_sequence.writeMultiSeqFile ( self.file_seq_path(),
                                            seqname,sequence,ncopies )
+        if hasattr(sec1,"MINSCORE"):
+            cache_key += ":" + self.getParameter(sec1.MINSCORE)
 
         simulation = False
 
-        engine  = ""
-        flavour = ""
+        engine     = ""
+        flavour    = ""
+        cache      = None
         if simulation:
             engine  = "alphafold"
             flavour = engine
         else:
             try:
+                # { 
+                #   "engine"       : "script",
+                #   "flavour"      : "alphafold",
+                #   "script_path"  : "/home/ccp4cloud/jscofe/af2-script.sh",
+                #   "cache"        : {   // optional
+                #       "path" : "/home/ccp4cloud/jscofe/nc-cache",
+                #       "size"   : 10000
+                #   }
+                # }
                 with open(os.environ["ALPHAFOLD_CFG"],"r") as f:
                     configuration = json.load ( f )
                     engine = configuration["engine"]
@@ -109,6 +126,8 @@ class StructurePrediction(basic.TaskDriver):
                         flavour = configuration["flavour"]
                     else:
                         flavour = engine
+                    if "cache" in configuration:
+                        cache = configuration["cache"]
             except:
                 self.putTitle   ( "Invalid or corrupt configuration" )
                 self.putMessage ( "Task configuration file is either missing or " +\
@@ -123,8 +142,43 @@ class StructurePrediction(basic.TaskDriver):
         nmodels_str = "1"
         if hasattr(sec1,"NSTRUCTS"):
             nmodels_str = self.getParameter ( sec1.NSTRUCTS )
+        cache_key += "::" + nmodels_str
 
-        if engine=="script":
+        cache_index      = {}
+        cache_index_path = None
+        cache_dir        = None
+
+        try:
+            if cache:
+                cache_index_path = os.path.join ( cache["path"],"cache_index.json" )
+                if not os.path.isdir(cache["path"]):
+                    os.makedirs ( cache["path"] )
+                elif os.path.isfile(cache_index_path):
+                    with open(cache_index_path,"r") as f:
+                        cache_index = json.load ( f )
+                    if cache_key in cache_index:
+                        cache_dir = cache_index[cache_key]["path"]
+                        if not os.path.isdir(cache_dir):
+                            # could be an effect of concurrent jobs
+                            cache_dir = None
+                            del cache_index[cache_key]
+                            with open(cache_index_path,"w") as f:
+                                json.dump ( cache_index,f )
+        except:
+            cache_index      = {}
+            cache_index_path = None
+            cache_dir        = None
+            self.stderrln ( " ***** error reading AF cache" )
+            pass
+ 
+        if cache_dir:
+            # retrieve cached results
+            if os.path.isdir(dirPath):
+                shutil.rmtree ( dirPath )
+            shutil.copytree ( cache_dir,dirPath,dirs_exist_ok=True )
+            rc = command.comrc()
+
+        elif engine=="script":
             
             self.putWaitMessageLF ( "Prediction in progress ..." )
 
@@ -421,11 +475,86 @@ class StructurePrediction(basic.TaskDriver):
 
                         #models.append ( model )
 
+            # save space by cleaning
+            for root, dirs, files in os.walk(dirPath,topdown=False):
+                for file in files:
+                    if file.endswith(".a3m"):
+                        file_path = os.path.join(root, file)
+                        os.remove ( file_path )            
+                for d in dirs:
+                    if d.endswith("_env"):
+                        dir_path = os.path.join(root, d)
+                        shutil.rmtree ( dir_path )
+
+            if cache:  # manage results cache (optional)
+
+                try:
+
+                    t0 = time.time()
+
+                    # prepare mew cache item if necessary - do this befofre dealing
+                    # with cache index because it may take a noticeable time
+                    cache_dir_1 = cache_dir
+                    if not cache_dir:
+                        # new item - pick a random directory name
+                        while not cache_dir_1 or os.path.isdir(cache_dir_1):
+                            cache_dir_1 = os.path.join ( cache["path"],"afcache_"+uuid.uuid4().hex )
+                        shutil.copytree ( dirPath,cache_dir_1 )
+
+                    # read again in case few AF jobs run in parallel
+                    if os.path.isfile(cache_index_path):
+                        with open(cache_index_path,"r") as f:
+                            cache_index = json.load ( f )
+                    else:
+                        cache_index = {}
+
+                    # trim cache if necessary
+                    max_size = cache["size"]
+                    if not cache_dir:
+                        max_size -= 1
+
+                    del_paths = []
+                    while len(cache_index)>max_size:
+                        dt0  = 0.0
+                        key0 = None
+                        for key in cache_index:
+                            if key!=cache_key:
+                                dt = t0 - cache_index[key]["seen"]
+                                if dt>dt0:
+                                    dt0  = dt
+                                    key0 = key
+                        if key0:
+                            # postpone deletions because they may take a noticeable time
+                            del_paths.append (  cache_index[key0]["path"] )
+                            del cache_index[key0]
+                        else:
+                            break
+                
+                    # put new item in the cache
+                    if not cache_dir:
+                        cache_index[cache_key] = {
+                            "path" : cache_dir_1
+                        }
+
+                    # update time stamp and write cache index on disk
+                    cache_index[cache_key]["seen"] = t0
+                    with open(cache_index_path,"w") as f:
+                        json.dump ( cache_index,f,indent=4 )
+
+                    for i in range(len(del_paths)):
+                        shutil.rmtree ( del_paths[i] )
+
+                except:
+                    self.stderrln ( " ***** error handling AF cache" )
+                    pass
+ 
+
             # clean up
-            try:
-                shutil.rmtree ( os.path.join(dirName,"input") )
-            except:
-                pass
+            # try:
+            #     shutil.rmtree ( os.path.join(dirName,"input") )
+            # except:
+            #     self.stderrln ( " ***** error cleaning up task data" )
+            #     pass
 
             if nModels == 1:
                 self.generic_parser_summary["structureprediction"] = {
@@ -500,8 +629,14 @@ ALPHAFOLD_CFG for openfold:
 ================================================================================================================
 ALPHAFOLD_CFG for generic script:
 
-{ "engine"       : "script"
-  "script_path"  : "/path/to/script/template.sh"
+{ 
+  "engine"       : "script",
+  "flavour"      : "alphafold",
+  "script_path"  : "/home/ccp4cloud/jscofe/af2-script.sh",
+  "cache"        : {  // optional
+      "path" : "/home/ccp4cloud/jscofe/nc-cache",
+      "size" : 10000
+  }
 }
 
 where template.sh is invoked as below:

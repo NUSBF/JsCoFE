@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.04.25   <--  Date of Last Modification.
+ *    24.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,6 +54,8 @@ function start ( callback_func )  {
 
   let feConfig  = conf.getFEConfig();
   let ncConfigs = conf.getNCConfigs();
+
+  feConfig.checkDirectories();
 
   if (ncrash==0)  {
     feConfig.killPrevious();

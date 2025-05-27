@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    03.10.22   <--  Date of Last Modification.
+#    23.05.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -76,7 +74,6 @@ naWeight = {
   "W": 242.2,
   "Y": 227.2
 }
-
 
 # ============================================================================
 # Sequence import function

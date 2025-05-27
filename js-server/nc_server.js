@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.04.25   <--  Date of Last Modification.
+ *    24.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,6 +90,9 @@ conf.setServerConfig ( conf.getNCConfig(nc_number) );
 conf.cleanNCTmpDir();
 
 var srvConfig = conf.getServerConfig();
+
+srvConfig.checkDirectories();
+
 srvConfig.killPrevious();
 srvConfig.savePID();
 
@@ -101,11 +104,10 @@ var browserCount = 0;  // browser start counter
 function start()  {
 
   //log.standard ( 1,'FE: url=' + conf.getFEConfig().url() );
-  log.standard ( 1,'NC[' + nc_number + ']: type=' +
-                   conf.getNCConfig(nc_number).exeType +
-                   ' url=' + conf.getNCConfig(nc_number).url() );
+  log.standard ( 1,'NC[' + nc_number + ']: type=' + srvConfig.exeType +
+                   ' url=' + srvConfig.url() );
   log.standard ( 2,'Emailer: ' + conf.getEmailerConfig().type );
-  log.standard ( 2,'State:   ' + conf.getNCConfig(nc_number).state );
+  log.standard ( 2,'State:   ' + srvConfig.state );
 
   utils.configureCache ( 0 );
 
