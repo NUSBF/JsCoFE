@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.09.24   <--  Date of Last Modification.
+ *    12.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Licence Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -114,7 +114,7 @@ function LicenceDialog ( current_licence,onclose_fnc )  {
         }
       },
       {
-        id   : 'cancel_btn',
+        id   : 'cancel_btn_' + __id_cnt++,
         text : 'Cancel',
         click: function() {
           onclose_fnc ( current_licence );

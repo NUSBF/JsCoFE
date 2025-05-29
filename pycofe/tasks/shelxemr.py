@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    14.04.25   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2025
 #
 # ============================================================================
 #
@@ -201,7 +201,7 @@ class ShelxEMR(basic.TaskDriver):
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),
             "[" + str(self.job_id).zfill(4) + "] SHELXE current structure",
-            "Autotrace in progress",
+            "View autotrace in progress",
             gridId,0,3
         )
 

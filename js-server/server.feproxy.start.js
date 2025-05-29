@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Proxy Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2025
  *
  *  =================================================================
  *
@@ -148,11 +148,8 @@ function start ( callback_func )  {
     });
     res.end('Something went wrong. And we are reporting a custom error message.');
     */
-    //log.error ( 2,'fe-proxy failure' );
     //cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #2',{} );
-    //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
-    //log.warning ( 3,'             error ' + err );
-    log.warning ( 3,'Proxy-server' + err + ' fetching ' + 
+    log.warning ( 3,'Proxy-server ' + err + ' fetching ' + 
                     url.parse(server_request.url).pathname.substr(1) );
     // setTimeout ( function(){
     //   proxy.web ( server_request,server_response,options_web );
@@ -274,6 +271,11 @@ function start ( callback_func )  {
   utils.setGracefulQuit();
 
 }
+
+process.on ( 'uncaughtException', function (err) {
+  log.error ( 3,'Caught unhandled exception: ' + err );
+  console.error ( err.stack );
+});
 
 // ==========================================================================
 // export for use in node

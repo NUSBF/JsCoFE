@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.03.25   <--  Date of Last Modification.
+ *    04.05.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -260,8 +260,16 @@ JobDialog.prototype.statusLine = function()  {
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 //  if (input_msg.startsWith('#'))  {
   if (input_msg[0]=='#')  {
-    new MessageBox ( 'Input errors','<div style="width:450px;">' +
-                     input_msg.substring(1) + '</div>', 'msg_error' );
+    let msg  = input_msg.substring(1);
+    let smsg = 'Input errors';
+    let icon = 'msg_error';
+    let lmsg = msg.split('#');
+    if (lmsg.length>1)  {
+      smsg = lmsg[0];
+      msg  = lmsg[1];
+      icon = lmsg[2];
+    }
+    new MessageBox ( smsg,'<div style="width:450px;">' + msg + '</div>',icon );
   } else  {
     // alert ( input_msg );
     let errlst  = input_msg.split('|');
@@ -1180,27 +1188,46 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
   if (this.newtab_btn)
     this.newtab_btn.addOnClickListener ( function(){
-      //if (dlg.outputPanel)
-      //  window.open ( dlg.outputPanel.getURL(),'_blank',
-      //                'location=no,menubar=no,titlebar=no,toolbar=no' );
+      // if (dlg.outputPanel)  {
+      //   // let win = window.open ( '','' );
+      //   // console.log('window.open returned:', win);
+      //   // if (!win) alert('Window is null!');
+      //   // else win.document.body.innerHTML = '<h1>Hello</h1>';
+      //   // console.log('Top window:', window === window.top);
+      //   // console.log('Inside iframe:', window !== window.top);
+      //   // console.log('Sandboxed:', window.frameElement?.sandbox?.length ? window.frameElement.sandbox.toString() : 'no');
+
+      //   let win = window.open ( dlg.outputPanel.getURL(),'' );
+      //   win.document.__user_settings = __user_settings;
+      //   // window.open ( dlg.outputPanel.getURL(),'_blank',
+      //   //               'location=no,menubar=no,titlebar=no,toolbar=no' );
+      //   //       .__user_settings = __user_settings;
+      // }
       if (dlg.outputPanel)  {
-        let iframe =
-          '<!DOCTYPE html>\n<html><head>' +
-          '<style>body, html {' +
-                  'width: 100%; height: 100%; margin: 0; padding: 0}' +
-          '</style>' +
-          '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
-                        '] ' + dlg.task.title +
-          '</title>' +
-          '<script>let __user_settings=' + JSON.stringify(__user_settings) +
-          ';</script>' +
-          '</head><body>' +
-          '<iframe src="' + dlg.outputPanel.getURL() +
-              '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
-          '</iframe></body></html>';
-        let win = window.open ( "",'' );
-//                            "toolbar=no,menubar=no,resizable=yes,location=no" );
-        win.document.write ( iframe );
+        window.open ( dlg.outputPanel.getURL(),'' );
+//         let iframe =
+//           '<!DOCTYPE html>\n<html><head>' +
+//           '<style>body, html {' +
+//                   'width: 100%; height: 100%; margin: 0; padding: 0}' +
+//           '</style>' +
+//           '<title>'  + dlg.task.project + ':[' + padDigits(dlg.task.id,4) +
+//                                           '] ' + dlg.task.title +
+//           '</title>' +
+//           '</head><body>' +
+//           '<script>' +
+//           ' var __user_settings=' + JSON.stringify(__user_settings) + ';' +
+//           ' var __active_color_mode="' + __active_color_mode + '";' +
+//           ' alert (__active_color_mode); ' +
+//           '</script>' +
+//           '<iframe src="' + dlg.outputPanel.getURL() +
+//               '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
+//           '</iframe>' +
+//           '</body></html>';
+//         let win = window.open ( '','' );
+// //                            "toolbar=no,menubar=no,resizable=yes,location=no" );
+//         win.document.open();
+//         win.document.write ( iframe );
+//         win.document.close();
       }
     });
 

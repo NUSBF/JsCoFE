@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.23   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  File upload class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -389,7 +389,7 @@ function UploadDialog ( title,files,customData,autoClose_bool,onReady_func )  {
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  let grid = new Grid('');
   this.addWidget ( grid );
   grid.setLabel ( '<h3>' + title + '</h3>',0,0,1,3 );
 
@@ -397,7 +397,9 @@ function UploadDialog ( title,files,customData,autoClose_bool,onReady_func )  {
 
   (function(self){
 
-    var w = 2*$(window).width()/7 + 'px';
+    let cancel_btn_id = 'cancel_btn_' + __id_cnt++;
+
+    let w = 2*$(window).width()/7 + 'px';
 
     $(self.element).dialog({
         resizable : false,
@@ -408,7 +410,8 @@ function UploadDialog ( title,files,customData,autoClose_bool,onReady_func )  {
         open      : function(event, ui) {
           $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
           self.upload = new Upload ( customData,files,null,null,function(returnCode){
-            $('#cancel_btn').button('option', 'label', 'Close');
+            // $('#cancel_btn').button('option', 'label', 'Close');
+            $('#'+cancel_btn_id).text('Close');
             onReady_func(returnCode);
             if ((!returnCode) && autoClose_bool)
               $(self.element).dialog("close");
@@ -417,10 +420,10 @@ function UploadDialog ( title,files,customData,autoClose_bool,onReady_func )  {
         },
         buttons   : [
           {
-            id    : "cancel_btn",
-            text  : "Cancel",
+            id    : cancel_btn_id,
+            text  : 'Cancel',
             click : function() {
-              $(this).dialog("close");
+              $(this).dialog('close');
             }
           }
         ]

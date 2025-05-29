@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.02.25   <--  Date of Last Modification.
+ *    08.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -110,21 +110,23 @@ function AccountPage ( sceneId )  {
     pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
     licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
     feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
-    cloudrun_lbl = new Label     ( 'CloudRun Id:' ).setNoWrap();
+    // cloudrun_lbl = new Label     ( 'CloudRun Id:' ).setNoWrap();
     globus_lbl   = new Label     ( 'Globus Id:'   ).setNoWrap();
     user_inp     = new InputText ( '' );
     email_inp    = new InputText ( '' );
     login_inp    = new InputText ( '' );
     pwd_inp      = new InputText ( '' );
     pwd1_inp     = new InputText ( '' );
-    cloudrun_inp = new InputText ( '' );
+    // cloudrun_inp = new InputText ( '' );
     globus_inp   = new InputText ( '' );
   } else  {
-    remote_login_lbl = new Label     ( 'Login name:&nbsp;' ).setNoWrap();
+    remote_login_lbl = new Label     ( 'Login name:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
     remote_pwd_lbl   = new Label     ( 'Password:&nbsp;'   ).setNoWrap();
     remote_login_inp = new InputText ( '' );
     remote_pwd_inp   = new InputText ( '' );
   }
+  cloudrun_lbl = new Label     ( 'CloudRun Id:' ).setNoWrap();
+  cloudrun_inp = new InputText ( '' );
   let authoris_lbl = null;
   if (__auth_software)  {
     authoris_lbl = new Label ( 'Software authorisations:&nbsp;' ).setNoWrap();
@@ -167,7 +169,7 @@ function AccountPage ( sceneId )  {
     pwd1_lbl    .setFontSize ( '112%' );
     licence_lbl .setFontSize ( '112%' );
     feedback_lbl.setFontSize ( '112%' );
-    cloudrun_lbl.setFontSize ( '112%' );
+    // cloudrun_lbl.setFontSize ( '112%' );
     globus_lbl  .setFontSize ( '112%' );
     /* == authoris_lbl.setFontSize( '112%' ); */
     user_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
@@ -175,25 +177,35 @@ function AccountPage ( sceneId )  {
     login_inp   .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt').setReadOnly(true);
     pwd_inp     .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
     pwd1_inp    .setFontSize ( '112%' ).setFontItalic(true).setWidth('234pt');
-    cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('110pt').setHeight('26px')
-                .setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
-                               'from command prompt. It should be changed periodically ' +
-                               'for security reasons. Press button on the left to ' +
-                               'generate new CloudRun Id.' );  
+    // cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('110pt').setHeight('26px')
+    //             .setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
+    //                            'from command prompt. It should be changed periodically ' +
+    //                            'for security reasons. Press button on the left to ' +
+    //                            'generate new CloudRun Id.' );  
     globus_inp  .setFontSize ( '94%'  ).setFontItalic(true).setWidth('234pt');
   } else  {
     remote_login_lbl.setFontSize ( '112%' );
     remote_pwd_lbl  .setFontSize ( '112%' );
     remote_login_inp.setFontSize ( '112%' ).setWidth('100%').setFontItalic(true)
-                    .setTooltip  ( 'To enable job execution on the remote ' +
-                                   appName() + ' server, the login username ' +
-                                   'and password must be provided.' ); 
+                    .setStyle    ( 'text','','remote server login',
+                                   'To enable job execution on the remote ' +
+                                    appName() + ' server, the login username ' +
+                                    'and password must be provided.' );
+                    // .setTooltip  ( 'To enable job execution on the remote ' +
+                    //                appName() + ' server, the login username ' +
+                    //                'and password must be provided.' ); 
     remote_pwd_inp  .setFontSize ( '112%' ).setWidth('100%')  // .setHeight('16pt')
                     .setFontItalic(true)
                     .setStyle    ( 'password','','remote server password',
                                    'The password for remote server login must ' +
                                    'be entered each time the settings are saved' );
   }
+  cloudrun_lbl.setFontSize ( '112%' );
+  cloudrun_inp.setFontSize ( '94%' ).setReadOnly(true).setWidth('120pt').setHeight('26px')
+              .setTooltip  ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
+                             'from command prompt. It should be changed periodically ' +
+                             'for security reasons. Press button on the left to ' +
+                             'generate new CloudRun Id.' );  
 
   let row = 0;
   panel.setWidget              ( title_lbl ,row,0,1,4 );
@@ -201,10 +213,13 @@ function AccountPage ( sceneId )  {
   panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
   panel.setCellSize            ( '','20pt' ,row++,0   );
 
+  cloudrun_pnl = new Grid('-compact');
+  cloudrun_pnl.setWidget ( cloudrun_inp,0,0,1,1 );
+
   if (full_list)  {
 
-    cloudrun_pnl = new Grid('-compact');
-    cloudrun_pnl.setWidget ( cloudrun_inp,0,0,1,1 );
+    // cloudrun_pnl = new Grid('-compact');
+    // cloudrun_pnl.setWidget ( cloudrun_inp,0,0,1,1 );
 
     panel.setWidget ( user_lbl    ,row  ,0,1,1 );
     panel.setWidget ( email_lbl   ,row+1,0,1,1 );
@@ -241,11 +256,6 @@ function AccountPage ( sceneId )  {
 
   } else  {
 
-    // panel.setWidget ( cloudrun_lbl,row,0,1,1 );
-    // panel.setWidget ( cloudrun_pnl,row,1,1,3 );
-    // panel.setCellSize  ( '96pt','',row,0   );
-    // panel.setVerticalAlignment ( row,0,'middle' );
-    // panel.setVerticalAlignment ( row,1,'middle' );
     let row1 = row;
     if (__remoteJobServer.status=='FE')  {
       panel.setLabel ( '<i>Remote job server:</i>',row1++,0,1,3 )
@@ -262,6 +272,9 @@ function AccountPage ( sceneId )  {
       rpanel.setWidget ( remote_pwd_inp  ,1,1,1,1 );
       rpanel.setVerticalAlignment ( 0,0,'middle' );
       rpanel.setVerticalAlignment ( 1,0,'middle' );
+      rpanel.setWidget ( cloudrun_lbl,2,0,1,1 );
+      rpanel.setWidget ( cloudrun_pnl,2,1,1,3 );
+      rpanel.setVerticalAlignment ( 2,0,'middle' );
       row1 += 2;
       // panel.setVerticalAlignment ( row,0,'middle' );
     } else  {
@@ -269,7 +282,15 @@ function AccountPage ( sceneId )  {
            .setNoWrap();
       panel.setLabel ( '<i>Check settings in ' + appName() + ' configurator</i>',
                        row1++,0,1,4 ).setNoWrap();
+      panel.setWidget ( cloudrun_lbl,row1,0,1,1 );
+      panel.setWidget ( cloudrun_pnl,row1,1,1,3 );
+      panel.setVerticalAlignment ( row1,0,'middle' );
     }
+
+    // panel.setCellSize  ( '96pt','',row,0   );
+    // panel.setVerticalAlignment ( row1,1,'middle' );
+    row1 += 2;
+
     panel.setCellSize  ( '96pt','',row,0 );
     if (__auth_software)  {
       for (let r=row1;r<row+9;r++)
@@ -412,30 +433,53 @@ function AccountPage ( sceneId )  {
   let licence_btn  = null;
   let feedback_btn = null; 
 
+  let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
+  cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
+  cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
+  cloudrun_copy_btn.addOnClickListener ( function(event){
+    copyToClipboard ( cloudrun_inp.getValue(),event.target.getBoundingClientRect() );
+  });
+
+  let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
+  cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
+                            'security reasons)' );
+  cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
+  cloudrun_btn.addOnClickListener ( function(){
+    cloudrun_inp.setValue ( getRandomToken() );
+    new MessageBox ( 'Save changes',
+                     '<div style="width:300px"><h2>CloudRun Id changed</h2>' +
+                     'Do not forget to save changes and update your CloudRun ' +
+                     'scripts.</div>','msg_excl_yellow' );
+  });
+
+  cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
+  cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
+  cloudrun_pnl.setVerticalAlignment ( 0,2,'middle' );
+
   if (full_list)  {
 
-    let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
-    cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
-    cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
-    cloudrun_copy_btn.addOnClickListener ( function(event){
-      copyToClipboard ( cloudrun_inp.getValue(),event.target.getBoundingClientRect() );
-    });
+    // let cloudrun_copy_btn = new Button ( '',image_path('clipboard') );
+    // cloudrun_copy_btn.setSize('30px','30px').setTooltip ( 'Copy to clipboard' );
+    // cloudrun_pnl.setWidget ( cloudrun_copy_btn,0,1,1,1 );
+    // cloudrun_copy_btn.addOnClickListener ( function(event){
+    //   copyToClipboard ( cloudrun_inp.getValue(),event.target.getBoundingClientRect() );
+    // });
   
-    let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
-    cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
-                              'security reasons)' );
-    cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
-    cloudrun_btn.addOnClickListener ( function(){
-      cloudrun_inp.setValue ( getRandomToken() );
-      new MessageBox ( 'Save changes',
-                       '<div style="width:300px"><h2>CloudRun Id changed</h2>' +
-                       'Do not forget to save changes and update your CloudRun ' +
-                       'scripts.</div>','msg_excl_yellow' );
-    });
+    // let cloudrun_btn = new Button ( 'renew',image_path('regenerate') );
+    // cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
+    //                           'security reasons)' );
+    // cloudrun_pnl.setWidget ( cloudrun_btn,0,2,1,1 );
+    // cloudrun_btn.addOnClickListener ( function(){
+    //   cloudrun_inp.setValue ( getRandomToken() );
+    //   new MessageBox ( 'Save changes',
+    //                    '<div style="width:300px"><h2>CloudRun Id changed</h2>' +
+    //                    'Do not forget to save changes and update your CloudRun ' +
+    //                    'scripts.</div>','msg_excl_yellow' );
+    // });
   
-    cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
-    cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
-    cloudrun_pnl.setVerticalAlignment ( 0,2,'middle' );
+    // cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
+    // cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
+    // cloudrun_pnl.setVerticalAlignment ( 0,2,'middle' );
 
     row += 7;
     licence_btn = new Button  ( 'choose',image_path('licence') );
@@ -582,7 +626,7 @@ function AccountPage ( sceneId )  {
         userData.pwd         = pwd_inp     .getValue().trim();
         userData.licence     = licence_btn .getText ();
         userData.feedback    = feedback_btn.getText ();
-        userData.cloudrun_id = cloudrun_inp.getValue().trim();
+        // userData.cloudrun_id = cloudrun_inp.getValue().trim();
         userData.globusId    = globus_inp  .getValue().trim();
       } else  {
         userData.remote_login = remote_login_inp.getValue().trim();
@@ -590,6 +634,7 @@ function AccountPage ( sceneId )  {
         userData.remote_tasks = __remote_tasks;
         restart = true;
       }
+      userData.cloudrun_id = cloudrun_inp.getValue().trim();
       userData.action = userdata_action.none;
 
       __user_settings.onlogin        = onlogin_sel.getValue();
@@ -722,7 +767,7 @@ function AccountPage ( sceneId )  {
       user_inp    .setValue  ( userData.name        );
       email_inp   .setValue  ( userData.email       );
       login_inp   .setValue  ( userData.login       );
-      cloudrun_inp.setValue  ( userData.cloudrun_id );
+      // cloudrun_inp.setValue  ( userData.cloudrun_id );
       globus_inp  .setValue  ( userData.globusId    );
       licence_btn .setButton ( userData.licence,image_path('licence') )
       if ((userData.feedback.length>0) &&
@@ -738,6 +783,7 @@ function AccountPage ( sceneId )  {
       remote_login_inp.setValue ( userData.remote_login );
       // remote_pwd_inp  .setValue ( userData.remote_pwd   );
     }
+    cloudrun_inp.setValue  ( userData.cloudrun_id );
 
     if (authoris_btn)
       authoris_btn.setDisabled ( false );

@@ -2,6 +2,7 @@
     "name": "ccp4cloud",
     "version": "1.8.002",
     "dependencies": {
+        "archiver": "*",
         "busboy": "^1.6.0",
         "check-disk-space": "^3.0.1",
         "cheerio": "1.0.0-rc.12",
@@ -22,7 +23,6 @@
         "uglify-js": "^3.13.10",
         "url": "*",
         "util": "^0.12.4",
-        "archiver": "*",
         "zip-lib": "*"
     }
 }

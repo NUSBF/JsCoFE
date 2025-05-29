@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.06.24   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -73,6 +73,9 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
                       'please wait ....</i>',4,2,1,3 );
       grid.setHorizontalAlignment ( 4,2,"right" );
 
+      let cancel_btn_id   = 'cancel_btn_'   + __id_cnt++;
+      let download_btn_id = 'download_btn_' + __id_cnt++;
+
       dlg.projectSize = -2;
 
     //  w = 3*$(window).width()/5 + 'px';
@@ -88,8 +91,8 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
         },
         buttons   : [
           {
-            id    : "download_btn",
-            text  : "Download",
+            id    : download_btn_id,
+            text  : 'Download',
             click : function() {
               let token;
               let url;
@@ -98,22 +101,23 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
               else  token = '404';
               url = __special_url_tag + '/' + token + '/' + projectList.current +
                                         '/' + projectList.current + projectFileExt;
-              $('#download_btn').hide();
-              $('#cancel_btn'  ).button ( "option","label","Close" );
+              $( '#' + download_btn_id).hide();
+              // $('#cancel_btn'  ).button ( "option","label","Close" );
+              $( '#' + cancel_btn_id ).text('Close');
               downloadFile ( url );
             }
           },
           {
-            id    : "cancel_btn",
-            text  : "Close",
+            id    : cancel_btn_id,
+            text  : 'Close',
             click : function() {
-              $(this).dialog("close");
+              $(this).dialog('close');
             }
           }
         ]
       });
 
-      window.setTimeout ( function(){ $('#download_btn').hide(); },0 );
+      window.setTimeout ( function(){ $('#'+download_btn_id).hide(); },0 );
 
       function checkReady() {
         serverRequest ( fe_reqtype.checkPrjExport,projectList,
@@ -130,7 +134,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
             grid.hideRow ( 4 )
-            $('#download_btn').show();
+            $('#'+download_btn_id).show();
           }
         },null,function(){ // depress error messages in this case!
           window.setTimeout ( checkReady,1000 );

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    15.12.24   <--  Date of Last Modification.
+ *    11.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CloudFileBrowser
  *       ~~~~~~~~~  
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  ===========================================================================
  *
@@ -113,7 +113,8 @@ CloudFileBrowser.prototype.disableButton = function ( btn_no,disable_bool )  {
 }
 
 CloudFileBrowser.prototype.setButtonLabel = function ( btn_no,label_text )  {
-  $('#' + this.btn_ids[btn_no]).button ( 'option','label',label_text );
+  // $('#' + this.btn_ids[btn_no]).button ( 'option','label',label_text );
+  $('#' + this.btn_ids[btn_no]).text ( label_text );
 }
 
 CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath,topPath )  {

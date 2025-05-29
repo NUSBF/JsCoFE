@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>4. The multi-domain Molecular Replacement &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -304,37 +303,43 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-tutorial-t2-002--page-root"><span class="section-number">4. </span>The multi-domain Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-002--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="the-multi-domain-molecular-replacement">
+<h1 id="doc-tutorial-t2-002--page-root"><span class="section-number">4. </span>The multi-domain Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-002--page-root" title="Link to this heading">¶</a></h1>
 <p>This tutorial explains how to use separate domains as a search model for Molecular Replacement (MR). For this tutorial, we’ll use Sucrose-Phosphatase (SPP) from Synechocystis sp. PCC6803 in a closed conformation (PDB Entry - 1TJ3).</p>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look at the import’s task output.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task or type <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>.</p>
 <p>After the task is finished, please, investigate the output it created. Every task in CCP4 Cloud produces a report. Here we can see that Matthew’s coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.</p>
 <div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">Please read the verdicts carefully, it helps assess the obtained results.</p>
+<p class="admonition-title">Tip</p>
+<p>Please read the verdicts carefully, it helps assess the obtained results.</p>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare Single-Chain MR Model(s) from Coordinate data</strong> task: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Prepare Single-Chain MR Model(s) from Coordinate data</strong></p>
 <p>Choose <code class="docutils literal notranslate"><span class="pre">[0001-02]</span> <span class="pre">1s2oA_dom1</span></code> as <strong>Coordinates (1)</strong> and <code class="docutils literal notranslate"><span class="pre">[0001-03]</span> <span class="pre">1s2oA_dom2</span></code> as <strong>Coordinates (2)</strong> and run the task. And two Single-Chain MR models will be prepared.</p>
-<a class="reference internal image-reference" href="_images/T2_002_1.png"><img alt="_images/T2_002_1.png" class="align-center" src="_images/T2_002_1.png" style="width: 777.6px; height: 329.6px;"/></a>
+<a class="reference internal image-reference" href="_images/T2_002_1.png"><img alt="_images/T2_002_1.png" class="align-center" src="_images/T2_002_1.png" style="width: 777.6px; height: 329.6px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code> Created models can be further used in both <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
 <p><code class="docutils literal notranslate"><span class="pre">4a.</span></code> Use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
 <p>Select <code class="docutils literal notranslate"><span class="pre">[0003-01]</span> <span class="pre">1s2oA_dom1_A.mrep</span></code> as <strong>Model ensemble (1)</strong> and <code class="docutils literal notranslate"><span class="pre">[0003-02]</span> <span class="pre">1s2oA_dom2_A.mrep</span></code> as <strong>Model ensemble (2)</strong> and click run. Phaser will search ensemble 1 first and then ensemble 2.</p>
-<a class="reference internal image-reference" href="_images/T2_002_2.png"><img alt="_images/T2_002_2.png" class="align-center" src="_images/T2_002_2.png" style="width: 651.2px; height: 382.40000000000003px;"/></a>
+<a class="reference internal image-reference" href="_images/T2_002_2.png"><img alt="_images/T2_002_2.png" class="align-center" src="_images/T2_002_2.png" style="width: 651.2px; height: 382.40000000000003px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">4b.</span></code> Use Molrep for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Molrep</strong></p>
 <p>Run Molrep with <code class="docutils literal notranslate"><span class="pre">[0003-01]</span> <span class="pre">1s2oA_dom1_A.mrep</span></code> as <strong>Model ensemble</strong> first.</p>
-<a class="reference internal image-reference" href="_images/T2_002_3.png"><img alt="_images/T2_002_3.png" class="align-center" src="_images/T2_002_3.png" style="width: 610.4px; height: 164.0px;"/></a>
+<a class="reference internal image-reference" href="_images/T2_002_3.png"><img alt="_images/T2_002_3.png" class="align-center" src="_images/T2_002_3.png" style="width: 610.4px; height: 164.0px;"/>
+</a>
 <p>After it finished append another Molrep task with <code class="docutils literal notranslate"><span class="pre">[0003-02]</span> <span class="pre">1s2oA_dom2_A.mrep</span></code> as <strong>Model ensemble</strong>.</p>
-<a class="reference internal image-reference" href="_images/T2_002_4.png"><img alt="_images/T2_002_4.png" class="align-center" src="_images/T2_002_4.png" style="width: 587.2px; height: 198.4px;"/></a>
+<a class="reference internal image-reference" href="_images/T2_002_4.png"><img alt="_images/T2_002_4.png" class="align-center" src="_images/T2_002_4.png" style="width: 587.2px; height: 198.4px;"/>
+</a>
 <p><code class="docutils literal notranslate"><span class="pre">5.</span></code>  After MR solution was found, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4’s automatic model builders (<a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> , <a class="reference external" href="../html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="../html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> , <a class="reference external" href="../html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>). Let’s run the <a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> task. The built model can be visually inspected with <strong>UglyMol</strong> (the corresponding launch button can be found on the task report page).</p>
 <p><code class="docutils literal notranslate"><span class="pre">6.</span></code> Compare Modelcraft outputs after Phaser and Molrep with <a class="reference external" href="../html-taskref/doc.task.Gesamt.html" rel="noopener noreferrer" target="_blank">Gesamt</a> (use multiple selections to access the data from different branches):</p>
-<a class="reference internal image-reference" href="_images/demo.multiple_selection.jpg"><img alt="_images/demo.multiple_selection.jpg" class="align-center" src="_images/demo.multiple_selection.jpg" style="width: 222.0px; height: 405.0px;"/></a>
+<a class="reference internal image-reference" href="_images/demo.multiple_selection.jpg"><img alt="_images/demo.multiple_selection.jpg" class="align-center" src="_images/demo.multiple_selection.jpg" style="width: 222.0px; height: 405.0px;"/>
+</a>
 <p><strong>Select both models =&gt; add next job =&gt; All tasks =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">7.</span></code> Further refinement can be conveniently done with the <strong>Automated refinement and ligand fitting workflow</strong></p>
-<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/>
+</a>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://doi.org/10.1105/tpc.105.031229" rel="noopener noreferrer" target="_blank">Sonia Fieulaine, John E. Lunn, Franck Borel, Jean-Luc Ferrer, The Structure of a Cyanobacterial Sucrose-Phosphatase Reveals the Sugar Tongs That Release Free Sucrose in the Cell, The Plant Cell, Volume 17, Issue 7, July 2005, Pages 2049–2058,</a></p>
-
+</section>
 
 
           </article>
@@ -379,7 +384,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

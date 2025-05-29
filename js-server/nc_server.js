@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.25   <--  Date of Last Modification.
+ *    18.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -271,6 +271,10 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncRunClientJob,srvConfig.state );
             break;
 
+          case cmd.nc_command.getLogFiles :
+              pp.processPOSTData ( server_request,server_response,rm.getLogFiles,srvConfig.state );
+            break;
+            
           default:
               log.error ( 13,'unknown command "' + command + '"' );
               response = new cmd.Response ( cmd.nc_retcode.unkCommand,
@@ -333,6 +337,11 @@ function start()  {
   utils.setGracefulQuit();
 
 }
+
+process.on ( 'uncaughtException', function (err) {
+  log.error ( 3,'Caught unhandled exception: ' + err );
+  console.error ( err.stack );
+});
 
 // ---------------------------------------------------------------------------
 

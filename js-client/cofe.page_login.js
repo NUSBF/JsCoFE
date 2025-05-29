@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    27.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -102,7 +102,7 @@ function LoginPage ( sceneId )  {
         tip_lbl.setText (
           '<img src="' + image_path('tip') +
           '" style="padding-left:80px;width:20px;height:20px;vertical-align:bottom;"/>' +
-          '<span><i style="font-style:Garamond;color:#666666;">' +
+          '<span><i style="font-family:Garamond;color:#666666;">' +
           __tips.tips[tipNo].summary.replace('<a>',tipLink) +
           '</i></span>'
         );
@@ -225,6 +225,8 @@ function LoginPage ( sceneId )  {
 
   login_btn.addOnClickListener ( function(){
 
+    login_btn.element.style.cursor = 'wait';
+
     // *MOBILE*
     // if (__mobile_device)
     //   setFullScreen();
@@ -337,5 +339,6 @@ function makeLoginPage ( sceneId )  {
 }
 
 function reloadBrowser()  {
+  document.body.style.cursor = 'wait';
   window.location = window.location;
 }

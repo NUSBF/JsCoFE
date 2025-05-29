@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.06.24   <--  Date of Last Modification.
+ *    10.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2025
  *
  *  =================================================================
  *
@@ -43,23 +43,23 @@ function TaskFitLigand()  {
   //this.helpURL = './html/jscofe_task_fitligand.html';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!phases','~mmcif_only']}, // data type(s) and subtype(s)
-      label     : 'Structure revision',        // label for input dialog
-      inputId   : 'revision', // input Id for referencing input fields
+      data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
+      label       : 'Structure revision',        // label for input dialog
+      inputId     : 'revision', // input Id for referencing input fields
       customInput : 'map-sel', // lay custom fields below the dropdown
-      version   : 4,          // minimum data version allowed
-      min       : 1,          // minimum acceptable number of data instances
-      max       : 1           // maximum acceptable number of data instances
+      version     : 4,          // minimum data version allowed
+      min         : 1,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
     },{
-      data_type : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label     : 'Ligand data', // label for input dialog
-      inputId   : 'ligand',      // input Id for referencing input fields
-      min       : 1,             // minimum acceptable number of data instances
-      max       : 1              // maximum acceptable number of data instances
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 1,             // minimum acceptable number of data instances
+      max         : 1              // maximum acceptable number of data instances
     }
   ];
 
-
+  /*
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
               title    : 'Parameters',
@@ -147,6 +147,52 @@ function TaskFitLigand()  {
               }
             }
   };
+  */
+
+  this.parameters = { // input parameters
+    sec1  : { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [0,0,1,5],
+              contains : {
+                ABSOLUTE : {
+                        type      : 'real',
+                        keyword   : '--absolute',
+                        // label     : 'Map level, e/&Aring;<sup>3</sup>',
+                        label     : 'Map level, &sigma;',
+                        tooltip   : 'Specify map level for ligand search',
+                        range     : [0.0,10.0],
+                        value     : '1.0',
+                        default   : '1.0',
+                        iwidth    : 40,
+                        position  : [0,0,1,1]
+                      },
+                FLEXIBLE_CBX : {
+                        type      : 'checkbox',
+                        keyword   : '--flexible',
+                        label     : 'Flexible fit',
+                        tooltip   : 'Check in order to use torsional ' +
+                                    'conformation ligand search',
+                        iwidth    : 120,
+                        value     : true,
+                        position  : [1,0,1,3]
+                      },
+                SAMPLES : {
+                        type      : 'integer',
+                        keyword   : '--samples',
+                        label     : 'Number of conformers:',
+                        tooltip   : 'The number of flexible ' +
+                                    'conformation samples',
+                        range     : [1,10000],
+                        value     : '300',
+                        default   : '300',
+                        iwidth    : 60,
+                        position  : [1,2,1,4],
+                        showon    : {FLEXIBLE_CBX:[true]}
+                      }
+              }
+            }
+  };
 
   this.saveDefaultValues ( this.parameters );
 
@@ -168,7 +214,7 @@ TaskFitLigand.prototype.desc_title     = function()  {
 }
 
 TaskFitLigand.prototype.currentVersion = function()  {
-  var version = 0;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -178,6 +224,8 @@ TaskFitLigand.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
     return this.__check_keywords ( keywords,['fit', 'ligand','fitligand'] );
 }
+
+// TaskFitLigand.prototype.cleanJobDir = function ( jobDir )  {}
 
 
 if (!__template)  {
@@ -191,7 +239,7 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
 
   TaskFitLigand.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -199,7 +247,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       //this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }

@@ -25,7 +25,7 @@ Basic idea
 
 CCP4 Setup series 8.0 and higher comes with CCP4 Cloud server, running on
 machine's internal network, known as **localhost**. This server is already 
-known to you as CCP4 Cloud Desktop Mode. By default, a server running on 
+known to you as CCP4 Cloud Local Mode. By default, a server running on 
 **localhost** cannot be accessed from other machines, because they are found
 on network different from **localhost**. 
 

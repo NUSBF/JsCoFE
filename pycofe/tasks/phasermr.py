@@ -185,7 +185,10 @@ class PhaserMR(basic.TaskDriver):
             else:
                 self.write_stdin ( "\nSGALTERNATIVE SELECT HAND" )
 
+        BF_correction = 'none'
         for i in range(len(ens0)):
+            if (ens0[i].BF_correction!='none') and (ens0[i].BF_correction!='pdb'):
+                BF_correction = ens0[i].BF_correction
             ename = ens0[i].ensembleName()
             if ens0[i].simtype=="seqid":
                 self.write_stdin (
@@ -243,7 +246,7 @@ class PhaserMR(basic.TaskDriver):
 
         elif xstruct:  # optional data parameter
             self.write_stdin (
-                "\nENSEMBLE " + xstruct.ensembleName() + " &" +\
+                "\nENSEMBLE "  + xstruct.ensembleName() + " &" +\
                 "\n    PDB \"" + xstruct.getPDBFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
                 "\nSOLUTION ORIGIN ENSEMBLE " + str(xstruct.ensembleName())
@@ -483,6 +486,7 @@ class PhaserMR(basic.TaskDriver):
                                         leadKey=1, # openState="closed",
                                         reserveRows=3 )
             if structure:
+                structure.BF_correction = BF_correction
                 # update structure revision
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )

@@ -639,6 +639,7 @@ class TaskDriver(object):
         return
 
     def putSection ( self,sec_id,sectionName,openState_bool=False ):
+        pyrvapi.rvapi_set_text  ( "",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_section ( sec_id,sectionName,self.report_page_id(),
                                     self.rvrow,0,1,1,openState_bool )
         self.rvrow += 1
@@ -751,6 +752,12 @@ class TaskDriver(object):
 
     def close_stdin ( self ):
         self.file_stdin.close()
+        return
+    
+    def write_stdin_all ( self,S ):
+        self.open_stdin  ()
+        self.write_stdin ( S )
+        self.close_stdin ()
         return
 
 

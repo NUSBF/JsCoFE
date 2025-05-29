@@ -33,7 +33,6 @@
 // document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
 //$(window).on ( 'load', function(){
 
-
 $(document).ready ( function(){
   // setDarkMode ( isDarkMode() );
   // document.body.style.cursor = "default"; 
@@ -43,7 +42,7 @@ $(document).ready ( function(){
   alert ( window.location.search );
   window.history.replaceState({}, document.title, "/" );
   */
-  let dev_switch = 0; //3;
+  let dev_switch = 0; //3;  
   startSession ( 'scene',dev_switch );
 });
 

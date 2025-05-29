@@ -18,7 +18,7 @@ Transferring Projects Between Remote and Local CCP4 Cloud Installations
 
 4. Choose a folder to save the CCP4 Cloud project.
 
-5. After downloading the project to your local machine, locate the cloud icon in the Activities or Software menu (depending on your Linux version). Click on the |desktop| CCP4 Cloud desktop icon or type ``ccp4cloud-desktop.sh`` in the terminal.
+5. After downloading the project to your local machine, locate the cloud icon in the Activities or Software menu (depending on your Linux version). Click on the |desktop| CCP4 Cloud Local icon or type ``ccp4cloud-local.sh`` in the terminal.
 
 6. Upload the project to the |local| local CCP4 Cloud installation using the |Import| button above the project list.
 

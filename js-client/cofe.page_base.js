@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.25   <--  Date of Last Modification.
+ *    21.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -398,15 +398,18 @@ let ul_style  = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
 */
 
 
-BasePage.prototype.makeHeader0 = function ( colSpan )  {
+BasePage.prototype.makeHeader0 = function ( colSpan,make_menu=true )  {
 
   this.headerPanel = new Grid('');
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
   this.grid.setCellSize ( '','32px',0,0 );
 
   this.headerPanel.setLabel  ( ' ',0,0,1,1 ).setWidth_px(8);
-  this.headerPanel.menu = new Menu('',image_path('menu'));
-  this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
+  if (make_menu)  {
+    this.headerPanel.menu = new Menu('',image_path('menu'));
+    this.headerPanel.setWidget ( this.headerPanel.menu,0,1,1,1 );
+  } else
+  this.headerPanel.menu = null;
 
   this.headerPanel.setLabel    ( '&nbsp;',0,2,1,1 ).setWidth ( '40px' );
   this.headerPanel.setCellSize ( '40px','',0,2 );
@@ -419,30 +422,34 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
     this.headerPanel.setWidget ( this.rationPanel,0,18,1,1 );
     this.toolPanel = new Grid ( '' );
     this.headerPanel.setWidget ( this.toolPanel,0,19,1,1 );
-    this.headerPanel.setLabel  ( '&nbsp;',0,20,1,1 ).setWidth('40px');
-    //let user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
-    let user_lbl = new Label ( '<i>' + __login_user + '</i>' );
-    this.headerPanel.setWidget      ( user_lbl,0,21,1,1 );
-    user_lbl.setHorizontalAlignment ( 'right' );
-    user_lbl.setNoWrap();
-//    this.headerPanel.setNoWrap   ( 0,20 );
+    if (make_menu)  {
+      this.headerPanel.setLabel  ( '&nbsp;',0,20,1,1 ).setWidth('40px');
+      //let user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
+      let user_lbl = new Label ( '<i>' + __login_user + '</i>' );
+      this.headerPanel.setWidget      ( user_lbl,0,21,1,1 );
+      user_lbl.setHorizontalAlignment ( 'right' );
+      user_lbl.setNoWrap();
+      //  this.headerPanel.setNoWrap   ( 0,20 );
+    }
   } else {
     this.rationPanel = null;
     this.headerPanel.setCellSize ( '99%','',0,17 );
     this._setModeIcon ( 18 );
   }
 
-  this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
-  this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
-  this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
-  this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
-  this.headerPanel.setCellSize ( '32px','32px',0,22 );
-  let end_tooltip = 'Logout';
-  if (__local_user)  {
-    if (isElectronAPI())  end_tooltip = 'Quit';
-                    else  end_tooltip = 'End session';
+  if (make_menu)  {
+    this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
+    this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
+    this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
+    this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
+    this.headerPanel.setCellSize ( '32px','32px',0,22 );
+    let end_tooltip = 'Logout';
+    if (__local_user)  {
+      if (isElectronAPI())  end_tooltip = 'Quit';
+                      else  end_tooltip = 'End session';
+    }
+    this.logout_btn.setTooltip ( end_tooltip );
   }
-  this.logout_btn.setTooltip ( end_tooltip );
 
   this.headerPanel.setLabel ( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -467,21 +474,28 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
 
 
 BasePage.prototype.addMenuItem = function ( name,icon_name,listener_func )  {
-  this.headerPanel.menu.addItem ( name,image_path(icon_name) )
-                       .addOnClickListener ( listener_func );
+  if (this.headerPanel.menu)
+    this.headerPanel.menu.addItem ( name,image_path(icon_name) )
+                         .addOnClickListener ( listener_func );
   return this;
 }
 
 BasePage.prototype.setMenuSpacing = function ( spacing )  {
-  this.headerPanel.menu.setMenuSpacing ( spacing );
+  if (this.headerPanel.menu)
+    this.headerPanel.menu.setMenuSpacing ( spacing );
 }
 
 BasePage.prototype.addMenuSeparator = function()  {
-  this.headerPanel.menu.addSeparator();
+  if (this.headerPanel.menu)
+    this.headerPanel.menu.addSeparator();
   return this;
 }
 
 BasePage.prototype.addGlobusLinkToMenu = function()  {
+
+  if (!this.headerPanel.menu)
+    return;
+
   this.addMenuSeparator();
   if (__globus_id || __local_user)  {
     this.addMenuItem ( 'Start Globus','globus_app',function(){
@@ -505,32 +519,38 @@ BasePage.prototype.addGlobusLinkToMenu = function()  {
           '<span style="color:blue">Globus web-site</span></a>','msg_stop');
     });
   }
+
 }
 
+
 BasePage.prototype.addFullscreenToMenu = function()  {
-  if (this.headerPanel.menu.n_items>0)
-    this.headerPanel.menu.addSeparator();
-  this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
-                       .addOnClickListener ( toggleFullScreen );
-  // if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
-    this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
-                        .addOnClickListener ( toggleDarkMode );
-    this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
-                        .addOnClickListener ( function(){ new DarkModeDialog(); } );
-  // }
+  if (this.headerPanel.menu)  {
+    if (this.headerPanel.menu.n_items>0)
+      this.headerPanel.menu.addSeparator();
+    this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
+                        .addOnClickListener ( toggleFullScreen );
+    // if (__setup_desc && (__setup_desc.id=='dev'))  {  // from FE config
+      this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
+                          .addOnClickListener ( toggleDarkMode );
+      this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
+                          .addOnClickListener ( function(){ new DarkModeDialog(); } );
+    // }
+  }
   return this;
 }
 
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
-  this.addFullscreenToMenu();
-  let menuLabel = 'Log out';
-  if (__local_user)  {
-    if (isElectronAPI())  menuLabel = 'Quit';
-                    else  menuLabel = 'End session';
+  if (this.headerPanel.menu)  {
+    this.addFullscreenToMenu();
+    let menuLabel = 'Log out';
+    if (__local_user)  {
+      if (isElectronAPI())  menuLabel = 'Quit';
+                      else  menuLabel = 'End session';
+    }
+    this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
+                        .addOnClickListener ( logout_func );
   }
-  this.headerPanel.menu.addItem ( menuLabel,image_path('logout') )
-                       .addOnClickListener ( logout_func );
   return this;
 }
 

@@ -72,6 +72,10 @@ var __current_folder  = {
 };
 var __local_setup     = 0;
 var __title_page      = true;   // whether to show title page in local/desktop mode
+var __integration     = "none"; // "project" limits the system to project page only
+                                // in local/desktop mode; project name must be given 
+                                // in the url as "?prj=projectName"; new project is 
+                                // created if does not already exists
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
 var __cloud_storage   = false;  // true if user has cloud storage allocated
@@ -621,6 +625,18 @@ function removeMyWorkflow ( workflowId )  {
   if (n>=0)
     __my_workflows.splice(n,1);
 }
+
+// window.onerror = function(message, source, lineno, colno, error) {
+//   console.error('Caught by window.onerror:', {
+//     message,
+//     source,
+//     lineno,
+//     colno,
+//     error
+//   });
+//   // Optional: report to a server
+//   return false; // prevents the firing of the default event handler
+// }
 
 // ===========================================================================
 // allow HTML markup in tooltips

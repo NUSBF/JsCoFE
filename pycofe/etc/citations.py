@@ -1213,6 +1213,19 @@ citations = {
                             'doi'     : '10.1107/S2052252521011088'
                          }]
                   },
+    'checkmysequence' : { 'name'     : 'checkMySequence',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Chojnowski, G.',
+                            'title'   : 'Sequence-assignment validation in protein crystal structure models with checkMySequence',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D79',
+                            'year'    : '2023',
+                            'pages'   : '559-568',
+                            'doi'     : '10.1107/S2059798323003765'
+                         }]
+                  },
+
 
     'omit'           : { 'name'     : 'Omit',
                          'category' : 'primary',
@@ -1273,6 +1286,34 @@ citations = {
                             'doi'     : '10.1002/prot.10286'
                         }]
                   },
+    'rabdam'         : { 'name'     : 'RABDAM',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Shelley, K. L., Dixon, T. P. E., Brooks-Bartlett, J. C. & Garman, E. F. ',
+                            'title'   : 'RABDAM',
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '51',
+                            'year'    : '2018',
+                            'pages'   : '522-559',
+                            'doi'     : 'https://doi.org/10.1107/S1600576718002509'
+                          },{
+                            'authors' : 'Gerstel, M., Deane, C. M. & Garman, E. F.',
+                            'title'   : 'Identifying and quantifying radiation damage at the atomic level',
+                            'journal' : 'J. Synchrotron Radiat ',
+                            'volume'  : '22',
+                            'year'    : '2015',
+                            'pages'   : '201-212',
+                            'doi'     : 'https://doi.org/10.1107/S1600577515002131'
+                        },{
+                            'authors' : 'Shelley, K.L., Garman, E.F',
+                            'title'   : 'Quantifying and comparing radiation damage in the Protein Data Bank',
+                            'journal' : 'Nat Commun',
+                            'volume'  : '13',
+                            'year'    : '2022',
+                            'pages'   : '1314',
+                            'doi'     : 'https://doi.org/10.1038/s41467-022-28934-0'
+                        }]
+                  },
 
     'jligand'        : { 'name'     : 'JLigand',
                          'category' : 'primary',
@@ -1292,6 +1333,19 @@ citations = {
                             'year'    : '2012',
                             'pages'   : '431-440',
                             'doi'     : '10.1107/S090744491200251X'
+                         }]
+                  },
+
+    'import_serial'  : { 'name'     : 'Import Serial',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Martin Maly, University of Southampton, UK',
+                            'title'   : 'Import Serial',
+                            'journal' : '',
+                            'volume'  : '',
+                            'year'    : '2024',
+                            'pages'   : '',
+                            'doi'     : ''
                          }]
                   },
 

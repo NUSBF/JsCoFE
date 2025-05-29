@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -47,13 +47,12 @@
   
   
     <title>7. Linking MrParse to local databases &#8212; CCP4 Cloud 1.8 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css?v=79c92029" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <script src="_static/documentation_options.js?v=d13700ae"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -336,10 +335,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="mrparse-server-setup--page-root"><span class="section-number">7. </span>Linking MrParse to local databases<a class="headerlink" href="#mrparse-server-setup--page-root" title="Permalink to this headline">¶</a></h1>
-
-<h2 id="mrparse-search-in-ccp4-cloud"><span class="section-number">7.1. </span>MrParse search in CCP4 Cloud<a class="headerlink" href="#mrparse-search-in-ccp4-cloud" title="Permalink to this headline">¶</a></h2>
+  <section id="linking-mrparse-to-local-databases">
+<h1 id="mrparse-server-setup--page-root"><span class="section-number">7. </span>Linking MrParse to local databases<a class="headerlink" href="#mrparse-server-setup--page-root" title="Link to this heading">¶</a></h1>
+<section id="mrparse-search-in-ccp4-cloud">
+<h2 id="mrparse-search-in-ccp4-cloud"><span class="section-number">7.1. </span>MrParse search in CCP4 Cloud<a class="headerlink" href="#mrparse-search-in-ccp4-cloud" title="Link to this heading">¶</a></h2>
 <p>In CCP4 Cloud, <em>MrParse</em> can be used to search various databases for possible
 homologous structures in the <em>Protein databank</em> (<em>PDB</em>) or entries in the <a class="reference external" href="https://alphafold.ebi.ac.uk" rel="noopener noreferrer" target="_blank">EBI
 AlphaFold Database</a> (<em>EBI-AFDB</em>) or <a class="reference external" href="https://esmatlas.com/" rel="noopener noreferrer" target="_blank">ESMAtlas</a> Database. It can also be used
@@ -352,9 +351,9 @@ date, a locally installed mirror of the <em>PDB</em> and its sequence listing ca
 used. In addition, local versions of the <em>EBI-AFDB</em> sequence listings (~92GBs)
 and the <em>ESMAtlas</em> database sequence listings (~120GBs) can be used to enable a
 complete search of these databases.</p>
-
-
-<h2 id="configuring-mrparse-to-use-local-resources"><span class="section-number">7.2. </span>Configuring MrParse to use local resources<a class="headerlink" href="#configuring-mrparse-to-use-local-resources" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="configuring-mrparse-to-use-local-resources">
+<h2 id="configuring-mrparse-to-use-local-resources"><span class="section-number">7.2. </span>Configuring MrParse to use local resources<a class="headerlink" href="#configuring-mrparse-to-use-local-resources" title="Link to this heading">¶</a></h2>
 <p>There are 4 local database options that can be configured:</p>
 <p><strong>1 A local PDB mirror</strong></p>
 <p>The general CCP4 Cloud environment variable <strong>PDB_DIR</strong> is used to specify the
@@ -375,8 +374,8 @@ file’s location on the local file system will enable MrParse to search the
 entire <em>EBI-AFDB</em> for hits.</p>
 <p><strong>4 A local copy of the ESMAtlas sequence listing file</strong></p>
 <p><em>Available soon..</em></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -421,7 +420,7 @@ entire <em>EBI-AFDB</em> for hits.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.4.7.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

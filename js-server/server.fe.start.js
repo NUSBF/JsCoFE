@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.02.25   <--  Date of Last Modification.
+ *    18.04.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,11 +86,6 @@ function start ( callback_func )  {
 
   function commandServer ( nc_number,final_callback_function,command )  {
     if (nc_number<ncConfigs.length)  {
-      /*
-      if ((ncConfigs[nc_number].type!='FEProxy') &&
-          (ncConfigs[nc_number].exeType!='CLIENT') &&
-          ((ncConfigs[nc_number].stoppable || (command!=cmd.nc_command.stop))  {
-      */
       if (ncConfigs[nc_number].in_use && ncConfigs[nc_number].stoppable &&
           (((ncConfigs[nc_number].type!='FEProxy') &&
             (ncConfigs[nc_number].exeType!='CLIENT')) ||
@@ -244,7 +239,7 @@ function start ( callback_func )  {
 
         case cmd.fe_command.stop :
             if (conf.getFEConfig().stoppable)  {
-              log.standard ( 6,'stopping' );
+              log.standard ( 6,'stopping on command ' + server_request.url );
               commandServer ( 0,function(){
                 server.close();
                 cmd.sendResponse ( server_response,cmd.fe_retcode.ok,'','' );
@@ -356,8 +351,13 @@ function start ( callback_func )  {
   });
 
   utils.setGracefulQuit();
-  
+
 }
+
+process.on ( 'uncaughtException', function (err) {
+  log.error ( 3,'Caught unhandled exception: ' + err );
+  console.error ( err.stack );
+});
 
 
 // ==========================================================================

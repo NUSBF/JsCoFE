@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.09.24   <--  Date of Last Modification.
+ *    23.03.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Requests Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2024
+ *  (C) E. Krissinel, A. Lebedev 2016-2025
  *
  *  =================================================================
  *
@@ -189,6 +189,7 @@ function ncGetInfo ( server_request,server_response )  {
 
 }
 
+
 function ncGetCapacity ( server_request,server_response )  {
   jm.calcCapacity ( function(current_capacity){
     let response = new cmd.Response ( cmd.nc_retcode.ok,'',{
@@ -199,6 +200,15 @@ function ncGetCapacity ( server_request,server_response )  {
   });
 }
 
+
+function getLogFiles ( post_data_obj,callback_func )  {
+  // console.log ( ' >>>>> ' + JSON.stringify(conf.getServerConfig().getLogFiles()))
+  callback_func ( 
+    new cmd.Response ( cmd.nc_retcode.ok,'',conf.getServerConfig().getLogFiles() )
+  );
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.ncSelectDir      = ncSelectDir;
@@ -206,3 +216,4 @@ module.exports.ncSelectFile     = ncSelectFile;
 module.exports.ncSelectImageDir = ncSelectImageDir;
 module.exports.ncGetInfo        = ncGetInfo;
 module.exports.ncGetCapacity    = ncGetCapacity;
+module.exports.getLogFiles      = getLogFiles;
