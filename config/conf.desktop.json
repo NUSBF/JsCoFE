@@ -33,7 +33,7 @@
                     "diskReserve" : 1000
                   }
     },
-    "jobs_safe"        : {
+    "_jobs_safe"        : {
         "path"     : "./cofe-nc-storage/jobs_safe",
         "capacity" : 10
     },
@@ -104,7 +104,7 @@
       "exclude_tasks"    : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-nc-storage",
-      "jobs_safe"        : {
+      "_jobs_safe"        : {
           "path"     : "./cofe-nc-storage/jobs_safe",
           "capacity" : 10
       },
