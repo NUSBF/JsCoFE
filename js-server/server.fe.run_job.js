@@ -106,7 +106,7 @@ FEJobRegister.prototype.addJob = function ( job_token,rfe_token,nc_number,
     job_token        : job_token,   // job_token issued by NC (clashes hopefully minimal)
                                     // make tokens surely NC-specific through NC
                                     // confoguration
-    rfe_token        : rfe_token,   // toke issued by 'REMOTE' FE (RFE)
+    rfe_token        : rfe_token,   // token issued by 'REMOTE' FE (RFE)
     remoteLogin      : remoteLogin, // remote login name (only if rfe_token given)
     loginData        : loginData,
     project          : project,
@@ -300,7 +300,8 @@ function getEFJobEntry ( loginData,project,jobId )  {
 // complex software setup such as AF2.
 //
 
-var pull_jobs_timer = null;
+var __pull_jobs_timer = null;
+var __retrieval_map   = {};
 
 function checkRemoteJobs ( check_jobs,nc_number )  {
 let nc_servers = conf.getNCConfigs();
@@ -330,10 +331,16 @@ let nc_servers = conf.getNCConfigs();
         delete feJobRegister.token_map[index];
         were_changes = true;
       
-      } else if (jobEntry && (check_jobs[index].status!=task_t.job_code.running))  {
+      } else if (jobEntry && (!__retrieval_map[jobEntry.job_token]) &&
+                 (check_jobs[index].status!=task_t.job_code.running))  {
         // job finished, results are ready
 
-        (function(server_no,job_entry){
+        let server_no = index;
+        let job_entry = jobEntry;
+
+        __retrieval_map[jobEntry.job_token] = true;
+
+        // (function(server_no,job_entry){
           let ncCfg    = nc_servers[check_jobs[server_no].nc_number];
           let nc_url   = ncCfg.externalURL;
           let filePath = path.join ( conf.getFETmpDir(),job_entry.job_token + '.zip' );
@@ -344,6 +351,7 @@ let nc_servers = conf.getNCConfigs();
               method  : 'POST',
               body    : { job_token : job_entry.job_token },
               json    : true,
+              timeout : 20000,
               rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
             }
           )
@@ -357,8 +365,10 @@ let nc_servers = conf.getNCConfigs();
               let rdata = utils.readObject ( filePath );
               if (rdata)  {
                 // if job is still running, just ignore received file till next round
-                if (rdata.status==cmd.nc_retcode.jobIsRunning)
+                if (rdata.status==cmd.nc_retcode.jobIsRunning)  {
+                  delete __retrieval_map[jobEntry.job_token];
                   return;
+                }
                 // the other signal is job not found on NC
                 if (rdata.status==cmd.nc_retcode.jobNotFound)  {
                   log.warning ( 2,'job not found on REMOTE NC "' + ncCfg.name +
@@ -367,6 +377,7 @@ let nc_servers = conf.getNCConfigs();
                   writeFEJobRegister();
                   check_jobs[server_no].status = task_t.job_code.remove;
                   were_changes = true;
+                  delete __retrieval_map[jobEntry.job_token];
                   return;
                 }
               }
@@ -392,6 +403,7 @@ let nc_servers = conf.getNCConfigs();
                   check_jobs[server_no].status = task_t.job_code.remove;
                   checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
                 }
+                delete __retrieval_map[jobEntry.job_token];
               });
 
           })
@@ -399,9 +411,10 @@ let nc_servers = conf.getNCConfigs();
             // make a counter here to avoid infinite looping
             utils.removeFile ( filePath ); // Remove file on error
             log.error ( 2,'Error receiving data from REMOTE NC: ' + err );
+            delete __retrieval_map[jobEntry.job_token];
           });
 
-        }(index,jobEntry))
+        // }(index,jobEntry))
       
       }
 
@@ -411,7 +424,7 @@ let nc_servers = conf.getNCConfigs();
       checkRemoteJobs ( check_jobs,0 );  // remove fetched and runaway jobs from NCs
       writeFEJobRegister();
     } else  {
-      pull_jobs_timer = null;  // note that timer was blocked up to this point
+      __pull_jobs_timer = null;  // note that timer was blocked up to this point
       checkPullMap();
     }
 
@@ -464,11 +477,11 @@ function checkPullMap()  {
 
   if (Object.keys(feJobRegister.token_pull_map).length <= 0)  {
 
-    pull_jobs_timer = null;
+    __pull_jobs_timer = null;
   
-  } else if (!pull_jobs_timer)  {  // else the timer is already running, do not repeat
+  } else if (!__pull_jobs_timer)  {  // else the timer is already running, do not repeat
 
-    pull_jobs_timer = setTimeout ( function(){
+    __pull_jobs_timer = setTimeout ( function(){
 
       let check_jobs = {};  // buffer structure for convenience
       for (let index in feJobRegister.token_pull_map)  {
@@ -774,10 +787,13 @@ function selectNumberCruncher ( task )  {
 
 
 function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
+//  run_remotely = 0 :  select local NC
+//               = 1 :  select remote NC 
+//               = 2 :  select remote NC if available, otherwise local
 //  nc_counter == conf.getNumberOfNCs() at 1st call
   let nc_number = -1;
   
-  if (run_remotely)  {
+  if (run_remotely>0)  {
     // Request to allocate job on NCs accessible via rempte FE (RFE). A typical 
     // scenario includes sending jobs from CCP4 Cloud Local to CCP4 Cloud Remote.
     // In this mode, the actual NC (ANC allocated to run the job in the remote
@@ -806,24 +822,32 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
             callback_func ( body.data.code,
                             nc_number,  // this should be remote NC, not ANC number
                             body.data.rfe_token,
-                            body.data.anc_name
+                            body.data.anc_name,
+                            run_remotely
                           );
+          } else if (run_remotely==2)  {
+            // now try local
+            ncSelectAndCheck ( nc_counter,task,0,callback_func );
           } else if (!error) {
-            callback_func ( 4,nc_number,'','' );
+            callback_func ( 4,nc_number,'','',run_remotely );
             log.warning ( 10,'remote FE could not allocate job for ' + task._type );
           } else  {
-            callback_func ( 6,nc_number,'','' );
+            callback_func ( 6,nc_number,'','',run_remotely );
             log.warning ( 11,'errors at communication with remote FE' );
           }
         }
       );
 
+    } else if (run_remotely==2)  {
+      // now try local
+      ncSelectAndCheck ( nc_counter,task,0,callback_func );
     } else  {
       log.error ( 41,'remote number cruncher is not configured' );
-      callback_func ( 3,nc_number,'','' );
+      callback_func ( 3,nc_number,'','',run_remotely );
     }
 
   } else  {
+    
     // Request to allocate job on NCs directly linked with FE, which is the
     // most common case.
 
@@ -838,9 +862,9 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
             printNCState ( nc_number );
             if (nc_number>=0)  {
               conf.getNCConfigs()[nc_number].current_capacity--;
-              callback_func ( 0,nc_number,'','' );
+              callback_func ( 0,nc_number,'','',run_remotely );
             } else
-              callback_func ( 5,nc_number,'','' );
+              callback_func ( 5,nc_number,'','',run_remotely );
           } else  {
             // log.standard ( 1,'NC-' + nc_number + ' does not answer' );
             log.error ( 3,'NC-' + nc_number + ' does not answer' );
@@ -849,18 +873,18 @@ function ncSelectAndCheck ( nc_counter,task,run_remotely,callback_func )  {
             } else  {
               // log.standard ( 2,'no response from number crunchers' );
               log.error ( 4,'no response from number crunchers' );
-              callback_func ( 2,nc_number,'','' );
+              callback_func ( 2,nc_number,'','',run_remotely );
             }
           }
         });
       } else  {
         // log.standard ( 3,'NC-' + nc_number + ' configuration cannot be obtained' );
         log.error ( 5,'NC-' + nc_number + ' configuration cannot be obtained' );
-        callback_func ( 1,nc_number,'','' );
+        callback_func ( 1,nc_number,'','',run_remotely );
       }
     } else  {
       log.warning ( 42,'all number crunchers refused to accept a job' );
-      callback_func ( 5,nc_number,'','' );
+      callback_func ( 5,nc_number,'','',run_remotely );
     }
 
   }
@@ -875,8 +899,8 @@ function allocateJob ( data,callback_func )  {  // gets UserData object
 
   // This function is used on Remote FE (RFE), therefore, parameter run_remotely
   // is set to false.
-  ncSelectAndCheck ( conf.getNumberOfNCs(),data.task,false,
-    function(code,nc_number,rfe_token,nc_name){
+  ncSelectAndCheck ( conf.getNumberOfNCs(),data.task,0,
+    function(code,nc_number,rfe_token,nc_name,run_remotely){
       let nc_cfg = conf.getNCConfig(nc_number);
       let response  = new cmd.Response ( cmd.fe_retcode.ok,'',
         { code       : code,
@@ -894,15 +918,17 @@ function allocateJob ( data,callback_func )  {  // gets UserData object
 // ===========================================================================
 
 function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-                    run_remotely, callback_func )  {
+                    run_remotely_key, callback_func )  {
 
   // for remote jobs:
   //   -- get Remote NC (RNC) number
   //   -- send task to Remote FE (RFE) for checking and receive 
   //      Actual NC (ANC) number
 
-  ncSelectAndCheck ( conf.getNumberOfNCs(),task,run_remotely,
-    function(code,nc_number,rfe_token,anc_name){
+  ncSelectAndCheck ( conf.getNumberOfNCs(),task,run_remotely_key,
+    function(code,nc_number,rfe_token,anc_name,run_remotely){
+
+      task.run_remotely = (run_remotely>0);  // may have changed
 
       let jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
       let jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
@@ -938,7 +964,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
       }
 
       if (msg)  {
-        if (run_remotely)
+        if (run_remotely>0)
           msg = 'The task was attempted to be run on remote server<p>' + msg;
         utils.writeJobReportMessage ( jobDir,'<h1>Task cannot be proccessed</h1>'+msg,
                                       false );
@@ -990,7 +1016,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
       //     forwards fetch request to ANC
 
       let request_headers = null;
-      if (run_remotely)  {
+      if (run_remotely>0)  {
         // RFE will check credentials when job is sent to ANC. Once job is 
         // running, communication between cliend and ANC is simply proxied
         // by RFE using rfe_token, which is part of request URL
@@ -1028,7 +1054,7 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
             log.standard ( 6,'job ' + task.id + ' sent to ' +
                             conf.getNCConfig(nc_number).name + ', job token:' +
                             job_token );
-            log.standard ( 6,'compression: '  + nc_cfg.compression +
+            log.standard ( 6,'compression: ' + nc_cfg.compression +
                             ', zip time: '   + stats.zip_time.toFixed(3) +
                             's, send time: ' + stats.send_time.toFixed(3) + 
                             's, size: '      + stats.size.toFixed(3) + ' MB' );
@@ -1240,7 +1266,7 @@ function runJob ( loginData,data, callback_func )  {
     // job for ordinary NC, pack and send all job directory to number cruncher
 
     _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-               data.run_remotely,  // remote/own NC comes from JobDialog
+               data.run_remotely ? 1 : 0,  // remote/own NC comes from JobDialog
       function(jtoken){
         callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
       });
@@ -1283,7 +1309,7 @@ function webappEndJob ( loginData,data, callback_func )  {
   task.nc_type ='ordinary';
 
   _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-             false,  // webapps run only on own NCs
+             0,  // webapps run only on own NCs
     function(jtoken){
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
     });
@@ -1645,13 +1671,20 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
       user.topupUserRation ( ownerLoginData,function(rdata){
 
-        let check_list = ration.checkUserRation ( ownerLoginData,false );
+        let check_list = ration.checkUserRation ( ownerLoginData,false,rdata.data.ration );
         if (check_list.length<=0)  {
   
           let tasks = [];
           let projectData = prj.readProjectData ( loginData,projectName );
           // pd.printProjectTree ( ' >>>auto-1',projectData );
-  
+
+          let uData = (loginData.login==ud.__local_user_id) ?
+                          user.readUserData ({ 
+                            login  : loginData.login,
+                            volume : null
+                          }) : 
+                          null;
+
           for (let key in auto_meta)
             if (key!='context')  {
   
@@ -1700,9 +1733,12 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                       task.script         = jobClass.script;
                       task.script_pointer = jobClass.script_end_pointer;
                     }
-                    task.submitter            = loginData.login;
+                    // task.submitter            = loginData.login;
+                    task.submitter            = jobClass.submitter;
                     task.input_data.data      = auto_meta[key].data;
                     task.start_time           = Date.now();
+
+                    task.run_remotely = (uData && uData.remote_tasks[task._type]);
     
                     for (let field in auto_meta[key].fields)
                       task[field] = auto_meta[key].fields[field];
@@ -1781,11 +1817,11 @@ let auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               let job_token = newJobToken();
 
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-                         false, // temporary workflows run only on own NCs
+                         task.run_remotely ? 2 : 0, // subject to remote NC availability
                          function(jtoken){} );
 
             }
-    
+
           }
   
         } else  {
@@ -2136,7 +2172,7 @@ function cloudRun ( server_request,server_response )  {
 
           user.topupUserRation ( loginData,function(rdata){
 
-            let check_list = ration.checkUserRation ( loginData,true );
+            let check_list = ration.checkUserRation ( loginData,true,rdata.ration );
             if (check_list.length>0)  {
 
               log.standard ( 62,'cloudrun rejected for user (' + meta.user + '): ' +
@@ -2255,6 +2291,7 @@ function cloudRun ( server_request,server_response )  {
                     pData.desc.jobCount = mjd[2];
                     task.submitter      = loginData.login;
                     task.start_time     = Date.now();
+                    task.run_remotely   = (uData && uData.remote_tasks[task._type]);
                     if (!task.autoRunId)
                       task.autoRunId = 'cloudrun';
                     task.state          = task_t.job_code.running;
@@ -2320,7 +2357,7 @@ function cloudRun ( server_request,server_response )  {
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
-                                     false, // temoporary cloudrun runs only on own NCs
+                                     task.run_remotely ? 2 : 0, // conditional on RNC
                                      function(jtoken){
                             let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {

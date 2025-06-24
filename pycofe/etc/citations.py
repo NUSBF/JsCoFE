@@ -172,6 +172,14 @@ citations = {
                             'year'    : '1997',
                             'pages'   : '1022-1025',
                             'doi'     : '10.1107/S0021889897006766'
+                        },{
+                            'authors' : 'Vagin, A., and Teplyakov, A.',
+                            'title'   : 'Molecular replacement with MOLREP',
+                            'journal' : 'Acta Cryst. D',
+                            'volume'  : '66',
+                            'year'    : '2010',
+                            'pages'   : '22-25',
+                            'doi'     : '10.1107/S0907444909042589'
                         }]
                   },
 
