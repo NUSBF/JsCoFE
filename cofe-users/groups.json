@@ -1,0 +1,73 @@
+{
+  "groups": {
+    "group_e31affa5a27344d0_1756207674314": {
+      "id": "group_e31affa5a27344d0_1756207674314",
+      "name": "Test Group 1756207674310",
+      "description": "Test group created by automated test script",
+      "created_by": "test_user",
+      "created_date": 1756207674314,
+      "status": "active",
+      "max_members": 50,
+      "members": {
+        "test_user": {
+          "role": "leader",
+          "joined_date": 1756207674314,
+          "status": "active",
+          "added_by": "test_user"
+        }
+      }
+    },
+    "group_df73d3c96299ccba_1756208847476": {
+      "id": "group_df73d3c96299ccba_1756208847476",
+      "name": "Test Group 1756208847472",
+      "description": "Test group created by automated test",
+      "created_by": "test_admin",
+      "created_date": 1756208847476,
+      "status": "active",
+      "max_members": 10,
+      "members": {
+        "test_admin": {
+          "role": "leader",
+          "joined_date": 1756208847476,
+          "status": "active",
+          "added_by": "test_admin"
+        }
+      }
+    },
+    "group_b889179899b38388_1756209615277": {
+      "id": "group_b889179899b38388_1756209615277",
+      "name": "Test Group 1756209615274",
+      "description": "Test group created by automated test",
+      "created_by": "test_admin",
+      "created_date": 1756209615278,
+      "status": "active",
+      "max_members": 10,
+      "members": {
+        "test_admin": {
+          "role": "leader",
+          "joined_date": 1756209615278,
+          "status": "active",
+          "added_by": "test_admin"
+        }
+      }
+    },
+    "group_cd75ce6a7216407c_1756209658088": {
+      "id": "group_cd75ce6a7216407c_1756209658088",
+      "name": "Test Group 1756209658085",
+      "description": "Test group created by automated test",
+      "created_by": "test_admin",
+      "created_date": 1756209658088,
+      "status": "active",
+      "max_members": 10,
+      "members": {
+        "test_admin": {
+          "role": "leader",
+          "joined_date": 1756209658088,
+          "status": "active",
+          "added_by": "test_admin"
+        }
+      }
+    }
+  },
+  "invitations": {}
+}

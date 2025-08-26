@@ -856,11 +856,17 @@ TablePages.prototype._fill_table = function ( startIndex )  {
   this.table.addSignalHandler ( 'click',function(target){
     const row = target.closest('tr');
     if (row.rowIndex>=self.startRow)  {
-      if ('onclick' in self.tdesc)  {
-        const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>) 
+      const uindex = self.startIndex + row.rowIndex; // Get the row index (1-based for <tbody>)
+      
+      // Always select the row if row_select is enabled
+      if ('row_select' in self.tdesc && self.tdesc.row_select === 'single') {
         self.table.selectRow ( -1,1 );  // deselect
         self.table.selectRow ( row.rowIndex,1 );
-        self.tdesc.onclick   ( self.tdata[uindex-1] );
+      }
+      
+      // Call onclick handler if defined
+      if ('onclick' in self.tdesc)  {
+        self.tdesc.onclick ( self.tdata[uindex-1] );
       }
     } else {
       let th = target.closest('th');

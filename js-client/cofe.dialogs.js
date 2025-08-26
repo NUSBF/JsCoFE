@@ -239,6 +239,24 @@ function MessageFileNotFound ( message )  {
 }
 
 function MessageUnknownError ( title,message )  {
+  // Handle empty or invalid messages
+  if (!message || message === '""' || message === '"undefined"' || message === '"null"' || message === '"Empty response"') {
+    message = "Empty response";
+    console.log('[' + getCurrentTimeString() + '] Empty server response handled in MessageUnknownError');
+    
+    // If we're on a page after login, don't show error dialog
+    if (__current_page && __login_token) {
+      console.log('[' + getCurrentTimeString() + '] Suppressing error dialog for empty response - user is logged in');
+      return;
+    }
+    
+    // If we're in the process of verifying a session, don't show error
+    if (title === 'Session Verification' || title === 'Check session') {
+      console.log('[' + getCurrentTimeString() + '] Suppressing error dialog for empty response during session verification');
+      return;
+    }
+  }
+  
   new MessageBox ( 'Unknown error',
     '<div style="width:500px"><h2>Unknown error.</h2> The server replied with:<p>' +
     '<i>' + message + '</i><p>Please file a report to ' +

@@ -27,7 +27,7 @@
 // -------------------------------------------------------------------------
 // Manage User dialog class
 
-function ManageUserDialog ( userData,FEconfig,onExit_func )  {
+function ManageUserDialog ( userData, FEconfig, groupsInfo, onExit_func )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Manage User ' + userData.login );
@@ -36,6 +36,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
   this.userData = userData;
+  this.groupsInfo = groupsInfo;
 
   this.diskNames = [];
   if (isObject(FEconfig.projectsPath))
@@ -70,6 +71,55 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 dlg.userData.dormant = Date.now();
             } else
               dlg.userData.dormant = 0;
+            
+            // Get the selected group
+            let selectedGroupIndex = dlg.groupDropdown.getValue();
+            let selectedGroupName = null;
+            let selectedGroupId = null;
+            
+            // If not "None" (index 0), find the group ID
+            if (selectedGroupIndex > 0) {
+              let i = 1; // Start at 1 because 'None' is at index 0
+              for (let groupId in dlg.groupsInfo.groups) {
+                if (i === selectedGroupIndex) {
+                  selectedGroupName = dlg.groupsInfo.groups[groupId].name;
+                  selectedGroupId = groupId;
+                  break;
+                }
+                i++;
+              }
+            }
+            
+            // Get the selected role (member or leader)
+            let selectedRole = ['member', 'leader'][dlg.groupRoleDropdown.getValue()];
+            
+            // Store the selected group information directly on userData for server processing
+            if (selectedGroupId) {
+              dlg.userData.selected_group_id = selectedGroupId;
+              dlg.userData.selected_group_role = selectedRole;
+            } else {
+              dlg.userData.selected_group_id = null;
+              dlg.userData.selected_group_role = null;
+            }
+
+            // Prepare group membership update data for separate server request
+            let groupUpdateData = {
+              targetUser: dlg.userData.login,
+              groups: []
+            };
+
+            // If a group is selected, add it to the groups array
+            if (selectedGroupId) {
+              groupUpdateData.groups.push({
+                group_id: selectedGroupId,
+                role: selectedRole
+              });
+            }
+            // If no group selected, groups array remains empty (removes user from all groups)
+
+            // Store group update data for later use
+            dlg.userData.groupUpdateData = groupUpdateData;
+            
             let volume = dlg.diskNames[dlg.volume.getValue()];
             dlg.userData.ration.storage      = dlg.storage     .getValue();
             dlg.userData.ration.storage_max  = dlg.storage_max .getValue();
@@ -108,19 +158,27 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 { name    : 'Yes, modify',
                   onclick : function(){
                               dlg.userData.volume = volume;
-                              serverRequest ( fe_reqtype.updateUData_admin,dlg.userData,
+
+                              // First update the user data
+                              serverRequest ( fe_reqtype.updateUData_admin, dlg.userData,
                                               'Manage User Data', function(response){
-                                if (response)
-                                  new MessageBoxW ( 'Manage User Data',response,0.5 );
-                                else
+                                if (response) {
+                                  new MessageBoxW ( 'Manage User Data', response, 0.5 );
+                                  onExit_func ( 1 );
+                                  $(dlg.element).dialog("close");
+                                } else {
+                                  // User data updated successfully, group updates are handled server-side
+                                  console.log('[DEBUG] Client - ManageUserDialog - User data and group memberships updated successfully');
                                   new MessageBox ( 'Manage User Data',
                                     'Account of <i>' + dlg.userData.name +
-                                    '</i> has been successfully updated, and ' +
-                                    'notification<br>sent to e-mail address:<p><b><i>' +
+                                    '</i> has been successfully updated' +
+                                    (dlg.userData.selected_group_id ? ', including group membership,' : '') +
+                                    ' and notification<br>sent to e-mail address:<p><b><i>' +
                                     dlg.userData.email + '</i></b>.', 'msg_confirm' );
-                                onExit_func ( 1 );
-                                $(dlg.element).dialog("close");
-                              },null,'persist' );
+                                  onExit_func ( 1 );
+                                  $(dlg.element).dialog("close");
+                                }
+                              }, null, 'persist' );
                             }
                 },{
                   name    : 'Cancel',
@@ -408,6 +466,49 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.licence = this.putLine ( 'Licence:',[
                                   'academic','commercial',this.userData.licence
                                 ], 0,row++,2 );
+  
+  // Add group dropdown
+  let groupOptions = ['None'];
+  let selectedGroup = 'None';
+  let selectedIndex = 0;
+  let currentUserGroupId = null;
+  let currentUserRole = 'member';
+
+  // Check if user is currently in any groups
+  if (this.userData.groups && this.userData.groups.length > 0) {
+    // For now, take the first group (could be enhanced to handle multiple groups)
+    let userGroup = this.userData.groups[0];
+    currentUserGroupId = userGroup.group_id;
+    currentUserRole = userGroup.role || 'member';
+  }
+
+  // Populate group options from groupsInfo
+  if (this.groupsInfo && this.groupsInfo.groups) {
+    let i = 1; // Start at 1 because 'None' is at index 0
+    for (let groupId in this.groupsInfo.groups) {
+      let group = this.groupsInfo.groups[groupId];
+      groupOptions.push(group.name);
+
+      // Check if this is the user's current group
+      if (currentUserGroupId === groupId) {
+        selectedGroup = group.name;
+        selectedIndex = i;
+      }
+      i++;
+    }
+  }
+
+  // Add the group dropdown with the options
+  groupOptions.push(selectedGroup);
+  this.groupDropdown = this.putLine('Group:', groupOptions, 0, row++, 2);
+
+  // Add group role dropdown (member or leader)
+  let roleOptions = ['member', 'leader'];
+
+  // Add the role dropdown with the options
+  roleOptions.push(currentUserRole);
+  this.groupRoleDropdown = this.putLine('Group Role:', roleOptions, 0, row++, 2);
+  
   let dormant_lbl = 'dormant';
   let dormant_sel = 'active';
   if (this.userData.dormant)  {

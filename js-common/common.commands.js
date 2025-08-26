@@ -164,12 +164,21 @@ const fe_reqtype = {
   getAdminData        : '-getAdminData',      // request to serve data for admin page
   getAnalytics        : '-getAnalytics',      // request to serve analytics data
   sendMailToAllUsers  : '-sendMailToAllUsers', // request to send e-mail to users
-  makeAnnouncement    : '-makeAnnouncememt',  // request to make announcement on login page
+  makeAnnouncement    : '-makeAnnouncement',  // request to make announcement on login page
   manageDormancy      : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
   saveMyWorkflows     : '-saveMyWorkflows',   // request to save custom workflow descriptions
-  getLogFiles         : '-getLogFiles'        // request to get FE or NC log file
+  getLogFiles         : '-getLogFiles',       // request to get FE or NC log file
+  createGroup         : '-createGroup',       // request to create a new group
+  deleteGroup         : '-deleteGroup',       // request to delete a group
+  getAllGroups        : '-getAllGroups',      // request to get all groups (admin only)
+  getUserGroups       : '-getUserGroups',     // request to get user's groups
+  inviteToGroup       : '-inviteToGroup',     // request to invite user to group
+  acceptInvitation    : '-acceptInvitation',  // request to accept group invitation
+  getGroupMembers     : '-getGroupMembers',   // request to get group members
+  getAccessibleProjects : '-getAccessibleProjects', // request to get projects accessible through groups
+  updateUserGroups    : '-update-user-groups' // request to update user group memberships
 };
 
 
@@ -211,6 +220,8 @@ const fe_retcode = {
   proxyError      : 'proxyError',      // fe-proxy error
   projectAccess   : 'projectAccess',   // project access denied
   serverInactive  : 'serverInactive',  // project access denied
+  accessDenied    : 'accessDenied',    // access denied for groups/resources
+  notFound        : 'notFound',        // resource not found
   errors          : 'errors'           // common errors
 };
 

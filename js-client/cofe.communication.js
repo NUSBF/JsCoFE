@@ -551,6 +551,26 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         __server_queue.shift();
         __process_network_indicators();
         try {
+          // Check if response is empty or not valid JSON
+          if (!rdata || rdata.trim() === '') {
+            console.log(' [' + getCurrentTimeString() + 
+                       '] Empty response received for command: ' + cmd +
+                       '\n --- reqid=' + sqid);
+            
+            // Handle empty response gracefully
+            if (function_always) {
+              function_always();
+            }
+            
+            // If we're already on a page, just stay there instead of showing error
+            if (__current_page) {
+              console.log(' [' + getCurrentTimeString() + '] Staying on current page instead of showing error');
+              return;
+            }
+            
+            return;
+          }
+          
           let rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
             let response = jQuery.extend ( true, new Response(), rsp );
@@ -674,22 +694,42 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
         __process_network_indicators();
 
         try {
-          let rsp = jQuery.parseJSON ( rdata );
-          if (checkVersionMatch(rsp,false))  {
-            response = jQuery.extend ( true, new Response(), rsp );
-            if (response.status==fe_retcode.ok)  {
+          // Check if response is empty or not valid JSON
+          if (!rdata || rdata.trim() === '') {
+            console.log(' [' + getCurrentTimeString() + 
+                       '] Empty response received for request type: ' + request_type +
+                       '\n --- reqid=' + sqid);
+            
+            // Handle empty response gracefully - reload the page
+            if (function_always) {
+              function_always(0, {});
+            }
+            
+            // If we're already on a page, just stay there instead of showing error
+            if (__current_page) {
+              console.log(' [' + getCurrentTimeString() + '] Staying on current page instead of showing error');
+              return;
+            }
+            
+            return;
+          }
+          
+          let rsp = jQuery.parseJSON(rdata);
+          if (checkVersionMatch(rsp, false)) {
+            response = jQuery.extend(true, new Response(), rsp);
+            if (response.status == fe_retcode.ok) {
               if (function_ok)
-                function_ok ( response.data );
+                function_ok(response.data);
             } else
-              makeCommErrorMessage ( page_title,request_type,response );
+              makeCommErrorMessage(page_title, request_type, response);
           }
         } catch(err) {
-          console.log ( ' [' + getCurrentTimeString() + 
-                        '] (r) error catch in __server_request.done:' +
-                        '\n --- ' + err +
-                        '\n --- request type: ' + request_type +
-                        '\n --- rdata = ' + rdata +
-                        '\n --- reqid='   + sqid );
+          console.log(' [' + getCurrentTimeString() + 
+                     '] (r) error catch in __server_request.done:' +
+                     '\n --- ' + err +
+                     '\n --- request type: ' + request_type +
+                     '\n --- rdata = ' + rdata +
+                     '\n --- reqid=' + sqid);
         }
       } else  {
         console.log ( ' [' + getCurrentTimeString() +

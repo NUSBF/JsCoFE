@@ -32,6 +32,7 @@ const rj      = require('./server.fe.run_job');
 const ustats  = require('./server.fe.usagestats')
 const utils   = require('./server.utils');
 const cache   = require('./server.cache');
+const groups  = require('./server.fe.groups');
 const cmd     = require('../js-common/common.commands');
 const ud      = require('../js-common/common.data_user');
 
@@ -136,6 +137,7 @@ function getAdminData ( loginData,data,callback_func )  {
   adminData.served    = false;
   adminData.jobsStat  = '';
   adminData.usersInfo = [];
+  adminData.groupsInfo = { groups: {} };
   adminData.nodesInfo = {};
   adminData.nodesInfo.FEconfig = {};
   adminData.nodesInfo.ncInfo   = [];
@@ -151,6 +153,50 @@ function getAdminData ( loginData,data,callback_func )  {
     adminData.served    = true;
     adminData.jobsStat  = rj.readJobStats();
     adminData.usersInfo = user.readUsersData();
+    adminData.groupsInfo = groups.readGroupsData();
+
+    // Enhance user data with group information
+    if (adminData.usersInfo && adminData.usersInfo.userList) {
+      for (let i = 0; i < adminData.usersInfo.userList.length; i++) {
+        let userDesc = adminData.usersInfo.userList[i];
+        let userLoginData = { login: userDesc.login };
+        let userGroups = groups.readUserGroups(userLoginData);
+
+        // Add group information to user description
+        userDesc.groups = [];
+        userDesc.group_count = 0;
+        userDesc.leadership_count = 0;
+        userDesc.groupRole = 'None';
+
+        if (userGroups.memberships && Object.keys(userGroups.memberships).length > 0) {
+          userDesc.group_count = Object.keys(userGroups.memberships).length;
+          userDesc.leadership_count = userGroups.leadership ? userGroups.leadership.length : 0;
+
+          let highestRole = 'member';
+          for (let groupId in userGroups.memberships) {
+            if (adminData.groupsInfo.groups[groupId]) {
+              let groupInfo = {
+                id: groupId,
+                name: adminData.groupsInfo.groups[groupId].name,
+                role: userGroups.memberships[groupId].role
+              };
+              userDesc.groups.push(groupInfo);
+
+              // Determine highest role
+              if (userGroups.memberships[groupId].role === 'leader') {
+                highestRole = 'leader';
+              } else if (userGroups.memberships[groupId].role === 'admin' && highestRole !== 'leader') {
+                highestRole = 'admin';
+              }
+            }
+          }
+
+          userDesc.groupRole = highestRole === 'leader' ? 'Leader' : 
+                              highestRole === 'admin' ? 'Admin' : 'Member';
+        }
+      }
+    }
+
     adminData.nodesInfo.FEconfig = conf.getFEConfig();
     getNCData ( adminData.nodesInfo.ncInfo,function(ncInfo){
       let dt = performance.now()-t0;

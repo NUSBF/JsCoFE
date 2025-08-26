@@ -30,6 +30,10 @@ function LogoutPage ( sceneId,reason_key )  {
   //if (__login_user)   __login_user .empty();
   __login_token = '';
   __login_user  = '';
+  // Clear session storage if the function exists
+  if (typeof clearSessionStorage === 'function') {
+    clearSessionStorage();
+  }
   if (__local_user)
         __user_role   = role_code.localuser;
   else  __user_role   = role_code.user;

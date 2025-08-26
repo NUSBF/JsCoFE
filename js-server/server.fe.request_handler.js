@@ -27,6 +27,7 @@ const storage = require('./server.fe.storage');
 const rj      = require('./server.fe.run_job');
 const adm     = require('./server.fe.admin');
 const arch    = require('./server.fe.archive');
+const groups  = require('./server.fe.groups');
 const cmd     = require('../js-common/common.commands');
 
 //  prepare log
@@ -36,8 +37,49 @@ const cmd     = require('../js-common/common.commands');
 // ==========================================================================
 
 function requestHandler ( loginData,request_cmd,data,callback_func )  {
-let response = null;
-
+  let response = null;
+  let callbackCalled = false;
+  
+  // Define timeout duration and check if this is a group operation
+  const timeoutDuration = 60000; // 60 seconds (60,000 ms)
+  const isGroupOperation = request_cmd && (
+    request_cmd === cmd.fe_reqtype.createGroup ||
+    request_cmd === cmd.fe_reqtype.deleteGroup ||
+    request_cmd === cmd.fe_reqtype.getAllGroups ||
+    request_cmd === cmd.fe_reqtype.getUserGroups ||
+    request_cmd === cmd.fe_reqtype.inviteToGroup ||
+    request_cmd === cmd.fe_reqtype.acceptInvitation ||
+    request_cmd === cmd.fe_reqtype.getGroupMembers ||
+    request_cmd === cmd.fe_reqtype.getAccessibleProjects ||
+    request_cmd === cmd.fe_reqtype.updateUserGroups
+  );
+  
+  // Create a wrapper for the callback function to ensure it's only called once
+  const safeCallback = function(resp) {
+    if (!callbackCalled) {
+      callbackCalled = true;
+      callback_func(resp);
+    }
+  };
+  
+  const timeoutId = setTimeout(() => {
+    if (!callbackCalled) {
+      console.log(`Request timeout for ${request_cmd} - forcing response after ${timeoutDuration/1000} seconds`);
+      
+      let timeoutMessage = 'Server operation timed out. Please try again.';
+      
+      // Provide more specific message for group operations
+      if (isGroupOperation) {
+        timeoutMessage = 'Group operation timed out. Group operations may take longer to complete due to file operations. Please try again and allow more time for the operation to complete.';
+      }
+      
+      safeCallback(new cmd.Response(
+        cmd.fe_retcode.errors, 
+        timeoutMessage, 
+        ''
+      ));
+    }
+  }, timeoutDuration);
   switch (request_cmd)  {
 
     case cmd.fe_reqtype.logout :
@@ -49,7 +91,7 @@ let response = null;
         break;
 
     case cmd.fe_reqtype.getUserRation :
-          user.getUserRation ( loginData,data,callback_func );
+          user.getUserRation ( loginData,data,safeCallback );
         break;
 
     case cmd.fe_reqtype.updateUserData :
@@ -181,7 +223,7 @@ let response = null;
        break;
 
     case cmd.fe_reqtype.archiveProject :
-           arch.archiveProject ( loginData,data,callback_func );
+           arch.archiveProject ( loginData,data,safeCallback );
        break;
 
     case cmd.fe_reqtype.accessArchivedPrj :
@@ -241,7 +283,7 @@ let response = null;
        break;
 
     case cmd.fe_reqtype.runJob :
-          rj.runJob ( loginData,data,callback_func );
+          rj.runJob ( loginData,data,safeCallback );
        break;
 
     case cmd.fe_reqtype.checkJobs :
@@ -249,7 +291,7 @@ let response = null;
        break;
 
     case cmd.fe_reqtype.wakeZombieJobs :
-          rj.wakeZombieJobs ( loginData,data,callback_func );
+          rj.wakeZombieJobs ( loginData,data,safeCallback );
        break;
 
     case cmd.fe_reqtype.stopJob :
@@ -257,15 +299,15 @@ let response = null;
        break;
 
     case cmd.fe_reqtype.webappEndJob :
-         response = rj.webappEndJob ( loginData,data,callback_func );
+         response = rj.webappEndJob ( loginData,data,safeCallback );
       break;
 
     case cmd.fe_reqtype.getCloudFileTree :
-          storage.getCloudFileTree ( loginData,data,callback_func );
+          storage.getCloudFileTree ( loginData,data,safeCallback );
        break;
 
     case cmd.fe_reqtype.getAdminData :
-          response = adm.getAdminData ( loginData,data,callback_func );
+          response = adm.getAdminData ( loginData,data,safeCallback );
        break;
 
     case cmd.fe_reqtype.getAnalytics :
@@ -273,18 +315,73 @@ let response = null;
        break;
 
     case cmd.fe_reqtype.getLogFiles :
-         adm.getLogFiles ( loginData,data,callback_func );
+         adm.getLogFiles ( loginData,data,safeCallback );
        break;
 
-    default: response = new cmd.Response ( cmd.fe_retcode.wrongRequest,
-                  '[00001] Unrecognised request <i>"' + request_cmd + '"</i>','' );
+    case cmd.fe_reqtype.createGroup :
+         console.log('[DEBUG] Server - request_handler - Received createGroup request');
+         console.log('[DEBUG] Server - request_handler - Request data:', JSON.stringify(data));
+         console.log('[DEBUG] Server - request_handler - Login data:', JSON.stringify(loginData));
+         groups.createGroup ( loginData,data,safeCallback );
+         console.log('[DEBUG] Server - request_handler - createGroup function called');
+       break;
+
+    case cmd.fe_reqtype.deleteGroup :
+         groups.deleteGroup ( loginData,data,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.getAllGroups :
+         groups.getAllGroups ( loginData,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.getUserGroups :
+         groups.getUserGroups ( loginData,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.inviteToGroup :
+         groups.inviteToGroup ( loginData,data,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.acceptInvitation :
+         groups.acceptInvitation ( loginData,data.inviteCode,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.getGroupMembers :
+         groups.getGroupMembers ( loginData,data.groupId,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.getAccessibleProjects :
+         groups.getAccessibleProjects ( loginData,safeCallback );
+       break;
+
+    case cmd.fe_reqtype.updateUserGroups :
+         groups.updateUserGroupMembership ( loginData,data,safeCallback );
+       break;
+
+    default: 
+          // Provide more detailed error information
+          let validRequestTypes = Object.keys(cmd.fe_reqtype).join(', ');
+          let errorMessage = '[00001xxxxx] Unrecognised request <i>"' + request_cmd + '"</i><br><br>' +
+                            'This request type is not recognized by the server. Please check:<br>' +
+                            '1. The request type is spelled correctly<br>' +
+                            '2. The request format is correct (should start with "-")<br>' +
+                            '3. The request is properly formatted in the client code<br><br>' +
+                            'If you are a developer, ensure the request type is defined in common.commands.js';
+          
+          console.log('Unrecognized request received: ' + request_cmd);
+          response = new cmd.Response(cmd.fe_retcode.wrongRequest, errorMessage, '');
 
   }
 
-  if (response)
-    callback_func ( response );
-  else  {
-    switch (request_cmd)  {
+  // Clear the timeout since we're about to respond
+  clearTimeout(timeoutId);
+  
+  if (response) {
+    safeCallback(response);
+  } else {
+    switch (request_cmd) {
+      // All these operations now use safeCallback, so we don't need to do anything here
+      // They will call safeCallback directly with their results
       case cmd.fe_reqtype.runJob           :
       case cmd.fe_reqtype.webappEndJob     :
       case cmd.fe_reqtype.getCloudFileTree :
@@ -293,8 +390,22 @@ let response = null;
       case cmd.fe_reqtype.wakeZombieJobs   :
       case cmd.fe_reqtype.archiveProject   :
       case cmd.fe_reqtype.getLogFiles      :
+      case cmd.fe_reqtype.createGroup      :
+      case cmd.fe_reqtype.deleteGroup      :
+      case cmd.fe_reqtype.getAllGroups     :
+      case cmd.fe_reqtype.getUserGroups    :
+      case cmd.fe_reqtype.inviteToGroup    :
+      case cmd.fe_reqtype.acceptInvitation :
+      case cmd.fe_reqtype.getGroupMembers  :
+      case cmd.fe_reqtype.getAccessibleProjects :
+      case cmd.fe_reqtype.updateUserGroups :
             break;
-      default : console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
+      default : 
+            console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
+            // Send a response to prevent client from waiting indefinitely
+            let errorMessage = 'Server did not generate a response for request: ' + request_cmd;
+            console.log(errorMessage);
+            safeCallback(new cmd.Response(cmd.fe_retcode.errors, errorMessage, ''));
     }
   }
 

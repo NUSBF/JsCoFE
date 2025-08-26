@@ -931,6 +931,7 @@ function readUsersData()  {
   let usersData = {};
   let fe_config = conf.getFEConfig();
   let udir_path = fe_config.userDataPath;
+  const groups = require('./server.fe.groups');
 
   usersData.loginHash = __userLoginHash;
   usersData.userList  = [];
@@ -941,6 +942,9 @@ function readUsersData()  {
     let after_ms = 0;
     if ((!fe_config.dormancy_control.strict) && fe_config.dormancy_control.after)
       after_ms = crTime - day_ms*fe_config.dormancy_control.after;
+
+    // Get all groups data once to avoid reading it for each user
+    let allGroupsData = groups.readGroupsData();
 
     // reading directory with 5K users takes ~8ms on NFS
     fs.readdirSync(udir_path).forEach(function(file,index){
@@ -988,9 +992,139 @@ function readUsersData()  {
 
           uration.clearJobs();  // just to make it slimmer for transmission
           uData.ration = uration;
-          usersData.userList.push ( uData );
+          
+          // Add group information to user data
+          try {
+            // Read user's group memberships
+            let userGroups = groups.readUserGroups(loginData);
+            
+            // Initialize group information
+            uData.groups = [];
+            uData.group_count = 0;
+            uData.leadership_count = 0;
+            
+            let hasLeaderRole = false;
+            let hasMemberRole = false;
 
+            // Check if user is in any groups directly from the global groups data
+            if (allGroupsData && allGroupsData.groups) {
+              for (let groupId in allGroupsData.groups) {
+                const group = allGroupsData.groups[groupId];
+                if (group.members && (loginData.login in group.members)) {
+                  const memberInfo = group.members[loginData.login];
+                  const role = memberInfo.role || "member";
+
+                  uData.groups.push({
+                    group_id: groupId,
+                    name: group.name,
+                    role: role,
+                    joined_date: memberInfo.joined_date
+                  });
+                  uData.group_count++;
+
+                  if (role === "leader") {
+                    uData.leadership_count++;
+                    hasLeaderRole = true;
+                  } else {
+                    hasMemberRole = true;
+                  }
+                }
+              }
+            }
+
+            // Also process user's group memberships from user-specific file
+            if (userGroups && userGroups.memberships) {
+              for (let groupId in userGroups.memberships) {
+                // Skip if already added from global groups data
+                if (uData.groups.some(g => g.group_id === groupId)) {
+                  continue;
+                }
+
+                if (allGroupsData.groups[groupId]) {
+                  const role = userGroups.leadership.includes(groupId) ? "leader" : "member";
+
+                  uData.groups.push({
+                    group_id: groupId,
+                    name: allGroupsData.groups[groupId].name,
+                    role: role,
+                    joined_date: userGroups.memberships[groupId].joined_date
+                  });
+                  uData.group_count++;
+
+                  if (role === "leader") {
+                    uData.leadership_count++;
+                    hasLeaderRole = true;
+                  } else {
+                    hasMemberRole = true;
+                  }
+                }
+              }
+            }
+
+            // Set the highest role for this user
+            if (hasLeaderRole) {
+              uData.groupRole = 'leader';
+            } else if (hasMemberRole) {
+              uData.groupRole = 'member';
+            } else {
+              uData.groupRole = 'None';
+            }
+
+          } catch (error) {
+            console.error('Error adding group information to user data:', error);
+            // Initialize with empty values if there's an error
+            uData.groups = [];
+            uData.group_count = 0;
+            uData.leadership_count = 0;
+            uData.groupRole = 'None';
+          }
+          
+          usersData.userList.push ( uData );
         }
+
+                // Add detailed group information with roles
+                try {
+                  const groups = require('./server.fe.groups');
+                  let userGroups = groups.readUserGroups({ login: uData.login });
+                  let groupsData = groups.readGroupsData();
+
+                  let groupInfo = [];
+                  let leaderCount = 0;
+                  let memberCount = 0;
+
+                  for (let groupId in userGroups.memberships) {
+                    if (groupsData.groups[groupId]) {
+                      let group = groupsData.groups[groupId];
+                      let role = userGroups.memberships[groupId].role;
+                      groupInfo.push(`${group.name} (${role})`);
+
+                      if (role === 'leader') {
+                        leaderCount++;
+                      } else {
+                        memberCount++;
+                      }
+                    }
+                  }
+
+                  if (groupInfo.length > 0) {
+                    uData.groupsDisplay = groupInfo.join(', ');
+                    uData.groupsCount = groupInfo.length;
+                    uData.groupsLeaderCount = leaderCount;
+                    uData.groupsMemberCount = memberCount;
+                  } else {
+                    uData.groupsDisplay = 'None';
+                    uData.groupsCount = 0;
+                    uData.groupsLeaderCount = 0;
+                    uData.groupsMemberCount = 0;
+                  }
+                } catch (error) {
+                  // If groups module fails, default to None
+                  uData.groupsDisplay = 'None';
+                  uData.groupsCount = 0;
+                  uData.groupsLeaderCount = 0;
+                  uData.groupsMemberCount = 0;
+                }
+
       }
     });
   }
@@ -1299,6 +1433,7 @@ function updateUserData ( loginData,userData )  {
 function updateUserData_admin ( loginData,userData )  {
   let response     = null;  // must become a cmd.Response object to return
   let userFilePath = getUserDataFName ( loginData );
+  const groups = require('./server.fe.groups'); // Import groups module
 
   log.standard ( 10,'update ' + userData.login +
                     '\' account settings by admin, login: ' + loginData.login );
@@ -1361,8 +1496,100 @@ function updateUserData_admin ( loginData,userData )  {
             uData.licence  = userData.licence;
             uData.feedback = feedback;
             uData.dormant  = userData.dormant;
+            
+            // Handle group assignment if selected_group_id is provided
+            let groupChanged = false;
+            if ('selected_group_id' in userData) {
+              log.standard(10, 'Updating group assignment for user: ' + userData.login);
+              
+              // Get user's current group memberships
+              let userGroupsData = groups.readUserGroups(userData);
+              
+              // If no group is selected (None), remove user from all groups
+              if (!userData.selected_group_id) {
+                if (Object.keys(userGroupsData.memberships).length > 0) {
+                  log.standard(10, 'Removing user from all groups: ' + userData.login);
+                  userGroupsData.memberships = {};
+                  userGroupsData.leadership = [];
+                  groups.writeUserGroups(userData, userGroupsData);
+                  groupChanged = true;
+                }
+              } 
+              // If a group is selected, update user's membership
+              else {
+                // Check if user is already in this group
+                let alreadyInGroup = userGroupsData.memberships && 
+                                    userData.selected_group_id in userGroupsData.memberships;
+                
+                if (!alreadyInGroup) {
+                  log.standard(10, 'Adding user to group: ' + userData.selected_group_id);
+                  
+                  // Initialize memberships object if it doesn't exist
+                  if (!userGroupsData.memberships) {
+                    userGroupsData.memberships = {};
+                  }
+                  
+                  // Initialize leadership array if it doesn't exist
+                  if (!userGroupsData.leadership) {
+                    userGroupsData.leadership = [];
+                  }
+                  
+                  // Add user to the selected group with the specified role
+                  userGroupsData.memberships[userData.selected_group_id] = {
+                    joined_date: Date.now(),
+                    status: 'active'
+                  };
+                  
+                  // Handle leadership role if selected
+                  if (userData.selected_group_role === 'leader') {
+                    // Add to leadership array if not already there
+                    if (!userGroupsData.leadership.includes(userData.selected_group_id)) {
+                      userGroupsData.leadership.push(userData.selected_group_id);
+                    }
+                  } else {
+                    // Remove from leadership array if present
+                    const leaderIndex = userGroupsData.leadership.indexOf(userData.selected_group_id);
+                    if (leaderIndex !== -1) {
+                      userGroupsData.leadership.splice(leaderIndex, 1);
+                    }
+                  }
+                  
+                  // Save the updated user groups data
+                  groups.writeUserGroups(userData, userGroupsData);
+                  
+                  // Update the group's members list in the global groups data
+                  let groupsData = groups.readGroupsData();
+                  if (groupsData.groups[userData.selected_group_id]) {
+                    // Initialize members array if it doesn't exist
+                    if (!groupsData.groups[userData.selected_group_id].members) {
+                      groupsData.groups[userData.selected_group_id].members = [];
+                    }
+                    
+                    // Add user to the group's members list if not already there
+                    if (!groupsData.groups[userData.selected_group_id].members.includes(userData.login)) {
+                      groupsData.groups[userData.selected_group_id].members.push(userData.login);
+                      groups.writeGroupsData(groupsData);
+                    }
+                  }
+                  
+                  groupChanged = true;
+                }
+              }
+            }
 
             if (utils.writeObject(userFilePath,uData))  {
+              // Get group name and role for email notification if group was changed
+              let groupName = 'None';
+              let groupRole = '';
+              if (groupChanged && userData.selected_group_id) {
+                // Get group data to find the name
+                let groupsData = groups.readGroupsData();
+                if (groupsData.groups[userData.selected_group_id]) {
+                  groupName = groupsData.groups[userData.selected_group_id].name;
+                  groupRole = userData.selected_group_role || 'member';
+                }
+              }
+              
               response = new cmd.Response ( cmd.fe_retcode.ok,'',
                 emailer.sendTemplateMessage ( userData,
                           cmd.appName() + ' Account Update',
@@ -1373,7 +1600,10 @@ function updateUserData_admin ( loginData,userData )  {
                             'userCPUDay'   : uRation.cpu_day,
                             'userCPUMonth' : uRation.cpu_month,
                             'userCRunDay'  : uRation.cloudrun_day,
-                            'archiveYear'  : uRation.archive_year
+                            'archiveYear'  : uRation.archive_year,
+                            'groupChanged' : groupChanged,
+                            'groupName'    : groupName,
+                            'groupRole'    : groupRole
                           })
               );
             } else  {
@@ -1425,6 +1655,35 @@ function updateUserData_admin ( loginData,userData )  {
           response = new cmd.Response ( cmd.fe_retcode.readError,
                                         'User file cannot be read.','' );
         }
+
+        // Add group role information
+        try {
+          const groups = require('./server.fe.groups');
+          let userGroups = groups.readUserGroups({ login: login });
+
+          let hasLeaderRole = false;
+          let hasMemberRole = false;
+
+          for (let groupId in userGroups.memberships) {
+            let role = userGroups.memberships[groupId].role;
+            if (role === 'leader') {
+              hasLeaderRole = true;
+            } else if (role === 'member') {
+              hasMemberRole = true;
+            }
+          }
+
+          if (hasLeaderRole) {
+            userData.groupRole = 'leader';
+          } else if (hasMemberRole) {
+            userData.groupRole = 'member';
+          } else {
+            userData.groupRole = 'None';
+          }
+        } catch (error) {
+          userData.groupRole = 'None';
+        }
+
       } else  {
         log.error ( 93,'Attempt to update user data without privileges from login ' +
                        loginData.login );

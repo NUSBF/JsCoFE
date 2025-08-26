@@ -1,0 +1,24 @@
+{
+  "memberships": {
+    "group_df73d3c96299ccba_1756208847476": {
+      "role": "leader",
+      "joined_date": 1756208847477,
+      "status": "active"
+    },
+    "group_b889179899b38388_1756209615277": {
+      "role": "leader",
+      "joined_date": 1756209615278,
+      "status": "active"
+    },
+    "group_cd75ce6a7216407c_1756209658088": {
+      "role": "leader",
+      "joined_date": 1756209658089,
+      "status": "active"
+    }
+  },
+  "leadership": [
+    "group_df73d3c96299ccba_1756208847476",
+    "group_b889179899b38388_1756209615277",
+    "group_cd75ce6a7216407c_1756209658088"
+  ]
+}

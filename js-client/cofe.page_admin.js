@@ -21,6 +21,10 @@
 
 'use strict';
 
+// fe_reqtype is globally available in the browser environment
+// No need to import cmd module
+
+
 // -------------------------------------------------------------------------
 // admin page class
 
@@ -65,6 +69,7 @@ function AdminPage ( sceneId )  {
   // this.tabs.setVisible ( false );
   this.userTable = null;
   this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
+  this.groupsTab = this.tabs.addTab ( 'Groups'     ,false );
   this.nodesTab  = this.tabs.addTab ( 'Nodes'      ,false );
   this.memoryTab = this.tabs.addTab ( 'Performance',false );
   this.anlTab    = null;
@@ -101,6 +106,20 @@ function AdminPage ( sceneId )  {
   this.uaPanel.setLabel    ( '   ',0,0,1,1 );
   this.uaPanel.setCellSize ( '95%','32px',0,0 );
 
+  // Groups tab controls
+  this.groupsTitle    = this.groupsTab.grid.setLabel ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.groupListTable = null;
+  this.groupsData     = null;
+  this.gaPanel        = new Grid('');
+  this.groupsTab.grid.setWidget   ( this.gaPanel,0,1,1,1 );
+  this.groupsTab.grid.setCellSize ( '','32px',0,0 );
+  this.groupsTab.grid.setCellSize ( '','32px',0,1 );
+  this.groupsTab.grid.setVerticalAlignment ( 0,0,'middle' );
+  this.groupsTab.grid.setVerticalAlignment ( 0,1,'middle' );
+
+  this.gaPanel.setLabel    ( '   ',0,0,1,1 );
+  this.gaPanel.setCellSize ( '95%','32px',0,0 );
+
   let search_btn    = null;
   let newuser_btn   = null;
   let dormant_btn   = null;
@@ -108,6 +127,12 @@ function AdminPage ( sceneId )  {
   let sendtoall_btn = null;
 
   this.search_dlg   = null;
+
+  // Groups tab buttons
+  let newgroup_btn     = null;
+  let searchgroup_btn  = null;
+  let managegroup_btn  = null;
+  let deletegroup_btn  = null;
 
   if (__user_role==role_code.admin)  {
     col = 1;
@@ -127,6 +152,23 @@ function AdminPage ( sceneId )  {
                                 .setTooltip('Send e-mail to all users');
     for (let i=1;i<col;i++)
       this.uaPanel.setCellSize ( 'auto','32px',0,i );
+
+    // Groups tab controls
+    col = 1;
+    searchgroup_btn  = this.gaPanel.setButton ( '',image_path('search' ),0,col++,1,1 )
+                                   .setSize('30px','30px')
+                                   .setTooltip('Find groups');
+    newgroup_btn     = this.gaPanel.setButton ( '',image_path('user'   ),0,col++,1,1 )
+                                   .setSize('30px','30px')
+                                   .setTooltip('Create new group');
+    deletegroup_btn  = this.gaPanel.setButton ( '',image_path('delete'),0,col++,1,1 )
+                                   .setSize('30px','30px')
+                                   .setTooltip('Delete selected group');
+          managegroup_btn  = this.gaPanel.setButton ( '',image_path('settings'),0,col++,1,1 )
+                                   .setSize('30px','30px')
+                                   .setTooltip('Manage group memberships');
+          for (let i=1;i<col;i++)
+      this.gaPanel.setCellSize ( 'auto','32px',0,i );
   }
 
   this.usageStats = this.usageTab.grid.setIFrame ( '',0,0,1,1 )
@@ -240,6 +282,31 @@ function AdminPage ( sceneId )  {
         new SendToAllDialog();
       });
 
+      // Groups tab event listeners
+      if (newgroup_btn) {
+        newgroup_btn.addOnClickListener ( function(){
+          self.showCreateGroupDialog();
+        });
+      }
+
+      if (deletegroup_btn) {
+        deletegroup_btn.addOnClickListener ( function(){
+          self.showDeleteGroupDialog();
+        });
+      }
+
+      if (searchgroup_btn) {
+        searchgroup_btn.addOnClickListener ( function(){
+          self.showGroupSearchDialog();
+        });
+      }
+
+      if (managegroup_btn) {
+        managegroup_btn.addOnClickListener ( function(){
+          self.showManageGroupsDialog();
+        });
+      }
+
     }
 
   refresh_btn.addOnClickListener ( function(){
@@ -312,6 +379,7 @@ AdminPage.prototype.refresh = function()  {
       window.setTimeout ( function(){
 
         self.makeUsersInfoTab ( data.usersInfo,data.nodesInfo.FEconfig );
+        self.makeGroupsInfoTab ( data.groupsInfo );
         
         window.setTimeout ( function(){
         
@@ -424,6 +492,7 @@ AdminPage.prototype.onResize = function ( width,height )  {
   if (this.anlTab)
     $(this.anlTab .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usersTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.groupsTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.nodesTab .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.memoryTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usageTab .element).css({'height':inner_height,'overflow-y':'scroll'});
@@ -691,6 +760,45 @@ AdminPage.prototype.makeUserList = function ( udata,tdesc )  {
         if (uDesc.lastSeen)
           lastSeen = new Date(uDesc.lastSeen).toISOString().slice(0,10);
       }
+      // Create group information display
+      let groupInfo = 'None';
+      let groupRole = 'None';
+      if (uDesc.group_count && uDesc.group_count > 0) {
+        // Show count with tooltip that will display group details
+        let groupTooltip = '';
+        if (uDesc.groups && uDesc.groups.length > 0) {
+          // Create tooltip content with group details
+          uDesc.groups.forEach(function(group, index) {
+            if (index > 0) groupTooltip += '<br>';
+            groupTooltip += group.name + ' (' + group.role + ')';
+          });
+
+          // Display count with leadership info if applicable
+          if (uDesc.leadership_count > 0) {
+            groupInfo = '<span title="' + groupTooltip + '">' + 
+                        uDesc.group_count + ' (' + uDesc.leadership_count + ' led)</span>';
+          } else {
+            groupInfo = '<span title="' + groupTooltip + '">' + uDesc.group_count + '</span>';
+          }
+
+          // Set the highest role from all groups
+          groupRole = uDesc.groupRole || 'Member';
+        } else {
+          groupInfo = uDesc.group_count.toString();
+        }
+      } else if (uDesc.groups && uDesc.groups.length > 0) {
+        // Handle case where groups exist but count is missing
+        let groupNames = uDesc.groups.map(function(group) {
+          return group.name + ' (' + group.role + ')';
+        });
+        groupInfo = '<span title="' + groupNames.join('<br>') + '">' + uDesc.groups.length + '</span>';
+        groupRole = uDesc.groupRole || 'Member';
+      } else if (uDesc.groupRole && uDesc.groupRole !== 'None') {
+        // Handle case where user has a group role but no groups listed
+        groupInfo = '1';
+        groupRole = uDesc.groupRole;
+      }
+      
       tdesc.rows.push ([
         uDesc.name,
         uDesc.login,
@@ -698,6 +806,8 @@ AdminPage.prototype.makeUserList = function ( udata,tdesc )  {
         uDesc.role,
         dormant,
         uDesc.email,
+        groupInfo,
+        uDesc.groupRole || 'None',
         uDesc.licence,
         uDesc.ration.jobs_total,
         round(uDesc.ration.storage_used,1),
@@ -771,6 +881,18 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
         style   : { 'text-align' : 'left', 'width' : 'auto' },
         sort    : true
       },
+      { header  : 'Groups',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Number of groups user belongs to',
+        style   : { 'text-align' : 'center', 'width' : '60px' },
+        sort    : true
+      },
+      { header  : 'Role',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'User\'s highest role across all groups',
+        style   : { 'text-align' : 'center', 'width' : '60px' },
+        sort    : true
+      },
       { header  : 'Licence',
         hstyle  : { 'text-align' : 'center' },
         tooltip : 'Type of user\'s licence',
@@ -819,11 +941,15 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
     page_size   : page_size,  // 0 for no pages
     start_page  : start_page,
     ondblclick  : function ( dataRow,callback_func){
-      new ManageUserDialog ( dataRow[dataRow.length-1],FEconfig,
+      new ManageUserDialog ( dataRow[dataRow.length-1], FEconfig, self.adminData.groupsInfo,
                              function(code){ 
                                callback_func();  // deselect row
-                               if (code>0)
-                                 self.refresh();
+                               if (code>0) {
+                                 // Force a complete refresh to update group information
+                                 setTimeout(function() {
+                                   self.refresh();
+                                 }, 100);
+                               }
                              });
     }
   };
@@ -1031,6 +1157,7 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 }
 
 
+
 AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
   
   let grid = this.memoryTab.grid;
@@ -1155,6 +1282,526 @@ AdminPage.prototype.makeMemoryInfoTab = function ( mdata,pdata )  {
     }
   }
 
+}
+
+AdminPage.prototype.makeGroupsInfoTab = function ( gdata )  {
+  // function to create groups info table and fill it with data
+  let self = this;
+
+  this.groupsTitle.setText('Groups').setFontSize('1.5em').setFontBold(true);
+
+  let tdesc = {
+    columns : [   
+      { header  : '##',
+        hstyle  : { 'text-align' : 'right' },
+        tooltip : 'Row number',
+        style   : { 'text-align' : 'right', 'width' : '30px' },
+        sort    : true
+      },
+      { header  : 'Group Name',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'Group name',
+        style   : { 'text-align' : 'left', 'width' : '120px' },
+        sort    : true
+      },
+      { header  : 'Description',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'Group description',
+        style   : { 'text-align' : 'left', 'width' : 'auto' },
+        sort    : true
+      },
+      { header  : 'Created by',
+        hstyle  : { 'text-align' : 'left' },
+        tooltip : 'User who created the group',
+        style   : { 'text-align' : 'left', 'width' : '80px' },
+        sort    : true
+      },
+      { header  : 'Members',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Number of group members',
+        style   : { 'text-align' : 'right', 'width' : '60px' },
+        sort    : false
+      },
+      { header  : 'Leaders',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Number of group leaders',
+        style   : { 'text-align' : 'right', 'width' : '60px' },
+        sort    : false
+      },
+      { header  : 'Status',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Group status',
+        style   : { 'text-align' : 'center', 'width' : '70px' },
+        sort    : true
+      },
+      { header  : 'Created',
+        hstyle  : { 'text-align' : 'center' },
+        tooltip : 'Date when group was created',
+        style   : { 'text-align' : 'center', 'width' : '80px' },
+        sort    : false
+      }
+    ],
+    rows        : [],
+    vheaders    : 'row',
+    style       : { 'cursor'      : 'pointer',
+                    'white-space' : 'nowrap',
+                    'font-family' : 'Arial, Helvetica, sans-serif'
+                  }, 
+    sortCol     : 1,
+    mouse_hover : true,
+    page_size   : 15,
+    start_page  : 1,
+    row_select  : 'single', // Enable row selection
+    ondblclick  : function ( dataRow,callback_func){
+      self.showGroupDetailsDialog ( dataRow[dataRow.length-1],
+                                   function(){ 
+                                     callback_func();  // deselect row
+                                     self.refresh();
+                                   });
+    }
+  };
+
+  // If we have groups data from the initial admin data load, use it
+  if (gdata && gdata.groups) {
+    this.populateGroupsTable(tdesc, gdata);
+  } else {
+    // Otherwise, load groups data from server
+    this.loadGroupsData(tdesc);
+  }
+
+  if (__user_role==role_code.admin)
+    console.log ( '... Groups Tab complete in ' + this.__load_time() );
+}
+
+AdminPage.prototype.populateGroupsTable = function(tdesc, groupsData) {
+  let self = this;
+  
+  console.log('Populating groups table with data:', groupsData);
+  
+  if (groupsData && groupsData.groups) {
+    let rowNum = 1;
+    let groupCount = Object.keys(groupsData.groups).length;
+    
+    console.log(`Found ${groupCount} groups to display`);
+    
+    if (groupCount === 0) {
+      // No groups to display, add a message to the table
+      tdesc.rows.push([
+        '<i>No groups available</i>',
+        'You are not a member of any groups. Create a new group to get started.',
+        '',
+        0,
+        0,
+        'N/A',
+        '',
+        null
+      ]);
+    } else {
+      // Add each group to the table
+      for (let groupId in groupsData.groups) {
+        try {
+          let group = groupsData.groups[groupId];
+          if (!group) continue;
+          
+          let memberCount = Object.keys(group.members || {}).length;
+          let leaderCount = 0;
+          for (let member in group.members) {
+            if (group.members[member].role === 'leader') {
+              leaderCount++;
+            }
+          }
+          
+          let createdDate = '';
+          try {
+            createdDate = new Date(group.created_date).toISOString().slice(0,10);
+          } catch (e) {
+            console.warn('Invalid date format for group:', group.name);
+          }
+
+          tdesc.rows.push([
+            group.name,
+            group.description || '',
+            group.created_by,
+            memberCount,
+            leaderCount,
+            group.status || 'Active',
+            createdDate,
+            group  // full group data for dialog
+          ]);
+          rowNum++;
+        } catch (error) {
+          console.error('Error processing group:', error);
+        }
+      }
+    }
+  } else {
+    console.warn('No groups data available or invalid format');
+    // Add a message when no data is available
+    tdesc.rows.push([
+      '<i>No data available</i>',
+      'Could not retrieve group data. Please try refreshing the page.',
+      '',
+      0,
+      0,
+      'N/A',
+      '',
+      null
+    ]);
+  }
+
+  self.groupListTable = new TablePages();
+  self.groupsTab.grid.setWidget(self.groupListTable, 1, 0, 1, 2);
+  self.groupListTable.makeTable(tdesc);
+}
+
+AdminPage.prototype.loadGroupsData = function(tdesc) {
+  let self = this;
+
+  // Add debug logging
+  console.log('Requesting groups data from server...');
+  
+  // Create an empty table first in case of errors
+  self.groupListTable = new TablePages();
+  self.groupsTab.grid.setWidget(self.groupListTable, 1, 0, 1, 2);
+  
+  // Try with a specific request format
+  let requestData = { requestType: 'getAllGroups' };
+  
+  serverRequest(fe_reqtype.getAllGroups, requestData, 'Load Groups', function(response) {
+    console.log('Groups data response received:', response);
+    if (response && response.status === 'ok' && response.data) {
+      self.populateGroupsTable(tdesc, response.data);
+    } else if (response && response.status !== 'ok') {
+      console.warn('Failed to load groups:', response.message || 'Unknown error');
+      // Show error message to user
+      new MessageBox('Error Loading Groups', 
+        '<h2>Failed to load groups</h2>' +
+        '<p>Error: ' + (response.message || 'Unknown error') + '</p>' +
+        '<p>Please try refreshing the page or contact support.</p>',
+        'msg_error');
+      // Still create the table but empty
+      self.groupListTable.makeTable(tdesc);
+    }
+  }, null, function(error) {
+    // On error, create empty table and log error
+    console.error('Error loading groups:', error);
+    // Show error message to user
+    new MessageBox('Communication Error', 
+      '<h2>Failed to communicate with server</h2>' +
+      '<p>Could not load group data. Please check your connection and try again.</p>',
+      'msg_error');
+    // Still create the table but empty
+    self.groupListTable.makeTable(tdesc);
+  });
+}
+
+AdminPage.prototype.showCreateGroupDialog = function() {
+  let self = this;
+
+  new FormDialog ( 'Create New Group', 550, 400, [
+    { name: 'Group Name', 
+      type: 'text', 
+      id: 'group_name',
+      required: true,
+      placeholder: 'Enter group name' 
+    },
+    { name: 'Description', 
+      type: 'textarea', 
+      id: 'group_description',
+      placeholder: 'Enter group description (optional)' 
+    },
+    { name: 'Max Members', 
+      type: 'number', 
+      id: 'max_members',
+      value: '50',
+      min: '1',
+      max: '1000'
+    }
+  ], [
+    { name: 'Create Group',
+      onclick: function(formData) {
+        if (!formData.group_name || formData.group_name.trim() === '') {
+          new MessageBox('Error', 'Group name is required', 'msg_error');
+          return;
+        }
+
+        let groupData = {
+          name: formData.group_name.trim(),
+          description: formData.group_description ? formData.group_description.trim() : '',
+          max_members: parseInt(formData.max_members) || 50
+        };
+
+        self.createNewGroup(groupData);
+        return true; // Close dialog
+      }
+    },
+    { name: 'Cancel',
+      onclick: function() {
+        return true; // Close dialog
+      }
+    }
+  ], 'msg_question' );
+}
+
+AdminPage.prototype.createNewGroup = function(groupData) {
+  let self = this;
+
+  document.body.style.cursor = 'wait';
+  
+  let requestData = groupData;
+
+  console.log('[DEBUG] Client - createNewGroup - Starting group creation process');
+  console.log('[DEBUG] Client - createNewGroup - Request data:', JSON.stringify(requestData));
+
+  serverRequest ( fe_reqtype.createGroup, requestData, 'Create Group', function(response) {
+    console.log('[DEBUG] Client - createNewGroup - Received response:', JSON.stringify(response));
+
+    document.body.style.cursor = 'auto';
+
+    // Handle both standard Response format and direct data format
+    let isSuccess = false;
+    let groupId = null;
+
+    if (response) {
+      // Check for standard Response format: {status: 'ok', data: {group_id, group}}
+      if (response.status === 'ok') {
+        isSuccess = true;
+        groupId = response.data && response.data.group_id;
+        console.log('[DEBUG] Client - createNewGroup - Standard response format detected');
+      }
+      // Check for direct data format: {group_id, group}
+      else if (response.group_id && response.group) {
+        isSuccess = true;
+        groupId = response.group_id;
+        console.log('[DEBUG] Client - createNewGroup - Direct data format detected');
+      }
+    }
+
+    if (isSuccess) {
+      console.log('[DEBUG] Client - createNewGroup - Group created successfully');
+      if (groupId) {
+        console.log('[DEBUG] Client - createNewGroup - Group ID:', groupId);
+      }
+      
+      new MessageBox ( 'Success', 
+        '<h2>Group Created Successfully</h2>' +
+        '<p>Group "' + groupData.name + '" has been created.</p>' +
+        '<p>You are now the group leader.</p>',
+        'msg_information' );
+      
+      self.refresh(); // Refresh the admin page to show new group
+      
+    } else if (response && response.status && response.status !== 'ok') {
+      // Handle explicit error responses
+      let errorMessage = response.message || 'Unknown error occurred';
+      
+      console.log('[DEBUG] Client - createNewGroup - Server returned error:', errorMessage);
+      new MessageBox ( 'Error', 
+        '<h2>Failed to Create Group</h2>' +
+        '<p>' + errorMessage + '</p>',
+        'msg_error' );
+        
+    } else {
+      // Handle unexpected response format
+      console.log('[DEBUG] Client - createNewGroup - Unexpected response format');
+      new MessageBox ( 'Warning', 
+        '<h2>Unexpected Response</h2>' +
+        '<p>The server response was not in the expected format.</p>' +
+        '<p>Please refresh the page to check if the group was created.</p>',
+        'msg_warning' );
+      self.refresh();
+    }
+
+  }, null, function() {
+    document.body.style.cursor = 'auto';
+    new MessageBox ( 'Error', 
+      '<h2>Communication Error</h2>' +
+      '<p>Failed to communicate with server. Please try again.</p>',
+      'msg_error' );
+  });
+}
+
+AdminPage.prototype.showGroupSearchDialog = function() {
+  new MessageBox ( 'Search Groups',
+    '<div style="width:400px;"><h2>Search Groups</h2>' +
+    'Group search functionality will be implemented here.<p>' +
+    'This will allow filtering groups by name, creator, or status.</div>',
+    'msg_information' );
+}
+
+AdminPage.prototype.showManageGroupsDialog = function() {
+  new MessageBox ( 'Manage Groups',
+    '<div style="width:400px;"><h2>Manage Group Memberships</h2>' +
+    'Group management functionality will be implemented here.<p>' +
+    'This will allow adding/removing members and changing roles.</div>',
+    'msg_information' );
+}
+
+AdminPage.prototype.showDeleteGroupDialog = function() {
+  let self = this;
+
+  if (!this.groupListTable) {
+    new MessageBox('Error', 'No groups table available', 'msg_error');
+    return;
+  }
+
+  // Get the selected row index from the table
+  let selectedRowIndex = this.groupListTable.table.selectedRow;
+  if (selectedRowIndex < 0) {
+    new MessageBox('Select Group', 
+      '<h2>No Group Selected</h2>' +
+      '<p>Please select a group from the table to delete.</p>',
+      'msg_information');
+    return;
+  }
+
+  // Calculate the index in the tdata array (adjust for header row)
+  let dataIndex = selectedRowIndex - this.groupListTable.startRow;
+  if (dataIndex < 0 || dataIndex >= this.groupListTable.tdata.length) {
+    console.error('[DEBUG] Client - showDeleteGroupDialog - Error: Invalid row index:', dataIndex);
+    new MessageBox('Error', 
+      '<h2>Selection Error</h2>' +
+      '<p>Could not retrieve the selected group data. Please try again.</p>',
+      'msg_error');
+    return;
+  }
+
+  // Get the original row data from tdata
+  let rowData = this.groupListTable.tdata[dataIndex];
+  if (!rowData || !Array.isArray(rowData)) {
+    console.error('[DEBUG] Client - showDeleteGroupDialog - Error: Invalid row data:', rowData);
+    new MessageBox('Error', 
+      '<h2>Data Error</h2>' +
+      '<p>Could not retrieve the selected group data. Please try again.</p>',
+      'msg_error');
+    return;
+  }
+  
+  // Get the group object from the last element of the row data
+  let groupData = rowData[rowData.length - 1];
+  
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Selected row index:', selectedRowIndex);
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Data index:', dataIndex);
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Row data length:', rowData.length);
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Selected group data type:', typeof groupData);
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Selected group data:', groupData ? JSON.stringify(groupData) : 'undefined');
+  console.log('[DEBUG] Client - showDeleteGroupDialog - Group ID:', groupData && groupData.id ? groupData.id : 'undefined');
+  
+  // Ensure groupData has the expected structure
+  if (!groupData || typeof groupData !== 'object' || !groupData.id) {
+    console.error('[DEBUG] Client - showDeleteGroupDialog - Error: Invalid group data structure');
+    new MessageBox('Error', 
+      '<h2>Invalid Group Data</h2>' +
+      '<p>The selected group data is invalid or missing the group ID.</p>' +
+      '<p>Please try selecting the group again or refresh the page.</p>',
+      'msg_error');
+    return;
+  }
+  
+  let memberCount = Object.keys(groupData.members || {}).length;
+
+  new QuestionBox ( 'Delete Group',
+    '<div style="width:450px;"><h2>Delete Group: ' + groupData.name + '</h2>' +
+    '<p><b>Warning:</b> This action cannot be undone!</p>' +
+    '<p>The group "' + groupData.name + '" will be permanently deleted.</p>' +
+    '<p><b>Members affected:</b> ' + memberCount + ' users will be removed from this group.</p>' +
+    '<p>Are you sure you want to proceed?</p></div>',
+    [
+      { name: 'Yes, Delete Group',
+        onclick: function() {
+          console.log('[DEBUG] Client - deleteGroupButton - Clicked with group ID:', groupData.id);
+          if (!groupData.id) {
+            console.error('[DEBUG] Client - deleteGroupButton - Error: groupData.id is undefined');
+            new MessageBox('Error', 
+              '<h2>Failed to Delete Group</h2>' +
+              '<p>Group ID is missing. Cannot proceed with deletion.</p>',
+              'msg_error');
+            return;
+          }
+          self.deleteGroup(groupData.id);
+        }
+      },
+      { name: 'Cancel',
+        onclick: function() {
+          console.log('[DEBUG] Client - deleteGroupButton - Cancel clicked');
+        }
+      }
+    ], 'msg_confirm' );
+}
+
+AdminPage.prototype.deleteGroup = function(groupId) {
+  let self = this;
+
+  // Validate groupId
+  if (!groupId) {
+    console.error('[DEBUG] Client - deleteGroup - Error: groupId is undefined or empty');
+    new MessageBox('Error', 
+      '<h2>Failed to Delete Group</h2>' +
+      '<p>Group ID is missing. Please select a valid group.</p>',
+      'msg_error');
+    return;
+  }
+
+  document.body.style.cursor = 'wait';
+
+  // Format the request data properly
+  let requestData = { groupId: groupId };
+  
+  console.log('[DEBUG] Client - deleteGroup - Starting group deletion process');
+  console.log('[DEBUG] Client - deleteGroup - Group ID:', groupId);
+  console.log('[DEBUG] Client - deleteGroup - Request data:', JSON.stringify(requestData));
+  
+  serverRequest ( fe_reqtype.deleteGroup, requestData, 'Delete Group', function(response) {
+    console.log('[DEBUG] Client - deleteGroup - Received response:', JSON.stringify(response));
+
+    document.body.style.cursor = 'auto';
+
+    if (response.status === 'ok') {
+      console.log('[DEBUG] Client - deleteGroup - Group deleted successfully');
+      new MessageBox ( 'Success', 
+        '<h2>Group Deleted Successfully</h2>' +
+        '<p>The group has been deleted and all members have been removed.</p>',
+        'msg_information' );
+      self.refresh(); // Refresh the admin page
+    } else {
+      console.error('[DEBUG] Client - deleteGroup - Failed to delete group:', response.message || 'Unknown error');
+      new MessageBox ( 'Error', 
+        '<h2>Failed to Delete Group</h2>' +
+        '<p>' + (response.message || 'Unknown error occurred') + '</p>',
+        'msg_error' );
+    }
+
+  }, null, function() {
+    document.body.style.cursor = 'auto';
+    new MessageBox ( 'Error', 
+      '<h2>Communication Error</h2>' +
+      '<p>Failed to communicate with server. Please try again.</p>',
+      'msg_error' );
+  });
+}
+
+AdminPage.prototype.showGroupDetailsDialog = function(groupData, callback_func) {
+  let memberCount = Object.keys(groupData.members || {}).length;
+  let membersList = [];
+
+  for (let memberLogin in groupData.members) {
+    let member = groupData.members[memberLogin];
+    membersList.push(memberLogin + ' (' + member.role + ')');
+  }
+
+  new MessageBox ( 'Group Details',
+    '<div style="width:500px;"><h2>Group: ' + groupData.name + '</h2>' +
+    '<p><b>Description:</b> ' + (groupData.description || 'No description') + '</p>' +
+    '<p><b>Created by:</b> ' + groupData.created_by + '</p>' +
+    '<p><b>Status:</b> ' + groupData.status + '</p>' +
+    '<p><b>Members:</b> ' + memberCount + '</p>' +
+    '<p><b>Created:</b> ' + new Date(groupData.created_date).toLocaleDateString() + '</p>' +
+    (membersList.length > 0 ? 
+      '<p><b>Member List:</b><br>' + membersList.join('<br>') + '</p>' : 
+      '<p><i>No members in this group</i></p>') +
+    '</div>',
+    'msg_information' );
+  if (callback_func) callback_func();
 }
 
 // -------------------------------------------------------------------------
