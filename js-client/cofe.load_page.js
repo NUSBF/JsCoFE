@@ -48,32 +48,33 @@ $(document).ready ( function(){
   
   // Check if we're coming from a page reload
   const fromPageReload = localStorage.getItem('fromPageReload') === 'true';
+  // Clear the reload flag immediately to prevent issues with subsequent visits
+  localStorage.removeItem('fromPageReload');
   
-  // If we're coming from a page reload, load task scripts first
-  if (fromPageReload) {
-    // Load task scripts with retry mechanism
-    loadTaskScripts().then(() => {
-      console.log('[' + getCurrentTimeString() + '] Task scripts loaded, starting session');
-      let dev_switch = 0;
-      startSession('scene', dev_switch);
-    }).catch(error => {
-      console.error('[' + getCurrentTimeString() + '] Failed to load task scripts:', error);
-      // Start session anyway
-      let dev_switch = 0;
-      startSession('scene', dev_switch);
-    });
-  } else {
-    // Normal flow - start session first, then load task scripts
-    let dev_switch = 0;
-    startSession('scene', dev_switch);
-    
-    // Load task scripts in the background
-    setTimeout(() => {
-      loadTaskScripts().then(() => {
-        console.log('[' + getCurrentTimeString() + '] Task scripts loaded in background');
-      });
-    }, 1000);
+  // Try to restore session from localStorage first
+  let sessionRestored = false;
+  if (typeof loadSessionFromStorage === 'function') {
+    sessionRestored = loadSessionFromStorage();
+    console.log('[' + getCurrentTimeString() + '] Session restoration attempt: ' + (sessionRestored ? 'successful' : 'failed'));
+    if (sessionRestored) {
+      console.log('[' + getCurrentTimeString() + '] Page reload detected: ' + fromPageReload);
+    }
   }
+  
+  // Start session
+  let dev_switch = 0;
+  // Pass the session restoration status to startSession
+  startSession('scene', dev_switch, sessionRestored);
+  
+  // Only check for missing scripts after a short delay
+  setTimeout(() => {
+    // Only load missing scripts if needed
+    loadTaskScripts().then(() => {
+      console.log('[' + getCurrentTimeString() + '] Task scripts check completed');
+    }).catch(error => {
+      console.error('[' + getCurrentTimeString() + '] Error checking task scripts:', error);
+    });
+  }, 1000);
 });
 
 

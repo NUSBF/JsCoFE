@@ -106,6 +106,8 @@ function clearSessionStorage() {
 // Save session when page is unloaded
 window.addEventListener('beforeunload', function() {
     saveSessionToStorage();
+    // Set a flag to indicate we're coming from a page reload
+    localStorage.setItem('fromPageReload', 'true');
 });
 
 // Automatically save session every 5 minutes

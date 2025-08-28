@@ -30,46 +30,129 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ./js-common/tasks/common.tasks.something.js . This convention is used
 // for class reconstruction from json strings
 
-const job_code = {
-  new           : 'new',           // new job_code
-  running       : 'running',       // job is running
-  ending        : 'ending',        // job is in gracefull ending phase
-  exiting       : 'exiting',       // job is in post-run processing
-  // retrieved     : 'retrieved',     // job is being retrieved from remote NC
-  finished      : 'finished',      // job finished normally (nothing to do with the results)
-  noresults     : 'noresults',     // job finished normally but no results produced
-  hiddenresults : 'hiddenresults', // job finished normally but results are hidden
-  failed        : 'failed',        // job failed
-  stopped       : 'stopped',       // job stopped (terminated by user)
-  remark        : 'remark',        // remark node
-  remdet        : 'remdet',        // detached remark node
-  remdoc        : 'remdoc',        // remark node converted from documentation import
-  retired       : 'retired',       // indicates that the task should not appear in task list
-  remove        : 'remove'         // special code for removing job from registry on REMOTE NCs
-};
+// Define job_code for both browser and Node.js environments
+var job_code;
+if (typeof window !== 'undefined') {
+  // Browser environment
+  if (typeof window.job_code === 'undefined') {
+    window.job_code = {
+      new           : 'new',           // new job_code
+      running       : 'running',       // job is running
+      ending        : 'ending',        // job is in gracefull ending phase
+      exiting       : 'exiting',       // job is in post-run processing
+      // retrieved     : 'retrieved',     // job is being retrieved from remote NC
+      finished      : 'finished',      // job finished normally (nothing to do with the results)
+      noresults     : 'noresults',     // job finished normally but no results produced
+      hiddenresults : 'hiddenresults', // job finished normally but results are hidden
+      failed        : 'failed',        // job failed
+      stopped       : 'stopped',       // job stopped (terminated by user)
+      remark        : 'remark',        // remark node
+      remdet        : 'remdet',        // detached remark node
+      remdoc        : 'remdoc',        // remark node converted from documentation import
+      retired       : 'retired',       // indicates that the task should not appear in task list
+      remove        : 'remove'         // special code for removing job from registry on REMOTE NCs
+    };
+  }
+  job_code = window.job_code;
+} else {
+  // Node.js environment
+  job_code = {
+    new           : 'new',           // new job_code
+    running       : 'running',       // job is running
+    ending        : 'ending',        // job is in gracefull ending phase
+    exiting       : 'exiting',       // job is in post-run processing
+    // retrieved     : 'retrieved',     // job is being retrieved from remote NC
+    finished      : 'finished',      // job finished normally (nothing to do with the results)
+    noresults     : 'noresults',     // job finished normally but no results produced
+    hiddenresults : 'hiddenresults', // job finished normally but results are hidden
+    failed        : 'failed',        // job failed
+    stopped       : 'stopped',       // job stopped (terminated by user)
+    remark        : 'remark',        // remark node
+    remdet        : 'remdet',        // detached remark node
+    remdoc        : 'remdoc',        // remark node converted from documentation import
+    retired       : 'retired',       // indicates that the task should not appear in task list
+    remove        : 'remove'         // special code for removing job from registry on REMOTE NCs
+  };
+}
 
-const input_mode = {
-  standard  : 'standard',  // standard input panel mode
-  root      : 'root'       // root input panel mode
-};
+// Define input_mode for both browser and Node.js environments
+var input_mode;
+if (typeof window !== 'undefined') {
+  // Browser environment
+  if (typeof window.input_mode === 'undefined') {
+    window.input_mode = {
+      standard  : 'standard',  // standard input panel mode
+      root      : 'root'       // root input panel mode
+    };
+  }
+  input_mode = window.input_mode;
+} else {
+  // Node.js environment
+  input_mode = {
+    standard  : 'standard',  // standard input panel mode
+    root      : 'root'       // root input panel mode
+  };
+}
 
 
 // ---------------------------------------------------------------------------
 // variables to be exported
 
-const jobDataFName      = 'job.meta';
-const jobReportDirName  = 'report';
-const jobInputDirName   = 'input';
-const jobOutputDirName  = 'output';
-const jobReportHTMLName = 'index.html';
-const jobReportTaskName = 'task.tsk';
+// Define jobConstants for both browser and Node.js environments
+var jobConstants;
+if (typeof window !== 'undefined') {
+  // Browser environment
+  if (typeof window.jobConstants === 'undefined') {
+    window.jobConstants = {
+      jobDataFName: 'job.meta',
+      jobReportDirName: 'report',
+      jobInputDirName: 'input',
+      jobOutputDirName: 'output',
+      jobReportHTMLName: 'index.html',
+      jobReportTaskName: 'task.tsk'
+    };
+  }
+  jobConstants = window.jobConstants;
+} else {
+  // Node.js environment
+  jobConstants = {
+    jobDataFName: 'job.meta',
+    jobReportDirName: 'report',
+    jobInputDirName: 'input',
+    jobOutputDirName: 'output',
+    jobReportHTMLName: 'index.html',
+    jobReportTaskName: 'task.tsk'
+  };
+}
+const jobDataFName      = jobConstants.jobDataFName;
+const jobReportDirName  = jobConstants.jobReportDirName;
+const jobInputDirName   = jobConstants.jobInputDirName;
+const jobOutputDirName  = jobConstants.jobOutputDirName;
+const jobReportHTMLName = jobConstants.jobReportHTMLName;
+const jobReportTaskName = jobConstants.jobReportTaskName;
 
-const keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
-                        'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
-                        '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe','PDB_DIR',
-                        '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
-                        'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
-                       ];
+// Define keyEnvironment for both browser and Node.js environments
+var keyEnvironment;
+if (typeof window !== 'undefined') {
+  // Browser environment
+  if (typeof window.keyEnvironment === 'undefined') {
+    window.keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
+                            'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
+                            '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe','PDB_DIR',
+                            '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
+                            'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
+                           ];
+  }
+  keyEnvironment = window.keyEnvironment;
+} else {
+  // Node.js environment
+  keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
+                   'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
+                   '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe','PDB_DIR',
+                   '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
+                   'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
+                  ];
+}
 
 var dbx   = null;
 var comut = null;
@@ -1893,7 +1976,7 @@ if (!dbx)  {
     if ((this.state==job_code.new) && (!versionMatch))  {
       // postpone messages in order to put the message on top of the dialog
       if (grid.inputPanel.fullVersionMismatch)  {
-        window.setTimeout ( function(){
+        (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
           new MessageBox ( 'Out-versioned data',
             '<h3>Out-versioned data encountered</h3>' +
             'Some data items, collected for this task, were created with a lower ' +
@@ -1912,7 +1995,7 @@ if (!dbx)  {
           );
         },0 );
       } else  {
-        window.setTimeout ( function(){
+        (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
           new MessageBox ( 'Out-versioned data',
             '<h3>Out-versioned data encountered</h3>' +
             'Some data items, collected for this task, were created with a lower ' +
@@ -2362,7 +2445,7 @@ if (!dbx)  {
           input.change_counter = 0;
           input.addOnInputListener ( function(){
             input.change_counter++;
-            window.setTimeout ( function(){
+            (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
               input.change_counter--;
               if (input.change_counter<=0)
                 task.inputChanged ( paramRef,Id,input.getValue() );
@@ -2503,7 +2586,7 @@ if (!dbx)  {
                                   function(e){
                                     task.inputChanged ( paramRef,Id,e.detail.item );
                                   },false );
-                                window.setTimeout ( function(){
+                                (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
                                   task.inputChanged ( paramRef,Id,item.value );
                                 },0);
                               }(inpParamRef,key,this));
@@ -2592,7 +2675,7 @@ if (!dbx)  {
                               //$(aceditor.element).css ( {'resize':'none'} );
                               inpParamRef.parameters[key].input = aceditor;
                               (function(acedt,text,placeholder){
-                                window.setTimeout ( function(){
+                                (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
                                   acedt.init ( text,placeholder );
                                 },0);
                               }(aceditor,item.value,pholder));
@@ -2765,11 +2848,11 @@ if (!dbx)  {
 
     this._lay_parameters ( grid,row,col,this.parameters,grid.inpParamRef );
     (function(task,grd){
-      window.setTimeout ( function(){
+      (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
         task._make_show_links   ( grd.inpParamRef );
         task._make_data_signals ( grd );
         // now show all widgets at once
-        window.setTimeout ( function(){
+        (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
           grd.setVisible ( true );
         },10 );
       },0 );
@@ -2946,7 +3029,7 @@ if (!dbx)  {
       this.disableInputWidgets ( widget.child[i],disable_bool );
     */
 
-    window.setTimeout ( function(){
+    (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
       if ('grid' in inputPanel)  {
         if ('inpDataRef' in inputPanel.grid)  {
           let input = inputPanel.grid.inpDataRef.input;
@@ -2962,7 +3045,7 @@ if (!dbx)  {
     if (inputPanel.hasOwnProperty('header') && (this.state!=job_code.running) &&
                                                (this.state!=job_code.exiting)) {
       if (inputPanel.header.hasOwnProperty('uname_inp'))
-        window.setTimeout ( function(){
+        (typeof window !== 'undefined' ? window.setTimeout : setTimeout) ( function(){
           inputPanel.header.uname_inp.setEnabled ( true );
         },0);
     }

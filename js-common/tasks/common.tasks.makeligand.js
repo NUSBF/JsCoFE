@@ -31,11 +31,24 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
 // ===========================================================================
 
-
-const __coot_reserved_codes = [
-  "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
-  "LG7","LG8","LG9"
-];
+// Define __coot_reserved_codes for both browser and Node.js environments
+var __coot_reserved_codes;
+if (typeof window !== 'undefined') {
+  // Browser environment
+  if (typeof window.__coot_reserved_codes === 'undefined') {
+    window.__coot_reserved_codes = [
+      "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
+      "LG7","LG8","LG9"
+    ];
+  }
+  __coot_reserved_codes = window.__coot_reserved_codes;
+} else {
+  // Node.js environment
+  __coot_reserved_codes = [
+    "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
+    "LG7","LG8","LG9"
+  ];
+}
 
 function TaskMakeLigand()  {
 

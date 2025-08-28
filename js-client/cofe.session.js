@@ -21,7 +21,7 @@
 
 'use strict';
 
-function startSession ( sceneId,dev_switch )  {
+function startSession ( sceneId, dev_switch, sessionRestored )  {
 
   // set up a loader spinner
   const img = document.createElement('img');
@@ -105,8 +105,48 @@ function startSession ( sceneId,dev_switch )  {
           document.title = appName();
 
         if (dev_switch==0)  {
-
-          makeLoginPage ( sceneId );
+          
+          // Check if we have a restored session and a token
+          if (sessionRestored && __login_token) {
+            // Get the last page from localStorage
+            const lastPage = localStorage.getItem('lastPage');
+            console.log('[' + getCurrentTimeString() + '] Restored session with token, last page: ' + lastPage);
+            
+            // Verify token is valid by checking its format
+            if (!__login_token || __login_token.length < 10) {
+              console.log('[' + getCurrentTimeString() + '] Invalid token format, redirecting to login page');
+              makeLoginPage(sceneId);
+              return;
+            }
+            
+            // Navigate to the appropriate page based on lastPage
+            if (lastPage === 'admin') {
+              loadKnowledge('Login');
+              makeAdminPage(sceneId);
+              makeSessionCheck(sceneId);
+            } else if (lastPage === 'account') {
+              loadKnowledge('Login');
+              makeAccountPage(sceneId);
+              makeSessionCheck(sceneId);
+            } else if (lastPage === 'project') {
+              loadKnowledge('Login');
+              makeProjectPage(sceneId);
+              makeSessionCheck(sceneId);
+            } else if (lastPage === 'projects' || !lastPage) {
+              // Default to projects page if lastPage is not set or is 'projects'
+              loadKnowledge('Login');
+              makeProjectListPage(sceneId);
+              makeSessionCheck(sceneId);
+            } else {
+              // If we don't recognize the page, default to projects
+              loadKnowledge('Login');
+              makeProjectListPage(sceneId);
+              makeSessionCheck(sceneId);
+            }
+          } else {
+            // No restored session or no token, show login page
+            makeLoginPage(sceneId);
+          }
 
         } else if (dev_switch==10)  {
 
