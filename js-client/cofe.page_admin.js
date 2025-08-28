@@ -68,15 +68,38 @@ function AdminPage ( sceneId )  {
 
   // this.tabs.setVisible ( false );
   this.userTable = null;
-  this.usersTab  = this.tabs.addTab ( 'Users'      ,true  );
-  this.groupsTab = this.tabs.addTab ( 'Groups'     ,false );
-  this.nodesTab  = this.tabs.addTab ( 'Nodes'      ,false );
-  this.memoryTab = this.tabs.addTab ( 'Performance',false );
+  
+  // Get the last active tab from localStorage
+  let activeTabName = localStorage.getItem('adminActiveTab') || 'Users';
+  
+  // Create all tabs, setting the active one based on stored preference
+  this.usersTab  = this.tabs.addTab ( 'Users'      , activeTabName === 'Users'       );
+  this.groupsTab = this.tabs.addTab ( 'Groups'     , activeTabName === 'Groups'      );
+  this.nodesTab  = this.tabs.addTab ( 'Nodes'      , activeTabName === 'Nodes'       );
+  this.memoryTab = this.tabs.addTab ( 'Performance', activeTabName === 'Performance' );
   this.anlTab    = null;
   if (__user_role==role_code.admin)
-    this.anlTab  = this.tabs.addTab ( 'Monitor'    ,false );
-  this.usageTab  = this.tabs.addTab ( 'Usage'      ,false );
-  this.jobsTab   = this.tabs.addTab ( 'Jobs'       ,false );
+    this.anlTab  = this.tabs.addTab ( 'Monitor'    , activeTabName === 'Monitor'     );
+  this.usageTab  = this.tabs.addTab ( 'Usage'      , activeTabName === 'Usage'       );
+  this.jobsTab   = this.tabs.addTab ( 'Jobs'       , activeTabName === 'Jobs'        );
+  
+  // Set up tab change listener to save the active tab and load tab content if needed
+  this.tabs.setTabChangeListener((ui) => {
+    const tabName = $(ui.newTab).text().trim();
+    localStorage.setItem('adminActiveTab', tabName);
+    
+    // Load tab content if needed when tab is selected
+    if (tabName === 'Groups' && (!this.groupListTable || !this.groupsData)) {
+      console.log('Loading Groups tab content on tab activation');
+      this.loadGroupsData({
+        columns: [
+          // Minimal column definition to be replaced by the full definition in loadGroupsData
+          { header: 'Group Name', style: { 'text-align': 'left' } }
+        ],
+        rows: []
+      });
+    }
+  });
   // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
@@ -1457,38 +1480,82 @@ AdminPage.prototype.populateGroupsTable = function(tdesc, groupsData) {
 AdminPage.prototype.loadGroupsData = function(tdesc) {
   let self = this;
 
-  // Add debug logging
-  console.log('Requesting groups data from server...');
+  // Add detailed debug logging
+  console.log('[' + getCurrentTimeString() + '] Groups Tab: Requesting groups data from server...');
+  console.log('[' + getCurrentTimeString() + '] Groups Tab: Current tab descriptor:', tdesc);
   
   // Create an empty table first in case of errors
-  self.groupListTable = new TablePages();
-  self.groupsTab.grid.setWidget(self.groupListTable, 1, 0, 1, 2);
+  if (!self.groupListTable) {
+    console.log('[' + getCurrentTimeString() + '] Groups Tab: Creating new table instance');
+    self.groupListTable = new TablePages();
+    self.groupsTab.grid.setWidget(self.groupListTable, 1, 0, 1, 2);
+  } else {
+    console.log('[' + getCurrentTimeString() + '] Groups Tab: Using existing table instance');
+  }
   
   // Try with a specific request format
   let requestData = { requestType: 'getAllGroups' };
   
+  // Show loading indicator
+  self.groupsTitle.setText('Groups (Loading...)').setFontSize('1.5em').setFontBold(true);
+  
+  console.log('[' + getCurrentTimeString() + '] Groups Tab: Sending server request for groups data');
   serverRequest(fe_reqtype.getAllGroups, requestData, 'Load Groups', function(response) {
-    console.log('Groups data response received:', response);
+    console.log('[' + getCurrentTimeString() + '] Groups Tab: Response received:', response);
+    
+    // Reset title
+    self.groupsTitle.setText('Groups').setFontSize('1.5em').setFontBold(true);
+    
     if (response && response.status === 'ok' && response.data) {
-      self.populateGroupsTable(tdesc, response.data);
+      console.log('[' + getCurrentTimeString() + '] Groups Tab: Successfully received groups data');
+      
+      // Store the groups data for future reference
+      self.groupsData = response.data;
+      
+      // Check if the response has the expected format with a groups property
+      if (response.data.groups) {
+        console.log('[' + getCurrentTimeString() + '] Groups Tab: Found groups data in response');
+        self.populateGroupsTable(tdesc, response.data);
+      } else {
+        console.warn('[' + getCurrentTimeString() + '] Groups Tab: Response missing groups property');
+        // Create a compatible format for the populateGroupsTable function
+        let compatibleData = { groups: {} };
+        self.populateGroupsTable(tdesc, compatibleData);
+      }
     } else if (response && response.status !== 'ok') {
-      console.warn('Failed to load groups:', response.message || 'Unknown error');
+      console.warn('[' + getCurrentTimeString() + '] Groups Tab: Failed to load groups:', response.message || 'Unknown error');
       // Show error message to user
       new MessageBox('Error Loading Groups', 
         '<h2>Failed to load groups</h2>' +
         '<p>Error: ' + (response.message || 'Unknown error') + '</p>' +
-        '<p>Please try refreshing the page or contact support.</p>',
+        '<p>Please try refreshing the page or contact support.</p>' +
+        '<p><small>Time: ' + getCurrentTimeString() + '</small></p>',
+        'msg_error');
+      // Still create the table but empty
+      self.groupListTable.makeTable(tdesc);
+    } else {
+      console.warn('[' + getCurrentTimeString() + '] Groups Tab: Received unexpected response format');
+      // Show error message for unexpected response format
+      new MessageBox('Error Loading Groups', 
+        '<h2>Unexpected response format</h2>' +
+        '<p>The server returned an unexpected response format.</p>' +
+        '<p>Please try refreshing the page or contact support.</p>' +
+        '<p><small>Time: ' + getCurrentTimeString() + '</small></p>',
         'msg_error');
       // Still create the table but empty
       self.groupListTable.makeTable(tdesc);
     }
   }, null, function(error) {
+    // Reset title
+    self.groupsTitle.setText('Groups').setFontSize('1.5em').setFontBold(true);
+    
     // On error, create empty table and log error
-    console.error('Error loading groups:', error);
+    console.error('[' + getCurrentTimeString() + '] Groups Tab: Error loading groups:', error);
     // Show error message to user
     new MessageBox('Communication Error', 
       '<h2>Failed to communicate with server</h2>' +
-      '<p>Could not load group data. Please check your connection and try again.</p>',
+      '<p>Could not load group data. Please check your connection and try again.</p>' +
+      '<p><small>Time: ' + getCurrentTimeString() + '</small></p>',
       'msg_error');
     // Still create the table but empty
     self.groupListTable.makeTable(tdesc);
